@@ -1,0 +1,33 @@
+.header-row {
+    padding: var(--header-row-py, 16px) var(--header-row-px, 0px);
+}
+
+.header-logo-picture {
+    max-width: var(--logo-max-w, 120px);
+    min-width: auto;
+}
+
+.header-actions-btn {
+    --#{$prefix}btn-padding-x: 6px;
+    --#{$prefix}btn-padding-y: 6px;
+    --#{$prefix}btn-border-radius: #{$border-radius-pill};
+    --#{$prefix}btn-hover-bg: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-bg: var(--#{$prefix}primary);
+    --#{$prefix}btn-active-border-color: transparent;
+    --icon-size: 20px;
+
+    @include media-breakpoint-up( lg ) {
+        --icon-size: 24px;
+        --#{$prefix}btn-padding-x: 8px;
+        --#{$prefix}btn-padding-y: 8px;
+    }
+
+    &.show {
+        background-color: var(--#{$prefix}btn-active-bg);
+    }
+}
+
+.header-action-badge {
+    --#{$prefix}badge-padding-y: 3px;
+    position: absolute !important;
+}

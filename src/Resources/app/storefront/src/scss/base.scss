@@ -1,0 +1,22 @@
+@import '~shogun/scss/mixins/vars';
+
+@font-face {
+    font-family: 'Figtree';
+    src: url('#{$sw-asset-public-url}/bundles/blurviewstheme/fonts/figtree-var.woff2') format('woff2');
+    font-weight: 200 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+	@include cssVarByMap('color', $colors-palette);
+}
+
+@import './component/account';
+@import './component/badge';
+@import './component/btn';
+@import './component/dropdown';
+@import './component/icon';
+
+@import './layout/header';
+

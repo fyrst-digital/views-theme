@@ -1,0 +1,34 @@
+{
+  "name": "Views Theme",
+  "author": "fyrst.digital",
+  "views": [
+    "@Storefront",
+    "@Plugins",
+    "@BlurViewsTheme"
+  ],
+  "style": [
+    "app/storefront/src/scss/overrides.scss",
+    "@StorefrontBootstrap",
+    "@ShogunBundle",
+    "@Plugins",
+    "app/storefront/src/scss/base.scss"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/blur-theme-views/blur-theme-views.js"
+  ],
+  "asset": [
+    "@Storefront",
+    "app/storefront/src/assets"
+  ],
+  "config": {
+    "fields": {
+      "headerFullWidth": {
+        "type": "switch",
+        "value": false,
+        "editable": true
+      }
+    }
+  },
+  "configInheritance": []
+}

@@ -1,0 +1,37 @@
+/*
+Override variable defaults
+==================================================
+This file is used to override default SCSS variables from the Shopware Storefront or Bootstrap.
+
+Because of the !default flags, theme variable overrides have to be declared beforehand.
+https://getbootstrap.com/docs/5.3/customize/sass/#variable-defaults
+*/
+$enable-cssgrid: true;
+$prefix: bs-;
+
+/** Colors **/
+$colors-palette: (
+	'pale-peach': #FBE6DD
+);
+
+$primary: map-get($colors-palette, 'pale-peach');
+
+/** Fonts **/
+$sw-font-family-base: 'Figtree', sans-serif;
+$sw-font-family-headline: $sw-font-family-base;
+
+/** Borders **/
+$sw-border-color:             rgb(from var(--#{$prefix}black) r g b / 0.1);
+
+$border-radius-sm:            3px;
+$border-radius:               6px;
+$border-radius-lg:            10px;
+$border-radius-xl:            16px;
+$border-radius-xxl:           24px;
+$border-radius-pill:          50rem;
+
+/** Shadows **/
+$box-shadow:                  0 .5rem 1rem rgb(from var(--#{$prefix}black) r g b / 0.1);
+
+/** Buttons **/
+$btn-font-weight: 550;

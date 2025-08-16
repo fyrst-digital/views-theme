@@ -1,0 +1,21 @@
+{
+  "name": "fyrst/views-theme",
+  "description": "Shopware 6 storefront theme",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Fyrst\\ViewsTheme\\": "src/"
+    }
+  },
+  "require": {
+    "fyrst/shogun": "^2"
+  },
+  "extra": {
+    "shopware-plugin-class": "Fyrst\\ViewsTheme\\BlurViewsTheme",
+    "label": {
+      "de-DE": "Views Theme",
+      "en-GB": "Views Theme"
+    }
+  }
+}

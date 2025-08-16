@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/layout/header.html.twig' %}
+
+{% block base_header_inner %}
+    {{ dump(theme_config('headerFullWidth')) }}
+
+    {% set classes = [
+        theme_config('headerFullWidth') is same as(true) ? 'container-fluid' : 'container',
+    ] %}
+
+    <div class="{{ classes|join(' ') }}">
+        {% sw_include '@Storefront/storefront/layout/header/header.html.twig' %}
+    </div>
+{% endblock %}

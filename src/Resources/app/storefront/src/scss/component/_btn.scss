@@ -1,0 +1,9 @@
+.btn {
+    @extend .d-flex, .flex-row, .flex-wrap, .align-items-center;
+    --#{$prefix}btn-padding-x: 16px;
+    --#{$prefix}btn-padding-y: 8px;
+    --#{$prefix}btn-line-height: inherit;
+    justify-content: var(--#{$prefix}btn-justify, center);
+    gap: var(--#{$prefix}btn-gap, 16px);
+    white-space: normal;
+}
