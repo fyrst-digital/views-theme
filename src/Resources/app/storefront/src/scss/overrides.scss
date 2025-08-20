@@ -9,6 +9,25 @@ https://getbootstrap.com/docs/5.3/customize/sass/#variable-defaults
 $enable-cssgrid: true;
 $prefix: bs-;
 
+/** Grid **/
+$grid-breakpoints: (
+	xs: 0,
+	sm: 420px,
+	md: 768px,
+	lg: 992px,
+	xl: 1200px,
+	xxl: 1400px
+);
+
+$container-max-widths: (
+	xs: 360px,
+	sm: 540px,
+	md: 720px,
+	lg: 960px,
+	xl: 1140px,
+	xxl: 1320px
+);
+
 /** Colors **/
 $colors-palette: (
 	'pale-peach': #FBE6DD

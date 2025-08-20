@@ -11,11 +11,17 @@
     "@StorefrontBootstrap",
     "@ShogunBundle",
     "@Plugins",
-    "app/storefront/src/scss/base.scss"
+    {
+      "app/storefront/src/scss/base.scss": {
+        "resolve": {
+          "shogun": ""
+        }
+      }
+    }
   ],
   "script": [
     "@Storefront",
-    "app/storefront/dist/storefront/js/blur-theme-views/blur-theme-views.js"
+    "app/storefront/dist/storefront/js/blur-views-theme/blur-views-theme.js"
   ],
   "asset": [
     "@Storefront",

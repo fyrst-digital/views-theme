@@ -1,8 +1,6 @@
 {% sw_extends '@Storefront/storefront/layout/header.html.twig' %}
 
 {% block base_header_inner %}
-    {{ dump(theme_config('headerFullWidth')) }}
-
     {% set classes = [
         theme_config('headerFullWidth') is same as(true) ? 'container-fluid' : 'container',
     ] %}
