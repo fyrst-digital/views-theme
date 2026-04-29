@@ -19,6 +19,7 @@ Agents should reference the following skill file when relevant:
 | Agent | Path | Trigger |
 |-------|------|---------|
 | **Pencil Designer** | [`.opencode/agents/pencil-designer.md`](.opencode/agents/pencil-designer.md) | Ecommerce design work specifically in Pencil. The main agent delegates all screen/component design tasks to this subagent. |
+| **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Code-level Shopware 6.7 tasks: theme scaffolding, Twig overrides, JS plugins, SCSS, CMS blocks, services, migrations. The main agent delegates all storefront coding tasks to this subagent. |
 
 ## Quick Start
 

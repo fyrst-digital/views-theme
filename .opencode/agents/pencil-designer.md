@@ -48,8 +48,8 @@ If no tokens exist, define them with `pencil_set_variables` before any design wo
 
 ### 5. Create Screen Pairs
 For every screen, create two top-level frames:
-- `[Screen Name] - Desktop` — width `1280`, height `fit_content`
-- `[Screen Name] - Mobile` — width `375`, height `fit_content`
+- `[Screen Name] - Desktop` — width `1600`, height `fit_content`
+- `[Screen Name] - Mobile` — width `360`, height `fit_content`
 
 Assemble screens using `ref` instances from the Design System. Override text, images, and layout props as needed.
 
