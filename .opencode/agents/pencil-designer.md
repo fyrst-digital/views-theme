@@ -10,7 +10,7 @@ Always use these tools in the correct order. Never attempt to design without fir
 
 | Tool | Purpose |
 |------|---------|
-| `pencil_open_document` | Open or create a `.pen` file. Always call this first. The main file is `views-theme.pen`. |
+| `pencil_open_document` | Open the existing `.pen` file. Always call this first. **CRITICAL**: Only ever open `views-theme.pen`. NEVER open any other path or a new document. You have to use absolute path to the file, so you need to resolve it first! |
 | `pencil_get_editor_state` | Get the active editor, current selection, and schema. Call after opening. |
 | `pencil_get_variables` | Read design tokens (colors, typography, spacing). Inspect before creating new screens. |
 | `pencil_set_variables` | Define or update design tokens. Do this once before building components if tokens are missing. |
@@ -25,8 +25,9 @@ Always use these tools in the correct order. Never attempt to design without fir
 Follow this exact sequence for every design task:
 
 ### 1. Open the Document
+**CRITICAL**: ALWAYS use the **existing** `views-theme.pen` document for every Pencil operation. NEVER create or open a new document. You have to use absolute path to the file, so you need to resolve it first!
 ```
-pencil_open_document(filePathOrTemplate="views-theme.pen")
+pencil_open_document(filePathOrTemplate="<resolved-absolute-path>/views-theme.pen")
 pencil_get_editor_state(include_schema=true)
 ```
 

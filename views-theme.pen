@@ -42,7 +42,7 @@
                 "thickness": 1,
                 "fill": "$btn-border-color"
               },
-              "gap": 8,
+              "gap": "$spacing-xs",
               "padding": [
                 "$btn-padding-x",
                 "$btn-padding-y"
@@ -51,14 +51,34 @@
               "alignItems": "center",
               "children": [
                 {
+                  "type": "icon_font",
+                  "id": "iuIy4",
+                  "name": "iconLeft",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "at-bold",
+                  "iconFontFamily": "phosphor",
+                  "fill": "$btn-color"
+                },
+                {
                   "type": "text",
                   "id": "Lxn1b",
                   "name": "btnPrimaryText",
                   "fill": "$btn-color",
                   "content": "Button",
                   "fontFamily": "$font-family",
-                  "fontSize": "$font-size-sm",
+                  "fontSize": "$btn-font-size",
                   "fontWeight": "700"
+                },
+                {
+                  "type": "icon_font",
+                  "id": "BRItD",
+                  "name": "icon",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "x-bold",
+                  "iconFontFamily": "phosphor",
+                  "fill": "$btn-color"
                 }
               ]
             },
@@ -536,34 +556,44 @@
                     "$btn-padding-x",
                     "$btn-padding-y"
                   ],
-                  "width": "fill_container"
+                  "width": "fill_container",
+                  "descendants": {
+                    "iuIy4": {
+                      "width": 20,
+                      "height": 20,
+                      "iconFontFamily": "phosphor",
+                      "iconFontName": "handbag-bold"
+                    },
+                    "Lxn1b": {
+                      "content": "Add to Cart"
+                    },
+                    "BRItD": {
+                      "enabled": false
+                    }
+                  }
                 },
                 {
-                  "type": "frame",
-                  "id": "FO3E6",
-                  "name": "pcWishlist",
-                  "cornerRadius": "$radii-md",
-                  "stroke": {
-                    "align": "inside",
-                    "thickness": 1,
-                    "fill": "$color-border"
+                  "id": "I6wLd",
+                  "type": "ref",
+                  "ref": "mTYNE",
+                  "theme": {
+                    "Button Size": "Equal (Default)",
+                    "Button Color": "Secondary"
                   },
-                  "padding": 10,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon_font",
-                      "id": "JbYrZ",
-                      "name": "pcWishlistIcon",
-                      "width": 18,
-                      "height": 18,
-                      "iconFontName": "heart-bold",
+                  "descendants": {
+                    "iuIy4": {
                       "iconFontFamily": "phosphor",
-                      "weight": 700,
-                      "fill": "$color-text-secondary"
+                      "iconFontName": "heart-bold",
+                      "width": 20,
+                      "height": 20
+                    },
+                    "Lxn1b": {
+                      "enabled": false
+                    },
+                    "BRItD": {
+                      "enabled": false
                     }
-                  ]
+                  }
                 }
               ]
             }
@@ -629,7 +659,7 @@
           "id": "pLuuk",
           "name": "Layout",
           "layout": "vertical",
-          "gap": 24,
+          "gap": 40,
           "padding": 24,
           "children": [
             {
@@ -645,22 +675,33 @@
                   "type": "frame",
                   "id": "XcpwA",
                   "name": "Header Top",
+                  "width": 1200,
                   "gap": 44,
                   "padding": [
                     16,
                     32
                   ],
+                  "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "text",
-                      "id": "uOeA0",
-                      "name": "logo",
-                      "fill": "$color-text-primary",
-                      "content": "VIEWS",
-                      "fontFamily": "Figtree",
-                      "fontSize": "$font-size-xl",
-                      "fontWeight": "$font-weight-bold"
+                      "type": "frame",
+                      "id": "vJZq7",
+                      "name": "logoFrame",
+                      "width": "fill_container",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uOeA0",
+                          "name": "logo",
+                          "fill": "$color-text-primary",
+                          "content": "VIEWS",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-xl",
+                          "fontWeight": "$font-weight-bold"
+                        }
+                      ]
                     },
                     {
                       "id": "nhLCi",
@@ -673,15 +714,17 @@
                       "type": "frame",
                       "id": "aerdZ",
                       "name": "headerActions",
+                      "width": "fill_container",
                       "gap": 24,
+                      "justifyContent": "end",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "icon_font",
                           "id": "nci8t",
                           "name": "wishlistIcon",
-                          "width": 24,
-                          "height": 24,
+                          "width": 20,
+                          "height": 20,
                           "iconFontName": "heart-bold",
                           "iconFontFamily": "phosphor",
                           "weight": 700,
@@ -691,8 +734,8 @@
                           "type": "icon_font",
                           "id": "g2pNU",
                           "name": "accountIcon",
-                          "width": 24,
-                          "height": 24,
+                          "width": 20,
+                          "height": 20,
                           "iconFontName": "user-bold",
                           "iconFontFamily": "phosphor",
                           "weight": 700,
@@ -702,8 +745,8 @@
                           "type": "icon_font",
                           "id": "RWgTW",
                           "name": "cartIcon",
-                          "width": 24,
-                          "height": 24,
+                          "width": 20,
+                          "height": 20,
                           "iconFontName": "handbag-bold",
                           "iconFontFamily": "phosphor",
                           "weight": 700,
@@ -803,7 +846,7 @@
               "id": "xAi5x",
               "name": "Header / Mobile",
               "reusable": true,
-              "width": "fill_container",
+              "width": 360,
               "layout": "vertical",
               "children": [
                 {
@@ -817,15 +860,24 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "type": "icon_font",
-                      "id": "BMaxu",
-                      "name": "menuIcon",
-                      "width": 20,
-                      "height": 20,
-                      "iconFontName": "list-bold",
-                      "iconFontFamily": "phosphor",
-                      "weight": 700,
-                      "fill": "$color-text-primary"
+                      "type": "frame",
+                      "id": "zLSE8",
+                      "name": "menuIconFrame",
+                      "width": "fill_container",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "BMaxu",
+                          "name": "menuIcon",
+                          "width": 20,
+                          "height": 20,
+                          "iconFontName": "list-bold",
+                          "iconFontFamily": "phosphor",
+                          "weight": 700,
+                          "fill": "$color-text-primary"
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -841,13 +893,18 @@
                       "type": "frame",
                       "id": "iigN7",
                       "name": "headerActions",
+                      "width": 110,
                       "gap": 16,
+                      "justifyContent": "end",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "icon_font",
                           "id": "BzKG4",
+                          "x": 54,
+                          "y": 0,
                           "name": "wishlistIcon",
+                          "enabled": false,
                           "width": 20,
                           "height": 20,
                           "iconFontName": "heart-bold",
@@ -858,7 +915,10 @@
                         {
                           "type": "icon_font",
                           "id": "mzA0W",
+                          "x": 53.5,
+                          "y": 0,
                           "name": "accountIcon",
+                          "enabled": false,
                           "width": 20,
                           "height": 20,
                           "iconFontName": "user-bold",
@@ -889,6 +949,417 @@
                   "name": "headerSearch"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "c4iwj",
+              "name": "Menu Drawer",
+              "reusable": true,
+              "width": 360,
+              "fill": "$color-surface",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000033",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 20
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "chWQJ",
+                  "name": "Drawer Header",
+                  "width": "fill_container",
+                  "padding": [
+                    "$spacing-sm",
+                    "$spacing-md"
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TPLPY",
+                      "name": "Header Links",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "3Aq5d",
+                          "name": "left1",
+                          "gap": 8,
+                          "padding": "$spacing-xs",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "UbPJ9",
+                              "name": "fLink1LeftIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "user-bold",
+                              "iconFontFamily": "phosphor",
+                              "fill": "$color-text-secondary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Ykup8",
+                              "name": "fLink1Text",
+                              "fill": "$color-text-secondary",
+                              "content": "My Account",
+                              "fontFamily": "Figtree",
+                              "fontSize": "$font-size-sm",
+                              "fontWeight": "$font-weight-medium"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DCpEp",
+                          "name": "left2",
+                          "gap": 8,
+                          "padding": "$spacing-xs",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "y1cMB",
+                              "name": "fLink2LeftIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "heart-bold",
+                              "iconFontFamily": "phosphor",
+                              "fill": "$color-text-secondary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TMukp",
+                              "name": "fLink2Text",
+                              "fill": "$color-text-secondary",
+                              "content": "Wishlist",
+                              "fontFamily": "Figtree",
+                              "fontSize": "$font-size-sm",
+                              "fontWeight": "$font-weight-medium"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "pt1ST",
+                      "name": "closeIcon",
+                      "width": 16,
+                      "height": 16,
+                      "iconFontName": "x-bold",
+                      "iconFontFamily": "phosphor",
+                      "fill": "$color-text-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "aXZdJ",
+                  "name": "Divider 1",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$color-border"
+                },
+                {
+                  "type": "frame",
+                  "id": "sxwK8",
+                  "name": "Nav Links",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "padding": "$spacing-md",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fqHuF",
+                      "name": "Nav Link - New Arrivals",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UyoKE",
+                          "name": "link1Text",
+                          "fill": "$color-text-primary",
+                          "content": "New Arrivals",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "Klvws",
+                          "name": "link1Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wO4Ks",
+                      "name": "Nav Link - Men",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dbWlX",
+                          "name": "link2Text",
+                          "fill": "$color-text-primary",
+                          "content": "Men",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "Tr0WG",
+                          "name": "link2Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ipL8u",
+                      "name": "Nav Link - Women",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kaRoL",
+                          "name": "link3Text",
+                          "fill": "$color-text-primary",
+                          "content": "Women",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "VFn3R",
+                          "name": "link3Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O0KO5",
+                      "name": "Nav Link - Accessories",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "PrR3U",
+                          "name": "link4Text",
+                          "fill": "$color-text-primary",
+                          "content": "Accessories",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "8d3LD",
+                          "name": "link4Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "F7gT7",
+                      "name": "Nav Link - Home",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ylx10",
+                          "name": "link5Text",
+                          "fill": "$color-text-primary",
+                          "content": "Home",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "Lb13i",
+                          "name": "link5Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-text-tertiary"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qYOfk",
+                      "name": "Nav Link - Sale",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "7tX5d",
+                          "name": "link6Text",
+                          "fill": "$color-sale",
+                          "content": "Sale",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-md",
+                          "fontWeight": "$font-weight-medium"
+                        },
+                        {
+                          "type": "icon_font",
+                          "id": "WhpJX",
+                          "name": "link6Icon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "caret-right-bold",
+                          "iconFontFamily": "phosphor",
+                          "fill": "$color-sale"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "djgDp",
+                  "name": "Divider 2",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$color-border"
+                },
+                {
+                  "type": "frame",
+                  "id": "uJkQe",
+                  "name": "Footer Links",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "padding": "$spacing-md",
+                  "children": [
+                    {
+                      "type": "note",
+                      "id": "lj3S6",
+                      "layoutPosition": "absolute",
+                      "x": 147,
+                      "y": 11,
+                      "width": 250,
+                      "height": 219,
+                      "content": "These Drawer Footer links are connected to the according Saleschannel entry point in Shopware"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "eGcjk",
+                      "name": "Footer Link - Help",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cirlJ",
+                          "name": "fLink3Text",
+                          "fill": "$color-text-secondary",
+                          "content": "Help & Support",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "$font-weight-medium"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dJt72",
+                      "name": "Footer Link - FAQ",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BKfMn",
+                          "name": "fLink3Text",
+                          "fill": "$color-text-secondary",
+                          "content": "FAQ",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "$font-weight-medium"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vYG1M",
+                      "name": "Footer Link - Contact",
+                      "width": "fill_container",
+                      "padding": "$spacing-xs",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ylC4U",
+                          "name": "fLink3Text",
+                          "fill": "$color-text-secondary",
+                          "content": "Contact",
+                          "fontFamily": "Figtree",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "$font-weight-medium"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -909,7 +1380,14 @@
           "type": "ref",
           "ref": "YKxJD",
           "width": "fill_container",
-          "name": "headerRef"
+          "name": "headerRef",
+          "descendants": {
+            "XcpwA": {
+              "width": 1149,
+              "justifyContent": "space_between",
+              "alignItems": "center"
+            }
+          }
         },
         {
           "type": "frame",
@@ -2062,12 +2540,16 @@
       "Default"
     ],
     "Button Size": [
-      "Default"
+      "Default",
+      "Equal (Default)"
     ],
     "Button Color": [
       "Primary",
       "Secondary",
       "Danger"
+    ],
+    "Sizing": [
+      "Default"
     ]
   },
   "variables": {
@@ -2270,7 +2752,7 @@
         {
           "value": 32,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2281,7 +2763,7 @@
         {
           "value": 20,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2292,7 +2774,7 @@
         {
           "value": 16,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2303,7 +2785,7 @@
         {
           "value": 14,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2314,7 +2796,7 @@
         {
           "value": 24,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2325,7 +2807,7 @@
         {
           "value": 12,
           "theme": {
-            "Theme": "Default"
+            "Sizing": "Default"
           }
         }
       ]
@@ -2477,6 +2959,12 @@
           "theme": {
             "Button Size": "Default"
           }
+        },
+        {
+          "value": "$spacing-sm",
+          "theme": {
+            "Button Size": "Equal (Default)"
+          }
         }
       ]
     },
@@ -2487,6 +2975,12 @@
           "value": "$spacing-xl",
           "theme": {
             "Button Size": "Default"
+          }
+        },
+        {
+          "value": "$spacing-sm",
+          "theme": {
+            "Button Size": "Equal (Default)"
           }
         }
       ]
@@ -4408,7 +4902,7 @@
           }
         },
         {
-          "value": "$grey-100",
+          "value": "$grey-200",
           "theme": {
             "Button Color": "Secondary"
           }
@@ -4417,6 +4911,128 @@
           "value": "$danger",
           "theme": {
             "Button Color": "Danger"
+          }
+        }
+      ]
+    },
+    "font-size-3xl": {
+      "type": "number",
+      "value": [
+        {
+          "value": 40,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "font-size-4xl": {
+      "type": "number",
+      "value": [
+        {
+          "value": 48,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "font-size-5xl": {
+      "type": "number",
+      "value": [
+        {
+          "value": 64,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "btn-font-size": {
+      "type": "number",
+      "value": [
+        {
+          "value": "$font-size-md",
+          "theme": {
+            "Button Size": "Default"
+          }
+        },
+        {
+          "value": "$font-size-md",
+          "theme": {
+            "Button Size": "Equal (Default)"
+          }
+        }
+      ]
+    },
+    "btn-icon-size": {
+      "type": "number",
+      "value": [
+        {
+          "value": "$icon-size-lg",
+          "theme": {
+            "Button Size": "Default"
+          }
+        },
+        {
+          "value": "$icon-size-lg",
+          "theme": {
+            "Button Size": "Equal (Default)"
+          }
+        }
+      ]
+    },
+    "icon-size-lg": {
+      "type": "number",
+      "value": [
+        {
+          "value": 20,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "icon-size-2xl": {
+      "type": "number",
+      "value": [
+        {
+          "value": 32,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "icon-size-md": {
+      "type": "number",
+      "value": [
+        {
+          "value": 16,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "icon-size-sm": {
+      "type": "number",
+      "value": [
+        {
+          "value": 12,
+          "theme": {
+            "Sizing": "Default"
+          }
+        }
+      ]
+    },
+    "icon-size-xl": {
+      "type": "number",
+      "value": [
+        {
+          "value": 24,
+          "theme": {
+            "Sizing": "Default"
           }
         }
       ]
