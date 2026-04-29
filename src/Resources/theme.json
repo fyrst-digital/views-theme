@@ -1,0 +1,36 @@
+{
+  "name": "ViewsTheme",
+  "author": "fyrst.dev",
+  "views": [
+    "@Storefront",
+    "@ViewsTheme"
+  ],
+  "style": [
+    "@StorefrontBootstrap"
+  ],
+  "script": [
+    "@Storefront",
+    "app/storefront/dist/storefront/js/views-theme.js"
+  ],
+  "asset": [
+    "app/storefront/src/assets"
+  ],
+  "config": {
+    "fields": {
+      "sw-color-brand-primary": {
+        "type": "color",
+        "value": "#19BF56",
+        "editable": true,
+        "block": "colors",
+        "order": 100
+      },
+      "sw-font-family-base": {
+        "type": "text",
+        "value": "'Figtree', sans-serif",
+        "editable": true,
+        "block": "typography",
+        "order": 100
+      }
+    }
+  }
+}
