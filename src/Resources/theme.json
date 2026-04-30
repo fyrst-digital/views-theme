@@ -6,6 +6,7 @@
     "@ViewsTheme"
   ],
   "style": [
+    "app/storefront/src/scss/override.scss",
     "@StorefrontBootstrap"
   ],
   "script": [

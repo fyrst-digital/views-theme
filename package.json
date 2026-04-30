@@ -1,0 +1,24 @@
+{
+  "name": "viewstheme",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/main.css -o ./src/Resources/public/css/theme.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fyrst-digital/views-theme.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fyrst-digital/views-theme/issues"
+  },
+  "homepage": "https://github.com/fyrst-digital/views-theme#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}
