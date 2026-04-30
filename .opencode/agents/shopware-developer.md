@@ -1,10 +1,6 @@
 ---
 description: Specialized Shopware 6.7 developer for theme customization, storefront features, and general plugin architecture. Delegate all code-level Shopware tasks to this subagent.
 mode: subagent
-permission:
-  edit: ask
-  bash: ask
-  webfetch: allow
 ---
 
 # Shopware Developer

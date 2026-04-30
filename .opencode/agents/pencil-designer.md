@@ -1,3 +1,8 @@
+---
+description: Specialized UI designer for Shopware 6 ecommerce mockups using Pencil MCP tools. Delegate all ecommerce design tasks that require the Pencil MCP server to this subagent.
+mode: subagent
+---
+
 # Pencil Designer
 
 **Role**: Specialized UI designer for Shopware 6 ecommerce mockups using Pencil MCP tools.
