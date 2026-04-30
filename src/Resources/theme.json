@@ -1,21 +1,10 @@
 {
   "name": "ViewsTheme",
   "author": "fyrst.dev",
-  "views": [
-    "@Storefront",
-    "@ViewsTheme"
-  ],
-  "style": [
-    "app/storefront/src/scss/override.scss",
-    "@StorefrontBootstrap"
-  ],
-  "script": [
-    "@Storefront",
-    "app/storefront/dist/storefront/js/views-theme.js"
-  ],
-  "asset": [
-    "app/storefront/src/assets"
-  ],
+  "views": ["@Storefront", "@ViewsTheme"],
+  "style": ["app/storefront/src/scss/override.scss", "@StorefrontBootstrap"],
+  "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme.js"],
+  "asset": ["app/storefront/src/assets"],
   "config": {
     "fields": {
       "sw-color-brand-primary": {

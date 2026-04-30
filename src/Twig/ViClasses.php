@@ -24,16 +24,20 @@ class ViClasses extends AbstractExtension
         ];
     }
 
-    public function attrClasses(?array $classes): string
+    public function attrClasses(?array $classes): \Twig\Markup
     {
         if (empty($classes)) {
-            return '';
+            return new \Twig\Markup('', 'UTF-8');
         }
 
         $classes = \array_filter($classes);
         $classes = \array_unique($classes);
 
-        return \implode(' ', $classes);
+        if (empty($classes)) {
+            return new \Twig\Markup('', 'UTF-8');
+        }
+
+        return new \Twig\Markup('class="' . \implode(' ', $classes) . '"', 'UTF-8');
     }
 
     public function defineClasses(array $defaultClasses, array $customClasses = [], bool $replace = false): array

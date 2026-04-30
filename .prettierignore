@@ -1,0 +1,4 @@
+node_modules/
+vendor/
+src/Resources/public/
+src/Resources/app/storefront/dist/

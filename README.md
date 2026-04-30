@@ -45,7 +45,7 @@ This function provides a consistent way to handle CSS class composition in reusa
 
 {% block component_header_main %}
   <div 
-    class="{{ classes.main|vi_attr_classes }}"
+    {{ classes.main|vi_attr_classes }}
     data-component="header-main">
   </div>
 {% endblock %}
@@ -85,7 +85,7 @@ Converts a class array into a clean, HTML-ready class string.
 
 #### Purpose
 
-Instead of writing `{{ classes.main|join(' ') }}` in every template, this filter handles class formatting for you. It removes empty values, deduplicates classes, and joins them with a single space.
+Instead of writing `class="{{ classes.main|join(' ') }}"` in every template, this filter outputs the entire `class` attribute for you. It removes empty values, deduplicates classes, and handles the HTML attribute syntax.
 
 #### Usage Example
 
@@ -94,7 +94,7 @@ Instead of writing `{{ classes.main|join(' ') }}` in every template, this filter
 <div class="{{ classes.main|join(' ') }}"></div>
 
 {# After #}
-<div class="{{ classes.main|vi_attr_classes }}"></div>
+<div {{ classes.main|vi_attr_classes }}></div>
 ```
 
 Combined with `vi_define_classes`:
@@ -107,15 +107,15 @@ Combined with `vi_define_classes`:
     ],
 }, classes|default({}), replaceClasses|default(false)) %}
 
-<div class="{{ classes.main|vi_attr_classes }}" data-component="header-main"></div>
+<div {{ classes.main|vi_attr_classes }} data-component="header-main"></div>
 ```
 
 #### Behavior
 
+- Outputs the full `class="..."` attribute string
 - Filters out empty, `null`, or `false` values
 - Removes duplicate class names
-- Joins remaining classes with a single space
-- Returns an empty string if the input array is empty or `null`
+- Returns an empty string (no attribute) if the input array is empty or `null`
 
 ## Requirements
 

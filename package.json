@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/main.css -o ./src/Resources/public/css/theme.css --watch"
+    "watch:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/main.css -o ./src/Resources/public/css/theme.css --watch",
+    "format": "prettier --write \"src/**/*.{js,ts,html,css,scss,json,md,twig}\"",
+    "format:check": "prettier --check \"src/**/*.{js,ts,html,css,scss,json,md,twig}\""
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,9 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.2.4",
     "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@destination/prettier-plugin-twig": "^2.0.0",
+    "prettier": "^3.8.3"
   }
 }
