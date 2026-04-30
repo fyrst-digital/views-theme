@@ -10,6 +10,12 @@
 %}
 
 {% block component_header_main %}
+  {%
+    set iconStyle = {
+      'namespace': 'ViewsTheme',
+      'pack': 'bold',
+    }
+  %}
   <div
     {{ classes.main | vi_attr_classes }}
     data-component="header-main">

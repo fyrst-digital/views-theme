@@ -2,7 +2,6 @@
   --logo-width: 80px;
 }
 
-[data-component='header-action'] {
-  align-items: center;
-  gap: 0.25rem;
+[data-component^='header-action'] {
+  // special styling for all header-acion
 }

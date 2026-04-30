@@ -1,0 +1,26 @@
+{# @ViewsTheme/components/icon/icon.html.twig #}
+
+{% macro render(name, options) %}
+    {% set options = options ?? {} %}
+    {% set pack = options.pack|default('default') %}
+    {% set namespace = options.namespace|default('Storefront') %}
+    {% set ariaHidden = options.ariaHidden ?? true %}
+    {% set styles = [options.size, options.color, options.rotation, options.flip, options.class]|filter(v => v) %}
+
+    {% if themeIconConfig[pack] is defined %}
+        {% set iconPath = '@' ~ themeIconConfig[pack].namespace ~ '/' ~ themeIconConfig[pack].path ~ '/' ~ name ~ '.svg' %}
+        {% set iconClass = 'icon icon-' ~ pack ~ ' icon-' ~ pack ~ '-' ~ name %}
+    {% else %}
+        {% set iconPath = '@' ~ namespace ~ '/assets/icon/' ~ pack ~ '/' ~ name ~ '.svg' %}
+        {% set iconClass = 'icon icon-' ~ name %}
+    {% endif %}
+
+    <span class="{{ iconClass }}{% for s in styles %} icon-{{ s }}{% endfor %}"{% if ariaHidden %} aria-hidden="true"{% endif %}>
+        {% set icon = source(iconPath, ignore_missing = true) %}
+        {% if options.ariaLabel is defined and not ariaHidden %}
+            {{ icon|sw_icon_cache|replace({'<svg ': '<svg aria-label="' ~ options.ariaLabel ~ '" '})|raw }}
+        {% else %}
+            {{ icon|sw_icon_cache|raw }}
+        {% endif %}
+    </span>
+{% endmacro %}

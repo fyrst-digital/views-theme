@@ -1,3 +1,5 @@
+{% import '@ViewsTheme/components/icon/icon.html.twig' as Icon %}
+
 {%
   set classes = vi_define_classes({
     action: [
@@ -21,11 +23,6 @@
     data-off-canvas-cart="true"
     data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
     data-component="header-action-cart">
-    {%
-      sw_icon 'account' style {
-          'namespace': 'ViewsTheme',
-          'pack': 'bold',
-      }
-    %}
+    {{ Icon.render('handbag', iconStyle) }}
   </span>
 {% endblock %}
