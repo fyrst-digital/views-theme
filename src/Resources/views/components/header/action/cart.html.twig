@@ -5,10 +5,27 @@
   }, classes|default({}), replaceClasses|default(false))
 %}
 
+{%
+  set offcanvasCartOptions = offcanvasCartOptions|default({
+      autoFocus: true
+  })
+%}
+
 {% block component_header_action_cart %}
-  <a
-    href=""
+  <span
     {{ classes.action | vi_attr_classes }}
-    >CART</a
-  >
+    title="{{ 'checkout.cartTitle'|trans|striptags }}"
+    aria-label="{{ 'checkout.cartTitle'|trans|striptags }}"
+    aria-haspopup="dialog"
+    data-cart-widget="true"
+    data-off-canvas-cart="true"
+    data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
+    data-component="header-action-cart">
+    {%
+      sw_icon 'account' style {
+          'namespace': 'ViewsTheme',
+          'pack': 'bold',
+      }
+    %}
+  </span>
 {% endblock %}
