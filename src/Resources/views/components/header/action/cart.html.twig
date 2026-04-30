@@ -1,0 +1,14 @@
+{%
+  set classes = vi_define_classes({
+    action: [
+    ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_header_action_cart %}
+  <a
+    href=""
+    {{ classes.action | vi_attr_classes }}
+    >CART</a
+  >
+{% endblock %}

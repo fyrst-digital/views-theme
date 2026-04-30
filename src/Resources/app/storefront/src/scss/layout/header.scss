@@ -1,3 +1,8 @@
 [data-component='header-main'] {
-  --logo-width: 120px;
+  --logo-width: 80px;
+}
+
+[data-component='header-action'] {
+  align-items: center;
+  gap: 0.25rem;
 }

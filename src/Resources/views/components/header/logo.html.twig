@@ -18,6 +18,7 @@
       href="{{ path('frontend.home.page') }}"
       title="{{ 'header.logoLink'|trans|striptags }}"
     {% endif %}
+    data-component="header-logo"
     {{ classes.logo | vi_attr_classes }}>
     {% if textLogo is not empty %}
       {% block component_header_logo_text %}
@@ -56,7 +57,6 @@
               <img
                 src="{{ logoPath|sw_encode_url }}"
                 alt="{{ 'header.logoLink'|trans|striptags }}"
-                data-component="header-logo"
                 style="width: var(--logo-width, auto)"
                 {{ classes.logoImage | vi_attr_classes }}>
             {% endif %}
