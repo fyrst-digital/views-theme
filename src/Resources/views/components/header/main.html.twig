@@ -1,0 +1,14 @@
+{% set classes = vi_define_classes({
+  main: [
+    'd-grid',
+    'flex-wrap',
+  ],
+}, classes|default({}), replaceClasses|default(false)) %}
+
+{% block component_header_main %}
+  <div 
+    class="{{ classes.main|vi_attr_classes }}"
+    data-component="header-main">
+
+  </div>
+{% endblock %}
