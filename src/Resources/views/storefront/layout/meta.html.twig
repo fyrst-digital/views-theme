@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_stylesheet %}
+  {{ parent() }}
+
+  {% block layout_extra_stylesheet %}
+    {#
+      <link
+      rel="stylesheet"
+      href="{{ asset('bundles/viewstheme/css/theme.css') }}">
+    #}
+  {% endblock %}
+{% endblock %}

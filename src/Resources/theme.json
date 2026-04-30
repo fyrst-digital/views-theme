@@ -2,7 +2,11 @@
   "name": "ViewsTheme",
   "author": "fyrst.dev",
   "views": ["@Storefront", "@ViewsTheme"],
-  "style": ["app/storefront/src/scss/override.scss", "@StorefrontBootstrap"],
+  "style": [
+    "app/storefront/src/scss/override.scss",
+    "@StorefrontBootstrap",
+    "app/storefront/src/scss/base.scss"
+  ],
   "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme.js"],
   "asset": ["app/storefront/src/assets"],
   "config": {
