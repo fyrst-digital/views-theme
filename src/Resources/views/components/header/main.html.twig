@@ -10,5 +10,8 @@
     class="{{ classes.main|vi_attr_classes }}"
     data-component="header-main">
 
+    {% block component_header_main_logo %}
+      {% sw_include '@Storefront/components/header/logo.html.twig' %}
+    {% endblock %}
   </div>
 {% endblock %}

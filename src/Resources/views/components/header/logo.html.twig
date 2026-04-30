@@ -1,0 +1,28 @@
+{% set classes = vi_define_classes({
+  logo: [
+    'col-auto',
+    'd-inline-flex'
+  ],
+  textLogo: []
+}, classes|default({}), replaceClasses|default(false)) %}
+
+{% set element = element|default('a') %}
+{% set textLogo = textLogo|default('VIEWS') %}
+
+{% block component_header_logo %}
+  <{{ element|raw }} 
+    {% if element is same as('a') %}
+      href="#"
+    {% endif %}
+    class="{{ classes.logo|vi_attr_classes }}"
+    data-component="header-logo">
+    {% if textLogo is not empty %}
+      <span
+        class="{{ classes.textLogo|vi_attr_classes }}">
+        {{ textLogo|raw }}
+      </span>
+    {% else %}
+      gdsgdsg
+    {% endif %}
+  </{{ element|raw }} >
+{% endblock %}
