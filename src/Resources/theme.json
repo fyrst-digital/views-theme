@@ -20,6 +20,44 @@
         "editable": true,
         "block": "typography",
         "order": 100
+      },
+      "sw-logo-desktop": {
+        "type": "media",
+        "value": "",
+        "editable": true,
+        "block": "media",
+        "order": 100,
+        "fullWidth": true
+      },
+      "sw-logo-tablet": {
+        "type": "media",
+        "value": "",
+        "editable": true,
+        "block": "media",
+        "order": 200,
+        "fullWidth": true
+      },
+      "sw-logo-mobile": {
+        "type": "media",
+        "value": "",
+        "editable": true,
+        "block": "media",
+        "order": 300,
+        "fullWidth": true
+      },
+      "sw-logo-share": {
+        "type": "media",
+        "value": "",
+        "editable": true,
+        "block": "media",
+        "order": 400
+      },
+      "sw-logo-favicon": {
+        "type": "media",
+        "value": "",
+        "editable": true,
+        "block": "media",
+        "order": 500
       }
     }
   }
