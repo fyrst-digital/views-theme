@@ -1,0 +1,5 @@
+.form-control {
+  border-color: var(--input-border-color, var(--#{$prefix}border-color));
+  padding-inline: var(--input-padding-inline, var(--#{$prefix}spacing-4));
+  padding-block: var(--input-padding-block, var(--#{$prefix}spacing-2));
+}

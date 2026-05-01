@@ -1,4 +1,20 @@
+// Custom spacing scale — must be defined before Bootstrap is imported
+$spacers: (
+  0: 0,
+  1: 4px,
+  2: 8px,
+  3: 12px,
+  4: 16px,
+  5: 20px,
+  6: 24px,
+  7: 32px,
+  8: 40px,
+  9: 64px,
+  10: 80px,
+);
+
 $enable-cssgrid: true;
+$prefix: '';
 
 $grid-breakpoints: (
   xs: 0,
@@ -18,4 +34,19 @@ $container-max-widths: (
   xxl: 1570px,
 );
 
-$container-padding-x: 15px;
+$container-padding-x: 30px;
+
+$border-radius: 6px;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.5rem;
+$border-radius-xl: 1rem;
+$border-radius-xxl: 2rem;
+$border-radius-pill: 50rem;
+
+$border-color: #d4d4d4;
+
+:root {
+  @each $key, $value in $spacers {
+    --#{$prefix}spacing-#{$key}: #{$value};
+  }
+}

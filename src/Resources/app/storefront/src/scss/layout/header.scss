@@ -4,4 +4,7 @@
 
 [data-component^='header-action'] {
   // special styling for all header-acion
+  @include media-breakpoint-up(lg) {
+    --icon-size: 24px;
+  }
 }

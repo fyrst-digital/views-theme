@@ -5,6 +5,7 @@
       'flex-wrap',
       'align-items-center',
       'gap-3',
+      'py-3',
     ],
   }, classes|default({}), replaceClasses|default(false))
 %}
@@ -19,12 +20,20 @@
   <div
     {{ classes.main | vi_attr_classes }}
     data-component="header-main">
+    {% block component_header_main_menu %}
+      {% sw_include '@Storefront/components/header/menu.html.twig' %}
+    {% endblock %}
+
     {% block component_header_main_logo %}
       {% sw_include '@Storefront/components/header/logo.html.twig' %}
     {% endblock %}
 
     {% block component_header_main_actions %}
       {% sw_include '@Storefront/components/header/actions.html.twig' %}
+    {% endblock %}
+
+    {% block component_header_main_search %}
+      {% sw_include '@Storefront/components/header/search.html.twig' %}
     {% endblock %}
   </div>
 {% endblock %}

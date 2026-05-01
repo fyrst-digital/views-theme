@@ -2525,6 +2525,118 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "3p7BU",
+      "x": 3061,
+      "y": 0,
+      "name": "VIEWS Logo Vector",
+      "width": 400,
+      "height": 300,
+      "fill": "#FFFFFF",
+      "stroke": {
+        "align": "inside",
+        "thickness": 1,
+        "fill": "#E5E7EB"
+      },
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 32,
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "VJtck",
+          "name": "logoText",
+          "fill": "#111827",
+          "content": "VIEWS",
+          "fontFamily": "Figtree",
+          "fontSize": 24,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "wcN6J",
+          "name": "label1",
+          "fill": "#6B7280",
+          "content": "Reference for external SVG generation",
+          "fontFamily": "Figtree",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "MzQxq",
+          "name": "propFrame",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "zNO4V",
+              "name": "prop1",
+              "fill": "#374151",
+              "content": "fontFamily: Figtree",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "IXtFZ",
+              "name": "prop2",
+              "fill": "#374151",
+              "content": "fontSize: 24px",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "hoyZy",
+              "name": "prop3",
+              "fill": "#374151",
+              "content": "fontWeight: 700 (bold)",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "stKOp",
+              "name": "prop4",
+              "fill": "#374151",
+              "content": "fill: #111827",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "6qh1e",
+              "name": "prop5",
+              "fill": "#374151",
+              "content": "letterSpacing: normal",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "fhZhh",
+              "name": "prop6",
+              "fill": "#374151",
+              "content": "lineHeight: default (Figtree)",
+              "fontFamily": "monospace",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
