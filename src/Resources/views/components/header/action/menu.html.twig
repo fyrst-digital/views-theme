@@ -2,16 +2,14 @@
 
 {%
   set classes = vi_define_classes({
-    button: [
-      'btn',
-      'btn-equal',
+    action: [
     ],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
 {% block component_header_action_menu %}
   <button
-    {{ classes.button | vi_attr_classes }}
+    {{ classes.action | vi_attr_classes }}
     type="button"
     data-off-canvas-menu="true"
     data-component="header-action-menu"
