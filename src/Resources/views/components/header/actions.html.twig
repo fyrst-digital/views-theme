@@ -6,6 +6,7 @@
       'justify-content-end',
       'align-items-center',
     ],
+    action: ['btn', 'btn-equal', 'rounded-pill']
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -14,11 +15,20 @@
     {{ classes.actions | vi_attr_classes }}
     data-component="header-actions">
     {% block component_header_actions_start %}{% endblock %}
+    {% block component_header_actions_account %}
+      {%
+        sw_include '@Storefront/components/header/action/account.html.twig' with {
+          classes: {
+            action: classes.action
+          }
+        }
+      %}
+    {% endblock %}
     {% block component_header_actions_cart %}
       {%
         sw_include '@Storefront/components/header/action/cart.html.twig' with {
           classes: {
-            action: ['btn', 'btn-equal', 'rounded-pill']
+            action: classes.action
           }
         }
       %}

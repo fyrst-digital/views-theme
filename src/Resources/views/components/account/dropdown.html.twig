@@ -1,0 +1,56 @@
+{%
+  set classes = vi_define_classes({
+    dropdown: [
+      'dropdown-menu', 'dropdown-menu-end', 'account-dropdown'
+    ],
+    loginForm: ['p-6'],
+    dropdownFooter: ['d-grid', 'p-3'],
+    registerAction: ['btn', 'btn-primary']
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_account_dropdown %}
+  <div
+    {{ classes.dropdown | vi_attr_classes }}>
+    {% if context.customer %}
+      {% block component_account_dropdown_user_actions %}
+        {%
+          sw_include '@Storefront/components/account/user-actions.html.twig' with {
+              activeRoute: activeRoute
+          }
+        %}
+      {% endblock %}
+    {% else %}
+      {% block component_account_dropdown_login_form %}
+        {%
+          sw_include '@Storefront/components/account/login-form.html.twig' with {
+            classes: {
+              form: classes.loginForm
+            }
+          }
+        %}
+      {% endblock %}
+      {% block component_account_dropdown_register_divider %}
+        <div class="divider">
+          {% block component_account_dropdown_register_divider_label %}
+            <div class="divider-label">
+              {{ 'account.newCustomerLabel' | trans | sw_sanitize }}
+            </div>
+          {% endblock %}
+        </div>
+      {% endblock %}
+      {% block component_account_dropdown_footer %}
+        <div {{ classes.dropdownFooter | vi_attr_classes }}>
+          {% block component_account_dropdown_footer_register %}
+            <a
+              href="{{ path('frontend.account.login.page') }}"
+              title="{{ 'account.orRegisterLink'|trans|striptags }}"
+              {{ classes.registerAction | vi_attr_classes }}>
+              {{ 'account.orRegisterLink' | trans | sw_sanitize }}
+            </a>
+          {% endblock %}
+        </div>
+      {% endblock %}
+    {% endif %}
+  </div>
+{% endblock %}

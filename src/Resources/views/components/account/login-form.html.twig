@@ -1,0 +1,108 @@
+{# @template-origin: storefront/component/account/login.html.twig #}
+{%
+  set classes = vi_define_classes({
+    form: ['login-form', 'd-flex', 'flex-column', 'flex-wrap', 'gap-3'],
+  	email: [],
+  	password: [],
+  	actions: ['login-form-actions','d-flex','flex-row','flex-wrap','align-items-center','justify-content-center','gap-2'],
+  	actionLogin: ['flex-grow-0','flex-basis-auto','btn','btn-primary'],
+  	actionPasswordRecovery: ['flex-grow-1','flex-basis-0','btn','btn-sm','btn-link']
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_account_login_form %}
+  <form
+    action="{{ path('frontend.account.login') }}"
+    method="post"
+    data-form-validation="true"
+    {{ classes.form | vi_attr_classes }}>
+    {% block component_account_login_form_parameter %}
+      <input
+        type="hidden"
+        name="redirectTo"
+        value="{{ redirectTo }}">
+      <input
+        type="hidden"
+        name="redirectParameters"
+        value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}">
+    {% endblock %}
+
+    {% block component_account_login_form_error %}
+      {% if loginError %}
+        {% if errorSnippet != null %}
+          {%
+            sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            	type: 'danger',
+            	content: errorSnippet|trans|sw_sanitize
+            }
+          %}
+        {% elseif waitTime != null %}
+          {%
+            sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            	type: 'info',
+            	content: 'account.loginThrottled'|trans({'%seconds%': waitTime})|sw_sanitize
+            }
+          %}
+        {% else %}
+          {%
+            sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            	type: 'danger',
+            	content: 'account.loginBadCredentials'|trans|sw_sanitize
+            }
+          %}
+        {% endif %}
+      {% endif %}
+    {% endblock %}
+
+    {% block component_account_login_form_username %}
+      {%
+        sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+            type: 'email',
+            label: 'account.loginMailLabel'|trans|sw_sanitize,
+            id: 'loginMail',
+            name: 'username',
+            autocomplete: 'username webauthn',
+            error: loginError,
+            validationRules: 'required,email',
+            additionalClass: classes.email|join(' '),
+        }
+      %}
+    {% endblock %}
+
+    {% block component_account_login_form_password %}
+      {%
+        sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+            type: 'password',
+            label: 'account.loginPasswordLabel'|trans|sw_sanitize,
+            id: 'loginPassword',
+            name: 'password',
+            autocomplete: 'current-password',
+            error: loginError,
+            validationRules: 'required',
+            additionalClass: classes.password|join(' '),
+        }
+      %}
+    {% endblock %}
+
+    {% block component_account_login_form_actions %}
+      <div
+        {{ classes.actions | vi_attr_classes }}>
+        {% block component_account_login_form_submit_button %}
+          <button
+            type="submit"
+            {{ classes.actionLogin | vi_attr_classes }}>
+            {{ 'account.loginSubmit' | trans | sw_sanitize }}
+          </button>
+        {% endblock %}
+
+        {% block component_account_login_form_password_recovery %}
+          <a
+            href="{{ seoUrl('frontend.account.recover.page') }}"
+            {{ classes.actionPasswordRecovery | vi_attr_classes }}>
+            {{ 'account.loginPasswordRecover' | trans | sw_sanitize }}
+          </a>
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </form>
+{% endblock %}

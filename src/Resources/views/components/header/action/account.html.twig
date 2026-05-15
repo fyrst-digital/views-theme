@@ -1,0 +1,31 @@
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{%
+  set classes = vi_define_classes({
+    action: [
+    ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_header_action_account %}
+  <div class="dropdown">
+    {% block component_header_action_account_toggle %}
+      <button
+        {{ classes.action | vi_attr_classes }}
+        type="button"
+        id="accountWidget"
+        data-component="header-action-account"
+        data-bs-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-label="{{ 'account.myAccount'|trans|striptags }}"
+        title="{{ 'account.myAccount'|trans|striptags }}">
+        {{ vi_icon('user', iconOptions) }}
+      </button>
+    {% endblock %}
+
+    {% block component_header_action_account_dropdown %}
+      {% sw_include '@Storefront/components/account/dropdown.html.twig' %}
+    {% endblock %}
+  </div>
+{% endblock %}
