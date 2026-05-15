@@ -10,6 +10,10 @@ Place the plugin in your Shopware installation under `custom/static-plugins/View
 bin/console plugin:install --activate ViewsTheme
 ```
 
+## Extended Theme configuration
+
+- In `theme.json` you can set an `icons` property
+
 ## Twig Extensions
 
 ### `vi_define_classes`
@@ -26,28 +30,29 @@ This function provides a consistent way to handle CSS class composition in reusa
 
 #### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `defaultClasses` | `array` | *required* | Base class map with semantic keys (e.g., `main`, `inner`, `title`) |
-| `customClasses` | `array` | `[]` | Incoming classes from a parent template |
-| `replace` | `bool` | `false` | If `true`, replaces default classes; otherwise merges them |
+| Parameter        | Type    | Default    | Description                                                        |
+| ---------------- | ------- | ---------- | ------------------------------------------------------------------ |
+| `defaultClasses` | `array` | _required_ | Base class map with semantic keys (e.g., `main`, `inner`, `title`) |
+| `customClasses`  | `array` | `[]`       | Incoming classes from a parent template                            |
+| `replace`        | `bool`  | `false`    | If `true`, replaces default classes; otherwise merges them         |
 
 #### Usage Example
 
 ```twig
 {# In your component template #}
-{% set classes = vi_define_classes({
-    main: [
-        'd-grid',
-        'flex-wrap',
-    ],
-}, classes|default({}), replaceClasses|default(false)) %}
+{%
+  set classes = vi_define_classes({
+      main: [
+          'd-grid',
+          'flex-wrap',
+      ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_header_main %}
-  <div 
-    {{ classes.main|vi_attr_classes }}
-    data-component="header-main">
-  </div>
+  <div
+    {{ classes.main | vi_attr_classes }}
+    data-component='header-main'></div>
 {% endblock %}
 ```
 
@@ -55,21 +60,25 @@ When including this component from a parent template, you can pass custom classe
 
 ```twig
 {# Merge additional classes (default behavior) #}
-{% sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-        main: ['custom-class', 'another-class']
-    }
-} %}
+{%
+  sw_include '@Storefront/components/header/main.html.twig' with {
+      classes: {
+          main: ['custom-class', 'another-class']
+      }
+  }
+%}
 
 {# Result: class="d-grid flex-wrap custom-class another-class" #}
 
 {# Completely replace default classes #}
-{% sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-        main: ['custom-class']
-    },
-    replaceClasses: true
-} %}
+{%
+  sw_include '@Storefront/components/header/main.html.twig' with {
+      classes: {
+          main: ['custom-class']
+      },
+      replaceClasses: true
+  }
+%}
 
 {# Result: class="custom-class" #}
 ```
@@ -91,23 +100,25 @@ Instead of writing `class="{{ classes.main|join(' ') }}"` in every template, thi
 
 ```twig
 {# Before #}
-<div class="{{ classes.main|join(' ') }}"></div>
+<div class='{{ classes.main|join(' ') }}'></div>
 
 {# After #}
-<div {{ classes.main|vi_attr_classes }}></div>
+<div {{ classes.main | vi_attr_classes }}></div>
 ```
 
 Combined with `vi_define_classes`:
 
 ```twig
-{% set classes = vi_define_classes({
-    main: [
-        'd-grid',
-        'flex-wrap',
-    ],
-}, classes|default({}), replaceClasses|default(false)) %}
+{%
+  set classes = vi_define_classes({
+      main: [
+          'd-grid',
+          'flex-wrap',
+      ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
-<div {{ classes.main|vi_attr_classes }} data-component="header-main"></div>
+<div {{ classes.main | vi_attr_classes }} data-component='header-main'></div>
 ```
 
 #### Behavior
@@ -116,6 +127,10 @@ Combined with `vi_define_classes`:
 - Filters out empty, `null`, or `false` values
 - Removes duplicate class names
 - Returns an empty string (no attribute) if the input array is empty or `null`
+
+### `vi_icon`
+
+- todo: add description
 
 ## Requirements
 

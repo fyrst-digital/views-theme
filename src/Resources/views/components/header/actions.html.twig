@@ -13,6 +13,7 @@
   <div
     {{ classes.actions | vi_attr_classes }}
     data-component="header-actions">
+    {% block component_header_actions_start %}{% endblock %}
     {% block component_header_actions_cart %}
       {%
         sw_include '@Storefront/components/header/action/cart.html.twig' with {
@@ -22,5 +23,6 @@
         }
       %}
     {% endblock %}
+    {% block component_header_actions_end %}{% endblock %}
   </div>
 {% endblock %}

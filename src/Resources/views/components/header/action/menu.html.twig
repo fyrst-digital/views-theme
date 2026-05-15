@@ -1,0 +1,21 @@
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{%
+  set classes = vi_define_classes({
+    button: [
+      'btn',
+      'btn-equal',
+    ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_header_action_menu %}
+  <button
+    {{ classes.button | vi_attr_classes }}
+    type="button"
+    data-off-canvas-menu="true"
+    data-component="header-action-menu"
+    aria-label="{{ 'general.menuLink'|trans|striptags }}">
+    {{ vi_icon('list', iconOptions) }}
+  </button>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% import '@ViewsTheme/components/icon/icon.html.twig' as Icon %}
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
 
 {%
   set classes = vi_define_classes({
@@ -23,6 +23,6 @@
     data-off-canvas-cart="true"
     data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
     data-component="header-action-cart">
-    {{ Icon.render('handbag', iconStyle) }}
+    {{ vi_icon('handbag', iconOptions) }}
   </span>
 {% endblock %}

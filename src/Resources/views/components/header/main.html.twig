@@ -7,21 +7,25 @@
       'gap-3',
       'py-3',
     ],
+    menu: [
+      'col',
+      'd-flex',
+      'justify-content-start',
+      'align-items-center',
+    ],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
 {% block component_header_main %}
-  {%
-    set iconStyle = {
-      'namespace': 'ViewsTheme',
-      'pack': 'bold',
-    }
-  %}
   <div
     {{ classes.main | vi_attr_classes }}
     data-component="header-main">
     {% block component_header_main_menu %}
-      {% sw_include '@Storefront/components/header/menu.html.twig' %}
+      <div
+        {{ classes.container | vi_attr_classes }}
+        data-component="header-menu">
+        {% sw_include '@Storefront/components/header/action/menu.html.twig' %}
+      </div>
     {% endblock %}
 
     {% block component_header_main_logo %}
