@@ -1,0 +1,22 @@
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{%
+  set classes = vi_define_classes({
+    action: [
+    ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_header_action_search %}
+  <button
+    {{ classes.action | vi_attr_classes }}
+    type="button"
+    data-component="header-action-search"
+    data-bs-toggle="collapse"
+    data-bs-target="#searchCollapse"
+    aria-expanded="false"
+    aria-controls="searchCollapse"
+    aria-label="{{ 'header.searchButton'|trans|striptags }}">
+    {{ vi_icon('magnifying-glass', iconOptions) }}
+  </button>
+{% endblock %}

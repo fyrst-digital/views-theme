@@ -15,14 +15,25 @@
     {{ classes.actions | vi_attr_classes }}
     data-component="header-actions">
     {% block component_header_actions_start %}{% endblock %}
-    {% block component_header_actions_wishlist %}
+    {% block component_header_actions_search %}
       {%
-        sw_include '@Storefront/components/header/action/wishlist.html.twig' with {
+        sw_include '@Storefront/components/header/action/search.html.twig' with {
           classes: {
             action: classes.action
           }
         }
       %}
+    {% endblock %}
+    {% block component_header_actions_wishlist %}
+      {% if config('core.cart.wishlistEnabled') %}
+        {%
+          sw_include '@Storefront/components/header/action/wishlist.html.twig' with {
+            classes: {
+              action: classes.action
+            }
+          }
+        %}
+      {% endif %}
     {% endblock %}
     {% block component_header_actions_account %}
       {%
