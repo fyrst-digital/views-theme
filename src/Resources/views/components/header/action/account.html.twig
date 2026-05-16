@@ -4,6 +4,7 @@
   set classes = vi_define_classes({
     action: [
     ],
+    dropdown: {}
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -25,7 +26,11 @@
     {% endblock %}
 
     {% block component_header_action_account_dropdown %}
-      {% sw_include '@Storefront/components/account/dropdown.html.twig' %}
+      {%
+        sw_include '@Storefront/components/account/dropdown.html.twig' with {
+          classes: classes.dropdown
+        }
+      %}
     {% endblock %}
   </div>
 {% endblock %}

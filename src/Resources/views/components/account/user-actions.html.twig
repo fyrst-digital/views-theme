@@ -3,9 +3,10 @@
 {%
   set classes = vi_define_classes({
     container: [],
-    nav: ['nav', 'user-actions'],
-    action: ['nav-item', 'user-action-item'],
-    footeer: []
+    nav: ['nav', 'user-actions', 'flex-column'],
+    action: ['nav-link', 'd-inline-flex'],
+    footer: [],
+    logoutAction: [],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -37,11 +38,13 @@
 {% endif %}
 
 {% block component_account_user_actions %}
-  <div {{ classes.container | vi_attr_classes }}>
+  <div
+    {{ classes.container | vi_attr_classes }}
+    data-component="account-user-actions">
     {% if userActions is not empty %}
       {% block component_account_user_actions_nav %}
         <nav {{ classes.nav | vi_attr_classes }}>
-          {% for action in userActions %}
+          {% for key, action in userActions %}
             {% block component_account_user_action %}
               {% if activeRoute is same as(action.route) %}
               {% endif %}
@@ -49,6 +52,7 @@
                 {{ classes.action | vi_attr_classes }}
                 href="{{path(action.route)}}"
                 title="{{action.label}}"
+                data-component="{{ 'account-user-action-' ~ key }}"
                 aria-current="page">
                 {% block component_account_user_action_icon %}
                   {% if action.icon is defined %}
@@ -71,7 +75,7 @@
         {% block component_account_user_action_footer_logout %}
           <a
             href="{{ path('frontend.account.logout.page') }}"
-            class="nav-link user-action-link"
+            {{ classes.logoutAction | vi_attr_classes }}
             title="{{ 'account.logout'|trans|sw_sanitize }}"
             aria-current="page">
             {% block component_account_user_action_logout_icon -%}{%- endblock %}

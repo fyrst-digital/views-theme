@@ -3,6 +3,7 @@
     dropdown: [
       'dropdown-menu', 'dropdown-menu-end', 'account-dropdown'
     ],
+    userActions: {},
     loginForm: ['p-6'],
     dropdownFooter: ['d-grid', 'p-3'],
     registerAction: ['btn', 'btn-primary']
@@ -11,12 +12,14 @@
 
 {% block component_account_dropdown %}
   <div
-    {{ classes.dropdown | vi_attr_classes }}>
+    {{ classes.dropdown | vi_attr_classes }}
+    data-component="account-dropdown">
     {% if context.customer %}
       {% block component_account_dropdown_user_actions %}
         {%
           sw_include '@Storefront/components/account/user-actions.html.twig' with {
-              activeRoute: activeRoute
+              activeRoute: activeRoute,
+              classes: classes.userActions
           }
         %}
       {% endblock %}
