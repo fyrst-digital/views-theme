@@ -4,27 +4,9 @@
     image: ['d-block', 'col-auto'],
     content: ['col'],
     itemName: [],
-    productPricing: {
-        container: ['search-suggest-product-pricing', 'col-auto'],
-        price: ['search-suggest-product-price'],
-        referencePrice: ['search-suggest-product-reference-price'],
-        listPrice: ['search-suggest-product-list-price']
-    }
+    itemPrice: {}
   }, classes|default({}), replaceClasses|default(false))
 %}
-
-{% set price = product.calculatedPrice %}
-
-{% if product.calculatedPrices.count > 0 %}
-  {% set price = product.calculatedPrices.last %}
-{% endif %}
-
-{% if product.variantListingConfig.displayParent and product.parentId === null %}
-  {% set displayFromVariants = price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
-  {% set price = product.calculatedCheapestPrice %}
-{% endif %}
-
-{% set referencePrice = price.referencePrice %}
 
 {% block component_search_suggest_item %}
   <a
@@ -87,39 +69,11 @@
         {% endblock %}
 
         {% block component_search_suggest_item_pricing %}
-          <div class="{{ classes.productPricing.container|join(' ') }}">
-            {% block component_search_suggest_item_price_prefix %}
-              {% if product.calculatedPrices.count > 1 or displayFromVariants %}
-                {{ 'listing.listingTextFrom' | trans | sw_sanitize }}
-              {% endif %}
-            {% endblock %}
-
-            {% block component_search_suggest_item_price %}
-              <span class="search-suggest-product-price">
-                {{ price.unitPrice | currency }}
-              </span>
-            {% endblock %}
-
-            {% block component_search_suggest_item_reference_price %}
-              {% if price.referencePrice is not null %}
-                <small class="search-suggest-product-reference-price">
-                  ({{ price.referencePrice.price | currency }}
-                  {{ 'general.star' | trans | sw_sanitize }} /
-                  {{ price.referencePrice.referenceUnit }}&nbsp;
-                  {{ price.referencePrice.unitName }})
-                </small>
-              {% endif %}
-            {% endblock %}
-
-            {% block component_search_suggest_item_regulation_price %}
-              {% if price.regulationPrice.price is not null %}
-                <small class="search-suggest-product-list-price">
-                  {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
-                  {{ 'general.star' | trans | sw_sanitize }}
-                </small>
-              {% endif %}
-            {% endblock %}
-          </div>
+          {%
+            sw_include '@Storefront/components/product/price.html.twig' with {
+              classes: classes.itemPrice
+            }
+          %}
         {% endblock %}
       </div>
     {% endblock %}
