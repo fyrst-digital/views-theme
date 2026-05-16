@@ -3,9 +3,12 @@
   --#{$prefix}btn-line-height: 1.5;
   --#{$prefix}btn-padding-x: var(--#{$prefix}spacing-3);
   --#{$prefix}btn-padding-y: var(--#{$prefix}spacing-2);
+  gap: var(--#{$prefix}btn-gap, var(--#{$prefix}spacing-3));
+  align-items: center;
 
   &.btn-equal {
     --#{$prefix}btn-padding-x: var(--#{$prefix}spacing-2);
     --#{$prefix}btn-padding-y: var(--#{$prefix}spacing-2);
+    --#{$prefix}btn-gap: var(--#{$prefix}spacing-2);
   }
 }
