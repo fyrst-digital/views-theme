@@ -1,0 +1,98 @@
+{%
+  set defaultClasses = {
+      group: ['input-group','quantity-selector-group', 'quantity-input'],
+      decrease: ['btn','btn-light','btn-decrease','js-btn-minus'],
+      increase: ['btn','btn-light','btn-increase','js-btn-plus'],
+      input: ['form-control','text-center','js-quantity-selector','quantity-selector-group-input'],
+  }
+%}
+
+{% if classes is defined %}
+  {% set classes = classes|vi_merge_deep(defaultClasses) %}
+{% else %}
+  {% set classes = defaultClasses %}
+{% endif %}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{% if size is defined && size is same as('sm') %}
+  {%
+    set classes = classes|vi_merge_deep({
+        group: ['input-group-sm']
+    })
+  %}
+{% endif %}
+
+{% if inputName is not defined %}
+  {% set inputName = 'quantity' %}
+{% endif %}
+
+{% if quantity is not defined %}
+  {% set quantity = 1 %}
+{% endif %}
+
+{% if minQuantity is not defined %}
+  {% set minQuantity = 1 %}
+{% endif %}
+
+{% if maxQuantity is not defined %}
+  {% set maxQuantity = 99 %}
+{% endif %}
+
+{% if purchaseSteps is not defined %}
+  {% set purchaseSteps = 1 %}
+{% endif %}
+
+{% block component_quantity_input %}
+  <div
+    class="{{classes.group|join(' ')}}"
+    data-quantity-selector="true">
+    {% block component_quantity_input_decrease %}
+      <button
+        {% if disabled is same as(true) %}
+          disabled="disabled"
+        {% endif %}
+        type="button"
+        class="{{classes.decrease|join(' ')}}"
+        aria-label="{{ 'component.product.quantitySelect.decrease'|trans|striptags }}">
+        {{ vi_icon('minus', iconOptions) }}
+      </button>
+    {% endblock %}
+
+    {% block component_quantity_input_field %}
+      <input
+        {% if disabled is same as(true) %}
+          disabled="disabled"
+        {% endif %}
+        {% if formName is defined %}
+          form="{{formName}}"
+        {% endif %}
+        type="number"
+        name="{{inputName}}"
+        class="{{classes.input|join(' ')}}"
+        min="{{ minQuantity }}"
+        max="{{ maxQuantity }}"
+        step="{{ purchaseSteps }}"
+        value="{{ quantity }}"
+        aria-label="{{ 'component.product.quantitySelect.label'|trans|striptags }}">
+    {% endblock %}
+
+    {% if unit %}
+      <span class="input-group-text">
+        {{ unit }}
+      </span>
+    {% endif %}
+
+    {% block component_quantity_input_increase %}
+      <button
+        {% if disabled is same as(true) %}
+          disabled="disabled"
+        {% endif %}
+        type="button"
+        class="{{classes.increase|join(' ')}}"
+        aria-label="{{ 'component.product.quantitySelect.increase'|trans|striptags }}">
+        {{ vi_icon('plus', iconOptions) }}
+      </button>
+    {% endblock %}
+  </div>
+{% endblock %}

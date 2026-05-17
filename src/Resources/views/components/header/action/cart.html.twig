@@ -18,8 +18,6 @@
     {{ classes.action | vi_attr_classes }}
     title="{{ 'checkout.cartTitle'|trans|striptags }}"
     aria-label="{{ 'checkout.cartTitle'|trans|striptags }}"
-    aria-haspopup="dialog"
-    data-cart-widget="true"
     data-off-canvas-cart="true"
     data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
     data-component="header-action-cart">

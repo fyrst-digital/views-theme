@@ -3,3 +3,6 @@
   padding-inline: var(--input-padding-inline, var(--#{$prefix}spacing-4));
   padding-block: var(--input-padding-block, var(--#{$prefix}spacing-2));
 }
+.input-group-sm {
+  --icon-size: 16px;
+}

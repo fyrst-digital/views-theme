@@ -1,0 +1,17 @@
+{% block component_cart_heading %}
+  <div class="cart-heading d-flex flex-row flex-wrap align-items-baseline justify-content-between">
+    {% block component_cart_heading_title %}
+      <div class="cart-heading-title">
+        {{ 'checkout.cartHeader' | trans | sw_sanitize }}
+      </div>
+    {% endblock %}
+
+    {% block component_cart_heading_products %}
+      {% if productsQuantity > 0 %}
+        <span class="cart-heading-products badge rounded-pill text-bg-light">
+          {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
+        </span>
+      {% endif %}
+    {% endblock %}
+  </div>
+{% endblock %}

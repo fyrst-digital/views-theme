@@ -1,0 +1,35 @@
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{%
+  set classes = vi_define_classes({
+    header: ['btn', 'offcanvas-close', 'js-offcanvas-close'],
+    content: [],
+    quantity: ['badge', 'rounded-pill', 'text-bg-light'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_cart_drawer_header %}
+  <button
+    {{ classes.header | vi_attr_classes }}
+    data-component="cart-drawer-header">
+    {% block component_cart_drawer_header_content %}
+      <div {{ classes.content | vi_attr_classes }}>
+        {% block component_cart_drawer_header_title %}
+          <span>
+            {{ 'checkout.cartHeader' | trans | sw_sanitize }}
+          </span>
+        {% endblock %}
+        {% block component_cart_drawer_header_quantity %}
+          {% if productsQuantity > 0 %}
+            <span {{ classes.quantity | vi_attr_classes }}>
+              {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
+            </span>
+          {% endif %}
+        {% endblock %}
+      </div>
+    {% endblock %}
+    {% block component_cart_drawer_header_close_icon %}
+      {{ vi_icon('x', iconOptions) }}
+    {% endblock %}
+  </button>
+{% endblock %}

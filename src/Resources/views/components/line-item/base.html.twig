@@ -1,0 +1,47 @@
+{% if showRemoveButton is not defined %}
+  {% set showRemoveButton = true %}
+{% endif %}
+
+{%
+  set classes = vi_define_classes({
+    item: ['line-item','js-cart-item', 'line-item-' ~ lineItem.type],
+    content: ['line-item-content'],
+    header: ['line-item-header'],
+    footer: ['line-item-footer'],
+    actions: ['line-item-actions'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_line_item %}
+  <div
+    {{ classes.item | vi_attr_classes }}
+    data-commponent="{{'line-item-' ~ lineItem.type}}">
+    {% block component_line_item_image %}
+      {% block component_line_item_image_element %}{% endblock %}
+    {% endblock %}
+
+    {% block component_line_item_content %}
+      <div {{ classes.content | vi_attr_classes }}>
+        {% block component_line_item_header %}
+          <div
+            {{ classes.header | vi_attr_classes }}
+            data-commponent="line-item-header">
+            {% block component_line_item_name %}
+              <div class="line-item-name">
+                {% block component_line_item_name_content %}{% endblock %}
+              </div>
+            {% endblock %}
+
+            {% block component_line_item_actions %}
+              <div {{ classes.actions | vi_attr_classes }}>
+                {% block component_line_item_actions_inner %}{% endblock %}
+              </div>
+            {% endblock %}
+          </div>
+        {% endblock %}
+
+        {% block component_line_item_details %}{% endblock %}
+      </div>
+    {% endblock %}
+  </div>
+{% endblock %}

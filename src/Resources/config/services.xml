@@ -10,7 +10,7 @@
         <service id="Fyrst\ViewsTheme\Twig\ViIcon">
             <tag name="twig.extension"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Twig\ShMergeDeep">
+        <service id="Fyrst\ViewsTheme\Twig\ViUtilities">
             <tag name="twig.extension"/>
         </service>
         <service id="Fyrst\ViewsTheme\Twig\ShUnique">

@@ -1,0 +1,115 @@
+{%
+  set classes = vi_define_classes({
+    list: ['cart-summary-list'],
+    item: {},
+    itemTotal: {
+        item: ['summary-item-total']
+    },
+    itemShipping: {
+        item: ['summary-item-shipping']
+    },
+    itemGrandTotal: {
+        item: ['summary-item-grand-total']
+    },
+    itemNetTotal: {
+        item: ['summary-item-net-total']
+    },
+    itemTaxTotal: {
+        item: ['summary-item-tax-total']
+    },
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_cart_summary %}
+  <div class="cart-summary">
+    {% block component_cart_summary_list %}
+      <div {{ classes.list | vi_attr_classes }}>
+        {% block component_cart_summary_item_total %}
+          {% if showTotal is not same as(false) %}
+            {%
+              sw_include '@Storefront/components/cart/summary-item.html.twig'
+                  with {
+                      label: 'checkout.subtotalAmount'|trans|sw_sanitize,
+                      value: summary.price.positionPrice|currency,
+                      classes: classes.item|vi_merge_deep(classes.itemTotal)
+                  }
+              only
+            %}
+          {% endif %}
+        {% endblock %}
+
+        {% block component_cart_summary_item_shippings %}
+          {% if summary.deliveries is defined && showShipping is not same as(false) %}
+            {% for delivery in summary.deliveries %}
+              {% block component_cart_summary_item_shipping %}
+                {%
+                  sw_include '@Storefront/components/cart/summary-item.html.twig'
+                      with {
+                        label: 'checkout.summaryShipping'|trans|sw_sanitize,
+                        value: delivery.shippingCosts.totalPrice|currency,
+                        classes: classes.item|vi_merge_deep(classes.itemShipping)
+                      }
+                  only
+                %}
+              {% endblock %}
+            {% endfor %}
+          {% endif %}
+        {% endblock %}
+
+        {% block component_cart_summary_item_grand_total %}
+          {% if showGrandTotal is not same as(false) %}
+            {% set total = summary.price.totalPrice %}
+
+            {%
+              sw_include '@Storefront/components/cart/summary-item.html.twig'
+                  with {
+                      label: 'checkout.summaryTotalPrice'|trans|sw_sanitize,
+                      value: total|currency,
+                      classes: classes.item|vi_merge_deep(classes.itemGrandTotal)
+                  }
+              only
+            %}
+          {% endif %}
+        {% endblock %}
+
+        {% block component_cart_summary_item_net_total %}
+          {% if showNetTotal is not same as(false) %}
+            {%
+              sw_include '@Storefront/components/cart/summary-item.html.twig'
+                  with {
+                      label: 'checkout.summaryNetPrice'|trans|sw_sanitize,
+                      value: summary.price.netPrice|currency,
+                      classes: classes.item|vi_merge_deep(classes.itemNetTotal)
+                  }
+              only
+            %}
+          {% endif %}
+        {% endblock %}
+
+        {% block component_cart_summary_item_taxes %}
+          {% if showTax is not same as(false) %}
+            {% for taxItem in summary.price.calculatedTaxes %}
+              {% block component_cart_summary_item_tax %}
+                {%
+                  set label = 'checkout.summaryTax'|trans({
+                      '%rate%': taxItem.taxRate
+                  })|sw_sanitize
+                %}
+
+                {%
+                  sw_include '@Storefront/components/cart/summary-item.html.twig'
+                      with {
+                          label: label,
+                          value: taxItem.tax|currency,
+                          classes: classes.item|vi_merge_deep(classes.itemTaxTotal)
+                      }
+                  only
+                %}
+              {% endblock %}
+            {% endfor %}
+          {% endif %}
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </div>
+{% endblock %}
