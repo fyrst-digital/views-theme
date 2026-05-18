@@ -1,0 +1,70 @@
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
+{%
+  set classes = vi_define_classes({
+    form: [
+      'add-product-form',
+    ],
+    label: [
+      'visually-hidden',
+    ],
+    inputGroup: [
+      'input-group',
+    ],
+    input: [
+      'form-control',
+    ],
+    submit: [
+      'btn',
+      'btn-secondary',
+    ],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_add_product_form %}
+  <form
+    action="{{ path('frontend.checkout.product.add-by-number') }}"
+    {{ classes.form | vi_attr_classes }}
+    method="post">
+    {% block component_add_product_form_redirect %}
+      <input
+        type="hidden"
+        name="redirectTo"
+        value="frontend.checkout.cart.page">
+    {% endblock %}
+
+    {% block component_add_product_form_label %}
+      <label {{ classes.label | vi_attr_classes }} for="addProductInput">
+        {{ 'checkout.addProductLabel' | trans | sw_sanitize }}
+      </label>
+    {% endblock %}
+
+    {% block component_add_product_form_input_group %}
+      <div {{ classes.inputGroup | vi_attr_classes }}>
+        {% block component_add_product_form_input %}
+          <input
+            type="text"
+            name="number"
+            {{ classes.input | vi_attr_classes }}
+            id="addProductInput"
+            placeholder="{{ 'checkout.addProductPlaceholder'|trans|striptags }}"
+            aria-label="{{ 'checkout.addProductLabel'|trans|striptags }}"
+            aria-describedby="addProductButton"
+            required="required">
+        {% endblock %}
+
+        {% block component_add_product_form_submit %}
+          <button
+            {{ classes.submit | vi_attr_classes }}
+            type="submit"
+            aria-labelledby="addProductInput"
+            id="addProductButton">
+            {% block component_add_product_form_submit_icon %}
+              {{ vi_icon('plus', iconOptions) }}
+            {% endblock %}
+          </button>
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </form>
+{% endblock %}
