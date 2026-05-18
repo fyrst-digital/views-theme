@@ -1,14 +1,46 @@
+{% set countDisplay = countDisplay|default('badge') %}
+
+{%
+  set classes = vi_define_classes({
+    heading: [
+      'cart-heading',
+      'd-flex',
+      'flex-row',
+      'flex-wrap',
+    ],
+    title: [
+      'cart-heading-title',
+    ],
+    countBadge: [
+      'cart-heading-products',
+      'badge',
+      'rounded-pill',
+      'text-bg-light',
+    ],
+    countInline: []
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% set titleTag = titleTag|default('div') %}
+
 {% block component_cart_heading %}
-  <div class="cart-heading d-flex flex-row flex-wrap align-items-baseline justify-content-between">
+  <div {{ classes.heading | vi_attr_classes }}>
     {% block component_cart_heading_title %}
-      <div class="cart-heading-title">
+      <{{ titleTag|raw }} {{ classes.title | vi_attr_classes }}>
         {{ 'checkout.cartHeader' | trans | sw_sanitize }}
-      </div>
+        {% if productsQuantity > 0 and countDisplay is same as('inline') %}
+          <span {{ classes.countInline | vi_attr_classes }}
+            >(
+            {{- 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize -}}
+            )</span
+          >
+        {% endif %}
+      </{{ titleTag|raw }}>
     {% endblock %}
 
     {% block component_cart_heading_products %}
-      {% if productsQuantity > 0 %}
-        <span class="cart-heading-products badge rounded-pill text-bg-light">
+      {% if productsQuantity > 0 and countDisplay is same as('badge') %}
+        <span {{ classes.countBadge | vi_attr_classes }}>
           {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
         </span>
       {% endif %}
