@@ -1,18 +1,15 @@
 {% sw_extends '@Storefront/storefront/component/address/address-personal.html.twig' %}
 
-{% block component_address_personal_fields %}
-  {%
-    set classes = vi_define_classes({
-      salutation: ['g-col-12', 'field-salutation'],
-      title: ['g-col-12', 'field-personal-title'],
-      firstName: ['g-col-12', 'field-firstname'],
-      lastName: ['g-col-12', 'field-lastname'],
-      companyName: ['g-col-12', 'field-company-name'],
-      birthday: ['g-col-12', 'fields-birthdate'],
-    }, classes|default({}), replaceClasses|default(false))
-  %}
-  {{ parent() }}
-{% endblock %}
+{%
+  set classes = vi_define_classes({
+    salutation: ['g-col-12', 'field-salutation'],
+    title: ['g-col-12', 'field-personal-title'],
+    firstName: ['g-col-12', 'field-firstname'],
+    lastName: ['g-col-12', 'field-lastname'],
+    companyName: ['g-col-12', 'field-company-name'],
+    birthday: ['g-col-12', 'fields-birthdate'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_address_personal_fields_salutation_title %}
   {% if config('core.loginRegistration.showSalutation') or config('core.loginRegistration.showTitleField') %}
@@ -28,6 +25,10 @@
 
 {% block component_address_personal_fields_name %}
   {% block component_address_personal_fields_first_name %}
+    {{ parent() }}
+  {% endblock %}
+
+  {% block component_address_personal_fields_last_name %}
     {{ parent() }}
   {% endblock %}
 {% endblock %}
