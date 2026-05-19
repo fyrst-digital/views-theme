@@ -1,0 +1,110 @@
+{% sw_extends '@Storefront/storefront/page/account/addressbook/address-item.html.twig' %}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons) %}
+{% set itemTag = 'li' %}
+
+{% if defaultShipping %}
+  {% set snippet = 'account.addressesTitleDefaultShippingAddress' %}
+{% elseif defaultBilling %}
+  {% set snippet = 'account.addressesTitleDefaultBillingAddress' %}
+{% endif %}
+
+{% set defaultAddressAction = null %}
+{% set defaultAddressSnippet = null %}
+
+{% if not defaultShipping %}
+  {% set defaultAddressAction = path('frontend.account.address.set-default-address', {type: 'shipping', addressId: address.id}) %}
+  {% set defaultAddressSnippet = 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize %}
+{% endif %}
+{% if not defaultBilling %}
+  {% set defaultAddressAction = path('frontend.account.address.set-default-address', {type: 'billing', addressId: address.id}) %}
+  {% set defaultAddressSnippet = 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize %}
+{% endif %}
+
+{%
+  set classes = vi_define_classes({
+    item: ['address-manager-select-address'],
+    body: ['d-flex', 'justify-content-between'],
+    footer: ['mt-auto', 'd-flex', 'justify-content-end'],
+    state: ['address-item-default-badge', 'fs-6', 'fw-semibold', 'px-4', 'py-1', 'rounded-pill', 'text-bg-info'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block address_item %}
+  <{{ itemTag|raw }} {{ classes.item | vi_attr_classes }}>
+    {% block address_item_body %}
+      <div {{ classes.body | vi_attr_classes }}>
+        {% block address_item_address %}
+          {{ parent() }}
+        {% endblock %}
+
+        {% block address_item_state %}
+          {% if defaultShipping or defaultBilling %}
+            <span {{ classes.state | vi_attr_classes }}>
+              {{ snippet | trans | sw_sanitize }}
+            </span>
+          {% endif %}
+        {% endblock %}
+      </div>
+    {% endblock %}
+
+    {% block address_item_footer %}
+      <div {{ classes.footer | vi_attr_classes }}>
+        {% block address_item_actions %}
+          <div>
+            {% block address_item_action_edit_adress %}
+              <a
+                class="dropdown-item address-manager-modal-address-form"
+                href="{{ path('frontend.account.address.edit.page', {addressId: address.id}) }}">
+                {{ 'global.default.edit' | trans | sw_sanitize }}
+              </a>
+            {% endblock %}
+            {% block address_item_action_default_adress %}
+              {% if defaultAddressAction %}
+                <form
+                  action="{{ pdefaultAddressAction }}"
+                  method="post"
+                  style="display: contents;">
+                  <button
+                    type="submit"
+                    title="{{ defaultAddressSnippet }}"
+                    class="dropdown-item">
+                    {{ defaultAddressSnippet }}
+                  </button>
+                </form>
+              {% endif %}
+            {% endblock %}
+            {% block address_item_action_delete_adress %}
+              {% if not (defaultShipping or defaultBilling) %}
+                <form
+                  action="{{ path('frontend.account.address.delete', {addressId: address.id}) }}"
+                  method="post"
+                  style="display: contents;">
+                  <button type="submit">
+                    {{
+                      'account.addressesContentItemActionDelete'
+                      | trans
+                      | sw_sanitize
+                    }}
+                  </button>
+                </form>
+              {% endif %}
+            {% endblock %}
+          </div>
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </{{ itemTag|raw }}>
+{% endblock %}
+
+{% block address_item_dropdown_button %}
+  <button
+    type="button"
+    id="{{ addressItemDropdownId }}"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    aria-label="{{ 'account.addressOptionsBtn'|trans|sw_sanitize }}"
+    {{ classes.dropdownButton | vi_attr_classes }}>
+    {{ vi_icon('plus',iconOptions) }}
+  </button>
+{% endblock %}
