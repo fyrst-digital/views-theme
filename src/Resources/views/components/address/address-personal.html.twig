@@ -1,0 +1,118 @@
+{% sw_extends '@Storefront/storefront/component/address/address-personal.html.twig' %}
+
+{% block component_address_personal_fields %}
+  {%
+    set classes = vi_define_classes({
+      salutation: ['g-col-12', 'field-salutation'],
+      title: ['g-col-12', 'field-personal-title'],
+      firstName: ['g-col-12', 'field-firstname'],
+      lastName: ['g-col-12', 'field-lastname'],
+      companyName: ['g-col-12', 'field-company-name'],
+      birthday: ['g-col-12', 'fields-birthdate'],
+    }, classes|default({}), replaceClasses|default(false))
+  %}
+  {{ parent() }}
+{% endblock %}
+
+{% block component_address_personal_fields_salutation_title %}
+  {% if config('core.loginRegistration.showSalutation') or config('core.loginRegistration.showTitleField') %}
+    {% block component_address_personal_fields_salutation %}
+      {{ parent() }}
+    {% endblock %}
+
+    {% block component_address_personal_fields_title %}
+      {{ parent() }}
+    {% endblock %}
+  {% endif %}
+{% endblock %}
+
+{% block component_address_personal_fields_name %}
+  {% block component_address_personal_fields_first_name %}
+    {{ parent() }}
+  {% endblock %}
+{% endblock %}
+
+{% block component_address_personal_fields_salutation_select %}
+  {%
+    sw_include '@Storefront/storefront/component/form/form-select.html.twig' with {
+        label: 'account.personalSalutationLabel'|trans|sw_sanitize,
+        id: idPrefix ~ prefix ~ 'personalSalutation',
+        name: prefix ? prefix ~ '[salutationId]' : 'salutationId',
+        options: salutationOptions,
+        autocomplete: 'section-personal honorific-prefix',
+        violationPath: '/salutationId',
+        additionalClass: classes.salutation | join(' '),
+    }
+  %}
+{% endblock %}
+
+{% block component_address_personal_fields_title_input %}
+  {%
+    sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+        label: 'account.personalTitleLabel'|trans|sw_sanitize,
+        id: idPrefix ~ prefix ~ 'personalTitle',
+        name: prefix ? prefix ~ '[title]' : 'title',
+        value: data.get('title'),
+        autocomplete: 'section-personal honorific-prefix',
+        violationPath: violationPath,
+        additionalClass: classes.title | join(' '),
+    }
+  %}
+{% endblock %}
+
+{% block component_address_personal_fields_first_name_input %}
+  {%
+    sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+        label: 'account.personalFirstNameLabel'|trans|sw_sanitize,
+        id: idPrefix ~ prefix ~ '-personalFirstName',
+        name: prefix ? prefix ~ '[firstName]' : 'firstName',
+        value: (prefix and data.has(prefix)) ? data.get(prefix).get('firstName') : data.get('firstName'),
+        autocomplete: 'section-personal given-name',
+        violationPath: violationPath,
+        validationRules: 'required',
+        additionalClass: classes.firstName | join(' '),
+    }
+  %}
+{% endblock %}
+
+{% block component_address_personal_fields_last_name_input %}
+  {%
+    sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+        label: 'account.personalLastNameLabel'|trans|sw_sanitize,
+        id: idPrefix ~ prefix ~ '-personalLastName',
+        name: prefix ? prefix ~ '[lastName]' : 'lastName',
+        value: (prefix and data.has(prefix)) ? data.get(prefix).get('lastName') : data.get('lastName'),
+        autocomplete: 'section-personal family-name',
+        violationPath: violationPath,
+        validationRules: 'required',
+        additionalClass: classes.lastName | join(' '),
+    }
+  %}
+{% endblock %}
+
+{% block component_address_personal_company_name_input %}
+  {%
+    sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+        label: 'address.companyNameLabel'|trans|sw_sanitize,
+        id: idPrefix ~ prefix ~ '-company',
+        name: 'company',
+        value: data.get('company'),
+        autocomplete: 'section-personal organization',
+        violationPath: violationPath,
+        validationRules: 'required',
+        additionalClass: classes.companyName | join(' '),
+    }
+  %}
+{% endblock %}
+
+{% block component_address_personal_fields_birthday %}
+  {% if showBirthdayField %}
+    {%
+      sw_include '@Storefront/storefront/component/form/form-select-birthday.html.twig' with {
+          label: 'account.personalBirthdayLabel'|trans|sw_sanitize,
+          validationRules: config('core.loginRegistration.birthdayFieldRequired') ? 'required' : '',
+          additionalClass: classes.birthday | join(' '),
+      }
+    %}
+  {% endif %}
+{% endblock %}
