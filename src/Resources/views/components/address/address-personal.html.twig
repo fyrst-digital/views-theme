@@ -2,12 +2,13 @@
 
 {%
   set classes = vi_define_classes({
-    salutation: ['g-col-12', 'field-salutation'],
-    title: ['g-col-12', 'field-personal-title'],
-    firstName: ['g-col-12', 'field-firstname'],
-    lastName: ['g-col-12', 'field-lastname'],
-    companyName: ['g-col-12', 'field-company-name'],
-    birthday: ['g-col-12', 'fields-birthdate'],
+    salutation: ['field-salutation'],
+    title: ['field-personal-title'],
+    firstName: ['field-firstname'],
+    lastName: ['field-lastname'],
+    companyContainer: ['js-field-toggle-contact-type-company' ~ prefix ? prefix : null],
+    companyName: ['field-company-name'],
+    birthday: ['fields-birthdate'],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -30,6 +31,45 @@
 
   {% block component_address_personal_fields_last_name %}
     {{ parent() }}
+  {% endblock %}
+
+  {% block component_address_personal_company_section -%}
+    {% if (config('core.loginRegistration.showAccountTypeSelection') or onlyCompanyRegistration) and showCompanyFields %}
+      <div {{ classes.companyContainer | vi_attr_classes }}>
+        {% block component_address_personal_company_name %}
+          {% if formViolations.getViolations('/company') is not empty %}
+            {% set violationPath = '/company' %}
+          {% endif %}
+
+          {# This is only rendered on the customer profile edit page. #}
+          {% block component_address_personal_company_name_input %}
+            {%
+              sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+                  label: 'address.companyNameLabel'|trans|sw_sanitize,
+                  id: idPrefix ~ prefix ~ '-company',
+                  name: 'company',
+                  value: data.get('company'),
+                  autocomplete: 'section-personal organization',
+                  violationPath: violationPath,
+                  validationRules: 'required',
+                  additionalClass: classes.companyName | join(' '),
+              }
+            %}
+          {% endblock %}
+        {% endblock %}
+
+        {% block component_address_personal_company_vat_id %}
+          {# @deprecated tag:v6.8.0 - Unused variable `editMode` and will be removed #}
+          {% set editMode = true %}
+
+          {%
+            sw_include '@Storefront/storefront/component/address/address-personal-vat-id.html.twig' with {
+                'vatIds': data.get('vatIds'),
+            }
+          %}
+        {% endblock %}
+      </div>
+    {% endif %}
   {% endblock %}
 {% endblock %}
 
@@ -91,21 +131,6 @@
   %}
 {% endblock %}
 
-{% block component_address_personal_company_name_input %}
-  {%
-    sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-        label: 'address.companyNameLabel'|trans|sw_sanitize,
-        id: idPrefix ~ prefix ~ '-company',
-        name: 'company',
-        value: data.get('company'),
-        autocomplete: 'section-personal organization',
-        violationPath: violationPath,
-        validationRules: 'required',
-        additionalClass: classes.companyName | join(' '),
-    }
-  %}
-{% endblock %}
-
 {% block component_address_personal_fields_birthday %}
   {% if showBirthdayField %}
     {%
@@ -117,3 +142,9 @@
     %}
   {% endif %}
 {% endblock %}
+
+{# @deprecated tag:v6.8.0 - Block will be removed use block `component_address_personal_company_name` instead #}
+{% block component_address_personal_company %}{% endblock %}
+
+{# @deprecated tag:v6.8.0 - Block will be removed use block `component_address_personal_company_vat_id` instead #}
+{% block component_address_personal_vat_id %}{% endblock %}
