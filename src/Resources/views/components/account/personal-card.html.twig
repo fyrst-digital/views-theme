@@ -1,0 +1,60 @@
+{% if editable is not defined %}
+  {% set editable = false %}
+{% endif %}
+
+{%
+  set classes = vi_define_classes({
+    card: ['card', 'account-card-personal'],
+    body: ['card-body'],
+    title: ['card-title'],
+    actions: ['card-actions'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_account_card_personal %}
+  <div {{ classes.card | vi_attr_classes }}>
+    <div {{ classes.body | vi_attr_classes }}>
+      {% block component_account_card_personal_title %}
+        <h4 {{ classes.title | vi_attr_classes }}>
+          {{ 'account.overviewProfileHeader' | trans | sw_sanitize }}
+        </h4>
+      {% endblock %}
+
+      {% block page_account_overview_profile_content %}
+        <div>
+          {% if context.customer.salutation
+            and context.customer.salutation.salutationKey != 'not_specified'
+          %}
+            {{ context.customer.salutation.translated.displayName }}
+          {% endif %}
+          {% if context.customer.title %}
+            {{ context.customer.title -}}
+            <br>
+          {% endif %}
+          {{ context.customer.firstName }}
+          {{ context.customer.lastName }}
+        </div>
+      {% endblock %}
+
+      {% block page_account_overview_profile_company %}
+        {#
+          % sw_include '@Storefront/storefront/component/account/customer-overview-personal-company.html.twig' with {
+          customer: context.customer,
+          } %
+        #}
+      {% endblock %}
+
+      {% block page_account_overview_profile_email %}
+        <div>
+          {{ context.customer.email }}
+        </div>
+      {% endblock %}
+
+      {% block page_account_overview_profile_actions %}
+        <div {{ classes.actions | vi_attr_classes }}>
+          {% block page_account_overview_profile_actions_content -%}{%- endblock %}
+        </div>
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
