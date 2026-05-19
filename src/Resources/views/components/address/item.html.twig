@@ -23,15 +23,19 @@
 
 {%
   set classes = vi_define_classes({
-    item: ['address-manager-select-address'],
-    body: ['d-flex', 'justify-content-between'],
-    footer: ['mt-auto', 'd-flex', 'justify-content-end'],
-    state: ['address-item-default-badge', 'fs-6', 'fw-semibold', 'px-4', 'py-1', 'rounded-pill', 'text-bg-info'],
+    item: [],
+    body: [],
+    footer: [],
+    state: [],
+    actions: [],
+    action: [],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
 {% block address_item %}
-  <{{ itemTag|raw }} {{ classes.item | vi_attr_classes }}>
+  <{{ itemTag|raw }}
+    {{ classes.item | vi_attr_classes }}
+    data-component="address-item">
     {% block address_item_body %}
       <div {{ classes.body | vi_attr_classes }}>
         {% block address_item_address %}
@@ -51,10 +55,10 @@
     {% block address_item_footer %}
       <div {{ classes.footer | vi_attr_classes }}>
         {% block address_item_actions %}
-          <div>
+          <div {{ classes.actions | vi_attr_classes }}>
             {% block address_item_action_edit_adress %}
               <a
-                class="dropdown-item address-manager-modal-address-form"
+                {{ classes.action | vi_attr_classes }}
                 href="{{ path('frontend.account.address.edit.page', {addressId: address.id}) }}">
                 {{ 'global.default.edit' | trans | sw_sanitize }}
               </a>
@@ -68,7 +72,7 @@
                   <button
                     type="submit"
                     title="{{ defaultAddressSnippet }}"
-                    class="dropdown-item">
+                    {{ classes.action | vi_attr_classes }}>
                     {{ defaultAddressSnippet }}
                   </button>
                 </form>
@@ -80,7 +84,7 @@
                   action="{{ path('frontend.account.address.delete', {addressId: address.id}) }}"
                   method="post"
                   style="display: contents;">
-                  <button type="submit">
+                  <button {{ classes.action | vi_attr_classes }} type="submit">
                     {{
                       'account.addressesContentItemActionDelete'
                       | trans
