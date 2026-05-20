@@ -1,0 +1,19 @@
+{% set productDescription = description|default(product.translated.description) %}
+{% set outputTags = stripTags|default(true) %}
+{%
+  set classes = vi_define_classes({
+    container: [],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_product_description %}
+  <div
+    {{ classes.container | vi_attr_classes }}
+    itemprop="description">
+    {% if outputTags is same as(true) %}
+      {{ productDescription | raw }}
+    {% else %}
+      {{ productDescription | striptags }}
+    {% endif %}
+  </div>
+{% endblock %}
