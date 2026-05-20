@@ -1,0 +1,23 @@
+{% set productId = productId|default(product.id) %}
+{% set productName = productName|default(product.translated.name) %}
+
+{%
+  set classes = vi_define_classes({
+    container: [],
+    link: [],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_product_name %}
+  <{{ productNameTag|raw }}
+    {{ classes.container | vi_attr_classes }}
+    data-component="product-name">
+    <a
+      {{ classes.link | vi_attr_classes }}
+      href="{{ seoUrl('frontend.detail.page', {productId: productId}) }}"
+      title="{{ productName }}"
+      data-component="product-name-link">
+      {{ productName }}
+    </a>
+  </{{ productNameTag|raw }}>
+{% endblock %}
