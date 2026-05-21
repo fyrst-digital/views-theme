@@ -1,0 +1,172 @@
+{% set id = product.id %}
+{% set name = product.translated.name %}
+{% set brand = product.manufacturer.translated.name|default('') %}
+{% set price = product.calculatedPrice.unitPrice %}
+
+{% set cover = product.cover.media %}
+{% set variation = product.variation %}
+{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+{% set headlineLevel = element.config.boxHeadlineLevel.value %}
+{% set headlineClasses = 'product-name-headline mb-0' %}
+
+{% set searchTerm = page.searchTerm %}
+{% set childCount = product.childCount %}
+{% set routeArguments = childCount > 0 and searchTerm ? { productId: id, search: searchTerm } : { productId: id } %}
+
+{% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+{% set displayFrom = product.calculatedPrices.count > 1 %}
+{% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+
+{% if referrerCategoryId %}
+  {% set routeArguments = routeArguments|merge({ referrerCategoryId: referrerCategoryId }) %}
+{% endif %}
+
+{% set productNameTag = productNameTag|default('div') %}
+
+{%
+  set classes = vi_define_classes({
+    box: ['product-box', 'layout-' ~ layout],
+    image: [],
+    content: [],
+    header: [],
+    body: [],
+    footer: [],
+    actions: [],
+    actionDetails: [],
+    productName: {},
+    productDescription: {},
+    productBuy: {},
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_product_box %}
+  <div
+    {{ classes.box | vi_attr_classes }}
+    data-component="product-box"
+    data-product-information="{{ {id, name, brand, price}|json_encode }}">
+    {% block component_product_box_image %}
+      <div
+        {{ classes.image | vi_attr_classes }}
+        data-component="product-box-image">
+        {% block component_product_box_image_prepend %}{% endblock %}
+
+        {% block component_product_box_badges %}
+          {% sw_include '@Storefront/components/product/badges.html.twig' %}
+        {% endblock %}
+
+        {% block component_product_box_image_cover %}
+          {% sw_include '@Storefront/components/product/cover.html.twig' %}
+        {% endblock %}
+
+        {% block component_product_box_wishlist_action %}
+          {% if config('core.cart.wishlistEnabled') %}
+            {%
+              sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
+                  showText: false,
+                  productId: id,
+                  classes: {
+                      action: ['product-box-wishlist-action']
+                  }
+              }
+            %}
+          {% endif %}
+        {% endblock %}
+
+        {% block component_product_box_image_append %}{% endblock %}
+      </div>
+    {% endblock %}
+
+    {% block component_product_box_content %}
+      <div
+        {{ classes.content | vi_attr_classes }}
+        data-component="product-box-content">
+        {% block component_product_box_header %}
+          <div {{ classes.content | vi_attr_classes }}>
+            {% block component_product_box_rating %}
+              {% if config('core.listing.showReview') && product.ratingAverage %}
+                {%
+                  sw_include '@Storefront/components/review/rating.html.twig' with {
+                      points: product.ratingAverage
+                  }
+                %}
+              {% endif %}
+            {% endblock %}
+
+            {% block component_product_box_name %}
+              {%
+                sw_include '@Storefront/components/product/name.html.twig' with {
+                  classes: classes.productName
+                }
+              %}
+            {% endblock %}
+          </div>
+        {% endblock %}
+
+        {% block component_product_box_body %}
+          <div {{ classes.body | vi_attr_classes }}>
+            {% block component_product_box_variant_characteristics %}
+              {% if not displayParent && product.variation %}
+                <div class="product-variant-characteristics">
+                  <div class="product-variant-characteristics-text">
+                    {% for variation in product.variation %}
+                      {{ variation.group }}:
+                      <span class="product-variant-characteristics-option">
+                        {{ variation.option }}
+                      </span>
+
+                      {% if product.variation|last != variation %}
+                        {{ ' | ' }}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endblock %}
+
+            {% block component_product_box_description %}
+              {%
+                sw_include '@Storefront/components/product/description.html.twig' with {
+                  classes: classes.productDescription,
+                  outputTags: false
+                }
+              %}
+            {% endblock %}
+          </div>
+        {% endblock %}
+
+        {% block component_product_box_footer %}
+          <div {{ classes.footer | vi_attr_classes }}>
+            {% block component_product_box_price %}
+              {% sw_include '@Storefront/components/product/price.html.twig' %}
+            {% endblock %}
+
+            {% block component_product_box_actions %}
+              <div {{ classes.actions | vi_attr_classes }}>
+                {% block component_product_box_actions_prepend %}{% endblock %}
+                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                  {% block component_product_box_action_buy %}
+                    {%
+                      sw_include '@Storefront/components/product/action/buy.html.twig' with {
+                        classes: classes.productBuy
+                      }
+                    %}
+                  {% endblock %}
+                {% else %}
+                  {% block component_product_box_action_details %}
+                    <a
+                      href="{{ seoUrl('frontend.detail.page', {productId: id}) }}"
+                      {{ classes.actionDetails | vi_attr_classes }}>
+                      {{ 'listing.boxProductDetails' | trans | sw_sanitize }}
+                    </a>
+                  {% endblock %}
+                {% endif %}
+                {% block component_product_box_actions_append %}{% endblock %}
+              </div>
+              {# {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %} #}
+            {% endblock %}
+          </div>
+        {% endblock %}
+      </div>
+    {% endblock %}
+  </div>
+{% endblock %}

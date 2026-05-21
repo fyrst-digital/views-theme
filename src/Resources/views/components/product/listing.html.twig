@@ -1,0 +1,86 @@
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{%
+  set classes = vi_define_classes({
+    listingActions: [],
+    listingEmpty: [],
+    listing: ['js-listing-wrapper'],
+    productBox: {},
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block element_product_listing_pagination_nav_actions %}
+  <div
+    {{ classes.listingActions | vi_attr_classes }}
+    data-component="product-listing-actions">
+    {% block element_product_listing_pagination_nav_top %}
+      {%
+        sw_include '@Storefront/storefront/component/pagination.html.twig' with {
+            entities: searchResult,
+            fallbackUrl: paginationFallbackUrl,
+            paginationLocation: 'top',
+        }
+      %}
+    {% endblock %}
+
+    {% block element_product_listing_sorting %}
+      {%
+        sw_include '@Storefront/storefront/component/sorting.html.twig' with {
+            current: searchResult.sorting,
+            sortings: searchResult.availableSortings
+        }
+      %}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block element_product_listing_row %}
+  {% if searchResult.total > searchResult.limit %}
+    {%
+      set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
+          '%count%': searchResult.elements|length,
+          '%total%': searchResult.total}
+      )|sw_sanitize
+    %}
+  {% else %}
+    {% set ariaLiveText = 'listing.filterPanelAriaLive'|trans({'%count%': searchResult.total})|sw_sanitize %}
+  {% endif %}
+
+  <div
+    {{ classes.listing | vi_attr_classes }}
+    data-aria-live-text="{{- ariaLiveText -}}"
+    {% if searchResult.total > 0 %}
+      role="list"
+    {% endif %}
+    data-component="product-listing">
+    {% if searchResult.total > 0 %}
+      {% block element_product_listing_col %}
+        {% for product in searchResult %}
+          {% block element_product_listing_box %}
+            {%
+              sw_include '@Storefront/components/product/box/base.html.twig' with {
+                  layout: boxLayout,
+                  displayMode: displayMode,
+                  classes: classes.productBox
+              }
+            %}
+          {% endblock %}
+        {% endfor %}
+      {% endblock %}
+    {% else %}
+      {% block element_product_listing_col_empty %}
+        <div {{ classes.listingEmpty | vi_attr_classes }}>
+          {% block element_product_listing_col_empty_alert %}
+            {%
+              sw_include '@Storefront/components/alert.html.twig' with {
+                  type: 'info',
+                  content: 'listing.emptyResultMessage'|trans|sw_sanitize,
+                  announceOnLoad: true,
+              }
+            %}
+          {% endblock %}
+        </div>
+      {% endblock %}
+    {% endif %}
+  </div>
+{% endblock %}
