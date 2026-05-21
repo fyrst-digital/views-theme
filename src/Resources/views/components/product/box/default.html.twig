@@ -21,7 +21,13 @@
   {% set routeArguments = routeArguments|merge({ referrerCategoryId: referrerCategoryId }) %}
 {% endif %}
 
-{% set productNameTag = productNameTag|default('div') %}
+{%
+  set productBoxOptions = {
+    showDescription: true,
+    showVariations: true,
+    showActions: true,
+  }|merge(productBoxOptions|default({}))
+%}
 
 {%
   set classes = vi_define_classes({
@@ -34,7 +40,9 @@
     actions: [],
     actionDetails: [],
     productName: {},
+    productVariations: {},
     productDescription: {},
+    productPrice: {},
     productBuy: {},
   }, classes|default({}), replaceClasses|default(false))
 %}
@@ -103,66 +111,69 @@
         {% endblock %}
 
         {% block component_product_box_body %}
-          <div {{ classes.body | vi_attr_classes }}>
-            {% block component_product_box_variant_characteristics %}
-              {% if not displayParent && product.variation %}
-                <div class="product-variant-characteristics">
-                  <div class="product-variant-characteristics-text">
-                    {% for variation in product.variation %}
-                      {{ variation.group }}:
-                      <span class="product-variant-characteristics-option">
-                        {{ variation.option }}
-                      </span>
+          {% set showBody = (not displayParent && product.variation && productBoxOptions.showVariations is same as(true)) or (productBoxOptions.showDescription is same as(true)) %}
 
-                      {% if product.variation|last != variation %}
-                        {{ ' | ' }}
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-            {% endblock %}
+          {% if showBody %}
+            <div {{ classes.body | vi_attr_classes }}>
+              {% block component_product_box_variations %}
+                {% if not displayParent && product.variation && productBoxOptions.showVariations is same as(true) %}
+                  {%
+                    sw_include '@Storefront/components/product/variations.html.twig' with {
+                      variation: product.variation,
+                      classes: classes.productVariations
+                    } only
+                  %}
+                {% endif %}
+              {% endblock %}
 
-            {% block component_product_box_description %}
-              {%
-                sw_include '@Storefront/components/product/description.html.twig' with {
-                  classes: classes.productDescription,
-                  outputTags: false
-                }
-              %}
-            {% endblock %}
-          </div>
+              {% block component_product_box_description %}
+                {% if productBoxOptions.showDescription is same as(true) %}
+                  {%
+                    sw_include '@Storefront/components/product/description.html.twig' with {
+                      classes: classes.productDescription,
+                      outputTags: false
+                    }
+                  %}
+                {% endif %}
+              {% endblock %}
+            </div>
+          {% endif %}
         {% endblock %}
 
         {% block component_product_box_footer %}
           <div {{ classes.footer | vi_attr_classes }}>
             {% block component_product_box_price %}
-              {% sw_include '@Storefront/components/product/price.html.twig' %}
+              {%
+                sw_include '@Storefront/components/product/price.html.twig' with {
+                  classes: classes.productPrice
+                }
+              %}
             {% endblock %}
 
             {% block component_product_box_actions %}
-              <div {{ classes.actions | vi_attr_classes }}>
-                {% block component_product_box_actions_prepend %}{% endblock %}
-                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                  {% block component_product_box_action_buy %}
-                    {%
-                      sw_include '@Storefront/components/product/action/buy.html.twig' with {
-                        classes: classes.productBuy
-                      }
-                    %}
-                  {% endblock %}
-                {% else %}
-                  {% block component_product_box_action_details %}
-                    <a
-                      href="{{ seoUrl('frontend.detail.page', {productId: id}) }}"
-                      {{ classes.actionDetails | vi_attr_classes }}>
-                      {{ 'listing.boxProductDetails' | trans | sw_sanitize }}
-                    </a>
-                  {% endblock %}
-                {% endif %}
-                {% block component_product_box_actions_append %}{% endblock %}
-              </div>
-              {# {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %} #}
+              {% if productBoxOptions.showActions is same as(true) %}
+                <div {{ classes.actions | vi_attr_classes }}>
+                  {% block component_product_box_actions_prepend -%}{%- endblock %}
+                  {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                    {% block component_product_box_action_buy %}
+                      {%
+                        sw_include '@Storefront/components/product/action/buy.html.twig' with {
+                          classes: classes.productBuy
+                        }
+                      %}
+                    {% endblock %}
+                  {% else %}
+                    {% block component_product_box_action_details %}
+                      <a
+                        href="{{ seoUrl('frontend.detail.page', {productId: id}) }}"
+                        {{ classes.actionDetails | vi_attr_classes }}>
+                        {{ 'listing.boxProductDetails' | trans | sw_sanitize }}
+                      </a>
+                    {% endblock %}
+                  {% endif %}
+                  {% block component_product_box_actions_append %}{% endblock %}
+                </div>
+              {% endif %}
             {% endblock %}
           </div>
         {% endblock %}

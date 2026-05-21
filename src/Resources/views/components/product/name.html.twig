@@ -1,5 +1,6 @@
 {% set productId = productId|default(product.id) %}
 {% set productName = productName|default(product.translated.name) %}
+{% set productNameTag = productNameTag|default('div') %}
 
 {%
   set classes = vi_define_classes({
