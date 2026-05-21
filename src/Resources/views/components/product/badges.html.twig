@@ -1,0 +1,44 @@
+{% sw_extends '@Storefront/storefront/component/product/card/badges.html.twig' %}
+
+{% set price = product.calculatedPrice %}
+{% if product.calculatedPrices.count > 0 %}
+    {% set price = product.calculatedPrices.last %}
+{% endif %}
+
+{% set listPrice = price.listPrice.percentage > 0 %}
+{% set hasRange = product.calculatedPrices.count > 1 %}
+
+{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+{% if displayParent %}
+    {% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+{% endif %}
+
+{% block component_product_badges_discount %}
+    {% if listPrice and not hasRange and not displayFromVariants %}
+        <div class="badge product-badge badge-discount">
+            {% block component_product_badges_discount_value %}
+                {{price.listPrice.percentage|number_format(0)}} %
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block component_product_badges_topseller %}
+    {% if product.markAsTopseller %}
+        <div class="badge product-badge badge-topseller">
+            {% block component_product_badges_topseller_value %}
+                {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block component_product_badges_new %}
+    {% if product.isNew %}
+        <div class="badge product-badge badge-new">
+            {% block component_product_badges_new_value %}
+                {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

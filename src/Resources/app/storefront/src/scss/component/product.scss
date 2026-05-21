@@ -1,0 +1,5 @@
+[data-component='product-image'] {
+  width: var(--image-w, auto);
+  max-width: var(--image-max-w, 100%);
+  aspect-ratio: var(--image-aspect-ratio, 4 / 3);
+}
