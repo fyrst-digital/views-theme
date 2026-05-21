@@ -30,7 +30,7 @@
   {% block component_line_item_action_wishlist %}
     {% if config('core.cart.wishlistEnabled') %}
       {%
-        sw_include '@Storefront/components/product/action-wishlist.html.twig' with {
+        sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
             showText: false,
             size: 'sm',
             productId: lineItem.referencedId,
