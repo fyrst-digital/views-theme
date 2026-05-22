@@ -1,85 +1,86 @@
-{% set formAction = path('frontend.checkout.line-item.add') %}
-{% set buyLabel = buyLabel|default('listing.boxAddProduct' | trans | sw_sanitize) %}
-{% set buyIcon = buyIcon|default('handbag') %}
+{%
+  set buyOptions = {
+    formAction: path('frontend.checkout.line-item.add'),
+    formId: 'ProductBuyForm' ~ product.id,
+    showQuantity: true,
+    buyLabel: 'listing.boxAddProduct' | trans | sw_sanitize,
+    buyIcon: 'handbag',
+  }|merge(buyOptions|default({}))
+%}
+
 {% set iconOptions = iconOptions|default(themeParameters.icons) %}
+
 {%
   set classes = vi_define_classes({
     form: [],
+    quantityInput: {},
     actionBuy: [],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
+{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
+{% set showQuantity = not product.type is defined or product.type != DIGITAL_CONST or (product.type == DIGITAL_CONST and product.maxPurchase !== 1) and buyOptions.showQuantity is not same as(true) %}
+
+{% set productUnit = false %}
+
+{% if product.translated.packUnit %}
+  {% if product.minPurchase > 1 and product.translated.packUnitPlural %}
+    {% set productUnit = product.translated.packUnitPlural %}
+  {% elseif product.translated.packUnit %}
+    {% set productUnit = product.translated.packUnit %}
+  {% endif %}
+{% endif %}
+
 {% block component_product_action_buy %}
   {# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
   <form
-    action="{{ formAction }}"
+    action="{{ buyOptions.formAction }}"
     method="post"
-    id="{{'ProductBuyForm' ~ id}}"
+    id="{{buyOptions.formId}}"
     {{ classes.form | vi_attr_classes }}
     data-component="product-buy"
-    data-add-to-cart="true">
-    {% block component_product_action_form %}
-      {% block component_product_action_buy_redirect_input %}
-        {# fallback redirect back to detail page is deactivated via js #}
-        <input
-          type="hidden"
-          name="redirectTo"
-          value="frontend.detail.page">
+    data-add-to-cart="true"
+    {% if product.isCloseout %}
+      data-add-to-cart-options="
+        {{ {
+            stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
+            outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
+        }|json_encode|e('html_attr') }}
+      "
+    {% endif %}>
+    {% block component_product_action_buy_parameter %}
+      {% sw_include '@Storefront/components/product/action/buy-parameter.html.twig' %}
+    {% endblock %}
 
-        <input
-          type="hidden"
-          name="redirectParameters"
-          data-redirect-parameters="true"
-          value="{{ {productId: id}|json_encode }}">
-      {% endblock %}
+    {% block component_product_action_buy_quantity %}
+      {% if showQuantity %}
+        {%
+          sw_include '@Storefront/components/quantity-input.html.twig' with {
+              inputName: 'lineItems[' ~ product.id ~ '][quantity]',
+              quantity: product.minPurchase,
+              minQuantity: product.minPurchase,
+              maxQuantity: product.calculatedMaxPurchase,
+              purchaseSteps: product.purchaseSteps,
+              unit: productUnit,
+              iconOptions: iconOptions,
+              classes: classes.quantityInput
+          } only
+        %}
+      {% endif %}
+    {% endblock %}
 
-      {% block component_product_action_buy_info %}
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][id]"
-          value="{{ id }}">
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][referencedId]"
-          value="{{ id }}">
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][type]"
-          value="product">
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][stackable]"
-          value="1">
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][removable]"
-          value="1">
-        <input
-          type="hidden"
-          name="lineItems[{{ id }}][quantity]"
-          value="{{ product.minPurchase }}">
-      {% endblock %}
-
-      {% block component_product_action_buy_meta %}
-        <input
-          type="hidden"
-          name="product-name"
-          value="{{ product.translated.name }}">
-      {% endblock %}
-
-      {% block component_product_action_buy_button %}
-        <button
-          {{ classes.actionBuy | vi_attr_classes }}
-          data-component="product-buy-action">
-          {% block component_product_action_buy_button_icon %}
-            {{ vi_icon(buyIcon, iconOptions) }}
-          {% endblock %}
-          {% block component_product_action_buy_button_label %}
-            {# @deprecated tag:v6.8.0 - Block page_product_detail_product_buy_button_label will be removed. Use component_product_action_buy_button_label instead. The default content will remain. #}
-            {{ buyLabel }}
-          {% endblock %}
-        </button>
-      {% endblock %}
+    {% block component_product_action_buy_button %}
+      <button
+        {{ classes.actionBuy | vi_attr_classes }}
+        data-component="product-buy-action">
+        {% block component_product_action_buy_button_icon %}
+          {{ vi_icon(buyOptions.buyIcon, iconOptions) }}
+        {% endblock %}
+        {% block component_product_action_buy_button_label %}
+          {# @deprecated tag:v6.8.0 - Block page_product_detail_product_buy_button_label will be removed. Use component_product_action_buy_button_label instead. The default content will remain. #}
+          {{ buyOptions.buyLabel }}
+        {% endblock %}
+      </button>
     {% endblock %}
   </form>
 {% endblock %}

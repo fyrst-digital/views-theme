@@ -1,17 +1,11 @@
 {%
-  set defaultClasses = {
-      group: ['input-group','quantity-selector-group', 'quantity-input'],
-      decrease: ['btn','btn-light','btn-decrease','js-btn-minus'],
-      increase: ['btn','btn-light','btn-increase','js-btn-plus'],
-      input: ['form-control','text-center','js-quantity-selector','quantity-selector-group-input'],
-  }
+  set classes = vi_define_classes({
+    group: ['input-group','quantity-selector-group', 'quantity-input'],
+    decrease: ['btn','btn-light','btn-decrease','js-btn-minus'],
+    increase: ['btn','btn-light','btn-increase','js-btn-plus'],
+    input: ['form-control','text-center','js-quantity-selector','quantity-selector-group-input'],
+  }, classes|default({}), replaceClasses|default(false))
 %}
-
-{% if classes is defined %}
-  {% set classes = classes|vi_merge_deep(defaultClasses) %}
-{% else %}
-  {% set classes = defaultClasses %}
-{% endif %}
 
 {% set iconOptions = iconOptions|default(themeParameters.icons) %}
 
@@ -45,7 +39,8 @@
 
 {% block component_quantity_input %}
   <div
-    class="{{classes.group|join(' ')}}"
+    {{ classes.group | vi_attr_classes }}
+    data-component="quantity-input"
     data-quantity-selector="true">
     {% block component_quantity_input_decrease %}
       <button

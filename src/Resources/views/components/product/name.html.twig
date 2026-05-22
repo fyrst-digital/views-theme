@@ -1,6 +1,11 @@
-{% set productId = productId|default(product.id) %}
-{% set productName = productName|default(product.translated.name) %}
-{% set productNameTag = productNameTag|default('div') %}
+{%
+  set options = {
+    showLink: true,
+    url: seoUrl('frontend.detail.page', {productId: product.id}),
+    name: product.translated.name,
+    tag: 'div'
+  }|merge(options|default({}))
+%}
 
 {%
   set classes = vi_define_classes({
@@ -10,15 +15,19 @@
 %}
 
 {% block component_product_name %}
-  <{{ productNameTag|raw }}
+  <{{ options.tag|raw }}
     {{ classes.container | vi_attr_classes }}
     data-component="product-name">
-    <a
-      {{ classes.link | vi_attr_classes }}
-      href="{{ seoUrl('frontend.detail.page', {productId: productId}) }}"
-      title="{{ productName }}"
-      data-component="product-name-link">
-      {{ productName }}
-    </a>
-  </{{ productNameTag|raw }}>
+    {% if options.showLink is same as(true) %}
+      <a
+        {{ classes.link | vi_attr_classes }}
+        href="{{ url }}"
+        title="{{ options.name }}"
+        data-component="product-name-link">
+        {{ options.name }}
+      </a>
+    {% else %}
+      {{ options.name }}
+    {% endif %}
+  </{{ options.tag|raw }}>
 {% endblock %}

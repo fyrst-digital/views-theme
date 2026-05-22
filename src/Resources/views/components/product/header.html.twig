@@ -1,0 +1,49 @@
+{%
+  set options = {
+      name: {},
+      manufacturer: product.manufacturer|default({})
+  }|merge(options|default({}))
+%}
+
+{%
+  set classes = vi_define_classes({
+  header: [],
+  productName: {},
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_product_header %}
+  <div {{ classes.header | vi_attr_classes }} data-component="product-header">
+    {% block component_product_header_prepend %}{% endblock %}
+
+    {% block component_product_header_breadcrumb %}
+      {% if feature('v6.8.0.0') or feature('BREADCRUMB_REWORK') %}
+        {%
+          sw_include '@Storefront/components/breadcrumb.html.twig' with {
+              context: context,
+              iconOptions: themeParameters.icons,
+              breadcrumb: page.breadcrumb
+          } only
+        %}
+      {% else %}
+        {%
+          sw_include '@Storefront/components/breadcrumb.html.twig' with {
+              context: context,
+              iconOptions: themeParameters.icons,
+              categoryId: shopware.navigation.id,
+          } only
+        %}
+      {% endif %}
+    {% endblock %}
+
+    {% block component_product_header_name %}
+      {%
+        sw_include '@Storefront/components/product/name.html.twig' with {
+          classes: classes.productName,
+          options: options.name,
+        }
+      %}
+    {% endblock %}
+    {% block component_product_header_append %}{% endblock %}
+  </div>
+{% endblock %}

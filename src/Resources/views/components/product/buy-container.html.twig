@@ -1,0 +1,139 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+
+{%
+  set options = {
+    productHeader: {},
+  }|merge(options|default({}))
+%}
+
+{%
+  set classes = vi_define_classes({
+  productHeader: {},
+  productBuy: {},
+  productPrice: {},
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block buy_widget_data %}
+  {% block buy_widget_data_rich_snippet_url %}
+    {{ parent() }}
+  {% endblock %}
+
+  {% block buy_widget_data_rich_snippet_price_range %}
+    {{ parent() }}
+  {% endblock %}
+
+  {% block buy_widget_data_rich_snippet_price_currency %}
+    {{ parent() }}
+  {% endblock %}
+
+  {% block buy_widget_header %}
+    {%
+      sw_include '@Storefront/components/product/header.html.twig' with {
+        options: options.productHeader,
+        classes: classes.productHeader,
+      }
+    %}
+  {% endblock %}
+
+  {% block buy_widget_reviews %}
+    {% if product.ratingAverage > 0 and totalReviews > 0 and config('core.listing.showReview') %}
+      {% if remoteClickOptions is not defined %}
+        {%
+          set remoteClickOptions = {
+              selector: '#review-tab-' ~ product.id,
+              scrollToElement: true,
+              excludedViewports: ['XS']
+          }
+        %}
+      {% endif %}
+
+      {% if reviewTabHref is not defined %}
+        {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
+      {% endif %}
+
+      <div class="product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center">
+        {%
+          sw_include '@Storefront/components/review/rating.html.twig' with {
+              points: product.ratingAverage
+          }
+        %}
+        <div class="product-review-label">
+          {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
+          <a
+            data-bs-toggle="tab"
+            class="product-detail-reviews-link product-review-link"
+            data-off-canvas-tabs="true"
+            data-remote-click="true"
+            data-remote-click-options="{{ remoteClickOptions|json_encode }}"
+            href="{{ reviewTabHref }}"
+            aria-controls="review-tab-pane">
+            {{ totalReviews }}
+            {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block component_product_buy_container_prices %}
+    <div class="product-prices">
+      {% block buy_widget_price %}
+        {%
+          sw_include '@Storefront/components/product/price.html.twig' with {
+            priceOptions: {
+              showTaxNote: true
+            },
+            classes: classes.productPrice
+          }
+        %}
+      {% endblock %}
+    </div>
+  {% endblock %}
+
+  {% block buy_widget_delivery_informations %}
+    {{ parent() }}
+  {% endblock %}
+{% endblock %}
+
+{% block buy_widget_buy_form %}
+  {% if product.active %}
+    {%
+      sw_include '@Storefront/components/product/action/buy.html.twig' with {
+        classes: classes.productBuy
+      }
+    %}
+  {% endif %}
+
+  {% block component_product_buy_container_actions %}
+    {%
+      set productActions = {
+          wishlist: config('core.cart.wishlistEnabled')
+      }
+    %}
+
+    {% block component_product_buy_container_actions_container %}
+      {% if true in productActions|sh_unique %}
+        <div class="product-actions">
+          {% block component_product_buy_container_action_prepend -%}{%- endblock %}
+
+          {% block component_product_buy_container_wishlist %}
+            {% if productActions.wishlist %}
+              {%
+                sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
+                    showText: true,
+                    size: 'sm',
+                    productId: product.id
+                }
+              %}
+            {% endif %}
+          {% endblock %}
+
+          {% block component_product_buy_container_action_append -%}{%- endblock %}
+        </div>
+      {% endif %}
+    {% endblock %}
+  {% endblock %}
+{% endblock %}
+
+{% block buy_widget_wishlist %}{% endblock %}
