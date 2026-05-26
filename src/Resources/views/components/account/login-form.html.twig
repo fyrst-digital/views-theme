@@ -11,7 +11,7 @@
   }, classes|default({}), replaceClasses|default(false))
 %}
 {% set loginRoute = loginRoute|default('frontend.account.login') %}
-{% set showDescription = showDescription|default(false) %}
+{% set showDescription = showDescription ?? false %}
 
 {% block component_account_login_form %}
   <form

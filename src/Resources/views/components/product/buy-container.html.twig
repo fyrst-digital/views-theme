@@ -3,6 +3,10 @@
 {%
   set options = {
     productHeader: {},
+    prices: {
+      showPrice: false,
+      showTaxNote: true,
+    }
   }|merge(options|default({}))
 %}
 
@@ -81,9 +85,7 @@
       {% block buy_widget_price %}
         {%
           sw_include '@Storefront/components/product/price.html.twig' with {
-            priceOptions: {
-              showTaxNote: true
-            },
+            priceOptions: options.prices,
             classes: classes.productPrice
           }
         %}
