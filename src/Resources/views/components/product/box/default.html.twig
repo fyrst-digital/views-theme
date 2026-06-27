@@ -26,6 +26,7 @@
     showDescription: true,
     showVariations: true,
     showActions: true,
+    priceOptions: {},
   }|merge(productBoxOptions|default({}))
 %}
 
@@ -145,6 +146,7 @@
             {% block component_product_box_price %}
               {%
                 sw_include '@Storefront/components/product/price.html.twig' with {
+                  priceOptions: productBoxOptions.priceOptions,
                   classes: classes.productPrice
                 }
               %}
