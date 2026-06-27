@@ -1,0 +1,27 @@
+{% sw_extends '@Storefront/storefront/component/review/review-widget.html.twig' %}
+
+{% block component_review_overview %}
+    <div class="product-detail-review-rating"
+        {% if productReviewCount > 0 %}
+            itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating"
+        {% endif %}>
+
+        {% if productReviewCount > 0 %}
+            <meta itemprop="bestRating" content="5">
+            <meta itemprop="ratingCount" content="{{ productReviewCount }}">
+            <meta itemprop="ratingValue" content="{{ productAvgRating }}">
+        {% endif %}
+
+        {% sw_include '@Storefront/components/review/rating.html.twig' with {
+            points: productAvgRating
+        } %}
+
+        {% if productReviewCount > 0 %}
+            {# The visible headline is aria-hidden because it is redundant for the screen reader. #}
+            {# The average rating alternative text is already part of `rating.html.twig`. #}
+            <p class="h6" aria-hidden="true">
+                {{ productAvgRating }} {{ 'detail.reviewAvgRate'|trans|sw_sanitize }} {{ reviews.matrix.maxPoints }} {{ 'detail.reviewAvgRateElements'|trans }}
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% set defaultClasses = {
+    item: ['contact-channel'],
+    label: ['contact-channel-label'],
+    content: ['contact-channel-content'],
+    value: ['contact-channel-value']
+} %}
+
+{% if classes is defined %}
+    {% set classes = defaultClasses|vi_merge_deep(classes) %}
+{% else %}
+    {% set classes = defaultClasses %}
+{% endif %}
+
+{% block component_footer_contact_channel %}
+    <div class="{{classes.item|join(' ')}}">
+
+        {% block component_footer_contact_channel_label %}
+            {% if label %}
+                <div class="{{classes.label|join(' ')}}">
+                    {{label}}
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block component_footer_contact_channel_content %}
+            <div class="{{classes.content|join(' ')}}">
+
+                {% block component_footer_contact_channel_icon %}
+                    {% if icon %}
+                        {{vi_icon(icon)}}
+                    {% endif %}
+                {% endblock %}
+
+                {% block component_footer_contact_channel_value %}
+
+                    {% if url %}
+                        <a href="{{url}}"
+                            class="{{classes.value|join(' ')}}"
+                            {% if urlAttributes %}
+                                {{urlAttributes|join(' ')|raw}}
+                            {% endif %}
+                            {% if openExternal %}
+                                target="_blank"
+                            {% endif %}
+                            title="{{value}}">
+
+                            {% block component_footer_contact_channel_link_value_content %}
+                                {% if value %}
+                                    {{value|raw}}
+                                {% endif %}
+                            {% endblock %}
+                        </a>
+                    {% else %}
+                        <span class="{{classes.value|join(' ')}}">
+                            {% block component_footer_contact_channel_value_content %}
+                                {% if value %}
+                                    {{value|raw}}
+                                {% endif %}
+                            {% endblock %}
+                        </span>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

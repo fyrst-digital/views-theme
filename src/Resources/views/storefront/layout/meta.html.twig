@@ -11,3 +11,14 @@
     #}
   {% endblock %}
 {% endblock %}
+
+{% block layout_head_javascript_router %}
+  {{ parent() }}
+
+  {% block layout_head_javascript_cart_count %}
+    <script>
+      {% set cart = context.extensions.cart ?? null %}
+      window.cartCount = {{ cart ? cart.lineItems|length : 0 }};
+    </script>
+  {% endblock %}
+{% endblock %}

@@ -1,5 +1,7 @@
 {% set iconOptions = iconOptions|default(themeParameters.icons) %}
 
+{% set cart = cart|default(page.cart) %}
+
 {%
   set classes = vi_define_classes({
     action: [

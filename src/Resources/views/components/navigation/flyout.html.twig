@@ -1,0 +1,25 @@
+{% extends '@Storefront/storefront/layout/navigation/flyout.html.twig' %}
+
+{% block layout_navigation_flyout_bar %}
+{% endblock %}
+
+{% block layout_navigation_flyout_categories %}
+    <div class="navigation-flyout-categories categories-root">
+        {% block layout_navigation_flyout_categories_recoursion %}
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block layout_navigation_flyout_teaser %}
+    {% if category.media %}
+        <div class="navigation-flyout-teaser">
+            {% block layout_navigation_flyout_teaser_image %}
+                {{ parent() }}
+            {% endblock %}
+
+            {% block layout_navigation_flyout_teaser_content %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

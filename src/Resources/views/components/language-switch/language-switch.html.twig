@@ -1,0 +1,96 @@
+{% sw_extends '@Storefront/storefront/layout/header/actions/language-widget.html.twig' %}
+
+{% if showFlagLabel is not defined %}
+    {% set showFlagLabel = true %}
+{% endif %}
+
+{% block layout_header_actions_language_widget_form %}
+
+    <form method="post"
+            action="{{ path('frontend.checkout.switch-language') }}"
+            class="language-form"
+            data-form-auto-submit="true">
+        {% block layout_header_actions_language_widget_content %}
+            {% set isoCode = page.header.activeLanguage.translationCode.code|lower|split('-') %}
+            {% set language = isoCode[0] %}
+            {% set country = isoCode[1] %}
+
+            <div class="languages-menu dropdown">
+
+                {% block component_language_switch_button %} 
+                    <button class="btn dropdown-toggle language-switch-btn"
+                        type="button"
+                        id="languagesDropdown-{{ position }}"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+
+                        {% block component_language_switch_button_flag %} 
+                            <div class="language-flag">
+
+                                {% block component_language_switch_button_icon %} 
+                                    <img src="{{ asset('bundles/viewstheme/flags/'~ page.header.activeLanguage.translationCode.code ~'.svg', 'asset') }}"
+                                        class="language-flag-icon">
+                                {% endblock %}
+
+                                {% block component_language_switch_button_label %} 
+                                    {% if showFlagLabel %}
+                                        <span class="language-flag-label">
+                                            {{language|upper}}
+                                        </span>
+                                    {% endif %}
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+                    </button>
+                {% endblock %}
+
+                {% block layout_header_actions_languages_widget_form_items %}
+                    <div class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="languagesDropdown-{{ position }}">
+                        {% for language in page.header.languages %}
+
+                            {% block component_language_switch_item %} 
+                                <div class="language-item dropdown-item{% if language.id is same as(page.header.activeLanguage.id) %} item-checked{% endif %}"
+                                    title="{{ language.translated.name }}">
+
+                                    {% set isoCode = language.translationCode.code|lower|split('-') %}
+                                    {% set flagLanguage = isoCode[0] %}
+                                    {% set flagCountry = isoCode[1] %}
+
+                                    {% block layout_header_actions_languages_widget_form_items_flag %}
+                                        <label class="language-item-label"
+                                            for="{{ position }}-{{ language.id }}">
+
+                                            <input id="{{ position }}-{{ language.id }}"
+                                                class="language-item-radio"
+                                                value="{{ language.id }}"
+                                                name="languageId"
+                                                type="radio"
+                                                {% if language.id is same as(page.header.activeLanguage.id) %} checked{% endif %}>
+                                            
+                                            {% block component_language_switch_item_flag_icon %} 
+                                                <img src="{{ asset('bundles/viewstheme/flags/'~ language.translationCode.code ~'.svg', 'asset') }}"
+                                                    class="language-item-icon">
+                                            {% endblock %}
+                                            
+                                            {% block component_language_switch_item_flag_label %} 
+                                                {{ language.name }}
+                                            {% endblock %}
+                                        </label>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        {% endfor %}
+                    </div>
+                {% endblock %}
+            </div>
+
+            <input name="redirectTo" type="hidden" value="{{ app.request.get('_route') }}">
+
+            {% for key, value in app.request.attributes.get('_route_params') %}
+                <input name="redirectParameters[{{ key }}]" type="hidden" value="{{ value }}">
+            {% endfor %}
+        {% endblock %}
+    </form>
+{% endblock %}

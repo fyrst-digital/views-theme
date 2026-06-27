@@ -1,0 +1,50 @@
+{% sw_extends '@Storefront/storefront/component/address/address-editor-modal-create-address.html.twig' %}
+
+{% block component_address_address_editor_modal_create_address_form %}
+    <form method="post"
+            action="{{ path('frontend.account.addressbook') }}"
+            class="js-close-address-editor"
+            data-form-ajax-submit="true"
+            data-form-validation="true"
+            data-form-ajax-submit-options="{{ formAjaxSubmitOptions|json_encode }}">
+
+        {% block component_address_address_editor_modal_create_address_form_hidden_inputs %}
+            {{ parent() }}
+        {% endblock %}
+
+        {% block component_address_address_editor_modal_create_address_form_fields_include %}
+            <div class="address-editor-fieldset">
+                {% sw_include '@Storefront/components/address/address-personal.html.twig' with {
+                    'data': postedData ?? address,
+                    'prefix': 'address',
+                    'idPrefix': typePrefix,
+                    'scope': 'parent',
+                    'parentSelector': 'form'
+                } %}
+
+                {% sw_include '@Storefront/components/address/address-form.html.twig' with {
+                    'data': postedData ?? address,
+                    'prefix': 'address',
+                    'idPrefix': typePrefix,
+                    'scope': 'parent',
+                    'parentSelector': 'form',
+                    'showFormCompany': true,
+                    'showNoShippingPostfix': true,
+                    'showVatIdField': changeBilling and context.customer and context.customer.guest ? true : false
+                } %}
+            </div>
+        {% endblock %}
+
+        {% block component_address_address_editor_modal_create_address_required_hint %}
+            <p class="address-required-info required-fields form-text mt-3">
+                {% block component_address_address_editor_modal_create_address_required_hint_text %}
+                    {{ parent() }}
+                {% endblock %}
+            </p>
+        {% endblock %}
+
+        {% block component_address_address_editor_modal_create_address_form_actions %}
+            {{ parent() }}
+        {% endblock %}
+    </form>
+{% endblock %}

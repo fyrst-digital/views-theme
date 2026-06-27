@@ -1,0 +1,24 @@
+{% block component_checkout_user_comment %}
+
+    {% if title %}
+        <div class="checkout-user-comment-title">
+            {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
+        </div>
+    {% endif %}
+
+    <div class="checkout-user-comment-control">
+        {% block page_checkout_confirm_customer_comment_control_textfield_label %}
+            <label class="form-label" for="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}">
+                {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
+            </label>
+        {% endblock %}
+
+        {% block page_checkout_confirm_customer_comment_control_textfield %}
+            <textarea class="form-control"
+                        placeholder="{{ 'checkout.customerCommentPlaceholder'|trans|sw_sanitize }}"
+                        id="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}"
+                        form="confirmOrderForm"
+                        name="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}"></textarea>
+        {% endblock %}
+    </div>
+{% endblock %}

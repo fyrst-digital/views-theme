@@ -1,0 +1,10 @@
+{% use '@Storefront/components/gallery-slider/thumbnails.html.twig' %}
+{% use '@Storefront/components/gallery-slider/canvas.html.twig' %}
+
+{% block component_gallery_slider %}
+    <div class="gallery-slider"
+        data-component="gallery-slider">
+        {{ block('component_gallery_slider_thumbnails') }}
+        {{ block('component_gallery_slider_canvas') }}
+    </div>
+{% endblock %}

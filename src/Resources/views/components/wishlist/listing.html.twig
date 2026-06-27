@@ -1,0 +1,18 @@
+{% sw_extends '@Storefront/components/product/listing.html.twig' %}
+
+{% block element_product_listing_col_empty %}
+    <div class="wishlist-listing-empty-container">
+        {% block element_product_listing_col_empty_wishlist %}
+            <img src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
+                 alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
+                 class="wishlist-listing-empty">
+
+            <h1 class="text-center wishlist-listing-header">{{ 'wishlist.wishlistEmptyHeader'|trans }}</h1>
+            <p class="text-center wishlist-listing-description">{{ 'wishlist.wishlistEmptyDescription'|trans }}</p>
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block element_product_listing_pagination_nav_actions %}{% endblock %}
+
+{% block element_product_listing_sorting %}{% endblock %}

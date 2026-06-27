@@ -1,0 +1,80 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
+
+{% block page_account_order_documents_table %}
+{% endblock %}
+
+{% block page_account_order_item_detail_table_header %}
+{% endblock %}
+
+{% block page_account_order_item_detail_table_body_customer_comment %}
+{% endblock %}
+
+{% block page_account_order_item_detail_table_body %}
+    <div class="order-detail-content-body">
+        {% sw_include '@Storefront/components/order/item-details-list.html.twig' %}
+    </div>
+{% endblock %}
+
+{% block page_account_order_item_detail_table_footer %}
+
+    {% block page_account_order_item_detail_table_labels_summary %}
+        <div class="order-item-detail-footer">
+
+            {% block page_account_order_item_detail_summary %}
+                <div class="order-item-summary-list cart-summary-list">
+                    {% block page_account_order_item_detail_shipping_costs %}
+                        {% if order.deliveries|length > 0 %}
+                            {% sw_include '@Storefront/components/cart/summary-item.html.twig'
+                                with {
+                                    label: 'account.orderItemShippingcosts'|trans|sw_sanitize,
+                                    value: order.shippingTotal|currency(order.currency.isoCode),
+                                    classes: {
+                                        item: ['summary-item-shipping']
+                                    }
+                                } 
+                            only %}
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block page_account_order_item_detail_amount %}
+                        {% set totalAmountLabel = 'account.orderItemTotal'|trans|sw_sanitize %}
+                        {% set totalAmountValue = order.amountTotal|currency(order.currency.isoCode) %}
+
+                        {% if order.isTaxFree %}
+                            {% set totalAmountLabel = 'account.orderItemNetTotal'|trans|sw_sanitize %}
+                            {% set totalAmountValue = order.amountNet|currency(order.currency.isoCode) %}
+                        {% endif %}
+
+                        {% sw_include '@Storefront/components/cart/summary-item.html.twig'
+                            with {
+                                label: totalAmountLabel,
+                                value: totalAmountValue,
+                                classes: {
+                                    item: ['summary-item-grand-total']
+                                }
+                            } 
+                        only %}
+                    {% endblock %}
+
+                    {% block page_account_order_item_detail_vat %}
+                        {% if not order.isTaxFree %}
+                            {% for calculatedTax in order.price.calculatedTaxes %}
+                                {% sw_include '@Storefront/components/cart/summary-item.html.twig'
+                                    with {
+                                        label: 'checkout.summaryTax'|trans({
+                                            '%rate%':  calculatedTax.taxRate
+                                        })|sw_sanitize,
+                                        value: calculatedTax.tax|currency(order.currency.isoCode),
+                                        classes: {
+                                            item: ['summary-item-tax-total']
+                                        }
+                                    } 
+                                only %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

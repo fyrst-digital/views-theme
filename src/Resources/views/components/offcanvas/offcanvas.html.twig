@@ -1,0 +1,22 @@
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
+
+{% block utilities_offcanvas_header %}
+    <div class="offcanvas-header border-bottom">
+
+        {% block component_offcanvas_header_content %}
+            <div class="offcanvas-header-content fw-semibold fs-5">
+                {% block component_offcanvas_header_title_content %}{% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block utilities_offcanvas_close %}
+            <button class="btn btn-light offcanvas-close js-offcanvas-close"
+                title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
+                aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}">
+                {% block utilities_offcanvas_close_icon %}
+                    {{vi_icon('x')}}
+                {% endblock %}
+            </button>
+        {% endblock %}
+    </div>
+{% endblock %}

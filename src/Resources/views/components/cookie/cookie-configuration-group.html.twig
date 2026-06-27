@@ -1,0 +1,27 @@
+{# @storefront-inheritance #}
+{% sw_extends '@Storefront/storefront/layout/cookie/cookie-configuration-group.html.twig' %}
+
+{% block cookie_configuration_group %}
+
+    {% if cookieGroup.cookie is defined or cookieGroup.entries is defined %}
+        <div class="offcanvas-cookie-group border-bottom py-3">
+            {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-parent.html.twig' with {
+                parent: cookieGroup
+            } only %}
+
+            {% if cookieGroup.snippet_description %}
+                <div>{{ cookieGroup.snippet_description|trans|sw_sanitize }}</div>
+            {% endif %}
+
+            {% if cookieGroup.entries is not empty or cookieGroup.snippet_description is defined %}
+                <div class="offcanvas-cookie-entries d-flex flex-column">
+                    {% for entry in cookieGroup.entries %}
+                        {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-child.html.twig' with {
+                            child: entry, isRequired: cookieGroup.isRequired
+                        } only %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

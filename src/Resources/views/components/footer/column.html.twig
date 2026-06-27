@@ -1,0 +1,32 @@
+{%
+  set classes = vi_define_classes({
+    column: ['footer-column'],
+    headline: ['footer-column-headline', 'footer-headline'],
+    content: ['footer-column-content-container']
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_footer_column %}
+    <div class="{% block component_footer_column_classes %}{{ classes.column|join(' ') }}{% endblock %}">
+        
+        {% block component_footer_column_inner %}
+
+            {% block component_footer_column_headline %}
+                <div class="{{ classes.headline|join(' ') }}"
+                    role="listitem">
+
+                    {% block component_footer_column_headline_title %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block component_footer_column_content_container %}
+                <div class="{{ classes.content|join(' ') }}">
+
+                    {% block component_footer_column_content %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        {% endblock %}
+    </div>
+{% endblock %}
