@@ -1,7 +1,7 @@
 {
   "name": "fyrst/views-theme",
   "description": "ViewsTheme - Shopware 6 storefront theme",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [

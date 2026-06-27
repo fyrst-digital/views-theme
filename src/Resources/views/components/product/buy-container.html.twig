@@ -115,25 +115,23 @@
     %}
 
     {% block component_product_buy_container_actions_container %}
-      {% if true in productActions|sh_unique %}
-        <div class="product-actions">
-          {% block component_product_buy_container_action_prepend -%}{%- endblock %}
+      <div class="product-actions">
+        {% block component_product_buy_container_action_prepend -%}{%- endblock %}
 
-          {% block component_product_buy_container_wishlist %}
-            {% if productActions.wishlist %}
-              {%
-                sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
-                    showText: true,
-                    size: 'sm',
-                    productId: product.id
-                }
-              %}
-            {% endif %}
-          {% endblock %}
+        {% block component_product_buy_container_wishlist %}
+          {% if productActions.wishlist %}
+            {%
+              sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
+                  showText: true,
+                  size: 'sm',
+                  productId: product.id
+              }
+            %}
+          {% endif %}
+        {% endblock %}
 
-          {% block component_product_buy_container_action_append -%}{%- endblock %}
-        </div>
-      {% endif %}
+        {% block component_product_buy_container_action_append -%}{%- endblock %}
+      </div>
     {% endblock %}
   {% endblock %}
 {% endblock %}
