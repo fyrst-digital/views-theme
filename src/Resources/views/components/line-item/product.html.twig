@@ -85,12 +85,14 @@
       {% endblock %}
 
       {% block component_line_item_product_total_price %}
-        <div class="line-item-total-price">
-          {# Shipping costs discounts always have a price of 0, which might be confusing, therefore we do not show those #}
-          {% if lineItem.payload.discountScope != 'delivery' %}
-            {{ lineItem.price.totalPrice | currency }}
-          {% endif %}
-        </div>
+        {% if lineItemOptions.showPrice is same as(true) %}
+          <div class="line-item-total-price">
+            {# Shipping costs discounts always have a price of 0, which might be confusing, therefore we do not show those #}
+            {% if lineItem.payload.discountScope != 'delivery' %}
+              {{ lineItem.price.totalPrice | currency }}
+            {% endif %}
+          </div>
+        {% endif %}
       {% endblock %}
     </div>
   {% endblock %}

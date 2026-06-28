@@ -25,6 +25,7 @@
   set productBoxOptions = {
     showDescription: true,
     showVariations: true,
+    showPrice: true,
     showActions: true,
     priceOptions: {},
   }|merge(productBoxOptions|default({}))
@@ -144,12 +145,14 @@
         {% block component_product_box_footer %}
           <div {{ classes.footer | vi_attr_classes }}>
             {% block component_product_box_price %}
-              {%
-                sw_include '@Storefront/components/product/price.html.twig' with {
-                  priceOptions: productBoxOptions.priceOptions,
-                  classes: classes.productPrice
-                }
-              %}
+              {% if productBoxOptions.showPrice is same as(true) %}
+                {%
+                  sw_include '@Storefront/components/product/price.html.twig' with {
+                    priceOptions: productBoxOptions.priceOptions,
+                    classes: classes.productPrice
+                  }
+                %}
+              {% endif %}
             {% endblock %}
 
             {% block component_product_box_actions %}
