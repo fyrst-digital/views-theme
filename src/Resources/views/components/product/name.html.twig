@@ -21,7 +21,7 @@
     {% if options.showLink is same as(true) %}
       <a
         {{ classes.link | vi_attr_classes }}
-        href="{{ url }}"
+        href="{{ options.url }}"
         title="{{ options.name }}"
         data-component="product-name-link">
         {{ options.name }}
