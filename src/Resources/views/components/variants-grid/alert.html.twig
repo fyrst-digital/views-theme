@@ -1,5 +1,12 @@
+{%
+  set classes = vi_define_classes({
+    alert: ['alert', 'alert-danger', 'd-none'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_variants_grid_alert %}
-<div class="alert alert-danger d-none"
-        role="alert"
-        data-component="error-message"></div>
+  <div
+    {{ classes.alert | vi_attr_classes }}
+    role="alert"
+    data-component="error-message"></div>
 {% endblock %}

@@ -6,15 +6,15 @@
         <title>Variants Grid</title>
         <title lang="de-DE">Varianten Raster</title>
 
-        <input-field type="switch">
-            <name>variantsGrid.active</name>
+        <input-field type="bool">
+            <name>variantsGridActive</name>
             <label>Active</label>
             <label lang="de-DE">Aktiv</label>
             <defaultValue>0</defaultValue>
         </input-field>
 
         <input-field type="int">
-            <name>variantsGrid.rowsPerPage</name>
+            <name>variantsGridRowsPerPage</name>
             <label>Rows per page</label>
             <label lang="de-DE">Zeilen pro Seite</label>
             <defaultValue>10</defaultValue>

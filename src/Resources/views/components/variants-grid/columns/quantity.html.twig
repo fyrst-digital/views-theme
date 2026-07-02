@@ -1,54 +1,53 @@
+{% set iconOptions = iconOptions|default({}) %}
+
+{%
+  set classes = vi_define_classes({
+    cell: ['variants-grid-column-quantity'],
+    quantityInput: {
+      group: ['variants-grid-quantity-group'],
+    },
+    unavailable: ['variants-grid-unavailable', 'text-muted', 'small'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_variants_grid_column_quantity_cell %}
-    <td class="variants-grid-column-quantity">
-        {% if isAvailable and showQuantitySelect %}
-            {% block component_variants_grid_column_quantity_input %}
-                <div class="input-group quantity-selector-group variants-grid-quantity-group"
-                     data-quantity-selector="true">
-                    <button type="button"
-                            class="btn btn-outline-light btn-minus js-btn-minus"
-                            aria-label="{{ 'component.product.quantitySelect.decrease'|trans|striptags }}">
-                        {% sw_icon 'minus' style {size: 'xs'} %}
-                    </button>
+  <td {{ classes.cell | vi_attr_classes }}>
+    {% if isAvailable and showQuantitySelect %}
+      {% block component_variants_grid_column_quantity_input %}
+        {%
+          sw_include '@Storefront/components/quantity-input.html.twig' with {
+            inputName: 'lineItems[' ~ variant.id ~ '][quantity]',
+            quantity: 0,
+            minQuantity: 0,
+            maxQuantity: variant.calculatedMaxPurchase,
+            purchaseSteps: variant.purchaseSteps,
+            iconOptions: iconOptions,
+            classes: classes.quantityInput,
+          } only
+        %}
 
-                    <input type="number"
-                           name="lineItems[{{ variant.id }}][quantity]"
-                           class="form-control js-quantity-selector quantity-selector-group-input variants-grid-quantity-input text-center"
-                           data-component="quantity-input"
-                           min="0"
-                           max="{{ variant.calculatedMaxPurchase }}"
-                           step="{{ variant.purchaseSteps }}"
-                           value="0"
-                           aria-label="{{ 'component.product.quantitySelect.label'|trans|striptags }}">
-
-                    <button type="button"
-                            class="btn btn-outline-light btn-plus js-btn-plus"
-                            aria-label="{{ 'component.product.quantitySelect.increase'|trans|striptags }}">
-                        {% sw_icon 'plus' style {size: 'xs'} %}
-                    </button>
-                </div>
-
-                <input type="hidden"
-                       name="lineItems[{{ variant.id }}][id]"
-                       value="{{ variant.id }}">
-                <input type="hidden"
-                       name="lineItems[{{ variant.id }}][type]"
-                       value="product">
-                <input type="hidden"
-                       name="lineItems[{{ variant.id }}][referencedId]"
-                       value="{{ variant.id }}">
-                <input type="hidden"
-                       name="lineItems[{{ variant.id }}][stackable]"
-                       value="1">
-                <input type="hidden"
-                       name="lineItems[{{ variant.id }}][removable]"
-                       value="1">
-            {% endblock %}
-        {% else %}
-            {% block component_variants_grid_column_quantity_unavailable %}
-                <span class="variants-grid-unavailable text-muted small">
-                    {{ 'variantsGrid.table.unavailable'|trans|sw_sanitize }}
-                </span>
-            {% endblock %}
-        {% endif %}
-    </td>
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][id]"
+          value="{{ variant.id }}">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][type]"
+          value="product">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][referencedId]"
+          value="{{ variant.id }}">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][stackable]"
+          value="1">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][removable]"
+          value="1">
+      {% endblock %}
+    {% else %}
+      {% block component_variants_grid_column_quantity_unavailable %}
+        <span class="{{ classes.unavailable|join(' ') }}">
+          {{ 'detail.unavailable'|trans|sw_sanitize }}
+        </span>
+      {% endblock %}
+    {% endif %}
+  </td>
 {% endblock %}

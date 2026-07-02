@@ -13,9 +13,13 @@
         <service id="Fyrst\ViewsTheme\Twig\ViUtilities">
             <tag name="twig.extension"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Subscriber\ThemeConfigSubscriber">
+        <service id="Fyrst\ViewsTheme\Service\ThemeParametersResolver">
             <argument type="service" id="Shopware\Storefront\Theme\StorefrontPluginRegistry"/>
             <argument type="service" id="theme.repository"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Subscriber\ThemeConfigSubscriber">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
         <service id="Fyrst\ViewsTheme\Subscriber\CartContextSubscriber">
@@ -29,6 +33,7 @@
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="twig"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

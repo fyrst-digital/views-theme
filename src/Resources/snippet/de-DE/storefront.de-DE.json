@@ -1,18 +1,10 @@
 {
     "variantsGrid": {
         "table": {
-            "preview": "Vorschau",
-            "productNumber": "Produktnummer",
-            "unitPrice": "Stückpreis",
-            "quantity": "Menge",
-            "unavailable": "Nicht verfügbar"
-        },
-        "action": {
-            "addAllToCart": "Alle in den Warenkorb"
+            "preview": "Vorschau"
         },
         "error": {
-            "noSelection": "Bitte wählen Sie mindestens eine Variante und Menge aus.",
-            "loadFailed": "Die Varianten konnten nicht geladen werden. Bitte versuchen Sie es erneut."
+            "noSelection": "Bitte wählen Sie mindestens eine Variante und Menge aus."
         },
         "pagination": {
             "pageLoaded": "Seite %page% geladen"

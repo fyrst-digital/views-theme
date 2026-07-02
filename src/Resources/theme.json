@@ -7,7 +7,7 @@
     "@StorefrontBootstrap",
     "app/storefront/src/scss/base.scss"
   ],
-  "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme.js"],
+  "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme/views-theme.js"],
   "asset": ["app/storefront/src/assets"],
   "config": {
     "fields": {

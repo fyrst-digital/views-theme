@@ -1,18 +1,10 @@
 {
     "variantsGrid": {
         "table": {
-            "preview": "Preview",
-            "productNumber": "Product number",
-            "unitPrice": "Unit price",
-            "quantity": "Quantity",
-            "unavailable": "Unavailable"
-        },
-        "action": {
-            "addAllToCart": "Add all to cart"
+            "preview": "Preview"
         },
         "error": {
-            "noSelection": "Please select at least one variant and quantity.",
-            "loadFailed": "The variants could not be loaded. Please try again."
+            "noSelection": "Please select at least one variant and quantity."
         },
         "pagination": {
             "pageLoaded": "Page %page% loaded"

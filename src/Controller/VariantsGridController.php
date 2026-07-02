@@ -2,6 +2,7 @@
 
 namespace Fyrst\ViewsTheme\Controller;
 
+use Fyrst\ViewsTheme\Service\ThemeParametersResolver;
 use Fyrst\ViewsTheme\Service\VariantsLoader;
 use Fyrst\ViewsTheme\Struct\VariantsGridPagination;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -24,7 +25,7 @@ use Twig\Environment;
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
 class VariantsGridController extends StorefrontController
 {
-    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGrid.rowsPerPage';
+    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGridRowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
     private const DEFAULT_ROWS_TEMPLATE = '@Storefront/components/variants-grid/rows.html.twig';
     private const DEFAULT_PAGINATION_TEMPLATE = '@Storefront/components/variants-grid/pagination.html.twig';
@@ -35,6 +36,7 @@ class VariantsGridController extends StorefrontController
         private readonly VariantsLoader $variantsLoader,
         private readonly SystemConfigService $systemConfig,
         private readonly Environment $twig,
+        private readonly ThemeParametersResolver $themeParametersResolver,
     ) {
     }
 
@@ -126,9 +128,12 @@ class VariantsGridController extends StorefrontController
             self::DEFAULT_PAGINATION_TEMPLATE,
         );
 
+        $themeParameters = $this->themeParametersResolver->resolve($request, $context);
+
         $rowsHtml = $this->renderView($rowsTemplate, [
             'variants' => $pagedVariants,
             'groups' => $groups,
+            'themeParameters' => $themeParameters ?? [],
         ]);
 
         $paginationHtml = $this->renderView($paginationTemplate, [
