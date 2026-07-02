@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductPageSubscriber implements EventSubscriberInterface
 {
-    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.rowsPerPage';
+    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGrid.rowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
 
     public function __construct(

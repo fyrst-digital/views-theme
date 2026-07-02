@@ -7,7 +7,7 @@
         <title lang="de-DE">Varianten Raster</title>
 
         <input-field type="int">
-            <name>rowsPerPage</name>
+            <name>variantsGrid.rowsPerPage</name>
             <label>Rows per page</label>
             <label lang="de-DE">Zeilen pro Seite</label>
             <defaultValue>10</defaultValue>

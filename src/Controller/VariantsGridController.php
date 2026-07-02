@@ -24,7 +24,7 @@ use Twig\Environment;
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
 class VariantsGridController extends StorefrontController
 {
-    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.rowsPerPage';
+    private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGrid.rowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
     private const DEFAULT_ROWS_TEMPLATE = '@Storefront/components/variants-grid/rows.html.twig';
     private const DEFAULT_PAGINATION_TEMPLATE = '@Storefront/components/variants-grid/pagination.html.twig';
