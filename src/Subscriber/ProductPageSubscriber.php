@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductPageSubscriber implements EventSubscriberInterface
 {
+    private const CONFIG_VARIANTS_GRID_ACTIVE = 'ViewsTheme.config.variantsGrid.active';
     private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGrid.rowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
 
@@ -36,6 +37,15 @@ class ProductPageSubscriber implements EventSubscriberInterface
         $page = $event->getPage();
         $product = $page->getProduct();
         $salesChannelContext = $event->getSalesChannelContext();
+
+        $active = (bool) $this->systemConfig->get(
+            self::CONFIG_VARIANTS_GRID_ACTIVE,
+            $salesChannelContext->getSalesChannelId(),
+        );
+
+        if (!$active) {
+            return;
+        }
 
         $parentId = $product->getParentId() ?? $product->getId();
         $hasVariants = $product->getChildCount() > 0 || $product->getParentId() !== null;

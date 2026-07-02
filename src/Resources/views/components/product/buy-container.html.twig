@@ -144,17 +144,19 @@
   {{ parent() }}
 
   {% block buy_widget_variants_grid %}
-    {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
-    {% if variantsGrid and variantsGrid.variants.count > 0 %}
-      {%
-        sw_include '@Storefront/components/variants-grid/container.html.twig' with {
-          variants: variantsGrid.variants,
-          groups: variantsGrid.groups,
-          pagination: variantsGrid.pagination,
-          pageParameter: variantsGrid.pageParameter,
-          parentId: variantsGrid.parentId,
-        }
-      %}
+    {% if config('ViewsTheme.config.variantsGrid.active') %}
+      {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
+      {% if variantsGrid and variantsGrid.variants.count > 0 %}
+        {%
+          sw_include '@Storefront/components/variants-grid/container.html.twig' with {
+            variants: variantsGrid.variants,
+            groups: variantsGrid.groups,
+            pagination: variantsGrid.pagination,
+            pageParameter: variantsGrid.pageParameter,
+            parentId: variantsGrid.parentId,
+          }
+        %}
+      {% endif %}
     {% endif %}
   {% endblock %}
 {% endblock %}
