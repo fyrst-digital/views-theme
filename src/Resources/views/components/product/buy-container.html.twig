@@ -6,7 +6,9 @@
     prices: {
       showPrice: false,
       showTaxNote: true,
-    }
+    },
+    showBuyForm: true,
+    showActions: true,
   }|merge(options|default({}))
 %}
 
@@ -99,7 +101,7 @@
 {% endblock %}
 
 {% block buy_widget_buy_form %}
-  {% if product.active %}
+  {% if product.active and options.showBuyForm is same as(true) %}
     {%
       sw_include '@Storefront/components/product/action/buy.html.twig' with {
         classes: classes.productBuy
@@ -115,23 +117,25 @@
     %}
 
     {% block component_product_buy_container_actions_container %}
-      <div class="product-actions">
-        {% block component_product_buy_container_action_prepend -%}{%- endblock %}
+      {% if options.showActions is same as(true) %}
+        <div class="product-actions">
+          {% block component_product_buy_container_action_prepend -%}{%- endblock %}
 
-        {% block component_product_buy_container_wishlist %}
-          {% if productActions.wishlist %}
-            {%
-              sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
-                  showText: true,
-                  size: 'sm',
-                  productId: product.id
-              }
-            %}
-          {% endif %}
-        {% endblock %}
+          {% block component_product_buy_container_wishlist %}
+            {% if productActions.wishlist %}
+              {%
+                sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
+                    showText: true,
+                    size: 'sm',
+                    productId: product.id
+                }
+              %}
+            {% endif %}
+          {% endblock %}
 
-        {% block component_product_buy_container_action_append -%}{%- endblock %}
-      </div>
+          {% block component_product_buy_container_action_append -%}{%- endblock %}
+        </div>
+      {% endif %}
     {% endblock %}
   {% endblock %}
 {% endblock %}
