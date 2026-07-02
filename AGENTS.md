@@ -1,6 +1,7 @@
 # Agent Instructions
 
-This file provides context for AI agents working on the `views-theme` project.
+- This file provides context for AI agents working on the `ViewsTheme` project
+- After each change check if the README and AGENTS md is in line with those changes
 
 ## Project Overview
 
@@ -28,6 +29,32 @@ Agents should reference the following skill file when relevant:
 3. Build reusable components in a "Design System" frame first, then assemble screens using `ref` instances.
 4. Always create desktop and mobile variants for each screen.
 5. Verify designs with `pencil_get_screenshot`.
+
+## JavaScript selector convention
+
+This plugin uses `data-component` attributes as the only JavaScript selectors.
+
+**Never use CSS classes as JavaScript selectors.** CSS classes are for styling only and may change without notice.
+
+### When adding new interactive elements / components
+
+1. Add a `data-component="<component-name>"` attribute to the element in Twig.
+2. Use `[data-component="<component-name>"]` as the selector in JavaScript.
+
+### Variants Grid components
+
+The variants grid is integrated into the `buy-container` component. The `ProductPageSubscriber` attaches grid data to the page under `page.extensions.viewsTheme.variantsGrid`.
+
+| Component      | Attribute                        | Element                                    |
+|----------------|----------------------------------|--------------------------------------------|
+| Grid container | `data-component="variants-grid"`   | Wrapper around the grid form               |
+| Grid body      | `data-component="grid-body"`       | `<tbody>` — target for AJAX row injection  |
+| Pagination     | `data-component="pagination"`      | Wrapper around pagination controls         |
+| Quantity input | `data-component="quantity-input"`  | Per-variant quantity spinbutton            |
+| Buy button     | `data-component="buy-button"`    | "Add all to cart" submit button            |
+| Grid memory    | `data-component="grid-memory"`     | Hidden container for cross-page inputs     |
+| Live region    | `data-component="live-region"`     | Screen-reader announcement for page loads  |
+| Error message  | `data-component="error-message"`   | Inline alert shown on AJAX failures        |
 
 ## Design System Summary
 

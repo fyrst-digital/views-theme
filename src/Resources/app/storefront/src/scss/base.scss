@@ -5,6 +5,7 @@
 @import 'component/cookie';
 @import 'component/product';
 @import 'component/search';
+@import 'component/variants-grid';
 
 :focus-visible {
   outline: var(--focus-outline-width, 2px) solid

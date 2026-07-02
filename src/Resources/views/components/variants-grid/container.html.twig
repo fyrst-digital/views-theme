@@ -1,0 +1,115 @@
+{% set formAction = path('frontend.checkout.variants-grid.add') %}
+
+{% block component_variants_grid %}
+    <div class="variants-grid-container"
+         data-component="variants-grid"
+         data-load-url="{{ path('frontend.checkout.variants-grid.load') }}"
+         data-parent-id="{{ parentId }}">
+        {% block component_variants_grid_error %}
+            {% sw_include '@Storefront/components/variants-grid/alert.html.twig' %}
+        {% endblock %}
+
+        {% block component_variants_grid_live_region %}
+            <div class="visually-hidden"
+                 aria-live="polite"
+                 aria-atomic="true"
+                 data-component="live-region"
+                 data-page-loaded-template="{{ 'variantsGrid.pagination.pageLoaded'|trans|sw_sanitize }}"></div>
+        {% endblock %}
+
+        {% block component_variants_grid_form %}
+            <form action="{{ formAction }}"
+                  method="post"
+                  class="variants-grid-form"
+                  data-variants-grid-form="true"
+                  data-add-to-cart="true">
+
+                {% block component_variants_grid_table %}
+                    <div class="table-responsive">
+                        <table class="table table-striped variants-grid-table">
+                            {% block component_variants_grid_head %}
+                                <thead>
+                                    <tr>
+                                        {% block component_variants_grid_head_preview %}
+                                            <th class="variants-grid-column-preview" scope="col">
+                                                {{ 'variantsGrid.table.preview'|trans|sw_sanitize }}
+                                            </th>
+                                        {% endblock %}
+
+                                        {% block component_variants_grid_head_number %}
+                                            <th class="variants-grid-column-number" scope="col">
+                                                {{ 'variantsGrid.table.productNumber'|trans|sw_sanitize }}
+                                            </th>
+                                        {% endblock %}
+
+                                        {% block component_variants_grid_head_options %}
+                                            {% for group in groups %}
+                                                <th class="variants-grid-column-option" scope="col">
+                                                    {{ group.translated.name }}
+                                                </th>
+                                            {% endfor %}
+                                        {% endblock %}
+
+                                        {% block component_variants_grid_head_price %}
+                                            <th class="variants-grid-column-price" scope="col">
+                                                {{ 'variantsGrid.table.unitPrice'|trans|sw_sanitize }}
+                                            </th>
+                                        {% endblock %}
+
+                                        {% block component_variants_grid_head_quantity %}
+                                            <th class="variants-grid-column-quantity" scope="col">
+                                                {{ 'variantsGrid.table.quantity'|trans|sw_sanitize }}
+                                            </th>
+                                        {% endblock %}
+                                    </tr>
+                                </thead>
+                            {% endblock %}
+
+                            {% block component_variants_grid_body %}
+                                <tbody data-component="grid-body">
+                                    {% sw_include '@Storefront/components/variants-grid/rows.html.twig' with {
+                                        variants: variants,
+                                        groups: groups,
+                                    } %}
+                                </tbody>
+                            {% endblock %}
+                        </table>
+                    </div>
+                {% endblock %}
+
+                {% block component_variants_grid_hidden_redirect %}
+                    <input type="hidden"
+                           name="redirectTo"
+                           value="frontend.detail.page">
+
+                    <input type="hidden"
+                           name="redirectParameters"
+                           value="{{ {productId: parentId}|json_encode }}">
+
+                    <div data-component="grid-memory" style="display:none;"></div>
+                {% endblock %}
+
+                {% block component_variants_grid_actions %}
+                    <div class="variants-grid-actions d-flex justify-content-between align-items-center">
+                        {% block component_variants_grid_pagination %}
+                            <div data-component="pagination">
+                                {% sw_include '@Storefront/components/variants-grid/pagination.html.twig' with {
+                                    pagination: pagination,
+                                    pageParameter: pageParameter,
+                                } %}
+                            </div>
+                        {% endblock %}
+
+                        {% block component_variants_grid_buy_button %}
+                            <button type="submit"
+                                    class="btn btn-primary variants-grid-buy-button"
+                                    data-component="buy-button">
+                                {{ 'variantsGrid.action.addAllToCart'|trans|sw_sanitize }}
+                            </button>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </form>
+        {% endblock %}
+    </div>
+{% endblock %}

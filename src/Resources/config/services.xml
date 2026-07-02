@@ -22,5 +22,27 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="Fyrst\ViewsTheme\Controller\VariantsGridController" public="true">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="twig"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\VariantsLoader">
+            <argument type="service" id="sales_channel.product.repository"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="request_stack"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

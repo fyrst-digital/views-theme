@@ -1,0 +1,28 @@
+{% block component_variants_grid_column_options_cells %}
+    {% for group in groups %}
+        {% block component_variants_grid_column_option_cell %}
+            <td class="variants-grid-column-option">
+                {% set option = variant.options.filterByProperty('groupId', group.id).first %}
+                {% if option %}
+                    {% block component_variants_grid_column_option_value %}
+                        {% if option.media %}
+                            <img src="{{ option.media|sw_encode_media_url }}"
+                                 alt="{{ option.translated.name|e('html_attr') }}"
+                                 class="variants-grid-option-swatch d-inline-block rounded-circle border align-middle"
+                                 width="24"
+                                 height="24"
+                                 loading="lazy">
+                        {% elseif option.colorHexCode %}
+                            <span class="variants-grid-option-swatch variants-grid-option-swatch--color d-inline-block rounded-circle border align-middle"
+                                  style="background-color: {{ option.colorHexCode }};"
+                                  title="{{ option.translated.name|e('html_attr') }}">
+                            </span>
+                        {% else %}
+                            {{ option.translated.name }}
+                        {% endif %}
+                    {% endblock %}
+                {% endif %}
+            </td>
+        {% endblock %}
+    {% endfor %}
+{% endblock %}

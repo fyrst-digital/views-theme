@@ -8,8 +8,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\SalesChannelRequest;
 use Shopware\Storefront\Event\StorefrontRenderEvent;
-use Shopware\Storefront\Page\Page;
-use Shopware\Storefront\Pagelet\Pagelet;
 use Shopware\Storefront\Theme\StorefrontPluginRegistry;
 use Shopware\Storefront\Theme\ThemeCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -86,21 +84,5 @@ class ThemeConfigSubscriber implements EventSubscriberInterface
         }
 
         return null;
-    }
-
-    private function normalizeIcons(mixed $icons): array
-    {
-        if (\is_array($icons)) {
-            return $icons;
-        }
-
-        if (\is_string($icons)) {
-            $decoded = json_decode($icons, true);
-            if (json_last_error() === JSON_ERROR_NONE && \is_array($decoded)) {
-                return $decoded;
-            }
-        }
-
-        return ['value' => $icons];
     }
 }
