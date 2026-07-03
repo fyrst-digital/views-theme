@@ -1,0 +1,22 @@
+{%
+  set classes = vi_define_classes({
+    cell: ['variants-grid-column-preview'],
+    image: ['variants-grid-preview-image', 'object-fit-cover'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_variants_grid_column_preview_cell %}
+  <td {{ classes.cell | vi_attr_classes }}>
+    {% if variant.cover %}
+      {% block component_variants_grid_column_preview_image %}
+        <img
+          src="{{ variant.cover.media|sw_encode_media_url }}"
+          alt="{{ variant.translated.name|e('html_attr') }}"
+          class="{{ classes.image|join(' ') }}"
+          loading="lazy"
+          width="50"
+          height="50">
+      {% endblock %}
+    {% endif %}
+  </td>
+{% endblock %}

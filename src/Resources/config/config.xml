@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Variants Grid</title>
+        <title lang="de-DE">Varianten Raster</title>
+
+        <input-field type="bool">
+            <name>variantsGridActive</name>
+            <label>Active</label>
+            <label lang="de-DE">Aktiv</label>
+            <defaultValue>0</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>variantsGridRowsPerPage</name>
+            <label>Rows per page</label>
+            <label lang="de-DE">Zeilen pro Seite</label>
+            <defaultValue>10</defaultValue>
+            <min>1</min>
+            <max>100</max>
+        </input-field>
+
+        <input-field type="bool">
+            <name>variantsGridShowPreviewColumn</name>
+            <label>Show preview column</label>
+            <label lang="de-DE">Vorschauspalte anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>variantsGridShowProductNumberColumn</name>
+            <label>Show product number column</label>
+            <label lang="de-DE">Artikelnummerspalte anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+</config>

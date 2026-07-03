@@ -132,6 +132,62 @@ Combined with `vi_define_classes`:
 
 - todo: add description
 
+## Variants Grid
+
+ViewsTheme includes a paginated variants grid on product detail pages for products with variants.
+
+### Features
+
+- Automatically shows a variants grid on any product detail page that has variants.
+- Dynamic columns based on the product's configurator groups.
+- Quantity input for every variant row.
+- Single "Add all to cart" button.
+- Server-side filtering of rows with zero quantity via a dedicated controller.
+- Seamless lazy-loading pagination via JavaScript fetch.
+- Preserved quantities across pagination pages.
+- Offcanvas cart opens after adding variants, matching default Shopware behavior.
+- Configurable rows per page via plugin configuration.
+- Unavailable variants are rendered as disabled rows.
+- Color/option media rendered as swatches where applicable.
+
+### Configuration
+
+Open the plugin configuration in the Shopware administration to set:
+
+- **Rows per page** — the maximum number of variants displayed per page in the grid. Default: `10`.
+- **Show preview column** — whether the preview (image) column is rendered in the grid. Default: on.
+- **Show product number column** — whether the product number (SKU) column is rendered in the grid. Default: on.
+
+Both column options apply to the table header and every row, and are honored on the initial page render as well as on AJAX-paginated page loads.
+
+### How it works
+
+#### Buy container integration
+
+The variants grid is rendered inside the `buy-container` component (`components/product/buy-container.html.twig`) via the `buy_widget_variants_grid` block. The `ProductPageSubscriber` attaches the grid data to the page under `page.extensions.viewsTheme.variantsGrid`.
+
+#### Custom controller
+
+The grid form posts to a dedicated controller:
+
+```
+frontend.checkout.variants-grid.add
+```
+
+This controller receives every row, ignores entries with `quantity <= 0`, creates the remaining line items, and adds them to the cart. The response is handled by Shopware's core `AddToCartPlugin`, which opens the offcanvas cart.
+
+The same controller also provides an AJAX endpoint for lazy pagination:
+
+```
+frontend.checkout.variants-grid.load
+```
+
+It returns the rendered table rows and pagination HTML for the requested page. It accepts two optional query parameters (`rowsTemplate`, `paginationTemplate`) for custom Twig templates; both fall back to the defaults if missing or invalid.
+
+#### Storefront JavaScript
+
+The `VariantsGridPlugin` (registered on `[data-component="variants-grid"]`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
+
 ## Requirements
 
 - Shopware 6.7 (Core & Storefront)

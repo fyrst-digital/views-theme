@@ -1,0 +1,54 @@
+{% set iconOptions = iconOptions|default({}) %}
+
+{%
+  set classes = vi_define_classes({
+    cell: ['variants-grid-column-quantity'],
+    quantityInput: {
+      group: ['variants-grid-quantity-group'],
+    },
+    unavailable: ['variants-grid-unavailable', 'text-muted', 'small'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_variants_grid_column_quantity_cell %}
+  <td {{ classes.cell | vi_attr_classes }}>
+    {% if isAvailable and showQuantitySelect %}
+      {% block component_variants_grid_column_quantity_input %}
+        {%
+          sw_include '@Storefront/components/quantity-input.html.twig' with {
+            inputName: 'lineItems[' ~ variant.id ~ '][quantity]',
+            size: 'sm',
+            quantity: 0,
+            minQuantity: 0,
+            maxQuantity: variant.calculatedMaxPurchase,
+            purchaseSteps: variant.purchaseSteps,
+            iconOptions: iconOptions,
+            classes: classes.quantityInput,
+          } only
+        %}
+
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][id]"
+          value="{{ variant.id }}">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][type]"
+          value="product">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][referencedId]"
+          value="{{ variant.id }}">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][stackable]"
+          value="1">
+        <input type="hidden"
+          name="lineItems[{{ variant.id }}][removable]"
+          value="1">
+      {% endblock %}
+    {% else %}
+      {% block component_variants_grid_column_quantity_unavailable %}
+        <span class="{{ classes.unavailable|join(' ') }}">
+          {{ 'detail.unavailable'|trans|sw_sanitize }}
+        </span>
+      {% endblock %}
+    {% endif %}
+  </td>
+{% endblock %}

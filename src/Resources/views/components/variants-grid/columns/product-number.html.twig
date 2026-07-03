@@ -1,0 +1,11 @@
+{%
+  set classes = vi_define_classes({
+    cell: ['variants-grid-column-number'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_variants_grid_column_product_number_cell %}
+  <td {{ classes.cell | vi_attr_classes }}>
+    {{ variant.productNumber }}
+  </td>
+{% endblock %}

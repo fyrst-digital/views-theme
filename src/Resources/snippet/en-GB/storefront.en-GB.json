@@ -1,0 +1,13 @@
+{
+    "variantsGrid": {
+        "table": {
+            "preview": "Preview"
+        },
+        "error": {
+            "noSelection": "Please select at least one variant and quantity."
+        },
+        "pagination": {
+            "pageLoaded": "Page %page% loaded"
+        }
+    }
+}
