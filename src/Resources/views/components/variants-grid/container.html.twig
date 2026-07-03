@@ -18,6 +18,8 @@
 %}
 
 {% block component_variants_grid %}
+  {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
+  {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
   <div
     {{ classes.container | vi_attr_classes }}
     data-component="variants-grid"
@@ -51,15 +53,19 @@
                 <thead>
                   <tr>
                     {% block component_variants_grid_head_preview %}
-                      <th {{ classes.headPreview | vi_attr_classes }} scope="col">
-                        {{ 'variantsGrid.table.preview'|trans|sw_sanitize }}
-                      </th>
+                      {% if showPreviewColumn %}
+                        <th {{ classes.headPreview | vi_attr_classes }} scope="col">
+                          {{ 'variantsGrid.table.preview'|trans|sw_sanitize }}
+                        </th>
+                      {% endif %}
                     {% endblock %}
 
                     {% block component_variants_grid_head_number %}
-                      <th {{ classes.headNumber | vi_attr_classes }} scope="col">
-                        {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
-                      </th>
+                      {% if showProductNumberColumn %}
+                        <th {{ classes.headNumber | vi_attr_classes }} scope="col">
+                          {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
+                        </th>
+                      {% endif %}
                     {% endblock %}
 
                     {% block component_variants_grid_head_options %}

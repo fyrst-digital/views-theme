@@ -155,6 +155,10 @@ ViewsTheme includes a paginated variants grid on product detail pages for produc
 Open the plugin configuration in the Shopware administration to set:
 
 - **Rows per page** — the maximum number of variants displayed per page in the grid. Default: `10`.
+- **Show preview column** — whether the preview (image) column is rendered in the grid. Default: on.
+- **Show product number column** — whether the product number (SKU) column is rendered in the grid. Default: on.
+
+Both column options apply to the table header and every row, and are honored on the initial page render as well as on AJAX-paginated page loads.
 
 ### How it works
 

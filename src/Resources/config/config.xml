@@ -21,5 +21,19 @@
             <min>1</min>
             <max>100</max>
         </input-field>
+
+        <input-field type="bool">
+            <name>variantsGridShowPreviewColumn</name>
+            <label>Show preview column</label>
+            <label lang="de-DE">Vorschauspalte anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>variantsGridShowProductNumberColumn</name>
+            <label>Show product number column</label>
+            <label lang="de-DE">Artikelnummerspalte anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
     </card>
 </config>
