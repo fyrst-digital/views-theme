@@ -188,6 +188,45 @@ It returns the rendered table rows and pagination HTML for the requested page. I
 
 The `VariantsGridPlugin` (registered on `[data-component="variants-grid"]`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
 
+## Preferred Delivery Date
+
+ViewsTheme adds an optional "preferred delivery date" picker to the checkout confirm page. The selected date is persisted as a custom field on the order.
+
+### Features
+
+- Native `<input type="date">` picker rendered on the `checkout/confirm` page alongside the customer comment.
+- Min date is today (the date can never lie in the past); max date is today plus a configurable number of days.
+- The date is submitted with the standard confirm-order form — no custom AJAX route required for persistence.
+- The date is *preferred*, not required: leaving it empty writes no custom field.
+- The order custom-field key is configurable; it defaults to `preferred_delivery_date`.
+- The whole feature can be toggled on/off via a single plugin configuration flag.
+
+### Configuration
+
+Open the plugin configuration in the Shopware administration to set:
+
+- **Active** — master toggle for the preferred delivery date feature. Default: off.
+- **Custom field key** — the order custom-field key the selected date is written under. Default: `preferred_delivery_date`.
+- **Maximum days from today** — the upper bound of the selectable window, in days from today. Default: `30`.
+
+### How it works
+
+#### Component
+
+The picker is rendered by the `delivery-date-selection` component (`components/checkout/delivery-date-selection.html.twig`), included from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm/index.html.twig`). It follows the theme component conventions: `vi_define_classes` / `vi_attr_classes` for overridable `checkout-delivery-date-selection-*` classes and a `data-component="delivery-date-selection"` hook for JavaScript. The `<input>` is attached to the standard order form via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`.
+
+#### Page subscriber
+
+The `CheckoutConfirmPageSubscriber` subscribes to `CheckoutConfirmPageLoadedEvent` and attaches the field configuration to the page under `page.extensions.viewsTheme.deliveryDate` (keys: `active`, `min`, `max`, `customFieldKey`). The component renders nothing when the feature is inactive.
+
+#### Persistence
+
+The `CheckoutOrderPlacedSubscriber` subscribes to `CheckoutOrderPlacedEvent`. It reads the submitted `viewsThemeDeliveryDate` value from the request, validates it as an ISO date within the allowed window, and writes it to the order's custom fields via `order.repository` using the configured key. Empty or invalid values are silently ignored (no custom field is written).
+
+#### Storefront JavaScript
+
+The `DeliveryDatePlugin` (registered on `[data-component="delivery-date-selection"]`) reads the `min` / `max` attributes from the input and clamps any out-of-window value on change.
+
 ## Requirements
 
 - Shopware 6.7 (Core & Storefront)

@@ -1,0 +1,54 @@
+{% set deliveryDate = page.extensions.viewsTheme.deliveryDate|default({}) %}
+
+{%
+  set classes = vi_define_classes({
+    container: ['checkout-delivery-date-selection-container'],
+    title: ['checkout-delivery-date-selection-title'],
+    control: ['checkout-delivery-date-selection-control'],
+    label: ['form-label', 'checkout-delivery-date-selection-label'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+{% block component_checkout_delivery_date_selection %}
+  {% if deliveryDate.active|default(false) %}
+    <div {{ classes.container | vi_attr_classes }} data-component="delivery-date-selection">
+
+      {% block component_checkout_delivery_date_selection_title %}
+        {% if title|default(true) %}
+          <div {{ classes.title | vi_attr_classes }}>
+            {{ 'checkout.preferredDeliveryDateHeader'|trans|sw_sanitize }}
+          </div>
+        {% endif %}
+      {% endblock %}
+
+      {% block component_checkout_delivery_date_selection_control %}
+        <div {{ classes.control | vi_attr_classes }}>
+
+          {% block component_checkout_delivery_date_selection_label %}
+            <label {{ classes.label | vi_attr_classes }} for="viewsThemeDeliveryDate">
+              {{ 'checkout.preferredDeliveryDateLabel'|trans|sw_sanitize }}
+            </label>
+          {% endblock %}
+
+          {% block component_checkout_delivery_date_selection_input %}
+            <input
+              type="date"
+              class="form-control"
+              id="viewsThemeDeliveryDate"
+              form="confirmOrderForm"
+              name="viewsThemeDeliveryDate"
+              min="{{ deliveryDate.min|default('') }}"
+              max="{{ deliveryDate.max|default('') }}"
+              value="">
+          {% endblock %}
+
+          {% block component_checkout_delivery_date_selection_help %}
+            <small class="form-text text-muted">
+              {{ 'checkout.preferredDeliveryDateHelpText'|trans|sw_sanitize }}
+            </small>
+          {% endblock %}
+        </div>
+      {% endblock %}
+    </div>
+  {% endif %}
+{% endblock %}

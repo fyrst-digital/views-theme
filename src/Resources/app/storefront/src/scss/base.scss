@@ -6,6 +6,7 @@
 @import 'component/product';
 @import 'component/search';
 @import 'component/variants-grid';
+@import 'component/delivery-date';
 
 :focus-visible {
   outline: var(--focus-outline-width, 2px) solid
