@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
@@ -37,8 +39,7 @@ class VariantsGridController extends StorefrontController
         private readonly SystemConfigService $systemConfig,
         private readonly Environment $twig,
         private readonly ThemeParametersResolver $themeParametersResolver,
-    ) {
-    }
+    ) {}
 
     #[Route(path: '/checkout/variants-grid/add', name: 'frontend.checkout.variants-grid.add', defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
     public function addVariants(Cart $cart, RequestDataBag $requestDataBag, Request $request, SalesChannelContext $context): Response
@@ -139,6 +140,7 @@ class VariantsGridController extends StorefrontController
         $paginationHtml = $this->renderView($paginationTemplate, [
             'pagination' => new VariantsGridPagination($page, $limit, $total),
             'pageParameter' => self::PAGE_PARAMETER,
+            'themeParameters' => $themeParameters ?? [],
         ]);
 
         return new JsonResponse([
@@ -183,7 +185,7 @@ class VariantsGridController extends StorefrontController
             return false;
         }
 
-        $this->addCartErrors($cart, fn (Error $error) => $error->isPersistent());
+        $this->addCartErrors($cart, fn(Error $error) => $error->isPersistent());
 
         return true;
     }

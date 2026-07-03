@@ -131,7 +131,9 @@
                 type="submit"
                 {{ classes.buyButton | vi_attr_classes }}
                 data-component="buy-button">
-                {{ 'detail.addProduct'|trans|sw_sanitize }}
+                {% block component_variants_grid_buy_button_label %}
+                  {{ 'detail.addProduct'|trans|sw_sanitize }}
+                {% endblock %}
               </button>
             {% endblock %}
           </div>

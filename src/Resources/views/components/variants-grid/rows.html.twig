@@ -7,9 +7,10 @@
   }, classes|default({}), replaceClasses|default(false))
 %}
 
+{% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
+{% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
+
 {% block component_variants_grid_rows %}
-  {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
-  {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
   {% for variant in variants %}
     {% set isAvailable = variant.available and variant.calculatedMaxPurchase > 0 %}
     {% set showQuantitySelect = not variant.type is defined or variant.type != constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') or (variant.type == constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') and variant.maxPurchase !== 1) %}

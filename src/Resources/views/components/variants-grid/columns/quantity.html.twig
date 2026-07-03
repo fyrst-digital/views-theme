@@ -17,6 +17,7 @@
         {%
           sw_include '@Storefront/components/quantity-input.html.twig' with {
             inputName: 'lineItems[' ~ variant.id ~ '][quantity]',
+            size: 'sm',
             quantity: 0,
             minQuantity: 0,
             maxQuantity: variant.calculatedMaxPurchase,
