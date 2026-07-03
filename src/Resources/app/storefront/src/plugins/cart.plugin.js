@@ -2,11 +2,10 @@ import Plugin from 'src/plugin-system/plugin.class'
 
 export default class CartPlugin extends Plugin {
   static options = {
-    badgeClass: 'badge bg-primary header-cart-badge',
+    badgeClass: 'badge bg-primary',
   }
 
   init() {
-    console.log('meddl')
     this._renderBadge()
     this._registerEvents()
   }
@@ -25,6 +24,7 @@ export default class CartPlugin extends Plugin {
         this.el.appendChild(badge)
       }
       badge.textContent = count
+      badge.setAttribute('data-component', 'header-badge-cart')
     } else if (badge) {
       badge.remove()
     }
