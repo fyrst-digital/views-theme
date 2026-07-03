@@ -56,6 +56,16 @@ The variants grid is integrated into the `buy-container` component. The `Product
 | Live region    | `data-component="live-region"`     | Screen-reader announcement for page loads  |
 | Error message  | `data-component="error-message"`   | Inline alert shown on AJAX failures        |
 
+### Checkout components
+
+The preferred delivery date is rendered on the checkout confirm page. The `CheckoutConfirmPageSubscriber` attaches the field configuration to the page under `page.extensions.viewsTheme.deliveryDate` (keys: `active`, `min`, `max`, `customFieldKey`). The `CheckoutOrderPlacedSubscriber` persists the submitted date as an order custom field on `CheckoutOrderPlacedEvent`.
+
+| Component              | Attribute                                      | Element                                          |
+|------------------------|------------------------------------------------|--------------------------------------------------|
+| Delivery date selection| `data-component="delivery-date-selection"`     | Wrapper around the native `<input type="date">`  |
+
+The date input is wired to the standard confirm-order form via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`, so no custom AJAX route is required for persistence. The custom-field key written to the order is configurable via `ViewsTheme.config.deliveryDateCustomFieldKey` (default `preferred_delivery_date`).
+
 ## Design System Summary
 
 - **Style**: Modern Minimal

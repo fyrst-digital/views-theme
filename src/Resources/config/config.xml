@@ -36,4 +36,32 @@
             <defaultValue>true</defaultValue>
         </input-field>
     </card>
+
+    <card>
+        <title>Delivery Date</title>
+        <title lang="de-DE">Lieferdatum</title>
+
+        <input-field type="bool">
+            <name>deliveryDateActive</name>
+            <label>Active</label>
+            <label lang="de-DE">Aktiv</label>
+            <defaultValue>0</defaultValue>
+        </input-field>
+
+        <input-field type="text">
+            <name>deliveryDateCustomFieldKey</name>
+            <label>Custom field key</label>
+            <label lang="de-DE">Custom-Feld Schlüssel</label>
+            <defaultValue>preferred_delivery_date</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>deliveryDateMaxDays</name>
+            <label>Maximum days from today</label>
+            <label lang="de-DE">Maximale Tage ab heute</label>
+            <defaultValue>30</defaultValue>
+            <min>1</min>
+            <max>365</max>
+        </input-field>
+    </card>
 </config>
