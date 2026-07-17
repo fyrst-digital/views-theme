@@ -14,7 +14,9 @@
     headQuantity: ['variants-grid-column-quantity'],
     actions: ['variants-grid-actions', 'd-flex', 'justify-content-between', 'align-items-center'],
     buyButton: ['btn', 'btn-primary', 'variants-grid-buy-button'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid %}

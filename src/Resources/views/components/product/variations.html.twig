@@ -4,7 +4,9 @@
   set classes = vi_define_classes({
     container: [],
     item: [],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_variations %}

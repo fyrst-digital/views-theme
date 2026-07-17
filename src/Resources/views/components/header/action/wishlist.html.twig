@@ -9,9 +9,12 @@
 {% set wishlistWidgetOptions = { showCounter: showCounter } %}
 {%
   set classes = vi_define_classes({
-    action: [
-    ],
-  }, classes|default({}), replaceClasses|default(false))
+    action: [],
+    badge: ['badge', 'bg-primary', 'header-wishlist-badge'],
+    srOnly: ['visually-hidden'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_header_action_wishlist %}
@@ -23,7 +26,7 @@
     aria-labelledby="wishlist-basket-live-area">
     {% block component_header_action_wishlist_badge %}
       <span
-        class="badge bg-primary header-wishlist-badge"
+        {{ classes.badge | vi_attr_classes }}
         id="wishlist-basket"
         data-wishlist-storage="true"
         data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"
@@ -35,7 +38,7 @@
     {% endblock %}
     {% block component_header_action_wishlist_live_region %}
       <span
-        class="visually-hidden"
+        {{ classes.srOnly | vi_attr_classes }}
         id="wishlist-basket-live-area"
         data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
         aria-live="polite"></span>

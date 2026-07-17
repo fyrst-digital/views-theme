@@ -1,10 +1,19 @@
 {# @storefront-inheritance #}
 {% sw_extends '@Storefront/storefront/layout/cookie/cookie-configuration-group.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    group: ['offcanvas-cookie-group', 'border-bottom', 'py-3'],
+    entries: ['offcanvas-cookie-entries', 'd-flex', 'flex-column'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block cookie_configuration_group %}
 
     {% if cookieGroup.cookie is defined or cookieGroup.entries is defined %}
-        <div class="offcanvas-cookie-group border-bottom py-3">
+        <div {{ classes.group | vi_attr_classes }}>
             {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-parent.html.twig' with {
                 parent: cookieGroup
             } only %}
@@ -14,7 +23,7 @@
             {% endif %}
 
             {% if cookieGroup.entries is not empty or cookieGroup.snippet_description is defined %}
-                <div class="offcanvas-cookie-entries d-flex flex-column">
+                <div {{ classes.entries | vi_attr_classes }}>
                     {% for entry in cookieGroup.entries %}
                         {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-child.html.twig' with {
                             child: entry, isRequired: cookieGroup.isRequired

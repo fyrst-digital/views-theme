@@ -1,14 +1,25 @@
 {% sw_extends '@Storefront/components/product/listing.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    emptyContainer: ['wishlist-listing-empty-container'],
+    emptyImage: ['wishlist-listing-empty'],
+    header: ['text-center', 'wishlist-listing-header'],
+    description: ['text-center', 'wishlist-listing-description'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block element_product_listing_col_empty %}
-    <div class="wishlist-listing-empty-container">
+    <div {{ classes.emptyContainer | vi_attr_classes }}>
         {% block element_product_listing_col_empty_wishlist %}
             <img src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
                  alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
-                 class="wishlist-listing-empty">
+                 {{ classes.emptyImage | vi_attr_classes }}>
 
-            <h1 class="text-center wishlist-listing-header">{{ 'wishlist.wishlistEmptyHeader'|trans }}</h1>
-            <p class="text-center wishlist-listing-description">{{ 'wishlist.wishlistEmptyDescription'|trans }}</p>
+            <h1 {{ classes.header | vi_attr_classes }}>{{ 'wishlist.wishlistEmptyHeader'|trans }}</h1>
+            <p {{ classes.description | vi_attr_classes }}>{{ 'wishlist.wishlistEmptyDescription'|trans }}</p>
         {% endblock %}
     </div>
 {% endblock %}

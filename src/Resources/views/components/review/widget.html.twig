@@ -1,7 +1,16 @@
 {% sw_extends '@Storefront/storefront/component/review/review-widget.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    main: ['product-detail-review-rating'],
+    averageLabel: ['h6'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block component_review_overview %}
-    <div class="product-detail-review-rating"
+    <div {{ classes.main | vi_attr_classes }}
         {% if productReviewCount > 0 %}
             itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating"
         {% endif %}>
@@ -19,7 +28,7 @@
         {% if productReviewCount > 0 %}
             {# The visible headline is aria-hidden because it is redundant for the screen reader. #}
             {# The average rating alternative text is already part of `rating.html.twig`. #}
-            <p class="h6" aria-hidden="true">
+            <p {{ classes.averageLabel | vi_attr_classes }} aria-hidden="true">
                 {{ productAvgRating }} {{ 'detail.reviewAvgRate'|trans|sw_sanitize }} {{ reviews.matrix.maxPoints }} {{ 'detail.reviewAvgRateElements'|trans }}
             </p>
         {% endif %}

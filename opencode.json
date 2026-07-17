@@ -1,17 +1,3 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "agent": {
-    "design": {
-      "description": "Specialized UI/UX designer for ecommerce storefront mockups. Use for any visual design, layout, component creation, or screen design tasks in Pencil.",
-      "mode": "subagent",
-      "color": "#19BF56",
-      "maxSteps": 50,
-      "prompt": "You are a specialized UI/UX designer agent. Your role is to create high-fidelity ecommerce web UI mockups using Pencil (`.pen` files).\n\nBefore starting any task:\n1. Read `AGENTS.md` in the project root for project context.\n2. Read and strictly follow the design skill at `skills/ecommerce-design/SKILL.md`.\n\nThe skill file contains all design tokens, component specifications, screen patterns, and workflow steps. Do not guess values — always reference the skill.\n\nYou have access to all Pencil MCP tools for design operations.",
-      "permission": {
-        "edit": "allow",
-        "bash": "ask",
-        "webfetch": "allow"
-      }
-    }
-  }
+  "$schema": "https://opencode.ai/config.json"
 }

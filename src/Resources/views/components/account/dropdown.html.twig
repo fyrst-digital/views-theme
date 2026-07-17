@@ -5,9 +5,13 @@
     ],
     userActions: {},
     loginForm: ['p-6'],
+    divider: ['divider'],
+    dividerLabel: ['divider-label'],
     dropdownFooter: ['d-grid', 'p-3'],
     registerAction: ['btn', 'btn-primary']
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_account_dropdown %}
@@ -34,9 +38,9 @@
         %}
       {% endblock %}
       {% block component_account_dropdown_register_divider %}
-        <div class="divider">
+        <div {{ classes.divider | vi_attr_classes }}>
           {% block component_account_dropdown_register_divider_label %}
-            <div class="divider-label">
+            <div {{ classes.dividerLabel | vi_attr_classes }}>
               {{ 'account.newCustomerLabel' | trans | sw_sanitize }}
             </div>
           {% endblock %}

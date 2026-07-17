@@ -27,7 +27,9 @@
     requiredInfo: ['form-text', 'register-required-info'],
     submit: ['register-submit', 'card-footer', 'd-flex', 'flex-row', 'flex-wrap', 'align-items-center', 'justify-content-end'],
     submitButton: ['btn', 'btn-primary', 'btn-lg'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_account_register %}
@@ -135,7 +137,7 @@
                           autocomplete: 'section-personal email',
                           violationPath: '/email',
                           validationRules: 'required,email',
-                          additionalClass: classes.emailField | join(' '),
+                          additionalClass: classes.emailField | vi_classes,
                       }
                     %}
                   {% endblock %}
@@ -151,7 +153,7 @@
                             autocomplete: 'section-personal email',
                             violationPath: '/email',
                             validationRules: 'confirmation,required,email',
-                            additionalClass: classes.emailConfirmField | join(' '),
+                            additionalClass: classes.emailConfirmField | vi_classes,
                         }
                       %}
                     {% endif %}
@@ -176,7 +178,7 @@
                               violationPath: '/password',
                               validationRules: 'required,minLength',
                               minlength: config('core.loginRegistration.passwordMinLength'),
-                              additionalClass: classes.passwordField | join(' '),
+                              additionalClass: classes.passwordField | vi_classes,
                           } %}
                       {% endblock %}
                   {% endblock %}
@@ -190,7 +192,7 @@
                           autocomplete: 'new-password',
                           violationPath: '/passwordConfirmation',
                           validationRules: 'required,confirmation',
-                          additionalClass: classes.passwordConfirmField | join(' '),
+                          additionalClass: classes.passwordConfirmField | vi_classes,
                       } %}
                     {% endif %}
                   {% endblock %}

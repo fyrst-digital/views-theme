@@ -1,5 +1,15 @@
 {% sw_extends '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    body: ['order-detail-content-body'],
+    footer: ['order-item-detail-footer'],
+    summaryList: ['order-item-summary-list', 'cart-summary-list'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block page_account_order_documents_table %}
 {% endblock %}
 
@@ -10,7 +20,7 @@
 {% endblock %}
 
 {% block page_account_order_item_detail_table_body %}
-    <div class="order-detail-content-body">
+    <div {{ classes.body | vi_attr_classes }}>
         {% sw_include '@Storefront/components/order/item-details-list.html.twig' %}
     </div>
 {% endblock %}
@@ -18,10 +28,10 @@
 {% block page_account_order_item_detail_table_footer %}
 
     {% block page_account_order_item_detail_table_labels_summary %}
-        <div class="order-item-detail-footer">
+        <div {{ classes.footer | vi_attr_classes }}>
 
             {% block page_account_order_item_detail_summary %}
-                <div class="order-item-summary-list cart-summary-list">
+                <div {{ classes.summaryList | vi_attr_classes }}>
                     {% block page_account_order_item_detail_shipping_costs %}
                         {% if order.deliveries|length > 0 %}
                             {% sw_include '@Storefront/components/cart/summary-item.html.twig'

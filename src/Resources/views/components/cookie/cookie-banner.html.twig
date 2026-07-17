@@ -11,8 +11,16 @@
     ],
     actions: [
       'col-auto', 'd-flex', 'flex-wrap', 'gap-4'
-    ]
-  }, classes|default({}), replaceClasses|default(false))
+    ],
+    permissionButtonWrap: ['cookie-permission-button', 'js-cookie-permission-button'],
+    permissionButton: ['btn', 'btn-primary'],
+    configButtonWrap: ['js-cookie-configuration-button'],
+    configButton: ['btn', 'btn-primary'],
+    acceptAllWrap: ['js-cookie-accept-all-button'],
+    acceptAllButton: ['btn', 'btn-primary'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set acceptAllCookies = config('core.basicInformation.acceptAllCookies') %}
@@ -52,20 +60,20 @@
           {% block component_cookie_banner_actions %}
             <div {{ classes.actions | vi_attr_classes }}>
               {% block layout_cookie_permission_inner_button_deny %}
-                <span class="cookie-permission-button js-cookie-permission-button">
+                <span {{ classes.permissionButtonWrap | vi_attr_classes }}>
                   <button
                     type="submit"
-                    class="btn btn-primary">
+                    {{ classes.permissionButton | vi_attr_classes }}>
                     {{ 'cookie.deny' | trans | sw_sanitize }}
                   </button>
                 </span>
               {% endblock %}
 
               {% block layout_cookie_permission_inner_button_configuration %}
-                <span class="js-cookie-configuration-button">
+                <span {{ classes.configButtonWrap | vi_attr_classes }}>
                   <button
                     type="submit"
-                    class="btn btn-primary">
+                    {{ classes.configButton | vi_attr_classes }}>
                     {{ 'cookie.configure' | trans | sw_sanitize }}
                   </button>
                 </span>
@@ -73,10 +81,10 @@
 
               {% if acceptAllCookies %}
                 {% block layout_cookie_permission_inner_button_accept_all %}
-                  <span class="js-cookie-accept-all-button">
+                  <span {{ classes.acceptAllWrap | vi_attr_classes }}>
                     <button
                       type="submit"
-                      class="btn btn-primary">
+                      {{ classes.acceptAllButton | vi_attr_classes }}>
                       {{ 'cookie.acceptAll' | trans | sw_sanitize }}
                     </button>
                   </span>

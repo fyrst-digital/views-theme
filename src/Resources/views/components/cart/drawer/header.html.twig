@@ -5,7 +5,9 @@
     header: ['btn', 'offcanvas-close', 'js-offcanvas-close'],
     content: [],
     quantity: ['badge', 'rounded-pill', 'text-bg-light'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_cart_drawer_header %}

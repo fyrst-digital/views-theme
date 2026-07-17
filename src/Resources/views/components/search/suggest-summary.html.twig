@@ -1,14 +1,18 @@
 {%
   set classes = vi_define_classes({
     container: ['js-result', 'p-4', 'border-top'],
-    allResultsAction: ['btn', 'btn-primary']
-  }, classes|default({}), replaceClasses|default(false))
+    allResultsAction: ['btn', 'btn-primary'],
+    noResult: ['search-suggest-no-result'],
+    countBadge: ['badge', 'rounded-pill', 'text-bg-light'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_search_suggest_summary %}
   {#
     {% block component_search_suggest_no_result %}
-    <div class="search-suggest-no-result">
+    <div {{ classes.noResult | vi_attr_classes }}>
     {{ 'header.searchNoResult' | trans | sw_sanitize }}
     </div>
     {% endblock %}
@@ -24,7 +28,7 @@
           {{ classes.allResultsAction | vi_attr_classes }}>
           {{ 'header.searchAllResults' | trans | sw_sanitize }}
           {% block component_suggest_summary_all_results_action_badgee %}
-            <span class="badge rounded-pill text-bg-light">
+            <span {{ classes.countBadge | vi_attr_classes }}>
               {{ page.searchResult.total }}
             </span>
           {% endblock %}

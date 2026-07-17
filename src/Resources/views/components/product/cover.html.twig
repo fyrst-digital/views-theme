@@ -1,15 +1,19 @@
 {%
   set classes = vi_define_classes({
+    link: ['flex-fill', 'product-image-link', 'is-' ~ displayMode],
     video: [],
     image: [],
-  }, classes|default({}), replaceClasses|default(false))
+    placeholder: ['product-image-placeholder'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_cover %}
   <a
     href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
     title="{{ name }}"
-    class="flex-fill product-image-link is-{{ displayMode }}">
+    {{ classes.link | vi_attr_classes }}>
     {% block component_product_box_image_link_inner %}
       {% if cover.url and cover.isSpatialObject() == false %}
         {%
@@ -24,7 +28,7 @@
               set attributes = attributes|merge({
                   autoplay: true,
                   loop: true,
-                  class: classes.video | join(' '),
+                  class: classes.video | vi_classes,
                   'data-component': 'product-video'
               })
             %}
@@ -43,7 +47,7 @@
             set attributes = attributes|merge({
                 alt: (cover.translated.alt ?: name),
                 loading: 'lazy',
-                class: classes.image | join(' '),
+                class: classes.image | vi_classes,
                 'data-component': 'product-image'
             })
           %}
@@ -64,7 +68,7 @@
         {% endif %}
       {% else %}
         {% block component_product_box_image_placeholder %}
-          <div class="product-image-placeholder">
+          <div {{ classes.placeholder | vi_attr_classes }}>
             {%
               sw_icon 'placeholder' style {
                   size: 'fluid'

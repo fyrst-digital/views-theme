@@ -1,21 +1,24 @@
 {%
   set classes = vi_define_classes({
-    group: ['input-group','quantity-selector-group', 'quantity-input'],
-    decrease: ['btn','btn-light','btn-decrease','js-btn-minus'],
-    increase: ['btn','btn-light','btn-increase','js-btn-plus'],
-    input: ['form-control','text-center','js-quantity-selector','quantity-selector-group-input'],
-  }, classes|default({}), replaceClasses|default(false))
+    group: ['input-group', 'quantity-selector-group', 'quantity-input'],
+    decrease: ['btn', 'btn-light', 'btn-decrease', 'js-btn-minus'],
+    increase: ['btn', 'btn-light', 'btn-increase', 'js-btn-plus'],
+    input: ['form-control', 'text-center', 'js-quantity-selector', 'quantity-selector-group-input'],
+    unit: ['input-group-text'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+    variants: {
+      size: {
+        sm: { group: ['input-group-sm'] },
+      },
+    },
+    props: {
+      size: size|default(null),
+    },
+  })
 %}
 
 {% set iconOptions = iconOptions|default(themeParameters.icons) %}
-
-{% if size is defined && size is same as('sm') %}
-  {%
-    set classes = classes|vi_merge_deep({
-        group: ['input-group-sm']
-    })
-  %}
-{% endif %}
 
 {% if inputName is not defined %}
   {% set inputName = 'quantity' %}
@@ -48,7 +51,7 @@
           disabled="disabled"
         {% endif %}
         type="button"
-        class="{{classes.decrease|join(' ')}}"
+        {{ classes.decrease | vi_attr_classes }}
         aria-label="{{ 'component.product.quantitySelect.decrease'|trans|striptags }}">
         {{ vi_icon('minus', iconOptions) }}
       </button>
@@ -64,7 +67,7 @@
         {% endif %}
         type="number"
         name="{{inputName}}"
-        class="{{classes.input|join(' ')}}"
+        {{ classes.input | vi_attr_classes }}
         min="{{ minQuantity }}"
         max="{{ maxQuantity }}"
         step="{{ purchaseSteps }}"
@@ -73,7 +76,7 @@
     {% endblock %}
 
     {% if unit %}
-      <span class="input-group-text">
+      <span {{ classes.unit | vi_attr_classes }}>
         {{ unit }}
       </span>
     {% endif %}
@@ -84,7 +87,7 @@
           disabled="disabled"
         {% endif %}
         type="button"
-        class="{{classes.increase|join(' ')}}"
+        {{ classes.increase | vi_attr_classes }}
         aria-label="{{ 'component.product.quantitySelect.increase'|trans|striptags }}">
         {{ vi_icon('plus', iconOptions) }}
       </button>

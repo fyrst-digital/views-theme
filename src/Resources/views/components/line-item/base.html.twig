@@ -7,9 +7,17 @@
     item: ['line-item','js-cart-item', 'line-item-' ~ lineItem.type],
     content: ['line-item-content'],
     header: ['line-item-header'],
+    name: ['line-item-name'],
+    label: ['line-item-label', 'product-name'],
+    body: ['line-item-body'],
     footer: ['line-item-footer'],
+    quantity: ['line-item-quantity'],
+    totalPrice: ['line-item-total-price'],
     actions: ['line-item-actions'],
-  }, classes|default({}), replaceClasses|default(false))
+    image: [],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_line_item %}
@@ -27,7 +35,7 @@
             {{ classes.header | vi_attr_classes }}
             data-commponent="line-item-header">
             {% block component_line_item_name %}
-              <div class="line-item-name">
+              <div {{ classes.name | vi_attr_classes }}>
                 {% block component_line_item_name_content %}{% endblock %}
               </div>
             {% endblock %}

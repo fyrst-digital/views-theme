@@ -8,7 +8,9 @@
     title: [],
     closeButton: ['btn', 'js-offcanvas-close'],
     container: [],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_filter_panel_header %}

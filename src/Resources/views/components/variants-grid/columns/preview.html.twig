@@ -2,7 +2,9 @@
   set classes = vi_define_classes({
     cell: ['variants-grid-column-preview'],
     image: ['variants-grid-preview-image', 'object-fit-cover'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid_column_preview_cell %}
@@ -12,7 +14,7 @@
         <img
           src="{{ variant.cover.media|sw_encode_media_url }}"
           alt="{{ variant.translated.name|e('html_attr') }}"
-          class="{{ classes.image|join(' ') }}"
+          {{ classes.image | vi_attr_classes }}
           loading="lazy"
           width="50"
           height="50">

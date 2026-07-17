@@ -1,7 +1,9 @@
 {%
   set classes = vi_define_classes({
     alert: ['alert', 'alert-danger', 'd-none'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid_alert %}

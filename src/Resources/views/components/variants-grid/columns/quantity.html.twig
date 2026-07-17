@@ -7,7 +7,9 @@
       group: ['variants-grid-quantity-group'],
     },
     unavailable: ['variants-grid-unavailable', 'text-muted', 'small'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid_column_quantity_cell %}
@@ -45,7 +47,7 @@
       {% endblock %}
     {% else %}
       {% block component_variants_grid_column_quantity_unavailable %}
-        <span class="{{ classes.unavailable|join(' ') }}">
+        <span {{ classes.unavailable | vi_attr_classes }}>
           {{ 'detail.unavailable'|trans|sw_sanitize }}
         </span>
       {% endblock %}

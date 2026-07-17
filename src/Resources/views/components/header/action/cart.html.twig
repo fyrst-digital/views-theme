@@ -6,7 +6,9 @@
   set classes = vi_define_classes({
     action: [
     ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {%

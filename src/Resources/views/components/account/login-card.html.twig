@@ -1,18 +1,28 @@
 {% sw_extends '@Storefront/storefront/component/account/login.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    main: ['card', 'login-card'],
+    header: ['card-header', 'login-card-header'],
+    body: ['card-body', 'login-card-body'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block component_account_login %}
-    <div class="card login-card">
+    <div {{ classes.main | vi_attr_classes }}>
 
         {% block component_account_login_header %}
             {% if cardTitle %}
-                <h4 class="card-header login-card-header">
+                <h4 {{ classes.header | vi_attr_classes }}>
                     {{ cardTitle }}
                 </h4>
             {% endif %}
         {% endblock %}
 
         {% block component_account_login_form %}
-            <div class="card-body login-card-body">
+            <div {{ classes.body | vi_attr_classes }}>
                 {% sw_include '@Storefront/components/account/login-form.html.twig' %}
             </div>
         {% endblock %}

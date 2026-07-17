@@ -5,7 +5,9 @@
     content: ['col'],
     itemName: [],
     itemPrice: {}
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_search_suggest_item %}
@@ -18,7 +20,7 @@
       {%
         set attributes = {
           'data-component': 'search-suggest-item-image',
-          class: classes.image|join(' '),
+          class: classes.image | vi_classes,
           title: (product.cover.media.translated.title ?: '')
         }
       %}

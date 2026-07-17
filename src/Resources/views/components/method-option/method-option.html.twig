@@ -12,8 +12,23 @@
     {% set methodType = 'payment' %}
 {% endif %}
 
+{%
+  set classes = vi_define_classes({
+    main: ['method-option', methodType ~ '-method'],
+    input: ['method-option-input', methodType ~ '-method-input'],
+    label: ['method-option-label', methodType ~ '-method-label'],
+    image: ['method-option-image'],
+    imageElement: ['method-option-image-element'],
+    content: ['method-option-content'],
+    name: ['method-option-name'],
+    description: ['method-option-description'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block component_method_option %}
-    <div class="method-option {{ methodType }}-method">
+    <div {{ classes.main | vi_attr_classes }}>
 
         {% block component_method_option_input %}
             <input type="radio"
@@ -26,23 +41,23 @@
                 {% if methodDisabled is same as(true) %}
                     disabled="disabled"
                 {% endif %}
-                class="method-option-input {{ methodType }}-method-input">            
+                {{ classes.input | vi_attr_classes }}>            
         {% endblock %}
 
         {% block component_method_option_label %}
-            <label class="method-option-label {{ methodType }}-method-label"
+            <label {{ classes.label | vi_attr_classes }}
                 for="{{ methodType }}Method{{ methodId }}">
 
                 {% block component_method_option_image %}
                     {% if methodMedia %}
-                        <div class="method-option-image">
+                        <div {{ classes.image | vi_attr_classes }}>
                             {% sw_thumbnails 'method-option-image-thumbnails' with {
                                 media: methodMedia,
                                 sizes: {
                                     default: '100px'
                                 },
                                 attributes: {
-                                    class: 'method-option-image-element',
+                                    class: classes.imageElement | vi_classes,
                                     alt: (payment.media.translated.alt ?: payment.translated.name),
                                     title: (payment.media.translated.title ?: payment.translated.name)
                                 }
@@ -52,11 +67,11 @@
                 {% endblock %}
 
                 {% block component_method_option_content %}
-                    <div class="method-option-content">
+                    <div {{ classes.content | vi_attr_classes }}>
 
                         {% block component_method_option_name %}
                             {% set methodName = methodMeta.name %}
-                            <div class="method-option-name">
+                            <div {{ classes.name | vi_attr_classes }}>
                                 {{ methodName }}
                             </div>
                         {% endblock %}
@@ -65,7 +80,7 @@
                             {% set methodDescription = methodMeta.description %}
 
                             {% if methodDescription %}
-                                <div class="method-option-description ">
+                                <div {{ classes.description | vi_attr_classes }}>
                                     {{ methodDescription }}
                                 </div>
                             {% endif %}

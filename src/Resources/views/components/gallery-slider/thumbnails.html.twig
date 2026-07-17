@@ -1,14 +1,26 @@
 {% block component_gallery_slider_thumbnails %}
-    <div class="gallery-slider-thumbnails-container">
-        <div class="gallery-slider-thumbnails splide">
-            <div class="splide__track">
-                <ul class="splide__list">
+    {%
+      set classes = vi_define_classes({
+        container: ['gallery-slider-thumbnails-container'],
+        thumbnails: ['gallery-slider-thumbnails', 'splide'],
+        track: ['splide__track'],
+        list: ['splide__list'],
+        item: ['gallery-slider-thumbnail', 'splide__slide'],
+        image: ['gallery-slider-thumbnail-image'],
+      }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+    %}
+    <div {{ classes.container | vi_attr_classes }}>
+        <div {{ classes.thumbnails | vi_attr_classes }}>
+            <div {{ classes.track | vi_attr_classes }}>
+                <ul {{ classes.list | vi_attr_classes }}>
                     {% for media in medias %}
-                        <li class="gallery-slider-thumbnail splide__slide">
+                        <li {{ classes.item | vi_attr_classes }}>
                             {% sw_thumbnails 'gallery-slider-thumbnail' with {
                                 media: media,
                                 attributes: {
-                                    class: 'gallery-slider-thumbnail-image'
+                                    class: classes.image | vi_classes
                                 },
                                 sizes: {
                                     default: '200px'

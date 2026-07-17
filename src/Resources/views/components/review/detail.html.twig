@@ -1,5 +1,18 @@
 {% sw_extends '@Storefront/storefront/component/review/review.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    listContent: ['product-detail-review-list-content'],
+    formCollapse: ratingSuccess == -1
+      ? ['collapse', 'multi-collapse', 'show']
+      : ['collapse', 'multi-collapse'],
+    form: ['product-detail-review-form'],
+    login: ['product-detail-review-login'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block component_review_alert %}
     {% if ratingSuccess == 1 %}
         {% sw_include '@Storefront/components/alert.html.twig' with {
@@ -39,22 +52,22 @@
 
 {% block component_review_list_content %}
     {% for review in reviews %}
-        <div class="product-detail-review-list-content">
+        <div {{ classes.listContent | vi_attr_classes }}>
             {% sw_include '@Storefront/components/review/item.html.twig' %}
         </div>
     {% endfor %}
 {% endblock %}
 
 {% block component_review_form_container %}
-    <div class="collapse multi-collapse{% if ratingSuccess == -1 %} show{% endif %}"
+    <div {{ classes.formCollapse | vi_attr_classes }}
             id="review-form">
 
         {% if context.customer and not context.customer.guest %}
-            <div class="product-detail-review-form">
+            <div {{ classes.form | vi_attr_classes }}>
                 {% sw_include '@Storefront/components/review/form.html.twig' %}
             </div>
         {% else %}
-            <div class="product-detail-review-login">
+            <div {{ classes.login | vi_attr_classes }}>
                 {% sw_include '@Storefront/storefront/component/review/review-login.html.twig' %}
             </div>
         {% endif %}

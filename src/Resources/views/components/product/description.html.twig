@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     container: [],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_description %}

@@ -18,7 +18,9 @@
       'text-bg-light',
     ],
     countInline: []
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set titleTag = titleTag|default('div') %}

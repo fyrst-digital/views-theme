@@ -1,5 +1,6 @@
 {%
   set classes = vi_define_classes({
+    main: ['cart-summary'],
     list: ['cart-summary-list'],
     item: {},
     itemTotal: {
@@ -17,11 +18,13 @@
     itemTaxTotal: {
         item: ['summary-item-tax-total']
     },
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_cart_summary %}
-  <div class="cart-summary">
+  <div {{ classes.main | vi_attr_classes }}>
     {% block component_cart_summary_list %}
       <div {{ classes.list | vi_attr_classes }}>
         {% block component_cart_summary_item_total %}
@@ -31,7 +34,7 @@
                   with {
                       label: 'checkout.subtotalAmount'|trans|sw_sanitize,
                       value: summary.price.positionPrice|currency,
-                      classes: classes.item|vi_merge_deep(classes.itemTotal)
+                      classes: vi_define_classes(classes.item|default({}), classes.itemTotal|default({}))
                   }
               only
             %}
@@ -47,7 +50,7 @@
                       with {
                         label: 'checkout.summaryShipping'|trans|sw_sanitize,
                         value: delivery.shippingCosts.totalPrice|currency,
-                        classes: classes.item|vi_merge_deep(classes.itemShipping)
+                        classes: vi_define_classes(classes.item|default({}), classes.itemShipping|default({}))
                       }
                   only
                 %}
@@ -65,7 +68,7 @@
                   with {
                       label: 'checkout.summaryTotalPrice'|trans|sw_sanitize,
                       value: total|currency,
-                      classes: classes.item|vi_merge_deep(classes.itemGrandTotal)
+                      classes: vi_define_classes(classes.item|default({}), classes.itemGrandTotal|default({}))
                   }
               only
             %}
@@ -79,7 +82,7 @@
                   with {
                       label: 'checkout.summaryNetPrice'|trans|sw_sanitize,
                       value: summary.price.netPrice|currency,
-                      classes: classes.item|vi_merge_deep(classes.itemNetTotal)
+                      classes: vi_define_classes(classes.item|default({}), classes.itemNetTotal|default({}))
                   }
               only
             %}
@@ -101,7 +104,7 @@
                       with {
                           label: label,
                           value: taxItem.tax|currency,
-                          classes: classes.item|vi_merge_deep(classes.itemTaxTotal)
+                          classes: vi_define_classes(classes.item|default({}), classes.itemTaxTotal|default({}))
                       }
                   only
                 %}

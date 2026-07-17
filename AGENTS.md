@@ -1,76 +1,45 @@
 # Agent Instructions
 
-- This file provides context for AI agents working on the `ViewsTheme` project
-- After each change check if the README and AGENTS md is in line with those changes
+- Context for AI agents working on the `ViewsTheme` project
+- After each change, check whether **README**, **AGENTS**, and the relevant **`docs/`** pages still match the code
 
 ## Project Overview
 
-This is a **Shopware 6 theme design project** focused on creating high-fidelity ecommerce UI mockups in Pencil (`.pen` files). The designs target both desktop (1280px+) and mobile (375px) web storefronts.
+Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce UI (Twig/SCSS/JS). Desktop (1280px+) and mobile (375px).
 
-## Available Skills
-
-Agents should reference the following skill file when relevant:
-
-| Skill | Path | Trigger |
-|-------|------|---------|
-| **Ecommerce Design (Pencil)** | [`skills/ecommerce-design/SKILL.md`](skills/ecommerce-design/SKILL.md) | Any ecommerce UI design task in Pencil: product listings, PDP, cart, checkout, navigation, filters, account pages, or storefront components. Also triggered by keywords: shopware, ecommerce, product card, PLP, PDP. |
+**Human docs (source of truth for APIs and features):** [`docs/README.md`](docs/README.md)
 
 ## Agents
 
 | Agent | Path | Trigger |
 |-------|------|---------|
-| **Pencil Designer** | [`.opencode/agents/pencil-designer.md`](.opencode/agents/pencil-designer.md) | Ecommerce design work specifically in Pencil. The main agent delegates all screen/component design tasks to this subagent. |
-| **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Code-level Shopware 6.7 tasks: theme scaffolding, Twig overrides, JS plugins, SCSS, CMS blocks, services, migrations. The main agent delegates all storefront coding tasks to this subagent. |
+| **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Theme scaffolding, Twig, JS plugins, SCSS, CMS, services, migrations |
 
-## Quick Start
+## Quick reference (code)
 
-1. The main design file is [`views-theme.pen`](views-theme.pen).
-2. Before designing, initialize design tokens (colors, typography, spacing) using `pencil_set_variables`.
-3. Build reusable components in a "Design System" frame first, then assemble screens using `ref` instances.
-4. Always create desktop and mobile variants for each screen.
-5. Verify designs with `pencil_get_screenshot`.
+Do not re-document full APIs here — link to docs.
 
-## JavaScript selector convention
+| Topic | Doc |
+|-------|-----|
+| CSS class API (`vi_define_classes`, merge/replace/variants) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
+| Component template rules | [docs/conventions/components.md](docs/conventions/components.md) |
+| JS: only `[data-component="…"]` selectors | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
+| Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
+| Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
+| Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
+| Plugin / theme config | [docs/configuration.md](docs/configuration.md) |
+| Architecture | [docs/architecture.md](docs/architecture.md) |
 
-This plugin uses `data-component` attributes as the only JavaScript selectors.
+### Hard rules (always)
 
-**Never use CSS classes as JavaScript selectors.** CSS classes are for styling only and may change without notice.
-
-### When adding new interactive elements / components
-
-1. Add a `data-component="<component-name>"` attribute to the element in Twig.
-2. Use `[data-component="<component-name>"]` as the selector in JavaScript.
-
-### Variants Grid components
-
-The variants grid is integrated into the `buy-container` component. The `ProductPageSubscriber` attaches grid data to the page under `page.extensions.viewsTheme.variantsGrid`.
-
-| Component      | Attribute                        | Element                                    |
-|----------------|----------------------------------|--------------------------------------------|
-| Grid container | `data-component="variants-grid"`   | Wrapper around the grid form               |
-| Grid body      | `data-component="grid-body"`       | `<tbody>` — target for AJAX row injection  |
-| Pagination     | `data-component="pagination"`      | Wrapper around pagination controls         |
-| Quantity input | `data-component="quantity-input"`  | Per-variant quantity spinbutton            |
-| Buy button     | `data-component="buy-button"`    | "Add all to cart" submit button            |
-| Grid memory    | `data-component="grid-memory"`     | Hidden container for cross-page inputs     |
-| Live region    | `data-component="live-region"`     | Screen-reader announcement for page loads  |
-| Error message  | `data-component="error-message"`   | Inline alert shown on AJAX failures        |
-
-### Checkout components
-
-The preferred delivery date is rendered on the checkout confirm page. The `CheckoutConfirmPageSubscriber` attaches the field configuration to the page under `page.extensions.viewsTheme.deliveryDate` (keys: `active`, `min`, `max`, `customFieldKey`). The `CheckoutOrderPlacedSubscriber` persists the submitted date as an order custom field on `CheckoutOrderPlacedEvent`.
-
-| Component              | Attribute                                      | Element                                          |
-|------------------------|------------------------------------------------|--------------------------------------------------|
-| Delivery date selection| `data-component="delivery-date-selection"`     | Wrapper around the native `<input type="date">`  |
-
-The date input is wired to the standard confirm-order form via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`, so no custom AJAX route is required for persistence. The custom-field key written to the order is configurable via `ViewsTheme.config.deliveryDateCustomFieldKey` (default `preferred_delivery_date`).
+- Components under `src/Resources/views/components/`: use `vi_define_classes` + `vi_attr_classes` / `vi_classes` (see docs). No `|join(' ')` for class maps.
+- **Never** use CSS classes as JavaScript selectors — only `data-component`.
+- Prefer `vi_define_classes(base, override)` over `vi_merge_deep` for class maps.
+- Shell/router templates and `icon/icon.html.twig` are exempt from the class map API.
 
 ## Design System Summary
 
 - **Style**: Modern Minimal
 - **Font**: Figtree
-- **Accent**: `#19BF56` (light mode), `#A3EFAC` (dark mode variable-ready)
+- **Accent**: `#19BF56` (light), `#A3EFAC` (dark variable-ready)
 - **Base grid**: 8px
-
-For full design tokens, components, and screen patterns, see the Ecommerce Design skill file.

@@ -1,12 +1,22 @@
 {% sw_extends '@Storefront/storefront/layout/scroll-up.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    container: ['scroll-up-container', 'position-fixed', 'end-0', 'bottom-0'],
+    buttonWrap: ['scroll-up-button', 'js-scroll-up-button'],
+    button: ['btn', 'btn-primary', 'rounded-pill', 'p-3'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
+%}
+
 {% block layout_scroll_up_inner %}
-    <div class="scroll-up-container position-fixed end-0 bottom-0"
+    <div {{ classes.container | vi_attr_classes }}
          data-scroll-up="true">
         {% block layout_scroll_up_button %}
-            <div class="scroll-up-button js-scroll-up-button">
+            <div {{ classes.buttonWrap | vi_attr_classes }}>
                 <button type="submit"
-                        class="btn btn-primary rounded-pill p-3"
+                        {{ classes.button | vi_attr_classes }}
                         aria-hidden="true">
                     {% block layout_scroll_up_button_icon %}
                         {{vi_icon('caret-up')}}

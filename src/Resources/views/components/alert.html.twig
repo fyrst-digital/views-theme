@@ -33,24 +33,25 @@
     dismissButton: [
       'btn-close',
     ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+    variants: {
+      type: {
+        danger:  { alert: ['alert-danger'] },
+        warning: { alert: ['alert-warning'] },
+        info:    { alert: ['alert-info'] },
+        success: { alert: ['alert-success'] },
+      },
+      dismissible: {
+        true: { alert: ['alert-dismissible', 'fade', 'show'] },
+      },
+    },
+    props: {
+      type: type|default(null),
+      dismissible: dismissible|default(false),
+    },
+  })
 %}
-
-{% if type %}
-  {%
-    set classes = classes|merge({
-      alert: classes.alert|merge(['alert-' ~ type])
-    })
-  %}
-{% endif %}
-
-{% if dismissible %}
-  {%
-    set classes = classes|merge({
-      alert: classes.alert|merge(['alert-dismissible', 'fade', 'show'])
-    })
-  %}
-{% endif %}
 
 {%
   set alertAriaJsOptions = {

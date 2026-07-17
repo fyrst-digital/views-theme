@@ -3,7 +3,9 @@
     suggest: ['position-absolute', 'op-100', 'start-50', 'translate-middle-x', 'bg-white border', 'border-1', 'rounded-3', 'shadow-lg', 'js-search-result'],
     results: ['grid', 'gap-4', 'p-4'],
     item: {}
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_search_suggest %}
