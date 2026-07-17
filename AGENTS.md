@@ -5,31 +5,15 @@
 
 ## Project Overview
 
-Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce UI (Pencil designs + Twig/SCSS/JS implementation). Desktop (1280px+) and mobile (375px).
+Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce UI (Twig/SCSS/JS). Desktop (1280px+) and mobile (375px).
 
 **Human docs (source of truth for APIs and features):** [`docs/README.md`](docs/README.md)
-
-## Available Skills
-
-| Skill | Path | Trigger |
-|-------|------|---------|
-| **Ecommerce Design (Pencil)** | [`skills/ecommerce-design/SKILL.md`](skills/ecommerce-design/SKILL.md) | Ecommerce UI design in Pencil: listings, PDP, cart, checkout, navigation, filters, account. Keywords: shopware, ecommerce, product card, PLP, PDP. |
 
 ## Agents
 
 | Agent | Path | Trigger |
 |-------|------|---------|
 | **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Theme scaffolding, Twig, JS plugins, SCSS, CMS, services, migrations |
-
-> Pencil design work is covered by the Ecommerce Design skill above. A dedicated Pencil Designer agent can be added under `.opencode/agents/` when needed.
-
-## Quick Start (design)
-
-1. Main design file: `views-theme.pen` (when present in the workspace).
-2. Initialize design tokens with `pencil_set_variables`.
-3. Build reusable components in a "Design System" frame, then assemble screens with `ref` instances.
-4. Always create desktop and mobile variants.
-5. Verify with `pencil_get_screenshot`.
 
 ## Quick reference (code)
 
@@ -59,5 +43,3 @@ Do not re-document full APIs here — link to docs.
 - **Font**: Figtree
 - **Accent**: `#19BF56` (light), `#A3EFAC` (dark variable-ready)
 - **Base grid**: 8px
-
-Full tokens and patterns: Ecommerce Design skill file.
