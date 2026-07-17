@@ -3,7 +3,12 @@
 {% block layout_head_stylesheet %}
   {{ parent() }}
 
-  {% block layout_extra_stylesheet %}
+  {% block views_theme_additional_stylesheet %}
+    {% if themeParameters.icons and themeParameters.icons.mode is same as('css') and themeParameters.icons.pack is not empty %}
+      <link
+      rel="stylesheet"
+      href="{{ asset('bundles/viewstheme/css/icons/' ~ themeParameters.icons.pack ~ '.css') }}">
+    {% endif %}
     {#
       <link
       rel="stylesheet"

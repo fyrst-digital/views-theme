@@ -9,6 +9,10 @@
   ],
   "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme/views-theme.js"],
   "asset": ["app/storefront/src/assets"],
+  "icons": {
+    "pack": "default",
+    "mode": "css"
+  },
   "config": {
     "fields": {
       "sw-color-brand-primary": {

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "build:icons": "node build.icons.mts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/main.css -o ./src/Resources/public/css/theme.css --watch",
     "format": "prettier --write \"src/**/*.{js,ts,html,css,scss,json,md,twig}\"",
@@ -20,11 +21,13 @@
   },
   "homepage": "https://github.com/fyrst-digital/views-theme#readme",
   "dependencies": {
+    "@iconify/utils": "^3.1.4",
     "@tailwindcss/cli": "^4.2.4",
     "tailwindcss": "^4.2.4"
   },
   "devDependencies": {
     "@destination/prettier-plugin-twig": "^2.0.0",
+    "@iconify/json": "^2.2.500",
     "prettier": "^3.8.3"
   }
 }
