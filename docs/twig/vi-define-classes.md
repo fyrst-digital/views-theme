@@ -1,6 +1,6 @@
 # `vi_define_classes`
 
-> **Legacy.** New components use [UX Twig components](../conventions/ux-components.md) (`cva` + `attributes`). This API remains only for unmigrated templates and will be removed after full migration.
+> **Removed.** This API no longer ships. Use [UX Twig components](../conventions/ux-components.md) (`cva` + `attributes`). Historical reference only.
 
 Allows components to define default CSS classes while letting parent templates inject additional classes, fully set selected slots, or apply prop-driven variants.
 

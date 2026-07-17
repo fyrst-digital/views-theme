@@ -1,0 +1,29 @@
+{% props
+    medias = [],
+    defaultBaseClasses = 'vi-gallery-slider-thumbnails-container gallery-slider-thumbnails-container',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    <div class="vi-gallery-slider-thumbnails gallery-slider-thumbnails splide">
+        <div class="splide__track">
+            <ul class="splide__list">
+                {% for media in medias %}
+                    <li class="vi-gallery-slider-thumbnail gallery-slider-thumbnail splide__slide">
+                        {% sw_thumbnails 'gallery-slider-thumbnail' with {
+                            media: media,
+                            attributes: { class: 'vi-gallery-slider-thumbnail-image gallery-slider-thumbnail-image' },
+                            sizes: { default: '200px' },
+                        } %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

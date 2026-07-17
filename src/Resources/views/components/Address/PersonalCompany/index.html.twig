@@ -1,15 +1,7 @@
 {% sw_extends '@Storefront/storefront/component/address/address-personal-company.html.twig' %}
 
-{%
-  set classes = vi_define_classes({
-    fields: ['row', 'g-2', 'fields-company'],
-  }, classes|default({}), {
-    replace: replaceClasses|default([]),
-  })
-%}
-
 {% block component_address_form_company_fields %}
-    <div {{ classes.fields | vi_attr_classes }}>
+    <div class="row g-2 fields-company">
         {% block component_address_form_company_name %}
             {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
                 additionalClass: 'col-12 field-company-name'

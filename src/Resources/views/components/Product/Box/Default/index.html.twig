@@ -91,7 +91,7 @@
                 <div class="vi-product-box__header">
                     {% block rating %}
                         {% if config('core.listing.showReview') and product.ratingAverage %}
-                            {% sw_include '@Storefront/components/review/rating.html.twig' with {
+                            {% sw_include '@ViewsTheme/components/Review/Rating/index.html.twig' with {
                                 points: product.ratingAverage,
                             } %}
                         {% endif %}

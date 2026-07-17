@@ -1,42 +1,10 @@
 {% sw_extends '@Storefront/storefront/component/account/register.html.twig' %}
 
-{%
-  set classes = vi_define_classes({
-    card: ['card', 'register-card'],
-    header: ['card-header', 'register-card-header'],
-    form: ['register-form'],
-    personal: ['register-personal', 'grid', 'gap-3', 'card-body', 'border-bottom'],
-    guestCol: ['g-col-12'],
-    guestControl: ['form-check', 'register-guest-control', 'py-2', 'fw-semibold'],
-    guestInput: ['form-check-input'],
-    guestLabel: ['custom-control-label'],
-    emailField: ['g-col-12'],
-    emailConfirmField: ['g-col-12'],
-    passwordField: ['g-col-12', 'field-user-password', 'js-form-field-toggle-guest-mode'],
-    passwordConfirmField: ['g-col-12', 'field-user-password-confirmation', 'js-form-field-toggle-guest-mode'],
-    address: ['register-address'],
-    billing: ['register-billing', 'card-body', 'border-bottom'],
-    billingTitle: ['card-title'],
-    billingFields: ['grid', 'gap-3'],
-    shippingToggle: ['card-body', 'd-flex', 'flex-column', 'gap-3'],
-    differentShipping: ['form-check', 'register-different-shipping', 'fw-semibold'],
-    shipping: ['register-shipping', 'js-form-field-toggle-shipping-address', 'd-none'],
-    shippingTitle: ['card-title'],
-    shippingFields: ['grid', 'gap-3'],
-    privacyBody: ['card-body'],
-    requiredInfo: ['form-text', 'register-required-info'],
-    submit: ['register-submit', 'card-footer', 'd-flex', 'flex-row', 'flex-wrap', 'align-items-center', 'justify-content-end'],
-    submitButton: ['btn', 'btn-primary', 'btn-lg'],
-  }, classes|default({}), {
-    replace: replaceClasses|default([]),
-  })
-%}
-
 {% block component_account_register %}
-  <div {{ classes.card | vi_attr_classes }}>
+  <div class="card register-card">
     {% block component_account_register_header %}
       {% if cardTitle %}
-        <h4 {{ classes.header | vi_attr_classes }}>
+        <h4 class="card-header register-card-header">
           {{ cardTitle }}
         </h4>
       {% endif %}
@@ -45,7 +13,7 @@
     {% block component_account_register_form %}
       <form
         action="{{ path('frontend.account.register.save') }}"
-        {{ classes.form | vi_attr_classes }}
+        class="register-form"
         method="post"
         data-form-submit-loader="true"
         data-form-validation="true">
@@ -62,7 +30,7 @@
         {% endblock %}
 
         {% block component_account_register_personal %}
-          <div {{ classes.personal | vi_attr_classes }}>
+          <div class="register-personal grid gap-3 card-body border-bottom">
             {% block component_account_register_personal_fields %}
               {% block component_account_register_personal_address_fields %}
                 {% if feature('v6.7.0.0') %}
@@ -89,12 +57,12 @@
 
               {% block component_account_register_guest_mode_fields %}
                 {% if guestMode.active is same as(true) %}
-                  <div {{ classes.guestCol | vi_attr_classes }}>
-                    <div {{ classes.guestControl | vi_attr_classes }}>
+                  <div class="g-col-12">
+                    <div class="form-check register-guest-control py-2 fw-semibold">
                       {% block page_checkout_register_personal_guest_input %}
                         <input
                           type="checkbox"
-                          {{ classes.guestInput | vi_attr_classes }}
+                          class="form-check-input"
                           name="createCustomerAccount"
                           {% if guestMode.default is same as(true) %}
                             checked
@@ -111,7 +79,7 @@
 
                       {% block page_checkout_register_personal_guest_label %}
                         <label
-                          {{ classes.guestLabel | vi_attr_classes }}
+                          class="custom-control-label"
                           for="personalGuest">
                           {{
                             'checkout.registerCustomermodeLabel'
@@ -137,7 +105,7 @@
                           autocomplete: 'section-personal email',
                           violationPath: '/email',
                           validationRules: 'required,email',
-                          additionalClass: classes.emailField | vi_classes,
+                          additionalClass: 'g-col-12',
                       }
                     %}
                   {% endblock %}
@@ -153,7 +121,7 @@
                             autocomplete: 'section-personal email',
                             violationPath: '/email',
                             validationRules: 'confirmation,required,email',
-                            additionalClass: classes.emailConfirmField | vi_classes,
+                            additionalClass: 'g-col-12',
                         }
                       %}
                     {% endif %}
@@ -178,7 +146,7 @@
                               violationPath: '/password',
                               validationRules: 'required,minLength',
                               minlength: config('core.loginRegistration.passwordMinLength'),
-                              additionalClass: classes.passwordField | vi_classes,
+                              additionalClass: 'g-col-12 field-user-password js-form-field-toggle-guest-mode',
                           } %}
                       {% endblock %}
                   {% endblock %}
@@ -192,7 +160,7 @@
                           autocomplete: 'new-password',
                           violationPath: '/passwordConfirmation',
                           validationRules: 'required,confirmation',
-                          additionalClass: classes.passwordConfirmField | vi_classes,
+                          additionalClass: 'g-col-12 field-user-password-confirmation js-form-field-toggle-guest-mode',
                       } %}
                     {% endif %}
                   {% endblock %}
@@ -202,12 +170,12 @@
         {% endblock %}
 
         {% block component_account_register_address %}
-          <div {{ classes.address | vi_attr_classes }}>
+          <div class="register-address">
             {% block component_account_register_address_fields %}
               {% block component_account_register_address_billing %}
-                <div {{ classes.billing | vi_attr_classes }}>
+                <div class="register-billing card-body border-bottom">
                   {% block component_account_register_address_billing_header %}
-                    <h5 {{ classes.billingTitle | vi_attr_classes }}>
+                    <h5 class="card-title">
                       {{
                         'account.registerAddressBillingHeader'
                         | trans
@@ -217,7 +185,7 @@
                   {% endblock %}
 
                   {% block component_account_register_address_billing_fields %}
-                    <div {{ classes.billingFields | vi_attr_classes }}>
+                    <div class="grid gap-3">
                       {%
                         sw_include '@ViewsTheme/components/Address/Form/index.html.twig' with {
                             prefix: 'billingAddress',
@@ -231,9 +199,9 @@
               {% endblock %}
 
               {% block component_account_register_address_different_shipping %}
-                <div {{ classes.shippingToggle | vi_attr_classes }}>
+                <div class="card-body d-flex flex-column gap-3">
                   {% block component_account_register_address_different_shipping_control %}
-                    <div {{ classes.differentShipping | vi_attr_classes }}>
+                    <div class="form-check register-different-shipping fw-semibold">
                       {% block component_account_register_address_different_shipping_input %}
                         {{ parent() }}
                       {% endblock %}
@@ -245,9 +213,9 @@
                   {% endblock %}
 
                   {% block component_account_register_address_shipping %}
-                    <div {{ classes.shipping | vi_attr_classes }}>
+                    <div class="register-shipping js-form-field-toggle-shipping-address d-none">
                       {% block component_account_register_address_shipping_header %}
-                        <h5 {{ classes.shippingTitle | vi_attr_classes }}>
+                        <h5 class="card-title">
                           {{
                             'account.registerAddressShippingHeader'
                             | trans
@@ -257,7 +225,7 @@
                       {% endblock %}
 
                       {% block component_account_register_address_shipping_fields %}
-                        <div {{ classes.shippingFields | vi_attr_classes }}>
+                        <div class="grid gap-3">
                           {% block component_account_register_address_shipping_fields_personal %}
                             {%
                               sw_include '@ViewsTheme/components/Address/Personal/index.html.twig' with {
@@ -304,24 +272,24 @@
           {{ parent() }}
         {% endblock %}
 
-        <div {{ classes.privacyBody | vi_attr_classes }}>
+        <div class="card-body">
           {% block component_account_register_privacy %}
             {% sw_include '@Storefront/storefront/component/privacy-notice.html.twig' %}
           {% endblock %}
 
           {% block component_account_register_required_fields %}
-            <div {{ classes.requiredInfo | vi_attr_classes }}>
+            <div class="form-text register-required-info">
               {{ 'general.requiredFields' | trans | sw_sanitize }}
             </div>
           {% endblock %}
         </div>
 
         {% block component_account_register_footer %}
-          <div {{ classes.submit | vi_attr_classes }}>
+          <div class="register-submit card-footer d-flex flex-row flex-wrap align-items-center justify-content-end">
             {% block component_account_register_submit %}
               <button
                 type="submit"
-                {{ classes.submitButton | vi_attr_classes }}>
+                class="btn btn-primary btn-lg">
                 {{ 'account.registerSubmit' | trans | sw_sanitize }}
               </button>
             {% endblock %}

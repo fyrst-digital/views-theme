@@ -34,6 +34,5 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 
 - **Variants grid** — paginated multi-variant add-to-cart on the PDP (plugin config).
 - **Preferred delivery date** — optional date picker on checkout confirm, stored as an order custom field.
-- **UX Twig components** — `<twig:ViewsTheme:…>` with props, CVA, and attributes (migrating).
-- **Legacy Twig class API** — `vi_define_classes` / `vi_attr_classes` until domains migrate.
+- **UX Twig components** — `<twig:ViewsTheme:…>` with props, CVA, and attributes.
 - **Icons** — `vi_icon` for inline SVG / CSS icons.

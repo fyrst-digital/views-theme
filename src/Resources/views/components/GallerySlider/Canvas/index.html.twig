@@ -1,0 +1,36 @@
+{% props
+    medias = [],
+    defaultBaseClasses = 'vi-gallery-slider-canvas-container gallery-slider-canvas-container position-relative',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    <div class="vi-gallery-slider-canvas gallery-slider-canvas splide">
+        <div class="splide__arrows">
+            <button class="slider-control-button control-prev splide__arrow splide__arrow--prev">
+                {{ vi_icon('caret-left') }}
+            </button>
+            <button class="slider-control-button control-next splide__arrow splide__arrow--next">
+                {{ vi_icon('caret-right') }}
+            </button>
+        </div>
+        <div class="splide__track">
+            <ul class="splide__list">
+                {% for media in medias %}
+                    <li class="vi-gallery-slider-canvas-item gallery-slider-canvas-item splide__slide">
+                        {% sw_thumbnails 'gallery-slider-canvas-image' with {
+                            media: media,
+                            attributes: { class: 'vi-gallery-slider-canvas-image gallery-slider-canvas-image' },
+                        } %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

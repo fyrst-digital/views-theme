@@ -1,0 +1,14 @@
+{% props
+    defaultBaseClasses = 'vi-variants-grid-alert alert alert-danger d-none',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    role="alert"
+    data-ref="error-message"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+></div>

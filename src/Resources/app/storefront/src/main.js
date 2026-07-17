@@ -1,7 +1,2 @@
-// ViewsTheme Storefront JS entry point
-// Legacy PluginManager plugins (domains not yet on co-located ShopwareComponent)
-import VariantsGridPlugin from './plugins/variants-grid.plugin'
-
-const PluginManager = window.PluginManager
-
-PluginManager.register('VariantsGrid', VariantsGridPlugin, '[data-component="variants-grid"]')
+// ViewsTheme Storefront JS entry point.
+// Interactive UX components load via co-located ShopwareComponent modules.

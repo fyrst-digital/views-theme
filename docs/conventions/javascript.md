@@ -10,92 +10,49 @@
 | Internal hooks inside a component | `data-ref="…"` | `grid-body`, `buy-button` |
 | Twig → JS options | `data-component-options` | JSON object |
 
-Legacy plugins may still select old kebab `data-component` values until that domain migrates.
-
-## Co-located component JS (target)
+## Co-located component JS
 
 Interactive UX components ship `index.js` next to `index.html.twig`, extending global `ShopwareComponent`. Shopware builds them with Vite and loads them via import map — **no** `PluginManager.register`.
-
-```js
-// views/components/Header/Action/Cart/index.js
-export default class HeaderActionCart extends ShopwareComponent {
-  static options = {
-    badgeClass: 'badge bg-primary',
-  }
-
-  init() {
-    // …
-  }
-
-  destroy() {
-    // …
-  }
-}
-```
-
-```twig
-<button
-  data-component="ViewsTheme:Header:Action:Cart"
-  data-component-options="{{ jsOptions|json_encode }}"
->
-```
-
-Internal refs:
-
-```js
-static options = {
-  gridBodySelector: '[data-ref="grid-body"]',
-}
-```
-
-Build (project root):
-
-```bash
-composer build:js:storefront
-# or component-focused rebuild + assets:install + theme:compile
-```
-
-Dev: `composer storefront:dev-server`.
-
-## Legacy PluginManager plugins
-
-Still registered from `app/storefront/src/main.js` until their domain migrates:
-
-| Plugin | Selector (current) | Target UX root |
-|--------|--------------------|----------------|
-| `VariantsGrid` | `[data-component="variants-grid"]` | `ViewsTheme:VariantsGrid:Container` |
-
-### Migrated co-located components
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
 | Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart/index.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection/index.js` |
+| Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container/index.js` |
 
-`QuantityInput` root is `data-component="ViewsTheme:QuantityInput"` (no co-located JS yet; core `data-quantity-selector` remains).
+Build (project root):
+
+```bash
+composer build:js:storefront
+```
+
+Dev: `composer storefront:dev-server`.
 
 ## Features
 
 ### Variants grid
 
-Data: `page.extensions.viewsTheme.variantsGrid`. Plugin: `VariantsGridPlugin` (until PR migrates to co-located JS).
+Data: `page.extensions.viewsTheme.variantsGrid`.
 
-| Hook | Attribute (current) |
-|------|---------------------|
-| Grid container | `data-component="variants-grid"` |
-| Grid body | `data-component="grid-body"` → will become `data-ref` |
-| Pagination | `data-component="pagination"` |
+| Hook | Attribute |
+|------|-----------|
+| Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
+| Grid body | `data-ref="grid-body"` |
+| Pagination | `data-ref="pagination"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
-| Buy button | `data-component="buy-button"` |
-| Grid memory | `data-component="grid-memory"` |
-| Live region | `data-component="live-region"` |
-| Error message | `data-component="error-message"` |
+| Buy button | `data-ref="buy-button"` |
+| Grid memory | `data-ref="grid-memory"` |
+| Live region | `data-ref="live-region"` |
+| Error message | `data-ref="error-message"` |
 
 See [Variants grid](../features/variants-grid.md).
 
 ### Preferred delivery date
 
-Data: `page.extensions.viewsTheme.deliveryDate`.  
-Co-located: `Checkout/DeliveryDateSelection/index.js` on `data-component="ViewsTheme:Checkout:DeliveryDateSelection"`.
+Data: `page.extensions.viewsTheme.deliveryDate`.
+
+| Hook | Attribute |
+|------|-----------|
+| Wrapper | `data-component="ViewsTheme:Checkout:DeliveryDateSelection"` |
 
 See [Preferred delivery date](../features/delivery-date.md).

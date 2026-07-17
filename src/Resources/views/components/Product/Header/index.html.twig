@@ -18,13 +18,13 @@
 
     {% block breadcrumb %}
         {% if feature('v6.8.0.0') or feature('BREADCRUMB_REWORK') %}
-            {% sw_include '@Storefront/components/breadcrumb.html.twig' with {
+            {% sw_include '@ViewsTheme/components/Breadcrumb/index.html.twig' with {
                 context: context,
                 iconOptions: themeParameters.icons|default({}),
                 breadcrumb: page.breadcrumb,
             } only %}
         {% else %}
-            {% sw_include '@Storefront/components/breadcrumb.html.twig' with {
+            {% sw_include '@ViewsTheme/components/Breadcrumb/index.html.twig' with {
                 context: context,
                 iconOptions: themeParameters.icons|default({}),
                 categoryId: shopware.navigation.id,

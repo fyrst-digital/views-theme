@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/component/review/review-item.html.twig' %}
+
+{% block component_review_item_info_points %}
+    <div class="vi-review-item__points col-md-auto product-detail-review-item-points">
+        {% sw_include '@ViewsTheme/components/Review/Rating/index.html.twig' with {
+            points: review.points,
+        } %}
+    </div>
+{% endblock %}

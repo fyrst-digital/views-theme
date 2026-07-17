@@ -1,0 +1,21 @@
+{% props
+    medias = [],
+    defaultBaseClasses = 'vi-gallery-slider gallery-slider',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    data-ref="gallery-slider"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block thumbnails %}
+        <twig:ViewsTheme:GallerySlider:Thumbnails :medias="medias" />
+    {% endblock %}
+    {% block canvas %}
+        <twig:ViewsTheme:GallerySlider:Canvas :medias="medias" />
+    {% endblock %}
+</div>

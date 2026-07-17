@@ -7,9 +7,15 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js": {
-      "file": "ViewsTheme/Header/Action/Cart/index-BYsF6bQY.js",
+      "file": "ViewsTheme/Header/Action/Cart/index-BAdFFMCr.js",
       "name": "ViewsTheme/Header/Action/Cart/index",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container/index.js": {
+      "file": "ViewsTheme/VariantsGrid/Container/index-Ceh68J9W.js",
+      "name": "ViewsTheme/VariantsGrid/Container/index",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container/index.js",
       "isEntry": true
     }
   },

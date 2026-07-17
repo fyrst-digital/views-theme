@@ -1,0 +1,34 @@
+{% props
+    variants = [],
+    groups = [],
+%}
+
+{% set iconOptions = themeParameters.icons|default({}) %}
+{% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
+{% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
+
+{% for variant in variants %}
+    {% set isAvailable = variant.available and variant.calculatedMaxPurchase > 0 %}
+    {% set showQuantitySelect = not variant.type is defined
+        or variant.type != constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL')
+        or (variant.type == constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') and variant.maxPurchase !== 1) %}
+
+    <tr class="variants-grid-row{% if not isAvailable %} variants-grid-row--unavailable bg-light{% endif %}">
+        {% if showPreviewColumn %}
+            <twig:ViewsTheme:VariantsGrid:Column:Preview :variant="variant" />
+        {% endif %}
+
+        {% if showProductNumberColumn %}
+            <twig:ViewsTheme:VariantsGrid:Column:ProductNumber :variant="variant" />
+        {% endif %}
+
+        <twig:ViewsTheme:VariantsGrid:Column:Options :variant="variant" :groups="groups" />
+        <twig:ViewsTheme:VariantsGrid:Column:UnitPrice :variant="variant" />
+        <twig:ViewsTheme:VariantsGrid:Column:Quantity
+            :variant="variant"
+            :isAvailable="isAvailable"
+            :showQuantitySelect="showQuantitySelect"
+            :iconOptions="iconOptions"
+        />
+    </tr>
+{% endfor %}

@@ -29,8 +29,8 @@ class VariantsGridController extends StorefrontController
 {
     private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGridRowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
-    private const DEFAULT_ROWS_TEMPLATE = '@Storefront/components/variants-grid/rows.html.twig';
-    private const DEFAULT_PAGINATION_TEMPLATE = '@Storefront/components/variants-grid/pagination.html.twig';
+    private const DEFAULT_ROWS_TEMPLATE = '@ViewsTheme/components/VariantsGrid/Rows/index.html.twig';
+    private const DEFAULT_PAGINATION_TEMPLATE = '@ViewsTheme/components/VariantsGrid/Pagination/index.html.twig';
 
     public function __construct(
         private readonly CartService $cartService,

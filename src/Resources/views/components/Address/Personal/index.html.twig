@@ -1,19 +1,5 @@
 {% sw_extends '@Storefront/storefront/component/address/address-personal.html.twig' %}
 
-{%
-  set classes = vi_define_classes({
-    salutation: ['field-salutation'],
-    title: ['field-personal-title'],
-    firstName: ['field-firstname'],
-    lastName: ['field-lastname'],
-    companyContainer: ['js-field-toggle-contact-type-company' ~ prefix ? prefix : null],
-    companyName: ['field-company-name'],
-    birthday: ['fields-birthdate'],
-  }, classes|default({}), {
-    replace: replaceClasses|default([]),
-  })
-%}
-
 {% block component_address_personal_fields_salutation_title %}
   {% if config('core.loginRegistration.showSalutation') or config('core.loginRegistration.showTitleField') %}
     {% block component_address_personal_fields_salutation %}
@@ -37,7 +23,7 @@
 
   {% block component_address_personal_company_section -%}
     {% if (config('core.loginRegistration.showAccountTypeSelection') or onlyCompanyRegistration) and showCompanyFields %}
-      <div {{ classes.companyContainer | vi_attr_classes }}>
+      <div class="js-field-toggle-contact-type-company">
         {% block component_address_personal_company_name %}
           {% if formViolations.getViolations('/company') is not empty %}
             {% set violationPath = '/company' %}
@@ -54,7 +40,7 @@
                   autocomplete: 'section-personal organization',
                   violationPath: violationPath,
                   validationRules: 'required',
-                  additionalClass: classes.companyName | vi_classes,
+                  additionalClass: 'field-company-name',
               }
             %}
           {% endblock %}
@@ -84,7 +70,7 @@
         options: salutationOptions,
         autocomplete: 'section-personal honorific-prefix',
         violationPath: '/salutationId',
-        additionalClass: classes.salutation | vi_classes,
+        additionalClass: 'field-salutation',
     }
   %}
 {% endblock %}
@@ -98,7 +84,7 @@
         value: data.get('title'),
         autocomplete: 'section-personal honorific-prefix',
         violationPath: violationPath,
-        additionalClass: classes.title | vi_classes,
+        additionalClass: 'field-personal-title',
     }
   %}
 {% endblock %}
@@ -113,7 +99,7 @@
         autocomplete: 'section-personal given-name',
         violationPath: violationPath,
         validationRules: 'required',
-        additionalClass: classes.firstName | vi_classes,
+        additionalClass: 'field-firstname',
     }
   %}
 {% endblock %}
@@ -128,7 +114,7 @@
         autocomplete: 'section-personal family-name',
         violationPath: violationPath,
         validationRules: 'required',
-        additionalClass: classes.lastName | vi_classes,
+        additionalClass: 'field-lastname',
     }
   %}
 {% endblock %}
@@ -139,7 +125,7 @@
       sw_include '@Storefront/storefront/component/form/form-select-birthday.html.twig' with {
           label: 'account.personalBirthdayLabel'|trans|sw_sanitize,
           validationRules: config('core.loginRegistration.birthdayFieldRequired') ? 'required' : '',
-          additionalClass: classes.birthday | vi_classes,
+          additionalClass: 'fields-birthdate',
       }
     %}
   {% endif %}

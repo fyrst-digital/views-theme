@@ -16,53 +16,40 @@ ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as 
 
 ```
 src/
-  ViewsTheme.php              # Plugin bootstrap
-  Controller/                 # Storefront controllers (attribute routes)
-  Service/                    # Domain services
-  Struct/                     # Transfer objects
-  Subscriber/                 # Event subscribers
-  Twig/                       # Twig extensions (vi_*)
+  ViewsTheme.php
+  Controller/
+  Service/
+  Struct/
+  Subscriber/
+  Twig/                       # vi_icon, vi_merge_deep
   Resources/
-    config/                   # services.xml, routes.xml, config.xml
-    theme.json                # Theme definition and admin fields
+    config/
+    theme.json
     views/
-      components/             # UX components (migrating) + legacy includes
-      storefront/             # Storefront page/layout overrides
+      components/             # UX Twig components (primary UI)
+      storefront/             # Existing page/layout overrides only
     app/storefront/
-      src/                    # Theme SCSS, legacy JS plugins, assets
-      dist/                   # Built storefront JS
+      src/                    # Theme SCSS + legacy bundle entry
+      dist/
 ```
 
 ## Layers
 
-### PHP / Symfony
-
-- **Controllers** — e.g. `VariantsGridController` for add-to-cart and AJAX pagination.
-- **Subscribers** — attach page extensions and persist feature data (product page, checkout confirm, order placed, theme config, cart context).
-- **Services** — e.g. `VariantsLoader`, `ThemeParametersResolver`.
-- **Twig extensions** — `ViClasses` (legacy class maps), `ViIcon`, `ViUtilities`.
-
-### Twig storefront
+### Twig
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` ([UX guide](conventions/ux-components.md)).
-- **Legacy components** still use `sw_include` + `vi_define_classes` until their domain migrates.
-- **Page overrides** under `views/storefront/` extend `@Storefront` and compose theme components.
+- **Page overrides** only in existing `views/storefront/` files.
 
 ### Storefront JS
 
-- **Target:** co-located `index.js` next to UX components (`ShopwareComponent` + import map).
-- **Legacy:** plugins under `app/storefront/src/plugins/` registered from `main.js` on `[data-component="…"]`.
-- See [JavaScript conventions](conventions/javascript.md).
+- Co-located `index.js` next to interactive UX components (`ShopwareComponent` + import map).
+- Theme entry `app/storefront/src/main.js` is minimal (no PluginManager plugins remaining).
 
 ### SCSS
 
-- Theme styles: `app/storefront/src/scss/` (`override.scss`, `base.scss`, components).
-- Loaded via `theme.json` `style` array.
-- Component-local CSS is optional later; v1 keeps theme SCSS and `vi-*` hooks.
+- Theme styles: `app/storefront/src/scss/` via `theme.json`.
 
 ## Page extensions
-
-Feature data is attached under `page.extensions.viewsTheme`:
 
 | Key | Subscriber | Purpose |
 |-----|------------|---------|

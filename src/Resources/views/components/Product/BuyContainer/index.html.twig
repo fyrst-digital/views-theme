@@ -49,7 +49,7 @@
             {% endif %}
 
             <div class="vi-product-buy-container__reviews product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center">
-                {% sw_include '@Storefront/components/review/rating.html.twig' with {
+                {% sw_include '@ViewsTheme/components/Review/Rating/index.html.twig' with {
                     points: product.ratingAverage,
                 } %}
                 <div class="vi-product-buy-container__review-label product-review-label">
@@ -98,13 +98,13 @@
 {% block buy_widget_buy_form %}
     {% block component_product_buy_container_variants_grid %}
         {% if config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0 %}
-            {% sw_include '@Storefront/components/variants-grid/container.html.twig' with {
-                variants: variantsGrid.variants,
-                groups: variantsGrid.groups,
-                pagination: variantsGrid.pagination,
-                pageParameter: variantsGrid.pageParameter,
-                parentId: variantsGrid.parentId,
-            } %}
+            <twig:ViewsTheme:VariantsGrid:Container
+                :variants="variantsGrid.variants"
+                :groups="variantsGrid.groups"
+                :pagination="variantsGrid.pagination"
+                :pageParameter="variantsGrid.pageParameter"
+                :parentId="variantsGrid.parentId"
+            />
         {% endif %}
     {% endblock %}
 

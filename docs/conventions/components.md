@@ -1,36 +1,25 @@
 # Component template conventions
 
-## Target standard (UX)
+## Standard (UX)
 
-New and migrated components under `src/Resources/views/components/` use **Shopware UX Twig components**.
+All components under `src/Resources/views/components/` use **Shopware UX Twig components** (or thin `sw_extends` shells that compose them).
 
 Full guide: [UX Twig components](ux-components.md).
 
-Summary:
-
 1. PascalCase path → `<twig:ViewsTheme:…>`
-2. `{% props %}` for inputs
+2. `{% props %}` for inputs (pure UX components)
 3. `cva()` + `attributes` / `attributes.nested()` for classes (BEM `vi-*` roots)
 4. Short `{% block %}` names
 5. Interactive root: `data-component="ViewsTheme:…"`; internal hooks: `data-ref="…"`
-6. Optional co-located `index.js` (`ShopwareComponent`)
+6. Co-located `index.js` (`ShopwareComponent`) when interactive
 
-## Legacy standard (until migrated)
+## Extends shells
 
-Unmigrated components still use:
+Some templates still `sw_extends` core Storefront templates (listing, buy-widget, register, address forms, etc.) and live under `components/`. They must:
 
-1. `vi_define_classes` + `vi_attr_classes` / `vi_classes`
-2. `{% sw_include '@Storefront/components/…' %}`
-3. Kebab-case paths
-
-See [CSS class API](css-classes.md). Prefer **not** adding new legacy components.
-
-| Pattern | Status |
-|---------|--------|
-| UX + CVA + attributes | **Required for new / migrated components** |
-| `vi_define_classes` / `vi_attr_classes` | Legacy only; hard-remove after full migration |
-| Shell / router templates | May stay thin until their domain migrates |
-| `icon` helper (`vi_icon`) | Kept (not a class-map component) |
+- Not introduce new `views/storefront/` files
+- Compose UX children via `<twig:ViewsTheme:…>` or `@ViewsTheme/components/…` includes
+- Prefer plain `class="vi-…"` over any removed class-map API
 
 ## Related
 

@@ -1,0 +1,104 @@
+{% props
+    variants = [],
+    groups = [],
+    pagination = {},
+    pageParameter = 'variantsPage',
+    parentId,
+    defaultBaseClasses = 'vi-variants-grid variants-grid-container',
+    defaultVariants = {},
+%}
+
+{% set formAction = path('frontend.checkout.variants-grid.add') %}
+{% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
+{% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    data-component="ViewsTheme:VariantsGrid:Container"
+    data-load-url="{{ path('frontend.checkout.variants-grid.load') }}"
+    data-parent-id="{{ parentId }}"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block error %}
+        <twig:ViewsTheme:VariantsGrid:Alert />
+    {% endblock %}
+
+    {% block live_region %}
+        <div
+            class="visually-hidden"
+            aria-live="polite"
+            aria-atomic="true"
+            data-ref="live-region"
+            data-page-loaded-template="{{ 'variantsGrid.pagination.pageLoaded'|trans|sw_sanitize }}"
+        ></div>
+    {% endblock %}
+
+    {% block form %}
+        <form
+            action="{{ formAction }}"
+            method="post"
+            class="variants-grid-form"
+            data-variants-grid-form="true"
+            data-add-to-cart="true"
+        >
+            <div class="table-responsive">
+                <table class="table table-striped variants-grid-table">
+                    <thead>
+                        <tr>
+                            {% if showPreviewColumn %}
+                                <th class="variants-grid-column-preview" scope="col">
+                                    {{ 'variantsGrid.table.preview'|trans|sw_sanitize }}
+                                </th>
+                            {% endif %}
+                            {% if showProductNumberColumn %}
+                                <th class="variants-grid-column-number" scope="col">
+                                    {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
+                                </th>
+                            {% endif %}
+                            {% for group in groups %}
+                                <th class="variants-grid-column-option" scope="col">
+                                    {{ group.translated.name }}
+                                </th>
+                            {% endfor %}
+                            <th class="variants-grid-column-price" scope="col">
+                                {{ 'checkout.cartHeaderUnitPrice'|trans|sw_sanitize }}
+                            </th>
+                            <th class="variants-grid-column-quantity" scope="col">
+                                {{ 'checkout.cartHeaderQuantity'|trans|sw_sanitize }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-ref="grid-body">
+                        <twig:ViewsTheme:VariantsGrid:Rows :variants="variants" :groups="groups" />
+                    </tbody>
+                </table>
+            </div>
+
+            <input type="hidden" name="redirectTo" value="frontend.detail.page">
+            <input
+                type="hidden"
+                name="redirectParameters"
+                value="{{ { productId: parentId }|json_encode }}"
+            >
+            <div data-ref="grid-memory" style="display:none;"></div>
+
+            <div class="variants-grid-actions d-flex justify-content-between align-items-center">
+                <div data-ref="pagination">
+                    <twig:ViewsTheme:VariantsGrid:Pagination
+                        :pagination="pagination"
+                        :pageParameter="pageParameter"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn-primary variants-grid-buy-button"
+                    data-ref="buy-button"
+                >
+                    {{ 'detail.addProduct'|trans|sw_sanitize }}
+                </button>
+            </div>
+        </form>
+    {% endblock %}
+</div>

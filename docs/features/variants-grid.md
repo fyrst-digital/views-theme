@@ -57,20 +57,20 @@ It returns the rendered table rows and pagination HTML for the requested page. I
 
 ### Storefront JavaScript
 
-The `VariantsGridPlugin` (registered on `[data-component="variants-grid"]`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
+Co-located `VariantsGrid/Container/index.js` (`ShopwareComponent` on `data-component="ViewsTheme:VariantsGrid:Container"`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
 
-### `data-component` hooks
+### Hooks
 
 | Component | Attribute |
 |-----------|-----------|
-| Grid container | `data-component="variants-grid"` |
-| Grid body | `data-component="grid-body"` |
-| Pagination | `data-component="pagination"` |
-| Quantity input | `data-component="quantity-input"` |
-| Buy button | `data-component="buy-button"` |
-| Grid memory | `data-component="grid-memory"` |
-| Live region | `data-component="live-region"` |
-| Error message | `data-component="error-message"` |
+| Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
+| Grid body | `data-ref="grid-body"` |
+| Pagination | `data-ref="pagination"` |
+| Quantity input | `data-component="ViewsTheme:QuantityInput"` |
+| Buy button | `data-ref="buy-button"` |
+| Grid memory | `data-ref="grid-memory"` |
+| Live region | `data-ref="live-region"` |
+| Error message | `data-ref="error-message"` |
 
 See [JavaScript conventions](../conventions/javascript.md).
 
@@ -82,5 +82,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Loader | `src/Service/VariantsLoader.php` |
 | Pagination struct | `src/Struct/VariantsGridPagination.php` |
 | Page subscriber | `src/Subscriber/ProductPageSubscriber.php` |
-| JS plugin | `src/Resources/app/storefront/src/plugins/variants-grid.plugin.js` |
-| Templates | `src/Resources/views/components/variants-grid/` |
+| JS | `src/Resources/views/components/VariantsGrid/Container/index.js` |
+| Templates | `src/Resources/views/components/VariantsGrid/` |

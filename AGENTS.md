@@ -19,12 +19,9 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
 ## Quick reference (code)
 
-Do not re-document full APIs here — link to docs.
-
 | Topic | Doc |
 |-------|-----|
 | **UX Twig components** (target) | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
-| Legacy CSS class API (`vi_define_classes`) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
 | Component template rules | [docs/conventions/components.md](docs/conventions/components.md) |
 | JS: `data-component` / `data-ref` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
@@ -38,9 +35,9 @@ Do not re-document full APIs here — link to docs.
 - **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `cva()` + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md).
 - Interactive UX roots: `data-component="ViewsTheme:…"`. Internal hooks: **`data-ref`**. Never CSS classes as JS selectors.
 - Co-located interactive JS: `ShopwareComponent` in `index.js` next to the template (no new PluginManager plugins).
-- **Legacy** components may still use `vi_define_classes` until their domain migrates; do not add new legacy components.
 - `vi_icon` remains for icons.
 - **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
+- **Do not reintroduce** `vi_define_classes` / `vi_attr_classes` / `vi_classes`.
 
 ## Design System Summary
 

@@ -1,0 +1,63 @@
+{% props
+    label = null,
+    value = null,
+    icon = null,
+    url = null,
+    urlAttributes = [],
+    openExternal = false,
+    defaultBaseClasses = 'vi-contact-channel contact-channel',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set labelAttributes = attributes.nested('label') %}
+{% set contentAttributes = attributes.nested('content') %}
+{% set valueAttributes = attributes.nested('value') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% if label %}
+        <div
+            {{ labelAttributes.defaults({
+                class: 'vi-contact-channel__label contact-channel-label',
+            }) }}
+        >
+            {{ label }}
+        </div>
+    {% endif %}
+
+    <div
+        {{ contentAttributes.defaults({
+            class: 'vi-contact-channel__content contact-channel-content',
+        }) }}
+    >
+        {% if icon %}
+            {{ vi_icon(icon) }}
+        {% endif %}
+
+        {% if url %}
+            <a
+                href="{{ url }}"
+                {% if urlAttributes %}{{ urlAttributes|join(' ')|raw }}{% endif %}
+                {% if openExternal %}target="_blank"{% endif %}
+                title="{{ value }}"
+                {{ valueAttributes.defaults({
+                    class: 'vi-contact-channel__value contact-channel-value',
+                }) }}
+            >
+                {% if value %}{{ value|raw }}{% endif %}
+            </a>
+        {% else %}
+            <span
+                {{ valueAttributes.defaults({
+                    class: 'vi-contact-channel__value contact-channel-value',
+                }) }}
+            >
+                {% if value %}{{ value|raw }}{% endif %}
+            </span>
+        {% endif %}
+    </div>
+</div>
