@@ -1,7 +1,13 @@
 {
   "manifest": {
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection/index.js": {
+      "file": "ViewsTheme/Checkout/DeliveryDateSelection/index-Bvsc3Wn9.js",
+      "name": "ViewsTheme/Checkout/DeliveryDateSelection/index",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection/index.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js": {
-      "file": "ViewsTheme/Header/Action/Cart/index-CMRCXSQa.js",
+      "file": "ViewsTheme/Header/Action/Cart/index-BYsF6bQY.js",
       "name": "ViewsTheme/Header/Action/Cart/index",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js",
       "isEntry": true
