@@ -7,27 +7,36 @@ There is also a Twig **macro** at `components/icon/icon.html.twig` (Shopware-sty
 ## Function signature
 
 ```twig
-{{ vi_icon(name, options|default({})) }}
+{{ vi_icon(name) }}
+{{ vi_icon(name, options) }}
 ```
 
 | Argument | Type | Description |
 |----------|------|-------------|
 | `name` | `string` | Icon file name without `.svg` |
-| `options` | `array` | Optional rendering options |
+| `options` | `array` | Optional rendering options (merged over theme defaults) |
+
+### Defaults
+
+When `options` is omitted, null, or empty, `pack` and `mode` are taken from the active theme’s `theme.json` → `icons` (via `ThemeParametersResolver`). Explicit option keys always win.
+
+Hard fallbacks if no theme is available: `pack = 'default'`, `mode = 'svg'`.
+
+ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'default'`, so bare `{{ vi_icon('cart') }}` uses CSS mode in the storefront.
 
 ### Options
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `pack` | `string` | `'default'` | Icon pack folder under assets |
-| `mode` | `string` | `'svg'` | `'svg'` (inline SVG) or `'css'` (empty span with classes) |
+| `pack` | `string` | theme / `'default'` | Icon pack folder under assets |
+| `mode` | `string` | theme / `'svg'` | `'svg'` (inline SVG) or `'css'` (empty span with classes) |
 | `ariaHidden` | `bool` | `true` | Adds `aria-hidden="true"` in SVG mode |
 | `ariaLabel` | `string\|null` | `null` | Optional `aria-label` on the SVG |
 | `attr` | `array` | — | Extra HTML attributes merged onto the SVG root (SVG mode only) |
 
 ## Modes
 
-### `svg` (default)
+### `svg`
 
 Loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and a11y attributes on the `<svg>` root, and returns safe HTML markup.
 
@@ -35,20 +44,21 @@ Classes: `icon icon-{name}`.
 
 ```twig
 {{ vi_icon('cart') }}
-{{ vi_icon('heart', { pack: 'default', ariaHidden: false, ariaLabel: 'Wishlist' }) }}
-{{ vi_icon('search', { attr: { focusable: 'false' } }) }}
+{{ vi_icon('heart', { pack: 'default', mode: 'svg', ariaHidden: false, ariaLabel: 'Wishlist' }) }}
+{{ vi_icon('search', { mode: 'svg', attr: { focusable: 'false' } }) }}
 ```
 
 If the SVG file is missing, the function returns empty markup (no exception).
 
 ### `css`
 
-Renders a `<span>` with icon classes (no SVG body). Useful when icons are provided purely via CSS.
+Renders a `<span>` with icon classes (no SVG body). Useful when icons are provided purely via CSS (stylesheet linked from `meta.html.twig` when theme `icons.mode` is `css`).
 
 - Default pack: `class="icon icon-{name}"`
 - Other pack: `class="icon icon-{name}-{pack}"`
 
 ```twig
+{{ vi_icon('arrow-right') }}
 {{ vi_icon('arrow-right', { mode: 'css' }) }}
 ```
 
@@ -74,4 +84,5 @@ Supports `pack`, `namespace`, `ariaHidden`, `ariaLabel`, and style tokens (`size
 ## Related
 
 - [Twig overview](overview.md)
+- [Configuration](../configuration.md) (`theme.json` icons)
 - [Component conventions](../conventions/components.md) (icon template exempt)

@@ -1,11 +1,9 @@
 {% props
-    iconOptions = null,
     redirectTo = 'frontend.cart.offcanvas',
     defaultBaseClasses = 'vi-cart-promotion-form',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set labelAttributes = attributes.nested('label') %}
@@ -64,7 +62,7 @@
                         class: 'vi-cart-promotion-form__submit btn btn-secondary',
                     }) }}
                 >
-                    {{ vi_icon('ticket', iconOptions) }}
+                    {{ vi_icon('ticket') }}
                 </button>
             {% endblock %}
         </div>

@@ -1,6 +1,5 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/address-item.html.twig' %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set itemTag = 'li' %}
 
 {% if defaultShipping %}
@@ -83,6 +82,6 @@
         aria-expanded="false"
         aria-label="{{ 'account.addressOptionsBtn'|trans|sw_sanitize }}"
     >
-        {{ vi_icon('plus', iconOptions) }}
+        {{ vi_icon('plus') }}
     </button>
 {% endblock %}

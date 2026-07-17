@@ -5,7 +5,6 @@
     showQuantity = true,
     buyLabel = null,
     buyIcon = 'handbag',
-    iconOptions = null,
     defaultBaseClasses = 'vi-product-action-buy',
     defaultVariants = {},
 %}
@@ -13,7 +12,6 @@
 {% set formAction = formAction is not null ? formAction : path('frontend.checkout.line-item.add') %}
 {% set formId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
 {% set buyLabel = buyLabel is not null ? buyLabel : 'listing.boxAddProduct'|trans|sw_sanitize %}
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
 {% set showQuantityField = not product.type is defined
@@ -65,7 +63,6 @@
                 :maxQuantity="product.calculatedMaxPurchase"
                 :purchaseSteps="product.purchaseSteps"
                 :unit="productUnit"
-                :iconOptions="iconOptions"
             />
         {% endif %}
     {% endblock %}
@@ -77,7 +74,7 @@
             {{ buttonAttributes.defaults({ class: 'vi-product-action-buy__button' }) }}
         >
             {% block button_icon %}
-                {{ vi_icon(buyIcon, iconOptions) }}
+                {{ vi_icon(buyIcon) }}
             {% endblock %}
             {% block button_label %}
                 {{ buyLabel }}

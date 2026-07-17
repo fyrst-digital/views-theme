@@ -2,12 +2,10 @@
     variant,
     isAvailable = true,
     showQuantitySelect = true,
-    iconOptions = null,
     defaultBaseClasses = 'vi-variants-grid-column-quantity variants-grid-column-quantity',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default({}) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 
@@ -20,7 +18,6 @@
             :minQuantity="0"
             :maxQuantity="variant.calculatedMaxPurchase"
             :purchaseSteps="variant.purchaseSteps"
-            :iconOptions="iconOptions"
             class="variants-grid-quantity-group"
         />
 

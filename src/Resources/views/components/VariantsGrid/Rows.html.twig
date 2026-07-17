@@ -3,7 +3,6 @@
     groups = [],
 %}
 
-{% set iconOptions = themeParameters.icons|default({}) %}
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
 {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
 
@@ -28,7 +27,6 @@
             :variant="variant"
             :isAvailable="isAvailable"
             :showQuantitySelect="showQuantitySelect"
-            :iconOptions="iconOptions"
         />
     </tr>
 {% endfor %}

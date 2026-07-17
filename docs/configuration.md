@@ -56,4 +56,18 @@ Path: `src/Resources/theme.json`.
 
 ### Icons
 
-`theme.json` may define an `icons` property for theme icon packs (Shopware theme icon config). Icon rendering is documented under [`vi_icon`](twig/vi-icon.md).
+`theme.json` may define an `icons` property:
+
+```json
+"icons": {
+  "pack": "default",
+  "mode": "css"
+}
+```
+
+| Consumer | Role |
+|----------|------|
+| [`vi_icon`](twig/vi-icon.md) | Uses `pack` / `mode` as defaults when the second argument is omitted |
+| `storefront/layout/meta.html.twig` | Links the CSS icon pack stylesheet when `mode` is `css` |
+
+`ThemeConfigSubscriber` exposes full `theme.json` as the Twig parameter `themeParameters` for the stylesheet link. UX components do not need `themeParameters` for icons.

@@ -5,7 +5,6 @@
     redirectParameters = null,
     formAction = null,
     displayMode = 'default',
-    iconOptions = null,
     defaultBaseClasses = 'vi-line-item-remove',
     defaultVariants = {},
 %}
@@ -14,7 +13,6 @@
     ? formAction
     : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
 {% set label = label is not null ? label : lineItem.label|trans|sw_sanitize %}
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set formClass = rootCVA.apply({}, rootClass) %}
@@ -45,7 +43,7 @@
                 class: 'vi-line-item-remove__button btn btn-light btn-sm line-item-remove-button line-item-action',
             }) }}
         >
-            {{ vi_icon('x', iconOptions) }}
+            {{ vi_icon('x') }}
         </button>
     {% endblock %}
 </form>

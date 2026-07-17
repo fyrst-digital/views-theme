@@ -109,7 +109,7 @@ const icons: Record<string, Record<string, string[]>> = {
 const customIcons: string[] = []
 
 function buildCSSClass(iconUrl: string, iconName: string, pack: string) {
-	const className = pack === 'default' ? `icon-${iconName}` : `icon-${iconName}-${pack}`
+	const className = `icon-${iconName}`
 	return `.${className} {\n \t--svg: ${iconUrl}; \n}`;
 }
 

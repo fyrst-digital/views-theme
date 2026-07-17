@@ -1,12 +1,10 @@
 {% props
     activeRoute = null,
     userActions = null,
-    iconOptions = null,
     defaultBaseClasses = 'vi-account-user-actions',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% if userActions is null %}
     {% set userActions = {
         home: {
@@ -63,7 +61,7 @@
                             }) }}
                         >
                             {% if action.icon is defined %}
-                                {{ vi_icon(action.icon, iconOptions) }}
+                                {{ vi_icon(action.icon) }}
                             {% endif %}
                             {{ action.label }}
                         </a>

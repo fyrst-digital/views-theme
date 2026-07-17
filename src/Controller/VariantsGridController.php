@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\ThemeParametersResolver;
 use Fyrst\ViewsTheme\Service\VariantsLoader;
 use Fyrst\ViewsTheme\Struct\VariantsGridPagination;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -38,7 +37,6 @@ class VariantsGridController extends StorefrontController
         private readonly VariantsLoader $variantsLoader,
         private readonly SystemConfigService $systemConfig,
         private readonly Environment $twig,
-        private readonly ThemeParametersResolver $themeParametersResolver,
     ) {}
 
     #[Route(path: '/checkout/variants-grid/add', name: 'frontend.checkout.variants-grid.add', defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
@@ -129,18 +127,14 @@ class VariantsGridController extends StorefrontController
             self::DEFAULT_PAGINATION_TEMPLATE,
         );
 
-        $themeParameters = $this->themeParametersResolver->resolve($request, $context);
-
         $rowsHtml = $this->renderView($rowsTemplate, [
             'variants' => $pagedVariants,
             'groups' => $groups,
-            'themeParameters' => $themeParameters ?? [],
         ]);
 
         $paginationHtml = $this->renderView($paginationTemplate, [
             'pagination' => new VariantsGridPagination($page, $limit, $total),
             'pageParameter' => self::PAGE_PARAMETER,
-            'themeParameters' => $themeParameters ?? [],
         ]);
 
         return new JsonResponse([

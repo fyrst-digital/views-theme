@@ -1,14 +1,12 @@
 {% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
-
 {% block component_filter_panel_header %}
     <div class="vi-filter-panel__header">
         <div class="vi-filter-panel__title">
             {{ 'listing.filterTitleText'|trans }}
         </div>
         <div class="vi-filter-panel__close btn js-offcanvas-close">
-            {{ vi_icon('x', iconOptions) }}
+            {{ vi_icon('x') }}
         </div>
     </div>
 {% endblock %}

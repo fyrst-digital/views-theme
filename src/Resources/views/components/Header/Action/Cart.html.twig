@@ -1,11 +1,9 @@
 {% props
-    iconOptions = null,
     offcanvasCartOptions = { autoFocus: true },
     defaultBaseClasses = 'vi-header-action-cart',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 
@@ -18,5 +16,5 @@
     {{ attributes }}
     class="{{ rootCVA.apply({}, rootClass) }}"
 >
-    {{ vi_icon('handbag', iconOptions) }}
+    {{ vi_icon('handbag') }}
 </span>

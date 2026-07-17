@@ -1,10 +1,8 @@
 {% props
-    iconOptions = null,
     defaultBaseClasses = 'vi-header-action-search',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 
@@ -18,5 +16,5 @@
     {{ attributes }}
     class="{{ rootCVA.apply({}, rootClass) }}"
 >
-    {{ vi_icon('magnifying-glass', iconOptions) }}
+    {{ vi_icon('magnifying-glass') }}
 </button>

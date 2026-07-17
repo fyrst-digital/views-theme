@@ -10,7 +10,7 @@
   "script": ["@Storefront", "app/storefront/dist/storefront/js/views-theme/views-theme.js"],
   "asset": ["app/storefront/src/assets"],
   "icons": {
-    "pack": "default",
+    "pack": "bold",
     "mode": "css"
   },
   "config": {

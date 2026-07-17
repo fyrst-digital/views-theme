@@ -1,11 +1,9 @@
 {% props
     productsQuantity = 0,
-    iconOptions = null,
     defaultBaseClasses = 'vi-cart-drawer-header btn offcanvas-close js-offcanvas-close',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set contentAttributes = attributes.nested('content') %}
@@ -38,6 +36,6 @@
     {% endblock %}
 
     {% block close_icon %}
-        {{ vi_icon('x', iconOptions) }}
+        {{ vi_icon('x') }}
     {% endblock %}
 </button>

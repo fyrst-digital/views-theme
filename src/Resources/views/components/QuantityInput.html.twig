@@ -8,7 +8,6 @@
     size = null,
     disabled = false,
     formName = null,
-    iconOptions = null,
     defaultBaseClasses = 'vi-quantity-input input-group quantity-selector-group quantity-input',
     defaultVariants = {
         variants: {
@@ -19,7 +18,6 @@
     },
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set decreaseAttributes = attributes.nested('decrease') %}
@@ -43,7 +41,7 @@
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
             }) }}
         >
-            {{ vi_icon('minus', iconOptions) }}
+            {{ vi_icon('minus') }}
         </button>
     {% endblock %}
 
@@ -81,7 +79,7 @@
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
             }) }}
         >
-            {{ vi_icon('plus', iconOptions) }}
+            {{ vi_icon('plus') }}
         </button>
     {% endblock %}
 </div>

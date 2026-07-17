@@ -1,11 +1,9 @@
 {% props
     page,
-    iconOptions = null,
     defaultBaseClasses = 'vi-cart-shipping-calculation shipping-calculation-form',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set triggerAttributes = attributes.nested('trigger') %}
@@ -37,7 +35,7 @@
                 }) }}
             >
                 {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
-                {{ vi_icon('caret-down', iconOptions) }}
+                {{ vi_icon('caret-down') }}
             </a>
         {% endif %}
     {% endblock %}

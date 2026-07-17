@@ -1,11 +1,9 @@
 {% props
-    iconOptions = null,
     showCounter = true,
     defaultBaseClasses = 'vi-header-action-wishlist',
     defaultVariants = {},
 %}
 
-{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
 {% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
 {% set rootClass = attributes.render('class') %}
 {% set badgeAttributes = attributes.nested('badge') %}
@@ -39,7 +37,7 @@
     {% endblock %}
 
     {% block icon %}
-        {{ vi_icon('heart', iconOptions) }}
+        {{ vi_icon('heart') }}
     {% endblock %}
 
     {% block live_region %}
