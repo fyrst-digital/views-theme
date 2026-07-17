@@ -1,0 +1,157 @@
+{% props
+    lineItem,
+    showRemoveButton = true,
+    showPrice = true,
+    nestingLevel = 0,
+    autoSubmit = false,
+    deliveries = null,
+    defaultBaseClasses = null,
+    defaultVariants = {},
+%}
+
+{% set defaultBaseClasses = defaultBaseClasses is not null
+    ? defaultBaseClasses
+    : 'vi-line-item vi-line-item--product line-item js-cart-item line-item-' ~ lineItem.type %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set contentAttributes = attributes.nested('content') %}
+{% set headerAttributes = attributes.nested('header') %}
+{% set nameAttributes = attributes.nested('name') %}
+{% set labelAttributes = attributes.nested('label') %}
+{% set actionsAttributes = attributes.nested('actions') %}
+{% set bodyAttributes = attributes.nested('body') %}
+{% set footerAttributes = attributes.nested('footer') %}
+{% set quantityAttributes = attributes.nested('quantity') %}
+{% set totalPriceAttributes = attributes.nested('totalPrice') %}
+
+{% set label = lineItem.label|trans|sw_sanitize %}
+{% set productLink = lineItem.type is same as('product')
+    ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId })
+    : null %}
+
+<div
+    data-ref="line-item"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block image %}
+        {% sw_include '@Storefront/storefront/component/line-item/element/image.html.twig' with {
+            lineItem: lineItem,
+        } %}
+    {% endblock %}
+
+    {% block content %}
+        <div
+            {{ contentAttributes.defaults({ class: 'vi-line-item__content line-item-content' }) }}
+        >
+            {% block header %}
+                <div
+                    data-ref="header"
+                    {{ headerAttributes.defaults({ class: 'vi-line-item__header line-item-header' }) }}
+                >
+                    {% block name %}
+                        <div
+                            {{ nameAttributes.defaults({ class: 'vi-line-item__name line-item-name' }) }}
+                        >
+                            {% if productLink is not null %}
+                                <a
+                                    href="{{ productLink }}"
+                                    title="{{ label }}"
+                                    {{ labelAttributes.defaults({
+                                        class: 'vi-line-item__label line-item-label product-name',
+                                    }) }}
+                                >
+                                    {{ label|raw }}
+                                </a>
+                            {% else %}
+                                <span
+                                    {{ labelAttributes.defaults({
+                                        class: 'vi-line-item__label line-item-label product-name',
+                                    }) }}
+                                >
+                                    {{ label|raw }}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+
+                    {% block actions %}
+                        <div
+                            {{ actionsAttributes.defaults({ class: 'vi-line-item__actions line-item-actions' }) }}
+                        >
+                            {% block actions_inner %}
+                                {% if config('core.cart.wishlistEnabled') and lineItem.referencedId %}
+                                    <twig:ViewsTheme:Product:Action:Wishlist
+                                        :productId="lineItem.referencedId"
+                                        :showText="false"
+                                        size="sm"
+                                        class="line-item-action"
+                                    />
+                                {% endif %}
+
+                                {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
+                                    <twig:ViewsTheme:LineItem:Element:Remove :lineItem="lineItem" />
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block details %}
+                {% block body %}
+                    <div
+                        {{ bodyAttributes.defaults({ class: 'vi-line-item__body line-item-body' }) }}
+                    >
+                        {% if lineItem.payload.options is not empty %}
+                            {% sw_include '@Storefront/storefront/component/line-item/element/variant-characteristics.html.twig' with {
+                                lineItem: lineItem,
+                            } %}
+                        {% endif %}
+
+                        {% if lineItem.payload.features is not empty %}
+                            {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
+                                features: lineItem.payload.features,
+                            } %}
+                        {% endif %}
+
+                        {% if config('core.cart.showDeliveryTime') %}
+                            <twig:ViewsTheme:LineItem:Element:DeliveryDate
+                                :lineItem="lineItem"
+                                :deliveries="deliveries"
+                            />
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block footer %}
+                    <div
+                        {{ footerAttributes.defaults({ class: 'vi-line-item__footer line-item-footer' }) }}
+                    >
+                        <div
+                            {{ quantityAttributes.defaults({ class: 'vi-line-item__quantity line-item-quantity' }) }}
+                        >
+                            <twig:ViewsTheme:LineItem:Element:Quantity
+                                :lineItem="lineItem"
+                                :nestingLevel="nestingLevel"
+                                :autoSubmit="autoSubmit"
+                            />
+                        </div>
+
+                        {% if showPrice is same as(true) %}
+                            <div
+                                {{ totalPriceAttributes.defaults({
+                                    class: 'vi-line-item__total-price line-item-total-price',
+                                }) }}
+                            >
+                                {% if lineItem.payload.discountScope != 'delivery' %}
+                                    {{ lineItem.price.totalPrice|currency }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

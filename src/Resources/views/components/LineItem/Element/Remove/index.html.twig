@@ -1,0 +1,51 @@
+{% props
+    lineItem,
+    label = null,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    formAction = null,
+    displayMode = 'default',
+    iconOptions = null,
+    defaultBaseClasses = 'vi-line-item-remove',
+    defaultVariants = {},
+%}
+
+{% set formAction = formAction is not null
+    ? formAction
+    : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
+{% set label = label is not null ? label : lineItem.label|trans|sw_sanitize %}
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set formClass = rootCVA.apply({}, rootClass) %}
+{% if displayMode == 'offcanvas' %}
+    {% set formClass = formClass ~ ' js-offcanvas-cart-remove-product' %}
+{% endif %}
+{% set buttonAttributes = attributes.nested('button') %}
+{% set loaderOptions = { skipLoadingIndicator: true } %}
+
+<form
+    action="{{ formAction }}"
+    method="post"
+    data-form-submit-loader="true"
+    data-form-submit-loader-options="{{ loaderOptions|json_encode }}"
+    {{ attributes }}
+    class="{{ formClass }}"
+>
+    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+    <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+
+    {% block button %}
+        <button
+            type="submit"
+            aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags }}"
+            title="{{ 'global.default.remove'|trans }}"
+            data-product-id="{{ lineItem.id }}"
+            {{ buttonAttributes.defaults({
+                class: 'vi-line-item-remove__button btn btn-light btn-sm line-item-remove-button line-item-action',
+            }) }}
+        >
+            {{ vi_icon('x', iconOptions) }}
+        </button>
+    {% endblock %}
+</form>

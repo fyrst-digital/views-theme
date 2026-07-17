@@ -1,0 +1,81 @@
+{% props
+    summary,
+    showTotal = true,
+    showShipping = true,
+    showGrandTotal = true,
+    showNetTotal = true,
+    showTax = true,
+    defaultBaseClasses = 'vi-cart-summary cart-summary',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set listAttributes = attributes.nested('list') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block list %}
+        <div
+            {{ listAttributes.defaults({
+                class: 'vi-cart-summary__list cart-summary-list',
+            }) }}
+        >
+            {% block total %}
+                {% if showTotal is not same as(false) %}
+                    <twig:ViewsTheme:Cart:SummaryItem
+                        label="{{ 'checkout.subtotalAmount'|trans|sw_sanitize }}"
+                        value="{{ summary.price.positionPrice|currency }}"
+                        class="summary-item-total"
+                    />
+                {% endif %}
+            {% endblock %}
+
+            {% block shippings %}
+                {% if summary.deliveries is defined and showShipping is not same as(false) %}
+                    {% for delivery in summary.deliveries %}
+                        <twig:ViewsTheme:Cart:SummaryItem
+                            label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
+                            value="{{ delivery.shippingCosts.totalPrice|currency }}"
+                            class="summary-item-shipping"
+                        />
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+
+            {% block grand_total %}
+                {% if showGrandTotal is not same as(false) %}
+                    <twig:ViewsTheme:Cart:SummaryItem
+                        label="{{ 'checkout.summaryTotalPrice'|trans|sw_sanitize }}"
+                        value="{{ summary.price.totalPrice|currency }}"
+                        class="summary-item-grand-total"
+                    />
+                {% endif %}
+            {% endblock %}
+
+            {% block net_total %}
+                {% if showNetTotal is not same as(false) %}
+                    <twig:ViewsTheme:Cart:SummaryItem
+                        label="{{ 'checkout.summaryNetPrice'|trans|sw_sanitize }}"
+                        value="{{ summary.price.netPrice|currency }}"
+                        class="summary-item-net-total"
+                    />
+                {% endif %}
+            {% endblock %}
+
+            {% block taxes %}
+                {% if showTax is not same as(false) %}
+                    {% for taxItem in summary.price.calculatedTaxes %}
+                        <twig:ViewsTheme:Cart:SummaryItem
+                            label="{{ 'checkout.summaryTax'|trans({ '%rate%': taxItem.taxRate })|sw_sanitize }}"
+                            value="{{ taxItem.tax|currency }}"
+                            class="summary-item-tax-total"
+                        />
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

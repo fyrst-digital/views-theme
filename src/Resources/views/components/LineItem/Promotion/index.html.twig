@@ -1,0 +1,73 @@
+{% props
+    lineItem,
+    defaultBaseClasses = null,
+    defaultVariants = {},
+%}
+
+{% set defaultBaseClasses = defaultBaseClasses is not null
+    ? defaultBaseClasses
+    : 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set contentAttributes = attributes.nested('content') %}
+{% set headerAttributes = attributes.nested('header') %}
+{% set nameAttributes = attributes.nested('name') %}
+{% set labelAttributes = attributes.nested('label') %}
+{% set imageAttributes = attributes.nested('image') %}
+{% set totalPriceAttributes = attributes.nested('totalPrice') %}
+
+{% set label = lineItem.label|trans|sw_sanitize %}
+
+<div
+    data-ref="line-item"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block image %}
+        <div
+            {{ imageAttributes.defaults({
+                class: 'vi-line-item__image line-item-img discount-icon',
+            }) }}
+        >
+            {{ vi_icon('tag') }}
+        </div>
+    {% endblock %}
+
+    {% block content %}
+        <div
+            {{ contentAttributes.defaults({ class: 'vi-line-item__content line-item-content' }) }}
+        >
+            {% block header %}
+                <div
+                    {{ headerAttributes.defaults({ class: 'vi-line-item__header line-item-header' }) }}
+                >
+                    {% block name %}
+                        <div
+                            {{ nameAttributes.defaults({ class: 'vi-line-item__name line-item-name' }) }}
+                        >
+                            <span
+                                {{ labelAttributes.defaults({
+                                    class: 'vi-line-item__label line-item-label discount-name',
+                                }) }}
+                            >
+                                {{ label|raw }}
+                            </span>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block details %}
+                <div
+                    {{ totalPriceAttributes.defaults({
+                        class: 'vi-line-item__total-price line-item-total-price',
+                    }) }}
+                >
+                    {% if lineItem.payload.discountScope != 'delivery' %}
+                        {{ lineItem.price.totalPrice|currency }}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

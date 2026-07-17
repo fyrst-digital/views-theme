@@ -1,0 +1,47 @@
+{% props
+    productsQuantity = 0,
+    countDisplay = 'badge',
+    titleTag = 'div',
+    defaultBaseClasses = 'vi-cart-heading cart-heading d-flex flex-row flex-wrap',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set titleAttributes = attributes.nested('title') %}
+{% set countBadgeAttributes = attributes.nested('countBadge') %}
+{% set countInlineAttributes = attributes.nested('countInline') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block title %}
+        <{{ titleTag|raw }}
+            {{ titleAttributes.defaults({
+                class: 'vi-cart-heading__title cart-heading-title',
+            }) }}
+        >
+            {{ 'checkout.cartHeader'|trans|sw_sanitize }}
+            {% if productsQuantity > 0 and countDisplay is same as('inline') %}
+                <span
+                    {{ countInlineAttributes.defaults({ class: 'vi-cart-heading__count-inline' }) }}
+                >
+                    ({{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }})
+                </span>
+            {% endif %}
+        </{{ titleTag|raw }}>
+    {% endblock %}
+
+    {% block products %}
+        {% if productsQuantity > 0 and countDisplay is same as('badge') %}
+            <span
+                {{ countBadgeAttributes.defaults({
+                    class: 'vi-cart-heading__count-badge cart-heading-products badge rounded-pill text-bg-light',
+                }) }}
+            >
+                {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</div>

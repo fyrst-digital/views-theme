@@ -1,0 +1,20 @@
+{% props
+    lineItem,
+    showRemoveButton = true,
+    showPrice = true,
+    nestingLevel = 0,
+    autoSubmit = false,
+    deliveries = null,
+%}
+
+{% block content %}
+    <twig:ViewsTheme:LineItem:Product
+        :lineItem="lineItem"
+        :showRemoveButton="showRemoveButton"
+        :showPrice="showPrice"
+        :nestingLevel="nestingLevel"
+        :autoSubmit="autoSubmit"
+        :deliveries="deliveries"
+        class="vi-line-item--generic"
+    />
+{% endblock %}

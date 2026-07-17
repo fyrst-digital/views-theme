@@ -1,0 +1,79 @@
+{% props
+    lineItem,
+    nestingLevel = 0,
+    showQuantitySelect = true,
+    autoSubmit = false,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    formAction = null,
+    iconOptions = null,
+    defaultBaseClasses = null,
+    defaultVariants = {},
+%}
+
+{% set formAction = formAction is not null
+    ? formAction
+    : path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) %}
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set quantityInformation = lineItem.quantityInformation %}
+
+{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
+{% set isDigital = lineItem.payload.productType is defined and lineItem.payload.productType == DIGITAL_CONST %}
+{% if feature('v6.8.0.0') %}
+    {% set isDigital = isDigital or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% else %}
+    {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+    {% set isDigital = isDigital
+        or (lineItem.states is defined and DOWNLOAD_STATE in lineItem.states)
+        or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% endif %}
+
+{% set defaultBaseClasses = defaultBaseClasses is not null
+    ? defaultBaseClasses
+    : (isDigital
+        ? 'vi-line-item-quantity line-item-quantity-container disabled'
+        : 'vi-line-item-quantity line-item-quantity-container') %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+{% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
+    ? quantityInformation.maxPurchase
+    : config('core.cart.maxQuantity') %}
+
+{% if showQuantitySelect
+    and lineItem.quantityInformation
+    and lineItem.stackable
+    and nestingLevel < 1
+%}
+    {% set autoSubmitOptions = { delayChangeEvent: 800 } %}
+    <form
+        action="{{ formAction }}"
+        method="post"
+        {% if autoSubmit is same as(true) %}
+            data-form-auto-submit="true"
+            data-form-auto-submit-options="{{ autoSubmitOptions|json_encode }}"
+        {% endif %}
+        {{ attributes }}
+        class="{{ rootCVA.apply({}, rootClass) }}"
+    >
+        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+        <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+
+        <twig:ViewsTheme:QuantityInput
+            :quantity="lineItem.quantity"
+            :minQuantity="quantityInformation.minPurchase|default(1)"
+            :maxQuantity="maxQuantity"
+            :purchaseSteps="quantityInformation.purchaseSteps|default(1)"
+            size="sm"
+            :iconOptions="iconOptions"
+            :disabled="isDigital"
+        />
+    </form>
+{% else %}
+    <div
+        {{ attributes }}
+        class="{{ rootCVA.apply({}, rootClass) }}"
+    >
+        {{ lineItem.quantity }}
+    </div>
+{% endif %}

@@ -34,15 +34,11 @@
                 <div {{ classes.summaryList | vi_attr_classes }}>
                     {% block page_account_order_item_detail_shipping_costs %}
                         {% if order.deliveries|length > 0 %}
-                            {% sw_include '@Storefront/components/cart/summary-item.html.twig'
-                                with {
-                                    label: 'account.orderItemShippingcosts'|trans|sw_sanitize,
-                                    value: order.shippingTotal|currency(order.currency.isoCode),
-                                    classes: {
-                                        item: ['summary-item-shipping']
-                                    }
-                                } 
-                            only %}
+                            <twig:ViewsTheme:Cart:SummaryItem
+                                label="{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}"
+                                value="{{ order.shippingTotal|currency(order.currency.isoCode) }}"
+                                class="summary-item-shipping"
+                            />
                         {% endif %}
                     {% endblock %}
 
@@ -55,31 +51,23 @@
                             {% set totalAmountValue = order.amountNet|currency(order.currency.isoCode) %}
                         {% endif %}
 
-                        {% sw_include '@Storefront/components/cart/summary-item.html.twig'
-                            with {
-                                label: totalAmountLabel,
-                                value: totalAmountValue,
-                                classes: {
-                                    item: ['summary-item-grand-total']
-                                }
-                            } 
-                        only %}
+                        <twig:ViewsTheme:Cart:SummaryItem
+                            label="{{ totalAmountLabel }}"
+                            value="{{ totalAmountValue }}"
+                            class="summary-item-grand-total"
+                        />
                     {% endblock %}
 
                     {% block page_account_order_item_detail_vat %}
                         {% if not order.isTaxFree %}
                             {% for calculatedTax in order.price.calculatedTaxes %}
-                                {% sw_include '@Storefront/components/cart/summary-item.html.twig'
-                                    with {
-                                        label: 'checkout.summaryTax'|trans({
-                                            '%rate%':  calculatedTax.taxRate
-                                        })|sw_sanitize,
-                                        value: calculatedTax.tax|currency(order.currency.isoCode),
-                                        classes: {
-                                            item: ['summary-item-tax-total']
-                                        }
-                                    } 
-                                only %}
+                                <twig:ViewsTheme:Cart:SummaryItem
+                                    label="{{ 'checkout.summaryTax'|trans({
+                                        '%rate%': calculatedTax.taxRate
+                                    })|sw_sanitize }}"
+                                    value="{{ calculatedTax.tax|currency(order.currency.isoCode) }}"
+                                    class="summary-item-tax-total"
+                                />
                             {% endfor %}
                         {% endif %}
                     {% endblock %}

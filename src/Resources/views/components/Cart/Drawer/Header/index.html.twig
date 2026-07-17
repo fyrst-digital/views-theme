@@ -1,0 +1,43 @@
+{% props
+    productsQuantity = 0,
+    iconOptions = null,
+    defaultBaseClasses = 'vi-cart-drawer-header btn offcanvas-close js-offcanvas-close',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set contentAttributes = attributes.nested('content') %}
+{% set quantityAttributes = attributes.nested('quantity') %}
+
+<button
+    type="button"
+    data-ref="drawer-header"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block content %}
+        <div {{ contentAttributes.defaults({ class: 'vi-cart-drawer-header__content' }) }}>
+            {% block title %}
+                <span>{{ 'checkout.cartHeader'|trans|sw_sanitize }}</span>
+            {% endblock %}
+
+            {% block quantity %}
+                {% if productsQuantity > 0 %}
+                    <span
+                        {{ quantityAttributes.defaults({
+                            class: 'vi-cart-drawer-header__quantity badge rounded-pill text-bg-light',
+                        }) }}
+                    >
+                        {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block close_icon %}
+        {{ vi_icon('x', iconOptions) }}
+    {% endblock %}
+</button>

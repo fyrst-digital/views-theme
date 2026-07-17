@@ -1,0 +1,36 @@
+{% props
+    label,
+    value,
+    defaultBaseClasses = 'vi-cart-summary-item cart-summary-item',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set labelAttributes = attributes.nested('label') %}
+{% set valueAttributes = attributes.nested('value') %}
+
+<dl
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block label %}
+        <dt
+            {{ labelAttributes.defaults({
+                class: 'vi-cart-summary-item__label cart-summary-item-label',
+            }) }}
+        >
+            {{ label|raw }}
+        </dt>
+    {% endblock %}
+
+    {% block value %}
+        <dd
+            {{ valueAttributes.defaults({
+                class: 'vi-cart-summary-item__value cart-summary-item-value',
+            }) }}
+        >
+            {{ value }}
+        </dd>
+    {% endblock %}
+</dl>

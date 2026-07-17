@@ -1,0 +1,29 @@
+{% props
+    lineItem,
+    deliveries = null,
+    defaultBaseClasses = 'vi-line-item-delivery-date line-item-delivery-date',
+    defaultVariants = {},
+%}
+
+{% set deliveries = deliveries is not null ? deliveries : page.cart.deliveries|default(null) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+{% set deliveryPosition = null %}
+{% if deliveries and deliveries.count > 0 %}
+    {% set delivery = deliveries.first %}
+    {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
+{% endif %}
+
+{% if deliveryPosition and deliveryPosition.deliveryDate %}
+    <div
+        {{ attributes }}
+        class="{{ rootCVA.apply({}, rootClass) }}"
+    >
+        {{ vi_icon('truck') }}
+        {{ 'checkout.lineItemDeliveryDate'|trans({
+            '%earliest%': deliveryPosition.deliveryDate.earliest|format_date('short', locale=app.request.locale),
+            '%latest%': deliveryPosition.deliveryDate.latest|format_date('short', locale=app.request.locale),
+        })|sw_sanitize }}
+    </div>
+{% endif %}
