@@ -22,7 +22,9 @@
     reviewLink: ['product-detail-reviews-link', 'product-review-link'],
     prices: ['product-prices'],
     actions: ['product-actions'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}

@@ -1,7 +1,9 @@
 {%
   set classes = vi_define_classes({
     container: ['d-flex', 'p-6', 'justify-content-center'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_search_suggest_empty %}

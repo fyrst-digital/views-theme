@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     fields: ['row', 'g-2', 'fields-company'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_address_form_company_fields %}

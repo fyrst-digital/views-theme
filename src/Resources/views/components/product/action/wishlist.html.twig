@@ -10,17 +10,25 @@
     'btn-' ~ color|default('light'),
   ]
 %}
-
 {% if size is defined %}
   {% set actionClasses = actionClasses|merge(['btn-' ~ size]) %}
+{% endif %}
+
+{%
+  set labelClasses = ['product-wishlist-btn-content']
+%}
+{% if size is defined %}
+  {% set labelClasses = labelClasses|merge(['product-wishlist-btn-content-' ~ size]) %}
 {% endif %}
 
 {%
   set classes = vi_define_classes({
     action: actionClasses,
     icon: ['wishlist-icon'],
-    label: size is defined ? ['product-wishlist-btn-content', 'product-wishlist-btn-content-' ~ size] : ['product-wishlist-btn-content'],
-  }, classes|default({}), replaceClasses|default(false))
+    label: labelClasses,
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_wishlist_button %}

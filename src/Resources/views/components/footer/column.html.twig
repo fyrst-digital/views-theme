@@ -3,7 +3,9 @@
     column: ['footer-column'],
     headline: ['footer-column-headline', 'footer-headline'],
     content: ['footer-column-content-container'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_footer_column %}

@@ -6,7 +6,9 @@
     cellQuantity: [],
     cellPrice: [],
     cellReference: []
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_price_tiered_table %}

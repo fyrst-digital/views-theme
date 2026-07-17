@@ -3,7 +3,9 @@
     cell: ['variants-grid-column-option'],
     swatch: ['variants-grid-option-swatch', 'd-inline-block', 'rounded-circle', 'border', 'align-middle'],
     swatchColor: ['variants-grid-option-swatch', 'variants-grid-option-swatch--color', 'd-inline-block', 'rounded-circle', 'border', 'align-middle'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid_column_options_cells %}

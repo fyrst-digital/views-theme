@@ -11,7 +11,9 @@
     starIcon: ['icon-review-star'],
     ratingText: ['h6', 'product-detail-review-form-rating-text'],
     ratingTextHidden: ['h6', 'product-detail-review-form-rating-text', 'd-none'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_review_form_rating %}

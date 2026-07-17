@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     button: ['btn', 'btn-light', 'btn-sm', 'line-item-remove-button', 'line-item-action'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_line_item_remove_button %}

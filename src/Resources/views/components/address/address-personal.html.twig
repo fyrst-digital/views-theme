@@ -9,7 +9,9 @@
     companyContainer: ['js-field-toggle-contact-type-company' ~ prefix ? prefix : null],
     companyName: ['field-company-name'],
     birthday: ['fields-birthdate'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_address_personal_fields_salutation_title %}
@@ -52,7 +54,7 @@
                   autocomplete: 'section-personal organization',
                   violationPath: violationPath,
                   validationRules: 'required',
-                  additionalClass: classes.companyName | join(' '),
+                  additionalClass: classes.companyName | vi_classes,
               }
             %}
           {% endblock %}
@@ -82,7 +84,7 @@
         options: salutationOptions,
         autocomplete: 'section-personal honorific-prefix',
         violationPath: '/salutationId',
-        additionalClass: classes.salutation | join(' '),
+        additionalClass: classes.salutation | vi_classes,
     }
   %}
 {% endblock %}
@@ -96,7 +98,7 @@
         value: data.get('title'),
         autocomplete: 'section-personal honorific-prefix',
         violationPath: violationPath,
-        additionalClass: classes.title | join(' '),
+        additionalClass: classes.title | vi_classes,
     }
   %}
 {% endblock %}
@@ -111,7 +113,7 @@
         autocomplete: 'section-personal given-name',
         violationPath: violationPath,
         validationRules: 'required',
-        additionalClass: classes.firstName | join(' '),
+        additionalClass: classes.firstName | vi_classes,
     }
   %}
 {% endblock %}
@@ -126,7 +128,7 @@
         autocomplete: 'section-personal family-name',
         violationPath: violationPath,
         validationRules: 'required',
-        additionalClass: classes.lastName | join(' '),
+        additionalClass: classes.lastName | vi_classes,
     }
   %}
 {% endblock %}
@@ -137,7 +139,7 @@
       sw_include '@Storefront/storefront/component/form/form-select-birthday.html.twig' with {
           label: 'account.personalBirthdayLabel'|trans|sw_sanitize,
           validationRules: config('core.loginRegistration.birthdayFieldRequired') ? 'required' : '',
-          additionalClass: classes.birthday | join(' '),
+          additionalClass: classes.birthday | vi_classes,
       }
     %}
   {% endif %}

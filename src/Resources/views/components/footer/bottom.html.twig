@@ -7,7 +7,9 @@
     link: ['footer-link'],
     vat: ['footer-vat'],
     copyright: ['footer-copyright'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_footer_bottom %}

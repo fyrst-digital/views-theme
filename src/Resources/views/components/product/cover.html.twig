@@ -4,7 +4,9 @@
     video: [],
     image: [],
     placeholder: ['product-image-placeholder'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_cover %}
@@ -26,7 +28,7 @@
               set attributes = attributes|merge({
                   autoplay: true,
                   loop: true,
-                  class: classes.video | join(' '),
+                  class: classes.video | vi_classes,
                   'data-component': 'product-video'
               })
             %}
@@ -45,7 +47,7 @@
             set attributes = attributes|merge({
                 alt: (cover.translated.alt ?: name),
                 loading: 'lazy',
-                class: classes.image | join(' '),
+                class: classes.image | vi_classes,
                 'data-component': 'product-image'
             })
           %}

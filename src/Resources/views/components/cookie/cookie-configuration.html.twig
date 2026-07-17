@@ -11,7 +11,9 @@
     acceptAllButton: ['btn', 'btn-primary', 'btn-block', 'js-offcanvas-cookie-accept-all'],
     submitWrap: ['d-flex', 'flex-wrap', 'py-3'],
     submitButton: ['btn', 'btn-lg', 'btn-success', 'js-offcanvas-cookie-submit'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_offcanvas_header_title_content %}

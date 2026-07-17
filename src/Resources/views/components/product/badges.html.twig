@@ -18,7 +18,9 @@
     discount: ['badge', 'product-badge', 'badge-discount'],
     topseller: ['badge', 'product-badge', 'badge-topseller'],
     new: ['badge', 'product-badge', 'badge-new'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_product_badges_discount %}

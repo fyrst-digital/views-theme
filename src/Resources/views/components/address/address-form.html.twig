@@ -9,7 +9,9 @@
     companyName: ['field-company-name'],
     companyDepartment: ['field-company-department'],
     countryState: ['country-and-state-form-elements'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_address_form_company %}
@@ -24,7 +26,7 @@
           {% block component_address_form_company_name %}
             {%
               sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
-                additionalClass: classes.companyName|join(' ')
+                additionalClass: classes.companyName | vi_classes
               }
             %}
           {% endblock %}
@@ -32,7 +34,7 @@
           {% block component_address_form_company_department %}
             {%
               sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
-                additionalClass: classes.companyDepartment|join(' ')
+                additionalClass: classes.companyDepartment | vi_classes
               }
             %}
           {% endblock %}
@@ -71,7 +73,7 @@
   {% block component_address_form_street -%}
     {%
       sw_include '@Storefront/storefront/component/address/field/address-street-field.html.twig' with {
-          additionalClass: classes.streetField | join(' ')
+          additionalClass: classes.streetField | vi_classes
       }
     %}
   {% endblock %}
@@ -80,7 +82,7 @@
     {% block component_address_form_zipcode_field %}
       {%
         sw_include '@Storefront/storefront/component/address/field/address-zipcode-field.html.twig' with {
-          additionalClass: classes.zipcodeField | join(' ')
+          additionalClass: classes.zipcodeField | vi_classes
         }
       %}
     {% endblock %}
@@ -88,7 +90,7 @@
     {% block component_address_form_city_field %}
       {%
         sw_include '@Storefront/storefront/component/address/field/address-city-field.html.twig' with {
-          additionalClass: classes.cityField | join(' ')
+          additionalClass: classes.cityField | vi_classes
         }
       %}
     {% endblock %}

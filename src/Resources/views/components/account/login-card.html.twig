@@ -5,7 +5,9 @@
     main: ['card', 'login-card'],
     header: ['card-header', 'login-card-header'],
     body: ['card-body', 'login-card-body'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_account_login %}

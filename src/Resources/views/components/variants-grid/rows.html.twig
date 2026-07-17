@@ -4,7 +4,9 @@
   set classes = vi_define_classes({
     row: ['variants-grid-row'],
     rowUnavailable: ['variants-grid-row--unavailable', 'bg-light'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
@@ -15,10 +17,13 @@
     {% set isAvailable = variant.available and variant.calculatedMaxPurchase > 0 %}
     {% set showQuantitySelect = not variant.type is defined or variant.type != constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') or (variant.type == constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') and variant.maxPurchase !== 1) %}
 
-    {% set rowClasses = classes.row %}
-    {% if not isAvailable %}
-      {% set rowClasses = rowClasses|merge(classes.rowUnavailable) %}
-    {% endif %}
+    {%
+      set rowClasses = vi_define_classes({
+        row: classes.row,
+      }, isAvailable ? {} : {
+        row: classes.rowUnavailable,
+      }).row
+    %}
 
     <tr {{ rowClasses | vi_attr_classes }}>
       {% block component_variants_grid_row_preview %}

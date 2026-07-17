@@ -4,7 +4,9 @@
 {%
   set classes = vi_define_classes({
     main: ['gallery-slider'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_gallery_slider %}

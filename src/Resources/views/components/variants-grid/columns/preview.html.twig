@@ -2,7 +2,9 @@
   set classes = vi_define_classes({
     cell: ['variants-grid-column-preview'],
     image: ['variants-grid-preview-image', 'object-fit-cover'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_variants_grid_column_preview_cell %}

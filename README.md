@@ -18,35 +18,43 @@ bin/console plugin:install --activate ViewsTheme
 
 ### `vi_define_classes`
 
-Allows components to define default CSS classes while letting parent templates inject additional classes or completely override them.
+Allows components to define default CSS classes while letting parent templates inject additional classes, fully set selected slots, or apply prop-driven variants.
 
 #### Purpose
 
-This function provides a consistent way to handle CSS class composition in reusable Twig components. It ensures that:
-
 - Components always have their required base styles
-- Parent templates can extend or override classes without messy string concatenation
-- Class conflicts are resolved predictably through merge or replace strategies
+- Parent templates can extend or override classes without string concatenation
+- Default mode **merges** class lists; selected slots can be **fully set** via `replaceClasses`
+- Closed prop sets (type, size, state) can be expressed as variants
 
 #### Parameters
 
-| Parameter        | Type    | Default    | Description                                                        |
-| ---------------- | ------- | ---------- | ------------------------------------------------------------------ |
-| `defaultClasses` | `array` | _required_ | Base class map with semantic keys (e.g., `main`, `inner`, `title`) |
-| `customClasses`  | `array` | `[]`       | Incoming classes from a parent template                            |
-| `replace`        | `bool`  | `false`    | If `true`, replaces default classes; otherwise merges them         |
+| Parameter        | Type    | Default    | Description |
+| ---------------- | ------- | ---------- | ----------- |
+| `defaultClasses` | `array` | _required_ | Base class map (`root`, `title`, nested child slots, …) |
+| `customClasses`  | `array` | `[]`       | Incoming classes from a parent template |
+| `options`        | `array` | `[]`       | Options object (see below) |
 
-#### Usage Example
+#### Options object (3rd argument)
+
+| Key       | Type       | Description |
+| --------- | ---------- | ----------- |
+| `replace` | `string[]` | Keys whose values are fully set by `customClasses` (not merged). Alias: `replaceClasses` |
+| `variants`| `array`    | Prop → value → partial class map |
+| `props`   | `array`    | Current prop values used to pick variants |
+
+#### Simple usage
 
 ```twig
-{# In your component template #}
 {%
   set classes = vi_define_classes({
       main: [
           'd-grid',
           'flex-wrap',
       ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_header_main %}
@@ -56,10 +64,10 @@ This function provides a consistent way to handle CSS class composition in reusa
 {% endblock %}
 ```
 
-When including this component from a parent template, you can pass custom classes:
+Parent include:
 
 ```twig
-{# Merge additional classes (default behavior) #}
+{# Merge (default) #}
 {%
   sw_include '@Storefront/components/header/main.html.twig' with {
       classes: {
@@ -67,84 +75,103 @@ When including this component from a parent template, you can pass custom classe
       }
   }
 %}
+{# → class="d-grid flex-wrap custom-class another-class" #}
 
-{# Result: class="d-grid flex-wrap custom-class another-class" #}
-
-{# Completely replace default classes #}
+{# Fully set selected slots (others still merge) #}
 {%
   sw_include '@Storefront/components/header/main.html.twig' with {
       classes: {
-          main: ['custom-class']
+          main: ['custom-class'],
+          menu: ['extra'],
       },
-      replaceClasses: true
+      replaceClasses: ['main']
   }
 %}
-
-{# Result: class="custom-class" #}
+{# main → class="custom-class"
+   menu → defaults + extra #}
 ```
 
-#### Behavior
-
-- **Merge mode** (`replace = false`, default): Uses `array_merge_recursive` to combine classes. Both default and custom classes are preserved.
-- **Replace mode** (`replace = true`): Uses `array_replace_recursive` to override default classes with custom ones. If a key exists in both arrays, the custom value wins.
-
-### `vi_attr_classes`
-
-Converts a class array into a clean, HTML-ready class string.
-
-#### Purpose
-
-Instead of writing `class="{{ classes.main|join(' ') }}"` in every template, this filter outputs the entire `class` attribute for you. It removes empty values, deduplicates classes, and handles the HTML attribute syntax.
-
-#### Usage Example
-
-```twig
-{# Before #}
-<div class='{{ classes.main|join(' ') }}'></div>
-
-{# After #}
-<div {{ classes.main | vi_attr_classes }}></div>
-```
-
-Combined with `vi_define_classes`:
+#### Variants + selective replace
 
 ```twig
 {%
   set classes = vi_define_classes({
-      main: [
-          'd-grid',
-          'flex-wrap',
-      ],
-  }, classes|default({}), replaceClasses|default(false))
+    root: ['alert', 'd-flex', 'gap-3'],
+    icon: ['alert-icon'],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+    variants: {
+      type: {
+        danger:  { root: ['alert-danger'] },
+        warning: { root: ['alert-warning'] },
+        info:    { root: ['alert-info'] },
+        success: { root: ['alert-success'] },
+      },
+      dismissible: {
+        true: { root: ['alert-dismissible', 'fade', 'show'] },
+      },
+    },
+    props: {
+      type: type|default(null),
+      dismissible: dismissible|default(false),
+    },
+  })
 %}
-
-<div {{ classes.main | vi_attr_classes }} data-component='header-main'></div>
 ```
 
 #### Behavior
 
-- Outputs the full `class="..."` attribute string
-- Filters out empty, `null`, or `false` values
-- Removes duplicate class names
-- Returns an empty string (no attribute) if the input array is empty or `null`
+- **Merge (default):** leaf class lists append and dedupe; nested maps merge recursively
+- **Replace (`replace` / `replaceClasses: ['main', …]`):** only listed keys are fully set by custom; other keys still merge
+- **Variants:** applied after defaults, before custom parent classes
+- Leaf values may be arrays or space-separated strings
 
-#### Component conventions
+### `vi_attr_classes`
+
+Converts a class list into a full HTML attribute: `class="a b"`.
+
+```twig
+<div {{ classes.main | vi_attr_classes }}></div>
+```
+
+- Filters empty / null / false values
+- Deduplicates
+- Empty input → empty string (no attribute)
+
+### `vi_classes`
+
+Converts a class list into a bare class string (no attribute wrapper). Use when a Shopware API expects a string.
+
+```twig
+{# Form field macros #}
+additionalClass: classes.email | vi_classes,
+
+{# Media / thumbnail attribute bags #}
+attributes: {
+  class: classes.image | vi_classes,
+}
+```
+
+### Component conventions
 
 Every component under `src/Resources/views/components/` that renders styled markup must:
 
-1. Define defaults with `vi_define_classes(..., classes|default({}), replaceClasses|default(false))`
-2. Output map keys with `{{ classes.key | vi_attr_classes }}` (never `class="{{ classes.key|join(' ') }}"`)
+1. Define defaults with `vi_define_classes`
+2. Output map keys with `{{ classes.key | vi_attr_classes }}` on HTML tags
+3. Use `{{ classes.key | vi_classes }}` only for string APIs (forms, attribute bags)
+4. Prefer **variants** / `replaceClasses: ['slot']` over post-define `|merge` hacks
+5. Prefer `vi_define_classes(base, override)` over `vi_merge_deep` when composing class maps for child includes
 
-Allowed hybrids (platform constraints):
+| Pattern | Status |
+|---------|--------|
+| `vi_attr_classes` on HTML tags | Required |
+| `vi_classes` for string slots | Required (do not use `\|join(' ')`) |
+| `replaceClasses: ['key']` | Fully set those slots; all other keys merge |
+| Runtime list merge via `vi_define_classes` | OK for per-iteration state |
+| `icon/icon.html.twig` | Exempt (own dynamic icon API) |
+| Shell / router templates | Exempt |
 
-| Pattern | When |
-|---------|------|
-| `additionalClass: classes.x\|join(' ')` | Shopware form fields that expect a class **string** |
-| `class: classes.x\|join(' ')` | Attribute bags (`sw_thumbnails`, media/video helpers) |
-| `vi_merge_deep` | Parent composing nested class maps for a child include |
-| Pre-build dynamic defaults | Conditional classes (`type`, `size`, form violations) **before** `vi_define_classes`, or merge into a local array then `vi_attr_classes` |
-
-Exempt: pure include/extend routers with no own markup, and `icon/icon.html.twig` (dynamic icon class API).
+> **Shopware 6.8:** a future track may adopt UX Twig components + CVA. Until then this API is the ViewsTheme standard.
 
 ### `vi_icon`
 
@@ -231,7 +258,7 @@ Open the plugin configuration in the Shopware administration to set:
 
 #### Component
 
-The picker is rendered by the `delivery-date-selection` component (`components/checkout/delivery-date-selection.html.twig`), included from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm/index.html.twig`). It follows the theme component conventions: `vi_define_classes` / `vi_attr_classes` for overridable `checkout-delivery-date-selection-*` classes and a `data-component="delivery-date-selection"` hook for JavaScript. The `<input>` is attached to the standard order form via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`.
+The picker is rendered by the `delivery-date-selection` component (`components/checkout/delivery-date-selection.html.twig`), included from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm/index.html.twig`). It follows the theme component conventions: `vi_define_classes` / `vi_attr_classes` for overridable classes and a `data-component="delivery-date-selection"` hook for JavaScript. The `<input>` is attached to the standard order form via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`.
 
 #### Page subscriber
 

@@ -6,7 +6,9 @@
     starFull: ['review-star', 'full'],
     starHalf: ['review-star', 'half'],
     starBlank: ['review-star', 'blank'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_review_rating_output %}

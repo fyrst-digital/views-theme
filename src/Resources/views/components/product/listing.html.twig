@@ -6,7 +6,9 @@
     listingEmpty: [],
     listing: ['js-listing-wrapper'],
     productBox: {},
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block element_product_listing_pagination_nav_actions %}

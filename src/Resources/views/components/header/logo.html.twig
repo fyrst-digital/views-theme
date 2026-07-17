@@ -6,7 +6,9 @@
     ],
     logoText: [],
     logoImage: ['img-fluid'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set element = element|default('a') %}

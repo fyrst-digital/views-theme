@@ -14,7 +14,9 @@
     toggleBody: ['card-body', 'border-top'],
     toggleButton: ['btn', 'btn-light', 'btn-sm', 'order-hide-btn', 'collapsed'],
     contextMenuLink: ['dropdown-item', 'order-item-context-menu-link'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block page_account_order_item_overview %}

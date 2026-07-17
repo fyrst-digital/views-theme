@@ -7,7 +7,9 @@
         list: ['splide__list'],
         item: ['gallery-slider-thumbnail', 'splide__slide'],
         image: ['gallery-slider-thumbnail-image'],
-      }, classes|default({}), replaceClasses|default(false))
+      }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
     %}
     <div {{ classes.container | vi_attr_classes }}>
         <div {{ classes.thumbnails | vi_attr_classes }}>
@@ -18,7 +20,7 @@
                             {% sw_thumbnails 'gallery-slider-thumbnail' with {
                                 media: media,
                                 attributes: {
-                                    class: classes.image|join(' ')
+                                    class: classes.image | vi_classes
                                 },
                                 sizes: {
                                     default: '200px'

@@ -4,7 +4,9 @@
     control: ['checkout-user-comment-control'],
     label: ['form-label'],
     textarea: ['form-control'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_checkout_user_comment %}

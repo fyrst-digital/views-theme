@@ -3,7 +3,9 @@
     item: ['order-item-summary-item'],
     label: ['order-item-summary-item-label'],
     value: ['order-item-summary-item-value'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_order_item_summary_item %}

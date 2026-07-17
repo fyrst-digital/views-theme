@@ -18,7 +18,9 @@
       'btn',
       'btn-secondary',
     ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_add_product_form %}

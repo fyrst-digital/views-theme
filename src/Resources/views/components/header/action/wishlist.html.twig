@@ -12,7 +12,9 @@
     action: [],
     badge: ['badge', 'bg-primary', 'header-wishlist-badge'],
     srOnly: ['visually-hidden'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_header_action_wishlist %}

@@ -9,7 +9,9 @@
     dividerLabel: ['divider-label'],
     dropdownFooter: ['d-grid', 'p-3'],
     registerAction: ['btn', 'btn-primary']
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_account_dropdown %}

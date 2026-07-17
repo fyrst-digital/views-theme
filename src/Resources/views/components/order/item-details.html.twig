@@ -5,7 +5,9 @@
     body: ['order-detail-content-body'],
     footer: ['order-item-detail-footer'],
     summaryList: ['order-item-summary-list', 'cart-summary-list'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block page_account_order_documents_table %}

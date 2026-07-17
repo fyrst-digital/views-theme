@@ -10,7 +10,9 @@
       date: ['form-control'],
       helpText: ['form-text'],
     }
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {%

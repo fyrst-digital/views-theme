@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     points: ['col-md-auto', 'product-detail-review-item-points'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_review_item_info_points %}

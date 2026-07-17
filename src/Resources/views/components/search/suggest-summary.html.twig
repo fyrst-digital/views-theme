@@ -4,7 +4,9 @@
     allResultsAction: ['btn', 'btn-primary'],
     noResult: ['search-suggest-no-result'],
     countBadge: ['badge', 'rounded-pill', 'text-bg-light'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_search_suggest_summary %}

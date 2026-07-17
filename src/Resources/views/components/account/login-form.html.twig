@@ -8,7 +8,9 @@
   	actions: ['login-form-actions'],
   	actionLogin: [],
   	actionPasswordRecovery: []
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 {% set loginRoute = loginRoute|default('frontend.account.login') %}
 {% set showDescription = showDescription ?? false %}
@@ -82,7 +84,7 @@
             autocomplete: 'username webauthn',
             error: loginError,
             validationRules: 'required,email',
-            additionalClass: classes.email|join(' '),
+            additionalClass: classes.email | vi_classes,
         }
       %}
     {% endblock %}
@@ -97,7 +99,7 @@
             autocomplete: 'current-password',
             error: loginError,
             validationRules: 'required',
-            additionalClass: classes.password|join(' '),
+            additionalClass: classes.password | vi_classes,
         }
       %}
     {% endblock %}

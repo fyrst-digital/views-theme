@@ -15,7 +15,9 @@
     form: [],
     quantityInput: {},
     actionBuy: [],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}

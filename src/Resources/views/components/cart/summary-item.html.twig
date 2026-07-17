@@ -3,7 +3,9 @@
     item: ['cart-summary-item'],
     label: ['cart-summary-item-label'],
     value: ['cart-summary-item-value'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_cart_summary_item %}

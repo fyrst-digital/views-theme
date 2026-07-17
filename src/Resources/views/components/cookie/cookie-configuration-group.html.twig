@@ -5,7 +5,9 @@
   set classes = vi_define_classes({
     group: ['offcanvas-cookie-group', 'border-bottom', 'py-3'],
     entries: ['offcanvas-cookie-entries', 'd-flex', 'flex-column'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block cookie_configuration_group %}

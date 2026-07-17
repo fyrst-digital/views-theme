@@ -8,7 +8,9 @@
       : ['collapse', 'multi-collapse'],
     form: ['product-detail-review-form'],
     login: ['product-detail-review-login'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_review_alert %}

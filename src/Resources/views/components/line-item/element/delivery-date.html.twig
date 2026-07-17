@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     main: ['line-item-delivery-date'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_line_item_delivery_date %}

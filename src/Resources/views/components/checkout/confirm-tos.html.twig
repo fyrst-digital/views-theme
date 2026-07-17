@@ -23,7 +23,9 @@
     revocationCheckbox: ['checkout-confirm-revocation-checkbox', 'form-check-input'],
     revocationLabel: ['checkout-confirm-revocation-label', 'custom-control-label'],
     invalid: ['is-invalid'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_confirm_tos %}
@@ -47,10 +49,13 @@
             {% if showTosOptin is same as(true) %}
                 <div {{ classes.control | vi_attr_classes }}>
                     {% block component_confirm_tos_tos_control_checkbox %}
-                        {% set tosCheckboxClasses = classes.tosCheckbox %}
-                        {% if formViolations.getViolations('/tos') is not empty %}
-                            {% set tosCheckboxClasses = tosCheckboxClasses|merge(classes.invalid) %}
-                        {% endif %}
+                        {%
+                          set tosCheckboxClasses = vi_define_classes({
+                            control: classes.tosCheckbox,
+                          }, formViolations.getViolations('/tos') is not empty ? {
+                            control: classes.invalid,
+                          } : {}).control
+                        %}
                         <input type="checkbox"
                             {{ tosCheckboxClasses | vi_attr_classes }}
                             required="required"
@@ -80,10 +85,13 @@
             {% if page.showRevocation() %}
                 <div {{ classes.control | vi_attr_classes }}>
                     {% block component_confirm_tos_revocation_control_checkbox %}
-                        {% set revocationCheckboxClasses = classes.revocationCheckbox %}
-                        {% if formViolations.getViolations('/revocation') is not empty %}
-                            {% set revocationCheckboxClasses = revocationCheckboxClasses|merge(classes.invalid) %}
-                        {% endif %}
+                        {%
+                          set revocationCheckboxClasses = vi_define_classes({
+                            control: classes.revocationCheckbox,
+                          }, formViolations.getViolations('/revocation') is not empty ? {
+                            control: classes.invalid,
+                          } : {}).control
+                        %}
                         <input type="checkbox"
                                 {{ revocationCheckboxClasses | vi_attr_classes }}
                                 required="required"

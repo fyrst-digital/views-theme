@@ -18,7 +18,9 @@
     configButton: ['btn', 'btn-primary'],
     acceptAllWrap: ['js-cookie-accept-all-button'],
     acceptAllButton: ['btn', 'btn-primary'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% set acceptAllCookies = config('core.basicInformation.acceptAllCookies') %}

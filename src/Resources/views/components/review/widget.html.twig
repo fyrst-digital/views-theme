@@ -4,7 +4,9 @@
   set classes = vi_define_classes({
     main: ['product-detail-review-rating'],
     averageLabel: ['h6'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_review_overview %}

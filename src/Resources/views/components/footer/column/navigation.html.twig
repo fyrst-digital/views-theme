@@ -6,7 +6,9 @@
     list: ['footer-link-list'],
     item: ['footer-link-item'],
     link: ['footer-link'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_footer_column_headline_title %}

@@ -18,7 +18,9 @@
     itemLabel: ['language-item-label'],
     itemRadio: ['language-item-radio'],
     itemIcon: ['language-item-icon'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block layout_header_actions_language_widget_form %}

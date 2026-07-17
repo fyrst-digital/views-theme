@@ -5,7 +5,9 @@
     main: ['dropdown'],
     action: [],
     dropdown: {},
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_header_action_account %}

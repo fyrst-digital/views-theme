@@ -14,7 +14,10 @@
     quantity: ['line-item-quantity'],
     totalPrice: ['line-item-total-price'],
     actions: ['line-item-actions'],
-  }, classes|default({}), replaceClasses|default(false))
+    image: [],
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_line_item %}

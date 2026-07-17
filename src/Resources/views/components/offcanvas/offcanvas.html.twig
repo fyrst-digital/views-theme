@@ -5,7 +5,9 @@
     header: ['offcanvas-header', 'border-bottom'],
     headerContent: ['offcanvas-header-content', 'fw-semibold', 'fs-5'],
     closeButton: ['btn', 'btn-light', 'offcanvas-close', 'js-offcanvas-close'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block utilities_offcanvas_header %}

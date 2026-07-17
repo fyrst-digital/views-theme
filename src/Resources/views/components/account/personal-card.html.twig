@@ -8,7 +8,9 @@
     body: ['card-body'],
     title: ['card-title'],
     actions: ['card-actions'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_account_card_personal %}

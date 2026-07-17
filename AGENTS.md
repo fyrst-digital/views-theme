@@ -38,17 +38,24 @@ Components under `src/Resources/views/components/` use a shared CSS class API:
 {%
   set classes = vi_define_classes({
     main: ['component-main', 'd-flex'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 <div {{ classes.main | vi_attr_classes }} data-component="example">
 ```
 
-- **Definer:** `vi_define_classes`
-- **Compositor:** `vi_attr_classes` filter (emits full `class="..."`)
-- Do **not** use `defaultClasses` + `vi_merge_deep` or `class="{{ classes.x|join(' ') }}"` for component-owned HTML
-- `join(' ')` is only allowed for Shopware form `additionalClass` strings and media attribute bags
+- **Definer:** `vi_define_classes(defaults, custom, options)`
+- **Options:** `replace` / `replaceClasses` = `string[]` of keys to fully set (not merge); optional `variants` + `props`
+- **HTML compositor:** `vi_attr_classes` → full `class="..."` attribute
+- **String compositor:** `vi_classes` → bare class string for forms / attribute bags
+- Default is always **merge** (append + dedupe). There is no global bool replace.
+- Parent example: `replaceClasses: ['label']` with `classes: { label: ['…'] }`
+- Do **not** use `defaultClasses`, `class="{{ classes.x|join(' ') }}"`, or `|join(' ')` for class maps
+- Prefer `vi_define_classes(base, override)` over `vi_merge_deep` when composing child class maps
 - Shell/router templates and `icon/icon.html.twig` are exempt
+- Shopware UX / CVA is deferred to a 6.8 compatibility track
 
 ## JavaScript selector convention
 

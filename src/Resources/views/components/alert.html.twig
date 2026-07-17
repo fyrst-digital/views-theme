@@ -5,26 +5,14 @@
 {% endif %}
 
 {%
-  set alertClasses = [
-    'd-flex',
-    'flex-wrap',
-    'align-items-center',
-    'gap-3',
-    'alert',
-  ]
-%}
-
-{% if type %}
-  {% set alertClasses = alertClasses|merge(['alert-' ~ type]) %}
-{% endif %}
-
-{% if dismissible %}
-  {% set alertClasses = alertClasses|merge(['alert-dismissible', 'fade', 'show']) %}
-{% endif %}
-
-{%
   set classes = vi_define_classes({
-    alert: alertClasses,
+    alert: [
+      'd-flex',
+      'flex-wrap',
+      'align-items-center',
+      'gap-3',
+      'alert',
+    ],
     iconContainer: [
       'alert-icon-container',
       'fs-5',
@@ -45,7 +33,24 @@
     dismissButton: [
       'btn-close',
     ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+    variants: {
+      type: {
+        danger:  { alert: ['alert-danger'] },
+        warning: { alert: ['alert-warning'] },
+        info:    { alert: ['alert-info'] },
+        success: { alert: ['alert-success'] },
+      },
+      dismissible: {
+        true: { alert: ['alert-dismissible', 'fade', 'show'] },
+      },
+    },
+    props: {
+      type: type|default(null),
+      dismissible: dismissible|default(false),
+    },
+  })
 %}
 
 {%

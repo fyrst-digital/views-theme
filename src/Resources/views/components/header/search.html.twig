@@ -10,7 +10,9 @@
     input: ['form-control', 'header-search-input'],
     submitButton: ['btn', 'header-search-btn'],
     closeButton: ['btn', 'header-search-close'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block layout_header_search %}

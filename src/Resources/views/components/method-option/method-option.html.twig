@@ -22,7 +22,9 @@
     content: ['method-option-content'],
     name: ['method-option-name'],
     description: ['method-option-description'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_method_option %}
@@ -55,7 +57,7 @@
                                     default: '100px'
                                 },
                                 attributes: {
-                                    class: classes.imageElement|join(' '),
+                                    class: classes.imageElement | vi_classes,
                                     alt: (payment.media.translated.alt ?: payment.translated.name),
                                     title: (payment.media.translated.title ?: payment.translated.name)
                                 }

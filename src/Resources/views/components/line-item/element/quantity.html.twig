@@ -9,20 +9,10 @@
     container: isDigital
       ? ['line-item-quantity-container', 'disabled']
       : ['line-item-quantity-container'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
-
-{% block component_line_item_quantity_select_input %}
-  {%
-    sw_include '@Storefront/components/quantity-input.html.twig' with {
-        quantity: lineItem.quantity,
-        size: 'sm',
-        classes: {
-            input: ['test']
-        }
-    } only
-  %}
-{% endblock %}
 
 {% block component_line_item_quantity_inner %}
   {% block component_line_item_quantity_label %}{% endblock %}

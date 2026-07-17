@@ -7,7 +7,7 @@
     totalPrice: ['line-item-total-price'],
   }
 %}
-{% set replaceClasses = true %}
+{% set replaceClasses = ['label', 'image', 'totalPrice'] %}
 
 {% block component_line_item_image_element %}
     <div {{ classes.image | vi_attr_classes }}>

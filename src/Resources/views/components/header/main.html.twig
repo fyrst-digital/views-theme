@@ -14,7 +14,9 @@
       'justify-content-start',
       'align-items-center',
     ],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_header_main %}
@@ -23,7 +25,7 @@
     data-component="header-main">
     {% block component_header_main_menu %}
       <div
-        {{ classes.container | vi_attr_classes }}
+        {{ classes.menu | vi_attr_classes }}
         data-component="header-menu">
         {% sw_include '@Storefront/components/header/action/menu.html.twig' %}
       </div>

@@ -1,13 +1,21 @@
 {%
   set classes = vi_define_classes({
-    group: size is defined and size is same as('sm')
-      ? ['input-group', 'quantity-selector-group', 'quantity-input', 'input-group-sm']
-      : ['input-group', 'quantity-selector-group', 'quantity-input'],
+    group: ['input-group', 'quantity-selector-group', 'quantity-input'],
     decrease: ['btn', 'btn-light', 'btn-decrease', 'js-btn-minus'],
     increase: ['btn', 'btn-light', 'btn-increase', 'js-btn-plus'],
     input: ['form-control', 'text-center', 'js-quantity-selector', 'quantity-selector-group-input'],
     unit: ['input-group-text'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+    variants: {
+      size: {
+        sm: { group: ['input-group-sm'] },
+      },
+    },
+    props: {
+      size: size|default(null),
+    },
+  })
 %}
 
 {% set iconOptions = iconOptions|default(themeParameters.icons) %}

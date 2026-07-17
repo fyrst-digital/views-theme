@@ -10,7 +10,9 @@
         list: ['splide__list'],
         item: ['gallery-slider-canvas-item', 'splide__slide'],
         image: ['gallery-slider-canvas-image'],
-      }, classes|default({}), replaceClasses|default(false))
+      }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
     %}
     <div {{ classes.container | vi_attr_classes }}>
 
@@ -41,7 +43,7 @@
                                         {% sw_thumbnails 'gallery-slider-canvas-image' with {
                                             media: media,
                                             attributes: {
-                                                class: classes.image|join(' ')
+                                                class: classes.image | vi_classes
                                             }
                                         } %}
                                     </li>

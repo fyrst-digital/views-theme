@@ -16,7 +16,9 @@
     deleteButton: ['btn', 'btn-sm', 'btn-light'],
     setDefaultBillingButton: ['btn', 'btn-light', 'address-action-set-default', 'address-action-set-default-billing', 'btn-sm'],
     setDefaultShippingButton: ['btn', 'btn-light', 'address-action-set-default', 'address-action-set-default-shipping', 'btn-sm'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block page_account_address_actions %}

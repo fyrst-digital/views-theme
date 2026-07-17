@@ -5,7 +5,9 @@
 {%
   set classes = vi_define_classes({
     separator: ['breadcrumb-placeholder'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {# @deprecated tag:v6.8.0 - Block will be removed, the separator has been moved to a CSS only solution - Extend the `layout_breadcrumb_list_item` block if needed #}

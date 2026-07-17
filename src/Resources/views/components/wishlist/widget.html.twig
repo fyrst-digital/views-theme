@@ -3,7 +3,9 @@
 {%
   set classes = vi_define_classes({
     badge: ['header-wishlist-badge', 'header-action-badge', 'position-absolute', 'top-0', 'start-100', 'translate-middle', 'badge', 'rounded-pill'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block layout_header_actions_wishlist_widget %}

@@ -5,7 +5,9 @@
     form: ['js-close-address-editor'],
     fieldset: ['address-editor-fieldset'],
     requiredHint: ['address-required-info', 'required-fields', 'form-text', 'mt-3'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_address_address_editor_modal_create_address_form %}

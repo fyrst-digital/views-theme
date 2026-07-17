@@ -4,7 +4,9 @@
     label: ['contact-channel-label'],
     content: ['contact-channel-content'],
     value: ['contact-channel-value'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block component_footer_contact_channel %}

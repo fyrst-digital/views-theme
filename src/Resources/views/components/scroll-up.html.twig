@@ -5,7 +5,9 @@
     container: ['scroll-up-container', 'position-fixed', 'end-0', 'bottom-0'],
     buttonWrap: ['scroll-up-button', 'js-scroll-up-button'],
     button: ['btn', 'btn-primary', 'rounded-pill', 'p-3'],
-  }, classes|default({}), replaceClasses|default(false))
+  }, classes|default({}), {
+    replace: replaceClasses|default([]),
+  })
 %}
 
 {% block layout_scroll_up_inner %}
