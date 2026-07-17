@@ -4,6 +4,6 @@
     {{ parent() }}
 
     {% block page_checkout_additional_preferred_delivery_date %}
-        {% sw_include '@Storefront/components/checkout/delivery-date-selection.html.twig' %}
+        <twig:ViewsTheme:Checkout:DeliveryDateSelection />
     {% endblock %}
 {% endblock %}

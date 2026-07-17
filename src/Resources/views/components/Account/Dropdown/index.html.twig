@@ -1,0 +1,60 @@
+{% props
+    activeRoute = null,
+    defaultBaseClasses = 'vi-account-dropdown dropdown-menu dropdown-menu-end account-dropdown',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set dividerAttributes = attributes.nested('divider') %}
+{% set dividerLabelAttributes = attributes.nested('dividerLabel') %}
+{% set footerAttributes = attributes.nested('footer') %}
+{% set registerAttributes = attributes.nested('register') %}
+
+<div
+    data-ref="dropdown"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% if context.customer %}
+        {% block user_actions %}
+            <twig:ViewsTheme:Account:UserActions :activeRoute="activeRoute" />
+        {% endblock %}
+    {% else %}
+        {% block login_form %}
+            <twig:ViewsTheme:Account:LoginForm class="p-6" />
+        {% endblock %}
+
+        {% block register_divider %}
+            <div
+                {{ dividerAttributes.defaults({ class: 'vi-account-dropdown__divider divider' }) }}
+            >
+                <div
+                    {{ dividerLabelAttributes.defaults({
+                        class: 'vi-account-dropdown__divider-label divider-label',
+                    }) }}
+                >
+                    {{ 'account.newCustomerLabel'|trans|sw_sanitize }}
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+            <div
+                {{ footerAttributes.defaults({
+                    class: 'vi-account-dropdown__footer d-grid p-3',
+                }) }}
+            >
+                <a
+                    href="{{ path('frontend.account.login.page') }}"
+                    title="{{ 'account.orRegisterLink'|trans|striptags }}"
+                    {{ registerAttributes.defaults({
+                        class: 'vi-account-dropdown__register btn btn-primary',
+                    }) }}
+                >
+                    {{ 'account.orRegisterLink'|trans|sw_sanitize }}
+                </a>
+            </div>
+        {% endblock %}
+    {% endif %}
+</div>

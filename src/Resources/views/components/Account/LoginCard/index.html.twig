@@ -1,0 +1,26 @@
+{% sw_extends '@Storefront/storefront/component/account/login.html.twig' %}
+
+{% block component_account_login %}
+    <div class="vi-account-login-card card login-card">
+        {% block component_account_login_header %}
+            {% if cardTitle %}
+                <h4 class="vi-account-login-card__header card-header login-card-header">
+                    {{ cardTitle }}
+                </h4>
+            {% endif %}
+        {% endblock %}
+
+        {% block component_account_login_form %}
+            <div class="vi-account-login-card__body card-body login-card-body">
+                <twig:ViewsTheme:Account:LoginForm
+                    :loginError="loginError|default(false)"
+                    :errorSnippet="errorSnippet|default(null)"
+                    :waitTime="waitTime|default(null)"
+                    :redirectTo="redirectTo|default(null)"
+                    :redirectParameters="redirectParameters|default(null)"
+                    :showDescription="showDescription|default(false)"
+                />
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

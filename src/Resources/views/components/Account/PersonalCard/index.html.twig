@@ -1,0 +1,59 @@
+{% props
+    editable = false,
+    defaultBaseClasses = 'vi-account-personal-card card account-card-personal',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set bodyAttributes = attributes.nested('body') %}
+{% set titleAttributes = attributes.nested('title') %}
+{% set actionsAttributes = attributes.nested('actions') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    <div {{ bodyAttributes.defaults({ class: 'vi-account-personal-card__body card-body' }) }}>
+        {% block title %}
+            <h4
+                {{ titleAttributes.defaults({
+                    class: 'vi-account-personal-card__title card-title',
+                }) }}
+            >
+                {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
+            </h4>
+        {% endblock %}
+
+        {% block profile %}
+            <div>
+                {% if context.customer.salutation
+                    and context.customer.salutation.salutationKey != 'not_specified'
+                %}
+                    {{ context.customer.salutation.translated.displayName }}
+                {% endif %}
+                {% if context.customer.title %}
+                    {{ context.customer.title }}<br>
+                {% endif %}
+                {{ context.customer.firstName }}
+                {{ context.customer.lastName }}
+            </div>
+        {% endblock %}
+
+        {% block company %}{% endblock %}
+
+        {% block email %}
+            <div>{{ context.customer.email }}</div>
+        {% endblock %}
+
+        {% block actions %}
+            <div
+                {{ actionsAttributes.defaults({
+                    class: 'vi-account-personal-card__actions card-actions',
+                }) }}
+            >
+                {% block actions_content %}{% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+</div>

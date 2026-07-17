@@ -119,6 +119,10 @@ See [JavaScript](javascript.md).
 | `ViewsTheme:Cart:*` | UX (Summary, SummaryItem, Heading, forms, Drawer/Header, …) |
 | `Cart:Widget`, `Wishlist:Widget` | Component (`extends` core header widgets under components/) |
 | `Wishlist:Listing` | Component (extends Product Listing) |
+| `ViewsTheme:Account:*` | UX (Dropdown, LoginForm, UserActions, PersonalCard) + LoginCard/Register extends |
+| `ViewsTheme:Address:*` | Component (Form/Personal/Item/* still `sw_extends` core) |
+| `ViewsTheme:Checkout:*` | UX (ConfirmTos, UserComment, DeliveryDateSelection + co-located JS) |
+| `ViewsTheme:Order:*` | UX SummaryItem + Item/ItemDetails extends core |
 | Other components under `views/components/` | Legacy `sw_include` + `vi_define_classes` (migrating by domain) |
 
 Legacy class API: [CSS class API](css-classes.md) (deprecated for new work).

@@ -64,13 +64,13 @@ Still registered from `app/storefront/src/main.js` until their domain migrates:
 | Plugin | Selector (current) | Target UX root |
 |--------|--------------------|----------------|
 | `VariantsGrid` | `[data-component="variants-grid"]` | `ViewsTheme:VariantsGrid:Container` |
-| `DeliveryDateSelection` | `[data-component="delivery-date-selection"]` | `ViewsTheme:Checkout:DeliveryDateSelection` |
 
 ### Migrated co-located components
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
 | Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart/index.js` |
+| Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection/index.js` |
 
 `QuantityInput` root is `data-component="ViewsTheme:QuantityInput"` (no co-located JS yet; core `data-quantity-selector` remains).
 
@@ -95,10 +95,7 @@ See [Variants grid](../features/variants-grid.md).
 
 ### Preferred delivery date
 
-Data: `page.extensions.viewsTheme.deliveryDate`. Plugin: `DeliveryDatePlugin`.
-
-| Hook | Attribute |
-|------|-----------|
-| Wrapper | `data-component="delivery-date-selection"` |
+Data: `page.extensions.viewsTheme.deliveryDate`.  
+Co-located: `Checkout/DeliveryDateSelection/index.js` on `data-component="ViewsTheme:Checkout:DeliveryDateSelection"`.
 
 See [Preferred delivery date](../features/delivery-date.md).

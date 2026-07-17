@@ -70,7 +70,7 @@
                 {% endif %}
 
                 {%
-                  sw_include '@Storefront/components/address/address-personal.html.twig' with {
+                  sw_include '@ViewsTheme/components/Address/Personal/index.html.twig' with {
                       prefix: prefix,
                       showBirthdayField: config('core.loginRegistration.showBirthdayField'),
                       accountType: data.get('accountType')
@@ -80,7 +80,7 @@
 
               {% block component_account_register_company_fields %}
                 {%
-                  sw_include '@Storefront/components/address/address-personal-company.html.twig' with {
+                  sw_include '@ViewsTheme/components/Address/PersonalCompany/index.html.twig' with {
                       prefix: 'billingAddress',
                       address: data.get('billingAddress')
                   }
@@ -219,7 +219,7 @@
                   {% block component_account_register_address_billing_fields %}
                     <div {{ classes.billingFields | vi_attr_classes }}>
                       {%
-                        sw_include '@Storefront/components/address/address-form.html.twig' with {
+                        sw_include '@ViewsTheme/components/Address/Form/index.html.twig' with {
                             prefix: 'billingAddress',
                             data: data.get('billingAddress'),
                             showNoShippingPostfix: true,
@@ -260,7 +260,7 @@
                         <div {{ classes.shippingFields | vi_attr_classes }}>
                           {% block component_account_register_address_shipping_fields_personal %}
                             {%
-                              sw_include '@Storefront/components/address/address-personal.html.twig' with {
+                              sw_include '@ViewsTheme/components/Address/Personal/index.html.twig' with {
                                   prefix: 'shippingAddress',
                                   data: data.get('shippingAddress'),
                                   hideCustomerTypeSelect: false,
@@ -272,7 +272,7 @@
 
                           {% block component_account_register_address_shipping_fields_company %}
                             {%
-                              sw_include '@Storefront/components/address/address-personal-company.html.twig' with {
+                              sw_include '@ViewsTheme/components/Address/PersonalCompany/index.html.twig' with {
                                   prefix: 'shippingAddress',
                                   customToggleTarget: true,
                                   address: data.get('shippingAddress')
@@ -282,7 +282,7 @@
 
                           {% block component_account_register_address_shipping_fields_address %}
                             {%
-                              sw_include '@Storefront/components/address/address-form.html.twig' with {
+                              sw_include '@ViewsTheme/components/Address/Form/index.html.twig' with {
                                   prefix: 'shippingAddress',
                                   data: data.get('shippingAddress'),
                                   showNoShippingPostfix: true,

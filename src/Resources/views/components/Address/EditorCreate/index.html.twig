@@ -24,7 +24,7 @@
 
         {% block component_address_address_editor_modal_create_address_form_fields_include %}
             <div {{ classes.fieldset | vi_attr_classes }}>
-                {% sw_include '@Storefront/components/address/address-personal.html.twig' with {
+                {% sw_include '@ViewsTheme/components/Address/Personal/index.html.twig' with {
                     'data': postedData ?? address,
                     'prefix': 'address',
                     'idPrefix': typePrefix,
@@ -32,7 +32,7 @@
                     'parentSelector': 'form'
                 } %}
 
-                {% sw_include '@Storefront/components/address/address-form.html.twig' with {
+                {% sw_include '@ViewsTheme/components/Address/Form/index.html.twig' with {
                     'data': postedData ?? address,
                     'prefix': 'address',
                     'idPrefix': typePrefix,
