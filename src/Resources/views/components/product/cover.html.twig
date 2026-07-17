@@ -1,7 +1,9 @@
 {%
   set classes = vi_define_classes({
+    link: ['flex-fill', 'product-image-link', 'is-' ~ displayMode],
     video: [],
     image: [],
+    placeholder: ['product-image-placeholder'],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -9,7 +11,7 @@
   <a
     href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
     title="{{ name }}"
-    class="flex-fill product-image-link is-{{ displayMode }}">
+    {{ classes.link | vi_attr_classes }}>
     {% block component_product_box_image_link_inner %}
       {% if cover.url and cover.isSpatialObject() == false %}
         {%
@@ -64,7 +66,7 @@
         {% endif %}
       {% else %}
         {% block component_product_box_image_placeholder %}
-          <div class="product-image-placeholder">
+          <div {{ classes.placeholder | vi_attr_classes }}>
             {%
               sw_icon 'placeholder' style {
                   size: 'fluid'

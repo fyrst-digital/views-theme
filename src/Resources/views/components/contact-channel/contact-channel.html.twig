@@ -1,29 +1,25 @@
-{% set defaultClasses = {
+{%
+  set classes = vi_define_classes({
     item: ['contact-channel'],
     label: ['contact-channel-label'],
     content: ['contact-channel-content'],
-    value: ['contact-channel-value']
-} %}
-
-{% if classes is defined %}
-    {% set classes = defaultClasses|vi_merge_deep(classes) %}
-{% else %}
-    {% set classes = defaultClasses %}
-{% endif %}
+    value: ['contact-channel-value'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_footer_contact_channel %}
-    <div class="{{classes.item|join(' ')}}">
+    <div {{ classes.item | vi_attr_classes }}>
 
         {% block component_footer_contact_channel_label %}
             {% if label %}
-                <div class="{{classes.label|join(' ')}}">
+                <div {{ classes.label | vi_attr_classes }}>
                     {{label}}
                 </div>
             {% endif %}
         {% endblock %}
 
         {% block component_footer_contact_channel_content %}
-            <div class="{{classes.content|join(' ')}}">
+            <div {{ classes.content | vi_attr_classes }}>
 
                 {% block component_footer_contact_channel_icon %}
                     {% if icon %}
@@ -35,7 +31,7 @@
 
                     {% if url %}
                         <a href="{{url}}"
-                            class="{{classes.value|join(' ')}}"
+                            {{ classes.value | vi_attr_classes }}
                             {% if urlAttributes %}
                                 {{urlAttributes|join(' ')|raw}}
                             {% endif %}
@@ -51,7 +47,7 @@
                             {% endblock %}
                         </a>
                     {% else %}
-                        <span class="{{classes.value|join(' ')}}">
+                        <span {{ classes.value | vi_attr_classes }}>
                             {% block component_footer_contact_channel_value_content %}
                                 {% if value %}
                                     {{value|raw}}

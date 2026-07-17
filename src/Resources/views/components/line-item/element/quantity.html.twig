@@ -4,6 +4,14 @@
   {% set autoSubmit = false %}
 {% endif %}
 
+{%
+  set classes = vi_define_classes({
+    container: isDigital
+      ? ['line-item-quantity-container', 'disabled']
+      : ['line-item-quantity-container'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_line_item_quantity_select_input %}
   {%
     sw_include '@Storefront/components/quantity-input.html.twig' with {
@@ -33,7 +41,7 @@
         %}
         <form
           action="{{ formAction }}"
-          class="line-item-quantity-container {% if isDigital %}disabled{% endif %}"
+          {{ classes.container | vi_attr_classes }}
           method="post"
           {% if autoSubmit is same as(true) %}
             data-form-auto-submit="true"

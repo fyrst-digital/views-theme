@@ -1,24 +1,22 @@
-{% set defaultClasses = {
-    item: ['order-item-summary-item']
-} %}
-
-{% if classes is defined %}
-    {% set classes = classes|vi_merge_deep(defaultClasses) %}
-{% else %}
-    {% set classes = defaultClasses %}
-{% endif %}
+{%
+  set classes = vi_define_classes({
+    item: ['order-item-summary-item'],
+    label: ['order-item-summary-item-label'],
+    value: ['order-item-summary-item-value'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_order_item_summary_item %}
-    <div class="{{ classes.item|join(' ') }}">
+    <div {{ classes.item | vi_attr_classes }}>
 
         {% block component_order_item_summary_item_label %}
-            <div class="order-item-summary-item-label">
+            <div {{ classes.label | vi_attr_classes }}>
                 {{ label|raw }}
             </div>
         {% endblock %}
 
         {% block component_order_item_summary_item_value %}
-            <div class="order-item-summary-item-value">
+            <div {{ classes.value | vi_attr_classes }}>
                 {{ value|raw }}
             </div>
         {% endblock %}

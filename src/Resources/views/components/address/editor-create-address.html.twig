@@ -1,9 +1,17 @@
 {% sw_extends '@Storefront/storefront/component/address/address-editor-modal-create-address.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    form: ['js-close-address-editor'],
+    fieldset: ['address-editor-fieldset'],
+    requiredHint: ['address-required-info', 'required-fields', 'form-text', 'mt-3'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_address_address_editor_modal_create_address_form %}
     <form method="post"
             action="{{ path('frontend.account.addressbook') }}"
-            class="js-close-address-editor"
+            {{ classes.form | vi_attr_classes }}
             data-form-ajax-submit="true"
             data-form-validation="true"
             data-form-ajax-submit-options="{{ formAjaxSubmitOptions|json_encode }}">
@@ -13,7 +21,7 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_form_fields_include %}
-            <div class="address-editor-fieldset">
+            <div {{ classes.fieldset | vi_attr_classes }}>
                 {% sw_include '@Storefront/components/address/address-personal.html.twig' with {
                     'data': postedData ?? address,
                     'prefix': 'address',
@@ -36,7 +44,7 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_required_hint %}
-            <p class="address-required-info required-fields form-text mt-3">
+            <p {{ classes.requiredHint | vi_attr_classes }}>
                 {% block component_address_address_editor_modal_create_address_required_hint_text %}
                     {{ parent() }}
                 {% endblock %}

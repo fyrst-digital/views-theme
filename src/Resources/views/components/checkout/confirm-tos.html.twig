@@ -12,17 +12,31 @@
     }) %}
 {% endif %}
 
+{%
+  set classes = vi_define_classes({
+    main: ['confirm-tos'],
+    title: ['confirm-tos-title'],
+    revocationNotice: ['revocation-notice'],
+    control: ['form-check'],
+    tosCheckbox: ['checkout-confirm-tos-checkbox', 'form-check-input'],
+    tosLabel: ['checkout-confirm-tos-label', 'custom-control-label'],
+    revocationCheckbox: ['checkout-confirm-revocation-checkbox', 'form-check-input'],
+    revocationLabel: ['checkout-confirm-revocation-label', 'custom-control-label'],
+    invalid: ['is-invalid'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_confirm_tos %}
-    <div class="confirm-tos">
+    <div {{ classes.main | vi_attr_classes }}>
     
         {% block component_confirm_tos_header %}
-            <div class="confirm-tos-title">
+            <div {{ classes.title | vi_attr_classes }}>
                 {{ 'checkout.confirmTermsHeader'|trans|sw_sanitize }}
             </div>
         {% endblock %}
 
         {% block component_confirm_tos_revocation_notice %}
-            <div class="revocation-notice">
+            <div {{ classes.revocationNotice | vi_attr_classes }}>
                 {{ 'checkout.confirmRevocationNotice'|trans({
                     '%url%': path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') })
                 })|raw }}
@@ -31,10 +45,14 @@
 
         {% block component_confirm_tos_control %}
             {% if showTosOptin is same as(true) %}
-                <div class="form-check">
+                <div {{ classes.control | vi_attr_classes }}>
                     {% block component_confirm_tos_tos_control_checkbox %}
+                        {% set tosCheckboxClasses = classes.tosCheckbox %}
+                        {% if formViolations.getViolations('/tos') is not empty %}
+                            {% set tosCheckboxClasses = tosCheckboxClasses|merge(classes.invalid) %}
+                        {% endif %}
                         <input type="checkbox"
-                            class="checkout-confirm-tos-checkbox form-check-input{% if formViolations.getViolations('/tos') is not empty %} is-invalid{% endif %}"
+                            {{ tosCheckboxClasses | vi_attr_classes }}
                             required="required"
                             id="tos"
                             form="{{formId}}"
@@ -43,7 +61,7 @@
 
                     {% block component_confirm_tos_control_label %}
                         <label for="tos"
-                                class="checkout-confirm-tos-label custom-control-label">
+                                {{ classes.tosLabel | vi_attr_classes }}>
                             {{ tosSnippet|raw }}
                         </label>
                     {% endblock %}
@@ -60,10 +78,14 @@
 
         {% block component_confirm_tos_revocation_control %}
             {% if page.showRevocation() %}
-                <div class="form-check">
+                <div {{ classes.control | vi_attr_classes }}>
                     {% block component_confirm_tos_revocation_control_checkbox %}
+                        {% set revocationCheckboxClasses = classes.revocationCheckbox %}
+                        {% if formViolations.getViolations('/revocation') is not empty %}
+                            {% set revocationCheckboxClasses = revocationCheckboxClasses|merge(classes.invalid) %}
+                        {% endif %}
                         <input type="checkbox"
-                                class="checkout-confirm-revocation-checkbox form-check-input{% if formViolations.getViolations('/revocation') is not empty %} is-invalid{% endif %}"
+                                {{ revocationCheckboxClasses | vi_attr_classes }}
                                 required="required"
                                 id="revocation"
                                 form="{{formId}}"
@@ -72,7 +94,7 @@
 
                     {% block component_confirm_tos_revocation_control_label %}
                         <label for="revocation"
-                                class="checkout-confirm-revocation-label custom-control-label">
+                                {{ classes.revocationLabel | vi_attr_classes }}>
                             {{ 'checkout.confirmRevocationTerms'|trans() }}
                         </label>
                     {% endblock %}

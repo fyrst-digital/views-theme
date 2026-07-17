@@ -45,7 +45,7 @@
       {% endblock %}
     {% else %}
       {% block component_variants_grid_column_quantity_unavailable %}
-        <span class="{{ classes.unavailable|join(' ') }}">
+        <span {{ classes.unavailable | vi_attr_classes }}>
           {{ 'detail.unavailable'|trans|sw_sanitize }}
         </span>
       {% endblock %}

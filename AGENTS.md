@@ -30,6 +30,26 @@ Agents should reference the following skill file when relevant:
 4. Always create desktop and mobile variants for each screen.
 5. Verify designs with `pencil_get_screenshot`.
 
+## CSS class API convention
+
+Components under `src/Resources/views/components/` use a shared CSS class API:
+
+```twig
+{%
+  set classes = vi_define_classes({
+    main: ['component-main', 'd-flex'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
+<div {{ classes.main | vi_attr_classes }} data-component="example">
+```
+
+- **Definer:** `vi_define_classes`
+- **Compositor:** `vi_attr_classes` filter (emits full `class="..."`)
+- Do **not** use `defaultClasses` + `vi_merge_deep` or `class="{{ classes.x|join(' ') }}"` for component-owned HTML
+- `join(' ')` is only allowed for Shopware form `additionalClass` strings and media attribute bags
+- Shell/router templates and `icon/icon.html.twig` are exempt
+
 ## JavaScript selector convention
 
 This plugin uses `data-component` attributes as the only JavaScript selectors.

@@ -1,17 +1,29 @@
+{%
+  set classes = vi_define_classes({
+    main: ['footer-bottom'],
+    container: ['footer-bottom-container', 'container'],
+    serviceList: ['footer-service-list', 'list-unstyled'],
+    serviceItem: ['footer-service-item'],
+    link: ['footer-link'],
+    vat: ['footer-vat'],
+    copyright: ['footer-copyright'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_footer_bottom %}
-    <div class="footer-bottom">
+    <div {{ classes.main | vi_attr_classes }}>
     
     {% block component_footer_bottom_container %}
-        <div class="footer-bottom-container container">
+        <div {{ classes.container | vi_attr_classes }}>
 
             {% block component_footer_bottom_service_list %}
                 {% if page.header.serviceMenu %}
-                    <ul class="footer-service-list list-unstyled">
+                    <ul {{ classes.serviceList | vi_attr_classes }}>
                         {% for serviceMenuItem in page.header.serviceMenu %}
                             {% block component_footer_bottom_service_item %}
-                                <li class="footer-service-item">
+                                <li {{ classes.serviceItem | vi_attr_classes }}>
                                     {% block component_footer_bottom_service_link %}
-                                        <a class="footer-link"
+                                        <a {{ classes.link | vi_attr_classes }}
                                             href="{{ category_url(serviceMenuItem) }}"
                                             {% if category_linknewtab(serviceMenuItem) %}target="_blank"{% endif %}
                                             title="{{ serviceMenuItem.translated.name }}">
@@ -27,7 +39,7 @@
 
             {% block component_footer_bottom_vat_notice %}
                 {% if showVatNotice is same as(true) %}
-                    <div class="footer-vat">
+                    <div {{ classes.vat | vi_attr_classes }}>
                         {% if context.taxState == 'gross' %}
                             {{ 'footer.includeVatText'|trans({
                                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
@@ -42,7 +54,7 @@
             {% endblock %}
 
             {% block component_footer_bottom_copyright %}
-                <div class="footer-copyright">
+                <div {{ classes.copyright | vi_attr_classes }}>
                     {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
                 </div>
             {% endblock %}

@@ -1,5 +1,11 @@
 {% sw_extends '@Storefront/storefront/component/line-item/element/remove.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    button: ['btn', 'btn-light', 'btn-sm', 'line-item-remove-button', 'line-item-action'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_line_item_remove_button %}
   {% set iconOptions = iconOptions|default(themeParameters.icons) %}
   <button
@@ -7,7 +13,7 @@
     aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags }}"
     title="{{ 'global.default.remove'|trans }}"
     data-product-id="{{ lineItem.id }}"
-    class="btn btn-light btn-sm line-item-remove-button line-item-action">
+    {{ classes.button | vi_attr_classes }}>
     {{ vi_icon('x', iconOptions) }}
   </button>
 {% endblock %}

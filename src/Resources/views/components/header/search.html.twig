@@ -1,10 +1,23 @@
 {% sw_extends '@Storefront/storefront/layout/header/search.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    collapse: ['collapse', 'header-search-collapse', 'd-flex', 'flex-row', 'flex-wrap', 'align-items-center'],
+    search: ['header-search'],
+    form: ['header-search-form'],
+    container: ['header-search-container', 'd-flex', 'flex-row', 'flex-wrap', 'gap-2'],
+    inputGroup: ['input-group', 'header-search-input-group'],
+    input: ['form-control', 'header-search-input'],
+    submitButton: ['btn', 'header-search-btn'],
+    closeButton: ['btn', 'header-search-close'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block layout_header_search %}
-    <div class="collapse header-search-collapse d-flex flex-row flex-wrap align-items-center"
+    <div {{ classes.collapse | vi_attr_classes }}
         id="searchCollapse">
 
-        <div class="header-search">
+        <div {{ classes.search | vi_attr_classes }}>
 
             {% block layout_header_search_form %}
                 <form action="{{ path('frontend.search.page') }}"
@@ -12,15 +25,15 @@
                     data-search-widget="true"
                     data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
                     data-url="{{ path('frontend.search.suggest') }}?search="
-                    class="header-search-form">
+                    {{ classes.form | vi_attr_classes }}>
 
-                    <div class="header-search-container d-flex flex-row flex-wrap gap-2">
+                    <div {{ classes.container | vi_attr_classes }}>
                         {% block layout_header_search_input_group %}
-                            <div class="input-group header-search-input-group">
+                            <div {{ classes.inputGroup | vi_attr_classes }}>
                                 {% block layout_header_search_input %}
                                     <input type="search"
                                         name="search"
-                                        class="form-control header-search-input"
+                                        {{ classes.input | vi_attr_classes }}
                                         autocomplete="off"
                                         autocapitalize="off"
                                         placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
@@ -30,7 +43,7 @@
 
                                 {% block layout_header_search_button %}
                                     <button type="submit"
-                                        class="btn header-search-btn"
+                                        {{ classes.submitButton | vi_attr_classes }}
                                         aria-label="{{ 'header.searchButton'|trans|striptags }}">
                                         {% block layout_header_search_button_icon %}
                                             {{vi_icon('magnifying-glass')}}
@@ -41,7 +54,7 @@
                         {% endblock %}
 
                         {% block layout_header_search_close %}
-                            <button class="btn header-search-close"
+                            <button {{ classes.closeButton | vi_attr_classes }}
                                 data-header-search="close">
                                 {% block layout_header_search_close_icon %}
                                     {{vi_icon('x')}}

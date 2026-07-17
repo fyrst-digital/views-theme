@@ -4,21 +4,38 @@
     {% set showFlagLabel = true %}
 {% endif %}
 
+{%
+  set classes = vi_define_classes({
+    form: ['language-form'],
+    menu: ['languages-menu', 'dropdown'],
+    button: ['btn', 'dropdown-toggle', 'language-switch-btn'],
+    flag: ['language-flag'],
+    flagIcon: ['language-flag-icon'],
+    flagLabel: ['language-flag-label'],
+    dropdown: ['dropdown-menu', 'dropdown-menu-end'],
+    item: ['language-item', 'dropdown-item'],
+    itemChecked: ['language-item', 'dropdown-item', 'item-checked'],
+    itemLabel: ['language-item-label'],
+    itemRadio: ['language-item-radio'],
+    itemIcon: ['language-item-icon'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block layout_header_actions_language_widget_form %}
 
     <form method="post"
             action="{{ path('frontend.checkout.switch-language') }}"
-            class="language-form"
+            {{ classes.form | vi_attr_classes }}
             data-form-auto-submit="true">
         {% block layout_header_actions_language_widget_content %}
             {% set isoCode = page.header.activeLanguage.translationCode.code|lower|split('-') %}
             {% set language = isoCode[0] %}
             {% set country = isoCode[1] %}
 
-            <div class="languages-menu dropdown">
+            <div {{ classes.menu | vi_attr_classes }}>
 
                 {% block component_language_switch_button %} 
-                    <button class="btn dropdown-toggle language-switch-btn"
+                    <button {{ classes.button | vi_attr_classes }}
                         type="button"
                         id="languagesDropdown-{{ position }}"
                         data-bs-toggle="dropdown"
@@ -26,16 +43,16 @@
                         aria-expanded="false">
 
                         {% block component_language_switch_button_flag %} 
-                            <div class="language-flag">
+                            <div {{ classes.flag | vi_attr_classes }}>
 
                                 {% block component_language_switch_button_icon %} 
                                     <img src="{{ asset('bundles/viewstheme/flags/'~ page.header.activeLanguage.translationCode.code ~'.svg', 'asset') }}"
-                                        class="language-flag-icon">
+                                        {{ classes.flagIcon | vi_attr_classes }}>
                                 {% endblock %}
 
                                 {% block component_language_switch_button_label %} 
                                     {% if showFlagLabel %}
-                                        <span class="language-flag-label">
+                                        <span {{ classes.flagLabel | vi_attr_classes }}>
                                             {{language|upper}}
                                         </span>
                                     {% endif %}
@@ -46,12 +63,12 @@
                 {% endblock %}
 
                 {% block layout_header_actions_languages_widget_form_items %}
-                    <div class="dropdown-menu dropdown-menu-end"
+                    <div {{ classes.dropdown | vi_attr_classes }}
                         aria-labelledby="languagesDropdown-{{ position }}">
                         {% for language in page.header.languages %}
 
                             {% block component_language_switch_item %} 
-                                <div class="language-item dropdown-item{% if language.id is same as(page.header.activeLanguage.id) %} item-checked{% endif %}"
+                                <div {{ (language.id is same as(page.header.activeLanguage.id) ? classes.itemChecked : classes.item) | vi_attr_classes }}
                                     title="{{ language.translated.name }}">
 
                                     {% set isoCode = language.translationCode.code|lower|split('-') %}
@@ -59,11 +76,11 @@
                                     {% set flagCountry = isoCode[1] %}
 
                                     {% block layout_header_actions_languages_widget_form_items_flag %}
-                                        <label class="language-item-label"
+                                        <label {{ classes.itemLabel | vi_attr_classes }}
                                             for="{{ position }}-{{ language.id }}">
 
                                             <input id="{{ position }}-{{ language.id }}"
-                                                class="language-item-radio"
+                                                {{ classes.itemRadio | vi_attr_classes }}
                                                 value="{{ language.id }}"
                                                 name="languageId"
                                                 type="radio"
@@ -71,7 +88,7 @@
                                             
                                             {% block component_language_switch_item_flag_icon %} 
                                                 <img src="{{ asset('bundles/viewstheme/flags/'~ language.translationCode.code ~'.svg', 'asset') }}"
-                                                    class="language-item-icon">
+                                                    {{ classes.itemIcon | vi_attr_classes }}>
                                             {% endblock %}
                                             
                                             {% block component_language_switch_item_flag_label %} 

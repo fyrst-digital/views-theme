@@ -128,6 +128,24 @@ Combined with `vi_define_classes`:
 - Removes duplicate class names
 - Returns an empty string (no attribute) if the input array is empty or `null`
 
+#### Component conventions
+
+Every component under `src/Resources/views/components/` that renders styled markup must:
+
+1. Define defaults with `vi_define_classes(..., classes|default({}), replaceClasses|default(false))`
+2. Output map keys with `{{ classes.key | vi_attr_classes }}` (never `class="{{ classes.key|join(' ') }}"`)
+
+Allowed hybrids (platform constraints):
+
+| Pattern | When |
+|---------|------|
+| `additionalClass: classes.x\|join(' ')` | Shopware form fields that expect a class **string** |
+| `class: classes.x\|join(' ')` | Attribute bags (`sw_thumbnails`, media/video helpers) |
+| `vi_merge_deep` | Parent composing nested class maps for a child include |
+| Pre-build dynamic defaults | Conditional classes (`type`, `size`, form violations) **before** `vi_define_classes`, or merge into a local array then `vi_attr_classes` |
+
+Exempt: pure include/extend routers with no own markup, and `icon/icon.html.twig` (dynamic icon class API).
+
 ### `vi_icon`
 
 - todo: add description

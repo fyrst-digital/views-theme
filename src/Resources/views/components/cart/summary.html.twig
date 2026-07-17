@@ -1,5 +1,6 @@
 {%
   set classes = vi_define_classes({
+    main: ['cart-summary'],
     list: ['cart-summary-list'],
     item: {},
     itemTotal: {
@@ -21,7 +22,7 @@
 %}
 
 {% block component_cart_summary %}
-  <div class="cart-summary">
+  <div {{ classes.main | vi_attr_classes }}>
     {% block component_cart_summary_list %}
       <div {{ classes.list | vi_attr_classes }}>
         {% block component_cart_summary_item_total %}

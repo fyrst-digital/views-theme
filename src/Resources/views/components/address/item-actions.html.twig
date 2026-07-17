@@ -1,5 +1,24 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/address-actions.html.twig' %}
 
+{%
+  set editButtonClasses = ['btn', 'btn-sm']
+%}
+{% if feature('v6.7.0.0') %}
+  {% set editButtonClasses = editButtonClasses|merge(['btn-link', 'p-0', 'address-action-edit']) %}
+{% else %}
+  {% set editButtonClasses = editButtonClasses|merge(['btn-light']) %}
+{% endif %}
+
+{%
+  set classes = vi_define_classes({
+    editButton: editButtonClasses,
+    deleteForm: ['address-action-delete'],
+    deleteButton: ['btn', 'btn-sm', 'btn-light'],
+    setDefaultBillingButton: ['btn', 'btn-light', 'address-action-set-default', 'address-action-set-default-billing', 'btn-sm'],
+    setDefaultShippingButton: ['btn', 'btn-light', 'address-action-set-default', 'address-action-set-default-shipping', 'btn-sm'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block page_account_address_actions %}
 
         {% block page_account_address_actions_buttons %}
@@ -7,7 +26,7 @@
                     <a
                         href="{{ path('frontend.account.address.edit.page', {'addressId': address.id}) }}"
                         title="{{ "account.addressesContentItemActionEdit"|trans|striptags }}"
-                        class="btn btn-sm{% if feature('v6.7.0.0') %} btn-link p-0 address-action-edit{% else %} btn-light{% endif %}"
+                        {{ classes.editButton | vi_attr_classes }}
                     >
                         {{vi_icon('pencil-simple-line')}}
                         {{ "account.addressesContentItemActionEdit"|trans|sw_sanitize }}
@@ -17,11 +36,11 @@
             {% block page_account_address_actions_delete %}
                 {% if defaultShippingAddress.id != address.id and defaultBillingAddress.id != address.id %}
                         <form action="{{ path('frontend.account.address.delete', {'addressId': address.id}) }}"
-                              class="address-action-delete"
+                              {{ classes.deleteForm | vi_attr_classes }}
                               method="post">
                             <button
                                 type="submit"
-                                class="btn btn-sm btn-light"
+                                {{ classes.deleteButton | vi_attr_classes }}
                                 title="{{ "account.addressesContentItemActionDelete"|trans|striptags }}"
                             >
                                 {{vi_icon('x')}}
@@ -43,7 +62,7 @@
                             <button
                                 type="submit"
                                 title="{{ "account.addressesSetAsDefaultBillingAction"|trans|striptags }}"
-                                class="btn btn-light address-action-set-default address-action-set-default-billing btn-sm"
+                                {{ classes.setDefaultBillingButton | vi_attr_classes }}
                             >
                                 {{ "account.addressesSetAsDefaultBillingAction"|trans|sw_sanitize }}
                             </button>
@@ -61,7 +80,7 @@
                             <button
                                 type="submit"
                                 title="{{ "account.addressesSetAsDefaultShippingAction"|trans|striptags }}"
-                                class="btn btn-light address-action-set-default address-action-set-default-shipping btn-sm"
+                                {{ classes.setDefaultShippingButton | vi_attr_classes }}
                                 {% if not address.country.shippingAvailable %} disabled="disabled"{% endif %}
                             >
                                 {{ "account.addressesSetAsDefaultShippingAction"|trans|sw_sanitize }}

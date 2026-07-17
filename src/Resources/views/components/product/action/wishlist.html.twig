@@ -1,39 +1,42 @@
 {% sw_extends '@Storefront/storefront/component/product/card/wishlist.html.twig' %}
 
-{% set defaultClasses = {
-    action: ['btn', 'product-wishlist-' ~  productId, 'product-wishlist-action', 'product-wishlist-not-added', 'product-wishlist-loading']
-} %}
-
-{% set defaultClasses = defaultClasses|vi_merge_deep({
-    action: ['btn-' ~ color|default('light')]
-}) %}
+{%
+  set actionClasses = [
+    'btn',
+    'product-wishlist-' ~ productId,
+    'product-wishlist-action',
+    'product-wishlist-not-added',
+    'product-wishlist-loading',
+    'btn-' ~ color|default('light'),
+  ]
+%}
 
 {% if size is defined %}
-    {% set defaultClasses = defaultClasses|vi_merge_deep({
-        action: ['btn-' ~ size]
-    }) %}
+  {% set actionClasses = actionClasses|merge(['btn-' ~ size]) %}
 {% endif %}
 
-{% if classes is defined %}
-    {% set classes = classes|vi_merge_deep(defaultClasses) %}
-{% else %}
-    {% set classes = defaultClasses %}
-{% endif %}
+{%
+  set classes = vi_define_classes({
+    action: actionClasses,
+    icon: ['wishlist-icon'],
+    label: size is defined ? ['product-wishlist-btn-content', 'product-wishlist-btn-content-' ~ size] : ['product-wishlist-btn-content'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_product_wishlist_button %}
     <button
-        class="{{classes.action|join(' ')}}"
+        {{ classes.action | vi_attr_classes }}
         title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
         data-add-to-wishlist="true"
         data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
     >
         {% block component_product_wishlist_icon %}
-            <span class="wishlist-icon"></span>
+            <span {{ classes.icon | vi_attr_classes }}></span>
         {% endblock %}
 
         {% block component_product_wishlist_label %}
             {% if showText %}
-                <span class="product-wishlist-btn-content product-wishlist-btn-content-{{ size }}">
+                <span {{ classes.label | vi_attr_classes }}>
                     {{ 'listing.addToWishlist'|trans|sw_sanitize }}
                 </span>
             {% endif %}

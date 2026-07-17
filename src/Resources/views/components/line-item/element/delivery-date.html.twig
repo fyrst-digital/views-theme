@@ -1,5 +1,11 @@
 {% sw_extends '@Storefront/storefront/component/line-item/element/delivery-date.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    main: ['line-item-delivery-date'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_line_item_delivery_date %}
     {% set deliveryPosition = null %}
 
@@ -11,7 +17,7 @@
 
     {% if deliveryPosition and deliveryPosition.deliveryDate %}
         {% block component_line_item_delivery_date_inner %}
-            <div class="line-item-delivery-date">
+            <div {{ classes.main | vi_attr_classes }}>
                 {{vi_icon('truck')}}
                 {{ 'checkout.lineItemDeliveryDate'|trans({
                     '%earliest%': deliveryPosition.deliveryDate.earliest|format_date('short', locale=app.request.locale),

@@ -1,5 +1,14 @@
 {% sw_extends '@Storefront/components/footer/column.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    headlineLink: ['footer-headline-link'],
+    list: ['footer-link-list'],
+    item: ['footer-link-item'],
+    link: ['footer-link'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block component_footer_column_headline_title %}
   {% if navigation.category.type == 'folder' %}
     {{ navigation.category.translated.name }}
@@ -9,7 +18,7 @@
       {% if category_linknewtab(navigation.category) %}
         target="_blank"
       {% endif %}
-      class="footer-headline-link"
+      {{ classes.headlineLink | vi_attr_classes }}
       title="{{ navigation.category.translated.name }}">
       {{ navigation.category.translated.name }}
     </a>
@@ -17,17 +26,17 @@
 {% endblock %}
 
 {% block component_footer_column_content %}
-  <ul class="footer-link-list">
+  <ul {{ classes.list | vi_attr_classes }}>
     {% for treeItem in navigation.children %}
       {% set category = treeItem.category %}
       {% set name = category.translated.name %}
 
-      <li class="footer-link-item">
+      <li {{ classes.item | vi_attr_classes }}>
         {% if category.type == 'folder' %}
           <div>{{ name }}</div>
         {% else %}
           <a
-            class="footer-link"
+            {{ classes.link | vi_attr_classes }}
             href="{{ category_url(category) }}"
             {% if category_linknewtab(category) %}
               target="_blank"

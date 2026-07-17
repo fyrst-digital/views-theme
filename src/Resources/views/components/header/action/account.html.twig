@@ -2,14 +2,14 @@
 
 {%
   set classes = vi_define_classes({
-    action: [
-    ],
-    dropdown: {}
+    main: ['dropdown'],
+    action: [],
+    dropdown: {},
   }, classes|default({}), replaceClasses|default(false))
 %}
 
 {% block component_header_action_account %}
-  <div class="dropdown">
+  <div {{ classes.main | vi_attr_classes }}>
     {% block component_header_action_account_toggle %}
       <button
         {{ classes.action | vi_attr_classes }}

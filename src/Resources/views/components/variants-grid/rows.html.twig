@@ -20,7 +20,7 @@
       {% set rowClasses = rowClasses|merge(classes.rowUnavailable) %}
     {% endif %}
 
-    <tr class="{{ rowClasses|join(' ') }}">
+    <tr {{ rowClasses | vi_attr_classes }}>
       {% block component_variants_grid_row_preview %}
         {% if showPreviewColumn %}
           {% sw_include '@Storefront/components/variants-grid/columns/preview.html.twig' with {

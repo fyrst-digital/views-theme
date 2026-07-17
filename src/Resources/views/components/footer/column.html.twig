@@ -2,17 +2,17 @@
   set classes = vi_define_classes({
     column: ['footer-column'],
     headline: ['footer-column-headline', 'footer-headline'],
-    content: ['footer-column-content-container']
+    content: ['footer-column-content-container'],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
 {% block component_footer_column %}
-    <div class="{% block component_footer_column_classes %}{{ classes.column|join(' ') }}{% endblock %}">
-        
+    <div {{ classes.column | vi_attr_classes }}>
+
         {% block component_footer_column_inner %}
 
             {% block component_footer_column_headline %}
-                <div class="{{ classes.headline|join(' ') }}"
+                <div {{ classes.headline | vi_attr_classes }}
                     role="listitem">
 
                     {% block component_footer_column_headline_title %}
@@ -21,7 +21,7 @@
             {% endblock %}
 
             {% block component_footer_column_content_container %}
-                <div class="{{ classes.content|join(' ') }}">
+                <div {{ classes.content | vi_attr_classes }}>
 
                     {% block component_footer_column_content %}
                     {% endblock %}

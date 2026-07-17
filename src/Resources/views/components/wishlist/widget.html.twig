@@ -1,5 +1,11 @@
 {% sw_extends '@Storefront/storefront/layout/header/actions/wishlist-widget.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    badge: ['header-wishlist-badge', 'header-action-badge', 'position-absolute', 'top-0', 'start-100', 'translate-middle', 'badge', 'rounded-pill'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block layout_header_actions_wishlist_widget %}
     {% set showCounter = showCounter ?? true %}
     {% set wishlistStorageOptions = {
@@ -11,7 +17,7 @@
 
     {{vi_icon('heart')}}
     
-    <span class="header-wishlist-badge header-action-badge position-absolute top-0 start-100 translate-middle badge rounded-pill"
+    <span {{ classes.badge | vi_attr_classes }}
           id="wishlist-basket"
           data-wishlist-storage="true"
           data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"

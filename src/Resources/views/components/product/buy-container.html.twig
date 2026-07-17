@@ -14,9 +14,14 @@
 
 {%
   set classes = vi_define_classes({
-  productHeader: {},
-  productBuy: {},
-  productPrice: {},
+    productHeader: {},
+    productBuy: {},
+    productPrice: {},
+    reviews: ['product-detail-reviews', 'd-flex', 'flex-wrap', 'flex-row', 'gap-2', 'align-items-center'],
+    reviewLabel: ['product-review-label'],
+    reviewLink: ['product-detail-reviews-link', 'product-review-link'],
+    prices: ['product-prices'],
+    actions: ['product-actions'],
   }, classes|default({}), replaceClasses|default(false))
 %}
 
@@ -60,17 +65,17 @@
         {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
       {% endif %}
 
-      <div class="product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center">
+      <div {{ classes.reviews | vi_attr_classes }}>
         {%
           sw_include '@Storefront/components/review/rating.html.twig' with {
               points: product.ratingAverage
           }
         %}
-        <div class="product-review-label">
+        <div {{ classes.reviewLabel | vi_attr_classes }}>
           {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
           <a
             data-bs-toggle="tab"
-            class="product-detail-reviews-link product-review-link"
+            {{ classes.reviewLink | vi_attr_classes }}
             data-off-canvas-tabs="true"
             data-remote-click="true"
             data-remote-click-options="{{ remoteClickOptions|json_encode }}"
@@ -85,7 +90,7 @@
   {% endblock %}
 
   {% block component_product_buy_container_prices %}
-    <div class="product-prices">
+    <div {{ classes.prices | vi_attr_classes }}>
       {% block buy_widget_price %}
         {%
           sw_include '@Storefront/components/product/price.html.twig' with {
@@ -142,7 +147,7 @@
 
     {% block component_product_buy_container_actions_container %}
       {% if options.showActions is same as(true) %}
-        <div class="product-actions">
+        <div {{ classes.actions | vi_attr_classes }}>
           {% block component_product_buy_container_action_prepend -%}{%- endblock %}
 
           {% block component_product_buy_container_wishlist %}

@@ -1,24 +1,20 @@
-{% set defaultClasses = {
+{%
+  set classes = vi_define_classes({
     item: ['cart-summary-item'],
     label: ['cart-summary-item-label'],
-    value: ['cart-summary-item-value']
-} %}
-
-{% if classes is defined %}
-    {% set classes = classes|vi_merge_deep(defaultClasses) %}
-{% else %}
-    {% set classes = defaultClasses %}
-{% endif %}
+    value: ['cart-summary-item-value'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
 
 {% block component_cart_summary_item %}
-    <dl class="{{classes.item|join(' ')}}">
+    <dl {{ classes.item | vi_attr_classes }}>
         {% block component_cart_summary_label %}
-            <dt class="{{classes.label|join(' ')}}">
+            <dt {{ classes.label | vi_attr_classes }}>
                 {{ label|raw }}
             </dt>
         {% endblock %}
         {% block component_cart_summary_value %}
-            <dd class="{{classes.value|join(' ')}}">
+            <dd {{ classes.value | vi_attr_classes }}>
                 {{ value }}
             </dd>
         {% endblock %}

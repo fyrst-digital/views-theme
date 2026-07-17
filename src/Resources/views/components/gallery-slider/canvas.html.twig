@@ -1,18 +1,31 @@
 {% block component_gallery_slider_canvas_container %}
-    <div class="gallery-slider-canvas-container position-relative">3trehgfg
+    {%
+      set classes = vi_define_classes({
+        container: ['gallery-slider-canvas-container', 'position-relative'],
+        canvas: ['gallery-slider-canvas', 'splide'],
+        arrows: ['splide__arrows'],
+        arrowPrev: ['slider-control-button', 'control-prev', 'splide__arrow', 'splide__arrow--prev'],
+        arrowNext: ['slider-control-button', 'control-next', 'splide__arrow', 'splide__arrow--next'],
+        track: ['splide__track'],
+        list: ['splide__list'],
+        item: ['gallery-slider-canvas-item', 'splide__slide'],
+        image: ['gallery-slider-canvas-image'],
+      }, classes|default({}), replaceClasses|default(false))
+    %}
+    <div {{ classes.container | vi_attr_classes }}>
 
         {% block component_gallery_slider_canvas %}
-            <div class="gallery-slider-canvas splide">
+            <div {{ classes.canvas | vi_attr_classes }}>
 
                 {% block component_gallery_slider_canvas_arrows_control %}
-                    <div class="splide__arrows">
+                    <div {{ classes.arrows | vi_attr_classes }}>
                         {% block component_gallery_slider_canvas_arrows_control_prev %}
-                            <button class="slider-control-button control-prev splide__arrow splide__arrow--prev">
+                            <button {{ classes.arrowPrev | vi_attr_classes }}>
                                 {{vi_icon('caret-left')}}
                             </button>
                         {% endblock %}
                         {% block component_gallery_slider_canvas_arrows_control_next %}
-                            <button class="slider-control-button control-next splide__arrow splide__arrow--next">
+                            <button {{ classes.arrowNext | vi_attr_classes }}>
                                 {{vi_icon('caret-right')}}
                             </button>
                         {% endblock %}
@@ -20,15 +33,15 @@
                 {% endblock %}
 
                 {% block component_gallery_slider_canvas_track %}
-                    <div class="splide__track">
-                        <ul class="splide__list">
+                    <div {{ classes.track | vi_attr_classes }}>
+                        <ul {{ classes.list | vi_attr_classes }}>
                             {% for media in medias %}
                                 {% block component_gallery_slider_canvas_item %}
-                                    <li class="gallery-slider-canvas-item splide__slide">
+                                    <li {{ classes.item | vi_attr_classes }}>
                                         {% sw_thumbnails 'gallery-slider-canvas-image' with {
                                             media: media,
                                             attributes: {
-                                                class: 'gallery-slider-canvas-image'
+                                                class: classes.image|join(' ')
                                             }
                                         } %}
                                     </li>

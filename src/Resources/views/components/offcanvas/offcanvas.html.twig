@@ -1,16 +1,24 @@
 {% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
 
+{%
+  set classes = vi_define_classes({
+    header: ['offcanvas-header', 'border-bottom'],
+    headerContent: ['offcanvas-header-content', 'fw-semibold', 'fs-5'],
+    closeButton: ['btn', 'btn-light', 'offcanvas-close', 'js-offcanvas-close'],
+  }, classes|default({}), replaceClasses|default(false))
+%}
+
 {% block utilities_offcanvas_header %}
-    <div class="offcanvas-header border-bottom">
+    <div {{ classes.header | vi_attr_classes }}>
 
         {% block component_offcanvas_header_content %}
-            <div class="offcanvas-header-content fw-semibold fs-5">
+            <div {{ classes.headerContent | vi_attr_classes }}>
                 {% block component_offcanvas_header_title_content %}{% endblock %}
             </div>
         {% endblock %}
 
         {% block utilities_offcanvas_close %}
-            <button class="btn btn-light offcanvas-close js-offcanvas-close"
+            <button {{ classes.closeButton | vi_attr_classes }}
                 title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
                 aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}">
                 {% block utilities_offcanvas_close_icon %}
