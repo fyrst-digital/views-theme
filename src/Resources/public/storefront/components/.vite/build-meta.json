@@ -1,0 +1,11 @@
+{
+  "manifest": {
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js": {
+      "file": "ViewsTheme/Header/Action/Cart/index-CMRCXSQa.js",
+      "name": "ViewsTheme/Header/Action/Cart/index",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js",
+      "isEntry": true
+    }
+  },
+  "vendorMap": {}
+}

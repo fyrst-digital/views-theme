@@ -106,9 +106,22 @@ See [JavaScript](javascript.md).
 |------|--------|
 | `ViewsTheme:Alert` | UX |
 | `ViewsTheme:QuantityInput` | UX |
+| `ViewsTheme:Header:*` (Main, Logo, Actions, Search, Action/*) | UX |
+| `ViewsTheme:Header:Action:Cart` | UX + co-located `index.js` |
+| `ViewsTheme:Search:*` (Bar, Suggest, SuggestItem, SuggestEmpty, SuggestSummary) | UX |
+| `ViewsTheme:Search:Pagelet` | Component (still `sw_extends` core pagelet; not a storefront override) |
+| `ViewsTheme:Offcanvas` | UX |
+| `ViewsTheme:LanguageSwitch` | UX (invoke via `<twig:ViewsTheme:LanguageSwitch />`) |
+| `ViewsTheme:Navigation:Flyout` | Component (still `extends` core flyout + `parent()`; not a storefront override) |
 | Other components under `views/components/` | Legacy `sw_include` + `vi_define_classes` (migrating by domain) |
 
 Legacy class API: [CSS class API](css-classes.md) (deprecated for new work).
+
+## Scope rules
+
+- Migrate and create UI under **`src/Resources/views/components/` only**.
+- **Do not create** new files under `src/Resources/views/storefront/`.
+- **Only edit** existing storefront templates when replacing an include that already lives there (e.g. `layout/header/header.html.twig` → `<twig:ViewsTheme:Header:Main />`).
 
 ## Related
 

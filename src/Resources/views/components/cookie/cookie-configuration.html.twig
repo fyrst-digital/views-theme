@@ -1,4 +1,4 @@
-{% sw_extends '@Storefront/components/offcanvas/offcanvas.html.twig' %}
+{% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
 
 {%
   set classes = vi_define_classes({
@@ -16,8 +16,19 @@
   })
 %}
 
-{% block component_offcanvas_header_title_content %}
-    {{ 'cookie.headline'|trans|sw_sanitize }}
+{% block utilities_offcanvas_header %}
+    <div class="vi-offcanvas__header offcanvas-header border-bottom">
+        <div class="vi-offcanvas__title offcanvas-header-content fw-semibold fs-5">
+            {{ 'cookie.headline'|trans|sw_sanitize }}
+        </div>
+        <button
+            type="button"
+            class="vi-offcanvas__close btn btn-light offcanvas-close js-offcanvas-close"
+            title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
+            aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}">
+            {{ vi_icon('x') }}
+        </button>
+    </div>
 {% endblock %}
 
 {% block utilities_offcanvas_content %}
@@ -62,7 +73,7 @@
                 <button
                     type="submit"
                     {{ classes.submitButton | vi_attr_classes }}>
-                    {{vi_icon('check')}}
+                    {{ vi_icon('check') }}
                     {{ 'cookie.save'|trans|sw_sanitize }}
                 </button>
             </div>

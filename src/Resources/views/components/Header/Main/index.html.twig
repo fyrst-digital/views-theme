@@ -1,0 +1,36 @@
+{% props
+    defaultBaseClasses = 'vi-header-main d-flex flex-wrap align-items-center gap-3 py-3 z-5',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set menuAttributes = attributes.nested('menu') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block menu %}
+        <div
+            {{ menuAttributes.defaults({
+                class: 'vi-header-main__menu col d-flex justify-content-start align-items-center',
+            }) }}
+            data-ref="menu"
+        >
+            <twig:ViewsTheme:Header:Action:Menu />
+        </div>
+    {% endblock %}
+
+    {% block logo %}
+        <twig:ViewsTheme:Header:Logo />
+    {% endblock %}
+
+    {% block actions %}
+        <twig:ViewsTheme:Header:Actions />
+    {% endblock %}
+
+    {% block search %}
+        <twig:ViewsTheme:Header:Search />
+    {% endblock %}
+</div>

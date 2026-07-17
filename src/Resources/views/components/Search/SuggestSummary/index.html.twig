@@ -1,0 +1,40 @@
+{% props
+    total = 0,
+    searchTerm = '',
+    defaultBaseClasses = 'vi-search-suggest-summary js-result p-4 border-top',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set actionAttributes = attributes.nested('action') %}
+{% set badgeAttributes = attributes.nested('badge') %}
+
+{% if total > 0 %}
+    <div
+        data-ref="summary"
+        {{ attributes }}
+        class="{{ rootCVA.apply({}, rootClass) }}"
+    >
+        {% block action %}
+            <a
+                href="{{ path('frontend.search.page') }}?search={{ searchTerm }}"
+                title="{{ 'header.searchAllResults'|trans|striptags }}"
+                {{ actionAttributes.defaults({
+                    class: 'vi-search-suggest-summary__action btn btn-primary',
+                }) }}
+            >
+                {{ 'header.searchAllResults'|trans|sw_sanitize }}
+                {% block badge %}
+                    <span
+                        {{ badgeAttributes.defaults({
+                            class: 'vi-search-suggest-summary__badge badge rounded-pill text-bg-light',
+                        }) }}
+                    >
+                        {{ total }}
+                    </span>
+                {% endblock %}
+            </a>
+        {% endblock %}
+    </div>
+{% endif %}

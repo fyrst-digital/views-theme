@@ -1,0 +1,19 @@
+{% props
+    iconOptions = null,
+    defaultBaseClasses = 'vi-header-action-menu',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<button
+    type="button"
+    data-off-canvas-menu="true"
+    aria-label="{{ 'general.menuLink'|trans|striptags }}"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {{ vi_icon('list', iconOptions) }}
+</button>

@@ -1,0 +1,55 @@
+{% props
+    iconOptions = null,
+    showCounter = true,
+    defaultBaseClasses = 'vi-header-action-wishlist',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set badgeAttributes = attributes.nested('badge') %}
+{% set liveAttributes = attributes.nested('live') %}
+
+{% set wishlistStorageOptions = {
+    listPath: path('frontend.wishlist.product.list'),
+    mergePath: path('frontend.wishlist.product.merge'),
+    pageletPath: path('frontend.wishlist.product.merge.pagelet'),
+} %}
+{% set wishlistWidgetOptions = { showCounter: showCounter } %}
+
+<a
+    href="{{ path('frontend.wishlist.page') }}"
+    title="{{ 'header.wishlist'|trans|striptags }}"
+    aria-labelledby="wishlist-basket-live-area"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block badge %}
+        <span
+            id="wishlist-basket"
+            data-wishlist-storage="true"
+            data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"
+            data-wishlist-widget="true"
+            data-wishlist-widget-options="{{ wishlistWidgetOptions|json_encode }}"
+            {{ badgeAttributes.defaults({
+                class: 'vi-header-action-wishlist__badge badge bg-primary header-wishlist-badge',
+            }) }}
+        ></span>
+    {% endblock %}
+
+    {% block icon %}
+        {{ vi_icon('heart', iconOptions) }}
+    {% endblock %}
+
+    {% block live_region %}
+        <span
+            id="wishlist-basket-live-area"
+            data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
+            aria-live="polite"
+            {{ liveAttributes.defaults({
+                class: 'vi-header-action-wishlist__sr visually-hidden',
+            }) }}
+        ></span>
+    {% endblock %}
+</a>

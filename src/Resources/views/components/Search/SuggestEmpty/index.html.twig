@@ -1,0 +1,16 @@
+{% props
+    defaultBaseClasses = 'vi-search-suggest-empty d-flex p-6 justify-content-center',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block content %}
+        {{ 'header.searchNoResult'|trans|sw_sanitize }}
+    {% endblock %}
+</div>

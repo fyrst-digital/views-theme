@@ -1,0 +1,93 @@
+{% props
+    searchTerm = null,
+    searchWidgetOptions = {},
+    defaultBaseClasses = 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center',
+    defaultVariants = {},
+%}
+
+{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set searchAttributes = attributes.nested('search') %}
+{% set formAttributes = attributes.nested('form') %}
+{% set containerAttributes = attributes.nested('container') %}
+{% set inputGroupAttributes = attributes.nested('inputGroup') %}
+{% set inputAttributes = attributes.nested('input') %}
+{% set submitAttributes = attributes.nested('submit') %}
+{% set closeAttributes = attributes.nested('close') %}
+
+<div
+    {{ attributes.defaults({ id: 'searchCollapse' }) }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+    data-ref="search"
+>
+    <div {{ searchAttributes.defaults({ class: 'vi-header-search__body header-search' }) }}>
+        {% block form %}
+            <form
+                action="{{ path('frontend.search.page') }}"
+                method="get"
+                data-search-widget="true"
+                data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
+                data-url="{{ path('frontend.search.suggest') }}?search="
+                {{ formAttributes.defaults({ class: 'vi-header-search__form header-search-form' }) }}
+            >
+                <div
+                    {{ containerAttributes.defaults({
+                        class: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2',
+                    }) }}
+                >
+                    {% block input_group %}
+                        <div
+                            {{ inputGroupAttributes.defaults({
+                                class: 'vi-header-search__input-group input-group header-search-input-group',
+                            }) }}
+                        >
+                            {% block input %}
+                                <input
+                                    type="search"
+                                    name="search"
+                                    autocomplete="off"
+                                    autocapitalize="off"
+                                    placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                    aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                    value="{{ searchTerm }}"
+                                    {{ inputAttributes.defaults({
+                                        class: 'vi-header-search__input form-control header-search-input',
+                                    }) }}
+                                >
+                            {% endblock %}
+
+                            {% block submit %}
+                                <button
+                                    type="submit"
+                                    aria-label="{{ 'header.searchButton'|trans|striptags }}"
+                                    {{ submitAttributes.defaults({
+                                        class: 'vi-header-search__submit btn header-search-btn',
+                                    }) }}
+                                >
+                                    {% block submit_icon %}
+                                        {{ vi_icon('magnifying-glass') }}
+                                    {% endblock %}
+                                </button>
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block close %}
+                        <button
+                            type="button"
+                            data-header-search="close"
+                            {{ closeAttributes.defaults({
+                                class: 'vi-header-search__close btn header-search-close',
+                            }) }}
+                        >
+                            {% block close_icon %}
+                                {{ vi_icon('x') }}
+                            {% endblock %}
+                        </button>
+                    {% endblock %}
+                </div>
+            </form>
+        {% endblock %}
+    </div>
+</div>

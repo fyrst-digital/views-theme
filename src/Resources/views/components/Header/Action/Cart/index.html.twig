@@ -1,0 +1,22 @@
+{% props
+    iconOptions = null,
+    offcanvasCartOptions = { autoFocus: true },
+    defaultBaseClasses = 'vi-header-action-cart',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<span
+    title="{{ 'checkout.cartTitle'|trans|striptags }}"
+    aria-label="{{ 'checkout.cartTitle'|trans|striptags }}"
+    data-off-canvas-cart="true"
+    data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
+    data-component="ViewsTheme:Header:Action:Cart"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {{ vi_icon('handbag', iconOptions) }}
+</span>

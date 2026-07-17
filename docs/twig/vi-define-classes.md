@@ -32,7 +32,7 @@ Allows components to define default CSS classes while letting parent templates i
 ```twig
 {%
   set classes = vi_define_classes({
-      main: [
+      root: [
           'd-grid',
           'flex-wrap',
       ],
@@ -41,21 +41,17 @@ Allows components to define default CSS classes while letting parent templates i
   })
 %}
 
-{% block component_header_main %}
-  <div
-    {{ classes.main | vi_attr_classes }}
-    data-component='header-main'></div>
-{% endblock %}
+<div {{ classes.root | vi_attr_classes }}></div>
 ```
 
-### Parent include
+### Parent include (legacy)
 
 ```twig
 {# Merge (default) #}
 {%
-  sw_include '@Storefront/components/header/main.html.twig' with {
+  sw_include '@Storefront/components/example.html.twig' with {
       classes: {
-          main: ['custom-class', 'another-class']
+          root: ['custom-class', 'another-class']
       }
   }
 %}
@@ -63,17 +59,19 @@ Allows components to define default CSS classes while letting parent templates i
 
 {# Fully set selected slots (others still merge) #}
 {%
-  sw_include '@Storefront/components/header/main.html.twig' with {
+  sw_include '@Storefront/components/example.html.twig' with {
       classes: {
-          main: ['custom-class'],
+          root: ['custom-class'],
           menu: ['extra'],
       },
-      replaceClasses: ['main']
+      replaceClasses: ['root']
   }
 %}
-{# main → class="custom-class"
+{# root → class="custom-class"
    menu → defaults + extra #}
 ```
+
+For migrated components use `<twig:ViewsTheme:… class="custom-class">` instead — see [UX components](../conventions/ux-components.md).
 
 ## Variants + selective replace
 

@@ -63,11 +63,16 @@ Still registered from `app/storefront/src/main.js` until their domain migrates:
 
 | Plugin | Selector (current) | Target UX root |
 |--------|--------------------|----------------|
-| `CartPlugin` | `[data-component="header-action-cart"]` | `ViewsTheme:Header:Action:Cart` |
 | `VariantsGrid` | `[data-component="variants-grid"]` | `ViewsTheme:VariantsGrid:Container` |
 | `DeliveryDateSelection` | `[data-component="delivery-date-selection"]` | `ViewsTheme:Checkout:DeliveryDateSelection` |
 
-`QuantityInput` root is already `data-component="ViewsTheme:QuantityInput"` (no co-located JS yet; core `data-quantity-selector` remains).
+### Migrated co-located components
+
+| Component | `data-component` | Script |
+|-----------|------------------|--------|
+| Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart/index.js` |
+
+`QuantityInput` root is `data-component="ViewsTheme:QuantityInput"` (no co-located JS yet; core `data-quantity-selector` remains).
 
 ## Features
 

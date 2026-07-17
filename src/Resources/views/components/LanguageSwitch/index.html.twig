@@ -1,0 +1,163 @@
+{% props
+    position = 'top-bar',
+    showFlagLabel = true,
+    languages = null,
+    activeLanguageId = null,
+    defaultBaseClasses = 'vi-language-switch language-form',
+    defaultVariants = {},
+%}
+
+{% set languages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
+{% set activeLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(page.header.activeLanguage.id|default(null))) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set menuAttributes = attributes.nested('menu') %}
+{% set buttonAttributes = attributes.nested('button') %}
+{% set flagAttributes = attributes.nested('flag') %}
+{% set flagIconAttributes = attributes.nested('flagIcon') %}
+{% set flagLabelAttributes = attributes.nested('flagLabel') %}
+{% set dropdownAttributes = attributes.nested('dropdown') %}
+{% set itemAttributes = attributes.nested('item') %}
+{% set itemCheckedAttributes = attributes.nested('itemChecked') %}
+{% set itemLabelAttributes = attributes.nested('itemLabel') %}
+{% set itemRadioAttributes = attributes.nested('itemRadio') %}
+{% set itemIconAttributes = attributes.nested('itemIcon') %}
+
+{% set activeLanguage = null %}
+{% for language in languages %}
+    {% if language.id is same as(activeLanguageId) %}
+        {% set activeLanguage = language %}
+    {% endif %}
+{% endfor %}
+{% if activeLanguage is null and languages|length > 0 %}
+    {% set activeLanguage = languages|first %}
+{% endif %}
+
+{% set isoCode = activeLanguage and activeLanguage.translationCode
+    ? activeLanguage.translationCode.code|lower|split('-')
+    : [''] %}
+{% set languageCode = isoCode[0] %}
+
+<form
+    method="post"
+    action="{{ path('frontend.checkout.switch-language') }}"
+    data-form-auto-submit="true"
+    data-form-add-dynamic-redirect="true"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block content %}
+        <div
+            {{ menuAttributes.defaults({
+                class: 'vi-language-switch__menu languages-menu dropdown',
+            }) }}
+        >
+            {% block button %}
+                <button
+                    type="button"
+                    id="languagesDropdown-{{ position }}"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    {{ buttonAttributes.defaults({
+                        class: 'vi-language-switch__button btn dropdown-toggle language-switch-btn',
+                    }) }}
+                >
+                    {% block flag %}
+                        <div
+                            {{ flagAttributes.defaults({
+                                class: 'vi-language-switch__flag language-flag',
+                            }) }}
+                        >
+                            {% if activeLanguage and activeLanguage.translationCode %}
+                                {% block flag_icon %}
+                                    <img
+                                        src="{{ asset('bundles/viewstheme/flags/' ~ activeLanguage.translationCode.code ~ '.svg', 'asset') }}"
+                                        alt=""
+                                        {{ flagIconAttributes.defaults({
+                                            class: 'vi-language-switch__flag-icon language-flag-icon',
+                                        }) }}
+                                    >
+                                {% endblock %}
+                            {% endif %}
+
+                            {% block flag_label %}
+                                {% if showFlagLabel %}
+                                    <span
+                                        {{ flagLabelAttributes.defaults({
+                                            class: 'vi-language-switch__flag-label language-flag-label',
+                                        }) }}
+                                    >
+                                        {{ languageCode|upper }}
+                                    </span>
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+                </button>
+            {% endblock %}
+
+            {% block dropdown %}
+                <div
+                    aria-labelledby="languagesDropdown-{{ position }}"
+                    {{ dropdownAttributes.defaults({
+                        class: 'vi-language-switch__dropdown dropdown-menu dropdown-menu-end',
+                    }) }}
+                >
+                    {% for language in languages %}
+                        {% block item %}
+                            {% set isActive = language.id is same as(activeLanguageId) %}
+                            {% set itemSlotAttributes = isActive ? itemCheckedAttributes : itemAttributes %}
+                            <div
+                                title="{{ language.translated.name|default(language.name) }}"
+                                {{ itemSlotAttributes.defaults({
+                                    class: isActive
+                                        ? 'vi-language-switch__item language-item dropdown-item item-checked'
+                                        : 'vi-language-switch__item language-item dropdown-item',
+                                }) }}
+                            >
+                                <label
+                                    for="{{ position }}-{{ language.id }}"
+                                    {{ itemLabelAttributes.defaults({
+                                        class: 'vi-language-switch__item-label language-item-label',
+                                    }) }}
+                                >
+                                    <input
+                                        id="{{ position }}-{{ language.id }}"
+                                        value="{{ language.id }}"
+                                        name="languageId"
+                                        type="radio"
+                                        {% if isActive %}checked{% endif %}
+                                        {{ itemRadioAttributes.defaults({
+                                            class: 'vi-language-switch__item-radio language-item-radio',
+                                        }) }}
+                                    >
+
+                                    {% if language.translationCode %}
+                                        {% block item_icon %}
+                                            <img
+                                                src="{{ asset('bundles/viewstheme/flags/' ~ language.translationCode.code ~ '.svg', 'asset') }}"
+                                                alt=""
+                                                {{ itemIconAttributes.defaults({
+                                                    class: 'vi-language-switch__item-icon language-item-icon',
+                                                }) }}
+                                            >
+                                        {% endblock %}
+                                    {% endif %}
+
+                                    {% block item_label %}
+                                        {{ language.name }}
+                                    {% endblock %}
+                                </label>
+                            </div>
+                        {% endblock %}
+                    {% endfor %}
+                </div>
+            {% endblock %}
+        </div>
+
+        {% if position == 'offcanvas' %}
+            <input name="redirectParameters[offcanvas]" type="hidden" value="menu">
+        {% endif %}
+    {% endblock %}
+</form>

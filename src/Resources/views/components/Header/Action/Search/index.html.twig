@@ -1,0 +1,22 @@
+{% props
+    iconOptions = null,
+    defaultBaseClasses = 'vi-header-action-search',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<button
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#searchCollapse"
+    aria-expanded="false"
+    aria-controls="searchCollapse"
+    aria-label="{{ 'header.searchButton'|trans|striptags }}"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {{ vi_icon('magnifying-glass', iconOptions) }}
+</button>

@@ -1,0 +1,72 @@
+{% props
+    element = 'a',
+    textLogo = null,
+    defaultBaseClasses = 'vi-header-logo col-auto d-inline-flex',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set textAttributes = attributes.nested('text') %}
+{% set imageAttributes = attributes.nested('image') %}
+
+{% set logoDefaults = {} %}
+{% if element is same as('a') %}
+    {% set logoDefaults = {
+        href: path('frontend.home.page'),
+        title: 'header.logoLink'|trans|striptags,
+    } %}
+{% endif %}
+
+<{{ element|raw }}
+    {{ attributes.defaults(logoDefaults) }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+    data-ref="logo"
+>
+    {% if textLogo is not empty %}
+        {% block text %}
+            <span {{ textAttributes.defaults({ class: 'vi-header-logo__text' }) }}>
+                {{ textLogo|raw }}
+            </span>
+        {% endblock %}
+    {% else %}
+        {% block image %}
+            {% set logoPath = asset('bundles/viewstheme/img/views-logo.svg', 'asset') %}
+            {% if theme_config('sw-logo-mobile') %}
+                {% set logoPath = theme_config('sw-logo-mobile') %}
+            {% endif %}
+            <picture style="display: contents;">
+                {% block image_tablet %}
+                    {% set logoPath = theme_config('sw-logo-tablet') %}
+                    {% if logoPath %}
+                        <source
+                            srcset="{{ logoPath|sw_encode_url }}"
+                            media="(min-width: {{ theme_config('breakpoint.md') }}px) and (max-width: {{ theme_config('breakpoint.lg') - 1 }}px)"
+                        >
+                    {% endif %}
+                {% endblock %}
+
+                {% block image_desktop %}
+                    {% set logoPath = theme_config('sw-logo-desktop') %}
+                    {% if logoPath %}
+                        <source
+                            srcset="{{ logoPath|sw_encode_url }}"
+                            media="(max-width: {{ theme_config('breakpoint.md') - 1 }}px)"
+                        >
+                    {% endif %}
+                {% endblock %}
+
+                {% block image_default %}
+                    {% if logoPath %}
+                        <img
+                            src="{{ logoPath|sw_encode_url }}"
+                            alt="{{ 'header.logoLink'|trans|striptags }}"
+                            style="width: var(--logo-width, auto)"
+                            {{ imageAttributes.defaults({ class: 'vi-header-logo__image img-fluid' }) }}
+                        >
+                    {% endif %}
+                {% endblock %}
+            </picture>
+        {% endblock %}
+    {% endif %}
+</{{ element|raw }}>

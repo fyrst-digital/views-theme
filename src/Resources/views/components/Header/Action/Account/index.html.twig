@@ -1,0 +1,34 @@
+{% props
+    iconOptions = null,
+    defaultBaseClasses = 'vi-header-action-account dropdown',
+    defaultVariants = {},
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set toggleAttributes = attributes.nested('toggle') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block toggle %}
+        <button
+            type="button"
+            id="accountWidget"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="{{ 'account.myAccount'|trans|striptags }}"
+            title="{{ 'account.myAccount'|trans|striptags }}"
+            {{ toggleAttributes.defaults({ class: 'vi-header-action-account__toggle' }) }}
+        >
+            {{ vi_icon('user', iconOptions) }}
+        </button>
+    {% endblock %}
+
+    {% block dropdown %}
+        {% sw_include '@Storefront/components/account/dropdown.html.twig' %}
+    {% endblock %}
+</div>

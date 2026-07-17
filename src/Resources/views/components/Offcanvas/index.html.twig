@@ -1,0 +1,64 @@
+{% props
+    defaultBaseClasses = 'vi-offcanvas',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set headerAttributes = attributes.nested('header') %}
+{% set titleAttributes = attributes.nested('title') %}
+{% set closeAttributes = attributes.nested('close') %}
+{% set bodyAttributes = attributes.nested('body') %}
+
+{% block meta %}{% endblock %}
+
+{% block root %}
+    <div
+        {{ attributes }}
+        class="{{ rootCVA.apply({}, rootClass) }}"
+        data-ref="offcanvas"
+    >
+        {% block header %}
+            <div
+                {{ headerAttributes.defaults({
+                    class: 'vi-offcanvas__header offcanvas-header border-bottom',
+                }) }}
+            >
+                {% block title %}
+                    <div
+                        {{ titleAttributes.defaults({
+                            class: 'vi-offcanvas__title offcanvas-header-content fw-semibold fs-5',
+                        }) }}
+                    >
+                        {% block title_content %}{% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block close %}
+                    <button
+                        type="button"
+                        title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
+                        aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
+                        {{ closeAttributes.defaults({
+                            class: 'vi-offcanvas__close btn btn-light offcanvas-close js-offcanvas-close',
+                        }) }}
+                    >
+                        {% block close_icon %}
+                            {{ vi_icon('x') }}
+                        {% endblock %}
+                    </button>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block body %}
+            <div
+                {{ bodyAttributes.defaults({
+                    class: 'vi-offcanvas__body offcanvas-body',
+                }) }}
+            >
+                {% block content %}{% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

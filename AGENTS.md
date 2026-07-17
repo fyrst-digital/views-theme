@@ -40,6 +40,7 @@ Do not re-document full APIs here — link to docs.
 - Co-located interactive JS: `ShopwareComponent` in `index.js` next to the template (no new PluginManager plugins).
 - **Legacy** components may still use `vi_define_classes` until their domain migrates; do not add new legacy components.
 - `vi_icon` remains for icons.
+- **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
 
 ## Design System Summary
 
