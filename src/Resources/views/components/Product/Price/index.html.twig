@@ -1,0 +1,118 @@
+{% props
+    product,
+    showPrice = true,
+    showTieredPrices = true,
+    showTaxNote = false,
+    taxUrl = null,
+    taxText = null,
+    defaultBaseClasses = 'vi-product-price',
+    defaultVariants = {},
+%}
+
+{% set price = product.calculatedPrice %}
+{% set prices = product.calculatedPrices %}
+{% set displayFromVariants = false %}
+
+{% if product.variantListingConfig.displayParent and product.parentId === null %}
+    {% set displayFromVariants = price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+    {% set price = product.calculatedCheapestPrice %}
+{% endif %}
+
+{% if prices.count > 0 %}
+    {% set price = prices.first %}
+{% endif %}
+
+{% set taxUrl = taxUrl is not null ? taxUrl : path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }) %}
+{% set taxText = taxText is not null
+    ? taxText
+    : (context.taxState == 'gross'
+        ? 'general.grossTaxInformation'|trans|sw_sanitize
+        : 'general.netTaxInformation'|trans|sw_sanitize) %}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set prefixAttributes = attributes.nested('prefix') %}
+{% set unitAttributes = attributes.nested('unit') %}
+{% set referenceAttributes = attributes.nested('reference') %}
+{% set averageAttributes = attributes.nested('average') %}
+{% set taxAttributes = attributes.nested('tax') %}
+{% set taxActionAttributes = attributes.nested('taxAction') %}
+
+{% block tiered %}
+    {% if prices.count > 1 and showTieredPrices is same as(true) %}
+        <twig:ViewsTheme:Product:PricesTiered :product="product" :prices="prices" />
+    {% endif %}
+{% endblock %}
+
+{% block price %}
+    {% if showPrice is same as(true) %}
+        <div
+            data-ref="price"
+            {{ attributes }}
+            class="{{ rootCVA.apply({}, rootClass) }}"
+        >
+            {% block prefix %}
+                {% if prices.count > 1 or displayFromVariants %}
+                    <span
+                        data-ref="prefix"
+                        {{ prefixAttributes.defaults({ class: 'vi-product-price__prefix' }) }}
+                    >
+                        {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
+            {% block unit %}
+                <span
+                    data-ref="unit"
+                    {{ unitAttributes.defaults({ class: 'vi-product-price__unit' }) }}
+                >
+                    {{ price.unitPrice|currency }}
+                </span>
+            {% endblock %}
+
+            {% block reference %}
+                {% if price.referencePrice is not null %}
+                    <span
+                        data-ref="reference"
+                        {{ referenceAttributes.defaults({ class: 'vi-product-price__reference' }) }}
+                    >
+                        {{ price.referencePrice.price|currency }} /
+                        {{ price.referencePrice.referenceUnit }}&nbsp;
+                        {{ price.referencePrice.unitName }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
+            {% block average %}
+                {% if price.regulationPrice.price is not null %}
+                    <span
+                        data-ref="average"
+                        {{ averageAttributes.defaults({ class: 'vi-product-price__average' }) }}
+                    >
+                        {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block tax %}
+    {% if showTaxNote is same as(true) %}
+        <div
+            data-ref="tax"
+            {{ taxAttributes.defaults({ class: 'vi-product-price__tax' }) }}
+        >
+            <button
+                type="button"
+                data-ajax-modal="true"
+                data-url="{{ taxUrl }}"
+                aria-haspopup="dialog"
+                {{ taxActionAttributes.defaults({ class: 'vi-product-price__tax-action' }) }}
+            >
+                {{ taxText }}
+            </button>
+        </div>
+    {% endif %}
+{% endblock %}

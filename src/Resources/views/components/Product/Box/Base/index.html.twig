@@ -1,0 +1,38 @@
+{% props
+    product,
+    layout = 'default',
+    displayMode = 'standard',
+    classes = {},
+%}
+
+{% if layout is empty or layout is same as('standard') %}
+    {% set layout = 'default' %}
+{% endif %}
+
+{% set sizes = {
+    xs: '500px',
+    sm: '315px',
+    md: '390px',
+    lg: '350px',
+    xl: '280px',
+} %}
+
+{% if layout == 'image' %}
+    {% set sizes = {
+        xs: '500px',
+        sm: '500px',
+        md: '390px',
+        lg: '350px',
+        xl: '280px',
+    } %}
+{% endif %}
+
+{% block box %}
+    {# Only default layout is implemented; other layouts fall back to Default. #}
+    <twig:ViewsTheme:Product:Box:Default
+        :product="product"
+        :layout="layout"
+        :displayMode="displayMode"
+        :sizes="sizes"
+    />
+{% endblock %}

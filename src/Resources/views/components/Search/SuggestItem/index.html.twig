@@ -63,9 +63,7 @@
             {% endblock %}
 
             {% block pricing %}
-                {% sw_include '@Storefront/components/product/price.html.twig' with {
-                    product: product,
-                } %}
+                <twig:ViewsTheme:Product:Price :product="product" />
             {% endblock %}
         </div>
     {% endblock %}

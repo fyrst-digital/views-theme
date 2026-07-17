@@ -1,0 +1,58 @@
+{% props
+    productId,
+    showText = false,
+    size = null,
+    color = 'light',
+    addToWishlistOptions = {},
+    defaultBaseClasses = null,
+    defaultVariants = {},
+%}
+
+{% set actionClasses = [
+    'vi-product-action-wishlist',
+    'btn',
+    'product-wishlist-' ~ productId,
+    'product-wishlist-action',
+    'product-wishlist-not-added',
+    'product-wishlist-loading',
+    'btn-' ~ color,
+] %}
+{% if size is not null %}
+    {% set actionClasses = actionClasses|merge(['btn-' ~ size]) %}
+{% endif %}
+{% set defaultBaseClasses = defaultBaseClasses is not null ? defaultBaseClasses : actionClasses|join(' ') %}
+
+{% set labelClasses = ['vi-product-action-wishlist__label', 'product-wishlist-btn-content'] %}
+{% if size is not null %}
+    {% set labelClasses = labelClasses|merge(['product-wishlist-btn-content-' ~ size]) %}
+{% endif %}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set iconAttributes = attributes.nested('icon') %}
+{% set labelAttributes = attributes.nested('label') %}
+
+<button
+    type="button"
+    title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+    data-add-to-wishlist="true"
+    data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block icon %}
+        <span
+            {{ iconAttributes.defaults({
+                class: 'vi-product-action-wishlist__icon wishlist-icon',
+            }) }}
+        ></span>
+    {% endblock %}
+
+    {% block label %}
+        {% if showText %}
+            <span {{ labelAttributes.defaults({ class: labelClasses|join(' ') }) }}>
+                {{ 'listing.addToWishlist'|trans|sw_sanitize }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</button>

@@ -1,0 +1,34 @@
+{% props
+    product,
+    showLink = true,
+    url = null,
+    name = null,
+    tag = 'div',
+    defaultBaseClasses = 'vi-product-name',
+    defaultVariants = {},
+%}
+
+{% set name = name is not null ? name : product.translated.name %}
+{% set url = url is not null ? url : seoUrl('frontend.detail.page', { productId: product.id }) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set linkAttributes = attributes.nested('link') %}
+
+<{{ tag|raw }}
+    data-ref="name"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% if showLink is same as(true) %}
+        <a
+            href="{{ url }}"
+            title="{{ name }}"
+            data-ref="link"
+            {{ linkAttributes.defaults({ class: 'vi-product-name__link' }) }}
+        >
+            {{ name }}
+        </a>
+    {% else %}
+        {{ name }}
+    {% endif %}
+</{{ tag|raw }}>

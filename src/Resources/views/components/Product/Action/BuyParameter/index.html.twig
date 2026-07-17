@@ -1,0 +1,38 @@
+{% props
+    product,
+    showQuantity = true,
+%}
+
+{% set productId = product.id %}
+
+{% block redirect %}
+    <input type="hidden" name="redirectTo" value="frontend.detail.page">
+    <input
+        type="hidden"
+        name="redirectParameters"
+        data-redirect-parameters="true"
+        value="{{ { productId: productId }|json_encode }}"
+    >
+{% endblock %}
+
+{% block info %}
+    <input type="hidden" name="lineItems[{{ productId }}][id]" value="{{ productId }}">
+    <input type="hidden" name="lineItems[{{ productId }}][referencedId]" value="{{ productId }}">
+    <input type="hidden" name="lineItems[{{ productId }}][type]" value="product">
+    <input type="hidden" name="lineItems[{{ productId }}][stackable]" value="1">
+    <input type="hidden" name="lineItems[{{ productId }}][removable]" value="1">
+{% endblock %}
+
+{% block quantity %}
+    {% if not showQuantity %}
+        <input
+            type="hidden"
+            name="lineItems[{{ productId }}][quantity]"
+            value="{{ product.minPurchase }}"
+        >
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    <input type="hidden" name="product-name" value="{{ product.translated.name }}">
+{% endblock %}

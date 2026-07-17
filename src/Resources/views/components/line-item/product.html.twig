@@ -29,16 +29,12 @@
 {% block component_line_item_actions_inner %}
   {% block component_line_item_action_wishlist %}
     {% if config('core.cart.wishlistEnabled') %}
-      {%
-        sw_include '@Storefront/components/product/action/wishlist.html.twig' with {
-            showText: false,
-            size: 'sm',
-            productId: lineItem.referencedId,
-            classes: {
-                action: ['line-item-action']
-            }
-        }
-      %}
+      <twig:ViewsTheme:Product:Action:Wishlist
+        :productId="lineItem.referencedId"
+        :showText="false"
+        size="sm"
+        class="line-item-action"
+      />
     {% endif %}
   {% endblock %}
 

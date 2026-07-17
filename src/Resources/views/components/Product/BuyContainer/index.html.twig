@@ -1,0 +1,147 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+
+{#
+  Buy widget composition under components/. Extends core buy-widget.
+  Not a pure UX tag component — include path only.
+#}
+
+{% set options = {
+    productHeader: {},
+    prices: {
+        showPrice: false,
+        showTaxNote: true,
+    },
+    showBuyForm: true,
+    showActions: true,
+}|merge(options|default({})) %}
+
+{% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
+
+{% block buy_widget_data %}
+    {% block buy_widget_data_rich_snippet_url %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block buy_widget_data_rich_snippet_price_range %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block buy_widget_data_rich_snippet_price_currency %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block buy_widget_header %}
+        <twig:ViewsTheme:Product:Header :product="product" />
+    {% endblock %}
+
+    {% block buy_widget_reviews %}
+        {% if product.ratingAverage > 0 and totalReviews > 0 and config('core.listing.showReview') %}
+            {% if remoteClickOptions is not defined %}
+                {% set remoteClickOptions = {
+                    selector: '#review-tab-' ~ product.id,
+                    scrollToElement: true,
+                    excludedViewports: ['XS'],
+                } %}
+            {% endif %}
+
+            {% if reviewTabHref is not defined %}
+                {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
+            {% endif %}
+
+            <div class="vi-product-buy-container__reviews product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center">
+                {% sw_include '@Storefront/components/review/rating.html.twig' with {
+                    points: product.ratingAverage,
+                } %}
+                <div class="vi-product-buy-container__review-label product-review-label">
+                    {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
+                    <a
+                        data-bs-toggle="tab"
+                        class="vi-product-buy-container__review-link product-detail-reviews-link product-review-link"
+                        data-off-canvas-tabs="true"
+                        data-remote-click="true"
+                        data-remote-click-options="{{ remoteClickOptions|json_encode }}"
+                        href="{{ reviewTabHref }}"
+                        aria-controls="review-tab-pane"
+                    >
+                        {{ totalReviews }}
+                        {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block component_product_buy_container_prices %}
+        <div class="vi-product-buy-container__prices product-prices">
+            {% block buy_widget_price %}
+                <twig:ViewsTheme:Product:Price
+                    :product="product"
+                    :showPrice="options.prices.showPrice|default(false)"
+                    :showTaxNote="options.prices.showTaxNote|default(true)"
+                    :showTieredPrices="options.prices.showTieredPrices|default(true)"
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block buy_widget_delivery_informations %}
+        {{ parent() }}
+    {% endblock %}
+{% endblock %}
+
+{% block buy_widget_configurator_include %}
+    {% if not (config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block buy_widget_buy_form %}
+    {% block component_product_buy_container_variants_grid %}
+        {% if config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0 %}
+            {% sw_include '@Storefront/components/variants-grid/container.html.twig' with {
+                variants: variantsGrid.variants,
+                groups: variantsGrid.groups,
+                pagination: variantsGrid.pagination,
+                pageParameter: variantsGrid.pageParameter,
+                parentId: variantsGrid.parentId,
+            } %}
+        {% endif %}
+    {% endblock %}
+
+    {% block component_product_buy_container_buy_form %}
+        {% if product.active
+            and options.showBuyForm is same as(true)
+            and not (config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0)
+        %}
+            <twig:ViewsTheme:Product:Action:Buy :product="product" />
+        {% endif %}
+    {% endblock %}
+
+    {% block component_product_buy_container_actions %}
+        {% set productActions = {
+            wishlist: config('core.cart.wishlistEnabled'),
+        } %}
+
+        {% block component_product_buy_container_actions_container %}
+            {% if options.showActions is same as(true) %}
+                <div class="vi-product-buy-container__actions product-actions">
+                    {% block component_product_buy_container_action_prepend %}{% endblock %}
+
+                    {% block component_product_buy_container_wishlist %}
+                        {% if productActions.wishlist %}
+                            <twig:ViewsTheme:Product:Action:Wishlist
+                                :productId="product.id"
+                                :showText="true"
+                                size="sm"
+                            />
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block component_product_buy_container_action_append %}{% endblock %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+{% endblock %}
+
+{% block buy_widget_wishlist %}{% endblock %}

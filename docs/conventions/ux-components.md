@@ -113,6 +113,8 @@ See [JavaScript](javascript.md).
 | `ViewsTheme:Offcanvas` | UX |
 | `ViewsTheme:LanguageSwitch` | UX (invoke via `<twig:ViewsTheme:LanguageSwitch />`) |
 | `ViewsTheme:Navigation:Flyout` | Component (still `extends` core flyout + `parent()`; not a storefront override) |
+| `ViewsTheme:Product:*` (Name, Price, Cover, Badges, Box, Action/*, Header, …) | UX |
+| `Product:Listing`, `Product:BuyContainer` | Component (`sw_extends` core listing/buy-widget; compose UX children) |
 | Other components under `views/components/` | Legacy `sw_include` + `vi_define_classes` (migrating by domain) |
 
 Legacy class API: [CSS class API](css-classes.md) (deprecated for new work).

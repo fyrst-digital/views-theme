@@ -1,0 +1,62 @@
+{% props
+    product,
+    defaultBaseClasses = 'vi-product-badges',
+    defaultVariants = {},
+%}
+
+{% set price = product.calculatedPrice %}
+{% if product.calculatedPrices.count > 0 %}
+    {% set price = product.calculatedPrices.last %}
+{% endif %}
+
+{% set listPrice = price.listPrice.percentage > 0 %}
+{% set hasRange = product.calculatedPrices.count > 1 %}
+{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+{% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set discountAttributes = attributes.nested('discount') %}
+{% set topsellerAttributes = attributes.nested('topseller') %}
+{% set newAttributes = attributes.nested('new') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block discount %}
+        {% if listPrice and not hasRange and not displayFromVariants %}
+            <div
+                {{ discountAttributes.defaults({
+                    class: 'vi-product-badges__discount badge product-badge badge-discount',
+                }) }}
+            >
+                {{ price.listPrice.percentage|number_format(0) }} %
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block topseller %}
+        {% if product.markAsTopseller %}
+            <div
+                {{ topsellerAttributes.defaults({
+                    class: 'vi-product-badges__topseller badge product-badge badge-topseller',
+                }) }}
+            >
+                {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block new %}
+        {% if product.isNew %}
+            <div
+                {{ newAttributes.defaults({
+                    class: 'vi-product-badges__new badge product-badge badge-new',
+                }) }}
+            >
+                {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>

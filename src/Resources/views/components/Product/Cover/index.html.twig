@@ -1,0 +1,77 @@
+{% props
+    id,
+    name,
+    cover = null,
+    displayMode = 'standard',
+    sizes = {},
+    defaultBaseClasses = null,
+    defaultVariants = {},
+%}
+
+{% set defaultBaseClasses = defaultBaseClasses is not null ? defaultBaseClasses : 'vi-product-cover flex-fill product-image-link is-' ~ displayMode %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set imageAttributes = attributes.nested('image') %}
+{% set videoAttributes = attributes.nested('video') %}
+{% set placeholderAttributes = attributes.nested('placeholder') %}
+
+<a
+    href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
+    title="{{ name }}"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block media %}
+        {% if cover.url and cover.isSpatialObject() == false %}
+            {% set mediaAttrs = {
+                title: (cover.translated.title ?: name),
+            } %}
+
+            {% if cover.getMediaType().getName() === 'VIDEO' %}
+                {% if config('core.listing.autoplayVideoInListing') %}
+                    {% set mediaAttrs = mediaAttrs|merge({
+                        autoplay: true,
+                        loop: true,
+                        class: videoAttributes.render('class') ?: 'vi-product-cover__video',
+                    }) %}
+                {% endif %}
+
+                {% block video %}
+                    {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                        media: cover,
+                        attributes: mediaAttrs,
+                    } %}
+                {% endblock %}
+            {% else %}
+                {% set imageClass = imageAttributes.render('class') ?: 'vi-product-cover__image' %}
+                {% set mediaAttrs = mediaAttrs|merge({
+                    alt: (cover.translated.alt ?: name),
+                    loading: 'lazy',
+                    class: imageClass,
+                }) %}
+
+                {% if displayMode == 'cover' or displayMode == 'contain' %}
+                    {% set mediaAttrs = mediaAttrs|merge({ 'data-object-fit': displayMode }) %}
+                {% endif %}
+
+                {% block image %}
+                    {% sw_thumbnails 'product-image-thumbnails' with {
+                        media: cover,
+                        sizes: sizes,
+                        attributes: mediaAttrs,
+                    } %}
+                {% endblock %}
+            {% endif %}
+        {% else %}
+            {% block placeholder %}
+                <div
+                    {{ placeholderAttributes.defaults({
+                        class: 'vi-product-cover__placeholder product-image-placeholder',
+                    }) }}
+                >
+                    {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                </div>
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+</a>

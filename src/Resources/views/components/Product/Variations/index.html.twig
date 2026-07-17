@@ -1,0 +1,25 @@
+{% props
+    product = null,
+    variations = null,
+    defaultBaseClasses = 'vi-product-variations',
+    defaultVariants = {},
+%}
+
+{% set variations = variations is not null ? variations : product.variation|default([]) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set itemAttributes = attributes.nested('item') %}
+
+<div
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% for variation in variations %}
+        <div
+            {{ itemAttributes.defaults({ class: 'vi-product-variations__item' }) }}
+        >
+            {{ variation.group }}:
+            {{ variation.option }}
+        </div>
+    {% endfor %}
+</div>

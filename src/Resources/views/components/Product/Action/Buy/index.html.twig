@@ -1,0 +1,87 @@
+{% props
+    product,
+    formAction = null,
+    formId = null,
+    showQuantity = true,
+    buyLabel = null,
+    buyIcon = 'handbag',
+    iconOptions = null,
+    defaultBaseClasses = 'vi-product-action-buy',
+    defaultVariants = {},
+%}
+
+{% set formAction = formAction is not null ? formAction : path('frontend.checkout.line-item.add') %}
+{% set formId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
+{% set buyLabel = buyLabel is not null ? buyLabel : 'listing.boxAddProduct'|trans|sw_sanitize %}
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+
+{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
+{% set showQuantityField = not product.type is defined
+    or product.type != DIGITAL_CONST
+    or (product.type == DIGITAL_CONST and product.maxPurchase !== 1)
+    and showQuantity is not same as(true) %}
+
+{% set productUnit = false %}
+{% if product.translated.packUnit %}
+    {% if product.minPurchase > 1 and product.translated.packUnitPlural %}
+        {% set productUnit = product.translated.packUnitPlural %}
+    {% elseif product.translated.packUnit %}
+        {% set productUnit = product.translated.packUnit %}
+    {% endif %}
+{% endif %}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set buttonAttributes = attributes.nested('button') %}
+
+<form
+    action="{{ formAction }}"
+    method="post"
+    id="{{ formId }}"
+    data-add-to-cart="true"
+    data-ref="buy"
+    {% if product.isCloseout %}
+        data-add-to-cart-options="{{ {
+            stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
+            outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
+        }|json_encode|e('html_attr') }}"
+    {% endif %}
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block parameter %}
+        <twig:ViewsTheme:Product:Action:BuyParameter
+            :product="product"
+            :showQuantity="showQuantityField"
+        />
+    {% endblock %}
+
+    {% block quantity %}
+        {% if showQuantityField %}
+            <twig:ViewsTheme:QuantityInput
+                inputName="lineItems[{{ product.id }}][quantity]"
+                :quantity="product.minPurchase"
+                :minQuantity="product.minPurchase"
+                :maxQuantity="product.calculatedMaxPurchase"
+                :purchaseSteps="product.purchaseSteps"
+                :unit="productUnit"
+                :iconOptions="iconOptions"
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block button %}
+        <button
+            type="submit"
+            data-ref="buy-action"
+            {{ buttonAttributes.defaults({ class: 'vi-product-action-buy__button' }) }}
+        >
+            {% block button_icon %}
+                {{ vi_icon(buyIcon, iconOptions) }}
+            {% endblock %}
+            {% block button_label %}
+                {{ buyLabel }}
+            {% endblock %}
+        </button>
+    {% endblock %}
+</form>

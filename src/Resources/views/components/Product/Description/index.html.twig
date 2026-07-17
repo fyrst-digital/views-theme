@@ -1,0 +1,23 @@
+{% props
+    product = null,
+    description = null,
+    outputTags = true,
+    defaultBaseClasses = 'vi-product-description',
+    defaultVariants = {},
+%}
+
+{% set productDescription = description is not null ? description : product.translated.description|default('') %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+
+<div
+    itemprop="description"
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% if outputTags is same as(true) %}
+        {{ productDescription|raw }}
+    {% else %}
+        {{ productDescription|striptags }}
+    {% endif %}
+</div>

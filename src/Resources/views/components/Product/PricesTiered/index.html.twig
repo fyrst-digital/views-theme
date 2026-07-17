@@ -1,0 +1,88 @@
+{% props
+    product,
+    prices,
+    defaultBaseClasses = 'vi-product-prices-tiered w-100',
+    defaultVariants = {},
+%}
+
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set rowAttributes = attributes.nested('row') %}
+{% set cellAttributes = attributes.nested('cell') %}
+{% set cellQuantityAttributes = attributes.nested('cellQuantity') %}
+{% set cellPriceAttributes = attributes.nested('cellPrice') %}
+{% set cellReferenceAttributes = attributes.nested('cellReference') %}
+
+<table
+    {{ attributes }}
+    class="{{ rootCVA.apply({}, rootClass) }}"
+>
+    {% block head %}
+        <tr>
+            <th>{{ 'detail.dataColumnQuantity'|trans|sw_sanitize }}</th>
+            <th>{{ 'detail.dataColumnPrice'|trans|sw_sanitize }}</th>
+            {% if product.calculatedPrice.referencePrice %}
+                <th>{{ 'detail.dataColumnReferencePrice'|trans|sw_sanitize }}</th>
+            {% endif %}
+        </tr>
+    {% endblock %}
+
+    {% for price in prices %}
+        {% block row %}
+            {% set isListPrice = price.listPrice.percentage > 0 %}
+            {% set isRegulationPrice = price.regulationPrice != null %}
+
+            <tr {{ rowAttributes.defaults({ class: 'vi-product-prices-tiered__row' }) }}>
+                {% block quantity %}
+                    <td
+                        {{ cellQuantityAttributes.defaults({
+                            class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--quantity',
+                        }) }}
+                    >
+                        {% if loop.last %}
+                            {{ 'detail.priceDataInfoFrom'|trans|sw_sanitize }}
+                        {% else %}
+                            {{ 'detail.priceDataInfoUntil'|trans|sw_sanitize }}
+                        {% endif %}
+                        {{ price.quantity }}
+                    </td>
+                {% endblock %}
+
+                {% block price %}
+                    <td
+                        {{ cellPriceAttributes.defaults({
+                            class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--price',
+                        }) }}
+                    >
+                        <span>
+                            {% if price.listprice and isListPrice %}
+                                {{ price.listprice.price|currency }}
+                            {% else %}
+                                {{ price.unitPrice|currency }}
+                            {% endif %}
+                        </span>
+                        {% if isRegulationPrice %}
+                            <span>
+                                {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
+                            </span>
+                        {% endif %}
+                    </td>
+                {% endblock %}
+
+                {% block reference %}
+                    {% if price.referencePrice is not null %}
+                        <td
+                            {{ cellReferenceAttributes.defaults({
+                                class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--reference',
+                            }) }}
+                        >
+                            {{ price.referencePrice.price|currency }} /
+                            {{ price.referencePrice.referenceUnit }}
+                            {{ price.referencePrice.unitName }}
+                        </td>
+                    {% endif %}
+                {% endblock %}
+            </tr>
+        {% endblock %}
+    {% endfor %}
+</table>
