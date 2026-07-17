@@ -57,7 +57,7 @@ It returns the rendered table rows and pagination HTML for the requested page. I
 
 ### Storefront JavaScript
 
-Co-located `VariantsGrid/Container/index.js` (`ShopwareComponent` on `data-component="ViewsTheme:VariantsGrid:Container"`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
+Co-located `VariantsGrid/Container.js` (`ShopwareComponent` on `data-component="ViewsTheme:VariantsGrid:Container"`) handles button-state management, AJAX pagination, quantity preservation across pages, and error feedback.
 
 ### Hooks
 
@@ -82,5 +82,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Loader | `src/Service/VariantsLoader.php` |
 | Pagination struct | `src/Struct/VariantsGridPagination.php` |
 | Page subscriber | `src/Subscriber/ProductPageSubscriber.php` |
-| JS | `src/Resources/views/components/VariantsGrid/Container/index.js` |
+| JS | `src/Resources/views/components/VariantsGrid/Container.js` |
 | Templates | `src/Resources/views/components/VariantsGrid/` |

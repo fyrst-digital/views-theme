@@ -1,0 +1,42 @@
+{% sw_extends '@ViewsTheme/components/Footer/Column.html.twig' %}
+
+{% block component_footer_column_headline_title %}
+  {% if navigation.category.type == 'folder' %}
+    {{ navigation.category.translated.name }}
+  {% else %}
+    <a
+      href="{{ category_url(navigation.category) }}"
+      {% if category_linknewtab(navigation.category) %}
+        target="_blank"
+      {% endif %}
+      class="footer-headline-link"
+      title="{{ navigation.category.translated.name }}">
+      {{ navigation.category.translated.name }}
+    </a>
+  {% endif %}
+{% endblock %}
+
+{% block component_footer_column_content %}
+  <ul class="footer-link-list">
+    {% for treeItem in navigation.children %}
+      {% set category = treeItem.category %}
+      {% set name = category.translated.name %}
+
+      <li class="footer-link-item">
+        {% if category.type == 'folder' %}
+          <div>{{ name }}</div>
+        {% else %}
+          <a
+            class="footer-link"
+            href="{{ category_url(category) }}"
+            {% if category_linknewtab(category) %}
+              target="_blank"
+            {% endif %}
+            title="{{ name }}">
+            {{ name }}
+          </a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

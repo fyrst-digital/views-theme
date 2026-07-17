@@ -34,7 +34,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
 - **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `cva()` + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md).
 - Interactive UX roots: `data-component="ViewsTheme:…"`. Internal hooks: **`data-ref`**. Never CSS classes as JS selectors.
-- Co-located interactive JS: `ShopwareComponent` in `index.js` next to the template (no new PluginManager plugins).
+- Co-located interactive JS: `ShopwareComponent` in `<Name>.js` next to `<Name>.html.twig` (no new PluginManager plugins).
 - `vi_icon` remains for icons.
 - **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
 - **Do not reintroduce** `vi_define_classes` / `vi_attr_classes` / `vi_classes`.

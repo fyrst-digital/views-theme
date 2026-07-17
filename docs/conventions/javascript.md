@@ -12,13 +12,15 @@
 
 ## Co-located component JS
 
-Interactive UX components ship `index.js` next to `index.html.twig`, extending global `ShopwareComponent`. Shopware builds them with Vite and loads them via import map — **no** `PluginManager.register`.
+Interactive UX components ship `<Name>.js` next to `<Name>.html.twig`, extending global `ShopwareComponent`. Shopware builds them with Vite and loads them via import map — **no** `PluginManager.register`.
+
+Do **not** use `index.js` / `index.html.twig` naming for components (import-map keys would get a spurious `:index` suffix).
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
-| Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart/index.js` |
-| Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection/index.js` |
-| Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container/index.js` |
+| Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart.js` |
+| Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
+| Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 
 Build (project root):
 

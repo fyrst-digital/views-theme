@@ -1,0 +1,189 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_overview %}
+    <div class="order-item card">
+
+        <div class="card-header order-item-header">
+            {% set states = [
+                ORDER_TRANSACTION_STATE_FAILED,
+                ORDER_TRANSACTION_STATE_REMINDED,
+                ORDER_TRANSACTION_STATE_UNCONFIRMED,
+                ORDER_TRANSACTION_STATE_CANCELLED
+            ] %}
+
+            {% set orderState = order.stateMachineState.technicalName %}
+            {% set orderPaymentState = order.transactions.last.stateMachineState.technicalName %}
+
+            {% set isPaymentNeeded = orderPaymentState in states and orderState != ORDER_STATE_CANCELLED %}
+
+            {% block page_account_order_item_heading_title_container %}
+
+                <div class="order-item-header-title-container">
+                    {% block page_account_order_item_heading_title %}
+                        <div class="order-item-header-title">
+                            {{ 'account.orderHeadline'|trans|sw_sanitize }} {{ order.orderDateTime|format_date('short', locale=app.request.locale) }}
+                        </div>
+                    {% endblock %}
+
+                    {% block page_account_order_item_status %}
+                        <div class="order-item-status">
+                            {% if isPaymentNeeded %}
+                                {% block page_account_order_item_status_badge_payment_process_needed %}
+                                    {{ parent() }}
+                                {% endblock %}
+                            {% else %}
+                                {% block page_account_order_item_status_badge %}
+                                    {{ parent() }}
+                                {% endblock %}
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+
+                    {% block page_account_order_item_order_number_col %}
+                        <div class="order-table-header-order-number">
+                            {% block page_account_order_item_order_number %}
+                                {{ 'account.orderNumber'|trans|sw_sanitize }} {{ order.orderNumber|sw_sanitize }}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                </div>
+
+            {% endblock %}
+
+            {% block page_account_order_item_context_menu_col %}
+                <div class="order-table-header-context-menu-wrapper">
+
+                    {% block page_account_order_item_context_menu %}
+                        {% block page_account_order_item_context_menu_button %}
+                            <button class="btn btn-light btn-sm dropdown-toggle order-table-header-context-menu"
+                                    type="button"
+                                    id="accountOrderDropdown"
+                                    data-bs-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                    aria-label="{{ 'account.orderActions' }}">
+                                {{'orderItem.moreOptions'|trans}}
+                            </button>
+                        {% endblock %}
+
+                        {% block page_account_order_item_context_menu_content %}
+                            {{ parent() }}
+                        {% endblock %}
+                    {% endblock %}
+
+                    {% if orderState != ORDER_STATE_CANCELLED %}
+                        {% sw_include '@Storefront/storefront/page/account/order-history/cancel-order-modal.html.twig' %}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+
+        <div class="card-body order-item-header-summary">
+            {% block page_account_order_item_order_table_body_col %}
+                {% block page_account_order_item_order_table_body %}
+
+                    {% block page_account_order_item_order_table_body_cell_shipping_status %}
+                        {% if order.deliveries|length > 0 %}
+                            <twig:ViewsTheme:Order:SummaryItem
+                                label="{{ 'account.orderShippingStatus'|trans|sw_sanitize }}"
+                                value="{{ order.deliveries|first.stateMachineState.translated.name }}"
+                            />
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block page_account_order_item_order_table_body_cell_payment_status %}
+                        <twig:ViewsTheme:Order:SummaryItem
+                            label="{{ 'account.orderPaymentStatus'|trans|sw_sanitize }}"
+                            value="{{ order.transactions|last.stateMachineState.translated.name }}"
+                        />
+                    {% endblock %}
+
+                    {% block page_account_order_item_order_table_body_cell_payment_method %}
+                        <twig:ViewsTheme:Order:SummaryItem
+                            label="{{ 'account.orderPaymentMethod'|trans|sw_sanitize }}"
+                            value="{{ order.transactions|last.paymentMethod.translated.name }}"
+                        />
+                    {% endblock %}
+
+                    {% block page_account_order_item_order_table_body_cell_shipping_method %}
+                        {% if order.deliveries|length > 0 %}
+                            <twig:ViewsTheme:Order:SummaryItem
+                                label="{{ 'account.orderShippingMethod'|trans|sw_sanitize }}"
+                                value="{{ order.deliveries|first.shippingMethod.translated.name }}"
+                            />
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block page_account_order_item_order_table_body_cell_user_comment %}
+                        {% if order.customerComment %}
+                            <twig:ViewsTheme:Order:SummaryItem
+                                label="{{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}"
+                                value="{{ order.customerComment|sw_sanitize|nl2br }}"
+                                class="flex-fill"
+                            />
+                        {% endif %}
+                    {% endblock %}
+
+                {% endblock %}
+            {% endblock %}
+        </div>
+
+        <div class="card-body border-top">
+            {% block page_account_order_item_order_table_body_cell_toggle_order_details_button %}
+                <button class="btn btn-light btn-sm order-hide-btn collapsed"
+                    type="submit"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#order{{ order.orderNumber }}"
+                    aria-expanded="false"
+                    aria-controls="collapseExample">
+
+                    {% block page_account_order_item_order_table_body_cell_toggle_order_details_button_text %}
+                        {{ 'account.orderActionView'|trans|sw_sanitize }}
+                    {% endblock %}
+                </button>
+            {% endblock %}
+        </div>
+
+        {% block page_account_order_item_detail %}
+            {% sw_include '@ViewsTheme/components/Order/ItemDetails.html.twig' %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{# More option dropdown layout #}
+{% block page_account_order_item_context_menu_content_change_payment_button %}
+    {% set actionLabelSnippet = 'account.orderContextMenuChangePayment' %}
+    {% set actionIcon = 'pencil-simple-line' %}
+
+    {% if isPaymentNeeded %}
+        {% set actionLabelSnippet = 'account.orderStatusActionCompletePayment' %}
+        {% set actionIcon = 'check' %}
+    {% endif %}
+
+    <a class="dropdown-item order-item-context-menu-link"
+        href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}">
+        {{vi_icon(actionIcon)}}
+        {{ actionLabelSnippet|trans|sw_sanitize }}
+    </a>
+{% endblock %}
+
+{% block page_account_order_item_context_menu_reorder_form_button %}
+    <button class="dropdown-item order-item-context-menu-link" 
+        type="submit">
+        {{vi_icon('arrows-clockwise')}}
+        {{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}
+    </button>
+{% endblock %}
+
+{% block page_account_order_item_context_menu_cancel_order %}
+    {% if orderState != ORDER_STATE_CANCELLED and config('core.cart.enableOrderRefunds') %}
+        <button type="button"
+            class="dropdown-item order-item-context-menu-link"
+            data-bs-toggle="modal"
+            data-bs-target="#order-{{ order.id }}">
+            {{vi_icon('x')}}
+            {{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}
+        </button>
+    {% endif %}
+{% endblock %}

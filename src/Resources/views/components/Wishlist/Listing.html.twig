@@ -1,0 +1,24 @@
+{% sw_extends '@ViewsTheme/components/Product/Listing.html.twig' %}
+
+{% block element_product_listing_col_empty %}
+    <div class="vi-wishlist-listing__empty wishlist-listing-empty-container">
+        {% block element_product_listing_col_empty_wishlist %}
+            <img
+                src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
+                alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
+                class="vi-wishlist-listing__empty-image wishlist-listing-empty"
+            >
+
+            <h1 class="vi-wishlist-listing__header text-center wishlist-listing-header">
+                {{ 'wishlist.wishlistEmptyHeader'|trans }}
+            </h1>
+            <p class="vi-wishlist-listing__description text-center wishlist-listing-description">
+                {{ 'wishlist.wishlistEmptyDescription'|trans }}
+            </p>
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block element_product_listing_pagination_nav_actions %}{% endblock %}
+
+{% block element_product_listing_sorting %}{% endblock %}

@@ -25,7 +25,7 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm/index.html.twig`).
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm.html.twig`).
 
 Conventions:
 
@@ -58,7 +58,7 @@ Empty or invalid values are silently ignored.
 
 ### Storefront JavaScript
 
-Co-located `Checkout/DeliveryDateSelection/index.js` (`ShopwareComponent`) reads `min` / `max` from the input and clamps out-of-window values on change.
+Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min` / `max` from the input and clamps out-of-window values on change.
 
 ## Key source files
 
@@ -66,5 +66,5 @@ Co-located `Checkout/DeliveryDateSelection/index.js` (`ShopwareComponent`) reads
 |------|------|
 | Confirm page subscriber | `src/Subscriber/CheckoutConfirmPageSubscriber.php` |
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
-| Component | `src/Resources/views/components/Checkout/DeliveryDateSelection/index.html.twig` |
-| JS | `src/Resources/views/components/Checkout/DeliveryDateSelection/index.js` |
+| Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
+| JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |

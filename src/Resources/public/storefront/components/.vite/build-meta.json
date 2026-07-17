@@ -1,21 +1,21 @@
 {
   "manifest": {
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection/index.js": {
-      "file": "ViewsTheme/Checkout/DeliveryDateSelection/index-Bvsc3Wn9.js",
-      "name": "ViewsTheme/Checkout/DeliveryDateSelection/index",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection/index.js",
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js": {
+      "file": "ViewsTheme/Checkout/DeliveryDateSelection-U70SGAMJ.js",
+      "name": "ViewsTheme/Checkout/DeliveryDateSelection",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js",
       "isEntry": true
     },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js": {
-      "file": "ViewsTheme/Header/Action/Cart/index-BAdFFMCr.js",
-      "name": "ViewsTheme/Header/Action/Cart/index",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart/index.js",
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart.js": {
+      "file": "ViewsTheme/Header/Action/Cart-BZTgUM1c.js",
+      "name": "ViewsTheme/Header/Action/Cart",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart.js",
       "isEntry": true
     },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container/index.js": {
-      "file": "ViewsTheme/VariantsGrid/Container/index-Ceh68J9W.js",
-      "name": "ViewsTheme/VariantsGrid/Container/index",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container/index.js",
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
+      "file": "ViewsTheme/VariantsGrid/Container-D1D0k4ok.js",
+      "name": "ViewsTheme/VariantsGrid/Container",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
       "isEntry": true
     }
   },

@@ -42,7 +42,7 @@ src/
 
 ### Storefront JS
 
-- Co-located `index.js` next to interactive UX components (`ShopwareComponent` + import map).
+- Co-located `<Name>.js` next to interactive UX components (`ShopwareComponent` + import map).
 - Theme entry `app/storefront/src/main.js` is minimal (no PluginManager plugins remaining).
 
 ### SCSS

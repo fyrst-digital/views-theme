@@ -11,7 +11,7 @@ Full guide: [UX Twig components](ux-components.md).
 3. `cva()` + `attributes` / `attributes.nested()` for classes (BEM `vi-*` roots)
 4. Short `{% block %}` names
 5. Interactive root: `data-component="ViewsTheme:…"`; internal hooks: `data-ref="…"`
-6. Co-located `index.js` (`ShopwareComponent`) when interactive
+6. Co-located `<Name>.js` (`ShopwareComponent`) when interactive
 
 ## Extends shells
 

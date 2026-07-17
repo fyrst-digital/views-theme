@@ -14,20 +14,18 @@ Namespace: **`ViewsTheme`** (plugin bundle name).
 Anonymous components under `src/Resources/views/components/`:
 
 ```text
-Alert/index.html.twig                 → ViewsTheme:Alert
-QuantityInput/index.html.twig         → ViewsTheme:QuantityInput
-Header/Main/index.html.twig           → ViewsTheme:Header:Main
-Header/Action/Cart/
-  index.html.twig
-  index.js                            # co-located ShopwareComponent
-VariantsGrid/Container/
-  index.html.twig
-  index.js
+Alert.html.twig                       → ViewsTheme:Alert
+QuantityInput.html.twig               → ViewsTheme:QuantityInput
+Header/Main.html.twig                 → ViewsTheme:Header:Main
+Header/Action/Cart.html.twig
+Header/Action/Cart.js                 # co-located ShopwareComponent
+VariantsGrid/Container.html.twig
+VariantsGrid/Container.js
 ```
 
-- PascalCase directories / names.
-- Prefer `index.html.twig` so the directory name is the component name.
-- Co-located `index.js` when interactive.
+- PascalCase directories / leaf file names.
+- Prefer **named files** (`Cart.html.twig` + `Cart.js`), not `index.*` (avoids import-map `:index` suffix).
+- Co-located JS/SCSS share the leaf name when interactive.
 
 ## Props / CVA / attributes
 
