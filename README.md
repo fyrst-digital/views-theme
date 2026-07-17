@@ -35,7 +35,3 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 - **Preferred delivery date** — optional date picker on checkout confirm, stored as an order custom field.
 - **Twig class API** — `vi_define_classes`, `vi_attr_classes`, `vi_classes` for overridable component classes.
 - **Icons** — `vi_icon` for inline SVG / CSS icons.
-
-## License
-
-MIT
