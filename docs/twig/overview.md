@@ -2,13 +2,15 @@
 
 ViewsTheme registers Twig helpers under the `vi_` prefix.
 
+**New components** use Shopware UX (`{% props %}`, `cva()`, `attributes`) — see [UX components](../conventions/ux-components.md). The class-map helpers below are **legacy** until migration finishes.
+
 | Name | Type | Purpose |
 |------|------|---------|
-| [`vi_define_classes`](vi-define-classes.md) | function | Class map definer (defaults, variants, parent overrides) |
-| [`vi_attr_classes`](vi-attr-classes.md) | filter | Full `class="…"` attribute |
-| [`vi_classes`](vi-classes.md) | filter | Bare class string |
+| [`vi_define_classes`](vi-define-classes.md) | function | **Legacy** class map definer |
+| [`vi_attr_classes`](vi-attr-classes.md) | filter | **Legacy** full `class="…"` attribute |
+| [`vi_classes`](vi-classes.md) | filter | **Legacy** bare class string |
 | [`vi_icon`](vi-icon.md) | function | Inline SVG or CSS icon markup |
-| `vi_merge_deep` | filter | Deep array merge (prefer `vi_define_classes` for class maps) |
+| `vi_merge_deep` | filter | Deep array merge |
 
 ## Implementation
 

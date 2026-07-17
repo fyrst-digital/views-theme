@@ -1,0 +1,87 @@
+{% props
+    inputName = 'quantity',
+    quantity = 1,
+    minQuantity = 1,
+    maxQuantity = 99,
+    purchaseSteps = 1,
+    unit = null,
+    size = null,
+    disabled = false,
+    formName = null,
+    iconOptions = null,
+    defaultBaseClasses = 'vi-quantity-input input-group quantity-selector-group quantity-input',
+    defaultVariants = {
+        variants: {
+            size: {
+                sm: 'input-group-sm',
+            },
+        },
+    },
+%}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set decreaseAttributes = attributes.nested('decrease') %}
+{% set inputAttributes = attributes.nested('input') %}
+{% set increaseAttributes = attributes.nested('increase') %}
+{% set unitAttributes = attributes.nested('unit') %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:QuantityInput',
+        'data-quantity-selector': 'true',
+    }) }}
+    class="{{ rootCVA.apply({ size: size }, rootClass) }}"
+>
+    {% block decrease %}
+        <button
+            type="button"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {{ decreaseAttributes.defaults({
+                class: 'vi-quantity-input__decrease btn btn-light btn-decrease js-btn-minus',
+                'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
+            }) }}
+        >
+            {{ vi_icon('minus', iconOptions) }}
+        </button>
+    {% endblock %}
+
+    {% block field %}
+        <input
+            type="number"
+            name="{{ inputName }}"
+            min="{{ minQuantity }}"
+            max="{{ maxQuantity }}"
+            step="{{ purchaseSteps }}"
+            value="{{ quantity }}"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {% if formName %}form="{{ formName }}"{% endif %}
+            {{ inputAttributes.defaults({
+                class: 'vi-quantity-input__field form-control text-center js-quantity-selector quantity-selector-group-input',
+                'aria-label': 'component.product.quantitySelect.label'|trans|striptags,
+            }) }}
+        >
+    {% endblock %}
+
+    {% if unit %}
+        {% block unit %}
+            <span {{ unitAttributes.defaults({ class: 'vi-quantity-input__unit input-group-text' }) }}>
+                {{ unit }}
+            </span>
+        {% endblock %}
+    {% endif %}
+
+    {% block increase %}
+        <button
+            type="button"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {{ increaseAttributes.defaults({
+                class: 'vi-quantity-input__increase btn btn-light btn-increase js-btn-plus',
+                'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
+            }) }}
+        >
+            {{ vi_icon('plus', iconOptions) }}
+        </button>
+    {% endblock %}
+</div>

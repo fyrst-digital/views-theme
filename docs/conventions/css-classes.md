@@ -1,18 +1,28 @@
 # CSS class API
 
-Components under `src/Resources/views/components/` use a shared class map API so parents can extend or fully set slots without string concatenation.
+## Migrated components (UX)
 
-## Definer and compositors
+Use **CVA + attributes** — see [UX Twig components](ux-components.md).
+
+- Root: `vi-*` BEM class + Bootstrap utilities in `defaultBaseClasses`
+- Parent extras: HTML `class="…"` on the component tag
+- Nested slots: `slot:class="…"` / `attributes.nested('slot')`
+
+Do **not** introduce new `vi_define_classes` usage.
+
+## Legacy components (until domain is migrated)
+
+Unmigrated templates still use the class map API:
 
 | Name | Kind | Role |
 |------|------|------|
-| `vi_define_classes` | function | Build the class map (defaults + variants + parent overrides) |
-| `vi_attr_classes` | filter | Full `class="…"` attribute for HTML tags |
-| `vi_classes` | filter | Bare class string for forms / attribute bags |
+| `vi_define_classes` | function | Class map (defaults + variants + parent overrides) |
+| `vi_attr_classes` | filter | Full `class="…"` attribute |
+| `vi_classes` | filter | Bare class string |
 
-Full reference: [Twig — `vi_define_classes`](../twig/vi-define-classes.md).
+Reference: [Twig — `vi_define_classes`](../twig/vi-define-classes.md).
 
-## Component pattern
+### Legacy pattern
 
 ```twig
 {%
@@ -26,41 +36,14 @@ Full reference: [Twig — `vi_define_classes`](../twig/vi-define-classes.md).
 <div {{ classes.main | vi_attr_classes }} data-component="example">
 ```
 
-## Rules
+### Rules (legacy)
 
-- Default is always **merge** (append + dedupe). There is no global bool replace.
-- Fully set selected slots with `replace` / `replaceClasses: ['key']`.
-- Prefer **variants** + `props` for closed prop sets (type, size, state).
-- Prefer `vi_define_classes(base, override)` over `vi_merge_deep` when composing child class maps.
-- Do **not** use `defaultClasses`, `class="{{ classes.x|join(' ') }}"`, or `|join(' ')` for class maps.
-- Shell/router templates and `icon/icon.html.twig` are exempt.
-- Shopware UX / CVA is deferred to a 6.8 compatibility track.
-
-## Parent include examples
-
-```twig
-{# Merge (default) #}
-{%
-  sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-      main: ['custom-class', 'another-class']
-    }
-  }
-%}
-
-{# Fully set selected slots (others still merge) #}
-{%
-  sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-      main: ['custom-class'],
-      menu: ['extra'],
-    },
-    replaceClasses: ['main']
-  }
-%}
-```
+- Default is **merge** (append + dedupe). Fully set slots with `replace` / `replaceClasses: ['key']`.
+- Prefer variants + props for closed sets (type, size).
+- No `|join(' ')` for class maps.
+- This API will be **removed** after all components migrate to UX.
 
 ## Related
 
+- [UX components](ux-components.md)
 - [Component templates](components.md)
-- [JavaScript selectors](javascript.md)

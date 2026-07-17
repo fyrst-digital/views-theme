@@ -1,0 +1,121 @@
+{% props
+    type = 'info',
+    dismissible = false,
+    heading = null,
+    content = null,
+    list = [],
+    icon = true,
+    iconOptions = null,
+    announceOnLoad = false,
+    ariaLive = 'polite',
+    defaultBaseClasses = 'vi-alert alert d-flex flex-wrap align-items-center gap-3',
+    defaultVariants = {
+        variants: {
+            type: {
+                danger: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info',
+                success: 'alert-success',
+            },
+            dismissible: {
+                true: 'alert-dismissible fade show',
+            },
+        },
+    },
+%}
+
+{% if type is same as('error') %}
+    {% set type = 'danger' %}
+{% endif %}
+
+{% set iconOptions = iconOptions|default(themeParameters.icons|default({})) %}
+{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
+{% set rootClass = attributes.render('class') %}
+{% set iconAttributes = attributes.nested('icon') %}
+{% set contentAttributes = attributes.nested('content') %}
+{% set headingAttributes = attributes.nested('heading') %}
+{% set listAttributes = attributes.nested('list') %}
+{% set dismissAttributes = attributes.nested('dismiss') %}
+
+{% set alertAriaJsOptions = { ariaLive: ariaLive } %}
+{% set iconName = 'x' %}
+{% if type is same as('danger') %}
+    {% set iconName = 'x-circle' %}
+{% elseif type is same as('warning') %}
+    {% set iconName = 'warning' %}
+{% elseif type is same as('info') %}
+    {% set iconName = 'info' %}
+{% elseif type is same as('success') %}
+    {% set iconName = 'check' %}
+{% endif %}
+
+<div
+    {{ attributes.defaults({
+        role: 'alert',
+        'aria-live': ariaLive,
+    }) }}
+    class="{{ rootCVA.apply({ type: type, dismissible: dismissible }, rootClass) }}"
+    {% if announceOnLoad %}
+        data-alert-aria="true"
+        data-alert-aria-options="{{ alertAriaJsOptions|json_encode }}"
+    {% endif %}
+>
+    {% block icon %}
+        {% if icon is not same as(false) and icon is not same as('false') %}
+            <div
+                {{ iconAttributes.defaults({ class: 'vi-alert__icon alert-icon-container fs-5 d-flex col-auto' }) }}
+            >
+                {% block icon_element %}
+                    {{ vi_icon(iconName, iconOptions) }}
+                {% endblock %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block content_container %}
+        <div
+            {{ contentAttributes.defaults({ class: 'vi-alert__content alert-content-container col' }) }}
+        >
+            {% block heading %}
+                {% if heading %}
+                    <div
+                        {{ headingAttributes.defaults({ class: 'vi-alert__heading alert-heading h5' }) }}
+                    >
+                        {{ heading }}
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block content %}
+                {% if list|length > 1 %}
+                    <ul {{ listAttributes.defaults({ class: 'vi-alert__list alert-list' }) }}>
+                        {% for entry in list %}
+                            <li>{{ entry|sw_sanitize }}</li>
+                        {% endfor %}
+                    </ul>
+                {% elseif list|length == 1 %}
+                    {% for entry in list %}
+                        {{ entry|sw_sanitize }}
+                    {% endfor %}
+                {% elseif content is not null %}
+                    {{ content|sw_sanitize }}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block dismiss %}
+        {% if dismissible %}
+            <button
+                type="button"
+                {{ dismissAttributes.defaults({
+                    class: 'vi-alert__dismiss btn-close',
+                    'data-bs-dismiss': 'alert',
+                    'aria-label': 'global.default.close'|trans|striptags,
+                }) }}
+            >
+                <span aria-hidden="true"></span>
+            </button>
+        {% endif %}
+    {% endblock %}
+</div>

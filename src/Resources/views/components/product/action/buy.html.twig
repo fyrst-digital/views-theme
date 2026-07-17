@@ -56,18 +56,16 @@
 
     {% block component_product_action_buy_quantity %}
       {% if showQuantity %}
-        {%
-          sw_include '@Storefront/components/quantity-input.html.twig' with {
-              inputName: 'lineItems[' ~ product.id ~ '][quantity]',
-              quantity: product.minPurchase,
-              minQuantity: product.minPurchase,
-              maxQuantity: product.calculatedMaxPurchase,
-              purchaseSteps: product.purchaseSteps,
-              unit: productUnit,
-              iconOptions: iconOptions,
-              classes: classes.quantityInput
-          } only
-        %}
+        <twig:ViewsTheme:QuantityInput
+          inputName="lineItems[{{ product.id }}][quantity]"
+          :quantity="product.minPurchase"
+          :minQuantity="product.minPurchase"
+          :maxQuantity="product.calculatedMaxPurchase"
+          :purchaseSteps="product.purchaseSteps"
+          :unit="productUnit"
+          :iconOptions="iconOptions"
+          class="{{ classes.quantityInput.group|default([])|join(' ') }}"
+        />
       {% endif %}
     {% endblock %}
 

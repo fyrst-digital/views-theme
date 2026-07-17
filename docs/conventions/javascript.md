@@ -1,41 +1,99 @@
-# JavaScript selector convention
+# JavaScript conventions
 
-This plugin uses **`data-component` attributes as the only JavaScript selectors**.
+## Selectors
 
-**Never use CSS classes as JavaScript selectors.** CSS classes are for styling only and may change without notice.
+**Never use CSS classes as JavaScript selectors.**
 
-## Adding interactive elements
+| Role | Attribute | Example |
+|------|-----------|---------|
+| UX component root (co-located JS) | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
+| Internal hooks inside a component | `data-ref="…"` | `grid-body`, `buy-button` |
+| Twig → JS options | `data-component-options` | JSON object |
 
-1. Add `data-component="<component-name>"` on the element in Twig.
-2. Register / select with `[data-component="<component-name>"]` in JavaScript.
+Legacy plugins may still select old kebab `data-component` values until that domain migrates.
 
-## Variants grid
+## Co-located component JS (target)
 
-Integrated into the `buy-container` component. Data: `page.extensions.viewsTheme.variantsGrid`.
+Interactive UX components ship `index.js` next to `index.html.twig`, extending global `ShopwareComponent`. Shopware builds them with Vite and loads them via import map — **no** `PluginManager.register`.
 
-| Component | Attribute | Element |
-|-----------|-----------|---------|
-| Grid container | `data-component="variants-grid"` | Wrapper around the grid form |
-| Grid body | `data-component="grid-body"` | `<tbody>` — AJAX row injection target |
-| Pagination | `data-component="pagination"` | Pagination controls wrapper |
-| Quantity input | `data-component="quantity-input"` | Per-variant quantity spinbutton |
-| Buy button | `data-component="buy-button"` | "Add all to cart" submit |
-| Grid memory | `data-component="grid-memory"` | Hidden container for cross-page inputs |
-| Live region | `data-component="live-region"` | Screen-reader page-load announcements |
-| Error message | `data-component="error-message"` | Inline alert on AJAX failures |
+```js
+// views/components/Header/Action/Cart/index.js
+export default class HeaderActionCart extends ShopwareComponent {
+  static options = {
+    badgeClass: 'badge bg-primary',
+  }
 
-Plugin: `VariantsGridPlugin` → `[data-component="variants-grid"]`.
+  init() {
+    // …
+  }
+
+  destroy() {
+    // …
+  }
+}
+```
+
+```twig
+<button
+  data-component="ViewsTheme:Header:Action:Cart"
+  data-component-options="{{ jsOptions|json_encode }}"
+>
+```
+
+Internal refs:
+
+```js
+static options = {
+  gridBodySelector: '[data-ref="grid-body"]',
+}
+```
+
+Build (project root):
+
+```bash
+composer build:js:storefront
+# or component-focused rebuild + assets:install + theme:compile
+```
+
+Dev: `composer storefront:dev-server`.
+
+## Legacy PluginManager plugins
+
+Still registered from `app/storefront/src/main.js` until their domain migrates:
+
+| Plugin | Selector (current) | Target UX root |
+|--------|--------------------|----------------|
+| `CartPlugin` | `[data-component="header-action-cart"]` | `ViewsTheme:Header:Action:Cart` |
+| `VariantsGrid` | `[data-component="variants-grid"]` | `ViewsTheme:VariantsGrid:Container` |
+| `DeliveryDateSelection` | `[data-component="delivery-date-selection"]` | `ViewsTheme:Checkout:DeliveryDateSelection` |
+
+`QuantityInput` root is already `data-component="ViewsTheme:QuantityInput"` (no co-located JS yet; core `data-quantity-selector` remains).
+
+## Features
+
+### Variants grid
+
+Data: `page.extensions.viewsTheme.variantsGrid`. Plugin: `VariantsGridPlugin` (until PR migrates to co-located JS).
+
+| Hook | Attribute (current) |
+|------|---------------------|
+| Grid container | `data-component="variants-grid"` |
+| Grid body | `data-component="grid-body"` → will become `data-ref` |
+| Pagination | `data-component="pagination"` |
+| Quantity input | `data-component="ViewsTheme:QuantityInput"` |
+| Buy button | `data-component="buy-button"` |
+| Grid memory | `data-component="grid-memory"` |
+| Live region | `data-component="live-region"` |
+| Error message | `data-component="error-message"` |
 
 See [Variants grid](../features/variants-grid.md).
 
-## Checkout — preferred delivery date
+### Preferred delivery date
 
-Data: `page.extensions.viewsTheme.deliveryDate` (`active`, `min`, `max`, `customFieldKey`).
+Data: `page.extensions.viewsTheme.deliveryDate`. Plugin: `DeliveryDatePlugin`.
 
-| Component | Attribute | Element |
-|-----------|-----------|---------|
-| Delivery date selection | `data-component="delivery-date-selection"` | Wrapper around `<input type="date">` |
-
-Plugin: `DeliveryDatePlugin` → `[data-component="delivery-date-selection"]`.
+| Hook | Attribute |
+|------|-----------|
+| Wrapper | `data-component="delivery-date-selection"` |
 
 See [Preferred delivery date](../features/delivery-date.md).

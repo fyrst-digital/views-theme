@@ -2,7 +2,7 @@ import Plugin from 'src/plugin-system/plugin.class';
 
 export default class VariantsGridPlugin extends Plugin {
     static options = {
-        quantityInputSelector: '[data-component="quantity-input"] input[type="number"]',
+        quantityInputSelector: '[data-component="ViewsTheme:QuantityInput"] input[type="number"]',
         buyButtonSelector: '[data-component="buy-button"]',
         gridBodySelector: '[data-component="grid-body"]',
         paginationSelector: '[data-component="pagination"]',

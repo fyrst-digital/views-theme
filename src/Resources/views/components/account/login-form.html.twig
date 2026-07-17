@@ -37,31 +37,25 @@
     {% block component_account_login_form_error -%}
       {% if loginError %}
         {% if errorSnippet != null %}
-          {%
-            sw_include '@Storefront/components/alert.html.twig' with {
-                type: 'danger',
-                content: errorSnippet|trans|sw_sanitize({}, true),
-                announceOnLoad: true,
-                ariaLive: 'assertive'
-            }
-          %}
+          <twig:ViewsTheme:Alert
+            type="danger"
+            content="{{ errorSnippet|trans|sw_sanitize({}, true) }}"
+            announceOnLoad
+            ariaLive="assertive"
+          />
         {% elseif waitTime != null %}
-          {%
-            sw_include '@Storefront/components/alert.html.twig' with {
-                type: 'info',
-                content: 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize,
-                announceOnLoad: true
-            }
-          %}
+          <twig:ViewsTheme:Alert
+            type="info"
+            content="{{ 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize }}"
+            announceOnLoad
+          />
         {% else %}
-          {%
-            sw_include '@Storefront/components/alert.html.twig' with {
-                type: 'danger',
-                content: 'account.loginBadCredentials'|trans|sw_sanitize,
-                announceOnLoad: true,
-                ariaLive: 'assertive'
-            }
-          %}
+          <twig:ViewsTheme:Alert
+            type="danger"
+            content="{{ 'account.loginBadCredentials'|trans|sw_sanitize }}"
+            announceOnLoad
+            ariaLive="assertive"
+          />
         {% endif %}
       {% endif %}
     {% endblock %}

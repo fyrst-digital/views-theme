@@ -16,18 +16,16 @@
   <td {{ classes.cell | vi_attr_classes }}>
     {% if isAvailable and showQuantitySelect %}
       {% block component_variants_grid_column_quantity_input %}
-        {%
-          sw_include '@Storefront/components/quantity-input.html.twig' with {
-            inputName: 'lineItems[' ~ variant.id ~ '][quantity]',
-            size: 'sm',
-            quantity: 0,
-            minQuantity: 0,
-            maxQuantity: variant.calculatedMaxPurchase,
-            purchaseSteps: variant.purchaseSteps,
-            iconOptions: iconOptions,
-            classes: classes.quantityInput,
-          } only
-        %}
+        <twig:ViewsTheme:QuantityInput
+          inputName="lineItems[{{ variant.id }}][quantity]"
+          size="sm"
+          :quantity="0"
+          :minQuantity="0"
+          :maxQuantity="variant.calculatedMaxPurchase"
+          :purchaseSteps="variant.purchaseSteps"
+          :iconOptions="iconOptions"
+          class="{{ classes.quantityInput.group|default([])|join(' ') }}"
+        />
 
         <input type="hidden"
           name="lineItems[{{ variant.id }}][id]"

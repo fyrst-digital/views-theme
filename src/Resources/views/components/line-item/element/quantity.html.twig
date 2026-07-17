@@ -44,13 +44,11 @@
           {# @deprecated tag:v6.7.0 - Unused variable selectQuantityThreshold will be removed without replacement #}
           {% set selectQuantityThreshold = 100 %}
           {% block component_line_item_quantity_select %}
-            {%
-              sw_include '@Storefront/components/quantity-input.html.twig' with {
-                quantity: lineItem.quantity,
-                size: 'sm',
-                iconOptions: iconOptions
-              } only
-            %}
+            <twig:ViewsTheme:QuantityInput
+              :quantity="lineItem.quantity"
+              size="sm"
+              :iconOptions="iconOptions"
+            />
           {% endblock %}
         </form>
       {% endblock %}

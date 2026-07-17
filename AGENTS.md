@@ -7,6 +7,8 @@
 
 Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce UI (Twig/SCSS/JS). Desktop (1280px+) and mobile (375px).
 
+Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
+
 **Human docs (source of truth for APIs and features):** [`docs/README.md`](docs/README.md)
 
 ## Agents
@@ -21,9 +23,10 @@ Do not re-document full APIs here — link to docs.
 
 | Topic | Doc |
 |-------|-----|
-| CSS class API (`vi_define_classes`, merge/replace/variants) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
+| **UX Twig components** (target) | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
+| Legacy CSS class API (`vi_define_classes`) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
 | Component template rules | [docs/conventions/components.md](docs/conventions/components.md) |
-| JS: only `[data-component="…"]` selectors | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
+| JS: `data-component` / `data-ref` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
@@ -32,10 +35,11 @@ Do not re-document full APIs here — link to docs.
 
 ### Hard rules (always)
 
-- Components under `src/Resources/views/components/`: use `vi_define_classes` + `vi_attr_classes` / `vi_classes` (see docs). No `|join(' ')` for class maps.
-- **Never** use CSS classes as JavaScript selectors — only `data-component`.
-- Prefer `vi_define_classes(base, override)` over `vi_merge_deep` for class maps.
-- Shell/router templates and `icon/icon.html.twig` are exempt from the class map API.
+- **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `cva()` + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md).
+- Interactive UX roots: `data-component="ViewsTheme:…"`. Internal hooks: **`data-ref`**. Never CSS classes as JS selectors.
+- Co-located interactive JS: `ShopwareComponent` in `index.js` next to the template (no new PluginManager plugins).
+- **Legacy** components may still use `vi_define_classes` until their domain migrates; do not add new legacy components.
+- `vi_icon` remains for icons.
 
 ## Design System Summary
 
