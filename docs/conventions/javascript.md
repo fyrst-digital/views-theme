@@ -18,7 +18,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
-| Header cart | `ViewsTheme:Header:Action:Cart` | `Header/Action/Cart.js` |
+| Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 

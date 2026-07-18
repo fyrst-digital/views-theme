@@ -17,21 +17,22 @@
     {% block start %}{% endblock %}
 
     {% block search %}
-        <twig:ViewsTheme:Header:Action:Search class="{{ actionClass }}" />
+        <twig:ViewsTheme:Page:Header:Action:Search class="{{ actionClass }}" />
     {% endblock %}
 
     {% block wishlist %}
         {% if wishlistEnabled %}
-            <twig:ViewsTheme:Header:Action:Wishlist class="{{ actionClass }}" />
+            <twig:ViewsTheme:Page:Header:Action:Wishlist class="{{ actionClass }}" />
         {% endif %}
     {% endblock %}
 
     {% block account %}
-        <twig:ViewsTheme:Header:Action:Account toggle:class="{{ actionClass }}" />
+        <twig:ViewsTheme:Page:Header:Action:Account toggle:class="{{ actionClass }}" />
     {% endblock %}
 
     {% block cart %}
-        <twig:ViewsTheme:Header:Action:Cart class="{{ actionClass }}" />
+        <twig:ViewsTheme:Page:Header:Action:Cart 
+            class="{{ actionClass }}" />
     {% endblock %}
 
     {% block end %}{% endblock %}
