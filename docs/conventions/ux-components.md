@@ -15,6 +15,7 @@ Anonymous components under `src/Resources/views/components/`:
 
 ```text
 Alert.html.twig                       → ViewsTheme:Alert
+Alert.cva.twig                        # optional co-located CVA defaults
 QuantityInput.html.twig               → ViewsTheme:QuantityInput
 Page/Header.html.twig                 → ViewsTheme:Page:Header
 Page/Header/Main.html.twig            → ViewsTheme:Page:Header:Main
@@ -27,20 +28,22 @@ VariantsGrid/Container.js
 
 - PascalCase directories / leaf file names.
 - Prefer **named files** (`Cart.html.twig` + `Cart.js`), not `index.*` (avoids import-map `:index` suffix).
-- Co-located JS/SCSS share the leaf name when interactive.
+- Co-located JS/SCSS/CVA share the leaf name when needed (`Name.cva.twig` for `vi_cva_from_file`).
 - **`Page`** = global storefront layout chrome (header, footer, …).
 
 ## Props / CVA / attributes
 
 Multi-slot class API:
 
-1. Inline default map (`root` + nested slots) with CVA fields (`base`, `variants`, …)
-2. Caller override: `:cva="{ … }"` → `|replace_recursive(cva)`
-3. Compose: `{% set cx = vi_cva({ … }|replace_recursive(cva)) %}`
+1. Default map: sibling **`Name.cva.twig`** (preferred for larger maps) or inline hash
+2. Compose: `{% set cx = vi_cva_from_file(cva) %}` or `vi_cva({ … }|replace_recursive(cva))`
+3. Caller override: `:cva="{ … }"` deep-merged into defaults
 4. Render: `class="{{ cx.root.apply({ size: size }) }}"` / `cx.label.apply(…)`
 5. Extras: `class="…"` (root) and `label:class="…"` (nested)
 
-Always call `vi_cva` **before** rendering `attributes` / `attributes.defaults()`.
+Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
+
+Co-locate like JS: `Alert.html.twig` + `Alert.cva.twig` (+ `Alert.js` when interactive).
 
 See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 

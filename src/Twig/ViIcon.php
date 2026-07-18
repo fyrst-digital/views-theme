@@ -49,6 +49,10 @@ class ViIcon extends AbstractExtension
         $ariaLabel = $options['ariaLabel'] ?? null;
         $mode = $options['mode'] ?? 'svg';
 
+        $attr = !empty($options['attr']) && \is_array($options['attr']) ? $options['attr'] : [];
+        $extraClass = $options['class'] ?? ($attr['class'] ?? null);
+        unset($attr['class']);
+
         if ($mode === 'css') {
             $classes = ['icon'];
             if ($pack === 'default') {
@@ -56,7 +60,8 @@ class ViIcon extends AbstractExtension
             } elseif (\is_string($pack)) {
                 $classes[] = "icon-{$name}-{$pack}";
             }
-            $classAttr = \implode(' ', $classes);
+            $classes = $this->mergeClasses($classes, $extraClass);
+            $classAttr = \htmlspecialchars(\implode(' ', $classes), \ENT_QUOTES, 'UTF-8');
             $html = "<span class=\"{$classAttr}\"></span>";
 
             return new Markup($html, 'UTF-8');
@@ -69,7 +74,7 @@ class ViIcon extends AbstractExtension
             $svg = \file_get_contents($svgPath) ?: '';
         }
 
-        $classes = ['icon', 'icon-' . $name];
+        $classes = $this->mergeClasses(['icon', 'icon-' . $name], $extraClass);
         $classString = \implode(' ', $classes);
 
         $attributes = ' class="' . \htmlspecialchars($classString, \ENT_QUOTES, 'UTF-8') . '"';
@@ -82,15 +87,37 @@ class ViIcon extends AbstractExtension
             $attributes .= ' aria-label="' . \htmlspecialchars((string) $ariaLabel, \ENT_QUOTES, 'UTF-8') . '"';
         }
 
-        if (!empty($options['attr']) && \is_array($options['attr'])) {
-            foreach ($options['attr'] as $key => $value) {
-                $attributes .= ' ' . $key . '="' . \htmlspecialchars((string) $value, \ENT_QUOTES, 'UTF-8') . '"';
-            }
+        foreach ($attr as $key => $value) {
+            $attributes .= ' ' . $key . '="' . \htmlspecialchars((string) $value, \ENT_QUOTES, 'UTF-8') . '"';
         }
 
         $svg = \preg_replace('/<svg\b([^>]*)>/i', '<svg$1' . $attributes . '>', $svg, 1) ?? $svg;
 
         return new Markup($svg, 'UTF-8');
+    }
+
+    /**
+     * @param list<string> $classes
+     * @return list<string>
+     */
+    private function mergeClasses(array $classes, mixed $extraClass): array
+    {
+        if (\is_string($extraClass) && $extraClass !== '') {
+            $parts = \preg_split('/\s+/', \trim($extraClass)) ?: [];
+            foreach ($parts as $part) {
+                if ($part !== '') {
+                    $classes[] = $part;
+                }
+            }
+        } elseif (\is_array($extraClass)) {
+            foreach ($extraClass as $part) {
+                if (\is_string($part) && $part !== '') {
+                    $classes[] = $part;
+                }
+            }
+        }
+
+        return $classes;
     }
 
     /**

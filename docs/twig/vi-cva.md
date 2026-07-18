@@ -1,22 +1,81 @@
-# `vi_cva`
+# `vi_cva` / `vi_cva_from_file`
 
-Twig function that maps a multi-slot CVA config to bound slots and pulls attribute class extras. Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`.
+Twig functions that map a multi-slot CVA config to bound slots and pull attribute class extras. Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`.
 
 Uses [`Twig\Extra\Html\Cva`](https://twig.symfony.com/html_cva) from `twig/html-extra` (not the deprecated Symfony UX `cva` / `Symfony\UX\TwigComponent\CVA`).
 
-## Signature
+## Signatures
 
 ```twig
 {% set cx = vi_cva(config) %}
 {% set cx = vi_cva(config, attributes) %}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cx = vi_cva_from_file(cva, attributes) %}
+{% set cx = vi_cva_from_file(cva, '@ViewsTheme/components/Alert.cva.twig') %}
+{% set cx = vi_cva_from_file(cva, 'Alert') %}
 ```
+
+| Function | Description |
+|----------|-------------|
+| `vi_cva` | Inline config map + attribute binding |
+| `vi_cva_from_file` | Load co-located / explicit `.cva.twig`, merge `cva` overrides, then same binding as `vi_cva` |
 
 | Argument | Type | Description |
 |----------|------|-------------|
 | `config` | `array` | Slot map: each key is a DOM slot (`root`, `label`, …) |
+| `cva` | `array` | Caller overrides (deep-merged via `array_replace_recursive`) |
 | `attributes` | `ComponentAttributes` | Optional; defaults to component `attributes` from context |
+| template ref (2nd arg) | `string` | Optional explicit `.cva.twig` path, `.html.twig` sibling, or short name (`Alert`, `Product/Box/Default`) |
 
 Returns `array<string, ViCvaSlot>`. Updates context `attributes` so nested `slot:class` keys are stripped after binding.
+
+## Prefer file-based defaults
+
+For multi-slot or variant-heavy components, keep defaults in a **sibling** file:
+
+```text
+Alert.html.twig
+Alert.cva.twig
+Product/Box/Default.html.twig
+Product/Box/Default.cva.twig
+```
+
+```twig
+{# Alert.html.twig #}
+{% props cva = {} %}
+{% set cx = vi_cva_from_file(cva) %}
+```
+
+Auto-resolution: caller `Name.html.twig` → sibling `Name.cva.twig` (via UX component stack, else render backtrace). Tiny maps may stay inline with `vi_cva`.
+
+### `.cva.twig` format
+
+A single Twig **hash expression** (not a full template). Optional `{# comments #}` only.
+
+```twig
+{# QuantityInput.cva.twig #}
+{
+    root: {
+        base: 'vi-quantity-input input-group …',
+        variants: {
+            size: { sm: 'input-group-sm' },
+        },
+    },
+    decrease: { base: 'vi-quantity-input__decrease …' },
+    input: { base: '…' },
+}
+```
+
+Evaluated with the **component context**, so dynamic bases work:
+
+```twig
+{# Product/Box/Default.cva.twig #}
+{
+    root: { base: 'vi-product-box product-box layout-' ~ layout },
+    image: { base: 'vi-product-box__image' },
+}
+```
 
 ## Slot config shape
 
@@ -46,9 +105,11 @@ Keys match CVA options: `base`, `variants`, `compoundVariants`, `defaultVariants
 | `root` | `class="…"` → `attributes.render('class')` |
 | other (`label`, …) | `label:class="…"` → nested class, then removed from attributes bag |
 
-Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consumed.
+Call `vi_cva` / `vi_cva_from_file` **before** rendering `{{ attributes }}` so root `class` is consumed.
 
 ## Usage
+
+### Inline (small components)
 
 ```twig
 {% props
@@ -69,6 +130,17 @@ Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consume
 
 <div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
     <label class="{{ cx.label.apply({ size: size }) }}">…</label>
+</div>
+```
+
+### File-based (default for larger maps)
+
+```twig
+{% props size = 'md', cva = {} %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
+    …
 </div>
 ```
 
@@ -95,4 +167,4 @@ Variant **values** stay explicit in `.apply({ … })` (component props). Only co
 
 - [CSS class API](../conventions/css-classes.md)
 - [UX components](../conventions/ux-components.md)
-- Shopware `replace_recursive` for deep prop merge (prefer over `vi_merge_deep`)
+- Shopware `replace_recursive` for deep prop merge (prefer over `vi_merge_deep`) when using inline `vi_cva`

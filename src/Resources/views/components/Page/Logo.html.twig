@@ -21,15 +21,15 @@
     {{ attributes.defaults({
         href: element is same as('a') ? href : null,
         title: title,
-        class: cx.root.apply()
-    }).without('data-component-template') }}
+    }).without('data-component-template').without('class') }}
+    class="{{cx.root.apply()}}"
 >
     {% if textLogo is not empty %}
         {% block text %}
             <span
-                {{ attributes.nested('text').defaults({
-                    class: cx.text.apply()
-                }) }}
+                {{ attributes.nested('text').without('class') }}
+                class="{{ cx.text.apply() }}"
+
             >
                 {{ textLogo|raw }}
             </span>

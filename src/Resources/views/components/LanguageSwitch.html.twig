@@ -9,20 +9,7 @@
 {% set languages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
 {% set activeLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(page.header.activeLanguage.id|default(null))) %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-language-switch language-form' },
-    menu: { base: 'vi-language-switch__menu languages-menu dropdown' },
-    button: { base: 'vi-language-switch__button btn dropdown-toggle language-switch-btn' },
-    flag: { base: 'vi-language-switch__flag language-flag' },
-    flagIcon: { base: 'vi-language-switch__flag-icon language-flag-icon' },
-    flagLabel: { base: 'vi-language-switch__flag-label language-flag-label' },
-    dropdown: { base: 'vi-language-switch__dropdown dropdown-menu dropdown-menu-end' },
-    item: { base: 'vi-language-switch__item language-item dropdown-item' },
-    itemChecked: { base: 'vi-language-switch__item language-item dropdown-item item-checked' },
-    itemLabel: { base: 'vi-language-switch__item-label language-item-label' },
-    itemRadio: { base: 'vi-language-switch__item-radio language-item-radio' },
-    itemIcon: { base: 'vi-language-switch__item-icon language-item-icon' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% set menuAttributes = attributes.nested('menu') %}
 {% set buttonAttributes = attributes.nested('button') %}

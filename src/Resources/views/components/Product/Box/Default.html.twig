@@ -30,15 +30,7 @@
 {% set displayFrom = product.calculatedPrices.count > 1 %}
 {% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-product-box product-box layout-' ~ layout },
-    image: { base: 'vi-product-box__image' },
-    content: { base: 'vi-product-box__content' },
-    body: { base: 'vi-product-box__body' },
-    footer: { base: 'vi-product-box__footer' },
-    actions: { base: 'vi-product-box__actions' },
-    details: { base: 'vi-product-box__details' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
     data-ref="box"

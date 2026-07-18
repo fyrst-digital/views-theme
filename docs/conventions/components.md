@@ -8,7 +8,7 @@ Full guide: [UX Twig components](ux-components.md).
 
 1. PascalCase path → `<twig:ViewsTheme:…>`
 2. `{% props %}` for inputs (pure UX components)
-3. `vi_cva({ … }|replace_recursive(cva))` + nested attrs (BEM `vi-*` roots); prop `cva = {}`
+3. `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva({ … }|replace_recursive(cva))`; prop `cva = {}`; BEM `vi-*` roots
 4. Short `{% block %}` names
 5. Interactive root: `data-component="ViewsTheme:…"`; internal hooks: `data-ref="…"`
 6. Co-located `<Name>.js` (`ShopwareComponent`) when interactive

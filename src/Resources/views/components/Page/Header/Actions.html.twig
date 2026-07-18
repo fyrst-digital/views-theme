@@ -1,40 +1,41 @@
 {% props
-    actionClass = 'btn btn-equal rounded-pill',
-    wishlistEnabled = null,
+    wishlist = config('core.cart.wishlistEnabled'),
     cva = {},
 %}
 
-{% set wishlistEnabled = wishlistEnabled is not null ? wishlistEnabled : config('core.cart.wishlistEnabled') %}
-
 {% set cx = vi_cva({
-    root: { base: 'vi-header-actions col d-flex justify-content-end align-items-center' },
+    root: { base: 'col d-flex justify-content-end align-items-center' },
 }|replace_recursive(cva)) %}
 
 <div
-    {{ attributes }}
+    {{ attributes.without('class').without('data-component-template') }}
     class="{{ cx.root.apply() }}"
-    data-ref="actions"
 >
-    {% block start %}{% endblock %}
+    {% block content %}
 
-    {% block search %}
-        <twig:ViewsTheme:Page:Header:Action:Search class="{{ actionClass }}" />
+        {% block menu %}
+        {% endblock %}
+
+        {% block search %}
+            <twig:ViewsTheme:Page:Header:Action:Search />
+        {% endblock %}
+
+        {% block wishlist %}
+            {% if wishlist %}
+                <twig:ViewsTheme:Wishlist:Action
+                    class="header-action" />
+            {% endif %}
+        {% endblock %}  
+
+        {% block account %}
+            <twig:ViewsTheme:Page:Header:Action:Account />
+        {% endblock %}
+
+        {% block cart %}
+            <twig:ViewsTheme:Page:Header:Action:Cart
+                class="{{ actionClass }}" />
+        {% endblock %}
+
     {% endblock %}
 
-    {% block wishlist %}
-        {% if wishlistEnabled %}
-            <twig:ViewsTheme:Page:Header:Action:Wishlist class="{{ actionClass }}" />
-        {% endif %}
-    {% endblock %}
-
-    {% block account %}
-        <twig:ViewsTheme:Page:Header:Action:Account toggle:class="{{ actionClass }}" />
-    {% endblock %}
-
-    {% block cart %}
-        <twig:ViewsTheme:Page:Header:Action:Cart
-            class="{{ actionClass }}" />
-    {% endblock %}
-
-    {% block end %}{% endblock %}
 </div>

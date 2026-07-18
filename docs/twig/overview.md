@@ -6,6 +6,7 @@ ViewsTheme registers Twig helpers under the `vi_` prefix.
 |------|------|---------|
 | [`vi_icon`](vi-icon.md) | function | Inline SVG or CSS icon markup |
 | [`vi_cva`](vi-cva.md) | function | Multi-slot CVA map + attribute class binding |
+| [`vi_cva_from_file`](vi-cva.md) | function | Load sibling / explicit `.cva.twig` defaults + merge `cva` + bind |
 | `vi_merge_deep` | filter | Deep array merge (utility; prefer `replace_recursive` for classes) |
 
 ## Removed

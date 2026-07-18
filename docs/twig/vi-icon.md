@@ -30,9 +30,10 @@ ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'default'`, so bare 
 |-----|------|---------|-------------|
 | `pack` | `string` | theme / `'default'` | Icon pack folder under assets |
 | `mode` | `string` | theme / `'svg'` | `'svg'` (inline SVG) or `'css'` (empty span with classes) |
+| `class` | `string\|string[]` | — | Extra CSS classes appended to the root element (`span` or `svg`) |
 | `ariaHidden` | `bool` | `true` | Adds `aria-hidden="true"` in SVG mode |
 | `ariaLabel` | `string\|null` | `null` | Optional `aria-label` on the SVG |
-| `attr` | `array` | — | Extra HTML attributes merged onto the SVG root (SVG mode only) |
+| `attr` | `array` | — | Extra HTML attributes merged onto the SVG root (SVG mode only). Prefer `class` for classes; `attr.class` is merged into the same class list |
 
 ## Modes
 
@@ -40,12 +41,13 @@ ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'default'`, so bare 
 
 Loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and a11y attributes on the `<svg>` root, and returns safe HTML markup.
 
-Classes: `icon icon-{name}`.
+Classes: `icon icon-{name}` plus any `class` option values.
 
 ```twig
 {{ vi_icon('cart') }}
 {{ vi_icon('heart', { pack: 'default', mode: 'svg', ariaHidden: false, ariaLabel: 'Wishlist' }) }}
 {{ vi_icon('search', { mode: 'svg', attr: { focusable: 'false' } }) }}
+{{ vi_icon('heart', { mode: 'svg', class: 'vi-alert__icon' }) }}
 ```
 
 If the SVG file is missing, the function returns empty markup (no exception).
@@ -60,6 +62,8 @@ Renders a `<span>` with icon classes (no SVG body). Useful when icons are provid
 ```twig
 {{ vi_icon('arrow-right') }}
 {{ vi_icon('arrow-right', { mode: 'css' }) }}
+{{ vi_icon('x', { class: 'foo bar' }) }}
+{{ vi_icon('cart', { class: ['vi-btn__icon', 'is-active'] }) }}
 ```
 
 ## Asset path
