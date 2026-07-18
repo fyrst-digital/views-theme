@@ -1,9 +1,32 @@
 {% props
-    meddl = 'loide',
+    size = 'md',
+    cva = {},
 %}
 
-<div>
+{% set cx = vi_cva(
+    {
+        root: {
+            base: 'root',
+            variants: {
+                size: {
+                    md: 'container-md'
+                }
+            }
+        },
+        label: {
+            base: 'label',
+            variants: {
+                size: {
+                    md: 'label-md'
+                }
+            }
+        }
+    }|replace_recursive(cva), 
+    attributes
+) %}
+
+<div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
     {% block content %}
-        vsvdsvfff  +++
+        <label class="{{ cx.label.apply({ size: size }) }}">vsvdsvfff  +++</label>
     {% endblock %}
 </div>

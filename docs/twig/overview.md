@@ -5,11 +5,12 @@ ViewsTheme registers Twig helpers under the `vi_` prefix.
 | Name | Type | Purpose |
 |------|------|---------|
 | [`vi_icon`](vi-icon.md) | function | Inline SVG or CSS icon markup |
-| `vi_merge_deep` | filter | Deep array merge (utility) |
+| [`vi_cva`](vi-cva.md) | function | Multi-slot CVA map + attribute class binding |
+| `vi_merge_deep` | filter | Deep array merge (utility; prefer `replace_recursive` for classes) |
 
 ## Removed
 
-`vi_define_classes`, `vi_attr_classes`, and `vi_classes` were removed after the UX component migration. Use [UX components](../conventions/ux-components.md) (`cva` + `attributes`) instead.
+`vi_define_classes`, `vi_attr_classes`, and `vi_classes` were removed after the UX component migration. Use [UX components](../conventions/ux-components.md) (`cva` / [`vi_cva`](vi-cva.md) + `attributes`) instead.
 
 ## Implementation
 
@@ -17,6 +18,7 @@ ViewsTheme registers Twig helpers under the `vi_` prefix.
 |-----------------|------|
 | `Fyrst\ViewsTheme\Twig\ViIcon` | `src/Twig/ViIcon.php` |
 | `Fyrst\ViewsTheme\Twig\ViUtilities` | `src/Twig/ViUtilities.php` |
+| `Fyrst\ViewsTheme\Twig\ViCvaSlot` | `src/Twig/ViCvaSlot.php` |
 
 ## Conventions
 

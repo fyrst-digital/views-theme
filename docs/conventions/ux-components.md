@@ -32,9 +32,17 @@ VariantsGrid/Container.js
 
 ## Props / CVA / attributes
 
-See earlier sections in this guide (props, CVA, nested attributes, blocks).
+Multi-slot class API:
 
-Always call `attributes.render('class')` **before** rendering `attributes` / `attributes.defaults()`.
+1. `defaultClasses` map (`root` + nested slots) with CVA fields (`base`, `variants`, …)
+2. Caller override: `:classes="{ … }"` → `defaultClasses|replace_recursive(classes)`
+3. Compose: `{% set cx = vi_cva(classes, attributes) %}`
+4. Render: `class="{{ cx.root.apply({ size: size }) }}"` / `cx.label.apply(…)`
+5. Extras: `class="…"` (root) and `label:class="…"` (nested)
+
+Always call `vi_cva` / `attributes.render('class')` **before** rendering `attributes` / `attributes.defaults()`.
+
+See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
 ## JavaScript
 

@@ -10,7 +10,7 @@ Developer documentation for the ViewsTheme Shopware 6.7 storefront plugin.
 | [Architecture](architecture.md) | Plugin layout and layers |
 | [Configuration](configuration.md) | Plugin config and `theme.json` |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
-| [Twig extensions](twig/overview.md) | `vi_icon`, utilities |
+| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_cva`, utilities |
 | [Features](features/variants-grid.md) | Variants grid, preferred delivery date |
 
 ## Conventions
@@ -23,10 +23,11 @@ Developer documentation for the ViewsTheme Shopware 6.7 storefront plugin.
 ## Twig
 
 - [Overview](twig/overview.md)
-- [`vi_define_classes`](twig/vi-define-classes.md)
-- [`vi_attr_classes`](twig/vi-attr-classes.md)
-- [`vi_classes`](twig/vi-classes.md)
+- [`vi_cva`](twig/vi-cva.md)
 - [`vi_icon`](twig/vi-icon.md)
+- [`vi_define_classes`](twig/vi-define-classes.md) (removed)
+- [`vi_attr_classes`](twig/vi-attr-classes.md) (removed)
+- [`vi_classes`](twig/vi-classes.md) (removed)
 
 ## Features
 
