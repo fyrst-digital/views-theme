@@ -1,10 +1,27 @@
 {% sw_extends '@Storefront/storefront/component/account/register.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'card register-card' },
+    header: { base: 'card-header register-card-header' },
+    form: { base: 'register-form' },
+    personal: { base: 'register-personal grid gap-3 card-body border-bottom' },
+    address: { base: 'register-address' },
+    billing: { base: 'register-billing card-body border-bottom' },
+    shippingToggle: { base: 'card-body d-flex flex-column gap-3' },
+    shipping: { base: 'register-shipping js-form-field-toggle-shipping-address d-none' },
+    footerBody: { base: 'card-body' },
+    submit: { base: 'register-submit card-footer d-flex flex-row flex-wrap align-items-center justify-content-end' },
+}|replace_recursive(cva)) %}
+
 {% block component_account_register %}
-  <div class="card register-card">
+  <div {{ attributes }} class="{{ cx.root.apply() }}">
     {% block component_account_register_header %}
       {% if cardTitle %}
-        <h4 class="card-header register-card-header">
+        <h4 {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
           {{ cardTitle }}
         </h4>
       {% endif %}
@@ -13,7 +30,8 @@
     {% block component_account_register_form %}
       <form
         action="{{ path('frontend.account.register.save') }}"
-        class="register-form"
+        {{ attributes.nested('form') }}
+        class="{{ cx.form.apply() }}"
         method="post"
         data-form-submit-loader="true"
         data-form-validation="true">
@@ -30,29 +48,25 @@
         {% endblock %}
 
         {% block component_account_register_personal %}
-          <div class="register-personal grid gap-3 card-body border-bottom">
+          <div {{ attributes.nested('personal') }} class="{{ cx.personal.apply() }}">
             {% block component_account_register_personal_fields %}
               {% block component_account_register_personal_address_fields %}
                 {% if feature('v6.7.0.0') %}
                   {% set prefix = 'billingAddress' %}
                 {% endif %}
 
-                {%
-                  sw_include '@ViewsTheme/components/Address/Personal.html.twig' with {
-                      prefix: prefix,
-                      showBirthdayField: config('core.loginRegistration.showBirthdayField'),
-                      accountType: data.get('accountType')
-                  }
-                %}
+                {% component 'ViewsTheme:Address:Personal' with {
+                    prefix: prefix,
+                    showBirthdayField: config('core.loginRegistration.showBirthdayField'),
+                    accountType: data.get('accountType')
+                } %}{% endcomponent %}
               {% endblock %}
 
               {% block component_account_register_company_fields %}
-                {%
-                  sw_include '@ViewsTheme/components/Address/PersonalCompany.html.twig' with {
-                      prefix: 'billingAddress',
-                      address: data.get('billingAddress')
-                  }
-                %}
+                {% component 'ViewsTheme:Address:PersonalCompany' with {
+                    prefix: 'billingAddress',
+                    address: data.get('billingAddress')
+                } %}{% endcomponent %}
               {% endblock %}
 
               {% block component_account_register_guest_mode_fields %}
@@ -170,10 +184,10 @@
         {% endblock %}
 
         {% block component_account_register_address %}
-          <div class="register-address">
+          <div {{ attributes.nested('address') }} class="{{ cx.address.apply() }}">
             {% block component_account_register_address_fields %}
               {% block component_account_register_address_billing %}
-                <div class="register-billing card-body border-bottom">
+                <div {{ attributes.nested('billing') }} class="{{ cx.billing.apply() }}">
                   {% block component_account_register_address_billing_header %}
                     <h5 class="card-title">
                       {{
@@ -186,20 +200,18 @@
 
                   {% block component_account_register_address_billing_fields %}
                     <div class="grid gap-3">
-                      {%
-                        sw_include '@ViewsTheme/components/Address/Form.html.twig' with {
-                            prefix: 'billingAddress',
-                            data: data.get('billingAddress'),
-                            showNoShippingPostfix: true,
-                        }
-                      %}
+                      {% component 'ViewsTheme:Address:Form' with {
+                          prefix: 'billingAddress',
+                          data: data.get('billingAddress'),
+                          showNoShippingPostfix: true,
+                      } %}{% endcomponent %}
                     </div>
                   {% endblock %}
                 </div>
               {% endblock %}
 
               {% block component_account_register_address_different_shipping %}
-                <div class="card-body d-flex flex-column gap-3">
+                <div {{ attributes.nested('shippingToggle') }} class="{{ cx.shippingToggle.apply() }}">
                   {% block component_account_register_address_different_shipping_control %}
                     <div class="form-check register-different-shipping fw-semibold">
                       {% block component_account_register_address_different_shipping_input %}
@@ -213,7 +225,7 @@
                   {% endblock %}
 
                   {% block component_account_register_address_shipping %}
-                    <div class="register-shipping js-form-field-toggle-shipping-address d-none">
+                    <div {{ attributes.nested('shipping') }} class="{{ cx.shipping.apply() }}">
                       {% block component_account_register_address_shipping_header %}
                         <h5 class="card-title">
                           {{
@@ -227,36 +239,30 @@
                       {% block component_account_register_address_shipping_fields %}
                         <div class="grid gap-3">
                           {% block component_account_register_address_shipping_fields_personal %}
-                            {%
-                              sw_include '@ViewsTheme/components/Address/Personal.html.twig' with {
-                                  prefix: 'shippingAddress',
-                                  data: data.get('shippingAddress'),
-                                  hideCustomerTypeSelect: false,
-                                  customToggleTarget: true,
-                                  accountType: data.get('shippingAddress').get('accountType')
-                              }
-                            %}
+                            {% component 'ViewsTheme:Address:Personal' with {
+                                prefix: 'shippingAddress',
+                                data: data.get('shippingAddress'),
+                                hideCustomerTypeSelect: false,
+                                customToggleTarget: true,
+                                accountType: data.get('shippingAddress').get('accountType')
+                            } %}{% endcomponent %}
                           {% endblock %}
 
                           {% block component_account_register_address_shipping_fields_company %}
-                            {%
-                              sw_include '@ViewsTheme/components/Address/PersonalCompany.html.twig' with {
-                                  prefix: 'shippingAddress',
-                                  customToggleTarget: true,
-                                  address: data.get('shippingAddress')
-                              }
-                            %}
+                            {% component 'ViewsTheme:Address:PersonalCompany' with {
+                                prefix: 'shippingAddress',
+                                customToggleTarget: true,
+                                address: data.get('shippingAddress')
+                            } %}{% endcomponent %}
                           {% endblock %}
 
                           {% block component_account_register_address_shipping_fields_address %}
-                            {%
-                              sw_include '@ViewsTheme/components/Address/Form.html.twig' with {
-                                  prefix: 'shippingAddress',
-                                  data: data.get('shippingAddress'),
-                                  showNoShippingPostfix: true,
-                                  disableNonShippableCountries: true,
-                              }
-                            %}
+                            {% component 'ViewsTheme:Address:Form' with {
+                                prefix: 'shippingAddress',
+                                data: data.get('shippingAddress'),
+                                showNoShippingPostfix: true,
+                                disableNonShippableCountries: true,
+                            } %}{% endcomponent %}
                           {% endblock %}
                         </div>
                       {% endblock %}
@@ -272,7 +278,7 @@
           {{ parent() }}
         {% endblock %}
 
-        <div class="card-body">
+        <div {{ attributes.nested('footerBody') }} class="{{ cx.footerBody.apply() }}">
           {% block component_account_register_privacy %}
             {% sw_include '@Storefront/storefront/component/privacy-notice.html.twig' %}
           {% endblock %}
@@ -285,7 +291,7 @@
         </div>
 
         {% block component_account_register_footer %}
-          <div class="register-submit card-footer d-flex flex-row flex-wrap align-items-center justify-content-end">
+          <div {{ attributes.nested('submit') }} class="{{ cx.submit.apply() }}">
             {% block component_account_register_submit %}
               <button
                 type="submit"

@@ -1,17 +1,33 @@
+{% props
+    showVatNotice = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'footer-bottom' },
+    container: { base: 'footer-bottom-container container' },
+    serviceList: { base: 'footer-service-list list-unstyled' },
+    serviceItem: { base: 'footer-service-item' },
+    serviceLink: { base: 'footer-link' },
+    vat: { base: 'footer-vat' },
+    copyright: { base: 'footer-copyright' },
+}|replace_recursive(cva)) %}
+
 {% block component_footer_bottom %}
-    <div class="footer-bottom">
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
     
     {% block component_footer_bottom_container %}
-        <div class="footer-bottom-container container">
+        <div {{ attributes.nested('container') }} class="{{ cx.container.apply() }}">
 
             {% block component_footer_bottom_service_list %}
                 {% if page.header.serviceMenu %}
-                    <ul class="footer-service-list list-unstyled">
+                    <ul {{ attributes.nested('serviceList') }} class="{{ cx.serviceList.apply() }}">
                         {% for serviceMenuItem in page.header.serviceMenu %}
                             {% block component_footer_bottom_service_item %}
-                                <li class="footer-service-item">
+                                <li {{ attributes.nested('serviceItem') }} class="{{ cx.serviceItem.apply() }}">
                                     {% block component_footer_bottom_service_link %}
-                                        <a class="footer-link"
+                                        <a {{ attributes.nested('serviceLink') }}
+                                            class="{{ cx.serviceLink.apply() }}"
                                             href="{{ category_url(serviceMenuItem) }}"
                                             {% if category_linknewtab(serviceMenuItem) %}target="_blank"{% endif %}
                                             title="{{ serviceMenuItem.translated.name }}">
@@ -27,7 +43,7 @@
 
             {% block component_footer_bottom_vat_notice %}
                 {% if showVatNotice is same as(true) %}
-                    <div class="footer-vat">
+                    <div {{ attributes.nested('vat') }} class="{{ cx.vat.apply() }}">
                         {% if context.taxState == 'gross' %}
                             {{ 'footer.includeVatText'|trans({
                                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
@@ -42,7 +58,7 @@
             {% endblock %}
 
             {% block component_footer_bottom_copyright %}
-                <div class="footer-copyright">
+                <div {{ attributes.nested('copyright') }} class="{{ cx.copyright.apply() }}">
                     {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
                 </div>
             {% endblock %}

@@ -1,17 +1,17 @@
 {% props
-    defaultBaseClasses = 'vi-header-action-menu',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-menu' },
+}|replace_recursive(cva)) %}
 
 <button
     type="button"
     data-off-canvas-menu="true"
     aria-label="{{ 'general.menuLink'|trans|striptags }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {{ vi_icon('list') }}
 </button>

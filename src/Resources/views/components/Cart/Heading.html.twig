@@ -2,31 +2,32 @@
     productsQuantity = 0,
     countDisplay = 'badge',
     titleTag = 'div',
-    defaultBaseClasses = 'vi-cart-heading cart-heading d-flex flex-row flex-wrap',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-heading cart-heading d-flex flex-row flex-wrap' },
+    title: { base: 'vi-cart-heading__title cart-heading-title' },
+    countBadge: { base: 'vi-cart-heading__count-badge cart-heading-products badge rounded-pill text-bg-light' },
+    countInline: { base: 'vi-cart-heading__count-inline' },
+}|replace_recursive(cva)) %}
+
 {% set titleAttributes = attributes.nested('title') %}
 {% set countBadgeAttributes = attributes.nested('countBadge') %}
 {% set countInlineAttributes = attributes.nested('countInline') %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block title %}
         <{{ titleTag|raw }}
-            {{ titleAttributes.defaults({
-                class: 'vi-cart-heading__title cart-heading-title',
-            }) }}
+            {{ titleAttributes }}
+            class="{{ cx.title.apply() }}"
         >
             {{ 'checkout.cartHeader'|trans|sw_sanitize }}
             {% if productsQuantity > 0 and countDisplay is same as('inline') %}
-                <span
-                    {{ countInlineAttributes.defaults({ class: 'vi-cart-heading__count-inline' }) }}
-                >
+                <span {{ countInlineAttributes }} class="{{ cx.countInline.apply() }}">
                     ({{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }})
                 </span>
             {% endif %}
@@ -35,11 +36,7 @@
 
     {% block products %}
         {% if productsQuantity > 0 and countDisplay is same as('badge') %}
-            <span
-                {{ countBadgeAttributes.defaults({
-                    class: 'vi-cart-heading__count-badge cart-heading-products badge rounded-pill text-bg-light',
-                }) }}
-            >
+            <span {{ countBadgeAttributes }} class="{{ cx.countBadge.apply() }}">
                 {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
             </span>
         {% endif %}

@@ -5,8 +5,7 @@
     showQuantity = true,
     buyLabel = null,
     buyIcon = 'handbag',
-    defaultBaseClasses = 'vi-product-action-buy',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set formAction = formAction is not null ? formAction : path('frontend.checkout.line-item.add') %}
@@ -28,9 +27,10 @@
     {% endif %}
 {% endif %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set buttonAttributes = attributes.nested('button') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-action-buy' },
+    button: { base: 'vi-product-action-buy__button' },
+}|replace_recursive(cva)) %}
 
 <form
     action="{{ formAction }}"
@@ -45,7 +45,7 @@
         }|json_encode|e('html_attr') }}"
     {% endif %}
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block parameter %}
         <twig:ViewsTheme:Product:Action:BuyParameter
@@ -71,7 +71,8 @@
         <button
             type="submit"
             data-ref="buy-action"
-            {{ buttonAttributes.defaults({ class: 'vi-product-action-buy__button' }) }}
+            {{ attributes.nested('button') }}
+            class="{{ cx.button.apply() }}"
         >
             {% block button_icon %}
                 {{ vi_icon(buyIcon) }}

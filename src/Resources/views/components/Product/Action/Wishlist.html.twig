@@ -4,33 +4,18 @@
     size = null,
     color = 'light',
     addToWishlistOptions = {},
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set actionClasses = [
-    'vi-product-action-wishlist',
-    'btn',
-    'product-wishlist-' ~ productId,
-    'product-wishlist-action',
-    'product-wishlist-not-added',
-    'product-wishlist-loading',
-    'btn-' ~ color,
-] %}
-{% if size is not null %}
-    {% set actionClasses = actionClasses|merge(['btn-' ~ size]) %}
-{% endif %}
-{% set defaultBaseClasses = defaultBaseClasses is not null ? defaultBaseClasses : actionClasses|join(' ') %}
-
-{% set labelClasses = ['vi-product-action-wishlist__label', 'product-wishlist-btn-content'] %}
-{% if size is not null %}
-    {% set labelClasses = labelClasses|merge(['product-wishlist-btn-content-' ~ size]) %}
-{% endif %}
-
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set iconAttributes = attributes.nested('icon') %}
-{% set labelAttributes = attributes.nested('label') %}
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-product-action-wishlist btn product-wishlist-' ~ productId ~ ' product-wishlist-action product-wishlist-not-added product-wishlist-loading btn-' ~ color ~ (size is not null ? ' btn-' ~ size : ''),
+    },
+    icon: { base: 'vi-product-action-wishlist__icon wishlist-icon' },
+    label: {
+        base: 'vi-product-action-wishlist__label product-wishlist-btn-content' ~ (size is not null ? ' product-wishlist-btn-content-' ~ size : ''),
+    },
+}|replace_recursive(cva)) %}
 
 <button
     type="button"
@@ -38,19 +23,21 @@
     data-add-to-wishlist="true"
     data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block icon %}
         <span
-            {{ iconAttributes.defaults({
-                class: 'vi-product-action-wishlist__icon wishlist-icon',
-            }) }}
+            {{ attributes.nested('icon') }}
+            class="{{ cx.icon.apply() }}"
         ></span>
     {% endblock %}
 
     {% block label %}
         {% if showText %}
-            <span {{ labelAttributes.defaults({ class: labelClasses|join(' ') }) }}>
+            <span
+                {{ attributes.nested('label') }}
+                class="{{ cx.label.apply() }}"
+            >
                 {{ 'listing.addToWishlist'|trans|sw_sanitize }}
             </span>
         {% endif %}

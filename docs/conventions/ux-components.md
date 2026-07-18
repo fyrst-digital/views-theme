@@ -34,13 +34,13 @@ VariantsGrid/Container.js
 
 Multi-slot class API:
 
-1. `defaultClasses` map (`root` + nested slots) with CVA fields (`base`, `variants`, …)
-2. Caller override: `:classes="{ … }"` → `defaultClasses|replace_recursive(classes)`
-3. Compose: `{% set cx = vi_cva(classes, attributes) %}`
+1. Inline default map (`root` + nested slots) with CVA fields (`base`, `variants`, …)
+2. Caller override: `:cva="{ … }"` → `|replace_recursive(cva)`
+3. Compose: `{% set cx = vi_cva({ … }|replace_recursive(cva)) %}`
 4. Render: `class="{{ cx.root.apply({ size: size }) }}"` / `cx.label.apply(…)`
 5. Extras: `class="…"` (root) and `label:class="…"` (nested)
 
-Always call `vi_cva` / `attributes.render('class')` **before** rendering `attributes` / `attributes.defaults()`.
+Always call `vi_cva` **before** rendering `attributes` / `attributes.defaults()`.
 
 See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
@@ -64,18 +64,19 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, QuantityInput | UX |
-| Page:Header:* (+ Cart JS), Page:Footer:* | UX |
+| Alert, QuantityInput | UX + `vi_cva` |
+| Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:*, LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
 | Product:* | UX + Listing/BuyContainer shells |
 | LineItem:*, Cart:*, Wishlist:* | UX / shells |
 | Account:*, Address:*, Checkout:*, Order:* | UX / shells |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |
-| VariantsGrid:* (+ Container JS) | UX |
-| Legacy `vi_define_classes` API | **Removed** |
+| VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
+| Legacy `vi_define_classes` / `defaultBaseClasses` API | **Removed** |
 
 ## Related
 
 - [Component templates](components.md)
 - [JavaScript](javascript.md)
+- [`vi_cva`](../twig/vi-cva.md)
 - Shopware core README: `vendor/shopware/storefront/Resources/views/components/README.md`

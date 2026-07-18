@@ -1,9 +1,25 @@
 {% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
 
-{% block page_account_order_item_overview %}
-    <div class="order-item card">
+{% props
+    cva = {},
+%}
 
-        <div class="card-header order-item-header">
+{% set cx = vi_cva({
+    root: { base: 'order-item card' },
+    header: { base: 'card-header order-item-header' },
+    headerTitleContainer: { base: 'order-item-header-title-container' },
+    headerTitle: { base: 'order-item-header-title' },
+    status: { base: 'order-item-status' },
+    orderNumber: { base: 'order-table-header-order-number' },
+    contextMenu: { base: 'order-table-header-context-menu-wrapper' },
+    summary: { base: 'card-body order-item-header-summary' },
+    toggleBody: { base: 'card-body border-top' },
+}|replace_recursive(cva)) %}
+
+{% block page_account_order_item_overview %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+
+        <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
             {% set states = [
                 ORDER_TRANSACTION_STATE_FAILED,
                 ORDER_TRANSACTION_STATE_REMINDED,
@@ -18,15 +34,15 @@
 
             {% block page_account_order_item_heading_title_container %}
 
-                <div class="order-item-header-title-container">
+                <div {{ attributes.nested('headerTitleContainer') }} class="{{ cx.headerTitleContainer.apply() }}">
                     {% block page_account_order_item_heading_title %}
-                        <div class="order-item-header-title">
+                        <div {{ attributes.nested('headerTitle') }} class="{{ cx.headerTitle.apply() }}">
                             {{ 'account.orderHeadline'|trans|sw_sanitize }} {{ order.orderDateTime|format_date('short', locale=app.request.locale) }}
                         </div>
                     {% endblock %}
 
                     {% block page_account_order_item_status %}
-                        <div class="order-item-status">
+                        <div {{ attributes.nested('status') }} class="{{ cx.status.apply() }}">
                             {% if isPaymentNeeded %}
                                 {% block page_account_order_item_status_badge_payment_process_needed %}
                                     {{ parent() }}
@@ -40,7 +56,7 @@
                     {% endblock %}
 
                     {% block page_account_order_item_order_number_col %}
-                        <div class="order-table-header-order-number">
+                        <div {{ attributes.nested('orderNumber') }} class="{{ cx.orderNumber.apply() }}">
                             {% block page_account_order_item_order_number %}
                                 {{ 'account.orderNumber'|trans|sw_sanitize }} {{ order.orderNumber|sw_sanitize }}
                             {% endblock %}
@@ -52,7 +68,7 @@
             {% endblock %}
 
             {% block page_account_order_item_context_menu_col %}
-                <div class="order-table-header-context-menu-wrapper">
+                <div {{ attributes.nested('contextMenu') }} class="{{ cx.contextMenu.apply() }}">
 
                     {% block page_account_order_item_context_menu %}
                         {% block page_account_order_item_context_menu_button %}
@@ -79,7 +95,7 @@
             {% endblock %}
         </div>
 
-        <div class="card-body order-item-header-summary">
+        <div {{ attributes.nested('summary') }} class="{{ cx.summary.apply() }}">
             {% block page_account_order_item_order_table_body_col %}
                 {% block page_account_order_item_order_table_body %}
 
@@ -129,7 +145,7 @@
             {% endblock %}
         </div>
 
-        <div class="card-body border-top">
+        <div {{ attributes.nested('toggleBody') }} class="{{ cx.toggleBody.apply() }}">
             {% block page_account_order_item_order_table_body_cell_toggle_order_details_button %}
                 <button class="btn btn-light btn-sm order-hide-btn collapsed"
                     type="submit"
@@ -146,7 +162,7 @@
         </div>
 
         {% block page_account_order_item_detail %}
-            {% sw_include '@ViewsTheme/components/Order/ItemDetails.html.twig' %}
+            {% component 'ViewsTheme:Order:ItemDetails' %}{% endcomponent %}
         {% endblock %}
     </div>
 {% endblock %}

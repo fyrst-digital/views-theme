@@ -6,16 +6,16 @@
     loginError = false,
     errorSnippet = null,
     waitTime = null,
-    defaultBaseClasses = 'vi-account-login-form login-form',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set descriptionAttributes = attributes.nested('description') %}
-{% set actionsAttributes = attributes.nested('actions') %}
-{% set loginAttributes = attributes.nested('login') %}
-{% set recoveryAttributes = attributes.nested('recovery') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-account-login-form login-form' },
+    description: { base: 'vi-account-login-form__description login-form-description' },
+    actions: { base: 'vi-account-login-form__actions login-form-actions' },
+    login: { base: 'vi-account-login-form__submit' },
+    recovery: { base: 'vi-account-login-form__recovery' },
+}|replace_recursive(cva)) %}
 
 <form
     action="{{ path(loginRoute) }}"
@@ -23,7 +23,7 @@
     data-form-handler="true"
     data-ref="login-form"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -63,9 +63,8 @@
     {% block description %}
         {% if showDescription is same as(true) %}
             <div
-                {{ descriptionAttributes.defaults({
-                    class: 'vi-account-login-form__description login-form-description',
-                }) }}
+                {{ attributes.nested('description') }}
+                class="{{ cx.description.apply() }}"
             >
                 {{ 'account.loginFormDescription'|trans|sw_sanitize }}
             </div>
@@ -100,19 +99,20 @@
 
     {% block actions %}
         <div
-            {{ actionsAttributes.defaults({
-                class: 'vi-account-login-form__actions login-form-actions',
-            }) }}
+            {{ attributes.nested('actions') }}
+            class="{{ cx.actions.apply() }}"
         >
             <button
                 type="submit"
-                {{ loginAttributes.defaults({ class: 'vi-account-login-form__submit' }) }}
+                {{ attributes.nested('login') }}
+                class="{{ cx.login.apply() }}"
             >
                 {{ 'account.loginSubmit'|trans|sw_sanitize }}
             </button>
             <a
                 href="{{ seoUrl('frontend.account.recover.page') }}"
-                {{ recoveryAttributes.defaults({ class: 'vi-account-login-form__recovery' }) }}
+                {{ attributes.nested('recovery') }}
+                class="{{ cx.recovery.apply() }}"
             >
                 {{ 'account.loginPasswordRecover'|trans|sw_sanitize }}
             </a>

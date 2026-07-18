@@ -2,7 +2,7 @@
     product,
     layout = 'default',
     displayMode = 'standard',
-    classes = {},
+    cva = {},
 %}
 
 {% if layout is empty or layout is same as('standard') %}
@@ -34,5 +34,6 @@
         :layout="layout"
         :displayMode="displayMode"
         :sizes="sizes"
+        :cva="cva"
     />
 {% endblock %}

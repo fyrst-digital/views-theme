@@ -1,17 +1,18 @@
 {% props
     actionClass = 'btn btn-equal rounded-pill',
     wishlistEnabled = null,
-    defaultBaseClasses = 'vi-header-actions col d-flex justify-content-end align-items-center',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set wishlistEnabled = wishlistEnabled is not null ? wishlistEnabled : config('core.cart.wishlistEnabled') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-actions col d-flex justify-content-end align-items-center' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
     data-ref="actions"
 >
     {% block start %}{% endblock %}
@@ -31,7 +32,7 @@
     {% endblock %}
 
     {% block cart %}
-        <twig:ViewsTheme:Page:Header:Action:Cart 
+        <twig:ViewsTheme:Page:Header:Action:Cart
             class="{{ actionClass }}" />
     {% endblock %}
 

@@ -1,32 +1,17 @@
 {% props
-    size = 'md',
     cva = {},
 %}
 
-{% set cx = vi_cva(
-    {
-        root: {
-            base: 'root',
-            variants: {
-                size: {
-                    md: 'container-md'
-                }
-            }
-        },
-        label: {
-            base: 'label',
-            variants: {
-                size: {
-                    md: 'label-md'
-                }
-            }
-        }
-    }|replace_recursive(cva), 
-    attributes
-) %}
+{% set cx = vi_cva({
+    root: { base: '' },
+}|replace_recursive(cva)) %}
 
-<div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
+<header 
+    class="{{ cx.root.apply() }}">
     {% block content %}
-        <label class="{{ cx.label.apply({ size: size }) }}">vsvdsvfff  +++</label>
+
+        {% block logo %}
+            <twig:ViewsTheme:Page:Logo />
+        {% endblock %}
     {% endblock %}
-</div>
+</header>

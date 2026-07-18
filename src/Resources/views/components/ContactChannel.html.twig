@@ -5,35 +5,31 @@
     url = null,
     urlAttributes = [],
     openExternal = false,
-    defaultBaseClasses = 'vi-contact-channel contact-channel',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-contact-channel contact-channel' },
+    label: { base: 'vi-contact-channel__label contact-channel-label' },
+    content: { base: 'vi-contact-channel__content contact-channel-content' },
+    value: { base: 'vi-contact-channel__value contact-channel-value' },
+}|replace_recursive(cva)) %}
+
 {% set labelAttributes = attributes.nested('label') %}
 {% set contentAttributes = attributes.nested('content') %}
 {% set valueAttributes = attributes.nested('value') %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% if label %}
-        <div
-            {{ labelAttributes.defaults({
-                class: 'vi-contact-channel__label contact-channel-label',
-            }) }}
-        >
+        <div {{ labelAttributes }} class="{{ cx.label.apply() }}">
             {{ label }}
         </div>
     {% endif %}
 
-    <div
-        {{ contentAttributes.defaults({
-            class: 'vi-contact-channel__content contact-channel-content',
-        }) }}
-    >
+    <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
         {% if icon %}
             {{ vi_icon(icon) }}
         {% endif %}
@@ -44,18 +40,13 @@
                 {% if urlAttributes %}{{ urlAttributes|join(' ')|raw }}{% endif %}
                 {% if openExternal %}target="_blank"{% endif %}
                 title="{{ value }}"
-                {{ valueAttributes.defaults({
-                    class: 'vi-contact-channel__value contact-channel-value',
-                }) }}
+                {{ valueAttributes }}
+                class="{{ cx.value.apply() }}"
             >
                 {% if value %}{{ value|raw }}{% endif %}
             </a>
         {% else %}
-            <span
-                {{ valueAttributes.defaults({
-                    class: 'vi-contact-channel__value contact-channel-value',
-                }) }}
-            >
+            <span {{ valueAttributes }} class="{{ cx.value.apply() }}">
                 {% if value %}{{ value|raw }}{% endif %}
             </span>
         {% endif %}

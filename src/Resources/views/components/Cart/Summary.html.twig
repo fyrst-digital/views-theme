@@ -5,23 +5,22 @@
     showGrandTotal = true,
     showNetTotal = true,
     showTax = true,
-    defaultBaseClasses = 'vi-cart-summary cart-summary',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set listAttributes = attributes.nested('list') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-summary cart-summary' },
+    list: { base: 'vi-cart-summary__list cart-summary-list' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block list %}
         <div
-            {{ listAttributes.defaults({
-                class: 'vi-cart-summary__list cart-summary-list',
-            }) }}
+            {{ attributes.nested('list') }}
+            class="{{ cx.list.apply() }}"
         >
             {% block total %}
                 {% if showTotal is not same as(false) %}

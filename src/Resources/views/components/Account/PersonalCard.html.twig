@@ -1,25 +1,27 @@
 {% props
     editable = false,
-    defaultBaseClasses = 'vi-account-personal-card card account-card-personal',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set bodyAttributes = attributes.nested('body') %}
-{% set titleAttributes = attributes.nested('title') %}
-{% set actionsAttributes = attributes.nested('actions') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-account-personal-card card account-card-personal' },
+    body: { base: 'vi-account-personal-card__body card-body' },
+    title: { base: 'vi-account-personal-card__title card-title' },
+    actions: { base: 'vi-account-personal-card__actions card-actions' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
-    <div {{ bodyAttributes.defaults({ class: 'vi-account-personal-card__body card-body' }) }}>
+    <div
+        {{ attributes.nested('body') }}
+        class="{{ cx.body.apply() }}"
+    >
         {% block title %}
             <h4
-                {{ titleAttributes.defaults({
-                    class: 'vi-account-personal-card__title card-title',
-                }) }}
+                {{ attributes.nested('title') }}
+                class="{{ cx.title.apply() }}"
             >
                 {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
             </h4>
@@ -48,9 +50,8 @@
 
         {% block actions %}
             <div
-                {{ actionsAttributes.defaults({
-                    class: 'vi-account-personal-card__actions card-actions',
-                }) }}
+                {{ attributes.nested('actions') }}
+                class="{{ cx.actions.apply() }}"
             >
                 {% block actions_content %}{% endblock %}
             </div>

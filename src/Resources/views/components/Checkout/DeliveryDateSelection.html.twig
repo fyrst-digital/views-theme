@@ -3,8 +3,7 @@
     title = null,
     label = null,
     helpText = null,
-    defaultBaseClasses = 'vi-checkout-delivery-date',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set deliveryDate = deliveryDate is not null
@@ -20,8 +19,15 @@
     ? helpText
     : 'checkout.preferredDeliveryDate.helpText'|trans|sw_sanitize %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-checkout-delivery-date' },
+    title: { base: 'vi-checkout-delivery-date__title' },
+    control: { base: 'vi-checkout-delivery-date__control' },
+    label: { base: 'vi-checkout-delivery-date__label form-label' },
+    input: { base: 'vi-checkout-delivery-date__input form-control' },
+    help: { base: 'vi-checkout-delivery-date__help form-text' },
+}|replace_recursive(cva)) %}
+
 {% set titleAttributes = attributes.nested('title') %}
 {% set controlAttributes = attributes.nested('control') %}
 {% set labelAttributes = attributes.nested('label') %}
@@ -30,35 +36,27 @@
 
 {% if deliveryDate.active|default(false) %}
     <div
-        data-component="ViewsTheme:Checkout:DeliveryDateSelection"
-        {{ attributes }}
-        class="{{ rootCVA.apply({}, rootClass) }}"
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Checkout:DeliveryDateSelection',
+        }) }}
+        class="{{ cx.root.apply() }}"
     >
         {% block title %}
             {% if title is not same as(false) %}
-                <div
-                    {{ titleAttributes.defaults({
-                        class: 'vi-checkout-delivery-date__title',
-                    }) }}
-                >
+                <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
                     {{ title }}
                 </div>
             {% endif %}
         {% endblock %}
 
         {% block control %}
-            <div
-                {{ controlAttributes.defaults({
-                    class: 'vi-checkout-delivery-date__control',
-                }) }}
-            >
+            <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
                 {% block label %}
                     {% if label is not same as(false) %}
                         <label
                             for="PreferredDeliveryDate"
-                            {{ labelAttributes.defaults({
-                                class: 'vi-checkout-delivery-date__label form-label',
-                            }) }}
+                            {{ labelAttributes }}
+                            class="{{ cx.label.apply() }}"
                         >
                             {{ label }}
                         </label>
@@ -74,19 +72,14 @@
                         min="{{ deliveryDate.min|default('') }}"
                         max="{{ deliveryDate.max|default('') }}"
                         value=""
-                        {{ inputAttributes.defaults({
-                            class: 'vi-checkout-delivery-date__input form-control',
-                        }) }}
+                        {{ inputAttributes }}
+                        class="{{ cx.input.apply() }}"
                     >
                 {% endblock %}
 
                 {% block help %}
                     {% if helpText is not same as(false) %}
-                        <div
-                            {{ helpAttributes.defaults({
-                                class: 'vi-checkout-delivery-date__help form-text',
-                            }) }}
-                        >
+                        <div {{ helpAttributes }} class="{{ cx.help.apply() }}">
                             {{ helpText }}
                         </div>
                     {% endif %}

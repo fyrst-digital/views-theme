@@ -1,8 +1,17 @@
 {% sw_extends '@Storefront/storefront/layout/scroll-up.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-scroll-up scroll-up-container position-fixed end-0 bottom-0' },
+}|replace_recursive(cva)) %}
+
 {% block layout_scroll_up_inner %}
     <div
-        class="vi-scroll-up scroll-up-container position-fixed end-0 bottom-0"
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
         data-scroll-up="true"
     >
         <div class="scroll-up-button js-scroll-up-button">

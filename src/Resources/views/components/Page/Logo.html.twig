@@ -1,40 +1,41 @@
 {% props
     element = 'a',
     textLogo = null,
-    defaultBaseClasses = 'vi-header-logo col-auto d-inline-flex',
-    defaultVariants = {},
+    logoPath = asset('bundles/viewstheme/img/views-logo.svg', 'asset'),
+    href = path('frontend.home.page'),
+    title = 'header.logoLink'|trans|striptags,
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set textAttributes = attributes.nested('text') %}
-{% set imageAttributes = attributes.nested('image') %}
+{% set cx = vi_cva({
+    root: { base: 'd-inline-flex' },
+    text: { base: '' },
+    image: { base: 'img-fluid' },
+}|replace_recursive(cva)) %}
 
-{% set logoDefaults = {} %}
-{% if element is same as('a') %}
-    {% set logoDefaults = {
-        href: path('frontend.home.page'),
-        title: 'header.logoLink'|trans|striptags,
-    } %}
+{% if theme_config('sw-logo-mobile') %}
+    {% set logoPath = theme_config('sw-logo-mobile') %}
 {% endif %}
 
 <{{ element|raw }}
-    {{ attributes.defaults(logoDefaults) }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
-    data-ref="logo"
+    {{ attributes.defaults({
+        href: element is same as('a') ? href : null,
+        title: title,
+        class: cx.root.apply()
+    }).without('data-component-template') }}
 >
     {% if textLogo is not empty %}
         {% block text %}
-            <span {{ textAttributes.defaults({ class: 'vi-header-logo__text' }) }}>
+            <span
+                {{ attributes.nested('text').defaults({
+                    class: cx.text.apply()
+                }) }}
+            >
                 {{ textLogo|raw }}
             </span>
         {% endblock %}
     {% else %}
-        {% block image %}
-            {% set logoPath = asset('bundles/viewstheme/img/views-logo.svg', 'asset') %}
-            {% if theme_config('sw-logo-mobile') %}
-                {% set logoPath = theme_config('sw-logo-mobile') %}
-            {% endif %}
+        {% block picture %}
             <picture style="display: contents;">
                 {% block image_tablet %}
                     {% set logoPath = theme_config('sw-logo-tablet') %}
@@ -56,13 +57,15 @@
                     {% endif %}
                 {% endblock %}
 
-                {% block image_default %}
+                {% block image %}
                     {% if logoPath %}
                         <img
-                            src="{{ logoPath|sw_encode_url }}"
-                            alt="{{ 'header.logoLink'|trans|striptags }}"
-                            style="width: var(--logo-width, auto)"
-                            {{ imageAttributes.defaults({ class: 'vi-header-logo__image img-fluid' }) }}
+                            {{ attributes.nested('image').defaults({
+                                src: logoPath|sw_encode_url,
+                                alt: 'header.logoLink'|trans|striptags,
+                                style: 'width: var(--logo-width, auto)',
+                            }) }}
+                            class="{{ cx.image.apply() }}"
                         >
                     {% endif %}
                 {% endblock %}

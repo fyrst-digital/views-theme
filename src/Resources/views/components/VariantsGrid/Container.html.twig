@@ -4,22 +4,23 @@
     pagination = {},
     pageParameter = 'variantsPage',
     parentId,
-    defaultBaseClasses = 'vi-variants-grid variants-grid-container',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set formAction = path('frontend.checkout.variants-grid.add') %}
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
 {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid variants-grid-container' },
+}|replace_recursive(cva)) %}
 
 <div
     data-component="ViewsTheme:VariantsGrid:Container"
     data-load-url="{{ path('frontend.checkout.variants-grid.load') }}"
     data-parent-id="{{ parentId }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block error %}
         <twig:ViewsTheme:VariantsGrid:Alert />

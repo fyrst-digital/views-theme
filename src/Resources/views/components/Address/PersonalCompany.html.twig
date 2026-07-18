@@ -1,7 +1,15 @@
 {% sw_extends '@Storefront/storefront/component/address/address-personal-company.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'row g-2 fields-company' },
+}|replace_recursive(cva)) %}
+
 {% block component_address_form_company_fields %}
-    <div class="row g-2 fields-company">
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
         {% block component_address_form_company_name %}
             {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
                 additionalClass: 'col-12 field-company-name'

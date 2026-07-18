@@ -7,8 +7,16 @@
     icon = true,
     announceOnLoad = false,
     ariaLive = 'polite',
-    defaultBaseClasses = 'vi-alert alert d-flex flex-wrap align-items-center gap-3',
-    defaultVariants = {
+    cva = {},
+%}
+
+{% if type is same as('error') %}
+    {% set type = 'danger' %}
+{% endif %}
+
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-alert alert d-flex flex-wrap align-items-center gap-3',
         variants: {
             type: {
                 danger: 'alert-danger',
@@ -21,14 +29,13 @@
             },
         },
     },
-%}
+    icon: { base: 'vi-alert__icon alert-icon-container fs-5 d-flex col-auto' },
+    content: { base: 'vi-alert__content alert-content-container col' },
+    heading: { base: 'vi-alert__heading alert-heading h5' },
+    list: { base: 'vi-alert__list alert-list' },
+    dismiss: { base: 'vi-alert__dismiss btn-close' },
+}|replace_recursive(cva)) %}
 
-{% if type is same as('error') %}
-    {% set type = 'danger' %}
-{% endif %}
-
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
 {% set iconAttributes = attributes.nested('icon') %}
 {% set contentAttributes = attributes.nested('content') %}
 {% set headingAttributes = attributes.nested('heading') %}
@@ -52,7 +59,7 @@
         role: 'alert',
         'aria-live': ariaLive,
     }) }}
-    class="{{ rootCVA.apply({ type: type, dismissible: dismissible }, rootClass) }}"
+    class="{{ cx.root.apply({ type: type, dismissible: dismissible }) }}"
     {% if announceOnLoad %}
         data-alert-aria="true"
         data-alert-aria-options="{{ alertAriaJsOptions|json_encode }}"
@@ -60,9 +67,7 @@
 >
     {% block icon %}
         {% if icon is not same as(false) and icon is not same as('false') %}
-            <div
-                {{ iconAttributes.defaults({ class: 'vi-alert__icon alert-icon-container fs-5 d-flex col-auto' }) }}
-            >
+            <div {{ iconAttributes }} class="{{ cx.icon.apply() }}">
                 {% block icon_element %}
                     {{ vi_icon(iconName) }}
                 {% endblock %}
@@ -71,14 +76,10 @@
     {% endblock %}
 
     {% block content_container %}
-        <div
-            {{ contentAttributes.defaults({ class: 'vi-alert__content alert-content-container col' }) }}
-        >
+        <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
             {% block heading %}
                 {% if heading %}
-                    <div
-                        {{ headingAttributes.defaults({ class: 'vi-alert__heading alert-heading h5' }) }}
-                    >
+                    <div {{ headingAttributes }} class="{{ cx.heading.apply() }}">
                         {{ heading }}
                     </div>
                 {% endif %}
@@ -86,7 +87,7 @@
 
             {% block content %}
                 {% if list|length > 1 %}
-                    <ul {{ listAttributes.defaults({ class: 'vi-alert__list alert-list' }) }}>
+                    <ul {{ listAttributes }} class="{{ cx.list.apply() }}">
                         {% for entry in list %}
                             <li>{{ entry|sw_sanitize }}</li>
                         {% endfor %}
@@ -107,10 +108,10 @@
             <button
                 type="button"
                 {{ dismissAttributes.defaults({
-                    class: 'vi-alert__dismiss btn-close',
                     'data-bs-dismiss': 'alert',
                     'aria-label': 'global.default.close'|trans|striptags,
                 }) }}
+                class="{{ cx.dismiss.apply() }}"
             >
                 <span aria-hidden="true"></span>
             </button>

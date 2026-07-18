@@ -1,11 +1,16 @@
 {% props
     title = true,
-    defaultBaseClasses = 'vi-checkout-user-comment',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-checkout-user-comment' },
+    title: { base: 'vi-checkout-user-comment__title checkout-user-comment-title' },
+    control: { base: 'vi-checkout-user-comment__control checkout-user-comment-control' },
+    label: { base: 'vi-checkout-user-comment__label form-label' },
+    textarea: { base: 'vi-checkout-user-comment__textarea form-control' },
+}|replace_recursive(cva)) %}
+
 {% set titleAttributes = attributes.nested('title') %}
 {% set controlAttributes = attributes.nested('control') %}
 {% set labelAttributes = attributes.nested('label') %}
@@ -14,31 +19,22 @@
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% if title %}
         {% block title %}
-            <div
-                {{ titleAttributes.defaults({
-                    class: 'vi-checkout-user-comment__title checkout-user-comment-title',
-                }) }}
-            >
+            <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
                 {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
             </div>
         {% endblock %}
     {% endif %}
 
     {% block control %}
-        <div
-            {{ controlAttributes.defaults({
-                class: 'vi-checkout-user-comment__control checkout-user-comment-control',
-            }) }}
-        >
+        <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
             <label
                 for="{{ commentKey }}"
-                {{ labelAttributes.defaults({
-                    class: 'vi-checkout-user-comment__label form-label',
-                }) }}
+                {{ labelAttributes }}
+                class="{{ cx.label.apply() }}"
             >
                 {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
             </label>
@@ -47,9 +43,8 @@
                 id="{{ commentKey }}"
                 form="confirmOrderForm"
                 name="{{ commentKey }}"
-                {{ textareaAttributes.defaults({
-                    class: 'vi-checkout-user-comment__textarea form-control',
-                }) }}
+                {{ textareaAttributes }}
+                class="{{ cx.textarea.apply() }}"
             ></textarea>
         </div>
     {% endblock %}

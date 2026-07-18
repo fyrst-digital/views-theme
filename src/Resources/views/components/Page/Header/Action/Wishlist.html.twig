@@ -1,13 +1,13 @@
 {% props
     showCounter = true,
-    defaultBaseClasses = 'vi-header-action-wishlist',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set badgeAttributes = attributes.nested('badge') %}
-{% set liveAttributes = attributes.nested('live') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-wishlist' },
+    badge: { base: 'vi-header-action-wishlist__badge badge bg-primary header-wishlist-badge' },
+    live: { base: 'vi-header-action-wishlist__sr visually-hidden' },
+}|replace_recursive(cva)) %}
 
 {% set wishlistStorageOptions = {
     listPath: path('frontend.wishlist.product.list'),
@@ -21,7 +21,7 @@
     title="{{ 'header.wishlist'|trans|striptags }}"
     aria-labelledby="wishlist-basket-live-area"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block badge %}
         <span
@@ -30,9 +30,8 @@
             data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"
             data-wishlist-widget="true"
             data-wishlist-widget-options="{{ wishlistWidgetOptions|json_encode }}"
-            {{ badgeAttributes.defaults({
-                class: 'vi-header-action-wishlist__badge badge bg-primary header-wishlist-badge',
-            }) }}
+            {{ attributes.nested('badge') }}
+            class="{{ cx.badge.apply() }}"
         ></span>
     {% endblock %}
 
@@ -45,9 +44,8 @@
             id="wishlist-basket-live-area"
             data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
             aria-live="polite"
-            {{ liveAttributes.defaults({
-                class: 'vi-header-action-wishlist__sr visually-hidden',
-            }) }}
+            {{ attributes.nested('live') }}
+            class="{{ cx.live.apply() }}"
         ></span>
     {% endblock %}
 </a>

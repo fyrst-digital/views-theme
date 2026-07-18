@@ -1,29 +1,29 @@
 {% props
     searchResult = null,
     searchTerm = null,
-    defaultBaseClasses = 'vi-search-suggest position-absolute op-100 start-50 translate-middle-x bg-white border border-1 rounded-3 shadow-lg js-search-result',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set searchResult = searchResult is not null ? searchResult : page.searchResult %}
 {% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set resultsAttributes = attributes.nested('results') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-search-suggest position-absolute op-100 start-50 translate-middle-x bg-white border border-1 rounded-3 shadow-lg js-search-result' },
+    results: { base: 'vi-search-suggest__results grid gap-4 p-4' },
+}|replace_recursive(cva)) %}
 
 <div
     data-ref="suggest"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block container %}
         {% if searchResult.total > 0 %}
             {% block results %}
                 <div
                     data-ref="results"
-                    {{ resultsAttributes.defaults({
-                        class: 'vi-search-suggest__results grid gap-4 p-4',
-                    }) }}
+                    {{ attributes.nested('results') }}
+                    class="{{ cx.results.apply() }}"
                 >
                     {% for product in searchResult %}
                         {% block result_item %}

@@ -3,39 +3,39 @@
     showRemoveButton = true,
     showPrice = true,
     nestingLevel = 0,
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set defaultBaseClasses = defaultBaseClasses is not null
-    ? defaultBaseClasses
-    : 'vi-line-item line-item js-cart-item line-item-' ~ lineItem.type %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set headerAttributes = attributes.nested('header') %}
-{% set nameAttributes = attributes.nested('name') %}
-{% set actionsAttributes = attributes.nested('actions') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item line-item js-cart-item line-item-' ~ lineItem.type },
+    content: { base: 'vi-line-item__content line-item-content' },
+    header: { base: 'vi-line-item__header line-item-header' },
+    name: { base: 'vi-line-item__name line-item-name' },
+    actions: { base: 'vi-line-item__actions line-item-actions' },
+}|replace_recursive(cva)) %}
 
 <div
     data-ref="line-item"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block image %}{% endblock %}
 
     {% block content %}
         <div
-            {{ contentAttributes.defaults({ class: 'vi-line-item__content line-item-content' }) }}
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
         >
             {% block header %}
                 <div
                     data-ref="header"
-                    {{ headerAttributes.defaults({ class: 'vi-line-item__header line-item-header' }) }}
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
                 >
                     {% block name %}
                         <div
-                            {{ nameAttributes.defaults({ class: 'vi-line-item__name line-item-name' }) }}
+                            {{ attributes.nested('name') }}
+                            class="{{ cx.name.apply() }}"
                         >
                             {% block name_content %}{% endblock %}
                         </div>
@@ -43,7 +43,8 @@
 
                     {% block actions %}
                         <div
-                            {{ actionsAttributes.defaults({ class: 'vi-line-item__actions line-item-actions' }) }}
+                            {{ attributes.nested('actions') }}
+                            class="{{ cx.actions.apply() }}"
                         >
                             {% block actions_inner %}{% endblock %}
                         </div>

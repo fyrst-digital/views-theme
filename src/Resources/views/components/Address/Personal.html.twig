@@ -1,5 +1,13 @@
 {% sw_extends '@Storefront/storefront/component/address/address-personal.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    companyToggle: { base: 'js-field-toggle-contact-type-company' },
+}|replace_recursive(cva)) %}
+
 {% block component_address_personal_fields_salutation_title %}
   {% if config('core.loginRegistration.showSalutation') or config('core.loginRegistration.showTitleField') %}
     {% block component_address_personal_fields_salutation %}
@@ -23,7 +31,7 @@
 
   {% block component_address_personal_company_section -%}
     {% if (config('core.loginRegistration.showAccountTypeSelection') or onlyCompanyRegistration) and showCompanyFields %}
-      <div class="js-field-toggle-contact-type-company">
+      <div {{ attributes.nested('companyToggle') }} class="{{ cx.companyToggle.apply() }}">
         {% block component_address_personal_company_name %}
           {% if formViolations.getViolations('/company') is not empty %}
             {% set violationPath = '/company' %}

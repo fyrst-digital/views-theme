@@ -1,5 +1,9 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/address-actions.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
 {% set editButtonClass = 'btn btn-sm' %}
 {% if feature('v6.7.0.0') %}
     {% set editButtonClass = editButtonClass ~ ' btn-link p-0 address-action-edit' %}
@@ -7,13 +11,22 @@
     {% set editButtonClass = editButtonClass ~ ' btn-light' %}
 {% endif %}
 
+{% set cx = vi_cva({
+    edit: { base: editButtonClass },
+    deleteForm: { base: 'address-action-delete' },
+    deleteButton: { base: 'btn btn-sm btn-light' },
+    setDefaultBilling: { base: 'btn btn-light address-action-set-default address-action-set-default-billing btn-sm' },
+    setDefaultShipping: { base: 'btn btn-light address-action-set-default address-action-set-default-shipping btn-sm' },
+}|replace_recursive(cva)) %}
+
 {% block page_account_address_actions %}
     {% block page_account_address_actions_buttons %}
         {% block page_account_address_actions_update %}
             <a
                 href="{{ path('frontend.account.address.edit.page', { addressId: address.id }) }}"
                 title="{{ 'account.addressesContentItemActionEdit'|trans|striptags }}"
-                class="{{ editButtonClass }}"
+                {{ attributes.nested('edit') }}
+                class="{{ cx.edit.apply() }}"
             >
                 {{ vi_icon('pencil-simple-line') }}
                 {{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}
@@ -24,12 +37,14 @@
             {% if defaultShippingAddress.id != address.id and defaultBillingAddress.id != address.id %}
                 <form
                     action="{{ path('frontend.account.address.delete', { addressId: address.id }) }}"
-                    class="address-action-delete"
+                    {{ attributes.nested('deleteForm') }}
+                    class="{{ cx.deleteForm.apply() }}"
                     method="post"
                 >
                     <button
                         type="submit"
-                        class="btn btn-sm btn-light"
+                        {{ attributes.nested('deleteButton') }}
+                        class="{{ cx.deleteButton.apply() }}"
                         title="{{ 'account.addressesContentItemActionDelete'|trans|striptags }}"
                     >
                         {{ vi_icon('x') }}
@@ -50,7 +65,8 @@
                     <button
                         type="submit"
                         title="{{ 'account.addressesSetAsDefaultBillingAction'|trans|striptags }}"
-                        class="btn btn-light address-action-set-default address-action-set-default-billing btn-sm"
+                        {{ attributes.nested('setDefaultBilling') }}
+                        class="{{ cx.setDefaultBilling.apply() }}"
                     >
                         {{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}
                     </button>
@@ -67,7 +83,8 @@
                     <button
                         type="submit"
                         title="{{ 'account.addressesSetAsDefaultShippingAction'|trans|striptags }}"
-                        class="btn btn-light address-action-set-default address-action-set-default-shipping btn-sm"
+                        {{ attributes.nested('setDefaultShipping') }}
+                        class="{{ cx.setDefaultShipping.apply() }}"
                         {% if not address.country.shippingAvailable %}disabled="disabled"{% endif %}
                     >
                         {{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}

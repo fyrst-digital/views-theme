@@ -1,15 +1,15 @@
 {% props
     variant,
     groups = [],
-    defaultBaseClasses = 'vi-variants-grid-column-option variants-grid-column-option',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-option variants-grid-column-option' },
+}|replace_recursive(cva)) %}
 
 {% for group in groups %}
-    <td {{ attributes }} class="{{ rootCVA.apply({}, rootClass) }}">
+    <td {{ attributes }} class="{{ cx.root.apply() }}">
         {% set option = variant.options.filterByProperty('groupId', group.id).first %}
         {% if option %}
             {% if option.media %}

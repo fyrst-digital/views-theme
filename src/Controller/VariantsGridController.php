@@ -127,10 +127,20 @@ class VariantsGridController extends StorefrontController
             self::DEFAULT_PAGINATION_TEMPLATE,
         );
 
-        $rowsHtml = $this->renderView($rowsTemplate, [
-            'variants' => $pagedVariants,
-            'groups' => $groups,
-        ]);
+        if ($rowsTemplate === self::DEFAULT_ROWS_TEMPLATE) {
+            $rowsHtml = $this->twig->createTemplate('{{- component(name, props) -}}')->render([
+                'name' => 'ViewsTheme:VariantsGrid:Rows',
+                'props' => [
+                    'variants' => $pagedVariants,
+                    'groups' => $groups,
+                ],
+            ]);
+        } else {
+            $rowsHtml = $this->renderView($rowsTemplate, [
+                'variants' => $pagedVariants,
+                'groups' => $groups,
+            ]);
+        }
 
         $paginationHtml = $this->renderView($paginationTemplate, [
             'pagination' => new VariantsGridPagination($page, $limit, $total),

@@ -1,21 +1,20 @@
 {% props
     product,
     prices,
-    defaultBaseClasses = 'vi-product-prices-tiered w-100',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set rowAttributes = attributes.nested('row') %}
-{% set cellAttributes = attributes.nested('cell') %}
-{% set cellQuantityAttributes = attributes.nested('cellQuantity') %}
-{% set cellPriceAttributes = attributes.nested('cellPrice') %}
-{% set cellReferenceAttributes = attributes.nested('cellReference') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-prices-tiered w-100' },
+    row: { base: 'vi-product-prices-tiered__row' },
+    cellQuantity: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--quantity' },
+    cellPrice: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--price' },
+    cellReference: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--reference' },
+}|replace_recursive(cva)) %}
 
 <table
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block head %}
         <tr>
@@ -32,12 +31,14 @@
             {% set isListPrice = price.listPrice.percentage > 0 %}
             {% set isRegulationPrice = price.regulationPrice != null %}
 
-            <tr {{ rowAttributes.defaults({ class: 'vi-product-prices-tiered__row' }) }}>
+            <tr
+                {{ attributes.nested('row') }}
+                class="{{ cx.row.apply() }}"
+            >
                 {% block quantity %}
                     <td
-                        {{ cellQuantityAttributes.defaults({
-                            class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--quantity',
-                        }) }}
+                        {{ attributes.nested('cellQuantity') }}
+                        class="{{ cx.cellQuantity.apply() }}"
                     >
                         {% if loop.last %}
                             {{ 'detail.priceDataInfoFrom'|trans|sw_sanitize }}
@@ -50,9 +51,8 @@
 
                 {% block price %}
                     <td
-                        {{ cellPriceAttributes.defaults({
-                            class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--price',
-                        }) }}
+                        {{ attributes.nested('cellPrice') }}
+                        class="{{ cx.cellPrice.apply() }}"
                     >
                         <span>
                             {% if price.listprice and isListPrice %}
@@ -72,9 +72,8 @@
                 {% block reference %}
                     {% if price.referencePrice is not null %}
                         <td
-                            {{ cellReferenceAttributes.defaults({
-                                class: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--reference',
-                            }) }}
+                            {{ attributes.nested('cellReference') }}
+                            class="{{ cx.cellReference.apply() }}"
                         >
                             {{ price.referencePrice.price|currency }} /
                             {{ price.referencePrice.referenceUnit }}

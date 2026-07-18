@@ -1,14 +1,14 @@
 {% props
-    defaultBaseClasses = 'vi-search-suggest-empty d-flex p-6 justify-content-center',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-search-suggest-empty d-flex p-6 justify-content-center' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block content %}
         {{ 'header.searchNoResult'|trans|sw_sanitize }}

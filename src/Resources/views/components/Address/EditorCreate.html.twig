@@ -1,9 +1,20 @@
 {% sw_extends '@Storefront/storefront/component/address/address-editor-modal-create-address.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'js-close-address-editor' },
+    fieldset: { base: 'address-editor-fieldset' },
+    requiredHint: { base: 'address-required-info required-fields form-text mt-3' },
+}|replace_recursive(cva)) %}
+
 {% block component_address_address_editor_modal_create_address_form %}
     <form method="post"
             action="{{ path('frontend.account.addressbook') }}"
-            class="js-close-address-editor"
+            {{ attributes }}
+            class="{{ cx.root.apply() }}"
             data-form-ajax-submit="true"
             data-form-validation="true"
             data-form-ajax-submit-options="{{ formAjaxSubmitOptions|json_encode }}">
@@ -13,30 +24,30 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_form_fields_include %}
-            <div class="address-editor-fieldset">
-                {% sw_include '@ViewsTheme/components/Address/Personal.html.twig' with {
-                    'data': postedData ?? address,
-                    'prefix': 'address',
-                    'idPrefix': typePrefix,
-                    'scope': 'parent',
-                    'parentSelector': 'form'
-                } %}
+            <div {{ attributes.nested('fieldset') }} class="{{ cx.fieldset.apply() }}">
+                {% component 'ViewsTheme:Address:Personal' with {
+                    data: postedData ?? address,
+                    prefix: 'address',
+                    idPrefix: typePrefix,
+                    scope: 'parent',
+                    parentSelector: 'form'
+                } %}{% endcomponent %}
 
-                {% sw_include '@ViewsTheme/components/Address/Form.html.twig' with {
-                    'data': postedData ?? address,
-                    'prefix': 'address',
-                    'idPrefix': typePrefix,
-                    'scope': 'parent',
-                    'parentSelector': 'form',
-                    'showFormCompany': true,
-                    'showNoShippingPostfix': true,
-                    'showVatIdField': changeBilling and context.customer and context.customer.guest ? true : false
-                } %}
+                {% component 'ViewsTheme:Address:Form' with {
+                    data: postedData ?? address,
+                    prefix: 'address',
+                    idPrefix: typePrefix,
+                    scope: 'parent',
+                    parentSelector: 'form',
+                    showFormCompany: true,
+                    showNoShippingPostfix: true,
+                    showVatIdField: changeBilling and context.customer and context.customer.guest ? true : false
+                } %}{% endcomponent %}
             </div>
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_required_hint %}
-            <p class="address-required-info required-fields form-text mt-3">
+            <p {{ attributes.nested('requiredHint') }} class="{{ cx.requiredHint.apply() }}">
                 {% block component_address_address_editor_modal_create_address_required_hint_text %}
                     {{ parent() }}
                 {% endblock %}

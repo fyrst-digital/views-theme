@@ -1,10 +1,10 @@
 {% props
-    defaultBaseClasses = 'vi-header-action-search',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-search' },
+}|replace_recursive(cva)) %}
 
 <button
     type="button"
@@ -14,7 +14,7 @@
     aria-controls="searchCollapse"
     aria-label="{{ 'header.searchButton'|trans|striptags }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {{ vi_icon('magnifying-glass') }}
 </button>

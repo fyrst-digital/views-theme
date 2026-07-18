@@ -5,6 +5,10 @@
   Not a pure UX tag component — include path only.
 #}
 
+{% props
+    cva = {},
+%}
+
 {% set options = {
     productHeader: {},
     prices: {
@@ -16,6 +20,14 @@
 }|merge(options|default({})) %}
 
 {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
+
+{% set cx = vi_cva({
+    reviews: { base: 'vi-product-buy-container__reviews product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center' },
+    reviewLabel: { base: 'vi-product-buy-container__review-label product-review-label' },
+    reviewLink: { base: 'vi-product-buy-container__review-link product-detail-reviews-link product-review-link' },
+    prices: { base: 'vi-product-buy-container__prices product-prices' },
+    actions: { base: 'vi-product-buy-container__actions product-actions' },
+}|replace_recursive(cva)) %}
 
 {% block buy_widget_data %}
     {% block buy_widget_data_rich_snippet_url %}
@@ -48,15 +60,14 @@
                 {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
             {% endif %}
 
-            <div class="vi-product-buy-container__reviews product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center">
-                {% sw_include '@ViewsTheme/components/Review/Rating.html.twig' with {
-                    points: product.ratingAverage,
-                } %}
-                <div class="vi-product-buy-container__review-label product-review-label">
+            <div {{ attributes.nested('reviews') }} class="{{ cx.reviews.apply() }}">
+                <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
+                <div {{ attributes.nested('reviewLabel') }} class="{{ cx.reviewLabel.apply() }}">
                     {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
                     <a
                         data-bs-toggle="tab"
-                        class="vi-product-buy-container__review-link product-detail-reviews-link product-review-link"
+                        {{ attributes.nested('reviewLink') }}
+                        class="{{ cx.reviewLink.apply() }}"
                         data-off-canvas-tabs="true"
                         data-remote-click="true"
                         data-remote-click-options="{{ remoteClickOptions|json_encode }}"
@@ -72,7 +83,7 @@
     {% endblock %}
 
     {% block component_product_buy_container_prices %}
-        <div class="vi-product-buy-container__prices product-prices">
+        <div {{ attributes.nested('prices') }} class="{{ cx.prices.apply() }}">
             {% block buy_widget_price %}
                 <twig:ViewsTheme:Product:Price
                     :product="product"
@@ -124,7 +135,7 @@
 
         {% block component_product_buy_container_actions_container %}
             {% if options.showActions is same as(true) %}
-                <div class="vi-product-buy-container__actions product-actions">
+                <div {{ attributes.nested('actions') }} class="{{ cx.actions.apply() }}">
                     {% block component_product_buy_container_action_prepend %}{% endblock %}
 
                     {% block component_product_buy_container_wishlist %}

@@ -11,11 +11,11 @@
         sidebar: false,
     } %}
 
-    {% sw_include '@ViewsTheme/components/Product/Listing.html.twig' with {
+    {% component 'ViewsTheme:Product:Listing' with {
         searchResult: page.listing,
         dataUrl: path('widgets.search.pagelet.v2'),
         filterUrl: path('widgets.search.filter'),
         params: { search: page.searchTerm },
         sidebar: 0,
-    } %}
+    } %}{% endcomponent %}
 {% endblock %}

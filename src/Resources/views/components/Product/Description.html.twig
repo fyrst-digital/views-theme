@@ -2,18 +2,19 @@
     product = null,
     description = null,
     outputTags = true,
-    defaultBaseClasses = 'vi-product-description',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set productDescription = description is not null ? description : product.translated.description|default('') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-description' },
+}|replace_recursive(cva)) %}
 
 <div
     itemprop="description"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% if outputTags is same as(true) %}
         {{ productDescription|raw }}

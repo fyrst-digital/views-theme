@@ -5,24 +5,21 @@
     nestingLevel = 0,
     autoSubmit = false,
     deliveries = null,
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set defaultBaseClasses = defaultBaseClasses is not null
-    ? defaultBaseClasses
-    : 'vi-line-item vi-line-item--product line-item js-cart-item line-item-' ~ lineItem.type %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set headerAttributes = attributes.nested('header') %}
-{% set nameAttributes = attributes.nested('name') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set actionsAttributes = attributes.nested('actions') %}
-{% set bodyAttributes = attributes.nested('body') %}
-{% set footerAttributes = attributes.nested('footer') %}
-{% set quantityAttributes = attributes.nested('quantity') %}
-{% set totalPriceAttributes = attributes.nested('totalPrice') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item vi-line-item--product line-item js-cart-item line-item-' ~ lineItem.type },
+    content: { base: 'vi-line-item__content line-item-content' },
+    header: { base: 'vi-line-item__header line-item-header' },
+    name: { base: 'vi-line-item__name line-item-name' },
+    label: { base: 'vi-line-item__label line-item-label product-name' },
+    actions: { base: 'vi-line-item__actions line-item-actions' },
+    body: { base: 'vi-line-item__body line-item-body' },
+    footer: { base: 'vi-line-item__footer line-item-footer' },
+    quantity: { base: 'vi-line-item__quantity line-item-quantity' },
+    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+}|replace_recursive(cva)) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
 {% set productLink = lineItem.type is same as('product')
@@ -32,7 +29,7 @@
 <div
     data-ref="line-item"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block image %}
         {% sw_include '@Storefront/storefront/component/line-item/element/image.html.twig' with {
@@ -42,32 +39,33 @@
 
     {% block content %}
         <div
-            {{ contentAttributes.defaults({ class: 'vi-line-item__content line-item-content' }) }}
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
         >
             {% block header %}
                 <div
                     data-ref="header"
-                    {{ headerAttributes.defaults({ class: 'vi-line-item__header line-item-header' }) }}
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
                 >
                     {% block name %}
                         <div
-                            {{ nameAttributes.defaults({ class: 'vi-line-item__name line-item-name' }) }}
+                            {{ attributes.nested('name') }}
+                            class="{{ cx.name.apply() }}"
                         >
                             {% if productLink is not null %}
                                 <a
                                     href="{{ productLink }}"
                                     title="{{ label }}"
-                                    {{ labelAttributes.defaults({
-                                        class: 'vi-line-item__label line-item-label product-name',
-                                    }) }}
+                                    {{ attributes.nested('label') }}
+                                    class="{{ cx.label.apply() }}"
                                 >
                                     {{ label|raw }}
                                 </a>
                             {% else %}
                                 <span
-                                    {{ labelAttributes.defaults({
-                                        class: 'vi-line-item__label line-item-label product-name',
-                                    }) }}
+                                    {{ attributes.nested('label') }}
+                                    class="{{ cx.label.apply() }}"
                                 >
                                     {{ label|raw }}
                                 </span>
@@ -77,7 +75,8 @@
 
                     {% block actions %}
                         <div
-                            {{ actionsAttributes.defaults({ class: 'vi-line-item__actions line-item-actions' }) }}
+                            {{ attributes.nested('actions') }}
+                            class="{{ cx.actions.apply() }}"
                         >
                             {% block actions_inner %}
                                 {% if config('core.cart.wishlistEnabled') and lineItem.referencedId %}
@@ -101,7 +100,8 @@
             {% block details %}
                 {% block body %}
                     <div
-                        {{ bodyAttributes.defaults({ class: 'vi-line-item__body line-item-body' }) }}
+                        {{ attributes.nested('body') }}
+                        class="{{ cx.body.apply() }}"
                     >
                         {% if lineItem.payload.options is not empty %}
                             {% sw_include '@Storefront/storefront/component/line-item/element/variant-characteristics.html.twig' with {
@@ -126,10 +126,12 @@
 
                 {% block footer %}
                     <div
-                        {{ footerAttributes.defaults({ class: 'vi-line-item__footer line-item-footer' }) }}
+                        {{ attributes.nested('footer') }}
+                        class="{{ cx.footer.apply() }}"
                     >
                         <div
-                            {{ quantityAttributes.defaults({ class: 'vi-line-item__quantity line-item-quantity' }) }}
+                            {{ attributes.nested('quantity') }}
+                            class="{{ cx.quantity.apply() }}"
                         >
                             <twig:ViewsTheme:LineItem:Element:Quantity
                                 :lineItem="lineItem"
@@ -140,9 +142,8 @@
 
                         {% if showPrice is same as(true) %}
                             <div
-                                {{ totalPriceAttributes.defaults({
-                                    class: 'vi-line-item__total-price line-item-total-price',
-                                }) }}
+                                {{ attributes.nested('totalPrice') }}
+                                class="{{ cx.totalPrice.apply() }}"
                             >
                                 {% if lineItem.payload.discountScope != 'delivery' %}
                                     {{ lineItem.price.totalPrice|currency }}

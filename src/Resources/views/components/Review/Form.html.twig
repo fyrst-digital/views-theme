@@ -1,7 +1,15 @@
 {% sw_extends '@Storefront/storefront/component/review/review-form.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-review-form__rating form-group col-md-4 product-detail-review-form-rating' },
+}|replace_recursive(cva)) %}
+
 {% block component_review_form_rating %}
-    <div class="vi-review-form__rating form-group col-md-4 product-detail-review-form-rating">
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
         <label for="#review-form-rating" class="form-label">
             {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
         </label>

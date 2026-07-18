@@ -1,12 +1,12 @@
 {% props
     variant,
-    defaultBaseClasses = 'vi-variants-grid-column-number variants-grid-column-number',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-number variants-grid-column-number' },
+}|replace_recursive(cva)) %}
 
-<td {{ attributes }} class="{{ rootCVA.apply({}, rootClass) }}">
+<td {{ attributes }} class="{{ cx.root.apply() }}">
     {{ variant.productNumber }}
 </td>

@@ -17,8 +17,7 @@
     priceShowTieredPrices = true,
     priceShowTaxNote = false,
     referrerCategoryId = null,
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set id = product.id %}
@@ -30,27 +29,28 @@
 {% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
 {% set displayFrom = product.calculatedPrices.count > 1 %}
 {% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
-{% set defaultBaseClasses = defaultBaseClasses is not null ? defaultBaseClasses : 'vi-product-box product-box layout-' ~ layout %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set imageAttributes = attributes.nested('image') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set bodyAttributes = attributes.nested('body') %}
-{% set footerAttributes = attributes.nested('footer') %}
-{% set actionsAttributes = attributes.nested('actions') %}
-{% set detailsAttributes = attributes.nested('details') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-box product-box layout-' ~ layout },
+    image: { base: 'vi-product-box__image' },
+    content: { base: 'vi-product-box__content' },
+    body: { base: 'vi-product-box__body' },
+    footer: { base: 'vi-product-box__footer' },
+    actions: { base: 'vi-product-box__actions' },
+    details: { base: 'vi-product-box__details' },
+}|replace_recursive(cva)) %}
 
 <div
     data-ref="box"
     data-product-information="{{ { id: id, name: name, brand: brand, price: price }|json_encode }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block image %}
         <div
             data-ref="image"
-            {{ imageAttributes.defaults({ class: 'vi-product-box__image' }) }}
+            {{ attributes.nested('image') }}
+            class="{{ cx.image.apply() }}"
         >
             {% block image_prepend %}{% endblock %}
 
@@ -85,15 +85,14 @@
     {% block content %}
         <div
             data-ref="content"
-            {{ contentAttributes.defaults({ class: 'vi-product-box__content' }) }}
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
         >
             {% block header %}
                 <div class="vi-product-box__header">
                     {% block rating %}
                         {% if config('core.listing.showReview') and product.ratingAverage %}
-                            {% sw_include '@ViewsTheme/components/Review/Rating.html.twig' with {
-                                points: product.ratingAverage,
-                            } %}
+                            <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
                         {% endif %}
                     {% endblock %}
 
@@ -109,7 +108,8 @@
 
                 {% if showBody %}
                     <div
-                        {{ bodyAttributes.defaults({ class: 'vi-product-box__body' }) }}
+                        {{ attributes.nested('body') }}
+                        class="{{ cx.body.apply() }}"
                     >
                         {% block variations %}
                             {% if not displayParent and product.variation and showVariations is same as(true) %}
@@ -134,7 +134,8 @@
 
             {% block footer %}
                 <div
-                    {{ footerAttributes.defaults({ class: 'vi-product-box__footer' }) }}
+                    {{ attributes.nested('footer') }}
+                    class="{{ cx.footer.apply() }}"
                 >
                     {% block price %}
                         {% if showPrice is same as(true) %}
@@ -150,7 +151,8 @@
                     {% block actions %}
                         {% if showActions is same as(true) %}
                             <div
-                                {{ actionsAttributes.defaults({ class: 'vi-product-box__actions' }) }}
+                                {{ attributes.nested('actions') }}
+                                class="{{ cx.actions.apply() }}"
                             >
                                 {% block actions_prepend %}{% endblock %}
 
@@ -162,9 +164,8 @@
                                     {% block action_details %}
                                         <a
                                             href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
-                                            {{ detailsAttributes.defaults({
-                                                class: 'vi-product-box__details',
-                                            }) }}
+                                            {{ attributes.nested('details') }}
+                                            class="{{ cx.details.apply() }}"
                                         >
                                             {{ 'listing.boxProductDetails'|trans|sw_sanitize }}
                                         </a>

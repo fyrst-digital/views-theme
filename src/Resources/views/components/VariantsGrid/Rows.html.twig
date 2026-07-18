@@ -1,10 +1,16 @@
 {% props
     variants = [],
     groups = [],
+    cva = {},
 %}
 
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
 {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
+
+{% set cx = vi_cva({
+    root: { base: 'variants-grid-row' },
+    unavailable: { base: 'variants-grid-row--unavailable bg-light' },
+}|replace_recursive(cva)) %}
 
 {% for variant in variants %}
     {% set isAvailable = variant.available and variant.calculatedMaxPurchase > 0 %}
@@ -12,7 +18,7 @@
         or variant.type != constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL')
         or (variant.type == constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') and variant.maxPurchase !== 1) %}
 
-    <tr class="variants-grid-row{% if not isAvailable %} variants-grid-row--unavailable bg-light{% endif %}">
+    <tr class="{{ cx.root.apply() }}{% if not isAvailable %} {{ cx.unavailable.apply() }}{% endif %}">
         {% if showPreviewColumn %}
             <twig:ViewsTheme:VariantsGrid:Column:Preview :variant="variant" />
         {% endif %}

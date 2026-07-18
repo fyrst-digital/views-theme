@@ -1,9 +1,15 @@
 {% sw_extends '@Storefront/storefront/component/review/review-item.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-review-item__points col-md-auto product-detail-review-item-points' },
+}|replace_recursive(cva)) %}
+
 {% block component_review_item_info_points %}
-    <div class="vi-review-item__points col-md-auto product-detail-review-item-points">
-        {% sw_include '@ViewsTheme/components/Review/Rating.html.twig' with {
-            points: review.points,
-        } %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+        <twig:ViewsTheme:Review:Rating :points="review.points" />
     </div>
 {% endblock %}

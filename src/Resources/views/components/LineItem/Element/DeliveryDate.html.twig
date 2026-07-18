@@ -1,13 +1,10 @@
 {% props
     lineItem,
     deliveries = null,
-    defaultBaseClasses = 'vi-line-item-delivery-date line-item-delivery-date',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set deliveries = deliveries is not null ? deliveries : page.cart.deliveries|default(null) %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
 
 {% set deliveryPosition = null %}
 {% if deliveries and deliveries.count > 0 %}
@@ -15,10 +12,14 @@
     {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
 {% endif %}
 
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item-delivery-date line-item-delivery-date' },
+}|replace_recursive(cva)) %}
+
 {% if deliveryPosition and deliveryPosition.deliveryDate %}
     <div
         {{ attributes }}
-        class="{{ rootCVA.apply({}, rootClass) }}"
+        class="{{ cx.root.apply() }}"
     >
         {{ vi_icon('truck') }}
         {{ 'checkout.lineItemDeliveryDate'|trans({

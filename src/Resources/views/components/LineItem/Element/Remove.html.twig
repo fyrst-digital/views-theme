@@ -5,22 +5,27 @@
     redirectParameters = null,
     formAction = null,
     displayMode = 'default',
-    defaultBaseClasses = 'vi-line-item-remove',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set formAction = formAction is not null
     ? formAction
     : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
 {% set label = label is not null ? label : lineItem.label|trans|sw_sanitize %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set formClass = rootCVA.apply({}, rootClass) %}
-{% if displayMode == 'offcanvas' %}
-    {% set formClass = formClass ~ ' js-offcanvas-cart-remove-product' %}
-{% endif %}
-{% set buttonAttributes = attributes.nested('button') %}
 {% set loaderOptions = { skipLoadingIndicator: true } %}
+
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-line-item-remove',
+        variants: {
+            displayMode: {
+                offcanvas: 'js-offcanvas-cart-remove-product',
+                default: '',
+            },
+        },
+    },
+    button: { base: 'vi-line-item-remove__button btn btn-light btn-sm line-item-remove-button line-item-action' },
+}|replace_recursive(cva)) %}
 
 <form
     action="{{ formAction }}"
@@ -28,7 +33,7 @@
     data-form-submit-loader="true"
     data-form-submit-loader-options="{{ loaderOptions|json_encode }}"
     {{ attributes }}
-    class="{{ formClass }}"
+    class="{{ cx.root.apply({ displayMode: displayMode }) }}"
 >
     <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
     <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
@@ -39,9 +44,8 @@
             aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags }}"
             title="{{ 'global.default.remove'|trans }}"
             data-product-id="{{ lineItem.id }}"
-            {{ buttonAttributes.defaults({
-                class: 'vi-line-item-remove__button btn btn-light btn-sm line-item-remove-button line-item-action',
-            }) }}
+            {{ attributes.nested('button') }}
+            class="{{ cx.button.apply() }}"
         >
             {{ vi_icon('x') }}
         </button>

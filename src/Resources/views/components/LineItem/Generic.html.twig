@@ -5,7 +5,12 @@
     nestingLevel = 0,
     autoSubmit = false,
     deliveries = null,
+    cva = {},
 %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item--generic' },
+}|replace_recursive(cva)) %}
 
 {% block content %}
     <twig:ViewsTheme:LineItem:Product
@@ -15,6 +20,6 @@
         :nestingLevel="nestingLevel"
         :autoSubmit="autoSubmit"
         :deliveries="deliveries"
-        class="vi-line-item--generic"
+        class="{{ cx.root.apply() }}"
     />
 {% endblock %}

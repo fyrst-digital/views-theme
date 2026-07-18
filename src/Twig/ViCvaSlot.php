@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Twig;
 
-use Symfony\UX\TwigComponent\CVA;
+use Twig\Extra\Html\Cva;
 
 /**
  * CVA slot with attribute class extras already bound.
@@ -12,7 +12,7 @@ use Symfony\UX\TwigComponent\CVA;
 final class ViCvaSlot implements \Stringable
 {
     public function __construct(
-        private readonly CVA $cva,
+        private readonly Cva $cva,
         private readonly ?string $extraClass = null,
     ) {
     }

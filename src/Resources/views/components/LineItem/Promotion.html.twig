@@ -1,33 +1,29 @@
 {% props
     lineItem,
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set defaultBaseClasses = defaultBaseClasses is not null
-    ? defaultBaseClasses
-    : 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set headerAttributes = attributes.nested('header') %}
-{% set nameAttributes = attributes.nested('name') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set imageAttributes = attributes.nested('image') %}
-{% set totalPriceAttributes = attributes.nested('totalPrice') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type },
+    content: { base: 'vi-line-item__content line-item-content' },
+    header: { base: 'vi-line-item__header line-item-header' },
+    name: { base: 'vi-line-item__name line-item-name' },
+    label: { base: 'vi-line-item__label line-item-label discount-name' },
+    image: { base: 'vi-line-item__image line-item-img discount-icon' },
+    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+}|replace_recursive(cva)) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
 
 <div
     data-ref="line-item"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block image %}
         <div
-            {{ imageAttributes.defaults({
-                class: 'vi-line-item__image line-item-img discount-icon',
-            }) }}
+            {{ attributes.nested('image') }}
+            class="{{ cx.image.apply() }}"
         >
             {{ vi_icon('tag') }}
         </div>
@@ -35,20 +31,22 @@
 
     {% block content %}
         <div
-            {{ contentAttributes.defaults({ class: 'vi-line-item__content line-item-content' }) }}
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
         >
             {% block header %}
                 <div
-                    {{ headerAttributes.defaults({ class: 'vi-line-item__header line-item-header' }) }}
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
                 >
                     {% block name %}
                         <div
-                            {{ nameAttributes.defaults({ class: 'vi-line-item__name line-item-name' }) }}
+                            {{ attributes.nested('name') }}
+                            class="{{ cx.name.apply() }}"
                         >
                             <span
-                                {{ labelAttributes.defaults({
-                                    class: 'vi-line-item__label line-item-label discount-name',
-                                }) }}
+                                {{ attributes.nested('label') }}
+                                class="{{ cx.label.apply() }}"
                             >
                                 {{ label|raw }}
                             </span>
@@ -59,9 +57,8 @@
 
             {% block details %}
                 <div
-                    {{ totalPriceAttributes.defaults({
-                        class: 'vi-line-item__total-price line-item-total-price',
-                    }) }}
+                    {{ attributes.nested('totalPrice') }}
+                    class="{{ cx.totalPrice.apply() }}"
                 >
                     {% if lineItem.payload.discountScope != 'delivery' %}
                         {{ lineItem.price.totalPrice|currency }}

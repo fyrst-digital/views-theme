@@ -1,5 +1,18 @@
 {% sw_extends '@ViewsTheme/components/Page/Footer/Column.html.twig' %}
 
+{% props
+    navigation,
+    cva = {},
+%}
+
+{# Separate map so parent Column `cx` (root/headline/content) is not overwritten #}
+{% set nx = vi_cva({
+    headlineLink: { base: 'footer-headline-link' },
+    linkList: { base: 'footer-link-list' },
+    linkItem: { base: 'footer-link-item' },
+    link: { base: 'footer-link' },
+}|replace_recursive(cva)) %}
+
 {% block component_footer_column_headline_title %}
   {% if navigation.category.type == 'folder' %}
     {{ navigation.category.translated.name }}
@@ -9,7 +22,8 @@
       {% if category_linknewtab(navigation.category) %}
         target="_blank"
       {% endif %}
-      class="footer-headline-link"
+      {{ attributes.nested('headlineLink') }}
+      class="{{ nx.headlineLink.apply() }}"
       title="{{ navigation.category.translated.name }}">
       {{ navigation.category.translated.name }}
     </a>
@@ -17,17 +31,18 @@
 {% endblock %}
 
 {% block component_footer_column_content %}
-  <ul class="footer-link-list">
+  <ul {{ attributes.nested('linkList') }} class="{{ nx.linkList.apply() }}">
     {% for treeItem in navigation.children %}
       {% set category = treeItem.category %}
       {% set name = category.translated.name %}
 
-      <li class="footer-link-item">
+      <li {{ attributes.nested('linkItem') }} class="{{ nx.linkItem.apply() }}">
         {% if category.type == 'folder' %}
           <div>{{ name }}</div>
         {% else %}
           <a
-            class="footer-link"
+            {{ attributes.nested('link') }}
+            class="{{ nx.link.apply() }}"
             href="{{ category_url(category) }}"
             {% if category_linknewtab(category) %}
               target="_blank"

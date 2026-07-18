@@ -2,14 +2,14 @@
     variant,
     isAvailable = true,
     showQuantitySelect = true,
-    defaultBaseClasses = 'vi-variants-grid-column-quantity variants-grid-column-quantity',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-quantity variants-grid-column-quantity' },
+}|replace_recursive(cva)) %}
 
-<td {{ attributes }} class="{{ rootCVA.apply({}, rootClass) }}">
+<td {{ attributes }} class="{{ cx.root.apply() }}">
     {% if isAvailable and showQuantitySelect %}
         <twig:ViewsTheme:QuantityInput
             inputName="lineItems[{{ variant.id }}][quantity]"

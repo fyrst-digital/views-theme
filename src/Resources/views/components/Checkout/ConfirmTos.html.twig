@@ -4,8 +4,7 @@
     tosSnippet = null,
     formViolations = null,
     page = null,
-    defaultBaseClasses = 'vi-checkout-confirm-tos confirm-tos',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set pageEntity = page is not null ? page : (_context.page|default(null)) %}
@@ -16,8 +15,17 @@
         '%url%': path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
     }) %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-checkout-confirm-tos confirm-tos' },
+    title: { base: 'vi-checkout-confirm-tos__title confirm-tos-title' },
+    revocationNotice: { base: 'vi-checkout-confirm-tos__revocation-notice revocation-notice' },
+    control: { base: 'vi-checkout-confirm-tos__control form-check' },
+    tosCheckbox: { base: 'vi-checkout-confirm-tos__checkbox checkout-confirm-tos-checkbox form-check-input' },
+    tosLabel: { base: 'vi-checkout-confirm-tos__label checkout-confirm-tos-label custom-control-label' },
+    revocationCheckbox: { base: 'vi-checkout-confirm-tos__revocation-checkbox checkout-confirm-revocation-checkbox form-check-input' },
+    revocationLabel: { base: 'vi-checkout-confirm-tos__revocation-label checkout-confirm-revocation-label custom-control-label' },
+}|replace_recursive(cva)) %}
+
 {% set titleAttributes = attributes.nested('title') %}
 {% set revocationNoticeAttributes = attributes.nested('revocationNotice') %}
 {% set controlAttributes = attributes.nested('control') %}
@@ -31,24 +39,16 @@
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block header %}
-        <div
-            {{ titleAttributes.defaults({
-                class: 'vi-checkout-confirm-tos__title confirm-tos-title',
-            }) }}
-        >
+        <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
             {{ 'checkout.confirmTermsHeader'|trans|sw_sanitize }}
         </div>
     {% endblock %}
 
     {% block revocation_notice %}
-        <div
-            {{ revocationNoticeAttributes.defaults({
-                class: 'vi-checkout-confirm-tos__revocation-notice revocation-notice',
-            }) }}
-        >
+        <div {{ revocationNoticeAttributes }} class="{{ cx.revocationNotice.apply() }}">
             {{ 'checkout.confirmRevocationNotice'|trans({
                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') }),
             })|raw }}
@@ -57,27 +57,20 @@
 
     {% block tos_control %}
         {% if showTosOptin is same as(true) %}
-            <div
-                {{ controlAttributes.defaults({
-                    class: 'vi-checkout-confirm-tos__control form-check',
-                }) }}
-            >
+            <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
                 <input
                     type="checkbox"
                     required="required"
                     id="tos"
                     form="{{ formId }}"
                     name="tos"
-                    {{ tosCheckboxAttributes.defaults({
-                        class: 'vi-checkout-confirm-tos__checkbox checkout-confirm-tos-checkbox form-check-input'
-                            ~ (tosInvalid ? ' is-invalid' : ''),
-                    }) }}
+                    {{ tosCheckboxAttributes }}
+                    class="{{ cx.tosCheckbox.apply() }}{{ tosInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
                     for="tos"
-                    {{ tosLabelAttributes.defaults({
-                        class: 'vi-checkout-confirm-tos__label checkout-confirm-tos-label custom-control-label',
-                    }) }}
+                    {{ tosLabelAttributes }}
+                    class="{{ cx.tosLabel.apply() }}"
                 >
                     {{ tosSnippet|raw }}
                 </label>
@@ -90,27 +83,20 @@
 
     {% block revocation_control %}
         {% if pageEntity and pageEntity.showRevocation() %}
-            <div
-                {{ controlAttributes.defaults({
-                    class: 'vi-checkout-confirm-tos__control form-check',
-                }) }}
-            >
+            <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
                 <input
                     type="checkbox"
                     required="required"
                     id="revocation"
                     form="{{ formId }}"
                     name="revocation"
-                    {{ revocationCheckboxAttributes.defaults({
-                        class: 'vi-checkout-confirm-tos__revocation-checkbox checkout-confirm-revocation-checkbox form-check-input'
-                            ~ (revocationInvalid ? ' is-invalid' : ''),
-                    }) }}
+                    {{ revocationCheckboxAttributes }}
+                    class="{{ cx.revocationCheckbox.apply() }}{{ revocationInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
                     for="revocation"
-                    {{ revocationLabelAttributes.defaults({
-                        class: 'vi-checkout-confirm-tos__revocation-label checkout-confirm-revocation-label custom-control-label',
-                    }) }}
+                    {{ revocationLabelAttributes }}
+                    class="{{ cx.revocationLabel.apply() }}"
                 >
                     {{ 'checkout.confirmRevocationTerms'|trans() }}
                 </label>

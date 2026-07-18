@@ -1,7 +1,6 @@
 {% props
     product,
-    defaultBaseClasses = 'vi-product-badges',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set price = product.calculatedPrice %}
@@ -14,22 +13,22 @@
 {% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
 {% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set discountAttributes = attributes.nested('discount') %}
-{% set topsellerAttributes = attributes.nested('topseller') %}
-{% set newAttributes = attributes.nested('new') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-badges' },
+    discount: { base: 'vi-product-badges__discount badge product-badge badge-discount' },
+    topseller: { base: 'vi-product-badges__topseller badge product-badge badge-topseller' },
+    new: { base: 'vi-product-badges__new badge product-badge badge-new' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block discount %}
         {% if listPrice and not hasRange and not displayFromVariants %}
             <div
-                {{ discountAttributes.defaults({
-                    class: 'vi-product-badges__discount badge product-badge badge-discount',
-                }) }}
+                {{ attributes.nested('discount') }}
+                class="{{ cx.discount.apply() }}"
             >
                 {{ price.listPrice.percentage|number_format(0) }} %
             </div>
@@ -39,9 +38,8 @@
     {% block topseller %}
         {% if product.markAsTopseller %}
             <div
-                {{ topsellerAttributes.defaults({
-                    class: 'vi-product-badges__topseller badge product-badge badge-topseller',
-                }) }}
+                {{ attributes.nested('topseller') }}
+                class="{{ cx.topseller.apply() }}"
             >
                 {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
             </div>
@@ -51,9 +49,8 @@
     {% block new %}
         {% if product.isNew %}
             <div
-                {{ newAttributes.defaults({
-                    class: 'vi-product-badges__new badge product-badge badge-new',
-                }) }}
+                {{ attributes.nested('new') }}
+                class="{{ cx.new.apply() }}"
             >
                 {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
             </div>

@@ -1,35 +1,30 @@
 {% props
     label,
     value,
-    defaultBaseClasses = 'vi-cart-summary-item cart-summary-item',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-summary-item cart-summary-item' },
+    label: { base: 'vi-cart-summary-item__label cart-summary-item-label' },
+    value: { base: 'vi-cart-summary-item__value cart-summary-item-value' },
+}|replace_recursive(cva)) %}
+
 {% set labelAttributes = attributes.nested('label') %}
 {% set valueAttributes = attributes.nested('value') %}
 
 <dl
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block label %}
-        <dt
-            {{ labelAttributes.defaults({
-                class: 'vi-cart-summary-item__label cart-summary-item-label',
-            }) }}
-        >
+        <dt {{ labelAttributes }} class="{{ cx.label.apply() }}">
             {{ label|raw }}
         </dt>
     {% endblock %}
 
     {% block value %}
-        <dd
-            {{ valueAttributes.defaults({
-                class: 'vi-cart-summary-item__value cart-summary-item-value',
-            }) }}
-        >
+        <dd {{ valueAttributes }} class="{{ cx.value.apply() }}">
             {{ value }}
         </dd>
     {% endblock %}

@@ -1,35 +1,33 @@
 {% props
     total = 0,
     searchTerm = '',
-    defaultBaseClasses = 'vi-search-suggest-summary js-result p-4 border-top',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set actionAttributes = attributes.nested('action') %}
-{% set badgeAttributes = attributes.nested('badge') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-search-suggest-summary js-result p-4 border-top' },
+    action: { base: 'vi-search-suggest-summary__action btn btn-primary' },
+    badge: { base: 'vi-search-suggest-summary__badge badge rounded-pill text-bg-light' },
+}|replace_recursive(cva)) %}
 
 {% if total > 0 %}
     <div
         data-ref="summary"
         {{ attributes }}
-        class="{{ rootCVA.apply({}, rootClass) }}"
+        class="{{ cx.root.apply() }}"
     >
         {% block action %}
             <a
                 href="{{ path('frontend.search.page') }}?search={{ searchTerm }}"
                 title="{{ 'header.searchAllResults'|trans|striptags }}"
-                {{ actionAttributes.defaults({
-                    class: 'vi-search-suggest-summary__action btn btn-primary',
-                }) }}
+                {{ attributes.nested('action') }}
+                class="{{ cx.action.apply() }}"
             >
                 {{ 'header.searchAllResults'|trans|sw_sanitize }}
                 {% block badge %}
                     <span
-                        {{ badgeAttributes.defaults({
-                            class: 'vi-search-suggest-summary__badge badge rounded-pill text-bg-light',
-                        }) }}
+                        {{ attributes.nested('badge') }}
+                        class="{{ cx.badge.apply() }}"
                     >
                         {{ total }}
                     </span>

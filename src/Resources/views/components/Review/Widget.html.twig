@@ -1,8 +1,17 @@
 {% sw_extends '@Storefront/storefront/component/review/review-widget.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-review-widget product-detail-review-rating' },
+}|replace_recursive(cva)) %}
+
 {% block component_review_overview %}
     <div
-        class="vi-review-widget product-detail-review-rating"
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
         {% if productReviewCount > 0 %}
             itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating"
         {% endif %}
@@ -13,9 +22,7 @@
             <meta itemprop="ratingValue" content="{{ productAvgRating }}">
         {% endif %}
 
-        {% sw_include '@ViewsTheme/components/Review/Rating.html.twig' with {
-            points: productAvgRating,
-        } %}
+        <twig:ViewsTheme:Review:Rating :points="productAvgRating" />
 
         {% if productReviewCount > 0 %}
             <p class="h6" aria-hidden="true">

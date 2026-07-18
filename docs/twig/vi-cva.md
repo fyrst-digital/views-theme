@@ -1,19 +1,22 @@
 # `vi_cva`
 
-Twig function that maps a multi-slot `classes` config to CVA slots and binds attribute class extras. Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`.
+Twig function that maps a multi-slot CVA config to bound slots and pulls attribute class extras. Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`.
+
+Uses [`Twig\Extra\Html\Cva`](https://twig.symfony.com/html_cva) from `twig/html-extra` (not the deprecated Symfony UX `cva` / `Symfony\UX\TwigComponent\CVA`).
 
 ## Signature
 
 ```twig
-{% set cx = vi_cva(classes, attributes) %}
+{% set cx = vi_cva(config) %}
+{% set cx = vi_cva(config, attributes) %}
 ```
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `classes` | `array` | Slot map: each key is a DOM slot (`root`, `label`, …) |
-| `attributes` | `ComponentAttributes` | UX component attributes bag |
+| `config` | `array` | Slot map: each key is a DOM slot (`root`, `label`, …) |
+| `attributes` | `ComponentAttributes` | Optional; defaults to component `attributes` from context |
 
-Returns `array<string, ViCvaSlot>`.
+Returns `array<string, ViCvaSlot>`. Updates context `attributes` so nested `slot:class` keys are stripped after binding.
 
 ## Slot config shape
 
@@ -41,7 +44,7 @@ Keys match CVA options: `base`, `variants`, `compoundVariants`, `defaultVariants
 | Slot | Extra classes from |
 |------|--------------------|
 | `root` | `class="…"` → `attributes.render('class')` |
-| other (`label`, …) | `label:class="…"` → `attributes.nested('label').render('class')` |
+| other (`label`, …) | `label:class="…"` → nested class, then removed from attributes bag |
 
 Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consumed.
 
@@ -50,10 +53,10 @@ Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consume
 ```twig
 {% props
     size = 'md',
-    classes = {},
+    cva = {},
 %}
 
-{% set defaultClasses = {
+{% set cx = vi_cva({
     root: {
         base: 'vi-page-header',
         variants: { size: { md: 'container-md' } },
@@ -62,10 +65,7 @@ Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consume
         base: 'vi-page-header__label',
         variants: { size: { md: 'label-md' } },
     },
-} %}
-
-{% set classes = defaultClasses|replace_recursive(classes) %}
-{% set cx = vi_cva(classes, attributes) %}
+}|replace_recursive(cva)) %}
 
 <div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
     <label class="{{ cx.label.apply({ size: size }) }}">…</label>
@@ -76,7 +76,7 @@ Call `vi_cva` **before** rendering `{{ attributes }}` so root `class` is consume
 
 ```twig
 {# Deep-merge CVA config #}
-<twig:ViewsTheme:Page:Header :classes="{ root: { base: 'header' } }" />
+<twig:ViewsTheme:Page:Header :cva="{ root: { base: 'header' } }" />
 
 {# Extra HTML classes #}
 <twig:ViewsTheme:Page:Header class="mt-2" label:class="fw-bold" />

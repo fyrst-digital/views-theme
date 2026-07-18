@@ -5,8 +5,18 @@
   Not a pure UX tag component — include path or theme inheritance only.
 #}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-listing js-listing-wrapper' },
+    actions: { base: 'vi-product-listing__actions' },
+    empty: { base: 'vi-product-listing__empty' },
+}|replace_recursive(cva)) %}
+
 {% block element_product_listing_pagination_nav_actions %}
-    <div class="vi-product-listing__actions" data-ref="listing-actions">
+    <div {{ attributes.nested('actions') }} class="{{ cx.actions.apply() }}" data-ref="listing-actions">
         {% block element_product_listing_pagination_nav_top %}
             {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
                 entities: searchResult,
@@ -35,7 +45,8 @@
     {% endif %}
 
     <div
-        class="vi-product-listing js-listing-wrapper"
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
         data-aria-live-text="{{- ariaLiveText -}}"
         {% if searchResult.total > 0 %}
             role="list"
@@ -56,7 +67,7 @@
             {% endblock %}
         {% else %}
             {% block element_product_listing_col_empty %}
-                <div class="vi-product-listing__empty">
+                <div {{ attributes.nested('empty') }} class="{{ cx.empty.apply() }}">
                     {% block element_product_listing_col_empty_alert %}
                         <twig:ViewsTheme:Alert
                             type="info"

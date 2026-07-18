@@ -1,13 +1,27 @@
 {% sw_extends '@Storefront/storefront/utilities/offcanvas.html.twig' %}
 
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    header: { base: 'vi-offcanvas__header offcanvas-header border-bottom' },
+    title: { base: 'vi-offcanvas__title offcanvas-header-content fw-semibold fs-5' },
+    close: { base: 'vi-offcanvas__close btn btn-light offcanvas-close js-offcanvas-close' },
+    root: { base: 'vi-cookie-configuration offcanvas-cookie' },
+    description: { base: 'vi-cookie-configuration__description offcanvas-cookie-description' },
+    list: { base: 'vi-cookie-configuration__list offcanvas-cookie-list' },
+}|replace_recursive(cva)) %}
+
 {% block utilities_offcanvas_header %}
-    <div class="vi-offcanvas__header offcanvas-header border-bottom">
-        <div class="vi-offcanvas__title offcanvas-header-content fw-semibold fs-5">
+    <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
+        <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
             {{ 'cookie.headline'|trans|sw_sanitize }}
         </div>
         <button
             type="button"
-            class="vi-offcanvas__close btn btn-light offcanvas-close js-offcanvas-close"
+            {{ attributes.nested('close') }}
+            class="{{ cx.close.apply() }}"
             title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
             aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
         >
@@ -17,8 +31,8 @@
 {% endblock %}
 
 {% block utilities_offcanvas_content %}
-    <div class="vi-cookie-configuration offcanvas-cookie">
-        <div class="vi-cookie-configuration__description offcanvas-cookie-description">
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+        <div {{ attributes.nested('description') }} class="{{ cx.description.apply() }}">
             <p>
                 {{ 'cookie.messageText'|trans({
                     '%url%': path('frontend.cms.page', { id: config('core.basicInformation.privacyPage') }),
@@ -29,12 +43,12 @@
             </div>
         </div>
 
-        <div class="vi-cookie-configuration__list offcanvas-cookie-list">
+        <div {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
             {% for cookieGroup in cookieGroups %}
-                {% sw_include '@ViewsTheme/components/Cookie/ConfigurationGroup.html.twig' with {
+                {% component 'ViewsTheme:Cookie:ConfigurationGroup' with {
                     themeIconConfig: themeIconConfig,
                     cookieGroup: cookieGroup,
-                } only %}
+                } only %}{% endcomponent %}
             {% endfor %}
         </div>
 

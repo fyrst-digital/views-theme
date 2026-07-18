@@ -1,15 +1,15 @@
 {% props
     medias = [],
-    defaultBaseClasses = 'vi-gallery-slider-thumbnails-container gallery-slider-thumbnails-container',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-gallery-slider-thumbnails-container gallery-slider-thumbnails-container' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     <div class="vi-gallery-slider-thumbnails gallery-slider-thumbnails splide">
         <div class="splide__track">

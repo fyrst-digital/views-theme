@@ -4,22 +4,21 @@
     cover = null,
     displayMode = 'standard',
     sizes = {},
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set defaultBaseClasses = defaultBaseClasses is not null ? defaultBaseClasses : 'vi-product-cover flex-fill product-image-link is-' ~ displayMode %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set imageAttributes = attributes.nested('image') %}
-{% set videoAttributes = attributes.nested('video') %}
-{% set placeholderAttributes = attributes.nested('placeholder') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-cover flex-fill product-image-link is-' ~ displayMode },
+    image: { base: 'vi-product-cover__image' },
+    video: { base: 'vi-product-cover__video' },
+    placeholder: { base: 'vi-product-cover__placeholder product-image-placeholder' },
+}|replace_recursive(cva)) %}
 
 <a
     href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
     title="{{ name }}"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block media %}
         {% if cover.url and cover.isSpatialObject() == false %}
@@ -32,7 +31,7 @@
                     {% set mediaAttrs = mediaAttrs|merge({
                         autoplay: true,
                         loop: true,
-                        class: videoAttributes.render('class') ?: 'vi-product-cover__video',
+                        class: cx.video.apply(),
                     }) %}
                 {% endif %}
 
@@ -43,11 +42,10 @@
                     } %}
                 {% endblock %}
             {% else %}
-                {% set imageClass = imageAttributes.render('class') ?: 'vi-product-cover__image' %}
                 {% set mediaAttrs = mediaAttrs|merge({
                     alt: (cover.translated.alt ?: name),
                     loading: 'lazy',
-                    class: imageClass,
+                    class: cx.image.apply(),
                 }) %}
 
                 {% if displayMode == 'cover' or displayMode == 'contain' %}
@@ -65,9 +63,8 @@
         {% else %}
             {% block placeholder %}
                 <div
-                    {{ placeholderAttributes.defaults({
-                        class: 'vi-product-cover__placeholder product-image-placeholder',
-                    }) }}
+                    {{ attributes.nested('placeholder') }}
+                    class="{{ cx.placeholder.apply() }}"
                 >
                     {% sw_icon 'placeholder' style { size: 'fluid' } %}
                 </div>

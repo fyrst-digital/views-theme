@@ -5,8 +5,7 @@
     showTaxNote = false,
     taxUrl = null,
     taxText = null,
-    defaultBaseClasses = 'vi-product-price',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set price = product.calculatedPrice %}
@@ -29,14 +28,15 @@
         ? 'general.grossTaxInformation'|trans|sw_sanitize
         : 'general.netTaxInformation'|trans|sw_sanitize) %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set prefixAttributes = attributes.nested('prefix') %}
-{% set unitAttributes = attributes.nested('unit') %}
-{% set referenceAttributes = attributes.nested('reference') %}
-{% set averageAttributes = attributes.nested('average') %}
-{% set taxAttributes = attributes.nested('tax') %}
-{% set taxActionAttributes = attributes.nested('taxAction') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-product-price' },
+    prefix: { base: 'vi-product-price__prefix' },
+    unit: { base: 'vi-product-price__unit' },
+    reference: { base: 'vi-product-price__reference' },
+    average: { base: 'vi-product-price__average' },
+    tax: { base: 'vi-product-price__tax' },
+    taxAction: { base: 'vi-product-price__tax-action' },
+}|replace_recursive(cva)) %}
 
 {% block tiered %}
     {% if prices.count > 1 and showTieredPrices is same as(true) %}
@@ -49,13 +49,14 @@
         <div
             data-ref="price"
             {{ attributes }}
-            class="{{ rootCVA.apply({}, rootClass) }}"
+            class="{{ cx.root.apply() }}"
         >
             {% block prefix %}
                 {% if prices.count > 1 or displayFromVariants %}
                     <span
                         data-ref="prefix"
-                        {{ prefixAttributes.defaults({ class: 'vi-product-price__prefix' }) }}
+                        {{ attributes.nested('prefix') }}
+                        class="{{ cx.prefix.apply() }}"
                     >
                         {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
                     </span>
@@ -65,7 +66,8 @@
             {% block unit %}
                 <span
                     data-ref="unit"
-                    {{ unitAttributes.defaults({ class: 'vi-product-price__unit' }) }}
+                    {{ attributes.nested('unit') }}
+                    class="{{ cx.unit.apply() }}"
                 >
                     {{ price.unitPrice|currency }}
                 </span>
@@ -75,7 +77,8 @@
                 {% if price.referencePrice is not null %}
                     <span
                         data-ref="reference"
-                        {{ referenceAttributes.defaults({ class: 'vi-product-price__reference' }) }}
+                        {{ attributes.nested('reference') }}
+                        class="{{ cx.reference.apply() }}"
                     >
                         {{ price.referencePrice.price|currency }} /
                         {{ price.referencePrice.referenceUnit }}&nbsp;
@@ -88,7 +91,8 @@
                 {% if price.regulationPrice.price is not null %}
                     <span
                         data-ref="average"
-                        {{ averageAttributes.defaults({ class: 'vi-product-price__average' }) }}
+                        {{ attributes.nested('average') }}
+                        class="{{ cx.average.apply() }}"
                     >
                         {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
                     </span>
@@ -102,14 +106,16 @@
     {% if showTaxNote is same as(true) %}
         <div
             data-ref="tax"
-            {{ taxAttributes.defaults({ class: 'vi-product-price__tax' }) }}
+            {{ attributes.nested('tax') }}
+            class="{{ cx.tax.apply() }}"
         >
             <button
                 type="button"
                 data-ajax-modal="true"
                 data-url="{{ taxUrl }}"
                 aria-haspopup="dialog"
-                {{ taxActionAttributes.defaults({ class: 'vi-product-price__tax-action' }) }}
+                {{ attributes.nested('taxAction') }}
+                class="{{ cx.taxAction.apply() }}"
             >
                 {{ taxText }}
             </button>

@@ -6,8 +6,7 @@
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
     formAction = null,
-    defaultBaseClasses = null,
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set formAction = formAction is not null
@@ -26,13 +25,17 @@
         or (quantityInformation and quantityInformation.maxPurchase === 1) %}
 {% endif %}
 
-{% set defaultBaseClasses = defaultBaseClasses is not null
-    ? defaultBaseClasses
-    : (isDigital
-        ? 'vi-line-item-quantity line-item-quantity-container disabled'
-        : 'vi-line-item-quantity line-item-quantity-container') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-line-item-quantity line-item-quantity-container',
+        variants: {
+            digital: {
+                true: 'disabled',
+                false: '',
+            },
+        },
+    },
+}|replace_recursive(cva)) %}
 
 {% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
     ? quantityInformation.maxPurchase
@@ -52,7 +55,7 @@
             data-form-auto-submit-options="{{ autoSubmitOptions|json_encode }}"
         {% endif %}
         {{ attributes }}
-        class="{{ rootCVA.apply({}, rootClass) }}"
+        class="{{ cx.root.apply({ digital: isDigital }) }}"
     >
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
         <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
@@ -69,7 +72,7 @@
 {% else %}
     <div
         {{ attributes }}
-        class="{{ rootCVA.apply({}, rootClass) }}"
+        class="{{ cx.root.apply({ digital: isDigital }) }}"
     >
         {{ lineItem.quantity }}
     </div>

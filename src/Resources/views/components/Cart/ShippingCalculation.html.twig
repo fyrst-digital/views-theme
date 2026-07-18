@@ -1,11 +1,18 @@
 {% props
     page,
-    defaultBaseClasses = 'vi-cart-shipping-calculation shipping-calculation-form',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-shipping-calculation shipping-calculation-form' },
+    trigger: { base: 'vi-cart-shipping-calculation__trigger btn btn-light cart-shipping-costs-btn shipping-calculation-toogle-btn' },
+    collapse: { base: 'vi-cart-shipping-calculation__collapse collapse' },
+    selects: { base: 'vi-cart-shipping-calculation__selects shipping-calculation-selects' },
+    formGroup: { base: 'vi-cart-shipping-calculation__group form-group' },
+    label: { base: 'vi-cart-shipping-calculation__label form-label' },
+    select: { base: 'vi-cart-shipping-calculation__select form-select' },
+}|replace_recursive(cva)) %}
+
 {% set triggerAttributes = attributes.nested('trigger') %}
 {% set collapseAttributes = attributes.nested('collapse') %}
 {% set selectsAttributes = attributes.nested('selects') %}
@@ -19,7 +26,7 @@
     action="{{ path('frontend.checkout.configure') }}"
     data-form-auto-submit="true"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block trigger %}
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
@@ -30,9 +37,8 @@
                 role="button"
                 aria-expanded="false"
                 aria-controls="collapseExample"
-                {{ triggerAttributes.defaults({
-                    class: 'vi-cart-shipping-calculation__trigger btn btn-light cart-shipping-costs-btn shipping-calculation-toogle-btn',
-                }) }}
+                {{ triggerAttributes }}
+                class="{{ cx.trigger.apply() }}"
             >
                 {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
                 {{ vi_icon('caret-down') }}
@@ -43,25 +49,17 @@
     {% block form_group %}
         <div
             id="collapseShippingCost"
-            {{ collapseAttributes.defaults({
-                class: 'vi-cart-shipping-calculation__collapse collapse',
-            }) }}
+            {{ collapseAttributes }}
+            class="{{ cx.collapse.apply() }}"
         >
-            <div
-                {{ selectsAttributes.defaults({
-                    class: 'vi-cart-shipping-calculation__selects shipping-calculation-selects',
-                }) }}
-            >
+            <div {{ selectsAttributes }} class="{{ cx.selects.apply() }}">
                 {% block country %}
                     {% if not context.customer %}
-                        <div
-                            {{ formGroupAttributes.defaults({
-                                class: 'vi-cart-shipping-calculation__group form-group',
-                            }) }}
-                        >
+                        <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
                             <label
                                 for="countryId"
-                                {{ labelAttributes.defaults({ class: 'vi-cart-shipping-calculation__label form-label' }) }}
+                                {{ labelAttributes }}
+                                class="{{ cx.label.apply() }}"
                             >
                                 {{ 'checkout.shippingCountry'|trans|sw_sanitize }}
                             </label>
@@ -69,9 +67,8 @@
                                 type="text"
                                 id="countryId"
                                 name="countryId"
-                                {{ selectAttributes.defaults({
-                                    class: 'vi-cart-shipping-calculation__select form-select',
-                                }) }}
+                                {{ selectAttributes }}
+                                class="{{ cx.select.apply() }}"
                             >
                                 {% for country in page.countries %}
                                     <option
@@ -87,14 +84,11 @@
                 {% endblock %}
 
                 {% block payment_method %}
-                    <div
-                        {{ formGroupAttributes.defaults({
-                            class: 'vi-cart-shipping-calculation__group form-group',
-                        }) }}
-                    >
+                    <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
                         <label
                             for="paymentMethodId"
-                            {{ labelAttributes.defaults({ class: 'vi-cart-shipping-calculation__label form-label' }) }}
+                            {{ labelAttributes }}
+                            class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
                         </label>
@@ -102,9 +96,8 @@
                             type="text"
                             id="paymentMethodId"
                             name="paymentMethodId"
-                            {{ selectAttributes.defaults({
-                                class: 'vi-cart-shipping-calculation__select form-select',
-                            }) }}
+                            {{ selectAttributes }}
+                            class="{{ cx.select.apply() }}"
                         >
                             {% if context.paymentMethod.id not in page.paymentMethods.ids %}
                                 <option value="{{ context.paymentMethod.id }}" selected="selected" disabled="disabled">
@@ -125,14 +118,11 @@
                 {% endblock %}
 
                 {% block shipping_method %}
-                    <div
-                        {{ formGroupAttributes.defaults({
-                            class: 'vi-cart-shipping-calculation__group form-group',
-                        }) }}
-                    >
+                    <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
                         <label
                             for="shippingMethodId"
-                            {{ labelAttributes.defaults({ class: 'vi-cart-shipping-calculation__label form-label' }) }}
+                            {{ labelAttributes }}
+                            class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.shippingMethod'|trans|sw_sanitize }}
                         </label>
@@ -140,9 +130,8 @@
                             type="text"
                             id="shippingMethodId"
                             name="shippingMethodId"
-                            {{ selectAttributes.defaults({
-                                class: 'vi-cart-shipping-calculation__select form-select',
-                            }) }}
+                            {{ selectAttributes }}
+                            class="{{ cx.select.apply() }}"
                         >
                             {% if context.shippingMethod.id not in page.shippingMethods.ids %}
                                 <option value="{{ context.shippingMethod.id }}" selected="selected" disabled="disabled">

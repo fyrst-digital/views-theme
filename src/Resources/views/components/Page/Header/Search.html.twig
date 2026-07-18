@@ -1,27 +1,31 @@
 {% props
     searchTerm = null,
     searchWidgetOptions = {},
-    defaultBaseClasses = 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center',
-    defaultVariants = {},
+    cva = {},
 %}
 
 {% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
-{% set searchAttributes = attributes.nested('search') %}
-{% set formAttributes = attributes.nested('form') %}
-{% set containerAttributes = attributes.nested('container') %}
-{% set inputGroupAttributes = attributes.nested('inputGroup') %}
-{% set inputAttributes = attributes.nested('input') %}
-{% set submitAttributes = attributes.nested('submit') %}
-{% set closeAttributes = attributes.nested('close') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center' },
+    search: { base: 'vi-header-search__body header-search' },
+    form: { base: 'vi-header-search__form header-search-form' },
+    container: { base: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2' },
+    inputGroup: { base: 'vi-header-search__input-group input-group header-search-input-group' },
+    input: { base: 'vi-header-search__input form-control header-search-input' },
+    submit: { base: 'vi-header-search__submit btn header-search-btn' },
+    close: { base: 'vi-header-search__close btn header-search-close' },
+}|replace_recursive(cva)) %}
 
 <div
     {{ attributes.defaults({ id: 'searchCollapse' }) }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
     data-ref="search"
 >
-    <div {{ searchAttributes.defaults({ class: 'vi-header-search__body header-search' }) }}>
+    <div
+        {{ attributes.nested('search') }}
+        class="{{ cx.search.apply() }}"
+    >
         {% block form %}
             <form
                 action="{{ path('frontend.search.page') }}"
@@ -29,18 +33,17 @@
                 data-search-widget="true"
                 data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
                 data-url="{{ path('frontend.search.suggest') }}?search="
-                {{ formAttributes.defaults({ class: 'vi-header-search__form header-search-form' }) }}
+                {{ attributes.nested('form') }}
+                class="{{ cx.form.apply() }}"
             >
                 <div
-                    {{ containerAttributes.defaults({
-                        class: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2',
-                    }) }}
+                    {{ attributes.nested('container') }}
+                    class="{{ cx.container.apply() }}"
                 >
                     {% block input_group %}
                         <div
-                            {{ inputGroupAttributes.defaults({
-                                class: 'vi-header-search__input-group input-group header-search-input-group',
-                            }) }}
+                            {{ attributes.nested('inputGroup') }}
+                            class="{{ cx.inputGroup.apply() }}"
                         >
                             {% block input %}
                                 <input
@@ -51,9 +54,8 @@
                                     placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
                                     aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
                                     value="{{ searchTerm }}"
-                                    {{ inputAttributes.defaults({
-                                        class: 'vi-header-search__input form-control header-search-input',
-                                    }) }}
+                                    {{ attributes.nested('input') }}
+                                    class="{{ cx.input.apply() }}"
                                 >
                             {% endblock %}
 
@@ -61,9 +63,8 @@
                                 <button
                                     type="submit"
                                     aria-label="{{ 'header.searchButton'|trans|striptags }}"
-                                    {{ submitAttributes.defaults({
-                                        class: 'vi-header-search__submit btn header-search-btn',
-                                    }) }}
+                                    {{ attributes.nested('submit') }}
+                                    class="{{ cx.submit.apply() }}"
                                 >
                                     {% block submit_icon %}
                                         {{ vi_icon('magnifying-glass') }}
@@ -77,9 +78,8 @@
                         <button
                             type="button"
                             data-header-search="close"
-                            {{ closeAttributes.defaults({
-                                class: 'vi-header-search__close btn header-search-close',
-                            }) }}
+                            {{ attributes.nested('close') }}
+                            class="{{ cx.close.apply() }}"
                         >
                             {% block close_icon %}
                                 {{ vi_icon('x') }}

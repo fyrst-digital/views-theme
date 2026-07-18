@@ -1,11 +1,16 @@
 {% props
     redirectTo = 'frontend.checkout.cart.page',
-    defaultBaseClasses = 'vi-cart-add-product-form add-product-form',
-    defaultVariants = {},
+    cva = {},
 %}
 
-{% set rootCVA = cva(defaultVariants|merge({ base: defaultBaseClasses })) %}
-{% set rootClass = attributes.render('class') %}
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-add-product-form add-product-form' },
+    label: { base: 'vi-cart-add-product-form__label visually-hidden' },
+    inputGroup: { base: 'vi-cart-add-product-form__input-group input-group' },
+    input: { base: 'vi-cart-add-product-form__input form-control' },
+    submit: { base: 'vi-cart-add-product-form__submit btn btn-secondary' },
+}|replace_recursive(cva)) %}
+
 {% set labelAttributes = attributes.nested('label') %}
 {% set inputGroupAttributes = attributes.nested('inputGroup') %}
 {% set inputAttributes = attributes.nested('input') %}
@@ -15,7 +20,7 @@
     action="{{ path('frontend.checkout.product.add-by-number') }}"
     method="post"
     {{ attributes }}
-    class="{{ rootCVA.apply({}, rootClass) }}"
+    class="{{ cx.root.apply() }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -24,20 +29,15 @@
     {% block label %}
         <label
             for="addProductInput"
-            {{ labelAttributes.defaults({
-                class: 'vi-cart-add-product-form__label visually-hidden',
-            }) }}
+            {{ labelAttributes }}
+            class="{{ cx.label.apply() }}"
         >
             {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
         </label>
     {% endblock %}
 
     {% block input_group %}
-        <div
-            {{ inputGroupAttributes.defaults({
-                class: 'vi-cart-add-product-form__input-group input-group',
-            }) }}
-        >
+        <div {{ inputGroupAttributes }} class="{{ cx.inputGroup.apply() }}">
             {% block input %}
                 <input
                     type="text"
@@ -47,9 +47,8 @@
                     aria-label="{{ 'checkout.addProductLabel'|trans|striptags }}"
                     aria-describedby="addProductButton"
                     required="required"
-                    {{ inputAttributes.defaults({
-                        class: 'vi-cart-add-product-form__input form-control',
-                    }) }}
+                    {{ inputAttributes }}
+                    class="{{ cx.input.apply() }}"
                 >
             {% endblock %}
 
@@ -58,9 +57,8 @@
                     type="submit"
                     aria-labelledby="addProductInput"
                     id="addProductButton"
-                    {{ submitAttributes.defaults({
-                        class: 'vi-cart-add-product-form__submit btn btn-secondary',
-                    }) }}
+                    {{ submitAttributes }}
+                    class="{{ cx.submit.apply() }}"
                 >
                     {{ vi_icon('plus') }}
                 </button>
