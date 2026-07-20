@@ -13,13 +13,11 @@
     aria-label="{{ 'header.searchButton'|trans|striptags }}"
     aria-hidden="true"
     data-component="ViewsTheme:Search:Overlay"
-    data-ref="overlay"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block backdrop %}
         <div
-            data-ref="backdrop"
             {{ attributes.nested('backdrop') }}
             class="{{ cx.backdrop.apply() }}"
         ></div>
@@ -27,14 +25,12 @@
 
     {% block panel %}
         <div
-            data-ref="panel"
             {{ attributes.nested('panel') }}
             class="{{ cx.panel.apply() }}"
         >
             {% block close %}
                 <button
                     type="button"
-                    data-ref="close"
                     aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
                     {{ attributes.nested('close') }}
                     class="{{ cx.close.apply() }}"
@@ -45,7 +41,6 @@
 
             {% block body %}
                 <div
-                    data-ref="body"
                     {{ attributes.nested('body') }}
                     class="{{ cx.body.apply() }}"
                 >

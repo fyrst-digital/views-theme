@@ -23,7 +23,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 |-------|-----|
 | **UX Twig components** (target) | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
 | Component template rules | [docs/conventions/components.md](docs/conventions/components.md) |
-| JS: `data-component` / `data-ref` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
+| JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
@@ -34,7 +34,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 ### Hard rules (always)
 
 - **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva()` + `cva = {}` prop + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md) and [vi-cva.md](docs/twig/vi-cva.md).
-- Interactive UX roots: `data-component="ViewsTheme:…"`. Internal hooks: **`data-ref`**. Never CSS classes as JS selectors.
+- Interactive UX roots: `data-component="ViewsTheme:…"` (Shopware auto-inits co-located JS). Do **not** add new `data-ref` attributes (legacy ones may remain until migrated). Never CSS classes as JS selectors.
 - Co-located interactive JS: `ShopwareComponent` in `<Name>.js` next to `<Name>.html.twig` (no new PluginManager plugins).
 - `vi_icon` remains for icons.
 - **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.

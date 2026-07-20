@@ -1,6 +1,7 @@
 export default class SearchOverlay extends ShopwareComponent {
     static options = {
-        openClass: 'is-open',
+        openClass: 'd-flex',
+        closedClass: 'd-none',
         bodyOpenClass: 'vi-search-overlay-open',
         backdropRef: 'backdrop',
         closeRef: 'close',
@@ -33,6 +34,7 @@ export default class SearchOverlay extends ShopwareComponent {
         }
 
         this._open = true
+        this.el.classList.remove(this.options.closedClass)
         this.el.classList.add(this.options.openClass)
         this.el.setAttribute('aria-hidden', 'false')
         this._setBodyLock(true)
@@ -47,6 +49,7 @@ export default class SearchOverlay extends ShopwareComponent {
 
         this._open = false
         this.el.classList.remove(this.options.openClass)
+        this.el.classList.add(this.options.closedClass)
         this.el.setAttribute('aria-hidden', 'true')
         this._setBodyLock(false)
         this.el.dispatchEvent(new CustomEvent('ViewsTheme:Search:Overlay:close', { bubbles: true }))

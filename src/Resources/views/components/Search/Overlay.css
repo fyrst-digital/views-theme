@@ -1,0 +1,3 @@
+.vi-search-overlay__modal {
+    max-width: var(--modal-max-w, 800px);
+}

@@ -7,8 +7,9 @@
 | Role | Attribute | Example |
 |------|-----------|---------|
 | UX component root (co-located JS) | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
-| Internal hooks inside a component | `data-ref="…"` | `grid-body`, `buy-button` |
 | Twig → JS options | `data-component-options` | JSON object |
+
+Do **not** add new `data-ref` attributes. Shopware mounts co-located JS from `data-component` only. Some existing templates still use `data-ref` for legacy component JS — leave those until migrated; do not extend the pattern.
 
 ## Co-located component JS
 
@@ -41,13 +42,9 @@ Data: `page.extensions.viewsTheme.variantsGrid`.
 | Hook | Attribute |
 |------|-----------|
 | Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
-| Grid body | `data-ref="grid-body"` |
-| Pagination | `data-ref="pagination"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
-| Buy button | `data-ref="buy-button"` |
-| Grid memory | `data-ref="grid-memory"` |
-| Live region | `data-ref="live-region"` |
-| Error message | `data-ref="error-message"` |
+
+Internal nodes still use legacy `data-ref` in markup for current JS — do not add more.
 
 See [Variants grid](../features/variants-grid.md).
 
@@ -69,6 +66,7 @@ Lazy-loaded dialog from the header search action.
 |------|-----------|
 | Action | `data-component="ViewsTheme:Search:Action"` |
 | Overlay | `data-component="ViewsTheme:Search:Overlay"` |
-| Backdrop / close | `data-ref="backdrop"` / `data-ref="close"` |
+
+Backdrop / close still use legacy `data-ref` in markup for current JS — do not add more.
 
 See [Search overlay](../features/search-overlay.md).

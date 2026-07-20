@@ -16,6 +16,8 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 ## Layout notes
 
+- Styling is **Bootstrap utilities first** (in sibling `*.cva.twig`). Custom SCSS in `search.scss` is last resort only (body scroll lock, thumb size, results max-height, item hover via `--bs-tertiary-bg`).
+- Overlay open/close toggles `d-none` / `d-flex` in `Overlay.js` (no custom `.is-open` styles).
 - `Search:Bar` keeps submit as a **direct form child after the chrome row** so `SearchWidgetPlugin` injects suggest markup under the input (not inside the chrome flex row).
 - Suggest is **in-flow** inside the panel (not a floating absolute dropdown).
 - Product rows: thumb · optional manufacturer/category meta · name · compact price (+ strikethrough list price).
@@ -73,11 +75,8 @@ Suggest uses the same `search` query param as core (`?search=`).
 |-----------|-----------|
 | Action button | `data-component="ViewsTheme:Search:Action"` |
 | Overlay root | `data-component="ViewsTheme:Search:Overlay"` |
-| Backdrop | `data-ref="backdrop"` |
-| Close control | `data-ref="close"` |
-| Search form | `data-ref="search-bar"` (on `Search:Bar`) |
 
-See [JavaScript conventions](../conventions/javascript.md).
+Backdrop / close / bar still use legacy `data-ref` for the current co-located JS. Do not add new `data-ref`s; see [JavaScript conventions](../conventions/javascript.md).
 
 ## Key source files
 

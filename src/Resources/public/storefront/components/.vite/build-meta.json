@@ -13,21 +13,30 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-      "file": "ViewsTheme/Search/Action-Bshsf-Rd.js",
+      "file": "ViewsTheme/Search/Action-BvWR7Vtx.js",
       "name": "ViewsTheme/Search/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
-      "file": "ViewsTheme/Search/Overlay-CsHLdqnU.js",
+      "file": "ViewsTheme/Search/Overlay-LLLa2nSJ.js",
       "name": "ViewsTheme/Search/Overlay",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-      "file": "ViewsTheme/VariantsGrid/Container-DSaYGoqe.js",
+      "file": "ViewsTheme/VariantsGrid/Container-D1D0k4ok.js",
       "name": "ViewsTheme/VariantsGrid/Container",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
+      "isEntry": true
+    },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css": {
+      "file": "ViewsTheme/Search/Overlay-DHtSjMGw.css",
+      "name": "ViewsTheme/Search/Overlay.css",
+      "names": [
+        "ViewsTheme/Search/Overlay.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css",
       "isEntry": true
     }
   },

@@ -52,8 +52,9 @@ See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 | Role | Attribute | Example |
 |------|-----------|---------|
 | Interactive UX root | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
-| Internal hooks | `data-ref="…"` | `grid-body`, `buy-button` |
 | Options | `data-component-options` | JSON |
+
+Do **not** add new `data-ref` attributes. Legacy `data-ref` in existing markup may remain until component JS is migrated.
 
 Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:storefront`.
 

@@ -27,7 +27,7 @@
             class="{{ cx.image.apply() }}"
         >
             {% set mediaAttrs = {
-                class: 'vi-search-suggest-item__media',
+                class: 'vi-search-suggest-item__media w-100 h-100',
                 title: (product.cover.media.translated.title ?: ''),
             } %}
 
@@ -90,7 +90,7 @@
                     <span
                         data-ref="price"
                         {{ attributes.nested('price') }}
-                        class="{{ cx.price.apply() }}{{ hasListPrice ? ' is-sale' : '' }}"
+                        class="{{ cx.price.apply() }}{{ hasListPrice ? ' text-danger' : '' }}"
                     >
                         {{ price.unitPrice|currency }}
                     </span>
