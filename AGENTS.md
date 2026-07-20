@@ -27,6 +27,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
+| Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
 | Plugin / theme config | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
 

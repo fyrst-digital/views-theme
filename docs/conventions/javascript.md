@@ -21,6 +21,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
+| Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
+| Search overlay | `ViewsTheme:Search:Overlay` | `Search/Overlay.js` |
 
 Build (project root):
 
@@ -58,3 +60,15 @@ Data: `page.extensions.viewsTheme.deliveryDate`.
 | Wrapper | `data-component="ViewsTheme:Checkout:DeliveryDateSelection"` |
 
 See [Preferred delivery date](../features/delivery-date.md).
+
+### Search overlay
+
+Lazy-loaded dialog from the header search action.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Search:Action"` |
+| Overlay | `data-component="ViewsTheme:Search:Overlay"` |
+| Backdrop / close | `data-ref="backdrop"` / `data-ref="close"` |
+
+See [Search overlay](../features/search-overlay.md).

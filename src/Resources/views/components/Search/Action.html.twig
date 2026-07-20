@@ -1,18 +1,23 @@
 {% props
     size = 'md',
+    overlayUrl = null,
     cva = {},
 %}
 
+{% set overlayUrl = overlayUrl is not null ? overlayUrl : path('frontend.views-theme.search.overlay') %}
+{% set componentOptions = { overlayUrl: overlayUrl } %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <button
     type="button"
     {{ attributes.defaults({
-        'aria-label': 'header.searchButton'|trans|striptags
+        'aria-label': 'header.searchButton'|trans|striptags,
     }) }}
-    aria-controls="searchCollapse"
+    aria-haspopup="dialog"
+    aria-controls="vi-search-overlay"
     aria-expanded="false"
     data-component="ViewsTheme:Search:Action"
+    data-component-options="{{ componentOptions|json_encode }}"
     class="{{ cx.root.apply({ size: size }) }}"
 >
     {{ vi_icon('magnifying-glass') }}

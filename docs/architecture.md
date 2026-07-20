@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date).
+ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay).
 
 ## Identity
 
@@ -62,3 +62,4 @@ src/
 - [UX components](conventions/ux-components.md)
 - [Variants grid](features/variants-grid.md)
 - [Preferred delivery date](features/delivery-date.md)
+- [Search overlay](features/search-overlay.md)

@@ -8,11 +8,14 @@
 {% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
 {% set cx = vi_cva({
-    root: { base: 'vi-search-suggest position-absolute op-100 start-50 translate-middle-x bg-white border border-1 rounded-3 shadow-lg js-search-result' },
+    root: { base: 'vi-search-suggest position-absolute bg-white border border-1 rounded-3 shadow-lg js-search-result' },
     results: { base: 'vi-search-suggest__results grid gap-4 p-4' },
 }|replace_recursive(cva)) %}
 
 <div
+    id="search-suggest-listbox"
+    role="listbox"
+    aria-label="{{ 'header.searchDropdownTitle'|trans|striptags }}"
     data-ref="suggest"
     {{ attributes }}
     class="{{ cx.root.apply() }}"

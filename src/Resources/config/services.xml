@@ -39,6 +39,13 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\SearchOverlayController" public="true">
+            <argument type="service" id="twig"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Service\VariantsLoader">
             <argument type="service" id="sales_channel.product.repository"/>
         </service>

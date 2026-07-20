@@ -6,19 +6,25 @@
     "isEntry": true
   },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js": {
-    "file": "ViewsTheme/Page/Header/Action/Cart-C0hdj_vT.js",
+    "file": "ViewsTheme/Page/Header/Action/Cart-DiD0Rc_X.js",
     "name": "ViewsTheme/Page/Header/Action/Cart",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js",
     "isEntry": true
   },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-    "file": "ViewsTheme/Search/Action-BCKfCT4p.js",
+    "file": "ViewsTheme/Search/Action-Bshsf-Rd.js",
     "name": "ViewsTheme/Search/Action",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
     "isEntry": true
   },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
+    "file": "ViewsTheme/Search/Overlay-CsHLdqnU.js",
+    "name": "ViewsTheme/Search/Overlay",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
+    "isEntry": true
+  },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-    "file": "ViewsTheme/VariantsGrid/Container-BuEKQSBY.js",
+    "file": "ViewsTheme/VariantsGrid/Container-DSaYGoqe.js",
     "name": "ViewsTheme/VariantsGrid/Container",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
     "isEntry": true

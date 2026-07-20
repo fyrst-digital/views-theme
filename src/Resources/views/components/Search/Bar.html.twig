@@ -12,6 +12,7 @@
     root: { base: 'vi-search-bar position-relative header-search-form js-search-form' },
     submit: { base: 'vi-search-bar__submit btn header-search-btn border-0' },
     input: { base: 'vi-search-bar__input rounded form-control header-search-input' },
+    clear: { base: 'vi-search-bar__clear btn header-close-btn js-search-close-btn' },
 }|replace_recursive(cva)) %}
 
 <form
@@ -55,5 +56,15 @@
         >
     {% endblock %}
 
-    {% block clear %}{% endblock %}
+    {% block clear %}
+        <button
+            type="button"
+            aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
+            data-ref="clear"
+            {{ attributes.nested('clear') }}
+            class="{{ cx.clear.apply() }}"
+        >
+            {{ vi_icon('x') }}
+        </button>
+    {% endblock %}
 </form>
