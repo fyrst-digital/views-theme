@@ -5,10 +5,10 @@
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js",
     "isEntry": true
   },
-  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart.js": {
-    "file": "ViewsTheme/Header/Action/Cart-BZTgUM1c.js",
-    "name": "ViewsTheme/Header/Action/Cart",
-    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Header/Action/Cart.js",
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js": {
+    "file": "ViewsTheme/Page/Header/Action/Cart-CWcUn17A.js",
+    "name": "ViewsTheme/Page/Header/Action/Cart",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js",
     "isEntry": true
   },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
