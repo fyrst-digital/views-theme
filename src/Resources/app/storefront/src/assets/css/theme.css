@@ -1,0 +1,13 @@
+
+  .header-action {
+    --icon-size: 24px;
+    --btn-border-radius: var(--border-radius-pill);
+
+    .badge {
+      --badge-position: absolute;
+      --badge-padding-x: 4px;
+      --badge-padding-y: 4px;
+      --badge-font-size: 12px;
+      --badge-min-w: 20px;
+    }
+  }

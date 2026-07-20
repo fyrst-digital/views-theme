@@ -4,16 +4,24 @@
   {{ parent() }}
 
   {% block views_theme_additional_stylesheet %}
+    {# Prod: theme asset package (copied by theme:compile). Dev (Vite): source via /@fs from ViewsTheme main.js URL. #}
+    {% set isDevServer = importmapData.isDevServer ?? false %}
+    {% set themeAssetCssBase = null %}
+    {% if isDevServer %}
+      {% set themeScript = (importmapData.scripts ?? [])|filter(s => s ends with '/app/storefront/src/main.js' and ('/views-theme/' in s or '/ViewsTheme/' in s))|first %}
+      {% if themeScript %}
+        {% set themeAssetCssBase = themeScript|replace({'/src/main.js': '/src/assets/css'}) %}
+      {% endif %}
+    {% endif %}
+
     {% if themeParameters.icons and themeParameters.icons.mode is same as('css') and themeParameters.icons.pack is not empty %}
       <link
-      rel="stylesheet"
-      href="{{ asset('bundles/viewstheme/css/icons/' ~ themeParameters.icons.pack ~ '.css') }}">
+        rel="stylesheet"
+        href="{{ themeAssetCssBase ? themeAssetCssBase ~ '/icons/' ~ themeParameters.icons.pack ~ '.css' : asset('assets/css/icons/' ~ themeParameters.icons.pack ~ '.css', 'theme') }}">
     {% endif %}
-    {#
-      <link
+    <link
       rel="stylesheet"
-      href="{{ asset('bundles/viewstheme/css/theme.css') }}">
-    #}
+      href="{{ themeAssetCssBase ? themeAssetCssBase ~ '/theme.css' : asset('assets/css/theme.css', 'theme') }}">
   {% endblock %}
 {% endblock %}
 

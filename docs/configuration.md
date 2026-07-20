@@ -42,6 +42,17 @@ Path: `src/Resources/theme.json`.
 | `script` | Storefront + compiled `views-theme.js` |
 | `asset` | `app/storefront/src/assets` |
 
+### Static asset CSS (Vite dev)
+
+Extra stylesheets under `app/storefront/src/assets/css/` (e.g. `theme.css`, conditional icon packs) are linked from `storefront/layout/meta.html.twig`:
+
+| Mode | How they load |
+|------|----------------|
+| Production | `asset(..., 'theme')` after `theme:compile` copies `asset` paths into the theme package |
+| Vite dev (`make dev-storefront`) | Same `<link>`s point at source via the ViewsTheme Vite `/@fs/…/src/assets/css/…` URL (derived from the theme `main.js` script entry) |
+
+There is no auto-reload for these files: edit + hard-refresh the storefront. Theme SCSS (`theme.json` `style`) still uses `/theme-scss/all.css` with full reload.
+
 ### Theme fields (admin)
 
 | Field | Type | Default / notes |

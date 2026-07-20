@@ -1,0 +1,19 @@
+{% props
+    size = 'md',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<button
+    type="button"
+    {{ attributes.defaults({
+        'aria-label': 'header.searchButton'|trans|striptags
+    }) }}
+    aria-controls="searchCollapse"
+    aria-expanded="false"
+    data-component="ViewsTheme:Search:Action"
+    class="{{ cx.root.apply({ size: size }) }}"
+>
+    {{ vi_icon('magnifying-glass') }}
+</button>
