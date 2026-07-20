@@ -1,0 +1,21 @@
+{
+    root: {
+        base: 'vi-alert alert d-flex flex-wrap align-items-center gap-3',
+        variants: {
+            type: {
+                danger: 'alert-danger',
+                warning: 'alert-warning',
+                info: 'alert-info',
+                success: 'alert-success',
+            },
+            dismissible: {
+                true: 'alert-dismissible fade show',
+            },
+        },
+    },
+    icon: { base: 'vi-alert__icon alert-icon-container fs-5 d-flex col-auto' },
+    content: { base: 'vi-alert__content alert-content-container col' },
+    heading: { base: 'vi-alert__heading alert-heading h5' },
+    list: { base: 'vi-alert__list alert-list' },
+    dismiss: { base: 'vi-alert__dismiss btn-close' },
+}

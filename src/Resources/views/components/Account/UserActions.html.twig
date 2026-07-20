@@ -1,0 +1,88 @@
+{% props
+    activeRoute = null,
+    userActions = null,
+    cva = {},
+%}
+
+{% if userActions is null %}
+    {% set userActions = {
+        home: {
+            route: 'frontend.account.home.page',
+            label: 'account.overviewLink'|trans|striptags,
+            icon: 'squares-four',
+        },
+        profile: {
+            route: 'frontend.account.profile.page',
+            label: 'account.profileLink'|trans|sw_sanitize,
+            icon: 'pencil-simple-line',
+        },
+        address: {
+            route: 'frontend.account.address.page',
+            label: 'account.addressLink'|trans|sw_sanitize,
+            icon: 'address-book',
+        },
+        orders: {
+            route: 'frontend.account.order.page',
+            label: 'account.ordersLink'|trans|sw_sanitize,
+            icon: 'package',
+        },
+    } %}
+{% endif %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-account-user-actions' },
+    nav: { base: 'vi-account-user-actions__nav nav user-actions flex-column' },
+    action: { base: 'vi-account-user-actions__action nav-link d-inline-flex' },
+    footer: { base: 'vi-account-user-actions__footer' },
+    logout: { base: 'vi-account-user-actions__logout' },
+}|replace_recursive(cva)) %}
+
+<div
+    data-ref="user-actions"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if userActions is not empty %}
+        {% block nav %}
+            <nav
+                {{ attributes.nested('nav') }}
+                class="{{ cx.nav.apply() }}"
+            >
+                {% for key, action in userActions %}
+                    {% block action %}
+                        <a
+                            href="{{ path(action.route) }}"
+                            title="{{ action.label }}"
+                            data-ref="action-{{ key }}"
+                            aria-current="page"
+                            {{ attributes.nested('action') }}
+                            class="{{ cx.action.apply() }}"
+                        >
+                            {% if action.icon is defined %}
+                                {{ vi_icon(action.icon) }}
+                            {% endif %}
+                            {{ action.label }}
+                        </a>
+                    {% endblock %}
+                {% endfor %}
+            </nav>
+        {% endblock %}
+    {% endif %}
+
+    {% block footer %}
+        <div
+            {{ attributes.nested('footer') }}
+            class="{{ cx.footer.apply() }}"
+        >
+            <a
+                href="{{ path('frontend.account.logout.page') }}"
+                title="{{ 'account.logout'|trans|sw_sanitize }}"
+                aria-current="page"
+                {{ attributes.nested('logout') }}
+                class="{{ cx.logout.apply() }}"
+            >
+                {{ 'account.logout'|trans|sw_sanitize }}
+            </a>
+        </div>
+    {% endblock %}
+</div>

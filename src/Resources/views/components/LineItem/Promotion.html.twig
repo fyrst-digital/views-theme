@@ -1,0 +1,70 @@
+{% props
+    lineItem,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type },
+    content: { base: 'vi-line-item__content line-item-content' },
+    header: { base: 'vi-line-item__header line-item-header' },
+    name: { base: 'vi-line-item__name line-item-name' },
+    label: { base: 'vi-line-item__label line-item-label discount-name' },
+    image: { base: 'vi-line-item__image line-item-img discount-icon' },
+    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+}|replace_recursive(cva)) %}
+
+{% set label = lineItem.label|trans|sw_sanitize %}
+
+<div
+    data-ref="line-item"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block image %}
+        <div
+            {{ attributes.nested('image') }}
+            class="{{ cx.image.apply() }}"
+        >
+            {{ vi_icon('tag') }}
+        </div>
+    {% endblock %}
+
+    {% block content %}
+        <div
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
+        >
+            {% block header %}
+                <div
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
+                >
+                    {% block name %}
+                        <div
+                            {{ attributes.nested('name') }}
+                            class="{{ cx.name.apply() }}"
+                        >
+                            <span
+                                {{ attributes.nested('label') }}
+                                class="{{ cx.label.apply() }}"
+                            >
+                                {{ label|raw }}
+                            </span>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block details %}
+                <div
+                    {{ attributes.nested('totalPrice') }}
+                    class="{{ cx.totalPrice.apply() }}"
+                >
+                    {% if lineItem.payload.discountScope != 'delivery' %}
+                        {{ lineItem.price.totalPrice|currency }}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

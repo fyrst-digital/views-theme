@@ -1,0 +1,59 @@
+{% props
+    searchTerm = null,
+    minSearchLength = null,
+    cva = {},
+%}
+
+{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
+{% set minSearchLength = minSearchLength is not null ? minSearchLength : shopware.minSearchLength %}
+{% set searchWidgetOptions = { searchWidgetMinChars: minSearchLength } %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-search-bar position-relative header-search-form js-search-form' },
+    submit: { base: 'vi-search-bar__submit btn header-search-btn border-0' },
+    input: { base: 'vi-search-bar__input rounded form-control header-search-input' },
+}|replace_recursive(cva)) %}
+
+<form
+    action="{{ path('frontend.search.page') }}"
+    method="get"
+    data-search-widget="true"
+    data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
+    data-url="{{ path('frontend.search.suggest') }}?search="
+    data-ref="search-bar"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block submit %}
+        <button
+            type="submit"
+            aria-label="{{ 'header.searchButton'|trans|striptags }}"
+            data-ref="submit"
+            {{ attributes.nested('submit') }}
+            class="{{ cx.submit.apply() }}"
+        >
+            {{ vi_icon('magnifying-glass') }}
+        </button>
+    {% endblock %}
+
+    {% block input %}
+        <input
+            type="search"
+            id="header-main-search-input"
+            name="search"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
+            aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            value="{{ searchTerm }}"
+            data-ref="input"
+            {{ attributes.nested('input') }}
+            class="{{ cx.input.apply() }}"
+        >
+    {% endblock %}
+
+    {% block clear %}{% endblock %}
+</form>

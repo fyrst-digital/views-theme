@@ -1,0 +1,70 @@
+{% props
+    showVatNotice = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'footer-bottom' },
+    container: { base: 'footer-bottom-container container' },
+    serviceList: { base: 'footer-service-list list-unstyled' },
+    serviceItem: { base: 'footer-service-item' },
+    serviceLink: { base: 'footer-link' },
+    vat: { base: 'footer-vat' },
+    copyright: { base: 'footer-copyright' },
+}|replace_recursive(cva)) %}
+
+{% block component_footer_bottom %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    
+    {% block component_footer_bottom_container %}
+        <div {{ attributes.nested('container') }} class="{{ cx.container.apply() }}">
+
+            {% block component_footer_bottom_service_list %}
+                {% if page.header.serviceMenu %}
+                    <ul {{ attributes.nested('serviceList') }} class="{{ cx.serviceList.apply() }}">
+                        {% for serviceMenuItem in page.header.serviceMenu %}
+                            {% block component_footer_bottom_service_item %}
+                                <li {{ attributes.nested('serviceItem') }} class="{{ cx.serviceItem.apply() }}">
+                                    {% block component_footer_bottom_service_link %}
+                                        <a {{ attributes.nested('serviceLink') }}
+                                            class="{{ cx.serviceLink.apply() }}"
+                                            href="{{ category_url(serviceMenuItem) }}"
+                                            {% if category_linknewtab(serviceMenuItem) %}target="_blank"{% endif %}
+                                            title="{{ serviceMenuItem.translated.name }}">
+                                            {{ serviceMenuItem.translated.name }}
+                                        </a>
+                                    {% endblock %}
+                                </li>
+                            {% endblock %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endblock %}
+
+            {% block component_footer_bottom_vat_notice %}
+                {% if showVatNotice is same as(true) %}
+                    <div {{ attributes.nested('vat') }} class="{{ cx.vat.apply() }}">
+                        {% if context.taxState == 'gross' %}
+                            {{ 'footer.includeVatText'|trans({
+                                '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
+                            })|raw }}
+                        {% else %}
+                            {{ 'footer.excludeVatText'|trans({
+                                '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
+                            })|raw }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block component_footer_bottom_copyright %}
+                <div {{ attributes.nested('copyright') }} class="{{ cx.copyright.apply() }}">
+                    {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
+                </div>
+            {% endblock %}
+
+        </div>
+    {% endblock %}
+
+    </div>
+{% endblock %}

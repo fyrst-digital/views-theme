@@ -1,0 +1,16 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-search-suggest-empty d-flex p-6 justify-content-center' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {{ 'header.searchNoResult'|trans|sw_sanitize }}
+    {% endblock %}
+</div>

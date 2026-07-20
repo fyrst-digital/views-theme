@@ -1,0 +1,121 @@
+{% props
+    loginRoute = 'frontend.account.login',
+    showDescription = false,
+    redirectTo = null,
+    redirectParameters = null,
+    loginError = false,
+    errorSnippet = null,
+    waitTime = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-account-login-form login-form' },
+    description: { base: 'vi-account-login-form__description login-form-description' },
+    actions: { base: 'vi-account-login-form__actions login-form-actions' },
+    login: { base: 'vi-account-login-form__submit' },
+    recovery: { base: 'vi-account-login-form__recovery' },
+}|replace_recursive(cva)) %}
+
+<form
+    action="{{ path(loginRoute) }}"
+    method="post"
+    data-form-handler="true"
+    data-ref="login-form"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block redirect %}
+        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+        <input
+            type="hidden"
+            name="redirectParameters"
+            value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}"
+        >
+    {% endblock %}
+
+    {% block error %}
+        {% if loginError %}
+            {% if errorSnippet != null %}
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ errorSnippet|trans|sw_sanitize({}, true) }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            {% elseif waitTime != null %}
+                <twig:ViewsTheme:Alert
+                    type="info"
+                    content="{{ 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize }}"
+                    announceOnLoad
+                />
+            {% else %}
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ 'account.loginBadCredentials'|trans|sw_sanitize }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+
+    {% block description %}
+        {% if showDescription is same as(true) %}
+            <div
+                {{ attributes.nested('description') }}
+                class="{{ cx.description.apply() }}"
+            >
+                {{ 'account.loginFormDescription'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block username %}
+        {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+            type: 'email',
+            label: 'account.loginMailLabel'|trans|sw_sanitize,
+            id: 'loginMail',
+            name: 'username',
+            autocomplete: 'username webauthn',
+            error: loginError,
+            validationRules: 'required,email',
+            additionalClass: 'vi-account-login-form__email login-form-email',
+        } %}
+    {% endblock %}
+
+    {% block password %}
+        {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
+            type: 'password',
+            label: 'account.loginPasswordLabel'|trans|sw_sanitize,
+            id: 'loginPassword',
+            name: 'password',
+            autocomplete: 'current-password',
+            error: loginError,
+            validationRules: 'required',
+            additionalClass: 'vi-account-login-form__password login-form-password',
+        } %}
+    {% endblock %}
+
+    {% block actions %}
+        <div
+            {{ attributes.nested('actions') }}
+            class="{{ cx.actions.apply() }}"
+        >
+            <button
+                type="submit"
+                {{ attributes.nested('login') }}
+                class="{{ cx.login.apply() }}"
+            >
+                {{ 'account.loginSubmit'|trans|sw_sanitize }}
+            </button>
+            <a
+                href="{{ seoUrl('frontend.account.recover.page') }}"
+                {{ attributes.nested('recovery') }}
+                class="{{ cx.recovery.apply() }}"
+            >
+                {{ 'account.loginPasswordRecover'|trans|sw_sanitize }}
+            </a>
+        </div>
+    {% endblock %}
+</form>

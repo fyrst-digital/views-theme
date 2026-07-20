@@ -1,0 +1,22 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'page-header-main' },
+}|replace_recursive(cva)) %}
+
+<div 
+    {{ attributes.without('class').without('data-component-template') }}
+    class="{{cx.root.apply()}}">
+    {% block content %}
+
+        {% block logo %}
+            <twig:ViewsTheme:Page:Logo />
+        {% endblock %}
+
+        {% block actions %}
+            <twig:ViewsTheme:Page:Header:Actions />
+        {% endblock %}
+    {% endblock %}
+</div>

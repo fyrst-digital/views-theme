@@ -1,0 +1,21 @@
+{% props
+    medias = [],
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-gallery-slider gallery-slider' },
+}|replace_recursive(cva)) %}
+
+<div
+    data-ref="gallery-slider"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block thumbnails %}
+        <twig:ViewsTheme:GallerySlider:Thumbnails :medias="medias" />
+    {% endblock %}
+    {% block canvas %}
+        <twig:ViewsTheme:GallerySlider:Canvas :medias="medias" />
+    {% endblock %}
+</div>

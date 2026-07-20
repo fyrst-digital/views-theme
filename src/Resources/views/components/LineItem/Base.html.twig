@@ -1,0 +1,58 @@
+{% props
+    lineItem,
+    showRemoveButton = true,
+    showPrice = true,
+    nestingLevel = 0,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-line-item line-item js-cart-item line-item-' ~ lineItem.type },
+    content: { base: 'vi-line-item__content line-item-content' },
+    header: { base: 'vi-line-item__header line-item-header' },
+    name: { base: 'vi-line-item__name line-item-name' },
+    actions: { base: 'vi-line-item__actions line-item-actions' },
+}|replace_recursive(cva)) %}
+
+<div
+    data-ref="line-item"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block image %}{% endblock %}
+
+    {% block content %}
+        <div
+            {{ attributes.nested('content') }}
+            class="{{ cx.content.apply() }}"
+        >
+            {% block header %}
+                <div
+                    data-ref="header"
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
+                >
+                    {% block name %}
+                        <div
+                            {{ attributes.nested('name') }}
+                            class="{{ cx.name.apply() }}"
+                        >
+                            {% block name_content %}{% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block actions %}
+                        <div
+                            {{ attributes.nested('actions') }}
+                            class="{{ cx.actions.apply() }}"
+                        >
+                            {% block actions_inner %}{% endblock %}
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block details %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

@@ -1,0 +1,30 @@
+{% extends '@Storefront/storefront/layout/navigation/flyout.html.twig' %}
+
+{#
+  Extends core flyout (uses parent()). Lives under components/ only —
+  not a storefront layout override. Include explicitly when needed.
+#}
+
+{% block layout_navigation_flyout_bar %}
+{% endblock %}
+
+{% block layout_navigation_flyout_categories %}
+    <div class="vi-navigation-flyout__categories navigation-flyout-categories categories-root">
+        {% block layout_navigation_flyout_categories_recoursion %}
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block layout_navigation_flyout_teaser %}
+    {% if category.media %}
+        <div class="vi-navigation-flyout__teaser navigation-flyout-teaser">
+            {% block layout_navigation_flyout_teaser_image %}
+                {{ parent() }}
+            {% endblock %}
+
+            {% block layout_navigation_flyout_teaser_content %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

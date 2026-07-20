@@ -1,0 +1,20 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-search' },
+}|replace_recursive(cva)) %}
+
+<button
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#searchCollapse"
+    aria-expanded="false"
+    aria-controls="searchCollapse"
+    aria-label="{{ 'header.searchButton'|trans|striptags }}"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {{ vi_icon('magnifying-glass') }}
+</button>

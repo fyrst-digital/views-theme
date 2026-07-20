@@ -1,0 +1,12 @@
+{% props
+    variant,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-price variants-grid-column-price' },
+}|replace_recursive(cva)) %}
+
+<td {{ attributes }} class="{{ cx.root.apply() }}">
+    {{ variant.calculatedPrice.unitPrice|currency }}
+</td>

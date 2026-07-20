@@ -1,0 +1,37 @@
+{% sw_extends '@ViewsTheme/components/Product/Listing.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{# Separate map so parent Listing `cx` is not overwritten #}
+{% set wx = vi_cva({
+    empty: { base: 'vi-wishlist-listing__empty wishlist-listing-empty-container' },
+    emptyImage: { base: 'vi-wishlist-listing__empty-image wishlist-listing-empty' },
+    header: { base: 'vi-wishlist-listing__header text-center wishlist-listing-header' },
+    description: { base: 'vi-wishlist-listing__description text-center wishlist-listing-description' },
+}|replace_recursive(cva)) %}
+
+{% block element_product_listing_col_empty %}
+    <div {{ attributes.nested('empty') }} class="{{ wx.empty.apply() }}">
+        {% block element_product_listing_col_empty_wishlist %}
+            <img
+                src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
+                alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
+                {{ attributes.nested('emptyImage') }}
+                class="{{ wx.emptyImage.apply() }}"
+            >
+
+            <h1 {{ attributes.nested('header') }} class="{{ wx.header.apply() }}">
+                {{ 'wishlist.wishlistEmptyHeader'|trans }}
+            </h1>
+            <p {{ attributes.nested('description') }} class="{{ wx.description.apply() }}">
+                {{ 'wishlist.wishlistEmptyDescription'|trans }}
+            </p>
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block element_product_listing_pagination_nav_actions %}{% endblock %}
+
+{% block element_product_listing_sorting %}{% endblock %}

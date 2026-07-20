@@ -10,56 +10,46 @@ ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as 
 | Composer package | `fyrst/views-theme` |
 | PHP namespace | `Fyrst\ViewsTheme` |
 | Plugin class | `Fyrst\ViewsTheme\ViewsTheme` |
+| UX component namespace | `ViewsTheme` |
 
 ## Directory layout
 
 ```
 src/
-  ViewsTheme.php              # Plugin bootstrap
-  Controller/                 # Storefront controllers (attribute routes)
-  Service/                    # Domain services
-  Struct/                     # Transfer objects
-  Subscriber/                 # Event subscribers
-  Twig/                       # Twig extensions (vi_*)
+  ViewsTheme.php
+  Controller/
+  Service/
+  Struct/
+  Subscriber/
+  Twig/                       # vi_icon, vi_merge_deep
   Resources/
-    config/                   # services.xml, routes.xml, config.xml
-    theme.json                # Theme definition and admin fields
+    config/
+    theme.json
     views/
-      components/             # Theme UI components (class API)
-      storefront/             # Storefront page/layout overrides
+      components/             # UX Twig components (primary UI)
+      storefront/             # Existing page/layout overrides only
     app/storefront/
-      src/                    # SCSS, JS plugins, assets (source)
-      dist/                   # Built storefront JS
+      src/                    # Theme SCSS + legacy bundle entry
+      dist/
 ```
 
 ## Layers
 
-### PHP / Symfony
+### Twig
 
-- **Controllers** — e.g. `VariantsGridController` for add-to-cart and AJAX pagination.
-- **Subscribers** — attach page extensions and persist feature data (product page, checkout confirm, order placed, theme config, cart context).
-- **Services** — e.g. `VariantsLoader`, `ThemeParametersResolver`.
-- **Twig extensions** — `ViClasses`, `ViIcon`, `ViUtilities`.
-
-### Twig storefront
-
-- **Components** under `views/components/` use the shared [CSS class API](conventions/css-classes.md).
-- **Page overrides** under `views/storefront/` extend `@Storefront` templates and include theme components.
+- **UX components** under `views/components/` as `<twig:ViewsTheme:…>` ([UX guide](conventions/ux-components.md)).
+- **Page overrides** only in existing `views/storefront/` files.
 
 ### Storefront JS
 
-- Plugins under `app/storefront/src/plugins/` register on `[data-component="…"]` only.
-- Entry: `app/storefront/src/main.js`.
-- See [JavaScript conventions](conventions/javascript.md).
+- Co-located `<Name>.js` next to interactive UX components (`ShopwareComponent` + import map).
+- Theme entry `app/storefront/src/main.js` is minimal (no PluginManager plugins remaining).
 
 ### SCSS
 
-- Theme styles: `app/storefront/src/scss/` (`override.scss`, `base.scss`, components).
-- Loaded via `theme.json` `style` array (overrides before Bootstrap, base after).
+- Theme styles: `app/storefront/src/scss/` via `theme.json`.
 
 ## Page extensions
-
-Feature data is attached under `page.extensions.viewsTheme`:
 
 | Key | Subscriber | Purpose |
 |-----|------------|---------|
@@ -69,5 +59,6 @@ Feature data is attached under `page.extensions.viewsTheme`:
 ## Related
 
 - [Configuration](configuration.md)
+- [UX components](conventions/ux-components.md)
 - [Variants grid](features/variants-grid.md)
 - [Preferred delivery date](features/delivery-date.md)

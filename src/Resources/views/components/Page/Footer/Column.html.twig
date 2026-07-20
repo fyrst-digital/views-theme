@@ -1,0 +1,35 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'footer-column' },
+    headline: { base: 'footer-column-headline footer-headline' },
+    content: { base: 'footer-column-content-container' },
+}|replace_recursive(cva)) %}
+
+{% block component_footer_column %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+
+        {% block component_footer_column_inner %}
+
+            {% block component_footer_column_headline %}
+                <div {{ attributes.nested('headline') }}
+                    class="{{ cx.headline.apply() }}"
+                    role="listitem">
+
+                    {% block component_footer_column_headline_title %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block component_footer_column_content_container %}
+                <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
+
+                    {% block component_footer_column_content %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        {% endblock %}
+    </div>
+{% endblock %}

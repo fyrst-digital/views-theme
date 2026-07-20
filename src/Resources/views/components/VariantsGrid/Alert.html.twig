@@ -1,0 +1,14 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-alert alert alert-danger d-none' },
+}|replace_recursive(cva)) %}
+
+<div
+    role="alert"
+    data-ref="error-message"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+></div>

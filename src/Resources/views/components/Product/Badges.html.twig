@@ -1,0 +1,59 @@
+{% props
+    product,
+    cva = {},
+%}
+
+{% set price = product.calculatedPrice %}
+{% if product.calculatedPrices.count > 0 %}
+    {% set price = product.calculatedPrices.last %}
+{% endif %}
+
+{% set listPrice = price.listPrice.percentage > 0 %}
+{% set hasRange = product.calculatedPrices.count > 1 %}
+{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+{% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-badges' },
+    discount: { base: 'vi-product-badges__discount badge product-badge badge-discount' },
+    topseller: { base: 'vi-product-badges__topseller badge product-badge badge-topseller' },
+    new: { base: 'vi-product-badges__new badge product-badge badge-new' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block discount %}
+        {% if listPrice and not hasRange and not displayFromVariants %}
+            <div
+                {{ attributes.nested('discount') }}
+                class="{{ cx.discount.apply() }}"
+            >
+                {{ price.listPrice.percentage|number_format(0) }} %
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block topseller %}
+        {% if product.markAsTopseller %}
+            <div
+                {{ attributes.nested('topseller') }}
+                class="{{ cx.topseller.apply() }}"
+            >
+                {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block new %}
+        {% if product.isNew %}
+            <div
+                {{ attributes.nested('new') }}
+                class="{{ cx.new.apply() }}"
+            >
+                {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>

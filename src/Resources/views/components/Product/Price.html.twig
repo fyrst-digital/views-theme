@@ -1,0 +1,124 @@
+{% props
+    product,
+    showPrice = true,
+    showTieredPrices = true,
+    showTaxNote = false,
+    taxUrl = null,
+    taxText = null,
+    cva = {},
+%}
+
+{% set price = product.calculatedPrice %}
+{% set prices = product.calculatedPrices %}
+{% set displayFromVariants = false %}
+
+{% if product.variantListingConfig.displayParent and product.parentId === null %}
+    {% set displayFromVariants = price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
+    {% set price = product.calculatedCheapestPrice %}
+{% endif %}
+
+{% if prices.count > 0 %}
+    {% set price = prices.first %}
+{% endif %}
+
+{% set taxUrl = taxUrl is not null ? taxUrl : path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }) %}
+{% set taxText = taxText is not null
+    ? taxText
+    : (context.taxState == 'gross'
+        ? 'general.grossTaxInformation'|trans|sw_sanitize
+        : 'general.netTaxInformation'|trans|sw_sanitize) %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-price' },
+    prefix: { base: 'vi-product-price__prefix' },
+    unit: { base: 'vi-product-price__unit' },
+    reference: { base: 'vi-product-price__reference' },
+    average: { base: 'vi-product-price__average' },
+    tax: { base: 'vi-product-price__tax' },
+    taxAction: { base: 'vi-product-price__tax-action' },
+}|replace_recursive(cva)) %}
+
+{% block tiered %}
+    {% if prices.count > 1 and showTieredPrices is same as(true) %}
+        <twig:ViewsTheme:Product:PricesTiered :product="product" :prices="prices" />
+    {% endif %}
+{% endblock %}
+
+{% block price %}
+    {% if showPrice is same as(true) %}
+        <div
+            data-ref="price"
+            {{ attributes }}
+            class="{{ cx.root.apply() }}"
+        >
+            {% block prefix %}
+                {% if prices.count > 1 or displayFromVariants %}
+                    <span
+                        data-ref="prefix"
+                        {{ attributes.nested('prefix') }}
+                        class="{{ cx.prefix.apply() }}"
+                    >
+                        {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
+            {% block unit %}
+                <span
+                    data-ref="unit"
+                    {{ attributes.nested('unit') }}
+                    class="{{ cx.unit.apply() }}"
+                >
+                    {{ price.unitPrice|currency }}
+                </span>
+            {% endblock %}
+
+            {% block reference %}
+                {% if price.referencePrice is not null %}
+                    <span
+                        data-ref="reference"
+                        {{ attributes.nested('reference') }}
+                        class="{{ cx.reference.apply() }}"
+                    >
+                        {{ price.referencePrice.price|currency }} /
+                        {{ price.referencePrice.referenceUnit }}&nbsp;
+                        {{ price.referencePrice.unitName }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
+            {% block average %}
+                {% if price.regulationPrice.price is not null %}
+                    <span
+                        data-ref="average"
+                        {{ attributes.nested('average') }}
+                        class="{{ cx.average.apply() }}"
+                    >
+                        {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block tax %}
+    {% if showTaxNote is same as(true) %}
+        <div
+            data-ref="tax"
+            {{ attributes.nested('tax') }}
+            class="{{ cx.tax.apply() }}"
+        >
+            <button
+                type="button"
+                data-ajax-modal="true"
+                data-url="{{ taxUrl }}"
+                aria-haspopup="dialog"
+                {{ attributes.nested('taxAction') }}
+                class="{{ cx.taxAction.apply() }}"
+            >
+                {{ taxText }}
+            </button>
+        </div>
+    {% endif %}
+{% endblock %}

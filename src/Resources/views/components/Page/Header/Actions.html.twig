@@ -1,0 +1,42 @@
+{% props
+    wishlist = config('core.cart.wishlistEnabled'),
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'col d-flex justify-content-end align-items-center' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes.without('class').without('data-component-template') }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+
+        {% block menu %}
+        {% endblock %}
+
+        {% block search %}
+            <twig:ViewsTheme:Search:Action 
+                class="header-action" />
+        {% endblock %}
+
+        {% block wishlist %}
+            {% if wishlist %}
+                <twig:ViewsTheme:Wishlist:Action
+                    class="header-action position-relative" />
+            {% endif %}
+        {% endblock %}  
+
+        {% block account %}
+            <twig:ViewsTheme:Page:Header:Action:Account />
+        {% endblock %}
+
+        {% block cart %}
+            <twig:ViewsTheme:Page:Header:Action:Cart
+                class="{{ actionClass }}" />
+        {% endblock %}
+
+    {% endblock %}
+
+</div>

@@ -1,0 +1,60 @@
+{% props
+    editable = false,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-account-personal-card card account-card-personal' },
+    body: { base: 'vi-account-personal-card__body card-body' },
+    title: { base: 'vi-account-personal-card__title card-title' },
+    actions: { base: 'vi-account-personal-card__actions card-actions' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    <div
+        {{ attributes.nested('body') }}
+        class="{{ cx.body.apply() }}"
+    >
+        {% block title %}
+            <h4
+                {{ attributes.nested('title') }}
+                class="{{ cx.title.apply() }}"
+            >
+                {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
+            </h4>
+        {% endblock %}
+
+        {% block profile %}
+            <div>
+                {% if context.customer.salutation
+                    and context.customer.salutation.salutationKey != 'not_specified'
+                %}
+                    {{ context.customer.salutation.translated.displayName }}
+                {% endif %}
+                {% if context.customer.title %}
+                    {{ context.customer.title }}<br>
+                {% endif %}
+                {{ context.customer.firstName }}
+                {{ context.customer.lastName }}
+            </div>
+        {% endblock %}
+
+        {% block company %}{% endblock %}
+
+        {% block email %}
+            <div>{{ context.customer.email }}</div>
+        {% endblock %}
+
+        {% block actions %}
+            <div
+                {{ attributes.nested('actions') }}
+                class="{{ cx.actions.apply() }}"
+            >
+                {% block actions_content %}{% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+</div>

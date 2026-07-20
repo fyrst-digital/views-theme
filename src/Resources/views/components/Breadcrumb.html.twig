@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/storefront/layout/breadcrumb.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    separator: { base: 'vi-breadcrumb__separator breadcrumb-placeholder' },
+}|replace_recursive(cva)) %}
+
+{% block layout_breadcrumb_placeholder %}
+    {% if key != breadcrumbKeys|last %}
+        <div
+            {{ attributes.nested('separator') }}
+            class="{{ cx.separator.apply() }}"
+            aria-hidden="true"
+        >
+            {{ vi_icon('arrow-right') }}
+        </div>
+    {% endif %}
+{% endblock %}

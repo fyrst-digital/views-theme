@@ -25,12 +25,12 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `components/checkout/delivery-date-selection.html.twig`, included from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm/index.html.twig`).
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm.html.twig`).
 
 Conventions:
 
-- `vi_define_classes` / `vi_attr_classes` for overridable classes
-- `data-component="delivery-date-selection"` for JavaScript
+- UX component (`cva` + `attributes`)
+- `data-component="ViewsTheme:Checkout:DeliveryDateSelection"` for co-located JS
 - Input attached via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`
 
 ### Page subscriber
@@ -58,7 +58,7 @@ Empty or invalid values are silently ignored.
 
 ### Storefront JavaScript
 
-`DeliveryDatePlugin` on `[data-component="delivery-date-selection"]` reads `min` / `max` from the input and clamps out-of-window values on change.
+Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min` / `max` from the input and clamps out-of-window values on change.
 
 ## Key source files
 
@@ -66,5 +66,5 @@ Empty or invalid values are silently ignored.
 |------|------|
 | Confirm page subscriber | `src/Subscriber/CheckoutConfirmPageSubscriber.php` |
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
-| Component | `src/Resources/views/components/checkout/delivery-date-selection.html.twig` |
-| JS plugin | `src/Resources/app/storefront/src/plugins/delivery-date.plugin.js` |
+| Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
+| JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |

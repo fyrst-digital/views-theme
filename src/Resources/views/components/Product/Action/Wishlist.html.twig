@@ -1,0 +1,45 @@
+{% props
+    productId,
+    showText = false,
+    size = null,
+    color = 'light',
+    addToWishlistOptions = {},
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-product-action-wishlist btn product-wishlist-' ~ productId ~ ' product-wishlist-action product-wishlist-not-added product-wishlist-loading btn-' ~ color ~ (size is not null ? ' btn-' ~ size : ''),
+    },
+    icon: { base: 'vi-product-action-wishlist__icon wishlist-icon' },
+    label: {
+        base: 'vi-product-action-wishlist__label product-wishlist-btn-content' ~ (size is not null ? ' product-wishlist-btn-content-' ~ size : ''),
+    },
+}|replace_recursive(cva)) %}
+
+<button
+    type="button"
+    title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+    data-add-to-wishlist="true"
+    data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block icon %}
+        <span
+            {{ attributes.nested('icon') }}
+            class="{{ cx.icon.apply() }}"
+        ></span>
+    {% endblock %}
+
+    {% block label %}
+        {% if showText %}
+            <span
+                {{ attributes.nested('label') }}
+                class="{{ cx.label.apply() }}"
+            >
+                {{ 'listing.addToWishlist'|trans|sw_sanitize }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</button>

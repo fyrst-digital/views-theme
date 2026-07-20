@@ -1,0 +1,68 @@
+{% props
+    redirectTo = 'frontend.cart.offcanvas',
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-promotion-form' },
+    label: { base: 'vi-cart-promotion-form__label visually-hidden' },
+    inputGroup: { base: 'vi-cart-promotion-form__input-group input-group' },
+    input: { base: 'vi-cart-promotion-form__input form-control' },
+    submit: { base: 'vi-cart-promotion-form__submit btn btn-secondary' },
+}|replace_recursive(cva)) %}
+
+{% set labelAttributes = attributes.nested('label') %}
+{% set inputGroupAttributes = attributes.nested('inputGroup') %}
+{% set inputAttributes = attributes.nested('input') %}
+{% set submitAttributes = attributes.nested('submit') %}
+
+<form
+    action="{{ path('frontend.checkout.promotion.add') }}"
+    method="post"
+    data-ref="promotion-form"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block redirect %}
+        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+    {% endblock %}
+
+    {% block input_group %}
+        {% block label %}
+            <label
+                for="addPromotionOffcanvasCartInput"
+                {{ labelAttributes }}
+                class="{{ cx.label.apply() }}"
+            >
+                {{ 'checkout.addPromotionLabel'|trans|sw_sanitize }}
+            </label>
+        {% endblock %}
+
+        <div {{ inputGroupAttributes }} class="{{ cx.inputGroup.apply() }}">
+            {% block input %}
+                <input
+                    type="text"
+                    name="code"
+                    id="addPromotionOffcanvasCartInput"
+                    placeholder="{{ 'checkout.addPromotionPlaceholder'|trans|striptags }}"
+                    aria-label="{{ 'checkout.addPromotionLabel'|trans|striptags }}"
+                    aria-describedby="addPromotionOffcanvasCart"
+                    required="required"
+                    {{ inputAttributes }}
+                    class="{{ cx.input.apply() }}"
+                >
+            {% endblock %}
+
+            {% block submit %}
+                <button
+                    type="submit"
+                    id="addPromotionOffcanvasCart"
+                    {{ submitAttributes }}
+                    class="{{ cx.submit.apply() }}"
+                >
+                    {{ vi_icon('ticket') }}
+                </button>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</form>

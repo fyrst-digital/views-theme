@@ -1,0 +1,42 @@
+{% props
+    product,
+    nameShowLink = true,
+    nameTag = 'div',
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-header' },
+}|replace_recursive(cva)) %}
+
+<div
+    data-ref="header"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block prepend %}{% endblock %}
+
+    {% block breadcrumb %}
+        {% if feature('v6.8.0.0') or feature('BREADCRUMB_REWORK') %}
+            {% component 'ViewsTheme:Breadcrumb' with {
+                context: context,
+                breadcrumb: page.breadcrumb,
+            } only %}{% endcomponent %}
+        {% else %}
+            {% component 'ViewsTheme:Breadcrumb' with {
+                context: context,
+                categoryId: shopware.navigation.id,
+            } only %}{% endcomponent %}
+        {% endif %}
+    {% endblock %}
+
+    {% block name %}
+        <twig:ViewsTheme:Product:Name
+            :product="product"
+            :showLink="nameShowLink"
+            :tag="nameTag"
+        />
+    {% endblock %}
+
+    {% block append %}{% endblock %}
+</div>

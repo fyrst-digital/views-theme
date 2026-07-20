@@ -1,3 +1,4 @@
 .badge {
   position: var(--badge-position, static) !important;
+  min-width: var(--badge-min-w, auto);
 }

@@ -1,0 +1,36 @@
+{% props
+    product,
+    showLink = true,
+    url = null,
+    name = null,
+    tag = 'div',
+    cva = {},
+%}
+
+{% set name = name is not null ? name : product.translated.name %}
+{% set url = url is not null ? url : seoUrl('frontend.detail.page', { productId: product.id }) %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-name' },
+    link: { base: 'vi-product-name__link' },
+}|replace_recursive(cva)) %}
+
+<{{ tag|raw }}
+    data-ref="name"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if showLink is same as(true) %}
+        <a
+            href="{{ url }}"
+            title="{{ name }}"
+            data-ref="link"
+            {{ attributes.nested('link') }}
+            class="{{ cx.link.apply() }}"
+        >
+            {{ name }}
+        </a>
+    {% else %}
+        {{ name }}
+    {% endif %}
+</{{ tag|raw }}>

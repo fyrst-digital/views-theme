@@ -9,23 +9,25 @@ Developer documentation for the ViewsTheme Shopware 6.7 storefront plugin.
 | [Getting started](getting-started.md) | Install, activate, compile |
 | [Architecture](architecture.md) | Plugin layout and layers |
 | [Configuration](configuration.md) | Plugin config and `theme.json` |
-| [Conventions](conventions/css-classes.md) | CSS classes, JS selectors, components |
-| [Twig extensions](twig/overview.md) | `vi_define_classes`, `vi_icon`, … |
+| [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
+| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_cva`, `vi_cva_from_file`, utilities |
 | [Features](features/variants-grid.md) | Variants grid, preferred delivery date |
 
 ## Conventions
 
-- [CSS class API](conventions/css-classes.md)
+- [UX Twig components](conventions/ux-components.md) (target)
+- [CSS class API](conventions/css-classes.md) (legacy + UX notes)
 - [JavaScript selectors](conventions/javascript.md)
 - [Component templates](conventions/components.md)
 
 ## Twig
 
 - [Overview](twig/overview.md)
-- [`vi_define_classes`](twig/vi-define-classes.md)
-- [`vi_attr_classes`](twig/vi-attr-classes.md)
-- [`vi_classes`](twig/vi-classes.md)
+- [`vi_cva` / `vi_cva_from_file`](twig/vi-cva.md)
 - [`vi_icon`](twig/vi-icon.md)
+- [`vi_define_classes`](twig/vi-define-classes.md) (removed)
+- [`vi_attr_classes`](twig/vi-attr-classes.md) (removed)
+- [`vi_classes`](twig/vi-classes.md) (removed)
 
 ## Features
 

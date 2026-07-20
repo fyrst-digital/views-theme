@@ -1,0 +1,17 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-menu' },
+}|replace_recursive(cva)) %}
+
+<button
+    type="button"
+    data-off-canvas-menu="true"
+    aria-label="{{ 'general.menuLink'|trans|striptags }}"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {{ vi_icon('list') }}
+</button>

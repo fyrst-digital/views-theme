@@ -1,0 +1,20 @@
+{% props
+    offcanvasCartOptions = { autoFocus: true },
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-action-cart' },
+}|replace_recursive(cva)) %}
+
+<button
+    title="{{ 'checkout.cartTitle'|trans|striptags }}"
+    aria-label="{{ 'checkout.cartTitle'|trans|striptags }}"
+    data-off-canvas-cart="true"
+    data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
+    data-component="ViewsTheme:Page:Header:Action:Cart"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {{ vi_icon('handbag') }}
+</button>

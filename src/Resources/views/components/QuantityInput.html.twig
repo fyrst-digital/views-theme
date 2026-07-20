@@ -1,0 +1,78 @@
+{% props
+    inputName = 'quantity',
+    quantity = 1,
+    minQuantity = 1,
+    maxQuantity = 99,
+    purchaseSteps = 1,
+    unit = null,
+    size = null,
+    disabled = false,
+    formName = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% set decreaseAttributes = attributes.nested('decrease') %}
+{% set inputAttributes = attributes.nested('input') %}
+{% set increaseAttributes = attributes.nested('increase') %}
+{% set unitAttributes = attributes.nested('unit') %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:QuantityInput',
+        'data-quantity-selector': 'true',
+    }) }}
+    class="{{ cx.root.apply({ size: size }) }}"
+>
+    {% block decrease %}
+        <button
+            type="button"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {{ decreaseAttributes.defaults({
+                'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
+            }) }}
+            class="{{ cx.decrease.apply() }}"
+        >
+            {{ vi_icon('minus') }}
+        </button>
+    {% endblock %}
+
+    {% block field %}
+        <input
+            type="number"
+            name="{{ inputName }}"
+            min="{{ minQuantity }}"
+            max="{{ maxQuantity }}"
+            step="{{ purchaseSteps }}"
+            value="{{ quantity }}"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {% if formName %}form="{{ formName }}"{% endif %}
+            {{ inputAttributes.defaults({
+                'aria-label': 'component.product.quantitySelect.label'|trans|striptags,
+            }) }}
+            class="{{ cx.input.apply() }}"
+        >
+    {% endblock %}
+
+    {% if unit %}
+        {% block unit %}
+            <span {{ unitAttributes }} class="{{ cx.unit.apply() }}">
+                {{ unit }}
+            </span>
+        {% endblock %}
+    {% endif %}
+
+    {% block increase %}
+        <button
+            type="button"
+            {% if disabled is same as(true) %}disabled="disabled"{% endif %}
+            {{ increaseAttributes.defaults({
+                'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
+            }) }}
+            class="{{ cx.increase.apply() }}"
+        >
+            {{ vi_icon('plus') }}
+        </button>
+    {% endblock %}
+</div>

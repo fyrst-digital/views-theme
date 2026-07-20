@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={};init(){console.log(`meddl SearchAction`)}destroy(){}onContentUpdate(e){}onAttributeUpdate(e){}setupEventListeners(){this.el.addEventListener(`click`,this.handleClick.bind(this))}handleClick(e){}};export{e as default};
+//# sourceMappingURL=Action-BCKfCT4p.js.map

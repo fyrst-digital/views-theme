@@ -1,0 +1,34 @@
+{% props
+    variant,
+    isAvailable = true,
+    showQuantitySelect = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-quantity variants-grid-column-quantity' },
+}|replace_recursive(cva)) %}
+
+<td {{ attributes }} class="{{ cx.root.apply() }}">
+    {% if isAvailable and showQuantitySelect %}
+        <twig:ViewsTheme:QuantityInput
+            inputName="lineItems[{{ variant.id }}][quantity]"
+            size="sm"
+            :quantity="0"
+            :minQuantity="0"
+            :maxQuantity="variant.calculatedMaxPurchase"
+            :purchaseSteps="variant.purchaseSteps"
+            class="variants-grid-quantity-group"
+        />
+
+        <input type="hidden" name="lineItems[{{ variant.id }}][id]" value="{{ variant.id }}">
+        <input type="hidden" name="lineItems[{{ variant.id }}][type]" value="product">
+        <input type="hidden" name="lineItems[{{ variant.id }}][referencedId]" value="{{ variant.id }}">
+        <input type="hidden" name="lineItems[{{ variant.id }}][stackable]" value="1">
+        <input type="hidden" name="lineItems[{{ variant.id }}][removable]" value="1">
+    {% else %}
+        <span class="variants-grid-unavailable text-muted small">
+            {{ 'detail.unavailable'|trans|sw_sanitize }}
+        </span>
+    {% endif %}
+</td>

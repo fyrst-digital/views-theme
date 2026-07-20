@@ -1,0 +1,75 @@
+{% props
+    element = 'a',
+    textLogo = null,
+    logoPath = asset('bundles/viewstheme/img/views-logo.svg', 'asset'),
+    href = path('frontend.home.page'),
+    title = 'header.logoLink'|trans|striptags,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'd-inline-flex' },
+    text: { base: '' },
+    image: { base: 'img-fluid' },
+}|replace_recursive(cva)) %}
+
+{% if theme_config('sw-logo-mobile') %}
+    {% set logoPath = theme_config('sw-logo-mobile') %}
+{% endif %}
+
+<{{ element|raw }}
+    {{ attributes.defaults({
+        href: element is same as('a') ? href : null,
+        title: title,
+    }).without('data-component-template').without('class') }}
+    class="{{cx.root.apply()}}"
+>
+    {% if textLogo is not empty %}
+        {% block text %}
+            <span
+                {{ attributes.nested('text').without('class') }}
+                class="{{ cx.text.apply() }}"
+
+            >
+                {{ textLogo|raw }}
+            </span>
+        {% endblock %}
+    {% else %}
+        {% block picture %}
+            <picture style="display: contents;">
+                {% block image_tablet %}
+                    {% set logoPath = theme_config('sw-logo-tablet') %}
+                    {% if logoPath %}
+                        <source
+                            srcset="{{ logoPath|sw_encode_url }}"
+                            media="(min-width: {{ theme_config('breakpoint.md') }}px) and (max-width: {{ theme_config('breakpoint.lg') - 1 }}px)"
+                        >
+                    {% endif %}
+                {% endblock %}
+
+                {% block image_desktop %}
+                    {% set logoPath = theme_config('sw-logo-desktop') %}
+                    {% if logoPath %}
+                        <source
+                            srcset="{{ logoPath|sw_encode_url }}"
+                            media="(max-width: {{ theme_config('breakpoint.md') - 1 }}px)"
+                        >
+                    {% endif %}
+                {% endblock %}
+
+                {% block image %}
+                    {% if logoPath %}
+                        <img
+                            {{ attributes.nested('image').defaults({
+                                src: logoPath|sw_encode_url,
+                                alt: 'header.logoLink'|trans|striptags,
+                                style: 'width: var(--logo-width, auto)',
+                            }) }}
+                            class="{{ cx.image.apply() }}"
+                        >
+                    {% endif %}
+                {% endblock %}
+            </picture>
+        {% endblock %}
+    {% endif %}
+</{{ element|raw }}>

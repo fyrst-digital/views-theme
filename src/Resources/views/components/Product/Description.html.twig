@@ -1,0 +1,24 @@
+{% props
+    product = null,
+    description = null,
+    outputTags = true,
+    cva = {},
+%}
+
+{% set productDescription = description is not null ? description : product.translated.description|default('') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-description' },
+}|replace_recursive(cva)) %}
+
+<div
+    itemprop="description"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if outputTags is same as(true) %}
+        {{ productDescription|raw }}
+    {% else %}
+        {{ productDescription|striptags }}
+    {% endif %}
+</div>

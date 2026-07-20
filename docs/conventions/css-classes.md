@@ -1,66 +1,42 @@
 # CSS class API
 
-Components under `src/Resources/views/components/` use a shared class map API so parents can extend or fully set slots without string concatenation.
+## Current standard (UX)
 
-## Definer and compositors
+Components use **[`vi_cva`](../twig/vi-cva.md)** / **`vi_cva_from_file`** + attributes.
 
-| Name | Kind | Role |
-|------|------|------|
-| `vi_define_classes` | function | Build the class map (defaults + variants + parent overrides) |
-| `vi_attr_classes` | filter | Full `class="…"` attribute for HTML tags |
-| `vi_classes` | filter | Bare class string for forms / attribute bags |
+| Concern | Mechanism |
+|---------|-----------|
+| Default CVA config | Sibling `Name.cva.twig` via `vi_cva_from_file(cva)`, or inline map for small components |
+| Caller CVA override | `:cva="{ … }"` deep-merged into defaults |
+| Root extra classes | `class="…"` on the component tag |
+| Nested slot extras | `slot:class="…"` |
+| Composition | `{% set cx = vi_cva_from_file(cva) %}` or `vi_cva({ … }\|replace_recursive(cva))` then `cx.root.apply({ … })` |
 
-Full reference: [Twig — `vi_define_classes`](../twig/vi-define-classes.md).
+Root BEM: `vi-*` prefix + Bootstrap utilities in slot `base`.
 
-## Component pattern
+Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
 
-```twig
-{%
-  set classes = vi_define_classes({
-    main: ['component-main', 'd-flex'],
-  }, classes|default({}), {
-    replace: replaceClasses|default([]),
-  })
-%}
+### When to use a `.cva.twig` file
 
-<div {{ classes.main | vi_attr_classes }} data-component="example">
+Prefer a sibling file when the map has many slots, variants, or hurts template readability. Keep a 2–3 slot static map inline if clearer.
+
+```text
+Alert.html.twig
+Alert.cva.twig      # hash expression only
 ```
 
-## Rules
+## Removed legacy API
 
-- Default is always **merge** (append + dedupe). There is no global bool replace.
-- Fully set selected slots with `replace` / `replaceClasses: ['key']`.
-- Prefer **variants** + `props` for closed prop sets (type, size, state).
-- Prefer `vi_define_classes(base, override)` over `vi_merge_deep` when composing child class maps.
-- Do **not** use `defaultClasses`, `class="{{ classes.x|join(' ') }}"`, or `|join(' ')` for class maps.
-- Shell/router templates and `icon/icon.html.twig` are exempt.
-- Shopware UX / CVA is deferred to a 6.8 compatibility track.
+`vi_define_classes`, `vi_attr_classes`, `vi_classes`, and root props `defaultBaseClasses` / `defaultVariants` have been **removed**. Do not reintroduce them.
 
-## Parent include examples
+Historical docs (for reference only):
 
-```twig
-{# Merge (default) #}
-{%
-  sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-      main: ['custom-class', 'another-class']
-    }
-  }
-%}
-
-{# Fully set selected slots (others still merge) #}
-{%
-  sw_include '@Storefront/components/header/main.html.twig' with {
-    classes: {
-      main: ['custom-class'],
-      menu: ['extra'],
-    },
-    replaceClasses: ['main']
-  }
-%}
-```
+- [vi_define_classes](../twig/vi-define-classes.md)
+- [vi_attr_classes](../twig/vi-attr-classes.md)
+- [vi_classes](../twig/vi-classes.md)
 
 ## Related
 
+- [`vi_cva`](../twig/vi-cva.md)
+- [UX components](ux-components.md)
 - [Component templates](components.md)
-- [JavaScript selectors](javascript.md)

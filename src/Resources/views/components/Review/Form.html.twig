@@ -1,0 +1,55 @@
+{% sw_extends '@Storefront/storefront/component/review/review-form.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-review-form__rating form-group col-md-4 product-detail-review-form-rating' },
+}|replace_recursive(cva)) %}
+
+{% block component_review_form_rating %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+        <label for="#review-form-rating" class="form-label">
+            {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
+        </label>
+
+        <div
+            id="review-form-rating"
+            class="product-detail-review-form-rating-input"
+            data-rating-system="true"
+        >
+            {% if data.get('points') is not empty %}
+                {% set currentPoints = data.get('points')|number_format %}
+            {% else %}
+                {% set currentPoints = reviews.matrix.maxPoints %}
+            {% endif %}
+
+            {% set maxPoints = reviews.matrix.maxPoints %}
+
+            {% for point in 1..maxPoints %}
+                <label
+                    data-review-form-point="{{ point }}"
+                    class="product-detail-review-form-star{% if currentPoints >= point %} is-active{% endif %}"
+                >
+                    <input
+                        class="product-detail-review-form-radio"
+                        type="radio"
+                        name="points"
+                        value="{{ point }}"
+                        {% if currentPoints >= point %} checked="checked"{% endif %}
+                    >
+                    <span class="icon-review-star"></span>
+                </label>
+            {% endfor %}
+            {% for matrix in reviews.matrix.matrix %}
+                <p
+                    class="h6 product-detail-review-form-rating-text{% if currentPoints != matrix.points %} d-none{% endif %}"
+                    data-rating-text="{{ matrix.points }}"
+                >
+                    {{ ("detail.review" ~ matrix.points ~ "PointRatingText")|trans|sw_sanitize }}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

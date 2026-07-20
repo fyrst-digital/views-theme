@@ -1,0 +1,31 @@
+{% props
+    label,
+    value,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-order-summary-item order-item-summary-item' },
+    label: { base: 'vi-order-summary-item__label order-item-summary-item-label' },
+    value: { base: 'vi-order-summary-item__value order-item-summary-item-value' },
+}|replace_recursive(cva)) %}
+
+{% set labelAttributes = attributes.nested('label') %}
+{% set valueAttributes = attributes.nested('value') %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block label %}
+        <div {{ labelAttributes }} class="{{ cx.label.apply() }}">
+            {{ label|raw }}
+        </div>
+    {% endblock %}
+
+    {% block value %}
+        <div {{ valueAttributes }} class="{{ cx.value.apply() }}">
+            {{ value|raw }}
+        </div>
+    {% endblock %}
+</div>

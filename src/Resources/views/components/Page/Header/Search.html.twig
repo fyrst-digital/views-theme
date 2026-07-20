@@ -1,0 +1,93 @@
+{% props
+    searchTerm = null,
+    searchWidgetOptions = {},
+    cva = {},
+%}
+
+{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center' },
+    search: { base: 'vi-header-search__body header-search' },
+    form: { base: 'vi-header-search__form header-search-form' },
+    container: { base: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2' },
+    inputGroup: { base: 'vi-header-search__input-group input-group header-search-input-group' },
+    input: { base: 'vi-header-search__input form-control header-search-input' },
+    submit: { base: 'vi-header-search__submit btn header-search-btn' },
+    close: { base: 'vi-header-search__close btn header-search-close' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes.defaults({ id: 'searchCollapse' }) }}
+    class="{{ cx.root.apply() }}"
+    data-ref="search"
+>
+    <div
+        {{ attributes.nested('search') }}
+        class="{{ cx.search.apply() }}"
+    >
+        {% block form %}
+            <form
+                action="{{ path('frontend.search.page') }}"
+                method="get"
+                data-search-widget="true"
+                data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
+                data-url="{{ path('frontend.search.suggest') }}?search="
+                {{ attributes.nested('form') }}
+                class="{{ cx.form.apply() }}"
+            >
+                <div
+                    {{ attributes.nested('container') }}
+                    class="{{ cx.container.apply() }}"
+                >
+                    {% block input_group %}
+                        <div
+                            {{ attributes.nested('inputGroup') }}
+                            class="{{ cx.inputGroup.apply() }}"
+                        >
+                            {% block input %}
+                                <input
+                                    type="search"
+                                    name="search"
+                                    autocomplete="off"
+                                    autocapitalize="off"
+                                    placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                    aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                                    value="{{ searchTerm }}"
+                                    {{ attributes.nested('input') }}
+                                    class="{{ cx.input.apply() }}"
+                                >
+                            {% endblock %}
+
+                            {% block submit %}
+                                <button
+                                    type="submit"
+                                    aria-label="{{ 'header.searchButton'|trans|striptags }}"
+                                    {{ attributes.nested('submit') }}
+                                    class="{{ cx.submit.apply() }}"
+                                >
+                                    {% block submit_icon %}
+                                        {{ vi_icon('magnifying-glass') }}
+                                    {% endblock %}
+                                </button>
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block close %}
+                        <button
+                            type="button"
+                            data-header-search="close"
+                            {{ attributes.nested('close') }}
+                            class="{{ cx.close.apply() }}"
+                        >
+                            {% block close_icon %}
+                                {{ vi_icon('x') }}
+                            {% endblock %}
+                        </button>
+                    {% endblock %}
+                </div>
+            </form>
+        {% endblock %}
+    </div>
+</div>

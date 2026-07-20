@@ -4,13 +4,14 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Fyrst\ViewsTheme\Twig\ViClasses">
-            <tag name="twig.extension"/>
-        </service>
         <service id="Fyrst\ViewsTheme\Twig\ViIcon">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
+            <argument type="service" id="request_stack"/>
             <tag name="twig.extension"/>
         </service>
         <service id="Fyrst\ViewsTheme\Twig\ViUtilities">
+            <argument type="service" id="ux.twig_component.component_stack" on-invalid="null"/>
+            <argument type="service" id="ux.twig_component.component_factory" on-invalid="null"/>
             <tag name="twig.extension"/>
         </service>
         <service id="Fyrst\ViewsTheme\Service\ThemeParametersResolver">
@@ -33,7 +34,6 @@
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="twig"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

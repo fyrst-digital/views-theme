@@ -1,0 +1,34 @@
+{% sw_extends '@Storefront/storefront/component/address/address-personal-company.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'row g-2 fields-company' },
+}|replace_recursive(cva)) %}
+
+{% block component_address_form_company_fields %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+        {% block component_address_form_company_name %}
+            {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
+                additionalClass: 'col-12 field-company-name'
+            } %}
+        {% endblock %}
+
+        {% block component_address_form_company_department %}
+            {% sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
+                additionalClass: 'col-sm-6 field-company-department'
+            } %}
+        {% endblock %}
+
+        {# ludtwig-ignore twig-block-name-snake-case #}
+        {% block component_address_form_company_vatId %}
+            {% if prefix != 'shippingAddress' %}
+                {% sw_include '@Storefront/storefront/component/address/address-personal-vat-id.html.twig' with {
+                    vatIds: data.get('vatIds')
+                } %}
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\ThemeParametersResolver;
 use Fyrst\ViewsTheme\Service\VariantsLoader;
 use Fyrst\ViewsTheme\Struct\VariantsGridPagination;
 use Shopware\Core\Checkout\Cart\Cart;
@@ -29,8 +28,8 @@ class VariantsGridController extends StorefrontController
 {
     private const CONFIG_ROWS_PER_PAGE = 'ViewsTheme.config.variantsGridRowsPerPage';
     private const PAGE_PARAMETER = 'variantsPage';
-    private const DEFAULT_ROWS_TEMPLATE = '@Storefront/components/variants-grid/rows.html.twig';
-    private const DEFAULT_PAGINATION_TEMPLATE = '@Storefront/components/variants-grid/pagination.html.twig';
+    private const DEFAULT_ROWS_TEMPLATE = '@ViewsTheme/components/VariantsGrid/Rows.html.twig';
+    private const DEFAULT_PAGINATION_TEMPLATE = '@ViewsTheme/components/VariantsGrid/Pagination.html.twig';
 
     public function __construct(
         private readonly CartService $cartService,
@@ -38,7 +37,6 @@ class VariantsGridController extends StorefrontController
         private readonly VariantsLoader $variantsLoader,
         private readonly SystemConfigService $systemConfig,
         private readonly Environment $twig,
-        private readonly ThemeParametersResolver $themeParametersResolver,
     ) {}
 
     #[Route(path: '/checkout/variants-grid/add', name: 'frontend.checkout.variants-grid.add', defaults: ['XmlHttpRequest' => true], methods: ['POST'])]
@@ -129,18 +127,24 @@ class VariantsGridController extends StorefrontController
             self::DEFAULT_PAGINATION_TEMPLATE,
         );
 
-        $themeParameters = $this->themeParametersResolver->resolve($request, $context);
-
-        $rowsHtml = $this->renderView($rowsTemplate, [
-            'variants' => $pagedVariants,
-            'groups' => $groups,
-            'themeParameters' => $themeParameters ?? [],
-        ]);
+        if ($rowsTemplate === self::DEFAULT_ROWS_TEMPLATE) {
+            $rowsHtml = $this->twig->createTemplate('{{- component(name, props) -}}')->render([
+                'name' => 'ViewsTheme:VariantsGrid:Rows',
+                'props' => [
+                    'variants' => $pagedVariants,
+                    'groups' => $groups,
+                ],
+            ]);
+        } else {
+            $rowsHtml = $this->renderView($rowsTemplate, [
+                'variants' => $pagedVariants,
+                'groups' => $groups,
+            ]);
+        }
 
         $paginationHtml = $this->renderView($paginationTemplate, [
             'pagination' => new VariantsGridPagination($page, $limit, $total),
             'pageParameter' => self::PAGE_PARAMETER,
-            'themeParameters' => $themeParameters ?? [],
         ]);
 
         return new JsonResponse([

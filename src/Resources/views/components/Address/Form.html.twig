@@ -1,0 +1,94 @@
+{% sw_extends '@Storefront/storefront/component/address/address-form.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    company: { base: '' },
+    countryState: { base: 'country-and-state-form-elements' },
+}|replace_recursive(cva)) %}
+
+{% block component_address_form_company %}
+  {% if showFormCompany %}
+    {% if config('core.loginRegistration.showAccountTypeSelection') %}
+      {% set accountTypeRequired = true %}
+    {% endif %}
+
+    {% if config('core.loginRegistration.showAccountTypeSelection') or prefix == 'address' or prefix == 'shippingAddress' or hasSelectedBusiness %}
+      <div {{ attributes.nested('company') }} class="{{ cx.company.apply() }}">
+        {% block component_address_form_company_fields %}
+          {% block component_address_form_company_name %}
+            {%
+              sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
+                additionalClass: 'field-company-name'
+              }
+            %}
+          {% endblock %}
+
+          {% block component_address_form_company_department %}
+            {%
+              sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
+                additionalClass: 'field-company-department'
+              }
+            %}
+          {% endblock %}
+        {% endblock %}
+      </div>
+    {% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block component_address_form_address_fields %}
+  {%
+    set options = {
+        scopeElementSelector,
+        prefix,
+    }
+  %}
+
+  {% set arrangement = config('core.loginRegistration.addressInputFieldArrangement') %}
+
+  {# @deprecated tag:v6.8.0 - Only condition will be removed #}
+  {% if feature('v6.8.0.0') %}
+    <div
+      {{ attributes.nested('countryState') }}
+      class="{{ cx.countryState.apply() }}"
+      data-country-state-select="true"
+      data-country-state-select-options="{{ options|json_encode }}">
+      {% block component_address_form_country_field %}
+        {%
+          sw_include '@Storefront/storefront/component/address/field/address-country-field.html.twig' with {
+              additionalClass: 'col-md'
+          }
+        %}
+      {% endblock %}
+    </div>
+  {% endif %}
+
+  {% block component_address_form_street -%}
+    {%
+      sw_include '@Storefront/storefront/component/address/field/address-street-field.html.twig' with {
+          additionalClass: 'field-street'
+      }
+    %}
+  {% endblock %}
+
+  {% block component_address_form_zipcode_city %}
+    {% block component_address_form_zipcode_field %}
+      {%
+        sw_include '@Storefront/storefront/component/address/field/address-zipcode-field.html.twig' with {
+          additionalClass: 'field-city'
+        }
+      %}
+    {% endblock %}
+
+    {% block component_address_form_city_field %}
+      {%
+        sw_include '@Storefront/storefront/component/address/field/address-city-field.html.twig' with {
+          additionalClass: 'field-zipcode'
+        }
+      %}
+    {% endblock %}
+  {% endblock %}
+{% endblock %}

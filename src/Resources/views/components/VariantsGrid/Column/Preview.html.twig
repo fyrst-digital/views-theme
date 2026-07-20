@@ -1,0 +1,21 @@
+{% props
+    variant,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-preview variants-grid-column-preview' },
+}|replace_recursive(cva)) %}
+
+<td {{ attributes }} class="{{ cx.root.apply() }}">
+    {% if variant.cover %}
+        <img
+            src="{{ variant.cover.media|sw_encode_media_url }}"
+            alt="{{ variant.translated.name|e('html_attr') }}"
+            class="vi-variants-grid-preview-image variants-grid-preview-image object-fit-cover"
+            loading="lazy"
+            width="50"
+            height="50"
+        >
+    {% endif %}
+</td>

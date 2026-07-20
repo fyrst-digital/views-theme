@@ -4,7 +4,7 @@ A Shopware 6.7 storefront theme focused on high-fidelity ecommerce UI design.
 
 ## Requirements
 
-- Shopware 6.7 (Core & Storefront)
+- Shopware 6.7.11+ (Core & Storefront; UX Twig components)
 
 ## Installation
 
@@ -23,7 +23,8 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 | Docs index | [docs/README.md](docs/README.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
 | Configuration | [docs/configuration.md](docs/configuration.md) |
-| CSS class API | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
+| UX Twig components | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
+| CSS class API (legacy) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
 | JavaScript selectors | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
@@ -33,5 +34,5 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 
 - **Variants grid** — paginated multi-variant add-to-cart on the PDP (plugin config).
 - **Preferred delivery date** — optional date picker on checkout confirm, stored as an order custom field.
-- **Twig class API** — `vi_define_classes`, `vi_attr_classes`, `vi_classes` for overridable component classes.
+- **UX Twig components** — `<twig:ViewsTheme:…>` with props, CVA, and attributes.
 - **Icons** — `vi_icon` for inline SVG / CSS icons.

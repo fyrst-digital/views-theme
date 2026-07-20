@@ -1,0 +1,87 @@
+{% props
+    product,
+    prices,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-prices-tiered w-100' },
+    row: { base: 'vi-product-prices-tiered__row' },
+    cellQuantity: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--quantity' },
+    cellPrice: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--price' },
+    cellReference: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--reference' },
+}|replace_recursive(cva)) %}
+
+<table
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block head %}
+        <tr>
+            <th>{{ 'detail.dataColumnQuantity'|trans|sw_sanitize }}</th>
+            <th>{{ 'detail.dataColumnPrice'|trans|sw_sanitize }}</th>
+            {% if product.calculatedPrice.referencePrice %}
+                <th>{{ 'detail.dataColumnReferencePrice'|trans|sw_sanitize }}</th>
+            {% endif %}
+        </tr>
+    {% endblock %}
+
+    {% for price in prices %}
+        {% block row %}
+            {% set isListPrice = price.listPrice.percentage > 0 %}
+            {% set isRegulationPrice = price.regulationPrice != null %}
+
+            <tr
+                {{ attributes.nested('row') }}
+                class="{{ cx.row.apply() }}"
+            >
+                {% block quantity %}
+                    <td
+                        {{ attributes.nested('cellQuantity') }}
+                        class="{{ cx.cellQuantity.apply() }}"
+                    >
+                        {% if loop.last %}
+                            {{ 'detail.priceDataInfoFrom'|trans|sw_sanitize }}
+                        {% else %}
+                            {{ 'detail.priceDataInfoUntil'|trans|sw_sanitize }}
+                        {% endif %}
+                        {{ price.quantity }}
+                    </td>
+                {% endblock %}
+
+                {% block price %}
+                    <td
+                        {{ attributes.nested('cellPrice') }}
+                        class="{{ cx.cellPrice.apply() }}"
+                    >
+                        <span>
+                            {% if price.listprice and isListPrice %}
+                                {{ price.listprice.price|currency }}
+                            {% else %}
+                                {{ price.unitPrice|currency }}
+                            {% endif %}
+                        </span>
+                        {% if isRegulationPrice %}
+                            <span>
+                                {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
+                            </span>
+                        {% endif %}
+                    </td>
+                {% endblock %}
+
+                {% block reference %}
+                    {% if price.referencePrice is not null %}
+                        <td
+                            {{ attributes.nested('cellReference') }}
+                            class="{{ cx.cellReference.apply() }}"
+                        >
+                            {{ price.referencePrice.price|currency }} /
+                            {{ price.referencePrice.referenceUnit }}
+                            {{ price.referencePrice.unitName }}
+                        </td>
+                    {% endif %}
+                {% endblock %}
+            </tr>
+        {% endblock %}
+    {% endfor %}
+</table>

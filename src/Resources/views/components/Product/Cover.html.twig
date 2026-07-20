@@ -1,0 +1,74 @@
+{% props
+    id,
+    name,
+    cover = null,
+    displayMode = 'standard',
+    sizes = {},
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-product-cover flex-fill product-image-link is-' ~ displayMode },
+    image: { base: 'vi-product-cover__image' },
+    video: { base: 'vi-product-cover__video' },
+    placeholder: { base: 'vi-product-cover__placeholder product-image-placeholder' },
+}|replace_recursive(cva)) %}
+
+<a
+    href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
+    title="{{ name }}"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block media %}
+        {% if cover.url and cover.isSpatialObject() == false %}
+            {% set mediaAttrs = {
+                title: (cover.translated.title ?: name),
+            } %}
+
+            {% if cover.getMediaType().getName() === 'VIDEO' %}
+                {% if config('core.listing.autoplayVideoInListing') %}
+                    {% set mediaAttrs = mediaAttrs|merge({
+                        autoplay: true,
+                        loop: true,
+                        class: cx.video.apply(),
+                    }) %}
+                {% endif %}
+
+                {% block video %}
+                    {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                        media: cover,
+                        attributes: mediaAttrs,
+                    } %}
+                {% endblock %}
+            {% else %}
+                {% set mediaAttrs = mediaAttrs|merge({
+                    alt: (cover.translated.alt ?: name),
+                    loading: 'lazy',
+                    class: cx.image.apply(),
+                }) %}
+
+                {% if displayMode == 'cover' or displayMode == 'contain' %}
+                    {% set mediaAttrs = mediaAttrs|merge({ 'data-object-fit': displayMode }) %}
+                {% endif %}
+
+                {% block image %}
+                    {% sw_thumbnails 'product-image-thumbnails' with {
+                        media: cover,
+                        sizes: sizes,
+                        attributes: mediaAttrs,
+                    } %}
+                {% endblock %}
+            {% endif %}
+        {% else %}
+            {% block placeholder %}
+                <div
+                    {{ attributes.nested('placeholder') }}
+                    class="{{ cx.placeholder.apply() }}"
+                >
+                    {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                </div>
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+</a>

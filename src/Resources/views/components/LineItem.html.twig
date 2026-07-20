@@ -1,0 +1,49 @@
+{% props
+    lineItem,
+    showRemoveButton = true,
+    showPrice = true,
+    nestingLevel = 0,
+    autoSubmit = false,
+    deliveries = null,
+%}
+
+{% set PRODUCT_LINE_ITEM_TYPE = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::PRODUCT_LINE_ITEM_TYPE') %}
+{% set DISCOUNT_LINE_ITEM_TYPE = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::DISCOUNT_LINE_ITEM') %}
+{% set CONTAINER_LINE_ITEM_TYPE = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::CONTAINER_LINE_ITEM') %}
+
+{% set isDiscount = (not lineItem.good and lineItem.price.totalPrice <= 0) or lineItem.type == DISCOUNT_LINE_ITEM_TYPE %}
+{% set isProduct = lineItem.type == PRODUCT_LINE_ITEM_TYPE %}
+{% set isContainer = lineItem.type == CONTAINER_LINE_ITEM_TYPE %}
+
+{% block type %}
+    {% if isProduct %}
+        <twig:ViewsTheme:LineItem:Product
+            :lineItem="lineItem"
+            :showRemoveButton="showRemoveButton"
+            :showPrice="showPrice"
+            :nestingLevel="nestingLevel"
+            :autoSubmit="autoSubmit"
+            :deliveries="deliveries"
+        />
+    {% elseif isDiscount %}
+        <twig:ViewsTheme:LineItem:Promotion :lineItem="lineItem" />
+    {% elseif isContainer %}
+        <twig:ViewsTheme:LineItem:Container
+            :lineItem="lineItem"
+            :showRemoveButton="showRemoveButton"
+            :showPrice="showPrice"
+            :nestingLevel="nestingLevel"
+            :autoSubmit="autoSubmit"
+            :deliveries="deliveries"
+        />
+    {% else %}
+        <twig:ViewsTheme:LineItem:Generic
+            :lineItem="lineItem"
+            :showRemoveButton="showRemoveButton"
+            :showPrice="showPrice"
+            :nestingLevel="nestingLevel"
+            :autoSubmit="autoSubmit"
+            :deliveries="deliveries"
+        />
+    {% endif %}
+{% endblock %}

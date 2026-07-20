@@ -1,0 +1,12 @@
+{% props
+    variant,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-variants-grid-column-number variants-grid-column-number' },
+}|replace_recursive(cva)) %}
+
+<td {{ attributes }} class="{{ cx.root.apply() }}">
+    {{ variant.productNumber }}
+</td>

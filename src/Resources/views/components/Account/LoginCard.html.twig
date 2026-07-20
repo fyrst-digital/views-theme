@@ -1,0 +1,36 @@
+{% sw_extends '@Storefront/storefront/component/account/login.html.twig' %}
+
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-account-login-card card login-card' },
+    header: { base: 'vi-account-login-card__header card-header login-card-header' },
+    body: { base: 'vi-account-login-card__body card-body login-card-body' },
+}|replace_recursive(cva)) %}
+
+{% block component_account_login %}
+    <div {{ attributes }} class="{{ cx.root.apply() }}">
+        {% block component_account_login_header %}
+            {% if cardTitle %}
+                <h4 {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
+                    {{ cardTitle }}
+                </h4>
+            {% endif %}
+        {% endblock %}
+
+        {% block component_account_login_form %}
+            <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
+                <twig:ViewsTheme:Account:LoginForm
+                    :loginError="loginError|default(false)"
+                    :errorSnippet="errorSnippet|default(null)"
+                    :waitTime="waitTime|default(null)"
+                    :redirectTo="redirectTo|default(null)"
+                    :redirectParameters="redirectParameters|default(null)"
+                    :showDescription="showDescription|default(false)"
+                />
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
