@@ -8,6 +8,7 @@ use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
+use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,6 +19,7 @@ class SearchOverlayController extends StorefrontController
 {
     public function __construct(
         private readonly Environment $twig,
+        private readonly SuggestPageLoader $suggestPageLoader,
     ) {}
 
     #[Route(
@@ -41,8 +43,36 @@ class SearchOverlayController extends StorefrontController
             $props['minSearchLength'] = (int) $minSearchLength;
         }
 
+        return $this->renderComponent('ViewsTheme:Search:Overlay', $props);
+    }
+
+    #[Route(
+        path: '/widgets/search/suggest',
+        name: 'frontend.views-theme.search.suggest',
+        defaults: ['XmlHttpRequest' => true],
+        methods: ['GET'],
+    )]
+    public function suggest(Request $request, SalesChannelContext $context): Response
+    {
+        if (!$request->request->has('no-aggregations')) {
+            $request->request->set('no-aggregations', true);
+        }
+
+        $page = $this->suggestPageLoader->load($request, $context);
+
+        return $this->renderComponent('ViewsTheme:Search:Suggest', [
+            'searchResult' => $page->getSearchResult(),
+            'searchTerm' => $page->getSearchTerm(),
+        ]);
+    }
+
+    /**
+     * @param array<string, mixed> $props
+     */
+    private function renderComponent(string $name, array $props = []): Response
+    {
         $html = $this->twig->createTemplate('{{- component(name, props) -}}')->render([
-            'name' => 'ViewsTheme:Search:Overlay',
+            'name' => $name,
             'props' => $props,
         ]);
 

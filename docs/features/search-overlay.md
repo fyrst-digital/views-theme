@@ -2,12 +2,14 @@
 
 Lazy-loaded full-viewport search dialog opened from the header search action.
 
+All UI lives under UX components (`components/Search/*`). Markup is served by theme widget routes — no storefront template overrides for search.
+
 ## Features
 
 - Header `Search:Action` opens `Search:Overlay` on click
-- Overlay HTML is fetched once from a dedicated storefront widget and cached client-side
-- Overlay composes `Search:Bar` and relies on core `SearchWidgetPlugin` for suggest
-- Suggest markup is rendered via theme UX components (`Search:Suggest*`)
+- Overlay HTML is fetched once from a dedicated theme widget and cached client-side
+- Overlay composes `Search:Bar` and uses core `SearchWidgetPlugin` for debounce/fetch UX
+- Suggest HTML is rendered by the theme controller as `ViewsTheme:Search:Suggest` with explicit props
 - Close via close button, backdrop click, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
 
@@ -24,24 +26,38 @@ Lazy-loaded full-viewport search dialog opened from the header search action.
 
 ### Suggest flow
 
-`Search:Bar` keeps core hooks (`data-search-widget`, `.js-search-form`, suggest URL).  
-Typing hits `frontend.search.suggest`. The storefront override  
-`layout/header/search-suggest.html.twig` renders `<twig:ViewsTheme:Search:Suggest />`.
+`Search:Bar` keeps core plugin hooks (`data-search-widget`, `.js-search-form`, `.js-search-result`) but points `data-url` at the **theme** route:
+
+```
+frontend.views-theme.search.suggest
+```
+
+That controller loads `SuggestPageLoader`, then renders:
+
+```twig
+{{ component('ViewsTheme:Search:Suggest', {
+    searchResult: page.searchResult,
+    searchTerm: page.searchTerm,
+}) }}
+```
+
+Props are passed **explicitly**. Self-closing UX tags do not inherit outer Twig context (`page`), so never rely on `page.*` inside a `component()` render without props.
 
 ### Controller
 
 | Route name | Path | Method |
 |------------|------|--------|
 | `frontend.views-theme.search.overlay` | `/widgets/search/overlay` | `GET` (XHR) |
+| `frontend.views-theme.search.suggest` | `/widgets/search/suggest` | `GET` (XHR) |
 
-Optional query params:
+Overlay optional query params:
 
 | Param | Purpose |
 |-------|---------|
 | `search` | Prefill bar value |
 | `minSearchLength` | Override min chars for suggest |
 
-Props are applied **server-side** when rendering the UX component. Client JS cannot pass Twig props after fetch; use query params or `data-component-options` for runtime options.
+Suggest uses the same `search` query param as core (`?search=`).
 
 ## Hooks
 
@@ -63,5 +79,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Overlay | `src/Resources/views/components/Search/Overlay.*` |
 | Action | `src/Resources/views/components/Search/Action.*` |
 | Bar / Suggest | `src/Resources/views/components/Search/` |
-| Suggest wire | `src/Resources/views/storefront/layout/header/search-suggest.html.twig` |
 | SCSS | `src/Resources/app/storefront/src/scss/component/search.scss` |

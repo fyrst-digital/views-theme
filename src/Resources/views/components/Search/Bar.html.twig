@@ -1,11 +1,13 @@
 {% props
     searchTerm = null,
     minSearchLength = null,
+    suggestUrl = null,
     cva = {},
 %}
 
 {% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 {% set minSearchLength = minSearchLength is not null ? minSearchLength : shopware.minSearchLength %}
+{% set suggestUrl = suggestUrl is not null ? suggestUrl : path('frontend.views-theme.search.suggest') %}
 {% set searchWidgetOptions = { searchWidgetMinChars: minSearchLength } %}
 
 {% set cx = vi_cva({
@@ -20,7 +22,7 @@
     method="get"
     data-search-widget="true"
     data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
-    data-url="{{ path('frontend.search.suggest') }}?search="
+    data-url="{{ suggestUrl }}?search="
     data-ref="search-bar"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
