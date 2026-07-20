@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Shopware 6.7 (Core & Storefront)
+- Shopware 6.7.11+ (Core & Storefront)
 
 ## Installation
 
