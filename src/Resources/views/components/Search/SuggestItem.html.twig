@@ -3,12 +3,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-search-suggest-item g-col-4 d-flex flex-wrap' },
-    image: { base: 'vi-search-suggest-item__image d-block col-auto' },
-    content: { base: 'vi-search-suggest-item__content col' },
-    name: { base: 'vi-search-suggest-item__name' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <a
     href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
