@@ -20,8 +20,48 @@
     data-url="{{ suggestUrl }}?search="
     data-ref="search-bar"
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ cx.root.apply() }} header-search-form js-search-form"
 >
+    {% block chrome %}
+        <div
+            data-ref="chrome"
+            {{ attributes.nested('chrome') }}
+            class="{{ cx.chrome.apply() }}"
+        >
+            {% block input %}
+                <input
+                    type="search"
+                    id="header-main-search-input"
+                    name="search"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                    aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-expanded="false"
+                    value="{{ searchTerm }}"
+                    data-ref="input"
+                    {{ attributes.nested('input') }}
+                    class="{{ cx.input.apply() }} header-search-input form-control"
+                >
+            {% endblock %}
+
+            {% block clear %}
+                <button
+                    type="button"
+                    aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
+                    data-ref="clear"
+                    {{ attributes.nested('clear') }}
+                    class="{{ cx.clear.apply() }}"
+                >
+                    {{ vi_icon('x') }}
+                </button>
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {# Submit must be a direct form child so SearchWidgetPlugin injects suggest after it (under chrome). #}
     {% block submit %}
         <button
             type="submit"
@@ -31,37 +71,6 @@
             class="{{ cx.submit.apply() }}"
         >
             {{ vi_icon('magnifying-glass') }}
-        </button>
-    {% endblock %}
-
-    {% block input %}
-        <input
-            type="search"
-            id="header-main-search-input"
-            name="search"
-            autocomplete="off"
-            autocapitalize="off"
-            placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
-            aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
-            role="combobox"
-            aria-autocomplete="list"
-            aria-expanded="false"
-            value="{{ searchTerm }}"
-            data-ref="input"
-            {{ attributes.nested('input') }}
-            class="{{ cx.input.apply() }}"
-        >
-    {% endblock %}
-
-    {% block clear %}
-        <button
-            type="button"
-            aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
-            data-ref="clear"
-            {{ attributes.nested('clear') }}
-            class="{{ cx.clear.apply() }}"
-        >
-            {{ vi_icon('x') }}
         </button>
     {% endblock %}
 </form>

@@ -8,10 +8,18 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 - Header `Search:Action` opens `Search:Overlay` on click
 - Overlay HTML is fetched once from a dedicated theme widget and cached client-side
+- Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
 - Overlay composes `Search:Bar` and uses core `SearchWidgetPlugin` for debounce/fetch UX
 - Suggest HTML is rendered by the theme controller as `ViewsTheme:Search:Suggest` with explicit props
 - Close via close button, backdrop click, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
+
+## Layout notes
+
+- `Search:Bar` keeps submit as a **direct form child after the chrome row** so `SearchWidgetPlugin` injects suggest markup under the input (not inside the chrome flex row).
+- Suggest is **in-flow** inside the panel (not a floating absolute dropdown).
+- Product rows: thumb · optional manufacturer/category meta · name · compact price (+ strikethrough list price).
+- No category filter, articles column, or voice search in the current scope.
 
 ## How it works
 

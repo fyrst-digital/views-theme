@@ -14,20 +14,12 @@
     >
         {% block action %}
             <a
-                href="{{ path('frontend.search.page') }}?search={{ searchTerm }}"
+                href="{{ path('frontend.search.page') }}?search={{ searchTerm|url_encode }}"
                 title="{{ 'header.searchAllResults'|trans|striptags }}"
                 {{ attributes.nested('action') }}
                 class="{{ cx.action.apply() }}"
             >
-                {{ 'header.searchAllResults'|trans|sw_sanitize }}
-                {% block badge %}
-                    <span
-                        {{ attributes.nested('badge') }}
-                        class="{{ cx.badge.apply() }}"
-                    >
-                        {{ total }}
-                    </span>
-                {% endblock %}
+                {{ 'header.searchAllResults'|trans|sw_sanitize }} »
             </a>
         {% endblock %}
     </div>

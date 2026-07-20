@@ -19,6 +19,16 @@
 >
     {% block container %}
         {% if searchResult.total > 0 %}
+            {% block heading %}
+                <div
+                    data-ref="heading"
+                    {{ attributes.nested('heading') }}
+                    class="{{ cx.heading.apply() }}"
+                >
+                    Products
+                </div>
+            {% endblock %}
+
             {% block results %}
                 <div
                     data-ref="results"

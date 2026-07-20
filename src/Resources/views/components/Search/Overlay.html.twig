@@ -31,34 +31,16 @@
             {{ attributes.nested('panel') }}
             class="{{ cx.panel.apply() }}"
         >
-            {% block header %}
-                <div
-                    data-ref="header"
-                    {{ attributes.nested('header') }}
-                    class="{{ cx.header.apply() }}"
+            {% block close %}
+                <button
+                    type="button"
+                    data-ref="close"
+                    aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
+                    {{ attributes.nested('close') }}
+                    class="{{ cx.close.apply() }}"
                 >
-                    {% block title %}
-                        <div
-                            data-ref="title"
-                            {{ attributes.nested('title') }}
-                            class="{{ cx.title.apply() }}"
-                        >
-                            {{ 'header.searchButton'|trans|sw_sanitize }}
-                        </div>
-                    {% endblock %}
-
-                    {% block close %}
-                        <button
-                            type="button"
-                            data-ref="close"
-                            aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
-                            {{ attributes.nested('close') }}
-                            class="{{ cx.close.apply() }}"
-                        >
-                            {{ vi_icon('x') }}
-                        </button>
-                    {% endblock %}
-                </div>
+                    {{ vi_icon('x') }}
+                </button>
             {% endblock %}
 
             {% block body %}

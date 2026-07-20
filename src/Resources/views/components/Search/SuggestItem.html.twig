@@ -5,58 +5,106 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set price = product.calculatedPrice %}
+{% if product.calculatedPrices.count > 0 %}
+    {% set price = product.calculatedPrices.first %}
+{% endif %}
+{% set hasListPrice = price.listPrice and price.listPrice.percentage > 0 %}
+{% set metaLabel = product.manufacturer.translated.name|default(product.seoCategory.translated.name|default('')) %}
+
 <a
     href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
     title="{{ product.translated.name }}"
+    role="option"
     data-ref="item"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block image %}
-        {% set mediaAttrs = {
-            class: cx.image.apply(),
-            title: (product.cover.media.translated.title ?: ''),
-        } %}
+        <span
+            data-ref="image"
+            {{ attributes.nested('image') }}
+            class="{{ cx.image.apply() }}"
+        >
+            {% set mediaAttrs = {
+                class: 'vi-search-suggest-item__media',
+                title: (product.cover.media.translated.title ?: ''),
+            } %}
 
-        {% if product.cover.media.url and product.cover.media.isSpatialObject() == false %}
-            {% if product.cover.media.getMediaType().getName() === 'VIDEO' %}
-                {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
-                    media: product.cover.media,
-                    attributes: mediaAttrs,
-                } %}
+            {% if product.cover.media.url and product.cover.media.isSpatialObject() == false %}
+                {% if product.cover.media.getMediaType().getName() === 'VIDEO' %}
+                    {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                        media: product.cover.media,
+                        attributes: mediaAttrs,
+                    } %}
+                {% else %}
+                    {% set mediaAttrs = mediaAttrs|merge({
+                        alt: (product.cover.media.translated.alt ?: product.translated.name),
+                    }) %}
+                    {% sw_thumbnails 'search-suggest-product-image-thumbnails' with {
+                        media: product.cover.media,
+                        sizes: { default: '80px' },
+                        attributes: mediaAttrs,
+                    } %}
+                {% endif %}
             {% else %}
-                {% set mediaAttrs = mediaAttrs|merge({
-                    alt: (product.cover.media.translated.alt ?: ''),
-                }) %}
-                {% sw_thumbnails 'search-suggest-product-image-thumbnails' with {
-                    media: product.cover.media,
-                    sizes: { default: '100px' },
-                    attributes: mediaAttrs,
-                } %}
+                {{ vi_icon('placeholder') }}
             {% endif %}
-        {% else %}
-            {% sw_icon 'placeholder' style { size: 'lg' } %}
-        {% endif %}
+        </span>
     {% endblock %}
 
-    {% block content %}
-        <div
-            {{ attributes.nested('content') }}
-            class="{{ cx.content.apply() }}"
+    {% block body %}
+        <span
+            data-ref="body"
+            {{ attributes.nested('body') }}
+            class="{{ cx.body.apply() }}"
         >
+            {% block meta %}
+                {% if metaLabel %}
+                    <span
+                        data-ref="meta"
+                        {{ attributes.nested('meta') }}
+                        class="{{ cx.meta.apply() }}"
+                    >
+                        {{ metaLabel }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
             {% block name %}
-                <div
+                <span
                     data-ref="name"
                     {{ attributes.nested('name') }}
                     class="{{ cx.name.apply() }}"
                 >
                     {{ product.translated.name }}
-                </div>
+                </span>
             {% endblock %}
 
             {% block pricing %}
-                <twig:ViewsTheme:Product:Price :product="product" />
+                <span
+                    data-ref="pricing"
+                    {{ attributes.nested('pricing') }}
+                    class="{{ cx.pricing.apply() }}"
+                >
+                    <span
+                        data-ref="price"
+                        {{ attributes.nested('price') }}
+                        class="{{ cx.price.apply() }}{{ hasListPrice ? ' is-sale' : '' }}"
+                    >
+                        {{ price.unitPrice|currency }}
+                    </span>
+                    {% if hasListPrice %}
+                        <span
+                            data-ref="listPrice"
+                            {{ attributes.nested('listPrice') }}
+                            class="{{ cx.listPrice.apply() }}"
+                        >
+                            {{ price.listPrice.price|currency }}
+                        </span>
+                    {% endif %}
+                </span>
             {% endblock %}
-        </div>
+        </span>
     {% endblock %}
 </a>

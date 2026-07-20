@@ -5,7 +5,7 @@
   display: none;
   align-items: flex-start;
   justify-content: center;
-  padding: var(--vi-search-overlay-padding, 1.5rem);
+  padding: var(--vi-search-overlay-padding, 1.25rem);
 
   &.is-open {
     display: flex;
@@ -14,42 +14,50 @@
   &__backdrop {
     position: absolute;
     inset: 0;
-    background: var(--vi-search-overlay-backdrop, rgba(0, 0, 0, 0.45));
+    background: var(--vi-search-overlay-backdrop, rgba(15, 23, 42, 0.55));
   }
 
   &__panel {
     position: relative;
     z-index: 1;
-    width: min(100%, var(--vi-search-overlay-max-w, 40rem));
-    margin-top: var(--vi-search-overlay-offset-y, 10vh);
-    background: var(--vi-search-overlay-bg, var(--bs-body-bg, #fff));
-    border-radius: var(--vi-search-overlay-radius, 0.75rem);
-    box-shadow: var(--vi-search-overlay-shadow, 0 1rem 3rem rgba(0, 0, 0, 0.2));
-    overflow: visible;
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1rem 0;
-  }
-
-  &__title {
-    font-weight: 600;
-    font-size: 1.125rem;
+    width: min(100%, var(--vi-search-overlay-max-w, 56rem));
+    margin-top: var(--vi-search-overlay-offset-y, 8vh);
+    background: var(--vi-search-overlay-bg, #fff);
+    border-radius: var(--vi-search-overlay-radius, 1rem);
+    box-shadow: var(
+      --vi-search-overlay-shadow,
+      0 1.5rem 3.5rem rgba(15, 23, 42, 0.22)
+    );
+    overflow: hidden;
   }
 
   &__close {
-    flex-shrink: 0;
-    padding: 0.5rem;
+    position: absolute;
+    top: 0.65rem;
+    right: 0.65rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
     line-height: 1;
+    border: 0;
+    border-radius: 999px;
+    color: var(--vi-search-overlay-close-color, #64748b);
+    background: transparent;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--vi-search-overlay-close-hover, #0f172a);
+      background: var(--vi-search-overlay-close-bg, rgba(15, 23, 42, 0.06));
+    }
   }
 
   &__body {
     position: relative;
-    padding: 1rem;
+    padding: var(--vi-search-overlay-body-pad, 1rem 1.25rem 1.25rem);
   }
 }
 
@@ -59,46 +67,232 @@ body.vi-search-overlay-open {
 
 .vi-search-bar {
   position: relative;
+  display: flex;
+  flex-direction: column;
 
-  &__submit {
-    position: absolute;
-    inset: 0;
-    right: auto;
-    z-index: 2;
-  }
-
-  &__clear {
-    position: absolute;
-    inset: 0;
-    left: auto;
-    z-index: 2;
+  &__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    padding: 0.35rem 3.25rem 0.35rem 1rem;
+    border: 1px solid var(--vi-search-bar-border, #e2e8f0);
+    border-radius: var(--vi-search-bar-radius, 0.75rem);
+    background: var(--vi-search-bar-bg, #fff);
+    box-shadow: var(--vi-search-bar-shadow, 0 1px 2px rgba(15, 23, 42, 0.04));
   }
 
   &__input {
-    padding-inline: 2.75rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.5rem 0;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--vi-search-bar-color, #0f172a);
+
+    &::placeholder {
+      color: var(--vi-search-bar-placeholder, #94a3b8);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none !important;
+    }
+
+    // Hide native clear on search inputs; theme clear + overlay close handle UX
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
+  &__clear {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    color: #94a3b8;
+    background: transparent;
+    line-height: 1;
+
+    &:hover {
+      color: #0f172a;
+      background: rgba(15, 23, 42, 0.06);
+    }
+  }
+
+  &__chrome:focus-within &__clear,
+  &__input:not(:placeholder-shown) + &__clear {
+    display: inline-flex;
+  }
+
+  // Submit is a direct form child (plugin inject target) — pin into chrome right
+  &__submit {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.35rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.55rem;
+    height: 2.55rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.55rem;
+    color: var(--vi-search-bar-submit-color, #334155);
+    background: transparent;
+    line-height: 1;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--vi-search-bar-submit-hover, #0f172a);
+      background: var(--vi-search-bar-submit-bg, rgba(15, 23, 42, 0.06));
+    }
   }
 }
 
 .vi-search-suggest {
-  width: var(--search-suggest-w, 100%);
-  max-width: var(--search-suggest-max-w, none);
-  top: calc(100% + var(--search-suggest-offset, 0.5rem));
-  left: 0;
-  right: 0;
-  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  max-height: min(60vh, 28rem);
+
+  &__heading {
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--vi-search-suggest-heading, #0f172a);
+  }
 
   &__results {
-    --columns: var(--search-suggest-columns, 1);
-    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 0.15rem;
   }
 }
 
 .vi-search-suggest-item {
-  &__image {
-    aspect-ratio: var(--product-image-aspect-ratio, 1 / 1);
-    object-fit: var(--product-image-object-fit, contain);
-    object-position: var(--product-image-object-position, center);
-    background-color: var(--product-image-bg-color);
-    max-width: var(--product-image-max-w, 4rem);
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.5rem 0.35rem;
+  border-radius: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--vi-search-suggest-item-hover, #f8fafc);
+    text-decoration: none;
+    color: inherit;
   }
+
+  &__image {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 0.55rem;
+    background: var(--vi-search-suggest-thumb-bg, #f1f5f9);
+    overflow: hidden;
+  }
+
+  &__media {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--product-image-object-fit, contain);
+    object-position: center;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  &__meta {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: var(--vi-search-suggest-meta, #94a3b8);
+  }
+
+  &__name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--vi-search-suggest-name, #0f172a);
+  }
+
+  &__pricing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-top: 0.1rem;
+  }
+
+  &__price {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--vi-search-suggest-price, #0f172a);
+
+    &.is-sale {
+      color: var(--vi-search-suggest-sale, #dc2626);
+    }
+  }
+
+  &__list-price {
+    font-size: 0.8125rem;
+    color: var(--vi-search-suggest-list-price, #94a3b8);
+    text-decoration: line-through;
+  }
+}
+
+.vi-search-suggest-summary {
+  flex: 0 0 auto;
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.65rem;
+  background: var(--vi-search-suggest-footer-bg, #f1f5f9);
+  text-align: center;
+
+  &__action {
+    display: inline-block;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--vi-search-suggest-footer-color, #334155);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--vi-search-suggest-footer-hover, #0f172a);
+      text-decoration: none;
+    }
+  }
+}
+
+.vi-search-suggest-empty {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: var(--vi-search-suggest-empty, #64748b);
+  font-size: 0.9375rem;
 }
