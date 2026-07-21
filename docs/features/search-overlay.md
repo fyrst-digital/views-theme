@@ -21,7 +21,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Backdrop and Close are nested UX components under `Search/Overlay/`.
 - Suggest is inserted as the **next sibling after the bar form**.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (`showTieredPrices=false`, `showTaxNote=false`, list price via shared Price component).
-- Suggest subcomponents (Heading, Item, Summary, Empty) live nested under `Search/Suggest/`.
+- Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`.
 
 ## How it works
 
@@ -94,6 +94,6 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Action | `src/Resources/views/components/Search/Action.*` |
 | Bar | `src/Resources/views/components/Search/Bar.*` |
 | Suggest | `src/Resources/views/components/Search/Suggest.*` |
-| Suggest children | `src/Resources/views/components/Search/Suggest/{Heading,Item,Summary,Empty}.*` |
+| Suggest children | `src/Resources/views/components/Search/Suggest/{Heading,Results,Item,Summary,Empty}.*` |
 | Product pieces used by suggest | `src/Resources/views/components/Product/Cover.html.twig`, `Name.html.twig`, `Price.html.twig` |
 | SCSS | `src/Resources/app/storefront/src/scss/component/search.scss` |

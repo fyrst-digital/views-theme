@@ -1,0 +1,21 @@
+{% props
+    searchResult,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% for product in searchResult %}
+            {% block item %}
+                <twig:ViewsTheme:Search:Suggest:Item
+                    :product="product"
+                    class="g-col-4 g-col-lg-2" />
+            {% endblock %}
+        {% endfor %}
+    {% endblock %}
+</div>

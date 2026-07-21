@@ -17,7 +17,7 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
-    {% block container %}
+    {% block content %}
         {% if searchResult.total > 0 %}
             {% block heading %}
                 <twig:ViewsTheme:Search:Suggest:Heading
@@ -26,18 +26,8 @@
             {% endblock %}
 
             {% block results %}
-                <div
-                    {{ attributes.nested('results') }}
-                    class="{{ cx.results.apply() }}"
-                >
-                    {% for product in searchResult %}
-                        {% block result_item %}
-                            <twig:ViewsTheme:Search:Suggest:Item 
-                                :product="product"
-                                class="g-col-4 g-col-lg-2" />
-                        {% endblock %}
-                    {% endfor %}
-                </div>
+                <twig:ViewsTheme:Search:Suggest:Results 
+                    :searchResult="searchResult" />
             {% endblock %}
 
             {% block summary %}
