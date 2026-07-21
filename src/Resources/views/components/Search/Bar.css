@@ -2,4 +2,10 @@
     box-shadow: none !important;
     transition: all 200ms;
     --input-focus-outline-color: var(--primary);
+
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        appearance: none;
+    }
 }

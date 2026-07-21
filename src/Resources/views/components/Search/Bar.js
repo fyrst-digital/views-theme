@@ -10,6 +10,7 @@ export default class SearchBar extends ShopwareComponent {
         inputSelector: 'input[type="search"]',
         listboxId: 'search-suggest-listbox',
         viewAllSelector: '[data-action="view-all"]',
+        overlayOpenEvent: 'ViewsTheme:Search:Overlay:open',
     }
 
     init() {
@@ -27,21 +28,21 @@ export default class SearchBar extends ShopwareComponent {
         this._onInput = this._onInput.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
         this._onSubmit = this._onSubmit.bind(this)
-        this._onDocumentClick = this._onDocumentClick.bind(this)
+        this._onOverlayOpen = this._onOverlayOpen.bind(this)
         this._onResultsClick = this._onResultsClick.bind(this)
         this._onResultsKeydown = this._onResultsKeydown.bind(this)
 
         this._input.addEventListener('input', this._onInput)
         this._input.addEventListener('keydown', this._onKeydown)
         this.el.addEventListener('submit', this._onSubmit)
-        document.addEventListener('click', this._onDocumentClick)
+        document.addEventListener(this.options.overlayOpenEvent, this._onOverlayOpen)
     }
 
     destroy() {
         this._input?.removeEventListener('input', this._onInput)
         this._input?.removeEventListener('keydown', this._onKeydown)
         this.el.removeEventListener('submit', this._onSubmit)
-        document.removeEventListener('click', this._onDocumentClick)
+        document.removeEventListener(this.options.overlayOpenEvent, this._onOverlayOpen)
 
         if (this._debounceTimer) {
             clearTimeout(this._debounceTimer)
@@ -210,21 +211,26 @@ export default class SearchBar extends ShopwareComponent {
         }))
     }
 
-    _onDocumentClick(event) {
-        const target = event.target
-        if (!(target instanceof Node)) {
+    _onOverlayOpen(event) {
+        const overlay = event.target
+        if (!(overlay instanceof Element) || !overlay.contains(this.el)) {
             return
         }
 
-        if (this.el.contains(target)) {
+        if (this._resultsEl && !this._resultsEl.isConnected) {
+            this._resultsEl = null
+        }
+
+        const term = this._input.value.trim()
+        if (term.length < this.options.minChars) {
             return
         }
 
-        if (this._resultsEl?.contains(target)) {
+        if (this._resultsEl) {
             return
         }
 
-        this._clearResults()
+        void this._fetchSuggest(term)
     }
 
     _onResultsClick(event) {

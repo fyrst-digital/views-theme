@@ -4,33 +4,6 @@ body.vi-search-overlay-open {
   overflow: hidden;
 }
 
-.vi-search-bar__input {
-  &::-webkit-search-decoration,
-  &::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-  }
-}
-
 .vi-search-suggest__results {
   max-height: min(60vh, 28rem);
-}
-
-.vi-search-suggest-item {
-
-  &__image {
-    width: 3.5rem;
-    height: 3.5rem;
-  }
-
-  &__media {
-    object-fit: contain;
-    object-position: center;
-  }
-
-  &__cover {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
 }

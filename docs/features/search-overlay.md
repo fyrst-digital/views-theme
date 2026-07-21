@@ -39,6 +39,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 1. `Search:Overlay:Backdrop` / `Search:Overlay:Close` dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`
 2. `Search:Overlay` listens and calls `close()`
 3. `Escape` also calls `close()`
+4. Input value and suggest DOM stay mounted while the overlay is closed (no click-outside teardown)
 
 ### Suggest flow
 
@@ -49,6 +50,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 3. Abort previous in-flight request
 4. Mount HTML **after the form**
 5. Wire keyboard focus + analytics custom events
+6. On `ViewsTheme:Search:Overlay:open`, if the input still has a term ≥ `minChars` and results are missing (or detached), re-fetch suggest
 
 ```
 frontend.views-theme.search.suggest
