@@ -20,7 +20,7 @@
     {% block container %}
         {% if searchResult.total > 0 %}
             {% block heading %}
-                <twig:ViewsTheme:Search:SuggestHeading
+                <twig:ViewsTheme:Search:Suggest:Heading
                     total="{{searchResult.total}}"
                     class="fs-4 fw-semibold p-4" />
             {% endblock %}
@@ -32,7 +32,7 @@
                 >
                     {% for product in searchResult %}
                         {% block result_item %}
-                            <twig:ViewsTheme:Search:SuggestItem 
+                            <twig:ViewsTheme:Search:Suggest:Item 
                                 :product="product"
                                 class="g-col-4 g-col-lg-2" />
                         {% endblock %}
@@ -41,14 +41,14 @@
             {% endblock %}
 
             {% block summary %}
-                <twig:ViewsTheme:Search:SuggestSummary
+                <twig:ViewsTheme:Search:Suggest:Summary
                     :total="searchResult.total"
                     :searchTerm="searchTerm"
                 />
             {% endblock %}
         {% else %}
             {% block empty %}
-                <twig:ViewsTheme:Search:SuggestEmpty />
+                <twig:ViewsTheme:Search:Suggest:Empty />
             {% endblock %}
         {% endif %}
     {% endblock %}
