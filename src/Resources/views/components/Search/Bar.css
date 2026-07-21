@@ -1,6 +1,5 @@
 .vi-search-bar__input {
     box-shadow: none !important;
     transition: all 200ms;
-    --input-focus-bg-color: var(--light);
     --input-focus-outline-color: var(--primary);
 }

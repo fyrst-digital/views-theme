@@ -20,12 +20,9 @@
     {% block container %}
         {% if searchResult.total > 0 %}
             {% block heading %}
-                <div
-                    {{ attributes.nested('heading') }}
-                    class="{{ cx.heading.apply() }}"
-                >
-                    Products
-                </div>
+                <twig:ViewsTheme:Search:SuggestHeading
+                    total="{{searchResult.total}}"
+                    class="fs-4 fw-semibold p-4" />
             {% endblock %}
 
             {% block results %}

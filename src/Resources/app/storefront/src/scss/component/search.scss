@@ -17,10 +17,6 @@ body.vi-search-overlay-open {
 }
 
 .vi-search-suggest-item {
-  &:hover,
-  &:focus-visible {
-    background-color: var(--bs-tertiary-bg, #f8fafc);
-  }
 
   &__image {
     width: 3.5rem;

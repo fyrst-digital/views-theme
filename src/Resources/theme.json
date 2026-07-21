@@ -17,7 +17,35 @@
     "fields": {
       "sw-color-brand-primary": {
         "type": "color",
-        "value": "#19BF56",
+        "value": "#F87060",
+        "editable": true,
+        "block": "colors",
+        "order": 100
+      },
+      "sw-color-brand-secondary": {
+        "type": "color",
+        "value": "#71816D",
+        "editable": true,
+        "block": "colors",
+        "order": 100
+      },
+      "sw-color-brand-tertiary": {
+        "type": "color",
+        "value": "#A393BF",
+        "editable": true,
+        "block": "colors",
+        "order": 100
+      },
+      "sw-color-brand-light": {
+        "type": "color",
+        "value": "#faf5ee",
+        "editable": true,
+        "block": "colors",
+        "order": 100
+      },
+      "sw-color-brand-dark": {
+        "type": "color",
+        "value": "#2E282A",
         "editable": true,
         "block": "colors",
         "order": 100

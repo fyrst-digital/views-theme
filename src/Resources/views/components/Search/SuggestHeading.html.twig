@@ -1,0 +1,28 @@
+{% props
+    title = 'Products',
+    total = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: {
+        base: 'vi-search-suggest__heading'
+    },
+    total: {
+        base: ''
+    }
+}) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {{title}} 
+    {% if total %}
+        <span
+            {{ attributes.nested('total') }}
+            class="{{ cx.total.apply() }}">
+            ({{total}})
+        </span>
+    {% endif %}
+</div>
