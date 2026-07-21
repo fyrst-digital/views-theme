@@ -8,8 +8,13 @@
 |------|-----------|---------|
 | UX component root (co-located JS) | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
 | Twig → JS options | `data-component-options` | JSON object |
+| Internal interactive hooks | `data-action="…"` | `view-all` |
 
-Do **not** add new `data-ref` attributes. Shopware mounts co-located JS from `data-component` only. Some existing templates still use `data-ref` for legacy component JS — leave those until migrated; do not extend the pattern.
+Prefer **event delegation** on the component root for `data-action` clicks.
+
+Semantic element selectors are fine when unambiguous (`input[type="search"]`, `button[type="submit"]`).
+
+Do **not** use `data-ref`. Prefer `data-action` or semantic selectors. Legacy components may still have `data-ref` — leave until migrated; do not extend the pattern.
 
 ## Co-located component JS
 
@@ -24,6 +29,9 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
 | Search overlay | `ViewsTheme:Search:Overlay` | `Search/Overlay.js` |
+| Search overlay backdrop | `ViewsTheme:Search:Overlay:Backdrop` | `Search/Overlay/Backdrop.js` |
+| Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
+| Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
 
 Build (project root):
 
@@ -44,7 +52,7 @@ Data: `page.extensions.viewsTheme.variantsGrid`.
 | Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
 
-Internal nodes still use legacy `data-ref` in markup for current JS — do not add more.
+Internal nodes may still use legacy `data-ref` — do not add more.
 
 See [Variants grid](../features/variants-grid.md).
 
@@ -60,13 +68,18 @@ See [Preferred delivery date](../features/delivery-date.md).
 
 ### Search overlay
 
-Lazy-loaded dialog from the header search action.
+Lazy-loaded dialog from the header search action. Suggest UX lives on the bar component (not core `SearchWidgetPlugin`).
 
 | Hook | Attribute |
 |------|-----------|
 | Action | `data-component="ViewsTheme:Search:Action"` |
 | Overlay | `data-component="ViewsTheme:Search:Overlay"` |
+| Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
+| Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
+| Bar | `data-component="ViewsTheme:Search:Bar"` |
+| View all results | `data-action="view-all"` |
 
-Backdrop / close still use legacy `data-ref` in markup for current JS — do not add more.
+Backdrop/Close dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`; Overlay listens and closes.  
+Suggest HTML is inserted as the form’s next sibling.
 
 See [Search overlay](../features/search-overlay.md).

@@ -4,19 +4,25 @@
     cover = null,
     displayMode = 'standard',
     sizes = {},
+    showLink = true,
+    tag = 'div',
     cva = {},
 %}
 
+{% set rootTag = showLink is same as(true) ? 'a' : tag %}
+
 {% set cx = vi_cva({
-    root: { base: 'vi-product-cover flex-fill product-image-link is-' ~ displayMode },
-    image: { base: 'vi-product-cover__image' },
+    root: { base: 'vi-product-cover is-' ~ displayMode },
+    image: { base: 'vi-product-cover__image rounded-3 w-100 d-block' },
     video: { base: 'vi-product-cover__video' },
-    placeholder: { base: 'vi-product-cover__placeholder product-image-placeholder' },
+    placeholder: { base: 'vi-product-cover__placeholder' },
 }|replace_recursive(cva)) %}
 
-<a
-    href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
-    title="{{ name }}"
+<{{ rootTag|raw }}
+    {% if showLink is same as(true) %}
+        href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
+        title="{{ name }}"
+    {% endif %}
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -71,4 +77,4 @@
             {% endblock %}
         {% endif %}
     {% endblock %}
-</a>
+</{{ rootTag|raw }}>

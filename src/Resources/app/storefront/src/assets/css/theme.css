@@ -1,13 +1,16 @@
+.header-action {
+  --icon-size: 24px;
+  --btn-border-radius: var(--border-radius-pill);
 
-  .header-action {
-    --icon-size: 24px;
-    --btn-border-radius: var(--border-radius-pill);
-
-    .badge {
-      --badge-position: absolute;
-      --badge-padding-x: 4px;
-      --badge-padding-y: 4px;
-      --badge-font-size: 12px;
-      --badge-min-w: 20px;
-    }
+  .badge {
+    --badge-position: absolute;
+    --badge-padding-x: 4px;
+    --badge-padding-y: 4px;
+    --badge-font-size: 12px;
+    --badge-min-w: 20px;
   }
+}
+
+.vi-search-suggest__results {
+  --columns: 4;
+}

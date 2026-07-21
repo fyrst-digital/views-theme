@@ -17,10 +17,7 @@
     class="{{ cx.root.apply() }}"
 >
     {% block backdrop %}
-        <div
-            {{ attributes.nested('backdrop') }}
-            class="{{ cx.backdrop.apply() }}"
-        ></div>
+        <twig:ViewsTheme:Search:Overlay:Backdrop />
     {% endblock %}
 
     {% block panel %}
@@ -29,14 +26,7 @@
             class="{{ cx.panel.apply() }}"
         >
             {% block close %}
-                <button
-                    type="button"
-                    aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
-                    {{ attributes.nested('close') }}
-                    class="{{ cx.close.apply() }}"
-                >
-                    {{ vi_icon('x') }}
-                </button>
+                <twig:ViewsTheme:Search:Overlay:Close />
             {% endblock %}
 
             {% block body %}

@@ -2,32 +2,34 @@
     searchTerm = null,
     minSearchLength = null,
     suggestUrl = null,
+    delay = 250,
     cva = {},
 %}
 
 {% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 {% set minSearchLength = minSearchLength is not null ? minSearchLength : shopware.minSearchLength %}
 {% set suggestUrl = suggestUrl is not null ? suggestUrl : path('frontend.views-theme.search.suggest') %}
-{% set searchWidgetOptions = { searchWidgetMinChars: minSearchLength } %}
+{% set componentOptions = {
+    suggestUrl: suggestUrl,
+    minChars: minSearchLength,
+    delay: delay,
+} %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
     action="{{ path('frontend.search.page') }}"
     method="get"
-    data-search-widget="true"
-    data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
-    data-url="{{ suggestUrl }}?search="
-    data-ref="search-bar"
+    data-component="ViewsTheme:Search:Bar"
+    data-component-options="{{ componentOptions|json_encode }}"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
-
         {% block input %}
             <input
                 type="search"
-                id="header-main-search-input"
+                id="SearchOverlayInput"
                 name="search"
                 autocomplete="off"
                 autocapitalize="off"
@@ -37,29 +39,15 @@
                 aria-autocomplete="list"
                 aria-expanded="false"
                 value="{{ searchTerm }}"
-                data-ref="input"
                 {{ attributes.nested('input') }}
                 class="{{ cx.input.apply() }}"
             >
-        {% endblock %}
-
-        {% block clear %}
-            <button
-                type="button"
-                aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
-                data-ref="clear"
-                {{ attributes.nested('clear') }}
-                class="{{ cx.clear.apply() }}"
-            >
-                {{ vi_icon('x') }}
-            </button>
         {% endblock %}
 
         {% block submit %}
             <button
                 type="submit"
                 aria-label="{{ 'header.searchButton'|trans|striptags }}"
-                data-ref="submit"
                 {{ attributes.nested('submit') }}
                 class="{{ cx.submit.apply() }}"
             >
@@ -67,5 +55,4 @@
             </button>
         {% endblock %}
     {% endblock %}
-
 </form>

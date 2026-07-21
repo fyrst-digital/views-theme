@@ -1,0 +1,4 @@
+.vi-search-suggest-item {
+    transition: all 200ms;
+    text-decoration-line: var(--decoration-line, none) !important;
+}

@@ -68,7 +68,6 @@ export default class SearchAction extends ShopwareComponent {
 
             this._mountOverlay(this._overlayHtml)
             await this._waitForOverlayInstance()
-            this._initializePlugins()
 
             const overlay = this._getOverlayInstance()
             if (overlay && typeof overlay.open === 'function') {
@@ -99,16 +98,6 @@ export default class SearchAction extends ShopwareComponent {
 
         document.body.appendChild(overlayEl)
         this._overlayEl = overlayEl
-    }
-
-    _initializePlugins() {
-        if (!this._overlayEl || !window.PluginManager) {
-            return
-        }
-
-        if (typeof window.PluginManager.initializePluginsInParentElement === 'function') {
-            window.PluginManager.initializePluginsInParentElement(this._overlayEl)
-        }
     }
 
     async _waitForOverlayInstance(retries = 20) {

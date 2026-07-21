@@ -1,0 +1,11 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    data-component="ViewsTheme:Search:Overlay:Backdrop"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+></div>

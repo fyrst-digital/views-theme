@@ -9,19 +9,18 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Header `Search:Action` opens `Search:Overlay` on click
 - Overlay HTML is fetched once from a dedicated theme widget and cached client-side
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
-- Overlay composes `Search:Bar` and uses core `SearchWidgetPlugin` for debounce/fetch UX
+- `Search:Bar` owns suggest UX (debounce, fetch, DOM insert) — **not** core `SearchWidgetPlugin`
 - Suggest HTML is rendered by the theme controller as `ViewsTheme:Search:Suggest` with explicit props
-- Close via close button, backdrop click, Escape, or toggling the action again
+- Close via isolated `Search:Overlay:Close` / `Search:Overlay:Backdrop`, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
 
 ## Layout notes
 
-- Styling is **Bootstrap utilities first** (in sibling `*.cva.twig`). Custom SCSS in `search.scss` is last resort only (body scroll lock, thumb size, results max-height, item hover via `--bs-tertiary-bg`).
-- Overlay open/close toggles `d-none` / `d-flex` in `Overlay.js` (no custom `.is-open` styles).
-- `Search:Bar` keeps submit as a **direct form child after the chrome row** so `SearchWidgetPlugin` injects suggest markup under the input (not inside the chrome flex row).
-- Suggest is **in-flow** inside the panel (not a floating absolute dropdown).
-- Product rows: thumb · optional manufacturer/category meta · name · compact price (+ strikethrough list price).
-- No category filter, articles column, or voice search in the current scope.
+- Styling is **Bootstrap utilities first** (in sibling `*.cva.twig`). Custom SCSS in `search.scss` is last resort only.
+- Overlay open/close toggles `d-none` / `d-flex` in `Overlay.js`.
+- Backdrop and Close are nested UX components under `Search/Overlay/`.
+- Suggest is inserted as the **next sibling after the bar form**.
+- Product rows (`Search:SuggestItem`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (`showTieredPrices=false`, `showTaxNote=false`, list price via shared Price component).
 
 ## How it works
 
@@ -30,19 +29,30 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 1. `ViewsTheme:Search:Action` reads `overlayUrl` from `data-component-options`
 2. First click fetches `frontend.views-theme.search.overlay`
 3. Response HTML is appended to `document.body`
-4. Shopware component system initializes `ViewsTheme:Search:Overlay`
-5. `PluginManager.initializePluginsInParentElement` boots `SearchWidgetPlugin` on the bar form
-6. Subsequent clicks toggle the existing overlay instance (no extra network request)
+4. Shopware component system initializes `ViewsTheme:Search:Overlay` and nested `ViewsTheme:Search:Bar`
+5. Subsequent clicks toggle the existing overlay instance
+
+### Close flow
+
+1. `Search:Overlay:Backdrop` / `Search:Overlay:Close` dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`
+2. `Search:Overlay` listens and calls `close()`
+3. `Escape` also calls `close()`
 
 ### Suggest flow
 
-`Search:Bar` keeps core plugin hooks (`data-search-widget`, `.js-search-form`, `.js-search-result`) but points `data-url` at the **theme** route:
+`ViewsTheme:Search:Bar` (`Bar.js`):
+
+1. Debounced `input` on the search field
+2. If term length ≥ `minChars`, `GET` theme route with `search` query param
+3. Abort previous in-flight request
+4. Mount HTML **after the form**
+5. Wire keyboard focus + analytics custom events
 
 ```
 frontend.views-theme.search.suggest
 ```
 
-That controller loads `SuggestPageLoader`, then renders:
+Controller loads `SuggestPageLoader`, then:
 
 ```twig
 {{ component('ViewsTheme:Search:Suggest', {
@@ -51,8 +61,6 @@ That controller loads `SuggestPageLoader`, then renders:
 }) }}
 ```
 
-Props are passed **explicitly**. Self-closing UX tags do not inherit outer Twig context (`page`), so never rely on `page.*` inside a `component()` render without props.
-
 ### Controller
 
 | Route name | Path | Method |
@@ -60,23 +68,20 @@ Props are passed **explicitly**. Self-closing UX tags do not inherit outer Twig 
 | `frontend.views-theme.search.overlay` | `/widgets/search/overlay` | `GET` (XHR) |
 | `frontend.views-theme.search.suggest` | `/widgets/search/suggest` | `GET` (XHR) |
 
-Overlay optional query params:
-
-| Param | Purpose |
-|-------|---------|
-| `search` | Prefill bar value |
-| `minSearchLength` | Override min chars for suggest |
-
-Suggest uses the same `search` query param as core (`?search=`).
-
 ## Hooks
 
 | Component | Attribute |
 |-----------|-----------|
 | Action button | `data-component="ViewsTheme:Search:Action"` |
 | Overlay root | `data-component="ViewsTheme:Search:Overlay"` |
+| Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
+| Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
+| Search bar | `data-component="ViewsTheme:Search:Bar"` |
+| View all | `data-action="view-all"` |
 
-Backdrop / close / bar still use legacy `data-ref` for the current co-located JS. Do not add new `data-ref`s; see [JavaScript conventions](../conventions/javascript.md).
+Bar options (`data-component-options`): `suggestUrl`, `minChars`, `delay`.
+
+See [JavaScript conventions](../conventions/javascript.md).
 
 ## Key source files
 
@@ -84,6 +89,9 @@ Backdrop / close / bar still use legacy `data-ref` for the current co-located JS
 |------|------|
 | Controller | `src/Controller/SearchOverlayController.php` |
 | Overlay | `src/Resources/views/components/Search/Overlay.*` |
+| Backdrop / Close | `src/Resources/views/components/Search/Overlay/Backdrop.*`, `Close.*` |
 | Action | `src/Resources/views/components/Search/Action.*` |
-| Bar / Suggest | `src/Resources/views/components/Search/` |
+| Bar | `src/Resources/views/components/Search/Bar.*` |
+| Suggest | `src/Resources/views/components/Search/Suggest*` |
+| Product pieces used by suggest | `src/Resources/views/components/Product/Cover.html.twig`, `Name.html.twig`, `Price.html.twig` |
 | SCSS | `src/Resources/app/storefront/src/scss/component/search.scss` |

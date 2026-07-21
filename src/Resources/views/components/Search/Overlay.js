@@ -3,27 +3,24 @@ export default class SearchOverlay extends ShopwareComponent {
         openClass: 'd-flex',
         closedClass: 'd-none',
         bodyOpenClass: 'vi-search-overlay-open',
-        backdropRef: 'backdrop',
-        closeRef: 'close',
         inputSelector: 'input[type="search"]',
+        dismissEvent: 'ViewsTheme:Search:Overlay:dismiss',
     }
 
     init() {
         this._open = false
+        this._onDismiss = this._onDismiss.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
-        this._onBackdropClick = this._onBackdropClick.bind(this)
-        this._onCloseClick = this._onCloseClick.bind(this)
-
-        this._backdrop = this.el.querySelector(`[data-ref="${this.options.backdropRef}"]`)
-        this._closeButton = this.el.querySelector(`[data-ref="${this.options.closeRef}"]`)
         this._input = this.el.querySelector(this.options.inputSelector)
 
-        this._registerEvents()
+        this.el.addEventListener(this.options.dismissEvent, this._onDismiss)
+        document.addEventListener('keydown', this._onKeydown)
         this.open()
     }
 
     destroy() {
-        this._unregisterEvents()
+        this.el.removeEventListener(this.options.dismissEvent, this._onDismiss)
+        document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
     }
 
@@ -59,28 +56,9 @@ export default class SearchOverlay extends ShopwareComponent {
         return this._open
     }
 
-    _registerEvents() {
-        document.addEventListener('keydown', this._onKeydown)
-
-        if (this._backdrop) {
-            this._backdrop.addEventListener('click', this._onBackdropClick)
-        }
-
-        if (this._closeButton) {
-            this._closeButton.addEventListener('click', this._onCloseClick)
-        }
-    }
-
-    _unregisterEvents() {
-        document.removeEventListener('keydown', this._onKeydown)
-
-        if (this._backdrop) {
-            this._backdrop.removeEventListener('click', this._onBackdropClick)
-        }
-
-        if (this._closeButton) {
-            this._closeButton.removeEventListener('click', this._onCloseClick)
-        }
+    _onDismiss(event) {
+        event.preventDefault?.()
+        this.close()
     }
 
     _onKeydown(event) {
@@ -92,14 +70,6 @@ export default class SearchOverlay extends ShopwareComponent {
             event.preventDefault()
             this.close()
         }
-    }
-
-    _onBackdropClick() {
-        this.close()
-    }
-
-    _onCloseClick() {
-        this.close()
     }
 
     _focusInput() {

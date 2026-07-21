@@ -10,18 +10,17 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <div
-    id="search-suggest-listbox"
-    role="listbox"
-    aria-label="{{ 'header.searchDropdownTitle'|trans|striptags }}"
-    data-ref="suggest"
-    {{ attributes }}
+    {{ attributes.defaults({
+        id: 'search-suggest-listbox',
+        role: 'listbox',
+        'aria-label': 'header.searchDropdownTitle'|trans|striptags,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block container %}
         {% if searchResult.total > 0 %}
             {% block heading %}
                 <div
-                    data-ref="heading"
                     {{ attributes.nested('heading') }}
                     class="{{ cx.heading.apply() }}"
                 >
@@ -31,13 +30,14 @@
 
             {% block results %}
                 <div
-                    data-ref="results"
                     {{ attributes.nested('results') }}
                     class="{{ cx.results.apply() }}"
                 >
                     {% for product in searchResult %}
                         {% block result_item %}
-                            <twig:ViewsTheme:Search:SuggestItem :product="product" />
+                            <twig:ViewsTheme:Search:SuggestItem 
+                                :product="product"
+                                class="g-col-4 g-col-lg-2" />
                         {% endblock %}
                     {% endfor %}
                 </div>

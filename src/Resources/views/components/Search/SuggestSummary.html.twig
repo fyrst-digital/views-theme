@@ -8,7 +8,6 @@
 
 {% if total > 0 %}
     <div
-        data-ref="summary"
         {{ attributes }}
         class="{{ cx.root.apply() }}"
     >
@@ -16,6 +15,7 @@
             <a
                 href="{{ path('frontend.search.page') }}?search={{ searchTerm|url_encode }}"
                 title="{{ 'header.searchAllResults'|trans|striptags }}"
+                data-action="view-all"
                 {{ attributes.nested('action') }}
                 class="{{ cx.action.apply() }}"
             >
