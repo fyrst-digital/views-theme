@@ -1,0 +1,14 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Scroll:Area',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}{% endblock %}
+</div>

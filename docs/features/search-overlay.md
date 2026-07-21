@@ -22,6 +22,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Suggest is inserted as the **next sibling after the bar form**.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (`showTieredPrices=false`, `showTaxNote=false`, list price via shared Price component).
 - Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`.
+- Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `--scroll-fade: 40px`); JS toggles `data-scroll-up` / `data-scroll-down` so fades hide at the corresponding edge (and when content does not overflow).
 
 ## How it works
 
@@ -78,6 +79,7 @@ Controller loads `SuggestPageLoader`, then:
 | Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
 | Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
 | Search bar | `data-component="ViewsTheme:Search:Bar"` |
+| Scroll area (results grid) | `data-component="ViewsTheme:Scroll:Area"` |
 | View all | `data-action="view-all"` |
 
 Bar options (`data-component-options`): `suggestUrl`, `minChars`, `delay`.
@@ -95,5 +97,6 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Bar | `src/Resources/views/components/Search/Bar.*` |
 | Suggest | `src/Resources/views/components/Search/Suggest.*` |
 | Suggest children | `src/Resources/views/components/Search/Suggest/{Heading,Results,Item,Summary,Empty}.*` |
+| Scroll area | `src/Resources/views/components/Scroll/Area.*` |
 | Product pieces used by suggest | `src/Resources/views/components/Product/Cover.html.twig`, `Name.html.twig`, `Price.html.twig` |
 | SCSS | `src/Resources/app/storefront/src/scss/component/search.scss` |

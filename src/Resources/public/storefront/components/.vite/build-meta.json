@@ -7,9 +7,15 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js": {
-      "file": "ViewsTheme/Page/Header/Action/Cart-DUETUych.js",
+      "file": "ViewsTheme/Page/Header/Action/Cart-D1SkysES.js",
       "name": "ViewsTheme/Page/Header/Action/Cart",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js": {
+      "file": "ViewsTheme/Scroll/Area-CVhdyB9c.js",
+      "name": "ViewsTheme/Scroll/Area",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
@@ -31,19 +37,19 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js": {
-      "file": "ViewsTheme/Search/Overlay/Backdrop-DK8sZr4Z.js",
+      "file": "ViewsTheme/Search/Overlay/Backdrop-DLyBfeYW.js",
       "name": "ViewsTheme/Search/Overlay/Backdrop",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js": {
-      "file": "ViewsTheme/Search/Overlay/Close-C1k27pBx.js",
+      "file": "ViewsTheme/Search/Overlay/Close-p3v4tHNy.js",
       "name": "ViewsTheme/Search/Overlay/Close",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-      "file": "ViewsTheme/VariantsGrid/Container-D1D0k4ok.js",
+      "file": "ViewsTheme/VariantsGrid/Container-DOUgRfBH.js",
       "name": "ViewsTheme/VariantsGrid/Container",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
       "isEntry": true
@@ -57,8 +63,17 @@
       "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Product/Cover.css",
       "isEntry": true
     },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Scroll/Area.css": {
+      "file": "ViewsTheme/Scroll/Area-DVEaZ4CI.css",
+      "name": "ViewsTheme/Scroll/Area.css",
+      "names": [
+        "ViewsTheme/Scroll/Area.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Scroll/Area.css",
+      "isEntry": true
+    },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Bar.css": {
-      "file": "ViewsTheme/Search/Bar-DHHmoORw.css",
+      "file": "ViewsTheme/Search/Bar-CHgr7VVV.css",
       "name": "ViewsTheme/Search/Bar.css",
       "names": [
         "ViewsTheme/Search/Bar.css"
@@ -75,13 +90,13 @@
       "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css",
       "isEntry": true
     },
-    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/SuggestItem.css": {
-      "file": "ViewsTheme/Search/SuggestItem-CUS-HuE4.css",
-      "name": "ViewsTheme/Search/SuggestItem.css",
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Suggest/Item.css": {
+      "file": "ViewsTheme/Search/Suggest/Item-Dnd0BBWH.css",
+      "name": "ViewsTheme/Search/Suggest/Item.css",
       "names": [
-        "ViewsTheme/Search/SuggestItem.css"
+        "ViewsTheme/Search/Suggest/Item.css"
       ],
-      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/SuggestItem.css",
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Suggest/Item.css",
       "isEntry": true
     }
   },

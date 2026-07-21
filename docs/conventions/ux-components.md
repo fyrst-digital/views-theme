@@ -47,6 +47,28 @@ Co-locate like JS: `Alert.html.twig` + `Alert.cva.twig` (+ `Alert.js` when inter
 
 See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
+## Nested components (Symfony UX)
+
+Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not** mix `{% block %}` with HTML component tags ([Symfony nested components](https://symfony.com/bundles/ux-twig-component/current/index.html#nested-components)):
+
+```twig
+{# ✅ body → default content block; for-loops OK #}
+<twig:ViewsTheme:Scroll:Area class="{{ cx.root.apply() }}">
+    {% for item in items %}
+        <twig:ViewsTheme:Some:Child :item="item" />
+    {% endfor %}
+</twig:ViewsTheme:Scroll:Area>
+
+{# ✅ named block override #}
+<twig:ViewsTheme:Card>
+    <twig:block name="footer">…</twig:block>
+</twig:ViewsTheme:Card>
+
+{# ❌ {% block %} inside <twig:…> #}
+```
+
+`class="{{ … }}"`, `:prop="expr"`, and `{% for %}` inside HTML tags are fine.
+
 ## JavaScript
 
 | Role | Attribute | Example |
@@ -75,6 +97,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | LineItem:*, Cart:*, Wishlist:* | UX / shells |
 | Account:*, Address:*, Checkout:*, Order:* | UX / shells |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |
+| Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
 | Legacy `vi_define_classes` / `defaultBaseClasses` API | **Removed** |
 

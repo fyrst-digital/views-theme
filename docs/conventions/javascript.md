@@ -32,6 +32,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Search overlay backdrop | `ViewsTheme:Search:Overlay:Backdrop` | `Search/Overlay/Backdrop.js` |
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
+| Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 
 Build (project root):
 
@@ -80,6 +81,16 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | View all results | `data-action="view-all"` |
 
 Backdrop/Close dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`; Overlay listens and closes.  
-Suggest HTML is inserted as the form’s next sibling.
+Suggest HTML is inserted as the form’s next sibling. Product grid scrolls via nested `Scroll:Area`.
 
 See [Search overlay](../features/search-overlay.md).
+
+### Scroll area
+
+Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `--scroll-fade`).
+
+| Hook | Attribute |
+|------|-----------|
+| Root | `data-component="ViewsTheme:Scroll:Area"` |
+
+JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block.

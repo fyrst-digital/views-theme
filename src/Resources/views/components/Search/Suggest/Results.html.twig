@@ -5,17 +5,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
-<div
-    {{ attributes }}
-    class="{{ cx.root.apply() }}"
->
-    {% block content %}
-        {% for product in searchResult %}
-            {% block item %}
-                <twig:ViewsTheme:Search:Suggest:Item
-                    :product="product"
-                    class="g-col-4 g-col-lg-2" />
-            {% endblock %}
-        {% endfor %}
-    {% endblock %}
-</div>
+<twig:ViewsTheme:Scroll:Area class="{{ cx.root.apply() }}">
+    {% for product in searchResult %}
+        <twig:ViewsTheme:Search:Suggest:Item
+            :product="product"
+            class="g-col-4 g-col-lg-2" />
+    {% endfor %}
+</twig:ViewsTheme:Scroll:Area>

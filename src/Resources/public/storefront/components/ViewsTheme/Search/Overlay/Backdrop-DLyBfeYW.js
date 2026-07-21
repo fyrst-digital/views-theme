@@ -1,2 +1,2 @@
 var e=class extends ShopwareComponent{init(){this._onClick=this._onClick.bind(this),this.el.addEventListener(`click`,this._onClick)}destroy(){this.el.removeEventListener(`click`,this._onClick)}_onClick(e){e.preventDefault(),this.el.dispatchEvent(new CustomEvent(`ViewsTheme:Search:Overlay:dismiss`,{bubbles:!0}))}};export{e as default};
-//# sourceMappingURL=Close-C1k27pBx.js.map
+//# sourceMappingURL=Backdrop-DLyBfeYW.js.map
