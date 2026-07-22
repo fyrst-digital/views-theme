@@ -7,7 +7,7 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <twig:ViewsTheme:Dropdown
-    class="{{ cx.root.apply({ size: size }) }}"
+    class="{{ cx.root.apply() }}"
     placement="bottom-end"
     toggle:class="{{ cx.toggle.apply({ size: size }) }}"
     toggle:aria-label="{{ 'account.myAccount'|trans|striptags }}"

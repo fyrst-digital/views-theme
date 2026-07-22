@@ -1,11 +1,13 @@
 export default class Dropdown extends ShopwareComponent {
     init() {
-        this._panel = this.el.querySelector('[popover]')
+        this._panel = this.el
         if (!this._panel?.id) {
             return
         }
 
-        this._toggle = this.el.querySelector(`[popovertarget="${CSS.escape(this._panel.id)}"]`)
+        this._toggle = document.querySelector(
+            `[popovertarget="${CSS.escape(this._panel.id)}"]`,
+        )
         this._onToggle = this._handleToggle.bind(this)
         this._panel.addEventListener('toggle', this._onToggle)
     }

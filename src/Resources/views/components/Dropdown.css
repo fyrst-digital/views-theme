@@ -1,6 +1,6 @@
 /* Native popover + CSS anchor placement only — chrome in Dropdown.cva.twig */
 
-.vi-dropdown__panel[popover] {
+.vi-dropdown[popover] {
   position: absolute;
   inset: unset;
   margin: 0;
@@ -8,7 +8,7 @@
   max-width: min(100vw - 1.5rem, 22rem);
 }
 
-.vi-dropdown__panel[popover][data-placement='bottom-end'] {
+.vi-dropdown[popover][data-placement='bottom-end'] {
   top: anchor(bottom);
   right: anchor(right);
   left: auto;
@@ -16,7 +16,7 @@
   margin-top: 0.25rem;
 }
 
-.vi-dropdown__panel[popover][data-placement='bottom-start'] {
+.vi-dropdown[popover][data-placement='bottom-start'] {
   top: anchor(bottom);
   left: anchor(left);
   right: auto;
@@ -24,7 +24,7 @@
   margin-top: 0.25rem;
 }
 
-.vi-dropdown__panel[popover][data-placement='top-end'] {
+.vi-dropdown[popover][data-placement='top-end'] {
   bottom: anchor(top);
   right: anchor(right);
   left: auto;
@@ -32,7 +32,7 @@
   margin-bottom: 0.25rem;
 }
 
-.vi-dropdown__panel[popover][data-placement='top-start'] {
+.vi-dropdown[popover][data-placement='top-start'] {
   bottom: anchor(top);
   left: anchor(left);
   right: auto;
@@ -41,23 +41,23 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .vi-dropdown__panel[popover] {
+  .vi-dropdown[popover] {
     transition:
       opacity 0.12s ease,
       overlay 0.12s allow-discrete,
       display 0.12s allow-discrete;
   }
 
-  .vi-dropdown__panel[popover]:not(:popover-open) {
+  .vi-dropdown[popover]:not(:popover-open) {
     opacity: 0;
   }
 
-  .vi-dropdown__panel[popover]:popover-open {
+  .vi-dropdown[popover]:popover-open {
     opacity: 1;
   }
 
   @starting-style {
-    .vi-dropdown__panel[popover]:popover-open {
+    .vi-dropdown[popover]:popover-open {
       opacity: 0;
     }
   }

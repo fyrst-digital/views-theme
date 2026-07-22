@@ -7,9 +7,9 @@ Header account control: domain `Account:Action` composed with the generic `Dropd
 ```
 Page:Header:Actions
   └─ Account:Action
-       └─ Dropdown
-            ├─ toggle → user icon
-            └─ content → Account:Menu
+       └─ Dropdown (flat: button + panel, no wrapper)
+            ├─ toggle button → user icon
+            └─ panel (host) → Account:Menu
                  ├─ guest → LoginForm + register CTA
                  └─ customer → UserActions
 ```
@@ -22,11 +22,13 @@ Page:Header:Actions
 
 ## Dropdown behavior
 
+- **DOM:** Flat siblings — `<button class="vi-dropdown__toggle">` + `<div class="vi-dropdown" popover>` (no wrapper). Root attrs / root CVA / `data-component` on the **panel**
 - **Open/close:** HTML Popover (`popover="auto"` + `popovertarget`) — Escape and outside click included
 - **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). No JS positioning
-- **Slots:** `toggle` (button content only; Dropdown owns the `<button>`), default `content` (panel body)
-- **JS (a11y only):** `aria-expanded` sync; focus first focusable in panel on open; restore focus to toggle on close when focus was inside the panel
-- **Styling:** Bootstrap utilities first in `Dropdown.cva.twig` (border, rounded, shadow, bg-body, …). Co-located `Dropdown.css`: popover UA reset + anchor placement only
+- **Slots:** `toggle` (button content), default `content` (panel body)
+- **JS (a11y only):** host is the panel; finds toggle via `[popovertarget]`; syncs `aria-expanded` and focus
+- **Styling:** Bootstrap utilities first in `Dropdown.cva.twig`. Co-located `Dropdown.css`: popover UA reset + anchor placement only
+- **Header wire-up:** `toggle:class="header-action"` (icon chrome on the button, not the panel)
 - **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
@@ -49,7 +51,7 @@ Shims remain as thin wrappers with `@deprecated` comments.
 `Page:Header:Actions` renders:
 
 ```twig
-<twig:ViewsTheme:Account:Action class="header-action" />
+<twig:ViewsTheme:Account:Action toggle:class="header-action" />
 ```
 
 ## Related

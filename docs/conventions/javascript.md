@@ -111,13 +111,13 @@ JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the componentâ€
 
 ### Dropdown
 
-Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only). Flat markup (toggle button + panel host, no wrapper). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
 
 | Hook | Attribute |
 |------|-----------|
-| Root | `data-component="ViewsTheme:Dropdown"` |
+| Panel (host) | `data-component="ViewsTheme:Dropdown"` |
 
-JS only syncs `aria-expanded` and moves focus into the panel on open / back to the toggle on close. Open/close, light-dismiss, and placement stay native/CSS. Put trigger content in the `toggle` block; panel body in the default `content` block.
+JS runs on the panel, resolves the toggle via `[popovertarget="{id}"]`, syncs `aria-expanded`, and moves focus into the panel on open / back to the toggle on close. Open/close, light-dismiss, and placement stay native/CSS. Root attrs/CVA apply to the panel (`vi-dropdown`); toggle uses nested `toggle:*` / `vi-dropdown__toggle`.
 
 Build storefront assets from Shopware root: `make build-storefront`.
 
