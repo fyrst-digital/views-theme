@@ -43,6 +43,10 @@ $utilities: (
     responsive: true,
     values: static relative absolute fixed sticky
   ),
+  "cursor": (
+    property: cursor,
+    values: pointer default text
+  ),
 );
 
 $border-radius: 6px;
