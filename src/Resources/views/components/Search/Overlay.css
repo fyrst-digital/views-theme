@@ -3,4 +3,5 @@
 }
 .vi-search-overlay__panel {
     max-width: var(--panel-max-w, 1200px);
+    max-height: var(--panel-max-h, 100%);
 }

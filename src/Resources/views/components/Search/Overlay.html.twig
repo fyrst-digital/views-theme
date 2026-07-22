@@ -20,28 +20,21 @@
         <twig:ViewsTheme:Search:Overlay:Backdrop />
     {% endblock %}
 
+    {% block close %}
+        <twig:ViewsTheme:Search:Overlay:Close />
+    {% endblock %}
+
     {% block panel %}
         <div
             {{ attributes.nested('panel') }}
             class="{{ cx.panel.apply() }}"
         >
-            {% block close %}
-                <twig:ViewsTheme:Search:Overlay:Close />
-            {% endblock %}
-
-            {% block body %}
-                <div
-                    {{ attributes.nested('body') }}
-                    class="{{ cx.body.apply() }}"
-                >
-                    {% block bar %}
-                        <twig:ViewsTheme:Search:Bar
-                            :searchTerm="searchTerm"
-                            :minSearchLength="minSearchLength"
-                            input:class="fs-4 fw-semibold"
-                        />
-                    {% endblock %}
-                </div>
+            {% block bar %}
+                <twig:ViewsTheme:Search:Bar
+                    :searchTerm="searchTerm"
+                    :minSearchLength="minSearchLength"
+                    input:class="fs-4 fw-semibold"
+                />
             {% endblock %}
         </div>
     {% endblock %}
