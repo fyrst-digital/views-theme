@@ -33,6 +33,19 @@ See [Preferred delivery date](features/delivery-date.md).
 
 Path: `src/Resources/theme.json`.
 
+### Design system (summary)
+
+| Token | Value |
+|-------|--------|
+| Style | Modern Minimal |
+| Font | Figtree (`sw-font-family-base`) |
+| Primary accent | `#F87060` (`sw-color-brand-primary`) |
+| Secondary / tertiary | `#71816D` / `#A393BF` |
+| Light / dark | `#faf5ee` / `#2E282A` |
+| Base grid | 8px (SCSS spacing scale) |
+
+Authoritative field defaults: `theme.json` / theme fields table below.
+
 ### Inheritance and assets
 
 | Key | Value |

@@ -1,0 +1,31 @@
+# Hard rules (checklist)
+
+Agent-facing index of **must-follow** conventions. Rule text lives in the linked topic docs — do not duplicate it here.
+
+**Maintenance:** change conventions only in the topic page. Add/remove a checklist row here only when a new topic or link is needed. Do not expand rule prose into `AGENTS.md`.
+
+## Before coding
+
+Open the relevant links below and follow them. Full index: [docs/README.md](../README.md).
+
+## Checklist
+
+| Topic | Doc |
+|-------|-----|
+| UX tags, props, CVA, attributes, BEM `vi-*`, scope (`components/` only) | [ux-components.md](ux-components.md) |
+| Component template checklist | [components.md](components.md) |
+| `vi_cva` / `vi_cva_from_file` | [vi-cva.md](../twig/vi-cva.md) |
+| Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
+| JS: `data-component`, no CSS selectors, no new `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
+| JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
+| Removed class-map APIs (`vi_define_classes`, `vi_attr_classes`, `vi_classes`) | [css-classes.md](css-classes.md) |
+| Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
+| Design tokens (font, brand colors, grid) | [configuration.md](../configuration.md) |
+| Plugin / theme config | [configuration.md](../configuration.md) |
+
+## Related
+
+- [UX Twig components](ux-components.md)
+- [JavaScript](javascript.md)
+- [Architecture](../architecture.md)
+- Root [AGENTS.md](../../AGENTS.md) — agent routing only

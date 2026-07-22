@@ -21,8 +21,9 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 | Topic | Link |
 |-------|------|
 | Docs index | [docs/README.md](docs/README.md) |
+| Hard rules (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
-| Configuration | [docs/configuration.md](docs/configuration.md) |
+| Configuration / design tokens | [docs/configuration.md](docs/configuration.md) |
 | UX Twig components | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
 | CSS class API (legacy) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md) |
 | JavaScript selectors | [docs/conventions/javascript.md](docs/conventions/javascript.md) |

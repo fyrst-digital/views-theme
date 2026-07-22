@@ -33,6 +33,15 @@ VariantsGrid/Container.js
 
 ## Props / CVA / attributes
 
+### Props
+
+- Declare inputs with `{% props %}`.
+- Defaults live **only** in `{% props %}` (including `|trans`, `path(…)`, etc.).
+- Do **not** reassign prop names with `{% set prop = … %}` after the props block.
+- Non-prop locals (e.g. `cx` from `vi_cva_from_file`) are fine.
+
+### CVA
+
 Multi-slot class API:
 
 1. Default map: sibling **`Name.cva.twig`** (preferred for larger maps) or inline hash
@@ -43,11 +52,13 @@ Multi-slot class API:
 
 Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
 
-Non-`class` HTML attributes on the root (and nested slots) go through `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` — not inside `defaults`.
-
 Co-locate like JS: `Alert.html.twig` + `Alert.cva.twig` (+ `Alert.js` when interactive).
 
 See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
+
+### Attributes
+
+Non-`class` HTML attributes on the root (and nested slots) go through `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` — not inside `defaults`. Prefer this over bare `data-component="…"`, `action="…"`, `aria-*="…"`, etc. on the tag.
 
 ## Nested components (Symfony UX)
 
@@ -105,6 +116,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 ## Related
 
+- [Hard rules](hard-rules.md)
 - [Component templates](components.md)
 - [JavaScript](javascript.md)
 - [`vi_cva`](../twig/vi-cva.md)

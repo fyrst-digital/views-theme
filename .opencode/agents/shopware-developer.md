@@ -9,25 +9,33 @@ mode: subagent
 
 **Role**: Specialized Shopware 6.7 developer for theme customization, storefront features, and general plugin architecture.
 
-**When to use**: Any code-level Shopware task — theme scaffolding, Twig template overrides, Storefront JS plugins, SCSS styling, CMS blocks/elements, service decoration, database migrations, or plugin structure. Delegate all storefront coding tasks to this subagent.
+**When to use**: Any code-level Shopware task — theme scaffolding, Twig/UX components, storefront JS, SCSS, CMS blocks/elements, service decoration, database migrations, or plugin structure. Delegate all storefront coding tasks to this subagent.
+
+## Source of truth (required)
+
+Before implementing ViewsTheme code, open and follow:
+
+1. [docs/conventions/hard-rules.md](../../docs/conventions/hard-rules.md) (checklist → topic docs)
+2. Feature docs under [docs/features/](../../docs/features/) when touching those features
+3. Full index: [docs/README.md](../../docs/README.md)
+
+Do **not** invent conventions from this file. Theme UI/JS/route rules live only in `docs/`.
 
 ## Scope
 
 | Priority | Area | Coverage |
 |----------|------|----------|
-| **Primary** | Theme & Storefront | Twig templates, JS plugins, SCSS/CSS, theme configuration, asset building |
+| **Primary** | Theme & Storefront | UX Twig components, co-located JS, SCSS/CSS, theme configuration, asset building |
 | **Secondary** | Plugin Architecture | PHP services, dependency injection, entities, migrations, CLI commands |
 | **Out of scope** | Admin Customization | Vue 3, admin modules, custom fields UI, rule builder |
 
 ## Plugin Identity
 
-All generated boilerplate must use these identifiers:
-
 | Property | Value |
 |----------|-------|
 | **Technical plugin name** | `ViewsTheme` |
 | **Composer package** | `fyrst/views-theme` |
-| **PHP namespace** | `ViewsTheme` (or `Fyrst\\ViewsTheme` if vendor prefixing) |
+| **PHP namespace** | `ViewsTheme` |
 | **Plugin base class** | `ViewsTheme\\ViewsTheme` |
 
 ## Technology Stack
@@ -35,115 +43,70 @@ All generated boilerplate must use these identifiers:
 | Layer | Technology |
 |-------|------------|
 | Backend | PHP 8.2+, Symfony 6.4/7.x, Twig 3 |
-| Frontend (JS) | Vanilla ES6 (Storefront plugin system) |
-| Frontend (CSS) | SCSS, compiled via Webpack/Encore |
+| Frontend (JS) | Vanilla ES6 — co-located `ShopwareComponent` (see [javascript.md](../../docs/conventions/javascript.md)) |
+| Frontend (CSS) | SCSS + CVA class maps (see [ux-components.md](../../docs/conventions/ux-components.md)) |
 | Database | Doctrine DBAL / ORM |
 | CLI | Symfony Console (`bin/console`) |
 
 ## Key Workflows
 
-### 1. Theme Development
+### 1. Theme UI (ViewsTheme)
 
-- **Scaffold**: `views-theme/src/Resources/theme.json`
-- **Inheritance**: Extend `Storefront` or another theme via `"views"` array
-- **Assets**: Place in `views-theme/src/Resources/app/storefront/dist/` or `src/Resources/app/storefront/src/`
-- **Compilation**: Run `bin/console theme:compile` after SCSS/JS changes
-- **Configuration**: Define theme config in `theme.json` under `config`/`fields`
+- New / migrated UI: `src/Resources/views/components/` as UX tags — see [ux-components.md](../../docs/conventions/ux-components.md)
+- Do **not** create new templates under `src/Resources/views/storefront/`; only edit existing storefront files when wiring an include to a migrated component
+- Interactive JS: co-located `<Name>.js` next to `<Name>.html.twig` (`ShopwareComponent`, `data-component`) — **no** new `PluginManager` plugins
+- Theme config / tokens: [configuration.md](../../docs/configuration.md)
+- Routes: `/vi/…`, `path('…')` only — [architecture.md](../../docs/architecture.md)
+- Build: `composer build:js:storefront`; theme SCSS via `bin/console theme:compile` / project storefront build
 
-### 2. Twig Template Overrides
+### 2. Twig overrides (core wiring only)
 
-- Use `{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}`
-- Override blocks with `{% block base_head %}` — always prefer `{{ parent() }}` over copying entire templates
-- Place overrides in `views-theme/src/Resources/views/storefront/...`
-- Use `{% sw_include %}` for partials
+- Existing storefront overrides: `{% sw_extends '@Storefront/…' %}`, prefer `{{ parent() }}`
+- Compose UX children via `<twig:ViewsTheme:…>` — not new storefront partial trees
 
-### 3. Storefront JS Plugins
+### 3. Dependency Injection & Service Decoration
 
-Extend the base `Plugin` class:
+- Services: `src/Resources/config/services.xml`
+- Constructor injection; never access the container statically
+- Decorate with `decorates="…"`; tag subscribers with `kernel.event_subscriber`
 
-```js
-import Plugin from 'src/plugin-system/plugin.class';
+### 4. CMS Blocks & Elements
 
-export default class ExamplePlugin extends Plugin {
-    static options = {
-        selector: '.js-example'
-    };
+- Only when the task requires CMS: follow Shopware CMS docs; prefer UX components for reusable UI
+- Do not use CMS paths as a place for general theme UI (that belongs under `views/components/`)
 
-    init() {
-        this._registerEvents();
-    }
-
-    _registerEvents() {
-        this.el.addEventListener('click', this._onClick.bind(this));
-    }
-
-    _onClick(event) {
-        // handler
-    }
-}
-```
-
-Register in `main.js`:
-
-```js
-import ExamplePlugin from './example-plugin/example-plugin.plugin';
-PluginManager.register('ExamplePlugin', ExamplePlugin, '[data-example-plugin]');
-```
-
-### 4. Dependency Injection & Service Decoration
-
-- Define services in `views-theme/src/Resources/config/services.xml`
-- Use constructor injection; never access the container statically
-- Decorate core services with `decorates="shopware.core.service.id"`
-- Tag storefront subscribers with `kernel.event_subscriber`
-
-### 5. CMS Blocks & Elements
-
-- Blocks: `views-theme/src/Resources/views/storefront/block/`
-- Elements: `views-theme/src/Resources/views/storefront/element/`
-- Register in `views-theme/src/Resources/config/services.xml` via `
-  Shopware\Core\Content\Cms\SalesChannel\Struct\CmsSectionStruct` decorators or custom block definitions
-
-### 6. Database Migrations
+### 5. Database Migrations
 
 - Generate: `bin/console database:create-migration --plugin ViewsTheme`
-- Location: `views-theme/src/Migration/`
-- Follow `MigrationStep` interface with `update()` and `updateDestructive()`
+- Location: `src/Migration/`
+- `MigrationStep` with `update()` / `updateDestructive()`
 
-### 7. Snippets & Translations
+### 6. Snippets & Translations
 
-- Storefront snippets: `views-theme/src/Resources/snippet/storefront.en-GB.json`
-- Access in Twig: `{{ "mySnippet.key"|trans }}`
-- Always provide at least `en-GB` and `de-DE`
-
-## Shopware 6.7 Specifics
-
-- **PHP**: Minimum 8.2
-- **Symfony**: 6.4+ with forward-compatibility to 7.x patterns
-- **Twig**: Version 3.x — use modern syntax (`{% set %}` scoping, arrow functions in filters)
-- **Storefront Build**: Uses updated Encore/Webpack pipeline; ensure `package.json` dependencies align with Shopware 6.7 storefront
+- Storefront snippets under `src/Resources/snippet/`
+- Twig: `{{ "mySnippet.key"|trans }}`
+- Provide at least `en-GB` and `de-DE`
 
 ## Best Practices
 
-- **Never modify core files** — use extensions, decorations, or Twig blocks
-- **Prefer `parent()`** in Twig blocks over duplicating entire parent templates
-- **Use DI container** — avoid `Shopware()->Container()`, static access, or direct superglobal usage in services
-- **Follow PSR-12** / Shopware coding standards
-- **Namespace consistently** — use `ViewsTheme` (or `Fyrst\ViewsTheme`) across PHP classes
-- **Keep assets compiled** — run `bin/console theme:compile` or `bin/build-storefront.sh` after frontend changes
-- **Cache consciously** — clear relevant caches (`cache:clear`, `theme:refresh`) during development
+- **Never modify core files** — extensions, decorations, or Twig blocks
+- **Prefer `parent()`** in Twig blocks over copying entire parent templates
+- **Use DI** — no `Shopware()->Container()`, static container access, or superglobals in services
+- **PSR-12** / Shopware coding standards; namespace `ViewsTheme`
+- **Compile / clear caches** after frontend or config changes (`theme:compile`, `cache:clear`, `theme:refresh` as needed)
 
 ## Constraints & Anti-Patterns
 
-| Anti-Pattern | Why It's Wrong | Correct Approach |
-|--------------|----------------|----------------|
-| Modifying `vendor/shopware/` files | Lost on update | Use decorators, subscribers, or Twig overrides |
-| Hardcoded SQL in templates | Security & maintainability | Use repository DAL or injected services |
-| `$_GET` / `$_POST` in services | Breaks testability & Symfony patterns | Inject `RequestStack` or use controller arguments |
-| Copying entire parent Twig templates | Fragile on updates | Extend and override only needed blocks |
-| Static service container access | Hidden dependencies | Constructor injection |
-| Forgetting `theme:compile` | Stale CSS/JS in browser | Compile after every asset change |
-| Direct `echo` / `die()` in PHP code | Breaks HTTP layer & tests | Return `Response` objects or use proper logging |
+| Anti-Pattern | Correct approach |
+|--------------|------------------|
+| Modifying `vendor/shopware/` | Decorators, subscribers, Twig overrides |
+| New UI under `views/storefront/` | UX components under `views/components/` |
+| New `PluginManager` plugins / class selectors for JS | Co-located `ShopwareComponent` + `data-component` |
+| Reintroducing `vi_define_classes` / `vi_attr_classes` / `vi_classes` | `vi_cva` / `vi_cva_from_file` |
+| Hardcoded storefront paths in JS | `path('route.name')` in Twig → options |
+| Hardcoded SQL in templates | DAL / injected services |
+| `$_GET` / `$_POST` in services | `RequestStack` or controller args |
+| Static container access | Constructor injection |
 
 ## Common CLI Commands
 
@@ -165,14 +128,15 @@ bin/console plugin:update ViewsTheme
 bin/console database:create-migration --plugin ViewsTheme
 bin/console database:migrate --plugin ViewsTheme
 
-# Build
-bin/build-storefront.sh
+# JS (project root patterns)
+composer build:js:storefront
+composer storefront:dev-server
 ```
 
 ## References
 
-- **Shopware 6.7 Storefront Docs**: https://developer.shopware.com/docs/guides/plugins/themes.html
-- **Twig Extension Docs**: https://developer.shopware.com/docs/resources/references/adr/2021-08-10-twig-extension-guidelines.html
-- **Storefront JS Plugins**: https://developer.shopware.com/docs/guides/plugins/plugins/storefront/add-custom-javascript.html
-- **Service Decoration**: https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/adjusting-service.html
-- **CMS Blocks**: https://developer.shopware.com/docs/guides/plugins/plugins/content/cms/add-cms-block.html
+- **ViewsTheme docs**: [docs/README.md](../../docs/README.md)
+- **Hard rules**: [docs/conventions/hard-rules.md](../../docs/conventions/hard-rules.md)
+- **Shopware themes**: https://developer.shopware.com/docs/guides/plugins/themes.html
+- **Service decorations**: https://developer.shopware.com/docs/guides/plugins/plugins/plugin-fundamentals/adjusting-service.html
+- **CMS blocks**: https://developer.shopware.com/docs/guides/plugins/plugins/content/cms/add-cms-block.html

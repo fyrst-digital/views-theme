@@ -1,7 +1,9 @@
 # Agent Instructions
 
 - Context for AI agents working on the `ViewsTheme` project
-- After each change, check whether **README**, **AGENTS**, and the relevant **`docs/`** pages still match the code
+- **Conventions SoT:** [`docs/`](docs/README.md). Do not put rule prose here.
+- After each change, update the relevant **`docs/`** pages. Touch this file only for agent routing or project overview.
+- Convention changes: edit the **topic doc** only; update [hard-rules.md](docs/conventions/hard-rules.md) only if a checklist link is added/removed.
 
 ## Project Overview
 
@@ -9,7 +11,12 @@ Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce
 
 Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
-**Human docs (source of truth for APIs and features):** [`docs/README.md`](docs/README.md)
+## Before coding
+
+1. Open [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) and follow the linked topic docs.
+2. For feature work, also open the matching page under [docs/features/](docs/features/).
+
+Full index: [docs/README.md](docs/README.md).
 
 ## Agents
 
@@ -17,36 +24,17 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 |-------|------|---------|
 | **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Theme scaffolding, Twig, JS plugins, SCSS, CMS, services, migrations |
 
-## Quick reference (code)
+## Quick reference (docs)
 
 | Topic | Doc |
 |-------|-----|
-| **UX Twig components** (target) | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
-| Component template rules | [docs/conventions/components.md](docs/conventions/components.md) |
+| **Hard rules** (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
+| **UX Twig components** | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
+| Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
 | JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
 | Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
-| Plugin / theme config | [docs/configuration.md](docs/configuration.md) |
+| Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
-
-### Hard rules (always)
-
-- **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva()` + `cva = {}` prop + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md) and [vi-cva.md](docs/twig/vi-cva.md).
-- **Props:** defaults live **only** in `{% props %}`. Do **not** reassign prop names with `{% set prop = … %}` after the props block. Put defaults (including `|trans`, `path(…)`, etc.) in the props declaration. Non-prop locals (e.g. `cx` from `vi_cva_from_file`) are fine.
-- **Attributes:** put non-`class` HTML attrs on the root (and nested slots) via `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` (not inside `defaults`). Prefer this over bare `data-component="…"`, `action="…"`, `aria-*="…"`, etc. on the tag.
-- Interactive UX roots: `data-component="ViewsTheme:…"` (Shopware auto-inits co-located JS). Do **not** add new `data-ref` attributes (legacy ones may remain until migrated). Never CSS classes as JS selectors.
-- Co-located interactive JS: `ShopwareComponent` in `<Name>.js` next to `<Name>.html.twig` (no new PluginManager plugins).
-- **JS component communication:** prefer `Shopware.emit` / `emitQueued` + `on` / `off` for cross-component events; `Shopware.callMethod` for direct instance methods; native `CustomEvent` only for external/analytics. Always `off` in `destroy()`. Use `emitQueued` when emitting from `init()`. Event names are **PascalCase** segments (`ViewsTheme:Search:Overlay:Open`, not `:open`). See [javascript.md](docs/conventions/javascript.md).
-- `vi_icon` remains for icons.
-- **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
-- **Do not reintroduce** `vi_define_classes` / `vi_attr_classes` / `vi_classes`.
-- **Storefront routes:** path prefix **`/vi/…`** (e.g. `/vi/search/overlay`). Prefer names `frontend.views-theme.*`. Generate URLs with `path('…')` only — no hardcoded paths in JS. Do not add new `/widgets/…` routes. See [docs/architecture.md](docs/architecture.md).
-
-## Design System Summary
-
-- **Style**: Modern Minimal
-- **Font**: Figtree
-- **Accent**: `#F87060` (primary); brand tokens also include secondary `#71816D`, tertiary `#A393BF`, light `#faf5ee`, dark `#2E282A`
-- **Base grid**: 8px
