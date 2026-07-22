@@ -1,0 +1,22 @@
+{% props
+    size = 'md',
+    activeRoute = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<twig:ViewsTheme:Dropdown
+    class="{{ cx.root.apply({ size: size }) }}"
+    placement="bottom-end"
+    toggle:class="{{ cx.toggle.apply({ size: size }) }}"
+    toggle:aria-label="{{ 'account.myAccount'|trans|striptags }}"
+    toggle:title="{{ 'account.myAccount'|trans|striptags }}"
+    toggle:aria-haspopup="dialog"
+>
+    <twig:block name="toggle">
+        {{ vi_icon('user') }}
+    </twig:block>
+
+    <twig:ViewsTheme:Account:Menu :activeRoute="activeRoute" />
+</twig:ViewsTheme:Dropdown>

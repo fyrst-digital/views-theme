@@ -1,58 +1,7 @@
+{# @deprecated Use ViewsTheme:Account:Menu inside ViewsTheme:Dropdown #}
 {% props
     activeRoute = null,
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-account-dropdown dropdown-menu dropdown-menu-end account-dropdown' },
-    divider: { base: 'vi-account-dropdown__divider divider' },
-    dividerLabel: { base: 'vi-account-dropdown__divider-label divider-label' },
-    footer: { base: 'vi-account-dropdown__footer d-grid p-3' },
-    register: { base: 'vi-account-dropdown__register btn btn-primary' },
-}|replace_recursive(cva)) %}
-
-<div
-    data-ref="dropdown"
-    {{ attributes }}
-    class="{{ cx.root.apply() }}"
->
-    {% if context.customer %}
-        {% block user_actions %}
-            <twig:ViewsTheme:Account:UserActions :activeRoute="activeRoute" />
-        {% endblock %}
-    {% else %}
-        {% block login_form %}
-            <twig:ViewsTheme:Account:LoginForm class="p-6" />
-        {% endblock %}
-
-        {% block register_divider %}
-            <div
-                {{ attributes.nested('divider') }}
-                class="{{ cx.divider.apply() }}"
-            >
-                <div
-                    {{ attributes.nested('dividerLabel') }}
-                    class="{{ cx.dividerLabel.apply() }}"
-                >
-                    {{ 'account.newCustomerLabel'|trans|sw_sanitize }}
-                </div>
-            </div>
-        {% endblock %}
-
-        {% block footer %}
-            <div
-                {{ attributes.nested('footer') }}
-                class="{{ cx.footer.apply() }}"
-            >
-                <a
-                    href="{{ path('frontend.account.login.page') }}"
-                    title="{{ 'account.orRegisterLink'|trans|striptags }}"
-                    {{ attributes.nested('register') }}
-                    class="{{ cx.register.apply() }}"
-                >
-                    {{ 'account.orRegisterLink'|trans|sw_sanitize }}
-                </a>
-            </div>
-        {% endblock %}
-    {% endif %}
-</div>
+<twig:ViewsTheme:Account:Menu :activeRoute="activeRoute" :cva="cva" />

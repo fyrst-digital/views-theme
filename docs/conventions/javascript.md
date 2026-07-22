@@ -33,6 +33,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
+| Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
 
 Build (project root):
 
@@ -107,3 +108,15 @@ Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `-
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
 JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block.
+
+### Dropdown
+
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()`. Co-located `Dropdown.css` + minimal `Dropdown.js`.
+
+| Hook | Attribute |
+|------|-----------|
+| Root | `data-component="ViewsTheme:Dropdown"` |
+
+JS only syncs `aria-expanded` and moves focus into the panel on open / back to the toggle on close. Open/close and light-dismiss stay native (`popover="auto"`). Put trigger content in the `toggle` block; panel body in the default `content` block.
+
+See [Account action](../features/account-action.md).
