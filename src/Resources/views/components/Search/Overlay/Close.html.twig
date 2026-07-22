@@ -5,10 +5,11 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <button
-    type="button"
-    data-component="ViewsTheme:Search:Overlay:Close"
-    aria-label="{{ 'header.searchCloseButton'|trans|striptags }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Search:Overlay:Close',
+        'aria-label': 'header.searchCloseButton'|trans|striptags,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block icon %}

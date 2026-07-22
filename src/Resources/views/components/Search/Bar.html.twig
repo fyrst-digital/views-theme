@@ -1,54 +1,52 @@
 {% props
-    searchTerm = null,
-    minSearchLength = null,
-    suggestUrl = null,
+    searchTerm = page.searchTerm|default(''),
+    minSearchLength = shopware.minSearchLength,
+    suggestUrl = path('frontend.views-theme.search.suggest'),
     delay = 250,
     cva = {},
 %}
 
-{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
-{% set minSearchLength = minSearchLength is not null ? minSearchLength : shopware.minSearchLength %}
-{% set suggestUrl = suggestUrl is not null ? suggestUrl : path('frontend.views-theme.search.suggest') %}
-{% set componentOptions = {
-    suggestUrl: suggestUrl,
-    minChars: minSearchLength,
-    delay: delay,
-} %}
-
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
-    action="{{ path('frontend.search.page') }}"
-    method="get"
-    data-component="ViewsTheme:Search:Bar"
-    data-component-options="{{ componentOptions|json_encode }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        action: path('frontend.search.page'),
+        method: 'get',
+        'data-component': 'ViewsTheme:Search:Bar',
+        'data-component-options': {
+            suggestUrl: suggestUrl,
+            minChars: minSearchLength,
+            delay: delay,
+        }|json_encode,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
         {% block input %}
             <input
-                type="search"
-                id="SearchOverlayInput"
-                name="search"
-                autocomplete="off"
-                autocapitalize="off"
-                placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
-                aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded="false"
-                value="{{ searchTerm }}"
-                {{ attributes.nested('input') }}
+                {{ attributes.nested('input').defaults({
+                    type: 'search',
+                    id: 'SearchOverlayInput',
+                    name: 'search',
+                    autocomplete: 'off',
+                    autocapitalize: 'off',
+                    placeholder: 'header.searchPlaceholder'|trans|striptags,
+                    'aria-label': 'header.searchPlaceholder'|trans|striptags,
+                    role: 'combobox',
+                    'aria-autocomplete': 'list',
+                    'aria-expanded': 'false',
+                    value: searchTerm,
+                }) }}
                 class="{{ cx.input.apply() }}"
             >
         {% endblock %}
 
         {% block submit %}
             <button
-                type="submit"
-                aria-label="{{ 'header.searchButton'|trans|striptags }}"
-                {{ attributes.nested('submit') }}
+                {{ attributes.nested('submit').defaults({
+                    type: 'submit',
+                    'aria-label': 'header.searchButton'|trans|striptags,
+                }) }}
                 class="{{ cx.submit.apply() }}"
             >
                 {{ vi_icon('magnifying-glass') }}

@@ -43,6 +43,8 @@ Multi-slot class API:
 
 Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
 
+Non-`class` HTML attributes on the root (and nested slots) go through `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` — not inside `defaults`.
+
 Co-locate like JS: `Alert.html.twig` + `Alert.cva.twig` (+ `Alert.js` when interactive).
 
 See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).

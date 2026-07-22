@@ -5,7 +5,8 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <div
-    data-component="ViewsTheme:Search:Overlay:Backdrop"
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Search:Overlay:Backdrop',
+    }) }}
     class="{{ cx.root.apply() }}"
 ></div>

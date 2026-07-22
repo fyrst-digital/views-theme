@@ -1,11 +1,8 @@
 {% props
-    searchResult = null,
-    searchTerm = null,
+    searchResult = page.searchResult,
+    searchTerm = page.searchTerm|default(''),
     cva = {},
 %}
-
-{% set searchResult = searchResult is not null ? searchResult : page.searchResult %}
-{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -26,7 +23,7 @@
             {% endblock %}
 
             {% block results %}
-                <twig:ViewsTheme:Search:Suggest:Results 
+                <twig:ViewsTheme:Search:Suggest:Results
                     :searchResult="searchResult" />
             {% endblock %}
 
