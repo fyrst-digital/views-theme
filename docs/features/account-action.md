@@ -23,10 +23,11 @@ Page:Header:Actions
 ## Dropdown behavior
 
 - **Open/close:** HTML Popover (`popover="auto"` + `popovertarget`) — Escape and outside click included
-- **Placement:** CSS anchor positioning (`anchor-name` / `position-anchor` / `anchor()`) via `placement` prop (`bottom-end` default)
+- **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). No JS positioning
 - **Slots:** `toggle` (button content only; Dropdown owns the `<button>`), default `content` (panel body)
-- **JS (minimal):** `aria-expanded` sync; focus first focusable in panel on open; restore focus to toggle on close when focus was inside the panel
-- **Styling:** Bootstrap tokens on the panel; co-located `Dropdown.css` for anchor rules and popover UA reset
+- **JS (a11y only):** `aria-expanded` sync; focus first focusable in panel on open; restore focus to toggle on close when focus was inside the panel
+- **Styling:** Bootstrap utilities first in `Dropdown.cva.twig` (border, rounded, shadow, bg-body, …). Co-located `Dropdown.css`: popover UA reset + anchor placement only
+- **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
 
