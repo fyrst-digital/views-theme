@@ -12,13 +12,13 @@ use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Twig\Environment;
+use Symfony\UX\TwigComponent\ComponentRendererInterface;
 
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
 class SearchOverlayController extends StorefrontController
 {
     public function __construct(
-        private readonly Environment $twig,
+        private readonly ComponentRendererInterface $components,
         private readonly SuggestPageLoader $suggestPageLoader,
     ) {}
 
@@ -71,12 +71,7 @@ class SearchOverlayController extends StorefrontController
      */
     private function renderComponent(string $name, array $props = []): Response
     {
-        $html = $this->twig->createTemplate('{{- component(name, props) -}}')->render([
-            'name' => $name,
-            'props' => $props,
-        ]);
-
-        $response = new Response($html);
+        $response = new Response($this->components->createAndRender($name, $props));
         $response->headers->set('x-robots-tag', 'noindex');
         $response->headers->set('Content-Type', 'text/html; charset=UTF-8');
 
