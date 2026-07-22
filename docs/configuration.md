@@ -42,6 +42,17 @@ Path: `src/Resources/theme.json`.
 | `script` | Storefront + compiled `views-theme.js` |
 | `asset` | `app/storefront/src/assets` |
 
+### Local fonts (Figtree)
+
+Variable fonts live under `app/storefront/src/assets/fonts/` and are declared in SCSS (`scss/_fonts.scss` → imported from `base.scss`) via `$app-css-relative-asset-path`:
+
+| File | Face |
+|------|------|
+| `figtree-var.woff2` | Figtree normal (weight 300–900) |
+| `figtree-italic-var.woff2` | Figtree italic (weight 300–900) |
+
+`theme.json` sets `sw-font-family-base` to `'Figtree', sans-serif`. After adding or changing font files, run `bin/console theme:compile` (or rebuild storefront) so assets are copied into `public/theme/{id}/assets/fonts/`.
+
 ### Static asset CSS (Vite dev)
 
 Extra stylesheets under `app/storefront/src/assets/css/` (e.g. `theme.css`, conditional icon packs) are linked from `storefront/layout/meta.html.twig`:
@@ -57,13 +68,19 @@ There is no auto-reload for these files: edit + hard-refresh the storefront. The
 
 | Field | Type | Default / notes |
 |-------|------|-----------------|
-| `sw-color-brand-primary` | color | `#19BF56` |
+| `sw-color-brand-primary` | color | `#F87060` |
+| `sw-color-brand-secondary` | color | `#71816D` |
+| `sw-color-brand-tertiary` | color | `#A393BF` |
+| `sw-color-brand-light` | color | `#faf5ee` |
+| `sw-color-brand-dark` | color | `#2E282A` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
 | `sw-logo-desktop` | media | |
 | `sw-logo-tablet` | media | |
 | `sw-logo-mobile` | media | |
 | `sw-logo-share` | media | |
 | `sw-logo-favicon` | media | |
+
+Form controls use a global last-resort focus outline in `scss/_form.scss` (transparent outline by default, primary on `:focus`). Prefer component-level CSS when possible.
 
 ### Icons
 

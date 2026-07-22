@@ -21,6 +21,8 @@
     {% set price = prices.first %}
 {% endif %}
 
+{% set hasListPrice = price.listPrice and price.listPrice.percentage > 0 %}
+
 {% set taxUrl = taxUrl is not null ? taxUrl : path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }) %}
 {% set taxText = taxText is not null
     ? taxText
@@ -29,9 +31,10 @@
         : 'general.netTaxInformation'|trans|sw_sanitize) %}
 
 {% set cx = vi_cva({
-    root: { base: 'vi-product-price' },
+    root: { base: 'vi-product-price d-flex flex-row flex-wrap align-items-baseline gap-2' },
     prefix: { base: 'vi-product-price__prefix' },
     unit: { base: 'vi-product-price__unit' },
+    listPrice: { base: 'vi-product-price__list-price text-decoration-line-through' },
     reference: { base: 'vi-product-price__reference' },
     average: { base: 'vi-product-price__average' },
     tax: { base: 'vi-product-price__tax' },
@@ -47,14 +50,12 @@
 {% block price %}
     {% if showPrice is same as(true) %}
         <div
-            data-ref="price"
             {{ attributes }}
             class="{{ cx.root.apply() }}"
         >
             {% block prefix %}
                 {% if prices.count > 1 or displayFromVariants %}
                     <span
-                        data-ref="prefix"
                         {{ attributes.nested('prefix') }}
                         class="{{ cx.prefix.apply() }}"
                     >
@@ -65,18 +66,27 @@
 
             {% block unit %}
                 <span
-                    data-ref="unit"
                     {{ attributes.nested('unit') }}
-                    class="{{ cx.unit.apply() }}"
+                    class="{{ cx.unit.apply() }}{{ hasListPrice ? ' text-danger' : '' }}"
                 >
                     {{ price.unitPrice|currency }}
                 </span>
             {% endblock %}
 
+            {% block listPrice %}
+                {% if hasListPrice %}
+                    <span
+                        {{ attributes.nested('listPrice') }}
+                        class="{{ cx.listPrice.apply() }}"
+                    >
+                        {{ price.listPrice.price|currency }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+
             {% block reference %}
                 {% if price.referencePrice is not null %}
                     <span
-                        data-ref="reference"
                         {{ attributes.nested('reference') }}
                         class="{{ cx.reference.apply() }}"
                     >
@@ -90,7 +100,6 @@
             {% block average %}
                 {% if price.regulationPrice.price is not null %}
                     <span
-                        data-ref="average"
                         {{ attributes.nested('average') }}
                         class="{{ cx.average.apply() }}"
                     >
@@ -105,7 +114,6 @@
 {% block tax %}
     {% if showTaxNote is same as(true) %}
         <div
-            data-ref="tax"
             {{ attributes.nested('tax') }}
             class="{{ cx.tax.apply() }}"
         >

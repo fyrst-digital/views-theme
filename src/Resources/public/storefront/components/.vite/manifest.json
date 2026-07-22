@@ -6,21 +6,96 @@
     "isEntry": true
   },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js": {
-    "file": "ViewsTheme/Page/Header/Action/Cart-C0hdj_vT.js",
+    "file": "ViewsTheme/Page/Header/Action/Cart-D1SkysES.js",
     "name": "ViewsTheme/Page/Header/Action/Cart",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Page/Header/Action/Cart.js",
     "isEntry": true
   },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js": {
+    "file": "ViewsTheme/Scroll/Area-CVhdyB9c.js",
+    "name": "ViewsTheme/Scroll/Area",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js",
+    "isEntry": true
+  },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-    "file": "ViewsTheme/Search/Action-BCKfCT4p.js",
+    "file": "ViewsTheme/Search/Action-BdxS5iD4.js",
     "name": "ViewsTheme/Search/Action",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
     "isEntry": true
   },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js": {
+    "file": "ViewsTheme/Search/Bar-Bb68dnmb.js",
+    "name": "ViewsTheme/Search/Bar",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js",
+    "isEntry": true
+  },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
+    "file": "ViewsTheme/Search/Overlay-D6m44IjG.js",
+    "name": "ViewsTheme/Search/Overlay",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
+    "isEntry": true
+  },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js": {
+    "file": "ViewsTheme/Search/Overlay/Backdrop-DNxgdmbR.js",
+    "name": "ViewsTheme/Search/Overlay/Backdrop",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js",
+    "isEntry": true
+  },
+  "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js": {
+    "file": "ViewsTheme/Search/Overlay/Close-DitQF4EH.js",
+    "name": "ViewsTheme/Search/Overlay/Close",
+    "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js",
+    "isEntry": true
+  },
   "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-    "file": "ViewsTheme/VariantsGrid/Container-BuEKQSBY.js",
+    "file": "ViewsTheme/VariantsGrid/Container-DOUgRfBH.js",
     "name": "ViewsTheme/VariantsGrid/Container",
     "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
+    "isEntry": true
+  },
+  "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Product/Cover.css": {
+    "file": "ViewsTheme/Product/Cover-DckZfxeO.css",
+    "name": "ViewsTheme/Product/Cover.css",
+    "names": [
+      "ViewsTheme/Product/Cover.css"
+    ],
+    "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Product/Cover.css",
+    "isEntry": true
+  },
+  "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Scroll/Area.css": {
+    "file": "ViewsTheme/Scroll/Area-DVEaZ4CI.css",
+    "name": "ViewsTheme/Scroll/Area.css",
+    "names": [
+      "ViewsTheme/Scroll/Area.css"
+    ],
+    "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Scroll/Area.css",
+    "isEntry": true
+  },
+  "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Bar.css": {
+    "file": "ViewsTheme/Search/Bar-C3Js_DVk.css",
+    "name": "ViewsTheme/Search/Bar.css",
+    "names": [
+      "ViewsTheme/Search/Bar.css"
+    ],
+    "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Bar.css",
+    "isEntry": true
+  },
+  "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css": {
+    "file": "ViewsTheme/Search/Overlay-B4A1z3qO.css",
+    "name": "ViewsTheme/Search/Overlay.css",
+    "names": [
+      "ViewsTheme/Search/Overlay.css"
+    ],
+    "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css",
+    "isEntry": true
+  },
+  "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Suggest/Item.css": {
+    "file": "ViewsTheme/Search/Suggest/Item-Dnd0BBWH.css",
+    "name": "ViewsTheme/Search/Suggest/Item.css",
+    "names": [
+      "ViewsTheme/Search/Suggest/Item.css"
+    ],
+    "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Suggest/Item.css",
     "isEntry": true
   }
 }

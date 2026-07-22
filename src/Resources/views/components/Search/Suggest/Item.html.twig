@@ -1,0 +1,69 @@
+{% props
+    product,
+    metaProperty = product.manufacturer.translated.name|default(product.seoCategory.translated.name|default('')),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<a
+    href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
+    title="{{ product.translated.name }}"
+    role="option"
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block image %}
+            <twig:ViewsTheme:Product:Cover
+                :id="product.id"
+                :name="product.translated.name"
+                :cover="product.cover.media"
+                :showLink="false"
+                tag="span"
+                :sizes="{ 
+                    'xs': '64px',
+                    'sm': '80px',
+                    'xl': '100px' 
+                }"
+            />
+        {% endblock %}
+
+        {% block body %}
+            <span
+                {{ attributes.nested('body') }}
+                class="{{ cx.body.apply() }}"
+            >
+                {% block meta %}
+                    {% if metaProperty %}
+                        <span
+                            {{ attributes.nested('metaProperty') }}
+                            class="{{ cx.metaProperty.apply() }}"
+                        >
+                            {{ metaProperty }}
+                        </span>
+                    {% endif %}
+                {% endblock %}
+
+                {% block name %}
+                    <twig:ViewsTheme:Product:Name
+                        :product="product"
+                        :showLink="false"
+                        tag="span"
+                        class="fw-medium"
+                    />
+                {% endblock %}
+
+                {% block pricing %}
+                    <twig:ViewsTheme:Product:Price
+                        :product="product"
+                        :showTieredPrices="false"
+                        :showTaxNote="false"
+                        class="fs-5"
+                        unit:class="fw-bold"
+                    />
+                {% endblock %}
+            </span>
+        {% endblock %}
+    {% endblock %}
+</a>

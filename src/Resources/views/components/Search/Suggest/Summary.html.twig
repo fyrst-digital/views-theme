@@ -1,0 +1,26 @@
+{% props
+    total = 0,
+    searchTerm = '',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% if total > 0 %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {% block action %}
+            <a
+                href="{{ path('frontend.search.page') }}?search={{ searchTerm|url_encode }}"
+                title="{{ 'header.searchAllResults'|trans|striptags }}"
+                data-action="view-all"
+                {{ attributes.nested('action') }}
+                class="{{ cx.action.apply() }}"
+            >
+                {{ 'header.searchAllResults'|trans|sw_sanitize }} »
+            </a>
+        {% endblock %}
+    </div>
+{% endif %}

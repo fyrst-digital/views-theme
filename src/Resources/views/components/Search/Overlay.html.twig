@@ -1,0 +1,43 @@
+{% props
+    searchTerm = null,
+    minSearchLength = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        id: 'vi-search-overlay',
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'header.searchButton'|trans|striptags,
+        'aria-hidden': 'true',
+        inert: true,
+        'data-component': 'ViewsTheme:Search:Overlay',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block backdrop %}
+        <twig:ViewsTheme:Search:Overlay:Backdrop />
+    {% endblock %}
+
+    {% block close %}
+        <twig:ViewsTheme:Search:Overlay:Close />
+    {% endblock %}
+
+    {% block panel %}
+        <div
+            {{ attributes.nested('panel') }}
+            class="{{ cx.panel.apply() }}"
+        >
+            {% block bar %}
+                <twig:ViewsTheme:Search:Bar
+                    :searchTerm="searchTerm"
+                    :minSearchLength="minSearchLength"
+                    input:class="fs-4 fw-semibold"
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

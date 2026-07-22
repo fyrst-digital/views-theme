@@ -1,0 +1,14 @@
+{% props
+    searchResult,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<twig:ViewsTheme:Scroll:Area class="{{ cx.root.apply() }}">
+    {% for product in searchResult %}
+        <twig:ViewsTheme:Search:Suggest:Item
+            :product="product"
+            class="g-col-4 g-col-lg-2" />
+    {% endfor %}
+</twig:ViewsTheme:Scroll:Area>

@@ -1,47 +1,41 @@
 {% props
-    searchResult = null,
-    searchTerm = null,
+    searchResult = page.searchResult,
+    searchTerm = page.searchTerm|default(''),
     cva = {},
 %}
 
-{% set searchResult = searchResult is not null ? searchResult : page.searchResult %}
-{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
-
-{% set cx = vi_cva({
-    root: { base: 'vi-search-suggest position-absolute op-100 start-50 translate-middle-x bg-white border border-1 rounded-3 shadow-lg js-search-result' },
-    results: { base: 'vi-search-suggest__results grid gap-4 p-4' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
-    data-ref="suggest"
-    {{ attributes }}
+    {{ attributes.defaults({
+        id: 'search-suggest-listbox',
+        role: 'listbox',
+        'aria-label': 'header.searchDropdownTitle'|trans|striptags,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
-    {% block container %}
+    {% block content %}
         {% if searchResult.total > 0 %}
+            {% block heading %}
+                <twig:ViewsTheme:Search:Suggest:Heading
+                    total="{{searchResult.total}}"
+                    class="fs-4 fw-semibold p-4" />
+            {% endblock %}
+
             {% block results %}
-                <div
-                    data-ref="results"
-                    {{ attributes.nested('results') }}
-                    class="{{ cx.results.apply() }}"
-                >
-                    {% for product in searchResult %}
-                        {% block result_item %}
-                            <twig:ViewsTheme:Search:SuggestItem :product="product" />
-                        {% endblock %}
-                    {% endfor %}
-                </div>
+                <twig:ViewsTheme:Search:Suggest:Results
+                    :searchResult="searchResult" />
             {% endblock %}
 
             {% block summary %}
-                <twig:ViewsTheme:Search:SuggestSummary
+                <twig:ViewsTheme:Search:Suggest:Summary
                     :total="searchResult.total"
                     :searchTerm="searchTerm"
                 />
             {% endblock %}
         {% else %}
             {% block empty %}
-                <twig:ViewsTheme:Search:SuggestEmpty />
+                <twig:ViewsTheme:Search:Suggest:Empty />
             {% endblock %}
         {% endif %}
     {% endblock %}

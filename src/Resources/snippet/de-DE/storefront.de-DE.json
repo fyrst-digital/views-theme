@@ -1,4 +1,9 @@
 {
+    "viewsTheme": {
+        "search": {
+            "productsHeading": "Produkte"
+        }
+    },
     "variantsGrid": {
         "table": {
             "preview": "Vorschau"

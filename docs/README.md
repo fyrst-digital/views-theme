@@ -11,7 +11,7 @@ Developer documentation for the ViewsTheme Shopware 6.7 storefront plugin.
 | [Configuration](configuration.md) | Plugin config and `theme.json` |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_cva`, `vi_cva_from_file`, utilities |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay |
 
 ## Conventions
 
@@ -33,6 +33,7 @@ Developer documentation for the ViewsTheme Shopware 6.7 storefront plugin.
 
 - [Variants grid](features/variants-grid.md)
 - [Preferred delivery date](features/delivery-date.md)
+- [Search overlay](features/search-overlay.md)
 
 ## Related
 

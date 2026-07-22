@@ -1,7 +1,14 @@
 .form-control {
   border-color: var(--input-border-color, var(--#{$prefix}border-color));
-  padding-inline: var(--input-padding-inline, var(--#{$prefix}spacing-4));
-  padding-block: var(--input-padding-block, var(--#{$prefix}spacing-2));
+  // padding-inline: var(--input-padding-inline, var(--#{$prefix}spacing-4));
+  // padding-block: var(--input-padding-block, var(--#{$prefix}spacing-2));
+  outline: 2px solid var(--input-outline-color, transparent) !important;
+  outline-offset: var(--input-outline-offset, 2px) !important;
+  
+  &:focus {
+    --input-outline-color: var(--input-focus-outline-color);
+    background-color: var(--input-focus-bg-color, var(--input-bg-color));
+  }
 }
 .input-group-sm {
   --icon-size: 16px;

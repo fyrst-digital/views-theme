@@ -16,7 +16,6 @@
 }|replace_recursive(cva)) %}
 
 <{{ tag|raw }}
-    data-ref="name"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -24,7 +23,6 @@
         <a
             href="{{ url }}"
             title="{{ name }}"
-            data-ref="link"
             {{ attributes.nested('link') }}
             class="{{ cx.link.apply() }}"
         >
