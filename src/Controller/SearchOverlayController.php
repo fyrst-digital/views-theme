@@ -23,7 +23,7 @@ class SearchOverlayController extends StorefrontController
     ) {}
 
     #[Route(
-        path: '/widgets/search/overlay',
+        path: '/vi/search/overlay',
         name: 'frontend.views-theme.search.overlay',
         defaults: ['XmlHttpRequest' => true],
         methods: ['GET'],
@@ -47,7 +47,7 @@ class SearchOverlayController extends StorefrontController
     }
 
     #[Route(
-        path: '/widgets/search/suggest',
+        path: '/vi/search/suggest',
         name: 'frontend.views-theme.search.suggest',
         defaults: ['XmlHttpRequest' => true],
         methods: ['GET'],

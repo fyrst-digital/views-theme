@@ -40,6 +40,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 - `vi_icon` remains for icons.
 - **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
 - **Do not reintroduce** `vi_define_classes` / `vi_attr_classes` / `vi_classes`.
+- **Storefront routes:** path prefix **`/vi/…`** (e.g. `/vi/search/overlay`). Prefer names `frontend.views-theme.*`. Generate URLs with `path('…')` only — no hardcoded paths in JS. Do not add new `/widgets/…` routes. See [docs/architecture.md](docs/architecture.md).
 
 ## Design System Summary
 

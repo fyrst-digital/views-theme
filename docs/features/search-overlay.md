@@ -2,7 +2,7 @@
 
 Lazy-loaded full-viewport search dialog opened from the header search action.
 
-All UI lives under UX components (`components/Search/*`). Markup is served by theme widget routes — no storefront template overrides for search.
+All UI lives under UX components (`components/Search/*`). Markup is served by theme routes under `/vi/…` — no storefront template overrides for search.
 
 ## Features
 
@@ -70,8 +70,8 @@ Controller loads `SuggestPageLoader`, then:
 
 | Route name | Path | Method |
 |------------|------|--------|
-| `frontend.views-theme.search.overlay` | `/widgets/search/overlay` | `GET` (XHR) |
-| `frontend.views-theme.search.suggest` | `/widgets/search/suggest` | `GET` (XHR) |
+| `frontend.views-theme.search.overlay` | `/vi/search/overlay` | `GET` (XHR) |
+| `frontend.views-theme.search.suggest` | `/vi/search/suggest` | `GET` (XHR) |
 
 ## Hooks
 

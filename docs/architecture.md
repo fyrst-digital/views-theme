@@ -56,6 +56,26 @@ src/
 | `variantsGrid` | `ProductPageSubscriber` | Variants grid payload on PDP |
 | `deliveryDate` | `CheckoutConfirmPageSubscriber` | Preferred delivery date field config |
 
+## Storefront routes
+
+ViewsTheme storefront controllers use a dedicated URL path prefix:
+
+| Rule | Detail |
+|------|--------|
+| Path prefix | **`/vi/…`** |
+| Route names | Prefer `frontend.views-theme.*` (feature-specific names OK when already established) |
+| Generation | Always `path('route.name')` in Twig — never hardcode paths in JS |
+| Avoid | New `/widgets/…` paths (core-style; collision-prone) |
+
+Examples:
+
+| Name | Path |
+|------|------|
+| `frontend.views-theme.search.overlay` | `/vi/search/overlay` |
+| `frontend.views-theme.search.suggest` | `/vi/search/suggest` |
+
+Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
+
 ## Related
 
 - [Configuration](configuration.md)

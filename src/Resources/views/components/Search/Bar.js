@@ -1,6 +1,8 @@
-const PRODUCT_SEARCH_PERFORMED_EVENT = 'product:search-performed'
-const PRODUCT_SEARCH_SUGGESTION_SHOWN_EVENT = 'product:search-suggestion-shown'
-const PRODUCT_SEARCH_SUGGESTION_PRODUCT_VIEWED_EVENT = 'product:search-suggestion-product-viewed'
+const ANALYTICS = {
+    performed: 'product:search-performed',
+    suggestionShown: 'product:search-suggestion-shown',
+    productViewed: 'product:search-suggestion-product-viewed',
+}
 
 export default class SearchBar extends ShopwareComponent {
     static options = {
@@ -8,7 +10,6 @@ export default class SearchBar extends ShopwareComponent {
         minChars: 3,
         delay: 250,
         inputSelector: 'input[type="search"]',
-        listboxId: 'search-suggest-listbox',
         viewAllSelector: '[data-action="view-all"]',
         overlayOpenEvent: 'ViewsTheme:Search:Overlay:Open',
     }
@@ -19,7 +20,7 @@ export default class SearchBar extends ShopwareComponent {
         this._suggestLinks = []
         this._debounceTimer = null
         this._abortController = null
-        this._requestId = 0
+        this._resultsAbort = null
 
         if (!this._input || !this.options.suggestUrl) {
             return
@@ -44,49 +45,49 @@ export default class SearchBar extends ShopwareComponent {
         this.el.removeEventListener('submit', this._onSubmit)
         window.Shopware.off(this.options.overlayOpenEvent, this._onOverlayOpen)
 
-        if (this._debounceTimer) {
-            clearTimeout(this._debounceTimer)
-        }
-
+        clearTimeout(this._debounceTimer)
         this._abortInFlight()
         this._clearResults()
     }
 
-    _onInput() {
-        if (this._debounceTimer) {
-            clearTimeout(this._debounceTimer)
-        }
-
-        this._debounceTimer = setTimeout(() => {
-            this._debounceTimer = null
-            this._handleTermChange()
-        }, this.options.delay)
+    _term() {
+        return this._input.value.trim()
     }
 
-    _handleTermChange() {
-        const term = this._input.value.trim()
+    _emit(name, term = this._term()) {
+        document.dispatchEvent(new CustomEvent(name, { detail: { term } }))
+    }
 
-        if (term.length < this.options.minChars) {
-            this._abortInFlight()
-            this._clearResults()
-            return
-        }
+    _onInput() {
+        clearTimeout(this._debounceTimer)
+        this._debounceTimer = setTimeout(() => {
+            this._debounceTimer = null
+            const term = this._term()
 
-        void this._fetchSuggest(term)
+            if (term.length < this.options.minChars) {
+                this._abortInFlight()
+                this._clearResults()
+                return
+            }
+
+            void this._fetchSuggest(term)
+        }, this.options.delay)
     }
 
     async _fetchSuggest(term) {
         this._abortInFlight()
-        this._abortController = new AbortController()
-        const requestId = ++this._requestId
+        const ac = new AbortController()
+        this._abortController = ac
 
         this.el.setAttribute('aria-busy', 'true')
 
         try {
-            const url = this._buildSuggestUrl(term)
+            const url = new URL(this.options.suggestUrl, window.location.origin)
+            url.searchParams.set('search', term)
+
             const response = await fetch(url, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                signal: this._abortController.signal,
+                signal: ac.signal,
             })
 
             if (!response.ok) {
@@ -94,43 +95,29 @@ export default class SearchBar extends ShopwareComponent {
             }
 
             const html = await response.text()
-
-            if (requestId !== this._requestId) {
+            if (ac.signal.aborted) {
                 return
             }
 
             this._mountResults(html)
             this._input.setAttribute('aria-expanded', 'true')
-
-            document.dispatchEvent(new CustomEvent(PRODUCT_SEARCH_SUGGESTION_SHOWN_EVENT, {
-                detail: { term },
-            }))
+            this._emit(ANALYTICS.suggestionShown, term)
         } catch (error) {
-            if (error?.name === 'AbortError') {
+            if (error?.name === 'AbortError' || ac.signal.aborted) {
                 return
             }
 
-            if (requestId === this._requestId) {
-                this._clearResults()
-                console.error('SearchBar: suggest request failed', error)
-            }
+            this._clearResults()
+            console.error('SearchBar: suggest request failed', error)
         } finally {
-            if (requestId === this._requestId) {
+            if (this._abortController === ac) {
                 this.el.removeAttribute('aria-busy')
                 this._abortController = null
             }
         }
     }
 
-    _buildSuggestUrl(term) {
-        const url = new URL(this.options.suggestUrl, window.location.origin)
-        url.searchParams.set('search', term)
-        return url.toString()
-    }
-
     _mountResults(html) {
-        this._teardownResultsListeners()
-
         const template = document.createElement('template')
         template.innerHTML = html.trim()
         const next = template.content.firstElementChild
@@ -139,6 +126,8 @@ export default class SearchBar extends ShopwareComponent {
             this._clearResults()
             return
         }
+
+        this._unbindResults()
 
         if (this._resultsEl) {
             this._resultsEl.replaceWith(next)
@@ -155,31 +144,29 @@ export default class SearchBar extends ShopwareComponent {
             return
         }
 
-        const listbox = this._resultsEl.id
-            ? this._resultsEl
-            : this._resultsEl.querySelector(`#${this.options.listboxId}`)
-
-        if (listbox?.id) {
-            this._input.setAttribute('aria-controls', listbox.id)
+        if (this._resultsEl.id) {
+            this._input.setAttribute('aria-controls', this._resultsEl.id)
         }
 
-        this._suggestLinks = this._getFocusableLinks(this._resultsEl)
-        this._resultsEl.addEventListener('click', this._onResultsClick)
-        this._resultsEl.addEventListener('keydown', this._onResultsKeydown)
+        this._suggestLinks = Array.from(
+            window.focusHandler.getFocusableElements(this._resultsEl),
+        )
+
+        this._resultsAbort = new AbortController()
+        const { signal } = this._resultsAbort
+
+        this._resultsEl.addEventListener('click', this._onResultsClick, { signal })
+        this._resultsEl.addEventListener('keydown', this._onResultsKeydown, { signal })
     }
 
-    _teardownResultsListeners() {
-        if (!this._resultsEl) {
-            return
-        }
-
-        this._resultsEl.removeEventListener('click', this._onResultsClick)
-        this._resultsEl.removeEventListener('keydown', this._onResultsKeydown)
+    _unbindResults() {
+        this._resultsAbort?.abort()
+        this._resultsAbort = null
         this._suggestLinks = []
     }
 
     _clearResults() {
-        this._teardownResultsListeners()
+        this._unbindResults()
 
         if (this._resultsEl) {
             this._resultsEl.remove()
@@ -191,14 +178,12 @@ export default class SearchBar extends ShopwareComponent {
     }
 
     _abortInFlight() {
-        if (this._abortController) {
-            this._abortController.abort()
-            this._abortController = null
-        }
+        this._abortController?.abort()
+        this._abortController = null
     }
 
     _onSubmit(event) {
-        const term = this._input.value.trim()
+        const term = this._term()
 
         if (term.length < this.options.minChars) {
             event.preventDefault()
@@ -206,9 +191,7 @@ export default class SearchBar extends ShopwareComponent {
             return
         }
 
-        document.dispatchEvent(new CustomEvent(PRODUCT_SEARCH_PERFORMED_EVENT, {
-            detail: { term },
-        }))
+        this._emit(ANALYTICS.performed, term)
     }
 
     _onOverlayOpen(overlayEl) {
@@ -220,12 +203,8 @@ export default class SearchBar extends ShopwareComponent {
             this._resultsEl = null
         }
 
-        const term = this._input.value.trim()
-        if (term.length < this.options.minChars) {
-            return
-        }
-
-        if (this._resultsEl) {
+        const term = this._term()
+        if (term.length < this.options.minChars || this._resultsEl) {
             return
         }
 
@@ -238,28 +217,17 @@ export default class SearchBar extends ShopwareComponent {
             return
         }
 
-        const term = this._input.value.trim()
         const isViewAll = Boolean(link.closest(this.options.viewAllSelector))
-        const eventName = isViewAll
-            ? PRODUCT_SEARCH_PERFORMED_EVENT
-            : PRODUCT_SEARCH_SUGGESTION_PRODUCT_VIEWED_EVENT
-
-        document.dispatchEvent(new CustomEvent(eventName, {
-            detail: { term },
-        }))
+        this._emit(isViewAll ? ANALYTICS.performed : ANALYTICS.productViewed)
     }
 
     _onKeydown(event) {
-        if (event.key !== 'ArrowDown' || this._input.value.trim() === '') {
-            return
-        }
-
-        if (!this._suggestLinks.length) {
+        if (event.key !== 'ArrowDown' || !this._term() || !this._suggestLinks.length) {
             return
         }
 
         event.preventDefault()
-        this._focusElement(this._suggestLinks[0])
+        window.focusHandler.setFocus(this._suggestLinks[0], { focusVisible: true })
     }
 
     _onResultsKeydown(event) {
@@ -267,48 +235,22 @@ export default class SearchBar extends ShopwareComponent {
             return
         }
 
-        const currentIndex = this._suggestLinks.indexOf(event.target)
-        if (currentIndex === -1) {
+        const index = this._suggestLinks.indexOf(event.target)
+        if (index === -1) {
             return
         }
 
         event.preventDefault()
         event.stopPropagation()
 
-        if (event.key === 'ArrowDown') {
-            const next = this._suggestLinks[currentIndex + 1]
-            if (next) {
-                this._focusElement(next)
-            }
-            return
+        const next = event.key === 'ArrowDown'
+            ? this._suggestLinks[index + 1]
+            : index === 0
+                ? this._input
+                : this._suggestLinks[index - 1]
+
+        if (next) {
+            window.focusHandler.setFocus(next, { focusVisible: true })
         }
-
-        if (currentIndex === 0) {
-            this._focusElement(this._input)
-            return
-        }
-
-        this._focusElement(this._suggestLinks[currentIndex - 1])
-    }
-
-    _getFocusableLinks(root) {
-        if (window.focusHandler && typeof window.focusHandler.getFocusableElements === 'function') {
-            return Array.from(window.focusHandler.getFocusableElements(root))
-        }
-
-        return Array.from(root.querySelectorAll('a[href], button:not([disabled])'))
-    }
-
-    _focusElement(element) {
-        if (!element) {
-            return
-        }
-
-        if (window.focusHandler && typeof window.focusHandler.setFocus === 'function') {
-            window.focusHandler.setFocus(element, { focusVisible: true })
-            return
-        }
-
-        element.focus()
     }
 }
