@@ -36,6 +36,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 - **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva()` + `cva = {}` prop + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md) and [vi-cva.md](docs/twig/vi-cva.md).
 - Interactive UX roots: `data-component="ViewsTheme:…"` (Shopware auto-inits co-located JS). Do **not** add new `data-ref` attributes (legacy ones may remain until migrated). Never CSS classes as JS selectors.
 - Co-located interactive JS: `ShopwareComponent` in `<Name>.js` next to `<Name>.html.twig` (no new PluginManager plugins).
+- **JS component communication:** prefer `Shopware.emit` / `emitQueued` + `on` / `off` for cross-component events; `Shopware.callMethod` for direct instance methods; native `CustomEvent` only for external/analytics. Always `off` in `destroy()`. Use `emitQueued` when emitting from `init()`. Event names are **PascalCase** segments (`ViewsTheme:Search:Overlay:Open`, not `:open`). See [javascript.md](docs/conventions/javascript.md).
 - `vi_icon` remains for icons.
 - **Do not create** new templates under `src/Resources/views/storefront/`. Only edit existing storefront files when wiring an already-present include to a migrated component.
 - **Do not reintroduce** `vi_define_classes` / `vi_attr_classes` / `vi_classes`.

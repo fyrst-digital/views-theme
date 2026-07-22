@@ -80,7 +80,19 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` |
 
-Backdrop/Close dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`; Overlay listens and closes.  
+**Component communication (preferred):**
+
+| Pattern | Use for |
+|---------|---------|
+| `Shopware.emit` / `emitQueued` + `Shopware.on` / `off` | Cross-component lifecycle (e.g. Overlay open/close → Action, Bar) |
+| `Shopware.callMethod(name, method, …)` | Direct child → parent actions (e.g. Backdrop/Close → Overlay `close`) |
+| Native `CustomEvent` on `document` | External/analytics hooks only (e.g. `product:search-performed`) |
+
+Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefer `emitQueued` when emitting from `init()` to avoid race conditions. Always `Shopware.off` in `destroy()`.
+
+**Event name casing:** Shopware bus events use **PascalCase** segments (`Namespace:Feature:Action`), e.g. `ViewsTheme:Search:Overlay:Open` — not `:open`.
+
+Search: Backdrop/Close call `Shopware.callMethod('ViewsTheme:Search:Overlay', 'close')`. Overlay emits `ViewsTheme:Search:Overlay:Open` / `:Close` via `emitQueued` (payload: overlay element).  
 Suggest HTML is inserted as the form’s next sibling. Product grid scrolls via nested `Scroll:Area`.
 
 See [Search overlay](../features/search-overlay.md).

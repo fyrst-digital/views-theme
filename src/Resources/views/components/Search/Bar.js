@@ -10,7 +10,7 @@ export default class SearchBar extends ShopwareComponent {
         inputSelector: 'input[type="search"]',
         listboxId: 'search-suggest-listbox',
         viewAllSelector: '[data-action="view-all"]',
-        overlayOpenEvent: 'ViewsTheme:Search:Overlay:open',
+        overlayOpenEvent: 'ViewsTheme:Search:Overlay:Open',
     }
 
     init() {
@@ -35,14 +35,14 @@ export default class SearchBar extends ShopwareComponent {
         this._input.addEventListener('input', this._onInput)
         this._input.addEventListener('keydown', this._onKeydown)
         this.el.addEventListener('submit', this._onSubmit)
-        document.addEventListener(this.options.overlayOpenEvent, this._onOverlayOpen)
+        window.Shopware.on(this.options.overlayOpenEvent, this._onOverlayOpen)
     }
 
     destroy() {
         this._input?.removeEventListener('input', this._onInput)
         this._input?.removeEventListener('keydown', this._onKeydown)
         this.el.removeEventListener('submit', this._onSubmit)
-        document.removeEventListener(this.options.overlayOpenEvent, this._onOverlayOpen)
+        window.Shopware.off(this.options.overlayOpenEvent, this._onOverlayOpen)
 
         if (this._debounceTimer) {
             clearTimeout(this._debounceTimer)
@@ -211,9 +211,8 @@ export default class SearchBar extends ShopwareComponent {
         }))
     }
 
-    _onOverlayOpen(event) {
-        const overlay = event.target
-        if (!(overlay instanceof Element) || !overlay.contains(this.el)) {
+    _onOverlayOpen(overlayEl) {
+        if (!(overlayEl instanceof Element) || !overlayEl.contains(this.el)) {
             return
         }
 

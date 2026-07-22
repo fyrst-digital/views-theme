@@ -4,22 +4,20 @@ export default class SearchOverlay extends ShopwareComponent {
         closedClass: 'd-none',
         bodyOpenClass: 'overflow-hidden',
         inputSelector: 'input[type="search"]',
-        dismissEvent: 'ViewsTheme:Search:Overlay:dismiss',
+        openEvent: 'ViewsTheme:Search:Overlay:Open',
+        closeEvent: 'ViewsTheme:Search:Overlay:Close',
     }
 
     init() {
         this._open = false
-        this._onDismiss = this._onDismiss.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
         this._input = this.el.querySelector(this.options.inputSelector)
 
-        this.el.addEventListener(this.options.dismissEvent, this._onDismiss)
         document.addEventListener('keydown', this._onKeydown)
         this.open()
     }
 
     destroy() {
-        this.el.removeEventListener(this.options.dismissEvent, this._onDismiss)
         document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
     }
@@ -36,7 +34,7 @@ export default class SearchOverlay extends ShopwareComponent {
         this.el.setAttribute('aria-hidden', 'false')
         this._setBodyLock(true)
         this._focusInput()
-        this.el.dispatchEvent(new CustomEvent('ViewsTheme:Search:Overlay:open', { bubbles: true }))
+        window.Shopware.emitQueued(this.options.openEvent, this.el)
     }
 
     close() {
@@ -49,16 +47,11 @@ export default class SearchOverlay extends ShopwareComponent {
         this.el.classList.add(this.options.closedClass)
         this.el.setAttribute('aria-hidden', 'true')
         this._setBodyLock(false)
-        this.el.dispatchEvent(new CustomEvent('ViewsTheme:Search:Overlay:close', { bubbles: true }))
+        window.Shopware.emitQueued(this.options.closeEvent, this.el)
     }
 
     isOpen() {
         return this._open
-    }
-
-    _onDismiss(event) {
-        event.preventDefault?.()
-        this.close()
     }
 
     _onKeydown(event) {

@@ -32,13 +32,14 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 2. First click fetches `frontend.views-theme.search.overlay`
 3. Response HTML is appended to `document.body`
 4. Shopware component system initializes `ViewsTheme:Search:Overlay` and nested `ViewsTheme:Search:Bar`
-5. Subsequent clicks toggle the existing overlay instance
+5. Overlay `open()` emits `ViewsTheme:Search:Overlay:Open` via `Shopware.emitQueued` (payload: overlay element); Action sets `aria-expanded`
+6. Subsequent clicks toggle the existing overlay instance via `getComponentInstanceByElement` + `open()` / `close()`
 
 ### Close flow
 
-1. `Search:Overlay:Backdrop` / `Search:Overlay:Close` dispatch bubbled `ViewsTheme:Search:Overlay:dismiss`
-2. `Search:Overlay` listens and calls `close()`
-3. `Escape` also calls `close()`
+1. `Search:Overlay:Backdrop` / `Search:Overlay:Close` call `Shopware.callMethod('ViewsTheme:Search:Overlay', 'close')`
+2. `Escape` also calls `close()`
+3. Overlay emits `ViewsTheme:Search:Overlay:Close` via `Shopware.emitQueued` (payload: overlay element); Action updates aria and restores focus
 4. Input value and suggest DOM stay mounted while the overlay is closed (no click-outside teardown)
 
 ### Suggest flow
@@ -50,7 +51,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 3. Abort previous in-flight request
 4. Mount HTML **after the form**
 5. Wire keyboard focus + analytics custom events
-6. On `ViewsTheme:Search:Overlay:open`, if the input still has a term ≥ `minChars` and results are missing (or detached), re-fetch suggest
+6. On `Shopware` event `ViewsTheme:Search:Overlay:Open` (payload: overlay element), if the bar is inside that overlay, the input still has a term ≥ `minChars`, and results are missing (or detached), re-fetch suggest
 
 ```
 frontend.views-theme.search.suggest

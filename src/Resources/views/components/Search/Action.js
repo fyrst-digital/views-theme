@@ -3,6 +3,8 @@ export default class SearchAction extends ShopwareComponent {
         overlayUrl: null,
         overlayComponentName: 'ViewsTheme:Search:Overlay',
         overlaySelector: '[data-component="ViewsTheme:Search:Overlay"]',
+        openEvent: 'ViewsTheme:Search:Overlay:Open',
+        closeEvent: 'ViewsTheme:Search:Overlay:Close',
     }
 
     init() {
@@ -14,14 +16,14 @@ export default class SearchAction extends ShopwareComponent {
         this._onOverlayClose = this._onOverlayClose.bind(this)
 
         this.el.addEventListener('click', this._onClick)
-        document.addEventListener('ViewsTheme:Search:Overlay:open', this._onOverlayOpen)
-        document.addEventListener('ViewsTheme:Search:Overlay:close', this._onOverlayClose)
+        window.Shopware.on(this.options.openEvent, this._onOverlayOpen)
+        window.Shopware.on(this.options.closeEvent, this._onOverlayClose)
     }
 
     destroy() {
         this.el.removeEventListener('click', this._onClick)
-        document.removeEventListener('ViewsTheme:Search:Overlay:open', this._onOverlayOpen)
-        document.removeEventListener('ViewsTheme:Search:Overlay:close', this._onOverlayClose)
+        window.Shopware.off(this.options.openEvent, this._onOverlayOpen)
+        window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
     }
 
     async _onClick(event) {

@@ -19,37 +19,37 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-      "file": "ViewsTheme/Search/Action-4iVQVCK2.js",
+      "file": "ViewsTheme/Search/Action-C0jzQTO_.js",
       "name": "ViewsTheme/Search/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js": {
-      "file": "ViewsTheme/Search/Bar-C4ubLh7p.js",
+      "file": "ViewsTheme/Search/Bar-Cxx0QnNy.js",
       "name": "ViewsTheme/Search/Bar",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
-      "file": "ViewsTheme/Search/Overlay-DL1MJEpU.js",
+      "file": "ViewsTheme/Search/Overlay-DRGTHgAt.js",
       "name": "ViewsTheme/Search/Overlay",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js": {
-      "file": "ViewsTheme/Search/Overlay/Backdrop-DLyBfeYW.js",
+      "file": "ViewsTheme/Search/Overlay/Backdrop-DNxgdmbR.js",
       "name": "ViewsTheme/Search/Overlay/Backdrop",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js": {
-      "file": "ViewsTheme/Search/Overlay/Close-p3v4tHNy.js",
+      "file": "ViewsTheme/Search/Overlay/Close-DitQF4EH.js",
       "name": "ViewsTheme/Search/Overlay/Close",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-      "file": "ViewsTheme/VariantsGrid/Container-DOUgRfBH.js",
+      "file": "ViewsTheme/VariantsGrid/Container-BuEKQSBY.js",
       "name": "ViewsTheme/VariantsGrid/Container",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
       "isEntry": true
@@ -73,7 +73,7 @@
       "isEntry": true
     },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Bar.css": {
-      "file": "ViewsTheme/Search/Bar-CHgr7VVV.css",
+      "file": "ViewsTheme/Search/Bar-C3Js_DVk.css",
       "name": "ViewsTheme/Search/Bar.css",
       "names": [
         "ViewsTheme/Search/Bar.css"
@@ -82,7 +82,7 @@
       "isEntry": true
     },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Search/Overlay.css": {
-      "file": "ViewsTheme/Search/Overlay-CdQWkwV2.css",
+      "file": "ViewsTheme/Search/Overlay-B4A1z3qO.css",
       "name": "ViewsTheme/Search/Overlay.css",
       "names": [
         "ViewsTheme/Search/Overlay.css"

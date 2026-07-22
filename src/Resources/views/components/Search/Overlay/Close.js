@@ -1,4 +1,8 @@
 export default class SearchOverlayClose extends ShopwareComponent {
+    static options = {
+        overlayComponentName: 'ViewsTheme:Search:Overlay',
+    }
+
     init() {
         this._onClick = this._onClick.bind(this)
         this.el.addEventListener('click', this._onClick)
@@ -10,8 +14,6 @@ export default class SearchOverlayClose extends ShopwareComponent {
 
     _onClick(event) {
         event.preventDefault()
-        this.el.dispatchEvent(new CustomEvent('ViewsTheme:Search:Overlay:dismiss', {
-            bubbles: true,
-        }))
+        window.Shopware.callMethod(this.options.overlayComponentName, 'close')
     }
 }
