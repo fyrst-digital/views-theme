@@ -2,7 +2,7 @@ export default class SearchOverlay extends ShopwareComponent {
     static options = {
         openClass: 'd-flex',
         closedClass: 'd-none',
-        bodyOpenClass: 'vi-search-overlay-open',
+        bodyOpenClass: 'overflow-hidden',
         inputSelector: 'input[type="search"]',
         dismissEvent: 'ViewsTheme:Search:Overlay:dismiss',
     }

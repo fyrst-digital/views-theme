@@ -36,6 +36,15 @@ $container-max-widths: (
 
 $container-padding-x: 30px;
 
+// Breakpoint-aware position utilities (e.g. position-xl-absolute)
+$utilities: (
+  "position": (
+    property: position,
+    responsive: true,
+    values: static relative absolute fixed sticky
+  ),
+);
+
 $border-radius: 6px;
 $border-radius-sm: 0.25rem;
 $border-radius-lg: 0.5rem;
