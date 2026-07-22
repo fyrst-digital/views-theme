@@ -13,6 +13,7 @@ export default class SearchOverlay extends ShopwareComponent {
         this._onKeydown = this._onKeydown.bind(this)
         this._input = this.el.querySelector(this.options.inputSelector)
 
+        this.el.inert = true
         document.addEventListener('keydown', this._onKeydown)
         this.open()
     }
@@ -20,6 +21,7 @@ export default class SearchOverlay extends ShopwareComponent {
     destroy() {
         document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
+        this.el.inert = true
     }
 
     open() {
@@ -29,6 +31,7 @@ export default class SearchOverlay extends ShopwareComponent {
         }
 
         this._open = true
+        this.el.inert = false
         this.el.classList.remove(this.options.closedClass)
         this.el.classList.add(this.options.openClass)
         this.el.setAttribute('aria-hidden', 'false')
@@ -46,6 +49,7 @@ export default class SearchOverlay extends ShopwareComponent {
         this.el.classList.remove(this.options.openClass)
         this.el.classList.add(this.options.closedClass)
         this.el.setAttribute('aria-hidden', 'true')
+        this.el.inert = true
         this._setBodyLock(false)
         window.Shopware.emitQueued(this.options.closeEvent, this.el)
     }
@@ -62,6 +66,39 @@ export default class SearchOverlay extends ShopwareComponent {
         if (event.key === 'Escape') {
             event.preventDefault()
             this.close()
+            return
+        }
+
+        if (event.key === 'Tab') {
+            this._trapFocus(event)
+        }
+    }
+
+    _trapFocus(event) {
+        const focusables = Array.from(
+            window.focusHandler.getFocusableElements(this.el),
+        )
+
+        if (!focusables.length) {
+            event.preventDefault()
+            return
+        }
+
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        const active = document.activeElement
+
+        if (event.shiftKey) {
+            if (active === first || !this.el.contains(active)) {
+                event.preventDefault()
+                window.focusHandler.setFocus(last, { focusVisible: true })
+            }
+            return
+        }
+
+        if (active === last || !this.el.contains(active)) {
+            event.preventDefault()
+            window.focusHandler.setFocus(first, { focusVisible: true })
         }
     }
 

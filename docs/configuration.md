@@ -68,13 +68,19 @@ There is no auto-reload for these files: edit + hard-refresh the storefront. The
 
 | Field | Type | Default / notes |
 |-------|------|-----------------|
-| `sw-color-brand-primary` | color | `#19BF56` |
+| `sw-color-brand-primary` | color | `#F87060` |
+| `sw-color-brand-secondary` | color | `#71816D` |
+| `sw-color-brand-tertiary` | color | `#A393BF` |
+| `sw-color-brand-light` | color | `#faf5ee` |
+| `sw-color-brand-dark` | color | `#2E282A` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
 | `sw-logo-desktop` | media | |
 | `sw-logo-tablet` | media | |
 | `sw-logo-mobile` | media | |
 | `sw-logo-share` | media | |
 | `sw-logo-favicon` | media | |
+
+Form controls use a global last-resort focus outline in `scss/_form.scss` (transparent outline by default, primary on `:focus`). Prefer component-level CSS when possible.
 
 ### Icons
 

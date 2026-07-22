@@ -1,28 +1,22 @@
 {% props
-    title = 'Products',
+    title = 'viewsTheme.search.productsHeading'|trans|sw_sanitize,
     total = null,
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: {
-        base: 'vi-search-suggest__heading'
-    },
-    total: {
-        base: ''
-    }
-}) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    {{title}} 
+    {{ title }}
     {% if total %}
         <span
             {{ attributes.nested('total') }}
-            class="{{ cx.total.apply() }}">
-            ({{total}})
+            class="{{ cx.total.apply() }}"
+        >
+            ({{ total }})
         </span>
     {% endif %}
 </div>

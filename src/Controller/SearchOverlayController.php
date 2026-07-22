@@ -8,6 +8,7 @@ use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
+use Shopware\Storefront\Page\Suggest\SuggestPageLoadedHook;
 use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,6 +60,8 @@ class SearchOverlayController extends StorefrontController
         }
 
         $page = $this->suggestPageLoader->load($request, $context);
+
+        $this->hook(new SuggestPageLoadedHook($page, $context));
 
         return $this->renderComponent('ViewsTheme:Search:Suggest', [
             'searchResult' => $page->getSearchResult(),

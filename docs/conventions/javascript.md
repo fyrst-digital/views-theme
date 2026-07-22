@@ -93,6 +93,7 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 **Event name casing:** Shopware bus events use **PascalCase** segments (`Namespace:Feature:Action`), e.g. `ViewsTheme:Search:Overlay:Open` — not `:open`.
 
 Search: Backdrop/Close call `Shopware.callMethod('ViewsTheme:Search:Overlay', 'close')`. Overlay emits `ViewsTheme:Search:Overlay:Open` / `:Close` via `emitQueued` (payload: overlay element).  
+Closed overlay sets `inert` (plus `aria-hidden`) so tab order skips it; while open, Tab is trapped inside the dialog.  
 Suggest HTML is inserted as the form’s next sibling. Product grid scrolls via nested `Scroll:Area`.
 
 See [Search overlay](../features/search-overlay.md).

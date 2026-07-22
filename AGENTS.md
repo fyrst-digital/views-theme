@@ -34,6 +34,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 ### Hard rules (always)
 
 - **New / migrated** components: UX tags `<twig:ViewsTheme:…>`, `{% props %}`, `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva()` + `cva = {}` prop + `attributes`, BEM roots with **`vi-`** prefix. See [ux-components.md](docs/conventions/ux-components.md) and [vi-cva.md](docs/twig/vi-cva.md).
+- **Props:** defaults live **only** in `{% props %}`. Do **not** reassign prop names with `{% set prop = … %}` after the props block. Put defaults (including `|trans`, `path(…)`, etc.) in the props declaration. Non-prop locals (e.g. `cx` from `vi_cva_from_file`) are fine.
 - Interactive UX roots: `data-component="ViewsTheme:…"` (Shopware auto-inits co-located JS). Do **not** add new `data-ref` attributes (legacy ones may remain until migrated). Never CSS classes as JS selectors.
 - Co-located interactive JS: `ShopwareComponent` in `<Name>.js` next to `<Name>.html.twig` (no new PluginManager plugins).
 - **JS component communication:** prefer `Shopware.emit` / `emitQueued` + `on` / `off` for cross-component events; `Shopware.callMethod` for direct instance methods; native `CustomEvent` only for external/analytics. Always `off` in `destroy()`. Use `emitQueued` when emitting from `init()`. Event names are **PascalCase** segments (`ViewsTheme:Search:Overlay:Open`, not `:open`). See [javascript.md](docs/conventions/javascript.md).
@@ -46,5 +47,5 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
 - **Style**: Modern Minimal
 - **Font**: Figtree
-- **Accent**: `#19BF56` (light), `#A3EFAC` (dark variable-ready)
+- **Accent**: `#F87060` (primary); brand tokens also include secondary `#71816D`, tertiary `#A393BF`, light `#faf5ee`, dark `#2E282A`
 - **Base grid**: 8px
