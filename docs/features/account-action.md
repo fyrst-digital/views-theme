@@ -10,7 +10,8 @@ Page:Header:Actions
        └─ Dropdown (flat: button + panel, no wrapper)
             ├─ toggle button → user icon
             └─ panel (host) → Account:Menu
-                 ├─ guest → LoginForm + register CTA
+                 ├─ guest → Login → Login:Actions (Button submit + recover)
+                 │         + register CTA
                  └─ customer → UserActions
 ```
 
@@ -19,6 +20,7 @@ Page:Header:Actions
 | `Account:Action` | `components/Account/Action.*` | Header action shell (size CVA, a11y labels) |
 | `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, a11y focus |
 | `Account:Menu` | `components/Account/Menu.*` | Account panel body (no dropdown chrome) |
+| `Account:Login:Actions` | `components/Account/Login/Actions.*` | Login submit + recover (`Button`) |
 
 ## Dropdown behavior
 

@@ -22,7 +22,7 @@
 
         {% block component_account_login_form %}
             <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
-                <twig:ViewsTheme:Account:LoginForm
+                <twig:ViewsTheme:Account:Login
                     :loginError="loginError|default(false)"
                     :errorSnippet="errorSnippet|default(null)"
                     :waitTime="waitTime|default(null)"

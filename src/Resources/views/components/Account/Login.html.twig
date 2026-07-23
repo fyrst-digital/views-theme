@@ -1,6 +1,6 @@
 {% props
     loginRoute = 'frontend.account.login',
-    showDescription = false,
+    description = 'account.loginFormDescription'|trans|sw_sanitize,
     redirectTo = null,
     redirectParameters = null,
     loginError = false,
@@ -55,12 +55,12 @@
     {% endblock %}
 
     {% block description %}
-        {% if showDescription is same as(true) %}
+        {% if description is not empty %}
             <div
                 {{ attributes.nested('description') }}
                 class="{{ cx.description.apply() }}"
             >
-                {{ 'account.loginFormDescription'|trans|sw_sanitize }}
+                {{ description }}
             </div>
         {% endif %}
     {% endblock %}
@@ -74,7 +74,7 @@
             autocomplete: 'username webauthn',
             error: loginError,
             validationRules: 'required,email',
-            additionalClass: 'vi-account-login-form__email login-form-email',
+            additionalClass: 'vi-account-login__email login-form-email flex-fill',
         } %}
     {% endblock %}
 
@@ -87,31 +87,11 @@
             autocomplete: 'current-password',
             error: loginError,
             validationRules: 'required',
-            additionalClass: 'vi-account-login-form__password login-form-password',
+            additionalClass: 'vi-account-login__password login-form-password flex-fill',
         } %}
     {% endblock %}
 
     {% block actions %}
-        <div
-            {{ attributes.nested('actions') }}
-            class="{{ cx.actions.apply() }}"
-        >
-            <button
-                {{ attributes.nested('login').defaults({
-                    type: 'submit',
-                }) }}
-                class="{{ cx.login.apply() }}"
-            >
-                {{ 'account.loginSubmit'|trans|sw_sanitize }}
-            </button>
-            <a
-                {{ attributes.nested('recovery').defaults({
-                    href: seoUrl('frontend.account.recover.page'),
-                }) }}
-                class="{{ cx.recovery.apply() }}"
-            >
-                {{ 'account.loginPasswordRecover'|trans|sw_sanitize }}
-            </a>
-        </div>
+        <twig:ViewsTheme:Account:Login:Actions />
     {% endblock %}
 </form>
