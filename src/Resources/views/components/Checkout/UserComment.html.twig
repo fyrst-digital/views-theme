@@ -27,18 +27,20 @@
     {% block control %}
         <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
             <label
-                for="{{ commentKey }}"
-                {{ attributes.nested('label') }}
+                {{ attributes.nested('label').defaults({
+                    for: commentKey,
+                }) }}
                 class="{{ cx.label.apply() }}"
             >
                 {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
             </label>
             <textarea
-                placeholder="{{ 'checkout.customerCommentPlaceholder'|trans|sw_sanitize }}"
-                id="{{ commentKey }}"
-                form="confirmOrderForm"
-                name="{{ commentKey }}"
-                {{ attributes.nested('textarea') }}
+                {{ attributes.nested('textarea').defaults({
+                    placeholder: 'checkout.customerCommentPlaceholder'|trans|sw_sanitize,
+                    id: commentKey,
+                    form: 'confirmOrderForm',
+                    name: commentKey,
+                }) }}
                 class="{{ cx.textarea.apply() }}"
             ></textarea>
         </div>

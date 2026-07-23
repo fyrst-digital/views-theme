@@ -38,8 +38,9 @@
                 {% block label %}
                     {% if label is not same as(false) %}
                         <label
-                            for="PreferredDeliveryDate"
-                            {{ attributes.nested('label') }}
+                            {{ attributes.nested('label').defaults({
+                                for: 'PreferredDeliveryDate',
+                            }) }}
                             class="{{ cx.label.apply() }}"
                         >
                             {{ label }}
@@ -49,14 +50,15 @@
 
                 {% block input %}
                     <input
-                        type="date"
-                        id="PreferredDeliveryDate"
-                        form="confirmOrderForm"
-                        name="viewsThemeDeliveryDate"
-                        min="{{ resolvedDeliveryDate.min|default('') }}"
-                        max="{{ resolvedDeliveryDate.max|default('') }}"
-                        value=""
-                        {{ attributes.nested('input') }}
+                        {{ attributes.nested('input').defaults({
+                            type: 'date',
+                            id: 'PreferredDeliveryDate',
+                            form: 'confirmOrderForm',
+                            name: 'viewsThemeDeliveryDate',
+                            min: resolvedDeliveryDate.min|default(''),
+                            max: resolvedDeliveryDate.max|default(''),
+                            value: '',
+                        }) }}
                         class="{{ cx.input.apply() }}"
                     >
                 {% endblock %}

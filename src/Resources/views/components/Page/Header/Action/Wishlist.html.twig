@@ -17,20 +17,22 @@
 {% set wishlistWidgetOptions = { showCounter: showCounter } %}
 
 <a
-    href="{{ path('frontend.wishlist.page') }}"
-    title="{{ 'header.wishlist'|trans|striptags }}"
-    aria-labelledby="wishlist-basket-live-area"
-    {{ attributes }}
+    {{ attributes.defaults({
+        href: path('frontend.wishlist.page'),
+        title: 'header.wishlist'|trans|striptags,
+        'aria-labelledby': 'wishlist-basket-live-area',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block badge %}
         <span
-            id="wishlist-basket"
-            data-wishlist-storage="true"
-            data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"
-            data-wishlist-widget="true"
-            data-wishlist-widget-options="{{ wishlistWidgetOptions|json_encode }}"
-            {{ attributes.nested('badge') }}
+            {{ attributes.nested('badge').defaults({
+                id: 'wishlist-basket',
+                'data-wishlist-storage': 'true',
+                'data-wishlist-storage-options': wishlistStorageOptions|json_encode,
+                'data-wishlist-widget': 'true',
+                'data-wishlist-widget-options': wishlistWidgetOptions|json_encode,
+            }) }}
             class="{{ cx.badge.apply() }}"
         ></span>
     {% endblock %}
@@ -41,10 +43,11 @@
 
     {% block live_region %}
         <span
-            id="wishlist-basket-live-area"
-            data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
-            aria-live="polite"
-            {{ attributes.nested('live') }}
+            {{ attributes.nested('live').defaults({
+                id: 'wishlist-basket-live-area',
+                'data-wishlist-live-area-text': 'header.wishlistAriaLiveTemplate'|trans,
+                'aria-live': 'polite',
+            }) }}
             class="{{ cx.live.apply() }}"
         ></span>
     {% endblock %}

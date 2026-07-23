@@ -14,23 +14,25 @@
 }|replace_recursive(cva)) %}
 
 <form
-    name="precalc"
-    method="post"
-    action="{{ path('frontend.checkout.configure') }}"
-    data-form-auto-submit="true"
-    {{ attributes }}
+    {{ attributes.defaults({
+        name: 'precalc',
+        method: 'post',
+        action: path('frontend.checkout.configure'),
+        'data-form-auto-submit': 'true',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block trigger %}
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
         {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
             <a
-                data-bs-toggle="collapse"
-                href="#collapseShippingCost"
-                role="button"
-                aria-expanded="false"
-                aria-controls="collapseExample"
-                {{ attributes.nested('trigger') }}
+                {{ attributes.nested('trigger').defaults({
+                    'data-bs-toggle': 'collapse',
+                    href: '#collapseShippingCost',
+                    role: 'button',
+                    'aria-expanded': 'false',
+                    'aria-controls': 'collapseExample',
+                }) }}
                 class="{{ cx.trigger.apply() }}"
             >
                 {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
@@ -41,8 +43,9 @@
 
     {% block form_group %}
         <div
-            id="collapseShippingCost"
-            {{ attributes.nested('collapse') }}
+            {{ attributes.nested('collapse').defaults({
+                id: 'collapseShippingCost',
+            }) }}
             class="{{ cx.collapse.apply() }}"
         >
             <div {{ attributes.nested('selects') }} class="{{ cx.selects.apply() }}">
@@ -50,17 +53,19 @@
                     {% if not context.customer %}
                         <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                             <label
-                                for="countryId"
-                                {{ attributes.nested('label') }}
+                                {{ attributes.nested('label').defaults({
+                                    for: 'countryId',
+                                }) }}
                                 class="{{ cx.label.apply() }}"
                             >
                                 {{ 'checkout.shippingCountry'|trans|sw_sanitize }}
                             </label>
                             <select
-                                type="text"
-                                id="countryId"
-                                name="countryId"
-                                {{ attributes.nested('select') }}
+                                {{ attributes.nested('select').defaults({
+                                    type: 'text',
+                                    id: 'countryId',
+                                    name: 'countryId',
+                                }) }}
                                 class="{{ cx.select.apply() }}"
                             >
                                 {% for country in page.countries %}
@@ -79,17 +84,19 @@
                 {% block payment_method %}
                     <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
-                            for="paymentMethodId"
-                            {{ attributes.nested('label') }}
+                            {{ attributes.nested('label').defaults({
+                                for: 'paymentMethodId',
+                            }) }}
                             class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
                         </label>
                         <select
-                            type="text"
-                            id="paymentMethodId"
-                            name="paymentMethodId"
-                            {{ attributes.nested('select') }}
+                            {{ attributes.nested('select').defaults({
+                                type: 'text',
+                                id: 'paymentMethodId',
+                                name: 'paymentMethodId',
+                            }) }}
                             class="{{ cx.select.apply() }}"
                         >
                             {% if context.paymentMethod.id not in page.paymentMethods.ids %}
@@ -113,17 +120,19 @@
                 {% block shipping_method %}
                     <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
-                            for="shippingMethodId"
-                            {{ attributes.nested('label') }}
+                            {{ attributes.nested('label').defaults({
+                                for: 'shippingMethodId',
+                            }) }}
                             class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.shippingMethod'|trans|sw_sanitize }}
                         </label>
                         <select
-                            type="text"
-                            id="shippingMethodId"
-                            name="shippingMethodId"
-                            {{ attributes.nested('select') }}
+                            {{ attributes.nested('select').defaults({
+                                type: 'text',
+                                id: 'shippingMethodId',
+                                name: 'shippingMethodId',
+                            }) }}
                             class="{{ cx.select.apply() }}"
                         >
                             {% if context.shippingMethod.id not in page.shippingMethods.ids %}

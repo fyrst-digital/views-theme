@@ -16,7 +16,6 @@
     <div
         {{ attributes }}
         class="{{ cx.root.apply() }}"
-        data-ref="offcanvas"
     >
         {% block header %}
             <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
@@ -28,10 +27,11 @@
 
                 {% block close %}
                     <button
-                        type="button"
-                        title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-                        aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-                        {{ attributes.nested('close') }}
+                        {{ attributes.nested('close').defaults({
+                            type: 'button',
+                            title: 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+                            'aria-label': 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+                        }) }}
                         class="{{ cx.close.apply() }}"
                     >
                         {% block close_icon %}

@@ -30,18 +30,16 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ formAction }}"
-    method="post"
-    id="{{ resolvedFormId }}"
-    data-add-to-cart="true"
-    data-ref="buy"
-    {% if product.isCloseout %}
-        data-add-to-cart-options="{{ {
+    {{ attributes.defaults({
+        action: formAction,
+        method: 'post',
+        id: resolvedFormId,
+        'data-add-to-cart': 'true',
+        'data-add-to-cart-options': product.isCloseout ? {
             stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
             outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
-        }|json_encode|e('html_attr') }}"
-    {% endif %}
-    {{ attributes }}
+        }|json_encode : null,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block parameter %}
@@ -66,9 +64,9 @@
 
     {% block button %}
         <button
-            type="submit"
-            data-ref="buy-action"
-            {{ attributes.nested('button') }}
+            {{ attributes.nested('button').defaults({
+                type: 'submit',
+            }) }}
             class="{{ cx.button.apply() }}"
         >
             {% block button_icon %}

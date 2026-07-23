@@ -11,13 +11,15 @@
 }|replace_recursive(cva)) %}
 
 {% block component_address_address_editor_modal_create_address_form %}
-    <form method="post"
-            action="{{ path('frontend.account.addressbook') }}"
-            {{ attributes }}
-            class="{{ cx.root.apply() }}"
-            data-form-ajax-submit="true"
-            data-form-validation="true"
-            data-form-ajax-submit-options="{{ formAjaxSubmitOptions|json_encode }}">
+    <form
+            {{ attributes.defaults({
+                method: 'post',
+                action: path('frontend.account.addressbook'),
+                'data-form-ajax-submit': 'true',
+                'data-form-validation': 'true',
+                'data-form-ajax-submit-options': formAjaxSubmitOptions|json_encode,
+            }) }}
+            class="{{ cx.root.apply() }}">
 
         {% block component_address_address_editor_modal_create_address_form_hidden_inputs %}
             {{ parent() }}

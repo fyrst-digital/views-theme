@@ -1,7 +1,7 @@
 export default class HeaderActionCart extends ShopwareComponent {
   static options = {
     badgeClass: 'badge bg-primary',
-    badgeRef: 'badge',
+    badgeSelector: '[data-action="badge"]',
   }
 
   init() {
@@ -16,14 +16,13 @@ export default class HeaderActionCart extends ShopwareComponent {
 
   _renderBadge() {
     const count = window.cartCount || 0
-    const badgeSelector = `.${this.options.badgeClass.replace(/\s+/g, '.')}`
-    let badge = this.el.querySelector(badgeSelector)
+    let badge = this.el.querySelector(this.options.badgeSelector)
 
     if (count > 0) {
       if (!badge) {
         badge = document.createElement('span')
         badge.className = this.options.badgeClass
-        badge.setAttribute('data-ref', this.options.badgeRef)
+        badge.setAttribute('data-action', 'badge')
         this.el.appendChild(badge)
       }
       badge.textContent = String(count)

@@ -18,11 +18,11 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ path(loginRoute) }}"
-    method="post"
-    data-form-handler="true"
-    data-ref="login-form"
-    {{ attributes }}
+    {{ attributes.defaults({
+        action: path(loginRoute),
+        method: 'post',
+        'data-form-handler': 'true',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block redirect %}
@@ -103,15 +103,17 @@
             class="{{ cx.actions.apply() }}"
         >
             <button
-                type="submit"
-                {{ attributes.nested('login') }}
+                {{ attributes.nested('login').defaults({
+                    type: 'submit',
+                }) }}
                 class="{{ cx.login.apply() }}"
             >
                 {{ 'account.loginSubmit'|trans|sw_sanitize }}
             </button>
             <a
-                href="{{ seoUrl('frontend.account.recover.page') }}"
-                {{ attributes.nested('recovery') }}
+                {{ attributes.nested('recovery').defaults({
+                    href: seoUrl('frontend.account.recover.page'),
+                }) }}
                 class="{{ cx.recovery.apply() }}"
             >
                 {{ 'account.loginPasswordRecover'|trans|sw_sanitize }}

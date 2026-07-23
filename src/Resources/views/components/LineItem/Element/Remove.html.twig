@@ -28,11 +28,12 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ resolvedFormAction }}"
-    method="post"
-    data-form-submit-loader="true"
-    data-form-submit-loader-options="{{ loaderOptions|json_encode }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        action: resolvedFormAction,
+        method: 'post',
+        'data-form-submit-loader': 'true',
+        'data-form-submit-loader-options': loaderOptions|json_encode,
+    }) }}
     class="{{ cx.root.apply({ displayMode: displayMode }) }}"
 >
     <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -40,11 +41,12 @@
 
     {% block button %}
         <button
-            type="submit"
-            aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags }}"
-            title="{{ 'global.default.remove'|trans }}"
-            data-product-id="{{ lineItem.id }}"
-            {{ attributes.nested('button') }}
+            {{ attributes.nested('button').defaults({
+                type: 'submit',
+                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
+                title: 'global.default.remove'|trans,
+                'data-product-id': lineItem.id,
+            }) }}
             class="{{ cx.button.apply() }}"
         >
             {{ vi_icon('x') }}

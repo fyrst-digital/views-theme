@@ -15,7 +15,6 @@
 }|replace_recursive(cva)) %}
 
 <div
-    data-ref="line-item"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -28,7 +27,6 @@
         >
             {% block header %}
                 <div
-                    data-ref="header"
                     {{ attributes.nested('header') }}
                     class="{{ cx.header.apply() }}"
                 >

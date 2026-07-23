@@ -26,11 +26,14 @@
                             {% block component_footer_bottom_service_item %}
                                 <li {{ attributes.nested('serviceItem') }} class="{{ cx.serviceItem.apply() }}">
                                     {% block component_footer_bottom_service_link %}
-                                        <a {{ attributes.nested('serviceLink') }}
+                                        <a
+                                            {{ attributes.nested('serviceLink').defaults({
+                                                href: category_url(serviceMenuItem),
+                                                title: serviceMenuItem.translated.name,
+                                                target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
+                                            }) }}
                                             class="{{ cx.serviceLink.apply() }}"
-                                            href="{{ category_url(serviceMenuItem) }}"
-                                            {% if category_linknewtab(serviceMenuItem) %}target="_blank"{% endif %}
-                                            title="{{ serviceMenuItem.translated.name }}">
+                                        >
                                             {{ serviceMenuItem.translated.name }}
                                         </a>
                                     {% endblock %}

@@ -27,7 +27,6 @@
     : null %}
 
 <div
-    data-ref="line-item"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -44,7 +43,6 @@
         >
             {% block header %}
                 <div
-                    data-ref="header"
                     {{ attributes.nested('header') }}
                     class="{{ cx.header.apply() }}"
                 >
@@ -55,9 +53,10 @@
                         >
                             {% if productLink is not null %}
                                 <a
-                                    href="{{ productLink }}"
-                                    title="{{ label }}"
-                                    {{ attributes.nested('label') }}
+                                    {{ attributes.nested('label').defaults({
+                                        href: productLink,
+                                        title: label,
+                                    }) }}
                                     class="{{ cx.label.apply() }}"
                                 >
                                     {{ label|raw }}

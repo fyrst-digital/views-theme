@@ -14,7 +14,7 @@ Prefer **event delegation** on the component root for `data-action` clicks.
 
 Semantic element selectors are fine when unambiguous (`input[type="search"]`, `button[type="submit"]`).
 
-Do **not** use `data-ref`. Prefer `data-action` or semantic selectors. Legacy components may still have `data-ref` — leave until migrated; do not extend the pattern.
+Do **not** use `data-ref` (removed). Prefer `data-action` or semantic selectors.
 
 ## Co-located component JS
 
@@ -53,8 +53,11 @@ Data: `page.extensions.viewsTheme.variantsGrid`.
 |------|-----------|
 | Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
-
-Internal nodes may still use legacy `data-ref` — do not add more.
+| Pagination slot | `data-action="pagination"` |
+| Quantity memory | `data-action="memory"` |
+| Buy submit | `button[type="submit"]` |
+| Error | `[role="alert"]` |
+| Live region | `[aria-live]` |
 
 See [Variants grid](../features/variants-grid.md).
 

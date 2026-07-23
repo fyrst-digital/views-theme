@@ -12,10 +12,10 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ path('frontend.checkout.promotion.add') }}"
-    method="post"
-    data-ref="promotion-form"
-    {{ attributes }}
+    {{ attributes.defaults({
+        action: path('frontend.checkout.promotion.add'),
+        method: 'post',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block redirect %}
@@ -25,8 +25,9 @@
     {% block input_group %}
         {% block label %}
             <label
-                for="addPromotionOffcanvasCartInput"
-                {{ attributes.nested('label') }}
+                {{ attributes.nested('label').defaults({
+                    for: 'addPromotionOffcanvasCartInput',
+                }) }}
                 class="{{ cx.label.apply() }}"
             >
                 {{ 'checkout.addPromotionLabel'|trans|sw_sanitize }}
@@ -36,23 +37,25 @@
         <div {{ attributes.nested('inputGroup') }} class="{{ cx.inputGroup.apply() }}">
             {% block input %}
                 <input
-                    type="text"
-                    name="code"
-                    id="addPromotionOffcanvasCartInput"
-                    placeholder="{{ 'checkout.addPromotionPlaceholder'|trans|striptags }}"
-                    aria-label="{{ 'checkout.addPromotionLabel'|trans|striptags }}"
-                    aria-describedby="addPromotionOffcanvasCart"
-                    required="required"
-                    {{ attributes.nested('input') }}
+                    {{ attributes.nested('input').defaults({
+                        type: 'text',
+                        name: 'code',
+                        id: 'addPromotionOffcanvasCartInput',
+                        placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
+                        'aria-label': 'checkout.addPromotionLabel'|trans|striptags,
+                        'aria-describedby': 'addPromotionOffcanvasCart',
+                        required: 'required',
+                    }) }}
                     class="{{ cx.input.apply() }}"
                 >
             {% endblock %}
 
             {% block submit %}
                 <button
-                    type="submit"
-                    id="addPromotionOffcanvasCart"
-                    {{ attributes.nested('submit') }}
+                    {{ attributes.nested('submit').defaults({
+                        type: 'submit',
+                        id: 'addPromotionOffcanvasCart',
+                    }) }}
                     class="{{ cx.submit.apply() }}"
                 >
                     {{ vi_icon('ticket') }}

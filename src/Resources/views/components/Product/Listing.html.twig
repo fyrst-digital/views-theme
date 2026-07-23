@@ -16,7 +16,10 @@
 }|replace_recursive(cva)) %}
 
 {% block element_product_listing_pagination_nav_actions %}
-    <div {{ attributes.nested('actions') }} class="{{ cx.actions.apply() }}" data-ref="listing-actions">
+    <div
+        {{ attributes.nested('actions') }}
+        class="{{ cx.actions.apply() }}"
+    >
         {% block element_product_listing_pagination_nav_top %}
             {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
                 entities: searchResult,
@@ -45,13 +48,11 @@
     {% endif %}
 
     <div
-        {{ attributes }}
+        {{ attributes.defaults({
+            'data-aria-live-text': ariaLiveText,
+            role: searchResult.total > 0 ? 'list' : null,
+        }) }}
         class="{{ cx.root.apply() }}"
-        data-aria-live-text="{{- ariaLiveText -}}"
-        {% if searchResult.total > 0 %}
-            role="list"
-        {% endif %}
-        data-ref="listing"
     >
         {% if searchResult.total > 0 %}
             {% block element_product_listing_col %}

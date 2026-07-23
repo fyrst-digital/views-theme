@@ -28,12 +28,10 @@
     {{ attributes.defaults({
         role: 'alert',
         'aria-live': ariaLive,
+        'data-alert-aria': announceOnLoad ? 'true' : null,
+        'data-alert-aria-options': announceOnLoad ? alertAriaJsOptions|json_encode : null,
     }) }}
     class="{{ cx.root.apply({ type: alertType, dismissible: dismissible }) }}"
-    {% if announceOnLoad %}
-        data-alert-aria="true"
-        data-alert-aria-options="{{ alertAriaJsOptions|json_encode }}"
-    {% endif %}
 >
     {% block icon %}
         {% if icon is not same as(false) and icon is not same as('false') %}
@@ -76,8 +74,8 @@
     {% block dismiss %}
         {% if dismissible %}
             <button
-                type="button"
                 {{ attributes.nested('dismiss').defaults({
+                    type: 'button',
                     'data-bs-dismiss': 'alert',
                     'aria-label': 'global.default.close'|trans|striptags,
                 }) }}

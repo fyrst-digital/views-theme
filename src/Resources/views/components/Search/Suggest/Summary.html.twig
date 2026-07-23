@@ -13,10 +13,11 @@
     >
         {% block action %}
             <a
-                href="{{ path('frontend.search.page') }}?search={{ searchTerm|url_encode }}"
-                title="{{ 'header.searchAllResults'|trans|striptags }}"
-                data-action="view-all"
-                {{ attributes.nested('action') }}
+                {{ attributes.nested('action').defaults({
+                    href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,
+                    title: 'header.searchAllResults'|trans|striptags,
+                    'data-action': 'view-all',
+                }) }}
                 class="{{ cx.action.apply() }}"
             >
                 {{ 'header.searchAllResults'|trans|sw_sanitize }} »

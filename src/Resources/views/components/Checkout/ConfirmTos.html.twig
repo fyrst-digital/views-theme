@@ -46,17 +46,19 @@
         {% if showTosOptin is same as(true) %}
             <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
                 <input
-                    type="checkbox"
-                    required="required"
-                    id="tos"
-                    form="{{ formId }}"
-                    name="tos"
-                    {{ attributes.nested('tosCheckbox') }}
+                    {{ attributes.nested('tosCheckbox').defaults({
+                        type: 'checkbox',
+                        required: 'required',
+                        id: 'tos',
+                        form: formId,
+                        name: 'tos',
+                    }) }}
                     class="{{ cx.tosCheckbox.apply() }}{{ tosInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
-                    for="tos"
-                    {{ attributes.nested('tosLabel') }}
+                    {{ attributes.nested('tosLabel').defaults({
+                        for: 'tos',
+                    }) }}
                     class="{{ cx.tosLabel.apply() }}"
                 >
                     {{ tosSnippet|raw }}
@@ -72,17 +74,19 @@
         {% if pageEntity and pageEntity.showRevocation() %}
             <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
                 <input
-                    type="checkbox"
-                    required="required"
-                    id="revocation"
-                    form="{{ formId }}"
-                    name="revocation"
-                    {{ attributes.nested('revocationCheckbox') }}
+                    {{ attributes.nested('revocationCheckbox').defaults({
+                        type: 'checkbox',
+                        required: 'required',
+                        id: 'revocation',
+                        form: formId,
+                        name: 'revocation',
+                    }) }}
                     class="{{ cx.revocationCheckbox.apply() }}{{ revocationInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
-                    for="revocation"
-                    {{ attributes.nested('revocationLabel') }}
+                    {{ attributes.nested('revocationLabel').defaults({
+                        for: 'revocation',
+                    }) }}
                     class="{{ cx.revocationLabel.apply() }}"
                 >
                     {{ 'checkout.confirmRevocationTerms'|trans() }}

@@ -29,12 +29,13 @@
 
     {% block component_account_register_form %}
       <form
-        action="{{ path('frontend.account.register.save') }}"
-        {{ attributes.nested('form') }}
-        class="{{ cx.form.apply() }}"
-        method="post"
-        data-form-submit-loader="true"
-        data-form-validation="true">
+        {{ attributes.nested('form').defaults({
+            action: path('frontend.account.register.save'),
+            method: 'post',
+            'data-form-submit-loader': 'true',
+            'data-form-validation': 'true',
+        }) }}
+        class="{{ cx.form.apply() }}">
         {% block component_account_register_redirect %}
           {{ parent() }}
         {% endblock %}

@@ -26,23 +26,25 @@
 {% set languageCode = isoCode[0] %}
 
 <form
-    method="post"
-    action="{{ path('frontend.checkout.switch-language') }}"
-    data-form-auto-submit="true"
-    data-form-add-dynamic-redirect="true"
-    {{ attributes }}
+    {{ attributes.defaults({
+        method: 'post',
+        action: path('frontend.checkout.switch-language'),
+        'data-form-auto-submit': 'true',
+        'data-form-add-dynamic-redirect': 'true',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
         <div {{ attributes.nested('menu') }} class="{{ cx.menu.apply() }}">
             {% block button %}
                 <button
-                    type="button"
-                    id="languagesDropdown-{{ position }}"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    {{ attributes.nested('button') }}
+                    {{ attributes.nested('button').defaults({
+                        type: 'button',
+                        id: 'languagesDropdown-' ~ position,
+                        'data-bs-toggle': 'dropdown',
+                        'aria-haspopup': 'true',
+                        'aria-expanded': 'false',
+                    }) }}
                     class="{{ cx.button.apply() }}"
                 >
                     {% block flag %}
@@ -50,9 +52,10 @@
                             {% if activeLanguage and activeLanguage.translationCode %}
                                 {% block flag_icon %}
                                     <img
-                                        src="{{ asset('bundles/viewstheme/flags/' ~ activeLanguage.translationCode.code ~ '.svg', 'asset') }}"
-                                        alt=""
-                                        {{ attributes.nested('flagIcon') }}
+                                        {{ attributes.nested('flagIcon').defaults({
+                                            src: asset('bundles/viewstheme/flags/' ~ activeLanguage.translationCode.code ~ '.svg', 'asset'),
+                                            alt: '',
+                                        }) }}
                                         class="{{ cx.flagIcon.apply() }}"
                                     >
                                 {% endblock %}
@@ -72,39 +75,44 @@
 
             {% block dropdown %}
                 <div
-                    aria-labelledby="languagesDropdown-{{ position }}"
-                    {{ attributes.nested('dropdown') }}
+                    {{ attributes.nested('dropdown').defaults({
+                        'aria-labelledby': 'languagesDropdown-' ~ position,
+                    }) }}
                     class="{{ cx.dropdown.apply() }}"
                 >
                     {% for language in resolvedLanguages %}
                         {% block item %}
                             {% set isActive = language.id is same as(resolvedActiveLanguageId) %}
                             <div
-                                title="{{ language.translated.name|default(language.name) }}"
-                                {{ isActive ? attributes.nested('itemChecked') : attributes.nested('item') }}
+                                {{ (isActive ? attributes.nested('itemChecked') : attributes.nested('item')).defaults({
+                                    title: language.translated.name|default(language.name),
+                                }) }}
                                 class="{{ isActive ? cx.itemChecked.apply() : cx.item.apply() }}"
                             >
                                 <label
-                                    for="{{ position }}-{{ language.id }}"
-                                    {{ attributes.nested('itemLabel') }}
+                                    {{ attributes.nested('itemLabel').defaults({
+                                        for: position ~ '-' ~ language.id,
+                                    }) }}
                                     class="{{ cx.itemLabel.apply() }}"
                                 >
                                     <input
-                                        id="{{ position }}-{{ language.id }}"
-                                        value="{{ language.id }}"
-                                        name="languageId"
-                                        type="radio"
-                                        {% if isActive %}checked{% endif %}
-                                        {{ attributes.nested('itemRadio') }}
+                                        {{ attributes.nested('itemRadio').defaults({
+                                            id: position ~ '-' ~ language.id,
+                                            value: language.id,
+                                            name: 'languageId',
+                                            type: 'radio',
+                                            checked: isActive ? true : null,
+                                        }) }}
                                         class="{{ cx.itemRadio.apply() }}"
                                     >
 
                                     {% if language.translationCode %}
                                         {% block item_icon %}
                                             <img
-                                                src="{{ asset('bundles/viewstheme/flags/' ~ language.translationCode.code ~ '.svg', 'asset') }}"
-                                                alt=""
-                                                {{ attributes.nested('itemIcon') }}
+                                                {{ attributes.nested('itemIcon').defaults({
+                                                    src: asset('bundles/viewstheme/flags/' ~ language.translationCode.code ~ '.svg', 'asset'),
+                                                    alt: '',
+                                                }) }}
                                                 class="{{ cx.itemIcon.apply() }}"
                                             >
                                         {% endblock %}

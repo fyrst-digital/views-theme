@@ -19,11 +19,12 @@
             {{ 'cookie.headline'|trans|sw_sanitize }}
         </div>
         <button
-            type="button"
-            {{ attributes.nested('close') }}
+            {{ attributes.nested('close').defaults({
+                type: 'button',
+                title: 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+                'aria-label': 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+            }) }}
             class="{{ cx.close.apply() }}"
-            title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-            aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
         >
             {{ vi_icon('x') }}
         </button>

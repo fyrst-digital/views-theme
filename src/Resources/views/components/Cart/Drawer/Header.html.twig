@@ -10,9 +10,9 @@
 }|replace_recursive(cva)) %}
 
 <button
-    type="button"
-    data-ref="drawer-header"
-    {{ attributes }}
+    {{ attributes.defaults({
+        type: 'button',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}

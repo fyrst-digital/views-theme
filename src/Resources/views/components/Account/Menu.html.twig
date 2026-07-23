@@ -41,9 +41,10 @@
                 class="{{ cx.footer.apply() }}"
             >
                 <a
-                    href="{{ path('frontend.account.login.page') }}"
-                    title="{{ 'account.orRegisterLink'|trans|striptags }}"
-                    {{ attributes.nested('register') }}
+                    {{ attributes.nested('register').defaults({
+                        href: path('frontend.account.login.page'),
+                        title: 'account.orRegisterLink'|trans|striptags,
+                    }) }}
                     class="{{ cx.register.apply() }}"
                 >
                     {{ 'account.orRegisterLink'|trans|sw_sanitize }}

@@ -34,7 +34,6 @@
 }|replace_recursive(cva)) %}
 
 <div
-    data-ref="user-actions"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -47,11 +46,11 @@
                 {% for key, action in userActions %}
                     {% block action %}
                         <a
-                            href="{{ path(action.route) }}"
-                            title="{{ action.label }}"
-                            data-ref="action-{{ key }}"
-                            aria-current="page"
-                            {{ attributes.nested('action') }}
+                            {{ attributes.nested('action').defaults({
+                                href: path(action.route),
+                                title: action.label,
+                                'aria-current': 'page',
+                            }) }}
                             class="{{ cx.action.apply() }}"
                         >
                             {% if action.icon is defined %}
@@ -71,10 +70,11 @@
             class="{{ cx.footer.apply() }}"
         >
             <a
-                href="{{ path('frontend.account.logout.page') }}"
-                title="{{ 'account.logout'|trans|sw_sanitize }}"
-                aria-current="page"
-                {{ attributes.nested('logout') }}
+                {{ attributes.nested('logout').defaults({
+                    href: path('frontend.account.logout.page'),
+                    title: 'account.logout'|trans|sw_sanitize,
+                    'aria-current': 'page',
+                }) }}
                 class="{{ cx.logout.apply() }}"
             >
                 {{ 'account.logout'|trans|sw_sanitize }}

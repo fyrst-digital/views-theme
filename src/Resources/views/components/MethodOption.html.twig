@@ -24,19 +24,21 @@
     class="{{ cx.root.apply() }}"
 >
     <input
-        type="radio"
-        id="{{ methodType }}Method{{ methodId }}"
-        name="{{ methodType }}MethodId"
-        value="{{ methodId }}"
-        {% if methodId is same as(selectedMethodId) %}checked="checked"{% endif %}
-        {% if methodDisabled is same as(true) %}disabled="disabled"{% endif %}
-        {{ attributes.nested('input') }}
+        {{ attributes.nested('input').defaults({
+            type: 'radio',
+            id: methodType ~ 'Method' ~ methodId,
+            name: methodType ~ 'MethodId',
+            value: methodId,
+            checked: methodId is same as(selectedMethodId) ? 'checked' : null,
+            disabled: methodDisabled is same as(true) ? 'disabled' : null,
+        }) }}
         class="{{ cx.input.apply() }}"
     >
 
     <label
-        for="{{ methodType }}Method{{ methodId }}"
-        {{ attributes.nested('label') }}
+        {{ attributes.nested('label').defaults({
+            for: methodType ~ 'Method' ~ methodId,
+        }) }}
         class="{{ cx.label.apply() }}"
     >
         {% if methodMedia %}

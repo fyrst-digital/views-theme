@@ -20,9 +20,10 @@
 >
     {% if showLink is same as(true) %}
         <a
-            href="{{ productUrl }}"
-            title="{{ productName }}"
-            {{ attributes.nested('link') }}
+            {{ attributes.nested('link').defaults({
+                href: productUrl,
+                title: productName,
+            }) }}
             class="{{ cx.link.apply() }}"
         >
             {{ productName }}

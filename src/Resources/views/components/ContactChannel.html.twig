@@ -32,11 +32,12 @@
 
         {% if url %}
             <a
-                href="{{ url }}"
                 {% if urlAttributes %}{{ urlAttributes|join(' ')|raw }}{% endif %}
-                {% if openExternal %}target="_blank"{% endif %}
-                title="{{ value }}"
-                {{ attributes.nested('value') }}
+                {{ attributes.nested('value').defaults({
+                    href: url,
+                    title: value,
+                    target: openExternal ? '_blank' : null,
+                }) }}
                 class="{{ cx.value.apply() }}"
             >
                 {% if value %}{{ value|raw }}{% endif %}

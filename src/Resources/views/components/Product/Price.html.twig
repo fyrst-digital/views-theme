@@ -113,11 +113,12 @@
             class="{{ cx.tax.apply() }}"
         >
             <button
-                type="button"
-                data-ajax-modal="true"
-                data-url="{{ taxUrl }}"
-                aria-haspopup="dialog"
-                {{ attributes.nested('taxAction') }}
+                {{ attributes.nested('taxAction').defaults({
+                    type: 'button',
+                    'data-ajax-modal': 'true',
+                    'data-url': taxUrl,
+                    'aria-haspopup': 'dialog',
+                }) }}
                 class="{{ cx.taxAction.apply() }}"
             >
                 {{ taxText }}
