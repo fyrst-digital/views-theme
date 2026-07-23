@@ -50,7 +50,28 @@
         "block": "colors",
         "order": 100
       },
+      "sw-text-color": {
+        "type": "color",
+        "value": "#2E282A",
+        "editable": true,
+        "block": "colors",
+        "order": 200
+      },
+      "sw-headline-color": {
+        "type": "color",
+        "value": "#2E282A",
+        "editable": true,
+        "block": "colors",
+        "order": 400
+      },
       "sw-font-family-base": {
+        "type": "text",
+        "value": "'Figtree', sans-serif",
+        "editable": true,
+        "block": "typography",
+        "order": 100
+      },
+      "sw-font-family-headline": {
         "type": "text",
         "value": "'Figtree', sans-serif",
         "editable": true,

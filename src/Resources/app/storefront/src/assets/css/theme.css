@@ -1,9 +1,13 @@
+.btn-primary {
+  --btn-color: var(--body-color);
+}
+
 .header-action {
   --icon-size: 24px;
   --btn-border-radius: var(--border-radius-pill);
   --btn-hover-bg: var(--sw-color-brand-light);
-  --btn-active-bg: transrent;
-  --btn-active-border-color: var(--sw-color-brand-primary);
+  --btn-active-bg: var(--btn-hover-bg);
+  --btn-active-border-color: transparent;
 
   .badge {
     --badge-position: absolute;

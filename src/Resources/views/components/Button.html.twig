@@ -1,0 +1,40 @@
+{% props
+    type = 'button',
+    icon = null,
+    label = null,
+    href = null,
+    target = null,
+    title = null,
+    color = 'primary',
+    size = 'md',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set tag = type is same as('link') ? 'a' : 'button' %}
+
+<{{ tag }}
+    {{ attributes.defaults({
+        type: type is same as('link') ? null : type,
+        href: type is same as('link') ? href : null,
+        target: type is same as('link') ? target : null,
+        title: title ?? label,
+    }) }}
+    class="{{ cx.root.apply({ color: color, size: size }) }}"
+>
+    {% block icon %}
+        {% if icon %}
+            <span {{ attributes.nested('icon') }} class="{{ cx.icon.apply({ size: size }) }}">
+                {{ vi_icon(icon) }}
+            </span>
+        {% endif %}
+    {% endblock %}
+
+    {% block label %}
+        {% if label %}
+            <span {{ attributes.nested('label') }} class="{{ cx.label.apply({ size: size }) }}">
+                {{ label }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</{{ tag }}>

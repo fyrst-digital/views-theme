@@ -60,6 +60,9 @@ See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
 Non-`class` HTML attributes on the root (and nested slots) go through `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` — not inside `defaults`. Prefer this over bare `data-component="…"`, `action="…"`, `aria-*="…"`, etc. on the tag.
 
+- Call `attributes.nested('slot')` **on the element** — do not assign it to an intermediate variable.
+- Pass the defaults hash **inline** to `attributes.defaults({ … })` — do not assign it to an intermediate variable.
+
 ## Nested components (Symfony UX)
 
 Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not** mix `{% block %}` with HTML component tags ([Symfony nested components](https://symfony.com/bundles/ux-twig-component/current/index.html#nested-components)):
@@ -103,7 +106,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, QuantityInput | UX + `vi_cva` |
+| Alert, Button, QuantityInput | UX + `vi_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
 | Product:* | UX + Listing/BuyContainer shells |
