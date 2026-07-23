@@ -14,7 +14,9 @@
 >
     {% if context.customer %}
         {% block user_actions %}
-            <twig:ViewsTheme:Account:UserActions :activeRoute="activeRoute" />
+            <twig:ViewsTheme:Account:Actions 
+                nav:class="py-2"
+                :activeRoute="activeRoute" />
         {% endblock %}
     {% else %}
         {% block login %}

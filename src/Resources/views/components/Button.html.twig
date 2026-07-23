@@ -7,6 +7,7 @@
     title = null,
     color = 'primary',
     size = 'md',
+    justify = 'center', 
     cva = {},
 %}
 
@@ -20,13 +21,13 @@
         target: type is same as('link') ? target : null,
         title: title ?? label,
     }) }}
-    class="{{ cx.root.apply({ color: color, size: size }) }}"
+    class="{{ cx.root.apply({ color: color, size: size, justify: justify }) }}"
 >
     {% block icon %}
         {% if icon %}
-            <span {{ attributes.nested('icon') }} class="{{ cx.icon.apply({ size: size }) }}">
-                {{ vi_icon(icon) }}
-            </span>
+            {{ vi_icon(icon, {
+                class: cx.icon.apply({ size: size })
+            }) }}
         {% endif %}
     {% endblock %}
 

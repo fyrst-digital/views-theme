@@ -1,0 +1,74 @@
+{% props
+    activeRoute = null,
+    actions = {
+        home: {
+            route: 'frontend.account.home.page',
+            label: 'account.overviewLink'|trans|striptags,
+            icon: 'squares-four',
+        },
+        profile: {
+            route: 'frontend.account.profile.page',
+            label: 'account.profileLink'|trans|sw_sanitize,
+            icon: 'pencil-simple-line',
+        },
+        address: {
+            route: 'frontend.account.address.page',
+            label: 'account.addressLink'|trans|sw_sanitize,
+            icon: 'address-book',
+        },
+        orders: {
+            route: 'frontend.account.order.page',
+            label: 'account.ordersLink'|trans|sw_sanitize,
+            icon: 'package',
+        },
+        logout: {
+            route: 'frontend.account.logout.page',
+            label: 'account.logout'|trans|sw_sanitize,
+            icon: 'arrow-line-right'
+        },
+    },
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block header %}
+        {% endblock %}
+
+        {% if actions is not empty %}
+            {% block nav %}
+                <nav
+                    {{ attributes.nested('nav') }}
+                    class="{{ cx.nav.apply() }}"
+                >
+                    {% for key, action in actions %}
+                        {% block action %}
+                            <twig:ViewsTheme:Button
+                                {{ ...attributes.nested('action').defaults({
+                                    type: 'link',
+                                    href: path(action.route),
+                                    label: action.label,
+                                    icon: action.icon ?? null,
+                                    title: action.label,
+                                    size: 'sm',
+                                    color: 'none',
+                                    justify: 'start',
+                                    'aria-current': 'page',
+                                    class: cx.action.apply(),
+                                }).all() }}
+                            />
+                        {% endblock %}
+                    {% endfor %}
+                </nav>
+            {% endblock %}
+        {% endif %}
+
+        {% block footer %}
+        {% endblock %}        
+    {% endblock %}
+</div>

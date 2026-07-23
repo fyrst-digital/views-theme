@@ -36,19 +36,6 @@ $container-max-widths: (
 
 $container-padding-x: 30px;
 
-// Breakpoint-aware position utilities (e.g. position-xl-absolute)
-$utilities: (
-  "position": (
-    property: position,
-    responsive: true,
-    values: static relative absolute fixed sticky
-  ),
-  "cursor": (
-    property: cursor,
-    values: pointer default text
-  ),
-);
-
 $border-radius: 6px;
 $border-radius-sm: 0.25rem;
 $border-radius-lg: 0.5rem;
@@ -59,6 +46,42 @@ $border-radius-pill: 50rem;
 $light: $sw-color-brand-light;
 
 $border-color: #d4d4d4;
+
+$h1-font-size: 36px !default;
+$h2-font-size: 28px !default;
+$h3-font-size: 24px !default;
+$h4-font-size: 20px !default;
+$h5-font-size: 16px !default;
+$h6-font-size: 14px !default;
+
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+);
+
+// BUtilities overrides
+$utilities: (
+  "position": (
+    property: position,
+    responsive: true,
+    values: static relative absolute fixed sticky
+  ),
+  "font-size": (
+    rfs: true,
+    property: font-size,
+    class: fs,
+    responsive: true,
+    values: $font-sizes
+  ),
+  "cursor": (
+    property: cursor,
+    values: pointer default text
+  ),
+);
 
 :root {
   @each $key, $value in $spacers {

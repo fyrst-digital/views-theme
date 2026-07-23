@@ -1,9 +1,7 @@
 /* Native popover + CSS anchor placement only — chrome in Dropdown.cva.twig */
 
 .vi-dropdown[popover] {
-  position: absolute;
   inset: unset;
-  width: max-content;
   max-width: var(--dropdown-max-width, min(100vw - 1.5rem, 22rem));
 
   &[data-placement='bottom-end'] {

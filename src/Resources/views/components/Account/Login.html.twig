@@ -31,26 +31,25 @@
     {% block error %}
         {% if loginError %}
             {% if errorSnippet != null %}
-                <twig:ViewsTheme:Alert
-                    type="danger"
-                    content="{{ errorSnippet|trans|sw_sanitize({}, true) }}"
-                    announceOnLoad
-                    ariaLive="assertive"
-                />
+                {% set alertType = 'danger' %}
+                {% set alertContent = errorSnippet|trans|sw_sanitize({}, true) %}
+                {% set alertAriaLive = 'assertive' %}
             {% elseif waitTime != null %}
-                <twig:ViewsTheme:Alert
-                    type="info"
-                    content="{{ 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize }}"
-                    announceOnLoad
-                />
+                {% set alertType = 'info' %}
+                {% set alertContent = 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize %}
+                {% set alertAriaLive = 'polite' %}
             {% else %}
-                <twig:ViewsTheme:Alert
-                    type="danger"
-                    content="{{ 'account.loginBadCredentials'|trans|sw_sanitize }}"
-                    announceOnLoad
-                    ariaLive="assertive"
-                />
+                {% set alertType = 'danger' %}
+                {% set alertContent = 'account.loginBadCredentials'|trans|sw_sanitize %}
+                {% set alertAriaLive = 'assertive' %}
             {% endif %}
+
+            <twig:ViewsTheme:Alert
+                :type="alertType"
+                :content="alertContent"
+                announceOnLoad
+                :ariaLive="alertAriaLive"
+            />
         {% endif %}
     {% endblock %}
 
