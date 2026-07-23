@@ -30,7 +30,7 @@
         'data-placement': placement,
         'data-component': 'ViewsTheme:Dropdown',
     }) }}
-    class="{{ cx.root.apply({ placement: placement }) }}"
+    class="{{ cx.root.apply() }}"
     style="position-anchor: {{ anchorName }}"
 >
     {% block content %}{% endblock %}

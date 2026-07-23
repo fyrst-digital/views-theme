@@ -10,6 +10,7 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set loginId = 'vi-login-' ~ random() %}
 
 <form
     {{ attributes.defaults({
@@ -68,7 +69,7 @@
         <twig:ViewsTheme:Form:Input
             {{ ...attributes.nested('username').defaults({
                 type: 'email',
-                id: 'loginMail',
+                id: loginId ~ '-mail',
                 name: 'username',
                 label: 'account.loginMailLabel'|trans|sw_sanitize,
                 placeholder: 'account.loginMailLabel'|trans|sw_sanitize,
@@ -84,7 +85,7 @@
         <twig:ViewsTheme:Form:Input
             {{ ...attributes.nested('password').defaults({
                 type: 'password',
-                id: 'loginPassword',
+                id: loginId ~ '-password',
                 name: 'password',
                 label: 'account.loginPasswordLabel'|trans|sw_sanitize,
                 placeholder: 'account.loginPasswordLabel'|trans|sw_sanitize,

@@ -1,5 +1,5 @@
 {% props
-    activeRoute = null,
+    activeRoute = app.request.attributes.get('_route'),
     actions = {
         home: {
             route: 'frontend.account.home.page',
@@ -47,18 +47,19 @@
                     class="{{ cx.nav.apply() }}"
                 >
                     {% for key, action in actions %}
+                        {% set isActive = activeRoute is not empty and activeRoute is same as(action.route) %}
                         {% block action %}
                             <twig:ViewsTheme:Button
                                 {{ ...attributes.nested('action').defaults({
                                     type: 'link',
                                     href: path(action.route),
                                     label: action.label,
-                                    icon: action.icon ?? null,
+                                    icon: action.icon ?? false,
                                     title: action.label,
                                     size: 'sm',
                                     color: 'none',
                                     justify: 'start',
-                                    'aria-current': 'page',
+                                    'aria-current': isActive ? 'page' : false,
                                     class: cx.action.apply(),
                                 }).all() }}
                             />
@@ -69,6 +70,6 @@
         {% endif %}
 
         {% block footer %}
-        {% endblock %}        
+        {% endblock %}
     {% endblock %}
 </div>

@@ -28,8 +28,8 @@
     {{ attributes.defaults({
         role: 'alert',
         'aria-live': ariaLive,
-        'data-alert-aria': announceOnLoad ? 'true' : null,
-        'data-alert-aria-options': announceOnLoad ? alertAriaJsOptions|json_encode : null,
+        'data-alert-aria': announceOnLoad ? 'true' : false,
+        'data-alert-aria-options': announceOnLoad ? alertAriaJsOptions|json_encode : false,
     }) }}
     class="{{ cx.root.apply({ type: alertType, dismissible: dismissible }) }}"
 >

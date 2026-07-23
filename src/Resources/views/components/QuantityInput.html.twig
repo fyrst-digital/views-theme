@@ -24,7 +24,7 @@
         <button
             {{ attributes.nested('decrease').defaults({
                 type: 'button',
-                disabled: disabled is same as(true) ? 'disabled' : null,
+                disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
             }) }}
             class="{{ cx.decrease.apply() }}"
@@ -42,8 +42,8 @@
                 max: maxQuantity,
                 step: purchaseSteps,
                 value: quantity,
-                disabled: disabled is same as(true) ? 'disabled' : null,
-                form: formName ?: null,
+                disabled: disabled is same as(true) ? 'disabled' : false,
+                form: formName ?: false,
                 'aria-label': 'component.product.quantitySelect.label'|trans|striptags,
             }) }}
             class="{{ cx.input.apply() }}"
@@ -62,7 +62,7 @@
         <button
             {{ attributes.nested('increase').defaults({
                 type: 'button',
-                disabled: disabled is same as(true) ? 'disabled' : null,
+                disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
             }) }}
             class="{{ cx.increase.apply() }}"

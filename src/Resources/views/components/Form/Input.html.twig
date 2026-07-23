@@ -25,7 +25,7 @@
 ) %}
 {% set feedbackId = id ~ '-feedback' %}
 {% set descriptionId = id ~ '-description' %}
-{% set areaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
+{% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
 {% set isRequired = validationRules is not empty and 'required' in validationRules %}
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -71,7 +71,7 @@
                 disabled: disabled is same as(true) ? true : false,
                 'data-validation': validationRules is not empty ? validationRules : false,
                 'aria-required': isRequired ? 'true' : false,
-                'aria-describedby': areaDescribedBy,
+                'aria-describedby': ariaDescribedBy,
             }) }}
             class="{{ cx.input.apply({ invalid: isInvalid }) }}"
         >

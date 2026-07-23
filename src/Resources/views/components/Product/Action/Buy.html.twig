@@ -38,7 +38,7 @@
         'data-add-to-cart-options': product.isCloseout ? {
             stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
             outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
-        }|json_encode : null,
+        }|json_encode : false,
     }) }}
     class="{{ cx.root.apply() }}"
 >

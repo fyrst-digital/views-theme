@@ -22,13 +22,5 @@ export default class Dropdown extends ShopwareComponent {
     _handleToggle(event) {
         const open = event.newState === 'open'
         this._toggle?.setAttribute('aria-expanded', open ? 'true' : 'false')
-
-        if (open) {
-            return
-        }
-
-        if (this._toggle && this._panel?.contains(document.activeElement)) {
-            this._setFocus(this._toggle)
-        }
     }
 }

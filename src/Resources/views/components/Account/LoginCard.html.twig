@@ -28,7 +28,7 @@
                     :waitTime="waitTime|default(null)"
                     :redirectTo="redirectTo|default(null)"
                     :redirectParameters="redirectParameters|default(null)"
-                    :showDescription="showDescription|default(false)"
+                    :description="showDescription|default(false) ? 'account.loginFormDescription'|trans|sw_sanitize : false"
                 />
             </div>
         {% endblock %}

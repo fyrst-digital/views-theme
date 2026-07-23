@@ -16,9 +16,9 @@
 
 <{{ tag }}
     {{ attributes.defaults({
-        type: type is same as('link') ? null : type,
-        href: type is same as('link') ? href : null,
-        target: type is same as('link') ? target : null,
+        type: type is same as('link') ? false : type,
+        href: type is same as('link') ? href : false,
+        target: type is same as('link') and target ? target : false,
         title: title ?? label,
     }) }}
     class="{{ cx.root.apply({ color: color, size: size, justify: justify }) }}"

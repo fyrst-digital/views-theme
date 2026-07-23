@@ -120,7 +120,7 @@ Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` 
 |------|-----------|
 | Panel (host) | `data-component="ViewsTheme:Dropdown"` |
 
-JS runs on the panel, resolves the toggle via `[popovertarget="{id}"]`, syncs `aria-expanded`, and moves focus into the panel on open / back to the toggle on close. Open/close, light-dismiss, and placement stay native/CSS. Root attrs/CVA apply to the panel (`vi-dropdown`); toggle uses nested `toggle:*` / `vi-dropdown__toggle`.
+JS runs on the panel, resolves the toggle via `[popovertarget="{id}"]`, and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root attrs/CVA apply to the panel (`vi-dropdown`); toggle uses nested `toggle:*` / `vi-dropdown__toggle`.
 
 Build storefront assets from Shopware root: `make build-storefront`.
 

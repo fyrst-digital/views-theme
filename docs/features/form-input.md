@@ -66,7 +66,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 
 | Consumer | Status |
 |----------|--------|
-| `Account:Login` | Uses `Form:Input`; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
+| `Account:Login` | Uses `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
 | `Account:Register`, `Address:*` | Still core `form-input` include |
 
 ## Related
