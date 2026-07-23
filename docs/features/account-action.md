@@ -20,7 +20,9 @@ Page:Header:Actions
 | `Account:Action` | `components/Account/Action.*` | Header action shell (size CVA, a11y labels) |
 | `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, a11y focus |
 | `Account:Menu` | `components/Account/Menu.*` | Account panel body (no dropdown chrome) |
+| `Account:Login` | `components/Account/Login.*` | Login form (`Form:Input` fields + actions) |
 | `Account:Login:Actions` | `components/Account/Login/Actions.*` | Login submit + recover (`Button`) |
+| `Form:Input` | `components/Form/Input.*` | Shared text field (label, validation, violations) |
 
 ## Dropdown behavior
 
@@ -56,7 +58,34 @@ Shims remain as thin wrappers with `@deprecated` comments.
 <twig:ViewsTheme:Account:Action toggle:class="header-action" />
 ```
 
+## Account:Login field forwarding
+
+`Account:Login` spreads nested attribute bags into each `Form:Input`:
+
+| Nest | Child |
+|------|--------|
+| `username:*` | email `Form:Input` |
+| `password:*` | password `Form:Input` |
+
+Defaults live in Login (type, id, name, label, placeholder, autocomplete, error, validationRules, class). Caller keys override; `class` concatenates. Deeper nests pass through (e.g. `username:input:class`).
+
+```twig
+<twig:ViewsTheme:Account:Login
+    class="p-4 border-bottom"
+    :description="false"
+    :username:label="false"
+    username:placeholder="{{ 'account.loginMailLabel'|trans|sw_sanitize }}"
+    :password:label="false"
+    password:placeholder="{{ 'account.loginPasswordLabel'|trans|sw_sanitize }}"
+/>
+```
+
+Use `:username:label="false"` (dynamic) to hide the label — not the string `"false"`.
+
+See [UX components — Attributes](../conventions/ux-components.md#attributes) for DOM vs child-component patterns.
+
 ## Related
 
+- [Form input](form-input.md)
 - [UX components](../conventions/ux-components.md)
 - [JavaScript](../conventions/javascript.md)

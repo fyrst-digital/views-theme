@@ -8,8 +8,17 @@
   &:focus {
     --input-outline-color: var(--input-focus-outline-color);
     background-color: var(--input-focus-bg-color, var(--input-bg-color));
+
+    &.is-invalid {
+      box-shadow: none !important;
+    }
   }
 }
 .input-group-sm {
   --icon-size: 16px;
+}
+
+.was-validated .form-control:invalid, 
+.form-control.is-invalid {
+  --input-focus-outline-color: var(--danger);
 }

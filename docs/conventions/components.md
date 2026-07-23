@@ -9,9 +9,10 @@ Full guide: [UX Twig components](ux-components.md).
 1. PascalCase path → `<twig:ViewsTheme:…>`
 2. `{% props %}` for inputs; defaults only in props (no `{% set prop = … %}` after) — see [ux-components.md](ux-components.md)
 3. `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva({ … }|replace_recursive(cva))`; prop `cva = {}`; BEM `vi-*` roots
-4. Short `{% block %}` names
-5. Interactive root: `data-component="ViewsTheme:…"` (no `data-ref`)
-6. Co-located `<Name>.js` (`ShopwareComponent`) when interactive
+4. Attrs: DOM → `attributes.defaults` / `nested`; overridable child `<twig:…>` → **prefer** `{{ ...attributes.nested('slot').defaults({…}).all() }}` — [ux-components.md § Attributes](ux-components.md#attributes)
+5. Short `{% block %}` names
+6. Interactive root: `data-component="ViewsTheme:…"` (no `data-ref`)
+7. Co-located `<Name>.js` (`ShopwareComponent`) when interactive
 
 ## Extends shells
 

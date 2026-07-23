@@ -1,0 +1,110 @@
+{% props
+    id = null,
+    name = null,
+    type = 'text',
+    label = null,
+    value = null,
+    placeholder = null,
+    autocomplete = null,
+    minlength = null,
+    maxlength = null,
+    disabled = false,
+    description = null,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = null,
+    cva = {},
+%}
+
+{% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
+{% set isInvalid = error is not empty or (
+    violationPath is not empty
+    and violations
+    and violations.getViolations(violationPath) is not empty
+) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set areaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block label %}
+        {% if label %}
+            <label
+                {{ attributes.nested('label').defaults({
+                    for: id,
+                }) }}
+                class="{{ cx.label.apply() }}"
+            >
+                {{ label|raw }}
+
+                {% if isRequired %}
+                    <span
+                        {{ attributes.nested('required').defaults({
+                            'aria-hidden': 'true',
+                        }) }}
+                        class="{{ cx.required.apply() }}"
+                    >
+                        {{ 'general.required'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </label>
+        {% endif %}
+    {% endblock %}
+
+    {% block input %}
+        <input
+            {{ attributes.nested('input').defaults({
+                type: type,
+                id: id,
+                name: name,
+                value: value is not empty ? value : false,
+                placeholder: placeholder is not empty ? placeholder : false,
+                autocomplete: autocomplete is not empty ? autocomplete : false,
+                minlength: minlength is not empty ? minlength : false,
+                maxlength: maxlength is not empty ? maxlength : false,
+                disabled: disabled is same as(true) ? true : false,
+                'data-validation': validationRules is not empty ? validationRules : false,
+                'aria-required': isRequired ? 'true' : false,
+                'aria-describedby': areaDescribedBy,
+            }) }}
+            class="{{ cx.input.apply({ invalid: isInvalid }) }}"
+        >
+    {% endblock %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <small
+                {{ attributes.nested('description').defaults({
+                    id: descriptionId,
+                }) }}
+                class="{{ cx.description.apply() }}"
+            >
+                {{ description }}
+            </small>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ attributes.nested('feedback').defaults({
+                id: feedbackId,
+            }) }}
+            class="{{ cx.feedback.apply() }}"
+        >
+            {% block feedback_violations %}
+                {% if violationPath is not empty and violations and violations.getViolations(violationPath) is not empty %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: violations,
+                        violationPath: violationPath,
+                    } %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

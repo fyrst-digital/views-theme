@@ -37,5 +37,6 @@ Full index: [docs/README.md](docs/README.md).
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
 | Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |
+| Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |

@@ -66,29 +66,35 @@
     {% endblock %}
 
     {% block username %}
-        {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-            type: 'email',
-            label: 'account.loginMailLabel'|trans|sw_sanitize,
-            id: 'loginMail',
-            name: 'username',
-            autocomplete: 'username webauthn',
-            error: loginError,
-            validationRules: 'required,email',
-            additionalClass: 'vi-account-login__email login-form-email flex-fill',
-        } %}
+        <twig:ViewsTheme:Form:Input
+            {{ ...attributes.nested('username').defaults({
+                type: 'email',
+                id: 'loginMail',
+                name: 'username',
+                label: 'account.loginMailLabel'|trans|sw_sanitize,
+                placeholder: 'account.loginMailLabel'|trans|sw_sanitize,
+                autocomplete: 'username webauthn',
+                error: loginError,
+                validationRules: 'required,email',
+                class: 'vi-account-login__email login-form-email flex-fill',
+            }).all() }}
+        />
     {% endblock %}
 
     {% block password %}
-        {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-            type: 'password',
-            label: 'account.loginPasswordLabel'|trans|sw_sanitize,
-            id: 'loginPassword',
-            name: 'password',
-            autocomplete: 'current-password',
-            error: loginError,
-            validationRules: 'required',
-            additionalClass: 'vi-account-login__password login-form-password flex-fill',
-        } %}
+        <twig:ViewsTheme:Form:Input
+            {{ ...attributes.nested('password').defaults({
+                type: 'password',
+                id: 'loginPassword',
+                name: 'password',
+                label: 'account.loginPasswordLabel'|trans|sw_sanitize,
+                placeholder: 'account.loginPasswordLabel'|trans|sw_sanitize,
+                autocomplete: 'current-password',
+                error: loginError,
+                validationRules: 'required',
+                class: 'vi-account-login__password login-form-password flex-fill',
+            }).all() }}
+        />
     {% endblock %}
 
     {% block actions %}

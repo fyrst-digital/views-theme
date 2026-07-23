@@ -20,7 +20,9 @@
         {% block login %}
             <twig:ViewsTheme:Account:Login 
                 class="p-4 border-bottom"
-                :description="false" />
+                :description="false"
+                :username:label="false"
+                :password:label="false" />
         {% endblock %}
 
         {% block footer %}
