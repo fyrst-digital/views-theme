@@ -13,13 +13,6 @@
     select: { base: 'vi-cart-shipping-calculation__select form-select' },
 }|replace_recursive(cva)) %}
 
-{% set triggerAttributes = attributes.nested('trigger') %}
-{% set collapseAttributes = attributes.nested('collapse') %}
-{% set selectsAttributes = attributes.nested('selects') %}
-{% set formGroupAttributes = attributes.nested('formGroup') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set selectAttributes = attributes.nested('select') %}
-
 <form
     name="precalc"
     method="post"
@@ -37,7 +30,7 @@
                 role="button"
                 aria-expanded="false"
                 aria-controls="collapseExample"
-                {{ triggerAttributes }}
+                {{ attributes.nested('trigger') }}
                 class="{{ cx.trigger.apply() }}"
             >
                 {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
@@ -49,16 +42,16 @@
     {% block form_group %}
         <div
             id="collapseShippingCost"
-            {{ collapseAttributes }}
+            {{ attributes.nested('collapse') }}
             class="{{ cx.collapse.apply() }}"
         >
-            <div {{ selectsAttributes }} class="{{ cx.selects.apply() }}">
+            <div {{ attributes.nested('selects') }} class="{{ cx.selects.apply() }}">
                 {% block country %}
                     {% if not context.customer %}
-                        <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
+                        <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                             <label
                                 for="countryId"
-                                {{ labelAttributes }}
+                                {{ attributes.nested('label') }}
                                 class="{{ cx.label.apply() }}"
                             >
                                 {{ 'checkout.shippingCountry'|trans|sw_sanitize }}
@@ -67,7 +60,7 @@
                                 type="text"
                                 id="countryId"
                                 name="countryId"
-                                {{ selectAttributes }}
+                                {{ attributes.nested('select') }}
                                 class="{{ cx.select.apply() }}"
                             >
                                 {% for country in page.countries %}
@@ -84,10 +77,10 @@
                 {% endblock %}
 
                 {% block payment_method %}
-                    <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
+                    <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
                             for="paymentMethodId"
-                            {{ labelAttributes }}
+                            {{ attributes.nested('label') }}
                             class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
@@ -96,7 +89,7 @@
                             type="text"
                             id="paymentMethodId"
                             name="paymentMethodId"
-                            {{ selectAttributes }}
+                            {{ attributes.nested('select') }}
                             class="{{ cx.select.apply() }}"
                         >
                             {% if context.paymentMethod.id not in page.paymentMethods.ids %}
@@ -118,10 +111,10 @@
                 {% endblock %}
 
                 {% block shipping_method %}
-                    <div {{ formGroupAttributes }} class="{{ cx.formGroup.apply() }}">
+                    <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
                             for="shippingMethodId"
-                            {{ labelAttributes }}
+                            {{ attributes.nested('label') }}
                             class="{{ cx.label.apply() }}"
                         >
                             {{ 'checkout.shippingMethod'|trans|sw_sanitize }}
@@ -130,7 +123,7 @@
                             type="text"
                             id="shippingMethodId"
                             name="shippingMethodId"
-                            {{ selectAttributes }}
+                            {{ attributes.nested('select') }}
                             class="{{ cx.select.apply() }}"
                         >
                             {% if context.shippingMethod.id not in page.shippingMethods.ids %}

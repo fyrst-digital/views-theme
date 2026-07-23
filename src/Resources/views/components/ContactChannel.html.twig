@@ -15,21 +15,17 @@
     value: { base: 'vi-contact-channel__value contact-channel-value' },
 }|replace_recursive(cva)) %}
 
-{% set labelAttributes = attributes.nested('label') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set valueAttributes = attributes.nested('value') %}
-
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% if label %}
-        <div {{ labelAttributes }} class="{{ cx.label.apply() }}">
+        <div {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
             {{ label }}
         </div>
     {% endif %}
 
-    <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
+    <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
         {% if icon %}
             {{ vi_icon(icon) }}
         {% endif %}
@@ -40,13 +36,13 @@
                 {% if urlAttributes %}{{ urlAttributes|join(' ')|raw }}{% endif %}
                 {% if openExternal %}target="_blank"{% endif %}
                 title="{{ value }}"
-                {{ valueAttributes }}
+                {{ attributes.nested('value') }}
                 class="{{ cx.value.apply() }}"
             >
                 {% if value %}{{ value|raw }}{% endif %}
             </a>
         {% else %}
-            <span {{ valueAttributes }} class="{{ cx.value.apply() }}">
+            <span {{ attributes.nested('value') }} class="{{ cx.value.apply() }}">
                 {% if value %}{{ value|raw }}{% endif %}
             </span>
         {% endif %}

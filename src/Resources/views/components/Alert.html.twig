@@ -10,27 +10,17 @@
     cva = {},
 %}
 
-{% if type is same as('error') %}
-    {% set type = 'danger' %}
-{% endif %}
-
+{% set alertType = type is same as('error') ? 'danger' : type %}
 {% set cx = vi_cva_from_file(cva) %}
-
-{% set iconAttributes = attributes.nested('icon') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set headingAttributes = attributes.nested('heading') %}
-{% set listAttributes = attributes.nested('list') %}
-{% set dismissAttributes = attributes.nested('dismiss') %}
-
 {% set alertAriaJsOptions = { ariaLive: ariaLive } %}
 {% set iconName = 'x' %}
-{% if type is same as('danger') %}
+{% if alertType is same as('danger') %}
     {% set iconName = 'x-circle' %}
-{% elseif type is same as('warning') %}
+{% elseif alertType is same as('warning') %}
     {% set iconName = 'warning' %}
-{% elseif type is same as('info') %}
+{% elseif alertType is same as('info') %}
     {% set iconName = 'info' %}
-{% elseif type is same as('success') %}
+{% elseif alertType is same as('success') %}
     {% set iconName = 'check' %}
 {% endif %}
 
@@ -39,7 +29,7 @@
         role: 'alert',
         'aria-live': ariaLive,
     }) }}
-    class="{{ cx.root.apply({ type: type, dismissible: dismissible }) }}"
+    class="{{ cx.root.apply({ type: alertType, dismissible: dismissible }) }}"
     {% if announceOnLoad %}
         data-alert-aria="true"
         data-alert-aria-options="{{ alertAriaJsOptions|json_encode }}"
@@ -47,7 +37,7 @@
 >
     {% block icon %}
         {% if icon is not same as(false) and icon is not same as('false') %}
-            <div {{ iconAttributes }} class="{{ cx.icon.apply() }}">
+            <div {{ attributes.nested('icon') }} class="{{ cx.icon.apply() }}">
                 {% block icon_element %}
                     {{ vi_icon(iconName) }}
                 {% endblock %}
@@ -56,10 +46,10 @@
     {% endblock %}
 
     {% block content_container %}
-        <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
+        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
             {% block heading %}
                 {% if heading %}
-                    <div {{ headingAttributes }} class="{{ cx.heading.apply() }}">
+                    <div {{ attributes.nested('heading') }} class="{{ cx.heading.apply() }}">
                         {{ heading }}
                     </div>
                 {% endif %}
@@ -67,7 +57,7 @@
 
             {% block content %}
                 {% if list|length > 1 %}
-                    <ul {{ listAttributes }} class="{{ cx.list.apply() }}">
+                    <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
                         {% for entry in list %}
                             <li>{{ entry|sw_sanitize }}</li>
                         {% endfor %}
@@ -87,7 +77,7 @@
         {% if dismissible %}
             <button
                 type="button"
-                {{ dismissAttributes.defaults({
+                {{ attributes.nested('dismiss').defaults({
                     'data-bs-dismiss': 'alert',
                     'aria-label': 'global.default.close'|trans|striptags,
                 }) }}

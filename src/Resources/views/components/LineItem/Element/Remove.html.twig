@@ -8,10 +8,10 @@
     cva = {},
 %}
 
-{% set formAction = formAction is not null
+{% set resolvedFormAction = formAction is not null
     ? formAction
     : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
-{% set label = label is not null ? label : lineItem.label|trans|sw_sanitize %}
+{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
 {% set loaderOptions = { skipLoadingIndicator: true } %}
 
 {% set cx = vi_cva({
@@ -28,7 +28,7 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ formAction }}"
+    action="{{ resolvedFormAction }}"
     method="post"
     data-form-submit-loader="true"
     data-form-submit-loader-options="{{ loaderOptions|json_encode }}"
@@ -41,7 +41,7 @@
     {% block button %}
         <button
             type="submit"
-            aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags }}"
+            aria-label="{{ 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags }}"
             title="{{ 'global.default.remove'|trans }}"
             data-product-id="{{ lineItem.id }}"
             {{ attributes.nested('button') }}

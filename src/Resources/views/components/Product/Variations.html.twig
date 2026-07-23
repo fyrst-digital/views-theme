@@ -4,8 +4,7 @@
     cva = {},
 %}
 
-{% set variations = variations is not null ? variations : product.variation|default([]) %}
-
+{% set resolvedVariations = variations is not null ? variations : product.variation|default([]) %}
 {% set cx = vi_cva({
     root: { base: 'vi-product-variations' },
     item: { base: 'vi-product-variations__item' },
@@ -15,7 +14,7 @@
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    {% for variation in variations %}
+    {% for variation in resolvedVariations %}
         <div
             {{ attributes.nested('item') }}
             class="{{ cx.item.apply() }}"

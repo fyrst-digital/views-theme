@@ -106,7 +106,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, Button, QuantityInput | UX + `vi_cva` |
+| Alert, Button, QuantityInput | UX + `vi_cva` (convention-aligned attrs/props) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
 | Product:* | UX + Listing/BuyContainer shells |

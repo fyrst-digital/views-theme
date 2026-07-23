@@ -13,11 +13,6 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
-{% set decreaseAttributes = attributes.nested('decrease') %}
-{% set inputAttributes = attributes.nested('input') %}
-{% set increaseAttributes = attributes.nested('increase') %}
-{% set unitAttributes = attributes.nested('unit') %}
-
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:QuantityInput',
@@ -29,7 +24,7 @@
         <button
             type="button"
             {% if disabled is same as(true) %}disabled="disabled"{% endif %}
-            {{ decreaseAttributes.defaults({
+            {{ attributes.nested('decrease').defaults({
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
             }) }}
             class="{{ cx.decrease.apply() }}"
@@ -48,7 +43,7 @@
             value="{{ quantity }}"
             {% if disabled is same as(true) %}disabled="disabled"{% endif %}
             {% if formName %}form="{{ formName }}"{% endif %}
-            {{ inputAttributes.defaults({
+            {{ attributes.nested('input').defaults({
                 'aria-label': 'component.product.quantitySelect.label'|trans|striptags,
             }) }}
             class="{{ cx.input.apply() }}"
@@ -57,7 +52,7 @@
 
     {% if unit %}
         {% block unit %}
-            <span {{ unitAttributes }} class="{{ cx.unit.apply() }}">
+            <span {{ attributes.nested('unit') }} class="{{ cx.unit.apply() }}">
                 {{ unit }}
             </span>
         {% endblock %}
@@ -67,7 +62,7 @@
         <button
             type="button"
             {% if disabled is same as(true) %}disabled="disabled"{% endif %}
-            {{ increaseAttributes.defaults({
+            {{ attributes.nested('increase').defaults({
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
             }) }}
             class="{{ cx.increase.apply() }}"

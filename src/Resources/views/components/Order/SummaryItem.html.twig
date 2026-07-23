@@ -10,21 +10,18 @@
     value: { base: 'vi-order-summary-item__value order-item-summary-item-value' },
 }|replace_recursive(cva)) %}
 
-{% set labelAttributes = attributes.nested('label') %}
-{% set valueAttributes = attributes.nested('value') %}
-
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block label %}
-        <div {{ labelAttributes }} class="{{ cx.label.apply() }}">
+        <div {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
             {{ label|raw }}
         </div>
     {% endblock %}
 
     {% block value %}
-        <div {{ valueAttributes }} class="{{ cx.value.apply() }}">
+        <div {{ attributes.nested('value') }} class="{{ cx.value.apply() }}">
             {{ value|raw }}
         </div>
     {% endblock %}

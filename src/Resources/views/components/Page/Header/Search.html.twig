@@ -4,7 +4,7 @@
     cva = {},
 %}
 
-{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
+{% set resolvedSearchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
 {% set cx = vi_cva({
     root: { base: 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center' },
@@ -53,7 +53,7 @@
                                     autocapitalize="off"
                                     placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
                                     aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
-                                    value="{{ searchTerm }}"
+                                    value="{{ resolvedSearchTerm }}"
                                     {{ attributes.nested('input') }}
                                     class="{{ cx.input.apply() }}"
                                 >

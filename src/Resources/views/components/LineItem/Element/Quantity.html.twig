@@ -9,7 +9,7 @@
     cva = {},
 %}
 
-{% set formAction = formAction is not null
+{% set resolvedFormAction = formAction is not null
     ? formAction
     : path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) %}
 {% set quantityInformation = lineItem.quantityInformation %}
@@ -48,7 +48,7 @@
 %}
     {% set autoSubmitOptions = { delayChangeEvent: 800 } %}
     <form
-        action="{{ formAction }}"
+        action="{{ resolvedFormAction }}"
         method="post"
         {% if autoSubmit is same as(true) %}
             data-form-auto-submit="true"

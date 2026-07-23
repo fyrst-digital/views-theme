@@ -1,11 +1,6 @@
 {% props
     activeRoute = null,
-    userActions = null,
-    cva = {},
-%}
-
-{% if userActions is null %}
-    {% set userActions = {
+    userActions = {
         home: {
             route: 'frontend.account.home.page',
             label: 'account.overviewLink'|trans|striptags,
@@ -26,8 +21,9 @@
             label: 'account.ordersLink'|trans|sw_sanitize,
             icon: 'package',
         },
-    } %}
-{% endif %}
+    },
+    cva = {},
+%}
 
 {% set cx = vi_cva({
     root: { base: 'vi-account-user-actions' },

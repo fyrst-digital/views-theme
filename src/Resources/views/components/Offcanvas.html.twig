@@ -10,11 +10,6 @@
     body: { base: 'vi-offcanvas__body offcanvas-body' },
 }|replace_recursive(cva)) %}
 
-{% set headerAttributes = attributes.nested('header') %}
-{% set titleAttributes = attributes.nested('title') %}
-{% set closeAttributes = attributes.nested('close') %}
-{% set bodyAttributes = attributes.nested('body') %}
-
 {% block meta %}{% endblock %}
 
 {% block root %}
@@ -24,9 +19,9 @@
         data-ref="offcanvas"
     >
         {% block header %}
-            <div {{ headerAttributes }} class="{{ cx.header.apply() }}">
+            <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
                 {% block title %}
-                    <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
+                    <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
                         {% block title_content %}{% endblock %}
                     </div>
                 {% endblock %}
@@ -36,7 +31,7 @@
                         type="button"
                         title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
                         aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-                        {{ closeAttributes }}
+                        {{ attributes.nested('close') }}
                         class="{{ cx.close.apply() }}"
                     >
                         {% block close_icon %}
@@ -48,7 +43,7 @@
         {% endblock %}
 
         {% block body %}
-            <div {{ bodyAttributes }} class="{{ cx.body.apply() }}">
+            <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
                 {% block content %}{% endblock %}
             </div>
         {% endblock %}

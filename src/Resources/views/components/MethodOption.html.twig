@@ -19,13 +19,6 @@
     description: { base: 'vi-method-option__description method-option-description' },
 }|replace_recursive(cva)) %}
 
-{% set inputAttributes = attributes.nested('input') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set imageAttributes = attributes.nested('image') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set nameAttributes = attributes.nested('name') %}
-{% set descriptionAttributes = attributes.nested('description') %}
-
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -37,17 +30,17 @@
         value="{{ methodId }}"
         {% if methodId is same as(selectedMethodId) %}checked="checked"{% endif %}
         {% if methodDisabled is same as(true) %}disabled="disabled"{% endif %}
-        {{ inputAttributes }}
+        {{ attributes.nested('input') }}
         class="{{ cx.input.apply() }}"
     >
 
     <label
         for="{{ methodType }}Method{{ methodId }}"
-        {{ labelAttributes }}
+        {{ attributes.nested('label') }}
         class="{{ cx.label.apply() }}"
     >
         {% if methodMedia %}
-            <div {{ imageAttributes }} class="{{ cx.image.apply() }}">
+            <div {{ attributes.nested('image') }} class="{{ cx.image.apply() }}">
                 {% sw_thumbnails 'method-option-image-thumbnails' with {
                     media: methodMedia,
                     sizes: { default: '100px' },
@@ -60,12 +53,12 @@
             </div>
         {% endif %}
 
-        <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
-            <div {{ nameAttributes }} class="{{ cx.name.apply() }}">
+        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
+            <div {{ attributes.nested('name') }} class="{{ cx.name.apply() }}">
                 {{ methodMeta.name }}
             </div>
             {% if methodMeta.description %}
-                <div {{ descriptionAttributes }} class="{{ cx.description.apply() }}">
+                <div {{ attributes.nested('description') }} class="{{ cx.description.apply() }}">
                     {{ methodMeta.description }}
                 </div>
             {% endif %}

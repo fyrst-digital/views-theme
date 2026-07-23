@@ -10,21 +10,18 @@
     value: { base: 'vi-cart-summary-item__value cart-summary-item-value' },
 }|replace_recursive(cva)) %}
 
-{% set labelAttributes = attributes.nested('label') %}
-{% set valueAttributes = attributes.nested('value') %}
-
 <dl
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block label %}
-        <dt {{ labelAttributes }} class="{{ cx.label.apply() }}">
+        <dt {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
             {{ label|raw }}
         </dt>
     {% endblock %}
 
     {% block value %}
-        <dd {{ valueAttributes }} class="{{ cx.value.apply() }}">
+        <dd {{ attributes.nested('value') }} class="{{ cx.value.apply() }}">
             {{ value }}
         </dd>
     {% endblock %}

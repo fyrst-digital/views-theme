@@ -1,7 +1,9 @@
 {% props
     formId = 'confirmOrderForm',
     showTosOptin = true,
-    tosSnippet = null,
+    tosSnippet = 'checkout.confirmTermsText'|trans({
+        '%url%': path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
+    }),
     formViolations = null,
     page = null,
     cva = {},
@@ -9,12 +11,6 @@
 
 {% set pageEntity = page is not null ? page : (_context.page|default(null)) %}
 {% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
-{% set tosSnippet = tosSnippet is not null
-    ? tosSnippet
-    : 'checkout.confirmTermsText'|trans({
-        '%url%': path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
-    }) %}
-
 {% set cx = vi_cva({
     root: { base: 'vi-checkout-confirm-tos confirm-tos' },
     title: { base: 'vi-checkout-confirm-tos__title confirm-tos-title' },
@@ -25,15 +21,6 @@
     revocationCheckbox: { base: 'vi-checkout-confirm-tos__revocation-checkbox checkout-confirm-revocation-checkbox form-check-input' },
     revocationLabel: { base: 'vi-checkout-confirm-tos__revocation-label checkout-confirm-revocation-label custom-control-label' },
 }|replace_recursive(cva)) %}
-
-{% set titleAttributes = attributes.nested('title') %}
-{% set revocationNoticeAttributes = attributes.nested('revocationNotice') %}
-{% set controlAttributes = attributes.nested('control') %}
-{% set tosCheckboxAttributes = attributes.nested('tosCheckbox') %}
-{% set tosLabelAttributes = attributes.nested('tosLabel') %}
-{% set revocationCheckboxAttributes = attributes.nested('revocationCheckbox') %}
-{% set revocationLabelAttributes = attributes.nested('revocationLabel') %}
-
 {% set tosInvalid = violations and violations.getViolations('/tos') is not empty %}
 {% set revocationInvalid = violations and violations.getViolations('/revocation') is not empty %}
 
@@ -42,13 +29,13 @@
     class="{{ cx.root.apply() }}"
 >
     {% block header %}
-        <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
+        <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
             {{ 'checkout.confirmTermsHeader'|trans|sw_sanitize }}
         </div>
     {% endblock %}
 
     {% block revocation_notice %}
-        <div {{ revocationNoticeAttributes }} class="{{ cx.revocationNotice.apply() }}">
+        <div {{ attributes.nested('revocationNotice') }} class="{{ cx.revocationNotice.apply() }}">
             {{ 'checkout.confirmRevocationNotice'|trans({
                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') }),
             })|raw }}
@@ -57,19 +44,19 @@
 
     {% block tos_control %}
         {% if showTosOptin is same as(true) %}
-            <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
+            <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
                 <input
                     type="checkbox"
                     required="required"
                     id="tos"
                     form="{{ formId }}"
                     name="tos"
-                    {{ tosCheckboxAttributes }}
+                    {{ attributes.nested('tosCheckbox') }}
                     class="{{ cx.tosCheckbox.apply() }}{{ tosInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
                     for="tos"
-                    {{ tosLabelAttributes }}
+                    {{ attributes.nested('tosLabel') }}
                     class="{{ cx.tosLabel.apply() }}"
                 >
                     {{ tosSnippet|raw }}
@@ -83,19 +70,19 @@
 
     {% block revocation_control %}
         {% if pageEntity and pageEntity.showRevocation() %}
-            <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
+            <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
                 <input
                     type="checkbox"
                     required="required"
                     id="revocation"
                     form="{{ formId }}"
                     name="revocation"
-                    {{ revocationCheckboxAttributes }}
+                    {{ attributes.nested('revocationCheckbox') }}
                     class="{{ cx.revocationCheckbox.apply() }}{{ revocationInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
                     for="revocation"
-                    {{ revocationLabelAttributes }}
+                    {{ attributes.nested('revocationLabel') }}
                     class="{{ cx.revocationLabel.apply() }}"
                 >
                     {{ 'checkout.confirmRevocationTerms'|trans() }}

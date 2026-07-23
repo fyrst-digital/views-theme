@@ -11,11 +11,6 @@
     submit: { base: 'vi-cart-add-product-form__submit btn btn-secondary' },
 }|replace_recursive(cva)) %}
 
-{% set labelAttributes = attributes.nested('label') %}
-{% set inputGroupAttributes = attributes.nested('inputGroup') %}
-{% set inputAttributes = attributes.nested('input') %}
-{% set submitAttributes = attributes.nested('submit') %}
-
 <form
     action="{{ path('frontend.checkout.product.add-by-number') }}"
     method="post"
@@ -29,7 +24,7 @@
     {% block label %}
         <label
             for="addProductInput"
-            {{ labelAttributes }}
+            {{ attributes.nested('label') }}
             class="{{ cx.label.apply() }}"
         >
             {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
@@ -37,7 +32,7 @@
     {% endblock %}
 
     {% block input_group %}
-        <div {{ inputGroupAttributes }} class="{{ cx.inputGroup.apply() }}">
+        <div {{ attributes.nested('inputGroup') }} class="{{ cx.inputGroup.apply() }}">
             {% block input %}
                 <input
                     type="text"
@@ -47,7 +42,7 @@
                     aria-label="{{ 'checkout.addProductLabel'|trans|striptags }}"
                     aria-describedby="addProductButton"
                     required="required"
-                    {{ inputAttributes }}
+                    {{ attributes.nested('input') }}
                     class="{{ cx.input.apply() }}"
                 >
             {% endblock %}
@@ -57,7 +52,7 @@
                     type="submit"
                     aria-labelledby="addProductInput"
                     id="addProductButton"
-                    {{ submitAttributes }}
+                    {{ attributes.nested('submit') }}
                     class="{{ cx.submit.apply() }}"
                 >
                     {{ vi_icon('plus') }}

@@ -7,9 +7,8 @@
     cva = {},
 %}
 
-{% set name = name is not null ? name : product.translated.name %}
-{% set url = url is not null ? url : seoUrl('frontend.detail.page', { productId: product.id }) %}
-
+{% set productName = name is not null ? name : product.translated.name %}
+{% set productUrl = url is not null ? url : seoUrl('frontend.detail.page', { productId: product.id }) %}
 {% set cx = vi_cva({
     root: { base: 'vi-product-name' },
     link: { base: 'vi-product-name__link' },
@@ -21,14 +20,14 @@
 >
     {% if showLink is same as(true) %}
         <a
-            href="{{ url }}"
-            title="{{ name }}"
+            href="{{ productUrl }}"
+            title="{{ productName }}"
             {{ attributes.nested('link') }}
             class="{{ cx.link.apply() }}"
         >
-            {{ name }}
+            {{ productName }}
         </a>
     {% else %}
-        {{ name }}
+        {{ productName }}
     {% endif %}
 </{{ tag|raw }}>
