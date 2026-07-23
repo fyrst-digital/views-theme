@@ -3,18 +3,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-checkout-user-comment' },
-    title: { base: 'vi-checkout-user-comment__title checkout-user-comment-title' },
-    control: { base: 'vi-checkout-user-comment__control checkout-user-comment-control' },
-    label: { base: 'vi-checkout-user-comment__label form-label' },
-    textarea: { base: 'vi-checkout-user-comment__textarea form-control' },
-}|replace_recursive(cva)) %}
-
-{% set titleAttributes = attributes.nested('title') %}
-{% set controlAttributes = attributes.nested('control') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set textareaAttributes = attributes.nested('textarea') %}
+{% set cx = vi_cva_from_file(cva) %}
 {% set commentKey = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') %}
 
 <div
@@ -23,27 +12,29 @@
 >
     {% if title %}
         {% block title %}
-            <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
+            <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
                 {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
             </div>
         {% endblock %}
     {% endif %}
 
     {% block control %}
-        <div {{ controlAttributes }} class="{{ cx.control.apply() }}">
+        <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
             <label
-                for="{{ commentKey }}"
-                {{ labelAttributes }}
+                {{ attributes.nested('label').defaults({
+                    for: commentKey,
+                }) }}
                 class="{{ cx.label.apply() }}"
             >
                 {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
             </label>
             <textarea
-                placeholder="{{ 'checkout.customerCommentPlaceholder'|trans|sw_sanitize }}"
-                id="{{ commentKey }}"
-                form="confirmOrderForm"
-                name="{{ commentKey }}"
-                {{ textareaAttributes }}
+                {{ attributes.nested('textarea').defaults({
+                    placeholder: 'checkout.customerCommentPlaceholder'|trans|sw_sanitize,
+                    id: commentKey,
+                    form: 'confirmOrderForm',
+                    name: commentKey,
+                }) }}
                 class="{{ cx.textarea.apply() }}"
             ></textarea>
         </div>

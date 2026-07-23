@@ -2,18 +2,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-offcanvas' },
-    header: { base: 'vi-offcanvas__header offcanvas-header border-bottom' },
-    title: { base: 'vi-offcanvas__title offcanvas-header-content fw-semibold fs-5' },
-    close: { base: 'vi-offcanvas__close btn btn-light offcanvas-close js-offcanvas-close' },
-    body: { base: 'vi-offcanvas__body offcanvas-body' },
-}|replace_recursive(cva)) %}
-
-{% set headerAttributes = attributes.nested('header') %}
-{% set titleAttributes = attributes.nested('title') %}
-{% set closeAttributes = attributes.nested('close') %}
-{% set bodyAttributes = attributes.nested('body') %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block meta %}{% endblock %}
 
@@ -21,22 +10,22 @@
     <div
         {{ attributes }}
         class="{{ cx.root.apply() }}"
-        data-ref="offcanvas"
     >
         {% block header %}
-            <div {{ headerAttributes }} class="{{ cx.header.apply() }}">
+            <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
                 {% block title %}
-                    <div {{ titleAttributes }} class="{{ cx.title.apply() }}">
+                    <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
                         {% block title_content %}{% endblock %}
                     </div>
                 {% endblock %}
 
                 {% block close %}
                     <button
-                        type="button"
-                        title="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-                        aria-label="{{ 'general.offcanvasCloseMenu'|trans|sw_sanitize }}"
-                        {{ closeAttributes }}
+                        {{ attributes.nested('close').defaults({
+                            type: 'button',
+                            title: 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+                            'aria-label': 'general.offcanvasCloseMenu'|trans|sw_sanitize,
+                        }) }}
                         class="{{ cx.close.apply() }}"
                     >
                         {% block close_icon %}
@@ -48,7 +37,7 @@
         {% endblock %}
 
         {% block body %}
-            <div {{ bodyAttributes }} class="{{ cx.body.apply() }}">
+            <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
                 {% block content %}{% endblock %}
             </div>
         {% endblock %}

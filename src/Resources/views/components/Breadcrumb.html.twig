@@ -11,9 +11,10 @@
 {% block layout_breadcrumb_placeholder %}
     {% if key != breadcrumbKeys|last %}
         <div
-            {{ attributes.nested('separator') }}
+            {{ attributes.nested('separator').defaults({
+                'aria-hidden': 'true',
+            }) }}
             class="{{ cx.separator.apply() }}"
-            aria-hidden="true"
         >
             {{ vi_icon('arrow-right') }}
         </div>

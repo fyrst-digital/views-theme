@@ -6,16 +6,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-line-item line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    actions: { base: 'vi-line-item__actions line-item-actions' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
-    data-ref="line-item"
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
@@ -28,7 +21,6 @@
         >
             {% block header %}
                 <div
-                    data-ref="header"
                     {{ attributes.nested('header') }}
                     class="{{ cx.header.apply() }}"
                 >

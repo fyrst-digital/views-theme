@@ -14,7 +14,7 @@ Prefer **event delegation** on the component root for `data-action` clicks.
 
 Semantic element selectors are fine when unambiguous (`input[type="search"]`, `button[type="submit"]`).
 
-Do **not** use `data-ref`. Prefer `data-action` or semantic selectors. Legacy components may still have `data-ref` — leave until migrated; do not extend the pattern.
+Do **not** use `data-ref` (removed). Prefer `data-action` or semantic selectors.
 
 ## Co-located component JS
 
@@ -33,6 +33,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
+| Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
 
 Build (project root):
 
@@ -52,8 +53,11 @@ Data: `page.extensions.viewsTheme.variantsGrid`.
 |------|-----------|
 | Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
-
-Internal nodes may still use legacy `data-ref` — do not add more.
+| Pagination slot | `data-action="pagination"` |
+| Quantity memory | `data-action="memory"` |
+| Buy submit | `button[type="submit"]` |
+| Error | `[role="alert"]` |
+| Live region | `[aria-live]` |
 
 See [Variants grid](../features/variants-grid.md).
 
@@ -107,3 +111,17 @@ Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `-
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
 JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block.
+
+### Dropdown
+
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only). Flat markup (toggle button + panel host, no wrapper). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
+
+| Hook | Attribute |
+|------|-----------|
+| Panel (host) | `data-component="ViewsTheme:Dropdown"` |
+
+JS runs on the panel, resolves the toggle via `[popovertarget="{id}"]`, and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root attrs/CVA apply to the panel (`vi-dropdown`); toggle uses nested `toggle:*` / `vi-dropdown__toggle`.
+
+Build storefront assets from Shopware root: `make build-storefront`.
+
+See [Account action](../features/account-action.md).

@@ -3,8 +3,10 @@
     showPrice = true,
     showTieredPrices = true,
     showTaxNote = false,
-    taxUrl = null,
-    taxText = null,
+    taxUrl = path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }),
+    taxText = context.taxState == 'gross'
+        ? 'general.grossTaxInformation'|trans|sw_sanitize
+        : 'general.netTaxInformation'|trans|sw_sanitize,
     cva = {},
 %}
 
@@ -23,23 +25,7 @@
 
 {% set hasListPrice = price.listPrice and price.listPrice.percentage > 0 %}
 
-{% set taxUrl = taxUrl is not null ? taxUrl : path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }) %}
-{% set taxText = taxText is not null
-    ? taxText
-    : (context.taxState == 'gross'
-        ? 'general.grossTaxInformation'|trans|sw_sanitize
-        : 'general.netTaxInformation'|trans|sw_sanitize) %}
-
-{% set cx = vi_cva({
-    root: { base: 'vi-product-price d-flex flex-row flex-wrap align-items-baseline gap-2' },
-    prefix: { base: 'vi-product-price__prefix' },
-    unit: { base: 'vi-product-price__unit' },
-    listPrice: { base: 'vi-product-price__list-price text-decoration-line-through' },
-    reference: { base: 'vi-product-price__reference' },
-    average: { base: 'vi-product-price__average' },
-    tax: { base: 'vi-product-price__tax' },
-    taxAction: { base: 'vi-product-price__tax-action' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block tiered %}
     {% if prices.count > 1 and showTieredPrices is same as(true) %}
@@ -118,11 +104,12 @@
             class="{{ cx.tax.apply() }}"
         >
             <button
-                type="button"
-                data-ajax-modal="true"
-                data-url="{{ taxUrl }}"
-                aria-haspopup="dialog"
-                {{ attributes.nested('taxAction') }}
+                {{ attributes.nested('taxAction').defaults({
+                    type: 'button',
+                    'data-ajax-modal': 'true',
+                    'data-url': taxUrl,
+                    'aria-haspopup': 'dialog',
+                }) }}
                 class="{{ cx.taxAction.apply() }}"
             >
                 {{ taxText }}

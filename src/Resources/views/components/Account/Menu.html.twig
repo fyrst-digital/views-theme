@@ -1,0 +1,45 @@
+{% props
+    activeRoute = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults(context.customer ? {} : {
+        role: 'dialog',
+        'aria-label': 'account.myAccount'|trans|striptags,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if context.customer %}
+        {% block user_actions %}
+            <twig:ViewsTheme:Account:Actions 
+                nav:class="py-2"
+                :activeRoute="activeRoute" />
+        {% endblock %}
+    {% else %}
+        {% block login %}
+            <twig:ViewsTheme:Account:Login 
+                class="p-4 border-bottom"
+                :description="false"
+                :username:label="false"
+                :password:label="false" />
+        {% endblock %}
+
+        {% block footer %}
+            <div
+                {{ attributes.nested('footer') }}
+                class="{{ cx.footer.apply() }}"
+            >
+                <twig:ViewsTheme:Button
+                    type="link"
+                    color="outline-primary"
+                    :href="path('frontend.account.login.page')"
+                    :label="'account.orRegisterLink'|trans|striptags"
+                    class="{{ cx.register.apply() }}"
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+</div>

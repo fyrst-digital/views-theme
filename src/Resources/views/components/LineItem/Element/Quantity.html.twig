@@ -9,7 +9,7 @@
     cva = {},
 %}
 
-{% set formAction = formAction is not null
+{% set resolvedFormAction = formAction is not null
     ? formAction
     : path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) %}
 {% set quantityInformation = lineItem.quantityInformation %}
@@ -40,21 +40,20 @@
 {% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
     ? quantityInformation.maxPurchase
     : config('core.cart.maxQuantity') %}
+{% set autoSubmitOptions = { delayChangeEvent: 800 } %}
 
 {% if showQuantitySelect
     and lineItem.quantityInformation
     and lineItem.stackable
     and nestingLevel < 1
 %}
-    {% set autoSubmitOptions = { delayChangeEvent: 800 } %}
     <form
-        action="{{ formAction }}"
-        method="post"
-        {% if autoSubmit is same as(true) %}
-            data-form-auto-submit="true"
-            data-form-auto-submit-options="{{ autoSubmitOptions|json_encode }}"
-        {% endif %}
-        {{ attributes }}
+        {{ attributes.defaults({
+            action: resolvedFormAction,
+            method: 'post',
+            'data-form-auto-submit': autoSubmit is same as(true) ? 'true' : null,
+            'data-form-auto-submit-options': autoSubmit is same as(true) ? autoSubmitOptions|json_encode : null,
+        }) }}
         class="{{ cx.root.apply({ digital: isDigital }) }}"
     >
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">

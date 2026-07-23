@@ -12,8 +12,9 @@
 }|replace_recursive(cva)) %}
 
 <div
-    itemprop="description"
-    {{ attributes }}
+    {{ attributes.defaults({
+        itemprop: 'description',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% if outputTags is same as(true) %}

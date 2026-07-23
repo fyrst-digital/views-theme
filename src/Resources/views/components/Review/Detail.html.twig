@@ -45,7 +45,12 @@
 {% endblock %}
 
 {% block component_review_form_container %}
-    <div {{ attributes.nested('formContainer') }} class="{{ cx.formContainer.apply() }}" id="review-form">
+    <div
+        {{ attributes.nested('formContainer').defaults({
+            id: 'review-form',
+        }) }}
+        class="{{ cx.formContainer.apply() }}"
+    >
         {% if context.customer and not context.customer.guest %}
             <div {{ attributes.nested('form') }} class="{{ cx.form.apply() }}">
                 {% component 'ViewsTheme:Review:Form' %}{% endcomponent %}

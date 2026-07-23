@@ -21,13 +21,7 @@
 
 {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
 
-{% set cx = vi_cva({
-    reviews: { base: 'vi-product-buy-container__reviews product-detail-reviews d-flex flex-wrap flex-row gap-2 align-items-center' },
-    reviewLabel: { base: 'vi-product-buy-container__review-label product-review-label' },
-    reviewLink: { base: 'vi-product-buy-container__review-link product-detail-reviews-link product-review-link' },
-    prices: { base: 'vi-product-buy-container__prices product-prices' },
-    actions: { base: 'vi-product-buy-container__actions product-actions' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block buy_widget_data %}
     {% block buy_widget_data_rich_snippet_url %}
@@ -65,14 +59,15 @@
                 <div {{ attributes.nested('reviewLabel') }} class="{{ cx.reviewLabel.apply() }}">
                     {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
                     <a
-                        data-bs-toggle="tab"
-                        {{ attributes.nested('reviewLink') }}
+                        {{ attributes.nested('reviewLink').defaults({
+                            'data-bs-toggle': 'tab',
+                            'data-off-canvas-tabs': 'true',
+                            'data-remote-click': 'true',
+                            'data-remote-click-options': remoteClickOptions|json_encode,
+                            href: reviewTabHref,
+                            'aria-controls': 'review-tab-pane',
+                        }) }}
                         class="{{ cx.reviewLink.apply() }}"
-                        data-off-canvas-tabs="true"
-                        data-remote-click="true"
-                        data-remote-click-options="{{ remoteClickOptions|json_encode }}"
-                        href="{{ reviewTabHref }}"
-                        aria-controls="review-tab-pane"
                     >
                         {{ totalReviews }}
                         {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}

@@ -65,8 +65,13 @@ Co-located `VariantsGrid/Container.js` (`ShopwareComponent` on `data-component="
 |-----------|-----------|
 | Grid container | `data-component="ViewsTheme:VariantsGrid:Container"` |
 | Quantity input | `data-component="ViewsTheme:QuantityInput"` |
+| Pagination slot | `data-action="pagination"` |
+| Quantity memory | `data-action="memory"` |
+| Buy submit | `button[type="submit"]` |
+| Error | `[role="alert"]` |
+| Live region | `[aria-live]` |
 
-Internal nodes still use legacy `data-ref` for the current co-located JS. Do not add new `data-ref`s; see [JavaScript conventions](../conventions/javascript.md).
+See [JavaScript conventions](../conventions/javascript.md).
 
 ## Key source files
 

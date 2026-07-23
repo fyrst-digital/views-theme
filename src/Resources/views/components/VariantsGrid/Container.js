@@ -1,12 +1,12 @@
 export default class VariantsGridContainer extends ShopwareComponent {
     static options = {
         quantityInputSelector: '[data-component="ViewsTheme:QuantityInput"] input[type="number"]',
-        buyButtonSelector: '[data-ref="buy-button"]',
-        gridBodySelector: '[data-ref="grid-body"]',
-        paginationSelector: '[data-ref="pagination"]',
-        memorySelector: '[data-ref="grid-memory"]',
-        errorSelector: '[data-ref="error-message"]',
-        liveRegionSelector: '[data-ref="live-region"]',
+        buyButtonSelector: 'button[type="submit"]',
+        gridBodySelector: 'tbody',
+        paginationSelector: '[data-action="pagination"]',
+        memorySelector: '[data-action="memory"]',
+        errorSelector: '[role="alert"]',
+        liveRegionSelector: '[aria-live]',
     };
 
     init() {

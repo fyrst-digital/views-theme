@@ -24,12 +24,13 @@
     {{ vi_icon('heart') }}
 
     <span
-        {{ attributes.nested('badge') }}
+        {{ attributes.nested('badge').defaults({
+            id: 'wishlist-basket',
+            'data-wishlist-storage': 'true',
+            'data-wishlist-storage-options': wishlistStorageOptions|json_encode,
+            'data-wishlist-widget': 'true',
+            'data-wishlist-widget-options': wishlistWidgetOptions|json_encode,
+        }) }}
         class="{{ cx.badge.apply() }}"
-        id="wishlist-basket"
-        data-wishlist-storage="true"
-        data-wishlist-storage-options="{{ wishlistStorageOptions|json_encode }}"
-        data-wishlist-widget="true"
-        data-wishlist-widget-options="{{ wishlistWidgetOptions|json_encode }}"
     ></span>
 {% endblock %}

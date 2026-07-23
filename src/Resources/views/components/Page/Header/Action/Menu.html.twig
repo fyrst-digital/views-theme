@@ -7,10 +7,11 @@
 }|replace_recursive(cva)) %}
 
 <button
-    type="button"
-    data-off-canvas-menu="true"
-    aria-label="{{ 'general.menuLink'|trans|striptags }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        type: 'button',
+        'data-off-canvas-menu': 'true',
+        'aria-label': 'general.menuLink'|trans|striptags,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {{ vi_icon('list') }}

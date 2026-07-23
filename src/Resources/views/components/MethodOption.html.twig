@@ -8,46 +8,32 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-method-option method-option ' ~ methodType ~ '-method' },
-    input: { base: 'vi-method-option__input method-option-input ' ~ methodType ~ '-method-input' },
-    label: { base: 'vi-method-option__label method-option-label ' ~ methodType ~ '-method-label' },
-    image: { base: 'vi-method-option__image method-option-image' },
-    imageElement: { base: 'vi-method-option__image-element method-option-image-element' },
-    content: { base: 'vi-method-option__content method-option-content' },
-    name: { base: 'vi-method-option__name method-option-name' },
-    description: { base: 'vi-method-option__description method-option-description' },
-}|replace_recursive(cva)) %}
-
-{% set inputAttributes = attributes.nested('input') %}
-{% set labelAttributes = attributes.nested('label') %}
-{% set imageAttributes = attributes.nested('image') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set nameAttributes = attributes.nested('name') %}
-{% set descriptionAttributes = attributes.nested('description') %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     <input
-        type="radio"
-        id="{{ methodType }}Method{{ methodId }}"
-        name="{{ methodType }}MethodId"
-        value="{{ methodId }}"
-        {% if methodId is same as(selectedMethodId) %}checked="checked"{% endif %}
-        {% if methodDisabled is same as(true) %}disabled="disabled"{% endif %}
-        {{ inputAttributes }}
+        {{ attributes.nested('input').defaults({
+            type: 'radio',
+            id: methodType ~ 'Method' ~ methodId,
+            name: methodType ~ 'MethodId',
+            value: methodId,
+            checked: methodId is same as(selectedMethodId) ? 'checked' : null,
+            disabled: methodDisabled is same as(true) ? 'disabled' : null,
+        }) }}
         class="{{ cx.input.apply() }}"
     >
 
     <label
-        for="{{ methodType }}Method{{ methodId }}"
-        {{ labelAttributes }}
+        {{ attributes.nested('label').defaults({
+            for: methodType ~ 'Method' ~ methodId,
+        }) }}
         class="{{ cx.label.apply() }}"
     >
         {% if methodMedia %}
-            <div {{ imageAttributes }} class="{{ cx.image.apply() }}">
+            <div {{ attributes.nested('image') }} class="{{ cx.image.apply() }}">
                 {% sw_thumbnails 'method-option-image-thumbnails' with {
                     media: methodMedia,
                     sizes: { default: '100px' },
@@ -60,12 +46,12 @@
             </div>
         {% endif %}
 
-        <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
-            <div {{ nameAttributes }} class="{{ cx.name.apply() }}">
+        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
+            <div {{ attributes.nested('name') }} class="{{ cx.name.apply() }}">
                 {{ methodMeta.name }}
             </div>
             {% if methodMeta.description %}
-                <div {{ descriptionAttributes }} class="{{ cx.description.apply() }}">
+                <div {{ attributes.nested('description') }} class="{{ cx.description.apply() }}">
                     {{ methodMeta.description }}
                 </div>
             {% endif %}

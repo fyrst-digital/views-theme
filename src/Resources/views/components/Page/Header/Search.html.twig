@@ -4,23 +4,15 @@
     cva = {},
 %}
 
-{% set searchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
+{% set resolvedSearchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center' },
-    search: { base: 'vi-header-search__body header-search' },
-    form: { base: 'vi-header-search__form header-search-form' },
-    container: { base: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2' },
-    inputGroup: { base: 'vi-header-search__input-group input-group header-search-input-group' },
-    input: { base: 'vi-header-search__input form-control header-search-input' },
-    submit: { base: 'vi-header-search__submit btn header-search-btn' },
-    close: { base: 'vi-header-search__close btn header-search-close' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
-    {{ attributes.defaults({ id: 'searchCollapse' }) }}
+    {{ attributes.defaults({
+        id: 'searchCollapse',
+    }) }}
     class="{{ cx.root.apply() }}"
-    data-ref="search"
 >
     <div
         {{ attributes.nested('search') }}
@@ -28,12 +20,13 @@
     >
         {% block form %}
             <form
-                action="{{ path('frontend.search.page') }}"
-                method="get"
-                data-search-widget="true"
-                data-search-widget-options="{{ searchWidgetOptions|json_encode }}"
-                data-url="{{ path('frontend.search.suggest') }}?search="
-                {{ attributes.nested('form') }}
+                {{ attributes.nested('form').defaults({
+                    action: path('frontend.search.page'),
+                    method: 'get',
+                    'data-search-widget': 'true',
+                    'data-search-widget-options': searchWidgetOptions|json_encode,
+                    'data-url': path('frontend.search.suggest') ~ '?search=',
+                }) }}
                 class="{{ cx.form.apply() }}"
             >
                 <div
@@ -47,23 +40,25 @@
                         >
                             {% block input %}
                                 <input
-                                    type="search"
-                                    name="search"
-                                    autocomplete="off"
-                                    autocapitalize="off"
-                                    placeholder="{{ 'header.searchPlaceholder'|trans|striptags }}"
-                                    aria-label="{{ 'header.searchPlaceholder'|trans|striptags }}"
-                                    value="{{ searchTerm }}"
-                                    {{ attributes.nested('input') }}
+                                    {{ attributes.nested('input').defaults({
+                                        type: 'search',
+                                        name: 'search',
+                                        autocomplete: 'off',
+                                        autocapitalize: 'off',
+                                        placeholder: 'header.searchPlaceholder'|trans|striptags,
+                                        'aria-label': 'header.searchPlaceholder'|trans|striptags,
+                                        value: resolvedSearchTerm,
+                                    }) }}
                                     class="{{ cx.input.apply() }}"
                                 >
                             {% endblock %}
 
                             {% block submit %}
                                 <button
-                                    type="submit"
-                                    aria-label="{{ 'header.searchButton'|trans|striptags }}"
-                                    {{ attributes.nested('submit') }}
+                                    {{ attributes.nested('submit').defaults({
+                                        type: 'submit',
+                                        'aria-label': 'header.searchButton'|trans|striptags,
+                                    }) }}
                                     class="{{ cx.submit.apply() }}"
                                 >
                                     {% block submit_icon %}
@@ -76,9 +71,10 @@
 
                     {% block close %}
                         <button
-                            type="button"
-                            data-header-search="close"
-                            {{ attributes.nested('close') }}
+                            {{ attributes.nested('close').defaults({
+                                type: 'button',
+                                'data-header-search': 'close',
+                            }) }}
                             class="{{ cx.close.apply() }}"
                         >
                             {% block close_icon %}

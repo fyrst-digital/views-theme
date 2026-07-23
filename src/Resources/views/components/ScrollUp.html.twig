@@ -10,9 +10,10 @@
 
 {% block layout_scroll_up_inner %}
     <div
-        {{ attributes }}
+        {{ attributes.defaults({
+            'data-scroll-up': 'true',
+        }) }}
         class="{{ cx.root.apply() }}"
-        data-scroll-up="true"
     >
         <div class="scroll-up-button js-scroll-up-button">
             <button type="submit" class="btn btn-primary rounded-pill p-3" aria-hidden="true">

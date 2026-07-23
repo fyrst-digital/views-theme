@@ -22,13 +22,13 @@
 
         {% block component_account_login_form %}
             <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
-                <twig:ViewsTheme:Account:LoginForm
+                <twig:ViewsTheme:Account:Login
                     :loginError="loginError|default(false)"
                     :errorSnippet="errorSnippet|default(null)"
                     :waitTime="waitTime|default(null)"
                     :redirectTo="redirectTo|default(null)"
                     :redirectParameters="redirectParameters|default(null)"
-                    :showDescription="showDescription|default(false)"
+                    :description="showDescription|default(false) ? 'account.loginFormDescription'|trans|sw_sanitize : false"
                 />
             </div>
         {% endblock %}

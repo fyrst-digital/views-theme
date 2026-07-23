@@ -3,7 +3,7 @@ import { svgToURL, getIconData, iconToSVG, iconToHTML, replaceIDs } from "@iconi
 import { locate } from "@iconify/json"
 import type { IconifyJSON } from "@iconify/types"
 
-const buildPath = 'src/Resources/public/css/icons'
+const buildPath = 'src/Resources/app/storefront/src/assets/css/icons'
 
 /**
  * Icon packs. Outer key is pack name (output CSS basename),
@@ -20,6 +20,7 @@ const icons: Record<string, Record<string, string[]>> = {
       "arrow-left",
       "arrow-right",
       "arrow-up",
+      "arrow-line-right",
       "broadcast",
       "caret-left",
       "caret-right",
@@ -66,6 +67,7 @@ const icons: Record<string, Record<string, string[]>> = {
       "arrow-left-bold",
       "arrow-right-bold",
       "arrow-up-bold",
+      "arrow-line-right-bold",
       "broadcast-bold",
       "caret-left-bold",
       "caret-right-bold",

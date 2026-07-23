@@ -13,23 +13,27 @@
     image: { base: 'img-fluid' },
 }|replace_recursive(cva)) %}
 
+{% set resolvedLogoPath = logoPath %}
 {% if theme_config('sw-logo-mobile') %}
-    {% set logoPath = theme_config('sw-logo-mobile') %}
+    {% set resolvedLogoPath = theme_config('sw-logo-mobile') %}
 {% endif %}
+
+{% set tabletLogoPath = theme_config('sw-logo-tablet') %}
+{% set desktopLogoPath = theme_config('sw-logo-desktop') %}
+{% set imgLogoPath = desktopLogoPath ?: tabletLogoPath ?: resolvedLogoPath %}
 
 <{{ element|raw }}
     {{ attributes.defaults({
         href: element is same as('a') ? href : null,
         title: title,
     }).without('data-component-template').without('class') }}
-    class="{{cx.root.apply()}}"
+    class="{{ cx.root.apply() }}"
 >
     {% if textLogo is not empty %}
         {% block text %}
             <span
                 {{ attributes.nested('text').without('class') }}
                 class="{{ cx.text.apply() }}"
-
             >
                 {{ textLogo|raw }}
             </span>
@@ -38,30 +42,28 @@
         {% block picture %}
             <picture style="display: contents;">
                 {% block image_tablet %}
-                    {% set logoPath = theme_config('sw-logo-tablet') %}
-                    {% if logoPath %}
+                    {% if tabletLogoPath %}
                         <source
-                            srcset="{{ logoPath|sw_encode_url }}"
+                            srcset="{{ tabletLogoPath|sw_encode_url }}"
                             media="(min-width: {{ theme_config('breakpoint.md') }}px) and (max-width: {{ theme_config('breakpoint.lg') - 1 }}px)"
                         >
                     {% endif %}
                 {% endblock %}
 
                 {% block image_desktop %}
-                    {% set logoPath = theme_config('sw-logo-desktop') %}
-                    {% if logoPath %}
+                    {% if desktopLogoPath %}
                         <source
-                            srcset="{{ logoPath|sw_encode_url }}"
+                            srcset="{{ desktopLogoPath|sw_encode_url }}"
                             media="(max-width: {{ theme_config('breakpoint.md') - 1 }}px)"
                         >
                     {% endif %}
                 {% endblock %}
 
                 {% block image %}
-                    {% if logoPath %}
+                    {% if imgLogoPath %}
                         <img
                             {{ attributes.nested('image').defaults({
-                                src: logoPath|sw_encode_url,
+                                src: imgLogoPath|sw_encode_url,
                                 alt: 'header.logoLink'|trans|striptags,
                                 style: 'width: var(--logo-width, auto)',
                             }) }}

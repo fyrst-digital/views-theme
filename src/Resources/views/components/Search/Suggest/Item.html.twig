@@ -7,10 +7,11 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <a
-    href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
-    title="{{ product.translated.name }}"
-    role="option"
-    {{ attributes }}
+    {{ attributes.defaults({
+        href: seoUrl('frontend.detail.page', { productId: product.id }),
+        title: product.translated.name,
+        role: 'option',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
@@ -21,10 +22,10 @@
                 :cover="product.cover.media"
                 :showLink="false"
                 tag="span"
-                :sizes="{ 
+                :sizes="{
                     'xs': '64px',
                     'sm': '80px',
-                    'xl': '100px' 
+                    'xl': '100px'
                 }"
             />
         {% endblock %}

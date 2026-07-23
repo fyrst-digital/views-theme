@@ -3,23 +3,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-cart-add-product-form add-product-form' },
-    label: { base: 'vi-cart-add-product-form__label visually-hidden' },
-    inputGroup: { base: 'vi-cart-add-product-form__input-group input-group' },
-    input: { base: 'vi-cart-add-product-form__input form-control' },
-    submit: { base: 'vi-cart-add-product-form__submit btn btn-secondary' },
-}|replace_recursive(cva)) %}
-
-{% set labelAttributes = attributes.nested('label') %}
-{% set inputGroupAttributes = attributes.nested('inputGroup') %}
-{% set inputAttributes = attributes.nested('input') %}
-{% set submitAttributes = attributes.nested('submit') %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <form
-    action="{{ path('frontend.checkout.product.add-by-number') }}"
-    method="post"
-    {{ attributes }}
+    {{ attributes.defaults({
+        action: path('frontend.checkout.product.add-by-number'),
+        method: 'post',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block redirect %}
@@ -28,8 +18,9 @@
 
     {% block label %}
         <label
-            for="addProductInput"
-            {{ labelAttributes }}
+            {{ attributes.nested('label').defaults({
+                for: 'addProductInput',
+            }) }}
             class="{{ cx.label.apply() }}"
         >
             {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
@@ -37,27 +28,29 @@
     {% endblock %}
 
     {% block input_group %}
-        <div {{ inputGroupAttributes }} class="{{ cx.inputGroup.apply() }}">
+        <div {{ attributes.nested('inputGroup') }} class="{{ cx.inputGroup.apply() }}">
             {% block input %}
                 <input
-                    type="text"
-                    name="number"
-                    id="addProductInput"
-                    placeholder="{{ 'checkout.addProductPlaceholder'|trans|striptags }}"
-                    aria-label="{{ 'checkout.addProductLabel'|trans|striptags }}"
-                    aria-describedby="addProductButton"
-                    required="required"
-                    {{ inputAttributes }}
+                    {{ attributes.nested('input').defaults({
+                        type: 'text',
+                        name: 'number',
+                        id: 'addProductInput',
+                        placeholder: 'checkout.addProductPlaceholder'|trans|striptags,
+                        'aria-label': 'checkout.addProductLabel'|trans|striptags,
+                        'aria-describedby': 'addProductButton',
+                        required: 'required',
+                    }) }}
                     class="{{ cx.input.apply() }}"
                 >
             {% endblock %}
 
             {% block submit %}
                 <button
-                    type="submit"
-                    aria-labelledby="addProductInput"
-                    id="addProductButton"
-                    {{ submitAttributes }}
+                    {{ attributes.nested('submit').defaults({
+                        type: 'submit',
+                        'aria-labelledby': 'addProductInput',
+                        id: 'addProductButton',
+                    }) }}
                     class="{{ cx.submit.apply() }}"
                 >
                     {{ vi_icon('plus') }}

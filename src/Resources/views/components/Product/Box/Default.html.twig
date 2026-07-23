@@ -33,14 +33,13 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <div
-    data-ref="box"
-    data-product-information="{{ { id: id, name: name, brand: brand, price: price }|json_encode }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-product-information': { id: id, name: name, brand: brand, price: price }|json_encode,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block image %}
         <div
-            data-ref="image"
             {{ attributes.nested('image') }}
             class="{{ cx.image.apply() }}"
         >
@@ -76,7 +75,6 @@
 
     {% block content %}
         <div
-            data-ref="content"
             {{ attributes.nested('content') }}
             class="{{ cx.content.apply() }}"
         >
@@ -155,8 +153,9 @@
                                 {% else %}
                                     {% block action_details %}
                                         <a
-                                            href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
-                                            {{ attributes.nested('details') }}
+                                            {{ attributes.nested('details').defaults({
+                                                href: seoUrl('frontend.detail.page', { productId: id }),
+                                            }) }}
                                             class="{{ cx.details.apply() }}"
                                         >
                                             {{ 'listing.boxProductDetails'|trans|sw_sanitize }}

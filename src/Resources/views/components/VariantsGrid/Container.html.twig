@@ -16,10 +16,11 @@
 }|replace_recursive(cva)) %}
 
 <div
-    data-component="ViewsTheme:VariantsGrid:Container"
-    data-load-url="{{ path('frontend.checkout.variants-grid.load') }}"
-    data-parent-id="{{ parentId }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:VariantsGrid:Container',
+        'data-load-url': path('frontend.checkout.variants-grid.load'),
+        'data-parent-id': parentId,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block error %}
@@ -31,7 +32,6 @@
             class="visually-hidden"
             aria-live="polite"
             aria-atomic="true"
-            data-ref="live-region"
             data-page-loaded-template="{{ 'variantsGrid.pagination.pageLoaded'|trans|sw_sanitize }}"
         ></div>
     {% endblock %}
@@ -71,7 +71,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody data-ref="grid-body">
+                    <tbody>
                         <twig:ViewsTheme:VariantsGrid:Rows :variants="variants" :groups="groups" />
                     </tbody>
                 </table>
@@ -83,10 +83,10 @@
                 name="redirectParameters"
                 value="{{ { productId: parentId }|json_encode }}"
             >
-            <div data-ref="grid-memory" style="display:none;"></div>
+            <div data-action="memory" style="display:none;"></div>
 
             <div class="variants-grid-actions d-flex justify-content-between align-items-center">
-                <div data-ref="pagination">
+                <div data-action="pagination">
                     <twig:ViewsTheme:VariantsGrid:Pagination
                         :pagination="pagination"
                         :pageParameter="pageParameter"
@@ -95,7 +95,6 @@
                 <button
                     type="submit"
                     class="btn btn-primary variants-grid-buy-button"
-                    data-ref="buy-button"
                 >
                     {{ 'detail.addProduct'|trans|sw_sanitize }}
                 </button>

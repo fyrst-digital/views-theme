@@ -19,11 +19,10 @@
 }|replace_recursive(cva)) %}
 
 <{{ rootTag|raw }}
-    {% if showLink is same as(true) %}
-        href="{{ seoUrl('frontend.detail.page', { productId: id }) }}"
-        title="{{ name }}"
-    {% endif %}
-    {{ attributes }}
+    {{ attributes.defaults({
+        href: showLink is same as(true) ? seoUrl('frontend.detail.page', { productId: id }) : null,
+        title: showLink is same as(true) ? name : null,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block media %}

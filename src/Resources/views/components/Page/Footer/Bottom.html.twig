@@ -3,15 +3,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'footer-bottom' },
-    container: { base: 'footer-bottom-container container' },
-    serviceList: { base: 'footer-service-list list-unstyled' },
-    serviceItem: { base: 'footer-service-item' },
-    serviceLink: { base: 'footer-link' },
-    vat: { base: 'footer-vat' },
-    copyright: { base: 'footer-copyright' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block component_footer_bottom %}
     <div {{ attributes }} class="{{ cx.root.apply() }}">
@@ -26,11 +18,14 @@
                             {% block component_footer_bottom_service_item %}
                                 <li {{ attributes.nested('serviceItem') }} class="{{ cx.serviceItem.apply() }}">
                                     {% block component_footer_bottom_service_link %}
-                                        <a {{ attributes.nested('serviceLink') }}
+                                        <a
+                                            {{ attributes.nested('serviceLink').defaults({
+                                                href: category_url(serviceMenuItem),
+                                                title: serviceMenuItem.translated.name,
+                                                target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
+                                            }) }}
                                             class="{{ cx.serviceLink.apply() }}"
-                                            href="{{ category_url(serviceMenuItem) }}"
-                                            {% if category_linknewtab(serviceMenuItem) %}target="_blank"{% endif %}
-                                            title="{{ serviceMenuItem.translated.name }}">
+                                        >
                                             {{ serviceMenuItem.translated.name }}
                                         </a>
                                     {% endblock %}

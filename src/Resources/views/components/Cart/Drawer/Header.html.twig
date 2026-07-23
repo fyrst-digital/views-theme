@@ -9,24 +9,21 @@
     quantity: { base: 'vi-cart-drawer-header__quantity badge rounded-pill text-bg-light' },
 }|replace_recursive(cva)) %}
 
-{% set contentAttributes = attributes.nested('content') %}
-{% set quantityAttributes = attributes.nested('quantity') %}
-
 <button
-    type="button"
-    data-ref="drawer-header"
-    {{ attributes }}
+    {{ attributes.defaults({
+        type: 'button',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
-        <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
+        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
             {% block title %}
                 <span>{{ 'checkout.cartHeader'|trans|sw_sanitize }}</span>
             {% endblock %}
 
             {% block quantity %}
                 {% if productsQuantity > 0 %}
-                    <span {{ quantityAttributes }} class="{{ cx.quantity.apply() }}">
+                    <span {{ attributes.nested('quantity') }} class="{{ cx.quantity.apply() }}">
                         {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
                     </span>
                 {% endif %}

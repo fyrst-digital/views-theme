@@ -1,0 +1,35 @@
+{% props
+    submitLabel = 'account.loginSubmit'|trans|sw_sanitize,
+    recoverLabel = 'account.loginPasswordRecover'|trans|sw_sanitize,
+    recoverUrl = seoUrl('frontend.account.recover.page'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block login %}
+            <twig:ViewsTheme:Button
+                type="submit"
+                color="primary"
+                :label="submitLabel"
+                class="{{ cx.login.apply() }}"
+            />
+        {% endblock %}
+
+        {% block recovery %}
+            <twig:ViewsTheme:Button
+                type="link"
+                color="link"
+                size="sm"
+                :href="recoverUrl"
+                :label="recoverLabel"
+                class="{{ cx.recovery.apply() }}"
+            />
+        {% endblock %}
+    {% endblock %}
+</div>

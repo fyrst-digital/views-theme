@@ -16,7 +16,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | Component template checklist | [components.md](components.md) |
 | `vi_cva` / `vi_cva_from_file` | [vi-cva.md](../twig/vi-cva.md) |
 | Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
-| JS: `data-component`, no CSS selectors, no new `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
+| JS: `data-component`, no CSS selectors, no `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
 | JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
 | Removed class-map APIs (`vi_define_classes`, `vi_attr_classes`, `vi_classes`) | [css-classes.md](css-classes.md) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |

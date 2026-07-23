@@ -1,17 +1,14 @@
 {% props
     product,
-    formAction = null,
+    formAction = path('frontend.checkout.line-item.add'),
     formId = null,
     showQuantity = true,
-    buyLabel = null,
+    buyLabel = 'listing.boxAddProduct'|trans|sw_sanitize,
     buyIcon = 'handbag',
     cva = {},
 %}
 
-{% set formAction = formAction is not null ? formAction : path('frontend.checkout.line-item.add') %}
-{% set formId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
-{% set buyLabel = buyLabel is not null ? buyLabel : 'listing.boxAddProduct'|trans|sw_sanitize %}
-
+{% set resolvedFormId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
 {% set showQuantityField = not product.type is defined
     or product.type != DIGITAL_CONST
@@ -33,18 +30,16 @@
 }|replace_recursive(cva)) %}
 
 <form
-    action="{{ formAction }}"
-    method="post"
-    id="{{ formId }}"
-    data-add-to-cart="true"
-    data-ref="buy"
-    {% if product.isCloseout %}
-        data-add-to-cart-options="{{ {
+    {{ attributes.defaults({
+        action: formAction,
+        method: 'post',
+        id: resolvedFormId,
+        'data-add-to-cart': 'true',
+        'data-add-to-cart-options': product.isCloseout ? {
             stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
             outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
-        }|json_encode|e('html_attr') }}"
-    {% endif %}
-    {{ attributes }}
+        }|json_encode : false,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block parameter %}
@@ -69,9 +64,9 @@
 
     {% block button %}
         <button
-            type="submit"
-            data-ref="buy-action"
-            {{ attributes.nested('button') }}
+            {{ attributes.nested('button').defaults({
+                type: 'submit',
+            }) }}
             class="{{ cx.button.apply() }}"
         >
             {% block button_icon %}

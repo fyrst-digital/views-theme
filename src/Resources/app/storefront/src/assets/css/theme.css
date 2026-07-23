@@ -1,6 +1,36 @@
+.btn-primary {
+  --btn-color: var(--body-color);
+}
+
+[class*="btn-outline"] { 
+  text-decoration-line: underline !important;
+}
+
+
+.btn-outline-primary {
+  --btn-color: var(--body-color);
+}
+
+.btn-link {
+  --btn-font-weight: 500;
+
+  &:hover {
+    --btn-decoration-color-opacity: 50%;
+  }
+}
+
+.btn-lg {
+    --btn-padding-x: var(--spacing-4);
+    --btn-padding-y: var(--spacing-3);
+    --btn-font-size: 20px;
+}
+
 .header-action {
   --icon-size: 24px;
   --btn-border-radius: var(--border-radius-pill);
+  --btn-hover-bg: var(--sw-color-brand-light);
+  --btn-active-bg: var(--btn-hover-bg);
+  --btn-active-border-color: transparent;
 
   .badge {
     --badge-position: absolute;
@@ -14,3 +44,12 @@
 .vi-search-suggest__results {
   --columns: 4;
 }
+
+.vi-account__dropdown {
+  --dropdown-max-width: min(100vw - 40px, 280px);
+}
+
+.vi-account-actions__action {
+  --btn-hover-bg: var(--light);
+}
+

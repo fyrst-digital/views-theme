@@ -58,7 +58,51 @@ See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
 ### Attributes
 
-Non-`class` HTML attributes on the root (and nested slots) go through `attributes.defaults({ … })` / `attributes.nested('slot').defaults({ … })`. Render **`class` only** as `class="{{ cx.… }}"` — not inside `defaults`. Prefer this over bare `data-component="…"`, `action="…"`, `aria-*="…"`, etc. on the tag.
+**Preferred** wiring for props/HTML attrs (over bare tags like `data-component="…"`, `action="…"`, `aria-*="…"` on the markup):
+
+| Target | Preferred pattern |
+|--------|-------------------|
+| DOM node (`<div>`, `<input>`, …) | `{{ attributes.defaults({ … }) }}` / `{{ attributes.nested('slot').defaults({ … }) }}` |
+| Child `<twig:…>` (overridable) | `{{ ...attributes.nested('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7) |
+
+- Call `attributes.nested('slot')` **inline** — do not assign it to an intermediate variable.
+- Pass the defaults hash **inline** to `.defaults({ … })` — do not assign it to an intermediate variable.
+
+#### DOM nodes
+
+Stringifies the bag to HTML. On **this** component’s own root/slots, render **`class` only** via `class="{{ cx.… }}"` — not inside `defaults` (CVA owns classes). Non-class attrs go through `defaults` / `nested().defaults`.
+
+#### Child components (preferred forward)
+
+When a parent composes a child `<twig:…>` and callers may need to override that child’s props or nested attrs, **prefer nest + spread + defaults** over a long hardcoded prop list or parallel props (`usernameLabel`, …).
+
+Spread injects a **map** into the child mount: keys in the child’s `{% props %}` become props; the rest become the child’s `attributes` (including deeper nests like `input:class`).
+
+```twig
+{# ✅ Preferred: defaults + caller `username:*` overrides #}
+<twig:ViewsTheme:Form:Input
+    {{ ...attributes.nested('username').defaults({
+        type: 'email',
+        id: 'loginMail',
+        name: 'username',
+        label: 'account.loginMailLabel'|trans|sw_sanitize,
+        class: 'vi-account-login__email flex-fill',
+    }).all() }}
+/>
+
+{# Caller #}
+<twig:ViewsTheme:Account:Login
+    :username:label="false"
+    username:placeholder="{{ 'account.loginMailLabel'|trans|sw_sanitize }}"
+    username:input:class="form-control-lg"
+/>
+```
+
+- Put child defaults in `.defaults({ … })`; caller nested keys win (`class` is concatenated).
+- **`class` inside the spread `.defaults({…})` is OK** — that hash is child mount data, not this component’s DOM `defaults`.
+- Use `:slot:prop="…"` for non-strings (e.g. `:username:label="false"`). Static `username:label="false"` is the string `"false"`.
+- Nest names (`username`, `password`, …) are a parent convention — document them on the feature page. Not automatic across layers; each parent must spread.
+- Skip spread only when the child call is fixed and must never be overridden from outside.
 
 ## Nested components (Symfony UX)
 
@@ -89,7 +133,7 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
 | Interactive UX root | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
 | Options | `data-component-options` | JSON |
 
-Do **not** add new `data-ref` attributes. Legacy `data-ref` in existing markup may remain until component JS is migrated.
+Do **not** use `data-ref` (removed). Prefer `data-action` or semantic selectors for internal hooks.
 
 Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:storefront`.
 
@@ -103,12 +147,16 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, QuantityInput | UX + `vi_cva` |
+| Alert, Button, QuantityInput, Form:Input | UX + `vi_cva` (convention-aligned attrs/props) |
+| Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
+| Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
+| Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
 | Product:* | UX + Listing/BuyContainer shells |
 | LineItem:*, Cart:*, Wishlist:* | UX / shells |
-| Account:*, Address:*, Checkout:*, Order:* | UX / shells |
+| Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
+| Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |

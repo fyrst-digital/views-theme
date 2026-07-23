@@ -1,0 +1,103 @@
+{% props
+    loginRoute = 'frontend.account.login',
+    description = 'account.loginFormDescription'|trans|sw_sanitize,
+    redirectTo = null,
+    redirectParameters = null,
+    loginError = false,
+    errorSnippet = null,
+    waitTime = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set loginId = 'vi-login-' ~ random() %}
+
+<form
+    {{ attributes.defaults({
+        action: path(loginRoute),
+        method: 'post',
+        'data-form-handler': 'true',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block redirect %}
+        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+        <input
+            type="hidden"
+            name="redirectParameters"
+            value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}"
+        >
+    {% endblock %}
+
+    {% block error %}
+        {% if loginError %}
+            {% if errorSnippet != null %}
+                {% set alertType = 'danger' %}
+                {% set alertContent = errorSnippet|trans|sw_sanitize({}, true) %}
+                {% set alertAriaLive = 'assertive' %}
+            {% elseif waitTime != null %}
+                {% set alertType = 'info' %}
+                {% set alertContent = 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize %}
+                {% set alertAriaLive = 'polite' %}
+            {% else %}
+                {% set alertType = 'danger' %}
+                {% set alertContent = 'account.loginBadCredentials'|trans|sw_sanitize %}
+                {% set alertAriaLive = 'assertive' %}
+            {% endif %}
+
+            <twig:ViewsTheme:Alert
+                :type="alertType"
+                :content="alertContent"
+                announceOnLoad
+                :ariaLive="alertAriaLive"
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <div
+                {{ attributes.nested('description') }}
+                class="{{ cx.description.apply() }}"
+            >
+                {{ description }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block username %}
+        <twig:ViewsTheme:Form:Input
+            {{ ...attributes.nested('username').defaults({
+                type: 'email',
+                id: loginId ~ '-mail',
+                name: 'username',
+                label: 'account.loginMailLabel'|trans|sw_sanitize,
+                placeholder: 'account.loginMailLabel'|trans|sw_sanitize,
+                autocomplete: 'username webauthn',
+                error: loginError,
+                validationRules: 'required,email',
+                class: 'vi-account-login__email login-form-email flex-fill',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block password %}
+        <twig:ViewsTheme:Form:Input
+            {{ ...attributes.nested('password').defaults({
+                type: 'password',
+                id: loginId ~ '-password',
+                name: 'password',
+                label: 'account.loginPasswordLabel'|trans|sw_sanitize,
+                placeholder: 'account.loginPasswordLabel'|trans|sw_sanitize,
+                autocomplete: 'current-password',
+                error: loginError,
+                validationRules: 'required',
+                class: 'vi-account-login__password login-form-password flex-fill',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block actions %}
+        <twig:ViewsTheme:Account:Login:Actions />
+    {% endblock %}
+</form>

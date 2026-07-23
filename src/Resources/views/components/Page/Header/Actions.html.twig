@@ -29,7 +29,9 @@
         {% endblock %}  
 
         {% block account %}
-            <twig:ViewsTheme:Page:Header:Action:Account />
+            <twig:ViewsTheme:Account:Action 
+                class="mt-2 p-0 vi-account__dropdown"
+                toggle:class="header-action" />
         {% endblock %}
 
         {% block cart %}

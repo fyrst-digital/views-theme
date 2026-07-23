@@ -14,9 +14,12 @@
         {% block component_footer_column_inner %}
 
             {% block component_footer_column_headline %}
-                <div {{ attributes.nested('headline') }}
+                <div
+                    {{ attributes.nested('headline').defaults({
+                        role: 'listitem',
+                    }) }}
                     class="{{ cx.headline.apply() }}"
-                    role="listitem">
+                >
 
                     {% block component_footer_column_headline_title %}
                     {% endblock %}

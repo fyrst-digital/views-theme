@@ -5,9 +5,7 @@
     cva = {},
 %}
 
-{% if layout is empty or layout is same as('standard') %}
-    {% set layout = 'default' %}
-{% endif %}
+{% set resolvedLayout = layout is empty or layout is same as('standard') ? 'default' : layout %}
 
 {% set sizes = {
     xs: '500px',
@@ -17,7 +15,7 @@
     xl: '280px',
 } %}
 
-{% if layout == 'image' %}
+{% if resolvedLayout == 'image' %}
     {% set sizes = {
         xs: '500px',
         sm: '500px',
@@ -31,7 +29,7 @@
     {# Only default layout is implemented; other layouts fall back to Default. #}
     <twig:ViewsTheme:Product:Box:Default
         :product="product"
-        :layout="layout"
+        :layout="resolvedLayout"
         :displayMode="displayMode"
         :sizes="sizes"
         :cva="cva"

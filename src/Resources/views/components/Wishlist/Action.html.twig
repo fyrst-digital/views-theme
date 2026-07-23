@@ -13,24 +13,25 @@
     {{ attributes.defaults({
         href: href,
         title: title,
-        'aria-labelledby': 'wishlist-basket-live-area'
+        'aria-labelledby': 'wishlist-basket-live-area',
     }).without('class').without('data-component-template') }}
     class="{{ cx.root.apply({ size: size }) }}"
 >
     {% block badge %}
         <span
-            id="wishlist-basket"
-            data-wishlist-storage="true"
-            data-wishlist-storage-options="{{ {
-                listPath: path('frontend.wishlist.product.list'),
-                mergePath: path('frontend.wishlist.product.merge'),
-                pageletPath: path('frontend.wishlist.product.merge.pagelet'),
-            }|merge(storageOptions)|json_encode }}"
-            data-wishlist-widget="true"
-            data-wishlist-widget-options="{{ {
-                showCounter: true
-            }|merge(widgetsOptions)|json_encode }}"
-            {{ attributes.nested('badge') }}
+            {{ attributes.nested('badge').defaults({
+                id: 'wishlist-basket',
+                'data-wishlist-storage': 'true',
+                'data-wishlist-storage-options': {
+                    listPath: path('frontend.wishlist.product.list'),
+                    mergePath: path('frontend.wishlist.product.merge'),
+                    pageletPath: path('frontend.wishlist.product.merge.pagelet'),
+                }|merge(storageOptions)|json_encode,
+                'data-wishlist-widget': 'true',
+                'data-wishlist-widget-options': {
+                    showCounter: true,
+                }|merge(widgetsOptions)|json_encode,
+            }) }}
             class="{{ cx.badge.apply() }}"
         ></span>
     {% endblock %}
@@ -41,10 +42,11 @@
 
     {% block live_region %}
         <span
-            id="wishlist-basket-live-area"
-            data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
-            aria-live="polite"
-            {{ attributes.nested('live') }}
+            {{ attributes.nested('live').defaults({
+                id: 'wishlist-basket-live-area',
+                'data-wishlist-live-area-text': 'header.wishlistAriaLiveTemplate'|trans,
+                'aria-live': 'polite',
+            }) }}
             class="{{ cx.live.apply() }}"
         ></span>
     {% endblock %}

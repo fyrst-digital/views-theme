@@ -12,15 +12,17 @@
         class="{{ cx.root.apply() }}"
     >
         {% block action %}
-            <a
-                href="{{ path('frontend.search.page') }}?search={{ searchTerm|url_encode }}"
-                title="{{ 'header.searchAllResults'|trans|striptags }}"
-                data-action="view-all"
-                {{ attributes.nested('action') }}
-                class="{{ cx.action.apply() }}"
-            >
-                {{ 'header.searchAllResults'|trans|sw_sanitize }} »
-            </a>
+            <twig:ViewsTheme:Button
+                {{ ...attributes.nested('action').defaults({
+                    type: 'link',
+                    color: 'light',
+                    href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,
+                    title: 'header.searchAllResults'|trans|striptags,
+                    label: 'header.searchAllResults'|trans|sw_sanitize,
+                    'data-action': 'view-all',
+                    class: cx.action.apply(),
+                }).all() }}
+            />
         {% endblock %}
     </div>
 {% endif %}

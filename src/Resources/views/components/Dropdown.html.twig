@@ -1,0 +1,37 @@
+{% props
+    id = null,
+    placement = 'bottom-end',
+    cva = {},
+%}
+
+{% set dropdownId = id ?? ('vi-dropdown-' ~ random()) %}
+{% set anchorName = '--' ~ dropdownId %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<button
+    {{ attributes.nested('toggle').defaults({
+        type: 'button',
+        popovertarget: dropdownId,
+        'aria-expanded': 'false',
+        'aria-haspopup': 'true',
+        'aria-controls': dropdownId,
+    }) }}
+    class="{{ cx.toggle.apply() }}"
+    style="anchor-name: {{ anchorName }}"
+>
+    {% block toggle %}{% endblock %}
+</button>
+
+<div
+    {{ attributes.defaults({
+        id: dropdownId,
+        popover: 'auto',
+        tabindex: '-1',
+        'data-placement': placement,
+        'data-component': 'ViewsTheme:Dropdown',
+    }) }}
+    class="{{ cx.root.apply() }}"
+    style="position-anchor: {{ anchorName }}"
+>
+    {% block content %}{% endblock %}
+</div>

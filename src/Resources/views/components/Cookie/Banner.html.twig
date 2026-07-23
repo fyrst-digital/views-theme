@@ -15,10 +15,6 @@
     actions: { base: 'vi-cookie-banner__actions col-auto d-flex flex-wrap gap-4' },
 }|replace_recursive(cva)) %}
 
-{% set containerAttributes = attributes.nested('container') %}
-{% set contentAttributes = attributes.nested('content') %}
-{% set actionsAttributes = attributes.nested('actions') %}
-
 {% if useDefaultCookieConsent %}
     <div
         {{ attributes.defaults({
@@ -27,18 +23,17 @@
             role: 'region',
             tabindex: '-1',
             'aria-label': 'cookie.headline'|trans|sw_sanitize,
-            'data-ref': 'banner',
         }) }}
         class="{{ cx.root.apply() }}"
     >
-        <div {{ containerAttributes }} class="{{ cx.container.apply() }}">
-            <div {{ contentAttributes }} class="{{ cx.content.apply() }}">
+        <div {{ attributes.nested('container') }} class="{{ cx.container.apply() }}">
+            <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
                 {{ privacySnippetKey|trans({
                     '%url%': path(cmsPath, { id: config('core.basicInformation.privacyPage') }),
                 })|raw }}
             </div>
 
-            <div {{ actionsAttributes }} class="{{ cx.actions.apply() }}">
+            <div {{ attributes.nested('actions') }} class="{{ cx.actions.apply() }}">
                 <span class="cookie-permission-button js-cookie-permission-button">
                     <button type="submit" class="btn btn-primary">
                         {{ 'cookie.deny'|trans|sw_sanitize }}

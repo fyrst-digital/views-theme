@@ -4,18 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'card register-card' },
-    header: { base: 'card-header register-card-header' },
-    form: { base: 'register-form' },
-    personal: { base: 'register-personal grid gap-3 card-body border-bottom' },
-    address: { base: 'register-address' },
-    billing: { base: 'register-billing card-body border-bottom' },
-    shippingToggle: { base: 'card-body d-flex flex-column gap-3' },
-    shipping: { base: 'register-shipping js-form-field-toggle-shipping-address d-none' },
-    footerBody: { base: 'card-body' },
-    submit: { base: 'register-submit card-footer d-flex flex-row flex-wrap align-items-center justify-content-end' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block component_account_register %}
   <div {{ attributes }} class="{{ cx.root.apply() }}">
@@ -29,12 +18,13 @@
 
     {% block component_account_register_form %}
       <form
-        action="{{ path('frontend.account.register.save') }}"
-        {{ attributes.nested('form') }}
-        class="{{ cx.form.apply() }}"
-        method="post"
-        data-form-submit-loader="true"
-        data-form-validation="true">
+        {{ attributes.nested('form').defaults({
+            action: path('frontend.account.register.save'),
+            method: 'post',
+            'data-form-submit-loader': 'true',
+            'data-form-validation': 'true',
+        }) }}
+        class="{{ cx.form.apply() }}">
         {% block component_account_register_redirect %}
           {{ parent() }}
         {% endblock %}

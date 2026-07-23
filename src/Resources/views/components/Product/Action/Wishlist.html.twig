@@ -18,11 +18,12 @@
 }|replace_recursive(cva)) %}
 
 <button
-    type="button"
-    title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
-    data-add-to-wishlist="true"
-    data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        type: 'button',
+        title: 'listing.addToWishlist'|trans|sw_sanitize,
+        'data-add-to-wishlist': 'true',
+        'data-add-to-wishlist-options': addToWishlistOptions|json_encode,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block icon %}

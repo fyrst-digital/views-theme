@@ -1,0 +1,55 @@
+/* Native popover + CSS anchor placement only — chrome in Dropdown.cva.twig */
+
+.vi-dropdown[popover] {
+  inset: unset;
+  max-width: var(--dropdown-max-width, min(100vw - 1.5rem, 22rem));
+
+  &[data-placement='bottom-end'] {
+    top: anchor(bottom);
+    right: anchor(right);
+    left: auto;
+    bottom: auto;
+  }
+
+  &[data-placement='bottom-start'] {
+    top: anchor(bottom);
+    left: anchor(left);
+    right: auto;
+    bottom: auto;
+  }
+
+  &[data-placement='top-end'] {
+    bottom: anchor(top);
+    right: anchor(right);
+    left: auto;
+    top: auto;
+  }
+
+  &[data-placement='top-start'] {
+    bottom: anchor(top);
+    left: anchor(left);
+    right: auto;
+    top: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity var(--dropdown-duration, 200ms) ease,
+      overlay var(--dropdown-duration, 200ms) allow-discrete,
+      display var(--dropdown-duration, 200ms) allow-discrete;
+
+    &:not(:popover-open) {
+      opacity: 0;
+    }
+
+    &:popover-open {
+      opacity: 1;
+    }
+
+    @starting-style {
+      &:popover-open {
+        opacity: 0;
+      }
+    }
+  }
+}

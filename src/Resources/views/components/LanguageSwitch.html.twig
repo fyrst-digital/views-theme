@@ -6,31 +6,18 @@
     cva = {},
 %}
 
-{% set languages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
-{% set activeLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(page.header.activeLanguage.id|default(null))) %}
-
+{% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
+{% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(page.header.activeLanguage.id|default(null))) %}
 {% set cx = vi_cva_from_file(cva) %}
 
-{% set menuAttributes = attributes.nested('menu') %}
-{% set buttonAttributes = attributes.nested('button') %}
-{% set flagAttributes = attributes.nested('flag') %}
-{% set flagIconAttributes = attributes.nested('flagIcon') %}
-{% set flagLabelAttributes = attributes.nested('flagLabel') %}
-{% set dropdownAttributes = attributes.nested('dropdown') %}
-{% set itemAttributes = attributes.nested('item') %}
-{% set itemCheckedAttributes = attributes.nested('itemChecked') %}
-{% set itemLabelAttributes = attributes.nested('itemLabel') %}
-{% set itemRadioAttributes = attributes.nested('itemRadio') %}
-{% set itemIconAttributes = attributes.nested('itemIcon') %}
-
 {% set activeLanguage = null %}
-{% for language in languages %}
-    {% if language.id is same as(activeLanguageId) %}
+{% for language in resolvedLanguages %}
+    {% if language.id is same as(resolvedActiveLanguageId) %}
         {% set activeLanguage = language %}
     {% endif %}
 {% endfor %}
-{% if activeLanguage is null and languages|length > 0 %}
-    {% set activeLanguage = languages|first %}
+{% if activeLanguage is null and resolvedLanguages|length > 0 %}
+    {% set activeLanguage = resolvedLanguages|first %}
 {% endif %}
 
 {% set isoCode = activeLanguage and activeLanguage.translationCode
@@ -39,33 +26,36 @@
 {% set languageCode = isoCode[0] %}
 
 <form
-    method="post"
-    action="{{ path('frontend.checkout.switch-language') }}"
-    data-form-auto-submit="true"
-    data-form-add-dynamic-redirect="true"
-    {{ attributes }}
+    {{ attributes.defaults({
+        method: 'post',
+        action: path('frontend.checkout.switch-language'),
+        'data-form-auto-submit': 'true',
+        'data-form-add-dynamic-redirect': 'true',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
-        <div {{ menuAttributes }} class="{{ cx.menu.apply() }}">
+        <div {{ attributes.nested('menu') }} class="{{ cx.menu.apply() }}">
             {% block button %}
                 <button
-                    type="button"
-                    id="languagesDropdown-{{ position }}"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    {{ buttonAttributes }}
+                    {{ attributes.nested('button').defaults({
+                        type: 'button',
+                        id: 'languagesDropdown-' ~ position,
+                        'data-bs-toggle': 'dropdown',
+                        'aria-haspopup': 'true',
+                        'aria-expanded': 'false',
+                    }) }}
                     class="{{ cx.button.apply() }}"
                 >
                     {% block flag %}
-                        <div {{ flagAttributes }} class="{{ cx.flag.apply() }}">
+                        <div {{ attributes.nested('flag') }} class="{{ cx.flag.apply() }}">
                             {% if activeLanguage and activeLanguage.translationCode %}
                                 {% block flag_icon %}
                                     <img
-                                        src="{{ asset('bundles/viewstheme/flags/' ~ activeLanguage.translationCode.code ~ '.svg', 'asset') }}"
-                                        alt=""
-                                        {{ flagIconAttributes }}
+                                        {{ attributes.nested('flagIcon').defaults({
+                                            src: asset('bundles/viewstheme/flags/' ~ activeLanguage.translationCode.code ~ '.svg', 'asset'),
+                                            alt: '',
+                                        }) }}
                                         class="{{ cx.flagIcon.apply() }}"
                                     >
                                 {% endblock %}
@@ -73,7 +63,7 @@
 
                             {% block flag_label %}
                                 {% if showFlagLabel %}
-                                    <span {{ flagLabelAttributes }} class="{{ cx.flagLabel.apply() }}">
+                                    <span {{ attributes.nested('flagLabel') }} class="{{ cx.flagLabel.apply() }}">
                                         {{ languageCode|upper }}
                                     </span>
                                 {% endif %}
@@ -85,40 +75,44 @@
 
             {% block dropdown %}
                 <div
-                    aria-labelledby="languagesDropdown-{{ position }}"
-                    {{ dropdownAttributes }}
+                    {{ attributes.nested('dropdown').defaults({
+                        'aria-labelledby': 'languagesDropdown-' ~ position,
+                    }) }}
                     class="{{ cx.dropdown.apply() }}"
                 >
-                    {% for language in languages %}
+                    {% for language in resolvedLanguages %}
                         {% block item %}
-                            {% set isActive = language.id is same as(activeLanguageId) %}
-                            {% set itemSlotAttributes = isActive ? itemCheckedAttributes : itemAttributes %}
+                            {% set isActive = language.id is same as(resolvedActiveLanguageId) %}
                             <div
-                                title="{{ language.translated.name|default(language.name) }}"
-                                {{ itemSlotAttributes }}
+                                {{ (isActive ? attributes.nested('itemChecked') : attributes.nested('item')).defaults({
+                                    title: language.translated.name|default(language.name),
+                                }) }}
                                 class="{{ isActive ? cx.itemChecked.apply() : cx.item.apply() }}"
                             >
                                 <label
-                                    for="{{ position }}-{{ language.id }}"
-                                    {{ itemLabelAttributes }}
+                                    {{ attributes.nested('itemLabel').defaults({
+                                        for: position ~ '-' ~ language.id,
+                                    }) }}
                                     class="{{ cx.itemLabel.apply() }}"
                                 >
                                     <input
-                                        id="{{ position }}-{{ language.id }}"
-                                        value="{{ language.id }}"
-                                        name="languageId"
-                                        type="radio"
-                                        {% if isActive %}checked{% endif %}
-                                        {{ itemRadioAttributes }}
+                                        {{ attributes.nested('itemRadio').defaults({
+                                            id: position ~ '-' ~ language.id,
+                                            value: language.id,
+                                            name: 'languageId',
+                                            type: 'radio',
+                                            checked: isActive ? true : null,
+                                        }) }}
                                         class="{{ cx.itemRadio.apply() }}"
                                     >
 
                                     {% if language.translationCode %}
                                         {% block item_icon %}
                                             <img
-                                                src="{{ asset('bundles/viewstheme/flags/' ~ language.translationCode.code ~ '.svg', 'asset') }}"
-                                                alt=""
-                                                {{ itemIconAttributes }}
+                                                {{ attributes.nested('itemIcon').defaults({
+                                                    src: asset('bundles/viewstheme/flags/' ~ language.translationCode.code ~ '.svg', 'asset'),
+                                                    alt: '',
+                                                }) }}
                                                 class="{{ cx.itemIcon.apply() }}"
                                             >
                                         {% endblock %}
