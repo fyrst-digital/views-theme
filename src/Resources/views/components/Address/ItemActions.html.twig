@@ -11,13 +11,7 @@
     {% set editButtonClass = editButtonClass ~ ' btn-light' %}
 {% endif %}
 
-{% set cx = vi_cva({
-    edit: { base: editButtonClass },
-    deleteForm: { base: 'address-action-delete' },
-    deleteButton: { base: 'btn btn-sm btn-light' },
-    setDefaultBilling: { base: 'btn btn-light address-action-set-default address-action-set-default-billing btn-sm' },
-    setDefaultShipping: { base: 'btn btn-light address-action-set-default address-action-set-default-shipping btn-sm' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% block page_account_address_actions %}
     {% block page_account_address_actions_buttons %}

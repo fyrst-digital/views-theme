@@ -6,16 +6,7 @@
 
 {% set resolvedSearchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-header-search collapse header-search-collapse d-flex flex-row flex-wrap align-items-center' },
-    search: { base: 'vi-header-search__body header-search' },
-    form: { base: 'vi-header-search__form header-search-form' },
-    container: { base: 'vi-header-search__container header-search-container d-flex flex-row flex-wrap gap-2' },
-    inputGroup: { base: 'vi-header-search__input-group input-group header-search-input-group' },
-    input: { base: 'vi-header-search__input form-control header-search-input' },
-    submit: { base: 'vi-header-search__submit btn header-search-btn' },
-    close: { base: 'vi-header-search__close btn header-search-close' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <div
     {{ attributes.defaults({

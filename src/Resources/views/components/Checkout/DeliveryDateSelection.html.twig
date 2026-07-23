@@ -9,14 +9,7 @@
 {% set resolvedDeliveryDate = deliveryDate is not null
     ? deliveryDate
     : page.extensions.viewsTheme.deliveryDate|default({}) %}
-{% set cx = vi_cva({
-    root: { base: 'vi-checkout-delivery-date' },
-    title: { base: 'vi-checkout-delivery-date__title' },
-    control: { base: 'vi-checkout-delivery-date__control' },
-    label: { base: 'vi-checkout-delivery-date__label form-label' },
-    input: { base: 'vi-checkout-delivery-date__input form-control' },
-    help: { base: 'vi-checkout-delivery-date__help form-text' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% if resolvedDeliveryDate.active|default(false) %}
     <div

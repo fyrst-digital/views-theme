@@ -11,16 +11,7 @@
 
 {% set pageEntity = page is not null ? page : (_context.page|default(null)) %}
 {% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
-{% set cx = vi_cva({
-    root: { base: 'vi-checkout-confirm-tos confirm-tos' },
-    title: { base: 'vi-checkout-confirm-tos__title confirm-tos-title' },
-    revocationNotice: { base: 'vi-checkout-confirm-tos__revocation-notice revocation-notice' },
-    control: { base: 'vi-checkout-confirm-tos__control form-check' },
-    tosCheckbox: { base: 'vi-checkout-confirm-tos__checkbox checkout-confirm-tos-checkbox form-check-input' },
-    tosLabel: { base: 'vi-checkout-confirm-tos__label checkout-confirm-tos-label custom-control-label' },
-    revocationCheckbox: { base: 'vi-checkout-confirm-tos__revocation-checkbox checkout-confirm-revocation-checkbox form-check-input' },
-    revocationLabel: { base: 'vi-checkout-confirm-tos__revocation-label checkout-confirm-revocation-label custom-control-label' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 {% set tosInvalid = violations and violations.getViolations('/tos') is not empty %}
 {% set revocationInvalid = violations and violations.getViolations('/revocation') is not empty %}
 

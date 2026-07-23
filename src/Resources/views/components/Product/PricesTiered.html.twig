@@ -4,13 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-product-prices-tiered w-100' },
-    row: { base: 'vi-product-prices-tiered__row' },
-    cellQuantity: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--quantity' },
-    cellPrice: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--price' },
-    cellReference: { base: 'vi-product-prices-tiered__cell vi-product-prices-tiered__cell--reference' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <table
     {{ attributes }}

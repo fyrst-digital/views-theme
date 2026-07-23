@@ -3,13 +3,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-checkout-user-comment' },
-    title: { base: 'vi-checkout-user-comment__title checkout-user-comment-title' },
-    control: { base: 'vi-checkout-user-comment__control checkout-user-comment-control' },
-    label: { base: 'vi-checkout-user-comment__label form-label' },
-    textarea: { base: 'vi-checkout-user-comment__textarea form-control' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 {% set commentKey = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') %}
 
 <div

@@ -3,15 +3,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    label: { base: 'vi-line-item__label line-item-label discount-name' },
-    image: { base: 'vi-line-item__image line-item-img discount-icon' },
-    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
 
