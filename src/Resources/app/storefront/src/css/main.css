@@ -1,0 +1,27 @@
+/* Theme + utilities only (no Preflight). prefix(tw) avoids Bootstrap class clashes. */
+@import "tailwindcss/theme" layer(theme) prefix(tw);
+@import "tailwindcss/utilities" prefix(tw) source(none);
+
+/* Align with scss/override.scss — reusable breakpoints for custom CSS */
+@theme static {
+  --breakpoint-sm: 520px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1260px;
+  --breakpoint-xxl: 1600px;
+
+  --spacing: 4px;
+
+  --font-sans: "Figtree", sans-serif;
+
+  --color-brand-primary: var(--sw-color-brand-primary);
+  --color-brand-secondary: var(--sw-color-brand-secondary);
+  --color-brand-tertiary: var(--sw-color-brand-tertiary);
+  --color-brand-light: var(--sw-color-brand-light);
+  --color-brand-dark: var(--sw-color-brand-dark);
+}
+
+@source "../../../../views/**/*.{twig,html.twig}";
+@source "../**/*.{js,ts}";
+
+@import "./components.css";

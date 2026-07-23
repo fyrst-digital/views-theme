@@ -12,7 +12,12 @@ Components use **[`vi_cva`](../twig/vi-cva.md)** / **`vi_cva_from_file`** + attr
 | Nested slot extras | `slot:class="…"` |
 | Composition | `{% set cx = vi_cva_from_file(cva) %}` or `vi_cva({ … }\|replace_recursive(cva))` then `cx.root.apply({ … })` |
 
-Root BEM: `vi-*` prefix + Bootstrap utilities in slot `base`.
+Root BEM: `vi-*` prefix + utilities in slot `base`.
+
+- **Bootstrap** utilities: `d-flex`, `gap-2`, `p-3`, … (existing CVA)
+- **Tailwind** utilities: always `tw:`-prefixed (`tw:flex`, `tw:lg:gap-4`) so they never collide with Bootstrap
+
+Prefer one system per property on a node (do not mix e.g. `gap-2` and `tw:gap-4` on the same element). Global component overrides/tokens: Tailwind-built `assets/css/theme.css` (source: `app/storefront/src/css/`). See [Configuration — Tailwind CSS](../configuration.md#tailwind-css-themecss).
 
 Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
 

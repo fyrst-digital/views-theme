@@ -1,49 +1,40 @@
-/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */
-@layer theme {
-  :root, :host {
-    --tw-font-sans: "Figtree", sans-serif;
-    --tw-spacing: 4px;
-    --tw-breakpoint-sm: 520px;
-    --tw-breakpoint-md: 768px;
-    --tw-breakpoint-lg: 1024px;
-    --tw-breakpoint-xl: 1260px;
-    --tw-breakpoint-xxl: 1600px;
-    --tw-color-brand-primary: var(--sw-color-brand-primary);
-    --tw-color-brand-secondary: var(--sw-color-brand-secondary);
-    --tw-color-brand-tertiary: var(--sw-color-brand-tertiary);
-    --tw-color-brand-light: var(--sw-color-brand-light);
-    --tw-color-brand-dark: var(--sw-color-brand-dark);
-  }
-}
 .btn-primary {
   --btn-color: var(--body-color);
 }
+
 [class*="btn-outline"] {
   text-decoration-line: underline !important;
 }
+
 .btn-outline-primary {
   --btn-color: var(--body-color);
 }
+
 .btn-link {
   --btn-font-weight: 500;
+
   &:hover {
     --btn-decoration-color-opacity: 50%;
   }
 }
+
 .btn-lg {
   --btn-padding-x: var(--spacing-4);
   --btn-padding-y: var(--spacing-3);
   --btn-font-size: 20px;
 }
+
 .header-action {
   --icon-size: 20px;
   --btn-border-radius: var(--border-radius-pill);
   --btn-hover-bg: var(--sw-color-brand-light);
   --btn-active-bg: var(--btn-hover-bg);
   --btn-active-border-color: transparent;
-  @media (width >= 1024px) {
+
+  @variant lg {
     --icon-size: 24px;
   }
+
   .badge {
     --badge-position: absolute;
     --badge-padding-x: 4px;
@@ -52,12 +43,15 @@
     --badge-min-w: 20px;
   }
 }
+
 .vi-search-suggest__results {
   --columns: 4;
 }
+
 .vi-account__dropdown {
   --dropdown-max-width: min(100vw - 40px, 280px);
 }
+
 .vi-account-actions__action {
   --btn-hover-bg: var(--light);
 }

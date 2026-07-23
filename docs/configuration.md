@@ -77,6 +77,50 @@ Extra stylesheets under `app/storefront/src/assets/css/` (e.g. `theme.css`, cond
 
 There is no auto-reload for these files: edit + hard-refresh the storefront. Theme SCSS (`theme.json` `style`) still uses `/theme-scss/all.css` with full reload.
 
+### Tailwind CSS (`theme.css`)
+
+Global component CSS, design tokens, and **prefixed utilities** are built with **Tailwind v4 CLI** into the committed asset `app/storefront/src/assets/css/theme.css`.
+
+| Path | Role |
+|------|------|
+| `app/storefront/src/css/main.css` | Entry: theme + utilities (`prefix(tw)`), `@theme static`, `@source`, components |
+| `app/storefront/src/css/components.css` | Custom component rules (`.btn-*`, layout chrome, …) |
+| `app/storefront/src/assets/css/theme.css` | **Build output** (linked in storefront; commit after changes) |
+
+```bash
+# From the ViewsTheme plugin root
+npm run build:css    # one-shot
+npm run watch:css    # rebuild on source edit
+```
+
+**Imports:** `tailwindcss/theme` + `tailwindcss/utilities` only — **no Preflight** (Bootstrap handles base). Both use `prefix(tw)`.
+
+**Utility classes** use the `tw:` prefix so they never clash with Bootstrap names:
+
+```html
+<div class="d-flex gap-2 tw:lg:gap-4">…</div>
+```
+
+| HTML | Generated selector |
+|------|--------------------|
+| `tw:flex` | `.tw\:flex` |
+| `tw:lg:gap-2` | `@media (width >= …) { .tw\:lg\:gap-2 { … } }` |
+
+Theme CSS variables are also prefixed in the build (`--tw-breakpoint-lg`, `--tw-color-brand-primary`, …). Class scanning is **explicit only** (`source(none)`): `@source` covers Twig under `views/` and storefront JS/TS — not docs or the rest of the repo.
+
+`@theme` breakpoints and spacing match `scss/override.scss` (`sm` 520px … `xxl` 1600px, `--spacing: 4px`). Brand colors reference Shopware runtime vars (`--sw-color-brand-*`).
+
+In component CSS:
+
+| Need | Use |
+|------|-----|
+| Token as a property value | `var(--tw-color-brand-primary)`, `var(--tw-spacing)`, … (prefix applied in output) |
+| Responsive rule at a theme breakpoint | `@variant lg { … }` (compiles to `@media (width >= 1024px)`) |
+| Breakpoint length in `@media` | `theme(--breakpoint-lg)` (build-time) — **not** `var(--breakpoint-*)` (invalid in media queries) |
+| `@apply` | Prefixed names: `@apply tw:flex tw:gap-2` |
+
+**Cascade vs Bootstrap:** Shopware/Bootstrap CSS is unlayered. Unlayered styles always beat `@layer` styles, so component rules are intentionally **not** wrapped in `@layer` — they load after Bootstrap via `theme.css` and win. Theme tokens stay in `@layer theme`; utilities stay in `@layer utilities` (class names do not collide thanks to `tw:`).
+
 ### Theme fields (admin)
 
 | Field | Type | Default / notes |
