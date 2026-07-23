@@ -1,6 +1,7 @@
 .icon {
   width: var(--icon-size, 20px) !important;
   height: var(--icon-size, 20px) !important;
+  color: var(--icon-color, currentColor) !important;
   > svg {
     position: static !important;
     inset: auto !important;

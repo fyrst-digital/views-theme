@@ -3,62 +3,55 @@
 .vi-dropdown[popover] {
   position: absolute;
   inset: unset;
-  margin: 0;
   width: max-content;
-  max-width: min(100vw - 1.5rem, 22rem);
-}
+  max-width: var(--dropdown-max-width, min(100vw - 1.5rem, 22rem));
 
-.vi-dropdown[popover][data-placement='bottom-end'] {
-  top: anchor(bottom);
-  right: anchor(right);
-  left: auto;
-  bottom: auto;
-  margin-top: 0.25rem;
-}
+  &[data-placement='bottom-end'] {
+    top: anchor(bottom);
+    right: anchor(right);
+    left: auto;
+    bottom: auto;
+  }
 
-.vi-dropdown[popover][data-placement='bottom-start'] {
-  top: anchor(bottom);
-  left: anchor(left);
-  right: auto;
-  bottom: auto;
-  margin-top: 0.25rem;
-}
+  &[data-placement='bottom-start'] {
+    top: anchor(bottom);
+    left: anchor(left);
+    right: auto;
+    bottom: auto;
+  }
 
-.vi-dropdown[popover][data-placement='top-end'] {
-  bottom: anchor(top);
-  right: anchor(right);
-  left: auto;
-  top: auto;
-  margin-bottom: 0.25rem;
-}
+  &[data-placement='top-end'] {
+    bottom: anchor(top);
+    right: anchor(right);
+    left: auto;
+    top: auto;
+  }
 
-.vi-dropdown[popover][data-placement='top-start'] {
-  bottom: anchor(top);
-  left: anchor(left);
-  right: auto;
-  top: auto;
-  margin-bottom: 0.25rem;
-}
+  &[data-placement='top-start'] {
+    bottom: anchor(top);
+    left: anchor(left);
+    right: auto;
+    top: auto;
+  }
 
-@media (prefers-reduced-motion: no-preference) {
-  .vi-dropdown[popover] {
+  @media (prefers-reduced-motion: no-preference) {
     transition:
-      opacity 0.12s ease,
-      overlay 0.12s allow-discrete,
-      display 0.12s allow-discrete;
-  }
+      opacity var(--dropdown-duration, 200ms) ease,
+      overlay var(--dropdown-duration, 200ms) allow-discrete,
+      display var(--dropdown-duration, 200ms) allow-discrete;
 
-  .vi-dropdown[popover]:not(:popover-open) {
-    opacity: 0;
-  }
-
-  .vi-dropdown[popover]:popover-open {
-    opacity: 1;
-  }
-
-  @starting-style {
-    .vi-dropdown[popover]:popover-open {
+    &:not(:popover-open) {
       opacity: 0;
+    }
+
+    &:popover-open {
+      opacity: 1;
+    }
+
+    @starting-style {
+      &:popover-open {
+        opacity: 0;
+      }
     }
   }
 }

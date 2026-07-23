@@ -1,6 +1,9 @@
 .header-action {
   --icon-size: 24px;
   --btn-border-radius: var(--border-radius-pill);
+  --btn-hover-bg: var(--sw-color-brand-light);
+  --btn-active-bg: transrent;
+  --btn-active-border-color: var(--sw-color-brand-primary);
 
   .badge {
     --badge-position: absolute;

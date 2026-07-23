@@ -6,9 +6,10 @@
   gap: var(--#{$prefix}btn-gap, var(--#{$prefix}spacing-3));
   align-items: center;
 
-  &.btn-equal {
-    --#{$prefix}btn-padding-x: var(--#{$prefix}spacing-2);
-    --#{$prefix}btn-padding-y: var(--#{$prefix}spacing-2);
-    --#{$prefix}btn-gap: var(--#{$prefix}spacing-2);
+  &:focus,
+  &[aria-expanded="true"] {
+    color: var(--btn-active-color);
+    background-color: var(--btn-active-bg);
+    border-color: var(--btn-active-border-color);
   }
 }
