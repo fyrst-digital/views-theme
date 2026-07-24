@@ -1,0 +1,19 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Drawer:Close',
+        'aria-label': 'general.offcanvasCloseMenu'|trans|striptags,
+        title: 'general.offcanvasCloseMenu'|trans|striptags,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block icon %}
+        {{ vi_icon('x') }}
+    {% endblock %}
+</button>

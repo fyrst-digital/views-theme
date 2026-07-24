@@ -47,6 +47,14 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\NavigationDrawerController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoader"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Service\VariantsLoader">
             <argument type="service" id="sales_channel.product.repository"/>
         </service>

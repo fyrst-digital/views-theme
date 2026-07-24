@@ -1,0 +1,24 @@
+{% props
+    category,
+    cva = {},
+%}
+
+{% set name = category.translated.name %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<li
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    <a
+        {{ attributes.nested('link').defaults({
+            href: category_url(category),
+            title: name,
+            target: category_linknewtab(category) ? '_blank' : null,
+            'data-action': 'current',
+        }) }}
+        class="{{ cx.link.apply() }}"
+    >
+        {{ 'general.showCategory'|trans({'%category%': name})|sw_sanitize }}
+    </a>
+</li>

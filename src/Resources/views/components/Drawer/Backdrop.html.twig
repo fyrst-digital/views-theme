@@ -1,0 +1,12 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Drawer:Backdrop',
+    }) }}
+    class="{{ cx.root.apply() }}"
+></div>

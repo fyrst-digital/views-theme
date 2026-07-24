@@ -32,6 +32,11 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Search overlay backdrop | `ViewsTheme:Search:Overlay:Backdrop` | `Search/Overlay/Backdrop.js` |
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
+| Drawer | `ViewsTheme:Drawer` | `Drawer.js` |
+| Drawer backdrop | `ViewsTheme:Drawer:Backdrop` | `Drawer/Backdrop.js` |
+| Drawer close | `ViewsTheme:Drawer:Close` | `Drawer/Close.js` |
+| Navigation drawer action | `ViewsTheme:Navigation:Drawer:Action` | `Navigation/Drawer/Action.js` |
+| Navigation drawer menu | `ViewsTheme:Navigation:Drawer:Menu` | `Navigation/Drawer/Menu.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
 
@@ -101,6 +106,26 @@ Closed overlay sets `inert` (plus `aria-hidden`) so tab order skips it; while op
 Suggest HTML is inserted as the form’s next sibling. Product grid scrolls via nested `Scroll:Area`.
 
 See [Search overlay](../features/search-overlay.md).
+
+### Navigation drawer
+
+Lazy-loaded side drawer from the header menu action. **Menu** owns drill-down; the nav shell is Twig composition only.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
+| Shell | `#vi-navigation-drawer-shell` |
+| Drawer | `data-component="ViewsTheme:Drawer"` |
+| Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
+| Close | `data-component="ViewsTheme:Drawer:Close"` |
+| Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
+| Drill link | `data-action="drill"` |
+
+Menu parses fetched HTML with `<template>`, keeps its root instance, and applies the level with `replaceChildren` (no live `innerHTML` assign). Drawer emits `ViewsTheme:Drawer:Open` / `:Close` via `emitQueued`. Backdrop/Close call `Shopware.callMethod('ViewsTheme:Drawer', 'close')`.
+
+Prefer `replaceWith` / `replaceChildren` over assigning `innerHTML` on live nodes when applying HTML fragments.
+
+See [Navigation drawer](../features/navigation-drawer.md).
 
 ### Scroll area
 

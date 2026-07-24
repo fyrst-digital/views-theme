@@ -1,0 +1,68 @@
+{% props
+    id = 'vi-drawer',
+    side = 'start',
+    label = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': label,
+        'aria-hidden': 'true',
+        inert: true,
+        'data-side': side,
+        'data-open': 'false',
+        'data-component': 'ViewsTheme:Drawer',
+        'data-component-options': {
+            side: side,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply({ side: side }) }}"
+>
+    {% block backdrop %}
+        <twig:ViewsTheme:Drawer:Backdrop />
+    {% endblock %}
+
+    {% block panel %}
+        <div
+            {{ attributes.nested('panel').defaults({
+                'data-action': 'panel',
+            }) }}
+            class="{{ cx.panel.apply({ side: side }) }}"
+        >
+            {% block header %}
+                <div
+                    {{ attributes.nested('header') }}
+                    class="{{ cx.header.apply() }}"
+                >
+                    {% block title %}
+                        <div
+                            {{ attributes.nested('title') }}
+                            class="{{ cx.title.apply() }}"
+                        >
+                            {% block title_content %}{% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block close %}
+                        <twig:ViewsTheme:Drawer:Close />
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block body %}
+                <div
+                    {{ attributes.nested('body') }}
+                    class="{{ cx.body.apply() }}"
+                >
+                    {% block content %}{% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

@@ -1,0 +1,23 @@
+{% props
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<a
+    {{ attributes.defaults({
+        href: menuUrl,
+        title: 'general.mainMenu'|trans|striptags,
+        'data-action': 'drill',
+        'data-href': menuUrl,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <span class="{{ cx.icon.apply() }}">
+        {{ vi_icon('list') }}
+    </span>
+    <span class="{{ cx.label.apply() }}">
+        {{ 'general.mainMenu'|trans|sw_sanitize }}
+    </span>
+</a>

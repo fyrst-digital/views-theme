@@ -1,0 +1,24 @@
+{% props
+    size = 'md',
+    drawerUrl = path('frontend.views-theme.navigation.drawer'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'aria-label': 'general.menuLink'|trans|striptags,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-navigation-drawer',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Navigation:Drawer:Action',
+        'data-component-options': {
+            drawerUrl: drawerUrl,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply({ size: size }) }}"
+>
+    {{ vi_icon('list') }}
+</button>
