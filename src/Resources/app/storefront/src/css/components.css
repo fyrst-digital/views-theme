@@ -24,6 +24,10 @@
   --btn-font-size: 20px;
 }
 
+.header-main {
+  --logo-width: 80px;
+}
+
 .header-action {
   --icon-size: 20px;
   --btn-border-radius: var(--border-radius-pill);
