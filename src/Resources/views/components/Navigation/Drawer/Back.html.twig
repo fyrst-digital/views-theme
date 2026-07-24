@@ -12,10 +12,10 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <twig:ViewsTheme:Navigation:Drawer:Drill
+    class="{{ cx.root.apply() }}"
     {{ ...attributes.defaults({
         href: href,
         title: 'general.back'|trans|striptags,
-        class: cx.root.apply(),
     }).all() }}
 >
     <span class="{{ cx.icon.apply() }}">

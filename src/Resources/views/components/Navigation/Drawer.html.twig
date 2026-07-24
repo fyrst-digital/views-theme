@@ -9,11 +9,11 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <twig:ViewsTheme:Drawer
+    class="{{ cx.root.apply() }}"
     {{ ...attributes.defaults({
         id: 'vi-navigation-drawer',
         side: 'start',
         label: label,
-        class: cx.root.apply(),
     }).all() }}
 >
     <twig:block name="panel">
@@ -28,7 +28,8 @@
                         <div class="vi-drawer__title d-flex align-items-center gap-1 mb-0">
                             {% if wishlist %}
                                 <twig:ViewsTheme:Wishlist:Action
-                                    class="header-action position-relative"
+                                    class="position-relative"
+                                    label:class="fs-6"
                                     badge:id="vi-navigation-drawer-wishlist-basket"
                                     live:id="vi-navigation-drawer-wishlist-live"
                                     aria-labelledby="vi-navigation-drawer-wishlist-live"
@@ -36,9 +37,9 @@
                             {% endif %}
 
                             <twig:ViewsTheme:Account:Action
-                                class="p-0 vi-account__dropdown"
-                                placement="bottom-start"
-                                toggle:class="header-action"
+                                class="mt-2 p-0 vi-account__dropdown"
+                                placement="bottom-center"
+                                label:class="fs-6"
                             />
                         </div>
                     </twig:block>

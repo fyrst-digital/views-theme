@@ -26,14 +26,17 @@
         {% block wishlist %}
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
+                    :label="false"
                     class="header-action position-relative d-none d-lg-inline-flex" />
             {% endif %}
         {% endblock %}
 
         {% block account %}
             <twig:ViewsTheme:Account:Action
+                :label="false"
                 class="mt-2 p-0 vi-account__dropdown"
-                toggle:class="header-action d-none d-lg-inline-flex" />
+                host:class="vi-dropdown-host--lg-up"
+                toggle:class="header-action" />
         {% endblock %}
 
         {% block cart %}

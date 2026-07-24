@@ -67,6 +67,7 @@
 
     {% block username %}
         <twig:ViewsTheme:Form:Input
+            class="{{ cx.username.apply() }}"
             {{ ...attributes.nested('username').defaults({
                 type: 'email',
                 id: loginId ~ '-mail',
@@ -76,13 +77,13 @@
                 autocomplete: 'username webauthn',
                 error: loginError,
                 validationRules: 'required,email',
-                class: 'vi-account-login__email login-form-email flex-fill',
             }).all() }}
         />
     {% endblock %}
 
     {% block password %}
         <twig:ViewsTheme:Form:Input
+            class="{{ cx.password.apply() }}"
             {{ ...attributes.nested('password').defaults({
                 type: 'password',
                 id: loginId ~ '-password',
@@ -92,11 +93,9 @@
                 autocomplete: 'current-password',
                 error: loginError,
                 validationRules: 'required',
-                class: 'vi-account-login__password login-form-password flex-fill',
             }).all() }}
         />
     {% endblock %}
-
     {% block actions %}
         <twig:ViewsTheme:Account:Login:Actions />
     {% endblock %}

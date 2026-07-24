@@ -21,6 +21,8 @@ Prefer one system per property on a node (do not mix e.g. `gap-2` and `tw:gap-4`
 
 Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
 
+**Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ cx.…apply() }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
+
 ### When to use a `.cva.twig` file
 
 Prefer a sibling file when the map has many slots, variants, or hurts template readability. Keep a 2–3 slot static map inline if clearer.

@@ -50,6 +50,7 @@
                         {% set isActive = activeRoute is not empty and activeRoute is same as(action.route) %}
                         {% block action %}
                             <twig:ViewsTheme:Button
+                                class="{{ cx.action.apply() }}"
                                 {{ ...attributes.nested('action').defaults({
                                     type: 'link',
                                     href: path(action.route),
@@ -60,7 +61,6 @@
                                     color: 'none',
                                     justify: 'start',
                                     'aria-current': isActive ? 'page' : false,
-                                    class: cx.action.apply(),
                                 }).all() }}
                             />
                         {% endblock %}

@@ -18,11 +18,11 @@
 >
     {% if hasChildren %}
         <twig:ViewsTheme:Navigation:Drawer:Drill
+            class="{{ cx.link.apply() }}{{ isActive ? ' active' : '' }}"
             {{ ...attributes.nested('link').defaults({
                 href: category.type != 'folder' ? category_url(category) : drillUrl,
                 url: drillUrl,
                 title: name,
-                class: cx.link.apply() ~ (isActive ? ' active' : ''),
             }).all() }}
         >
             <span class="{{ cx.label.apply() }}">{{ name }}</span>

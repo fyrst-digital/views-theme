@@ -25,15 +25,18 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 - Drawer HTML is fetched once from a theme route and cached client-side
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
-- Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action`; close stays on the right
-- Below `lg`, header wishlist/account are hidden (`d-none d-lg-inline-flex`); use the drawer actions instead
+- Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
+- Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
+- Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
 - Close via `Drawer:Close` / `Drawer:Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
 
 ### Header actions in the drawer title
 
-`Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
+`Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
+
+`Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
 
 Wishlist uses drawer-scoped ids so it can coexist with the header instance:
 

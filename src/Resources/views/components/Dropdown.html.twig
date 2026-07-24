@@ -8,30 +8,36 @@
 {% set anchorName = '--' ~ dropdownId %}
 {% set cx = vi_cva_from_file(cva) %}
 
-<button
-    {{ attributes.nested('toggle').defaults({
-        type: 'button',
-        popovertarget: dropdownId,
-        'aria-expanded': 'false',
-        'aria-haspopup': 'true',
-        'aria-controls': dropdownId,
-    }) }}
-    class="{{ cx.toggle.apply() }}"
-    style="anchor-name: {{ anchorName }}"
->
-    {% block toggle %}{% endblock %}
-</button>
-
 <div
-    {{ attributes.defaults({
-        id: dropdownId,
-        popover: 'auto',
-        tabindex: '-1',
-        'data-placement': placement,
+    {{ attributes.nested('host').defaults({
         'data-component': 'ViewsTheme:Dropdown',
     }) }}
-    class="{{ cx.root.apply() }}"
-    style="position-anchor: {{ anchorName }}"
+    class="{{ cx.host.apply() }}"
 >
-    {% block content %}{% endblock %}
+    <button
+        {{ attributes.nested('toggle').defaults({
+            type: 'button',
+            popovertarget: dropdownId,
+            'aria-expanded': 'false',
+            'aria-haspopup': 'true',
+            'aria-controls': dropdownId,
+        }) }}
+        class="{{ cx.toggle.apply() }}"
+        style="anchor-name: {{ anchorName }}"
+    >
+        {% block toggle %}{% endblock %}
+    </button>
+
+    <div
+        {{ attributes.defaults({
+            id: dropdownId,
+            popover: 'auto',
+            tabindex: '-1',
+            'data-placement': placement,
+        }) }}
+        class="{{ cx.root.apply() }}"
+        style="position-anchor: {{ anchorName }}"
+    >
+        {% block content %}{% endblock %}
+    </div>
 </div>
