@@ -11,10 +11,10 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
-| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` block; mounts `Drawer:Panel` with `title` + Menu as Panel default content |
+| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; Menu is Panel body |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
-| `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; composes `Header` via `title` prop; JS notifies Drawer on close `transitionend` |
-| `Drawer:Header` | Presentational chrome: title div + `Drawer:Close` via `title` prop (no JS) |
+| `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
+| `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
 | `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level replace, focus |
 | `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source }` |
@@ -25,9 +25,24 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 - Drawer HTML is fetched once from a theme route and cached client-side
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
+- Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action`; close stays on the right
+- Below `lg`, header wishlist/account are hidden (`d-none d-lg-inline-flex`); use the drawer actions instead
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
 - Close via `Drawer:Close` / `Drawer:Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
+
+### Header actions in the drawer title
+
+`Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
+
+Wishlist uses drawer-scoped ids so it can coexist with the header instance:
+
+| Element | Header (default) | Drawer |
+|---------|------------------|--------|
+| Badge | `wishlist-basket` | `vi-navigation-drawer-wishlist-basket` |
+| Live region | `wishlist-basket-live-area` | `vi-navigation-drawer-wishlist-live` |
+
+Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile entry).
 
 ## How it works
 

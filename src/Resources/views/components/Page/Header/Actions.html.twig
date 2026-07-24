@@ -15,7 +15,7 @@
 
         {% block menu %}
             <twig:ViewsTheme:Navigation:Drawer:Action
-                class="header-action" />
+                class="header-action d-lg-none" />
         {% endblock %}
 
         {% block search %}
@@ -26,19 +26,18 @@
         {% block wishlist %}
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
-                    class="header-action position-relative" />
+                    class="header-action position-relative d-none d-lg-inline-flex" />
             {% endif %}
-        {% endblock %}  
+        {% endblock %}
 
         {% block account %}
-            <twig:ViewsTheme:Account:Action 
+            <twig:ViewsTheme:Account:Action
                 class="mt-2 p-0 vi-account__dropdown"
-                toggle:class="header-action" />
+                toggle:class="header-action d-none d-lg-inline-flex" />
         {% endblock %}
 
         {% block cart %}
-            <twig:ViewsTheme:Page:Header:Action:Cart
-                class="{{ actionClass }}" />
+            <twig:ViewsTheme:Page:Header:Action:Cart />
         {% endblock %}
 
     {% endblock %}

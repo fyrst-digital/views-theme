@@ -9,20 +9,22 @@
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    {% block title %}
-        <div
-            {{ attributes.nested('title') }}
-            class="{{ cx.title.apply() }}"
-        >
-            {% if title %}
-                {{ title }}
-            {% endif %}
-        </div>
-    {% endblock %}
+    {% block content %}
+        {% block title %}
+            <div
+                {{ attributes.nested('title') }}
+                class="{{ cx.title.apply() }}"
+            >
+                {% if title %}
+                    {{ title }}
+                {% endif %}
+            </div>
+        {% endblock %}
 
-    {% block close %}
-        <twig:ViewsTheme:Drawer:Close
-            {{ ...attributes.nested('close').defaults({}).all() }}
-        />
+        {% block close %}
+            <twig:ViewsTheme:Drawer:Close
+                {{ ...attributes.nested('close').defaults({}).all() }}
+            />
+        {% endblock %}
     {% endblock %}
 </div>

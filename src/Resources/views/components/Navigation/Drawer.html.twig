@@ -2,6 +2,7 @@
     navigation,
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
     label = 'general.menuLink'|trans|striptags,
+    wishlist = config('core.cart.wishlistEnabled'),
     cva = {},
 %}
 
@@ -12,7 +13,6 @@
         id: 'vi-navigation-drawer',
         side: 'start',
         label: label,
-        title: label,
         class: cx.root.apply(),
     }).all() }}
 >
@@ -20,9 +20,30 @@
         <twig:ViewsTheme:Drawer:Panel
             {{ ...attributes.nested('panel').defaults({
                 side: 'start',
-                title: label,
             }).all() }}
         >
+            <twig:block name="header">
+                <twig:ViewsTheme:Drawer:Header>
+                    <twig:block name="title">
+                        <div class="vi-drawer__title d-flex align-items-center gap-1 mb-0">
+                            {% if wishlist %}
+                                <twig:ViewsTheme:Wishlist:Action
+                                    class="header-action position-relative"
+                                    badge:id="vi-navigation-drawer-wishlist-basket"
+                                    live:id="vi-navigation-drawer-wishlist-live"
+                                    aria-labelledby="vi-navigation-drawer-wishlist-live"
+                                />
+                            {% endif %}
+
+                            <twig:ViewsTheme:Account:Action
+                                class="p-0 vi-account__dropdown"
+                                placement="bottom-start"
+                                toggle:class="header-action"
+                            />
+                        </div>
+                    </twig:block>
+                </twig:ViewsTheme:Drawer:Header>
+            </twig:block>
             <twig:ViewsTheme:Navigation:Drawer:Menu
                 :navigation="navigation"
                 :menuUrl="menuUrl"

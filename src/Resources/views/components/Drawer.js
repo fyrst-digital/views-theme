@@ -30,7 +30,6 @@ export default class Drawer extends ShopwareComponent {
 
     open() {
         if (this._open && !this._closing) {
-            this._focusFirst()
             return
         }
 
@@ -51,7 +50,6 @@ export default class Drawer extends ShopwareComponent {
             this.el.setAttribute(this.options.openAttr, 'true')
         })
 
-        this._focusFirst()
         window.Shopware.emitQueued(this.options.openEvent, this.el)
     }
 
@@ -159,14 +157,6 @@ export default class Drawer extends ShopwareComponent {
             event.preventDefault()
             window.focusHandler.setFocus(first, { focusVisible: true })
         }
-    }
-
-    _focusFirst() {
-        requestAnimationFrame(() => {
-            const focusables = window.focusHandler.getFocusableElements(this.el)
-            const target = focusables[0] || this.el
-            window.focusHandler.setFocus(target, { focusVisible: true })
-        })
     }
 
     _setBodyLock(locked) {

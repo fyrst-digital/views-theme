@@ -33,6 +33,7 @@ Page:Header:Actions
 - **Slots:** `toggle` (button content), default `content` (panel body)
 - **JS (a11y only):** host is the panel; finds toggle via `[popovertarget]`; syncs `aria-expanded` only (no focus moves)
 - **Styling:** Bootstrap utilities first in `Dropdown.cva.twig`. Co-located `Dropdown.css`: popover UA reset + anchor placement only
+- **Composition:** `Account:Action` spreads into `Dropdown` via `{{ ...attributes.defaults({…}).all() }}` (placement, `toggle:*`, `class`). Callers override without parallel props on Account
 - **Header wire-up:** `toggle:class="header-action"` (icon chrome on the button, not the panel)
 - **Build:** from Shopware root — `make build-storefront`
 
@@ -55,14 +56,26 @@ Shims remain as thin wrappers with `@deprecated` comments where kept.
 
 ## Wire-up
 
-`Page:Header:Actions` renders:
+`Page:Header:Actions` (visible from `lg` up):
 
 ```twig
 <twig:ViewsTheme:Account:Action
     class="mt-2 p-0 vi-account__dropdown"
+    toggle:class="header-action d-none d-lg-inline-flex"
+/>
+```
+
+`Navigation:Drawer` title (mobile entry). `placement` / `toggle:*` forward to `Dropdown` via attributes defaults (`bottom-start` so the panel opens into the drawer):
+
+```twig
+<twig:ViewsTheme:Account:Action
+    class="p-0 vi-account__dropdown"
+    placement="bottom-start"
     toggle:class="header-action"
 />
 ```
+
+See [Navigation drawer](navigation-drawer.md) and [UX components — Attributes](../conventions/ux-components.md#attributes).
 
 ## Account:Login field forwarding
 
