@@ -11,14 +11,12 @@
     : path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.parentId }) %}
 {% set cx = vi_cva_from_file(cva) %}
 
-<a
-    {{ attributes.defaults({
+<twig:ViewsTheme:Navigation:Drawer:Drill
+    {{ ...attributes.defaults({
         href: href,
         title: 'general.back'|trans|striptags,
-        'data-action': 'drill',
-        'data-href': href,
-    }) }}
-    class="{{ cx.root.apply() }}"
+        class: cx.root.apply(),
+    }).all() }}
 >
     <span class="{{ cx.icon.apply() }}">
         {{ vi_icon('caret-left') }}
@@ -26,4 +24,4 @@
     <span class="{{ cx.label.apply() }}">
         {{ 'general.back'|trans|sw_sanitize }}
     </span>
-</a>
+</twig:ViewsTheme:Navigation:Drawer:Drill>

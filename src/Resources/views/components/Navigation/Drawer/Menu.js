@@ -1,44 +1,39 @@
 export default class NavigationDrawerMenu extends ShopwareComponent {
     static options = {
-        drillSelector: '[data-action="drill"]',
+        drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',
+        showActiveSelector: '[data-component="ViewsTheme:Navigation:Drawer:ShowActive"]',
+        drillSelector: '[data-component="ViewsTheme:Navigation:Drawer:Drill"]',
         loadingAttr: 'aria-busy',
     }
 
     init() {
         this._cache = {}
         this._loading = false
-        this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
+        this._onDrill = this._onDrill.bind(this)
+        window.Shopware.on(this.options.drillEvent, this._onDrill)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        window.Shopware.off(this.options.drillEvent, this._onDrill)
     }
 
-    _onClick(event) {
-        const link = event.target.closest(this.options.drillSelector)
-        if (!link || !this.el.contains(link)) {
+    _onDrill(payload = {}) {
+        const { url, source } = payload
+
+        if (!url || !source || !this.el.contains(source)) {
             return
         }
 
-        event.preventDefault()
-        event.stopPropagation()
-
-        if (this._loading || link.getAttribute(this.options.loadingAttr) === 'true') {
+        if (this._loading || source.getAttribute(this.options.loadingAttr) === 'true') {
             return
         }
 
-        const url = link.getAttribute('data-href') || link.getAttribute('href')
-        if (!url) {
-            return
-        }
-
-        this._loadLevel(url, link)
+        this._loadLevel(url, source)
     }
 
-    async _loadLevel(url, link) {
+    async _loadLevel(url, source) {
         this._loading = true
-        link.setAttribute(this.options.loadingAttr, 'true')
+        source.setAttribute(this.options.loadingAttr, 'true')
 
         try {
             let html = this._cache[url]
@@ -61,7 +56,7 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
             console.error('NavigationDrawerMenu: Failed to load menu level', error)
         } finally {
             this._loading = false
-            link.removeAttribute(this.options.loadingAttr)
+            source.removeAttribute(this.options.loadingAttr)
         }
     }
 
@@ -77,11 +72,10 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
             return
         }
 
-        // Keep this component root + instance; swap level contents only
         this.el.replaceChildren(...next.children)
 
         const focusTarget =
-            this.el.querySelector('[data-action="current"]') ||
+            this.el.querySelector(`${this.options.showActiveSelector} a`) ||
             this.el.querySelector(this.options.drillSelector) ||
             this.el.querySelector('a, button')
 

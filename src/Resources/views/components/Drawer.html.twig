@@ -2,6 +2,7 @@
     id = 'vi-drawer',
     side = 'start',
     label = null,
+    title = null,
     cva = {},
 %}
 
@@ -29,40 +30,11 @@
     {% endblock %}
 
     {% block panel %}
-        <div
-            {{ attributes.nested('panel').defaults({
-                'data-action': 'panel',
-            }) }}
-            class="{{ cx.panel.apply({ side: side }) }}"
-        >
-            {% block header %}
-                <div
-                    {{ attributes.nested('header') }}
-                    class="{{ cx.header.apply() }}"
-                >
-                    {% block title %}
-                        <div
-                            {{ attributes.nested('title') }}
-                            class="{{ cx.title.apply() }}"
-                        >
-                            {% block title_content %}{% endblock %}
-                        </div>
-                    {% endblock %}
-
-                    {% block close %}
-                        <twig:ViewsTheme:Drawer:Close />
-                    {% endblock %}
-                </div>
-            {% endblock %}
-
-            {% block body %}
-                <div
-                    {{ attributes.nested('body') }}
-                    class="{{ cx.body.apply() }}"
-                >
-                    {% block content %}{% endblock %}
-                </div>
-            {% endblock %}
-        </div>
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...attributes.nested('panel').defaults({
+                side: side,
+                title: title,
+            }).all() }}
+        />
     {% endblock %}
 </div>

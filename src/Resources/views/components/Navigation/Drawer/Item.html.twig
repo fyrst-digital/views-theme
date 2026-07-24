@@ -9,28 +9,38 @@
 {% set isActive = activeId and category.id == activeId %}
 {% set hasChildren = category.visibleChildCount > 0 %}
 {% set name = category.translated.name %}
+{% set drillUrl = path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.id }) %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <li
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    <a
-        {{ attributes.nested('link').defaults({
-            href: category.type != 'folder' ? category_url(category) : '#',
-            title: name,
-            'aria-current': isActive ? 'page' : null,
-            target: category_linknewtab(category) ? '_blank' : null,
-            'data-action': hasChildren ? 'drill' : null,
-            'data-href': hasChildren ? path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.id }) : null,
-        }) }}
-        class="{{ cx.link.apply() }}{{ isActive ? ' active' : '' }}"
-    >
-        <span class="{{ cx.label.apply() }}">{{ name }}</span>
-        {% if hasChildren %}
+    {% if hasChildren %}
+        <twig:ViewsTheme:Navigation:Drawer:Drill
+            {{ ...attributes.nested('link').defaults({
+                href: category.type != 'folder' ? category_url(category) : drillUrl,
+                url: drillUrl,
+                title: name,
+                class: cx.link.apply() ~ (isActive ? ' active' : ''),
+            }).all() }}
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
             <span class="{{ cx.icon.apply() }}">
                 {{ vi_icon('caret-right') }}
             </span>
-        {% endif %}
-    </a>
+        </twig:ViewsTheme:Navigation:Drawer:Drill>
+    {% else %}
+        <a
+            {{ attributes.nested('link').defaults({
+                href: category.type != 'folder' ? category_url(category) : '#',
+                title: name,
+                'aria-current': isActive ? 'page' : null,
+                target: category_linknewtab(category) ? '_blank' : null,
+            }) }}
+            class="{{ cx.link.apply() }}{{ isActive ? ' active' : '' }}"
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        </a>
+    {% endif %}
 </li>

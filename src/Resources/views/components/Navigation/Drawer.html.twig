@@ -12,17 +12,21 @@
         id: 'vi-navigation-drawer',
         side: 'start',
         label: label,
+        title: label,
         class: cx.root.apply(),
     }).all() }}
 >
-    <twig:block name="title_content">
-        {{ label }}
-    </twig:block>
-
-    <twig:block name="content">
-        <twig:ViewsTheme:Navigation:Drawer:Menu
-            :navigation="navigation"
-            :menuUrl="menuUrl"
-        />
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...attributes.nested('panel').defaults({
+                side: 'start',
+                title: label,
+            }).all() }}
+        >
+            <twig:ViewsTheme:Navigation:Drawer:Menu
+                :navigation="navigation"
+                :menuUrl="menuUrl"
+            />
+        </twig:ViewsTheme:Drawer:Panel>
     </twig:block>
 </twig:ViewsTheme:Drawer>

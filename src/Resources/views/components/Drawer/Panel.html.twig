@@ -1,0 +1,34 @@
+{% props
+    side = 'start',
+    title = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Drawer:Panel',
+        'data-component-options': {
+            side: side,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply({ side: side }) }}"
+>
+    {% block header %}
+        <twig:ViewsTheme:Drawer:Header
+            {{ ...attributes.nested('header').defaults({
+                title: title,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ attributes.nested('body') }}
+            class="{{ cx.body.apply() }}"
+        >
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

@@ -7,7 +7,6 @@ export default class Drawer extends ShopwareComponent {
         closeEvent: 'ViewsTheme:Drawer:Close',
         openAttr: 'data-open',
         duration: 250,
-        panelSelector: '[data-action="panel"]',
     }
 
     init() {
@@ -15,7 +14,6 @@ export default class Drawer extends ShopwareComponent {
         this._closing = false
         this._closeTimer = null
         this._onKeydown = this._onKeydown.bind(this)
-        this._onTransitionEnd = this._onTransitionEnd.bind(this)
 
         this.el.inert = true
         this.el.setAttribute(this.options.openAttr, 'false')
@@ -46,9 +44,7 @@ export default class Drawer extends ShopwareComponent {
         this.el.setAttribute('aria-hidden', 'false')
         this._setBodyLock(true)
 
-        // Ensure closed transform paints before opening
         this.el.setAttribute(this.options.openAttr, 'false')
-        // force reflow
         void this.el.offsetWidth
 
         requestAnimationFrame(() => {
@@ -77,30 +73,21 @@ export default class Drawer extends ShopwareComponent {
             return
         }
 
-        const panel = this.el.querySelector(this.options.panelSelector)
-        if (panel) {
-            panel.addEventListener('transitionend', this._onTransitionEnd)
-        }
-
         this._closeTimer = window.setTimeout(() => {
             this._finishClose()
         }, this.options.duration + 50)
     }
 
-    isOpen() {
-        return this._open
-    }
-
-    _onTransitionEnd(event) {
-        if (event.target !== this.el.querySelector(this.options.panelSelector)) {
-            return
-        }
-
-        if (event.propertyName !== 'transform') {
+    onPanelTransitionEnd() {
+        if (!this._closing) {
             return
         }
 
         this._finishClose()
+    }
+
+    isOpen() {
+        return this._open
     }
 
     _finishClose() {
@@ -123,11 +110,6 @@ export default class Drawer extends ShopwareComponent {
         if (this._closeTimer !== null) {
             window.clearTimeout(this._closeTimer)
             this._closeTimer = null
-        }
-
-        const panel = this.el.querySelector(this.options.panelSelector)
-        if (panel) {
-            panel.removeEventListener('transitionend', this._onTransitionEnd)
         }
     }
 

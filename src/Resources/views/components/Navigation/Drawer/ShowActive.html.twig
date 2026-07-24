@@ -7,7 +7,9 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <li
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Navigation:Drawer:ShowActive',
+    }) }}
     class="{{ cx.root.apply() }}"
 >
     <a
@@ -15,7 +17,6 @@
             href: category_url(category),
             title: name,
             target: category_linknewtab(category) ? '_blank' : null,
-            'data-action': 'current',
         }) }}
         class="{{ cx.link.apply() }}"
     >

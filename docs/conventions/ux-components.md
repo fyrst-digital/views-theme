@@ -121,10 +121,50 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
     <twig:block name="footer">…</twig:block>
 </twig:ViewsTheme:Card>
 
-{# ❌ {% block %} inside <twig:…> #}
+{# ❌ {% block %} inside <twig:…> — double-defines the block / Twig error #}
+<twig:ViewsTheme:Child>
+    <twig:block name="title">
+        {% block title %}{% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Child>
 ```
 
 `class="{{ … }}"`, `:prop="expr"`, and `{% for %}` inside HTML tags are fine.
+
+### Nested slots: props and single content owner
+
+Do **not** multi-hop blocks through nested `<twig:…>` hosts (no `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward).
+
+| Need | Pattern |
+|------|---------|
+| Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `attributes.nested(…).defaults({…})` |
+| Markup body | **One** component owns `{% block content %}` (the shell that wraps that DOM) |
+| Rich chrome override | Caller overrides a **whole** `{% block %}` on that shell (e.g. `header`) |
+
+```twig
+{# Panel owns body content; title is a prop #}
+{% props title = null %}
+…
+<twig:ViewsTheme:Drawer:Header
+    {{ ...attributes.nested('header').defaults({
+        title: title,
+    }).all() }}
+/>
+<div class="…">
+    {% block content %}{% endblock %}
+</div>
+
+{# Caller overrides panel and puts body on Panel — e.g. Navigation:Drawer #}
+<twig:ViewsTheme:Drawer title="{{ label }}" …>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel title="{{ label }}" …>
+            <twig:ViewsTheme:Some:Body />
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>
+```
+
+Do **not** nest `{% block foo %}` inside `<twig:block name="foo">` — that redefines the same block and fails at compile time.
 
 ## JavaScript
 
@@ -153,7 +193,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
-| Drawer (+ Backdrop/Close JS), Navigation:Drawer (compose), Navigation:Drawer:Action / :Menu JS | UX + `vi_cva` |
+| Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |
 | LineItem:*, Cart:*, Wishlist:* | UX / shells |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
