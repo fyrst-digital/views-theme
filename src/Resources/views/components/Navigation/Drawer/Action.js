@@ -1,15 +1,13 @@
 export default class NavigationDrawerAction extends ShopwareComponent {
     static options = {
         drawerUrl: null,
-        shellSelector: '#vi-navigation-drawer-shell',
         drawerComponentName: 'ViewsTheme:Drawer',
-        drawerSelector: '[data-component="ViewsTheme:Drawer"]',
+        drawerSelector: '#vi-navigation-drawer',
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
     }
 
     init() {
-        this._shellEl = null
         this._drawerEl = null
         this._drawerHtml = null
         this._loading = false
@@ -75,7 +73,7 @@ export default class NavigationDrawerAction extends ShopwareComponent {
                 this._drawerHtml = await response.text()
             }
 
-            this._mountShell(this._drawerHtml)
+            this._mountDrawer(this._drawerHtml)
             await this._waitForDrawerInstance()
 
             const drawer = this._getDrawerInstance()
@@ -96,22 +94,20 @@ export default class NavigationDrawerAction extends ShopwareComponent {
         return template.content.firstElementChild
     }
 
-    _mountShell(html) {
-        const existing = document.querySelector(this.options.shellSelector)
+    _mountDrawer(html) {
+        const existing = document.querySelector(this.options.drawerSelector)
         if (existing) {
-            this._shellEl = existing
-            this._drawerEl = existing.querySelector(this.options.drawerSelector)
+            this._drawerEl = existing
             return
         }
 
-        const shellEl = this._parseRoot(html)
-        if (!shellEl) {
+        const drawerEl = this._parseRoot(html)
+        if (!drawerEl) {
             throw new Error('NavigationDrawerAction: Drawer markup is empty')
         }
 
-        document.body.appendChild(shellEl)
-        this._shellEl = shellEl
-        this._drawerEl = shellEl.querySelector(this.options.drawerSelector)
+        document.body.appendChild(drawerEl)
+        this._drawerEl = drawerEl
     }
 
     async _waitForDrawerInstance(retries = 20) {
@@ -127,13 +123,7 @@ export default class NavigationDrawerAction extends ShopwareComponent {
     }
 
     _getDrawerInstance() {
-        if (!this._shellEl || !document.body.contains(this._shellEl)) {
-            this._shellEl = document.querySelector(this.options.shellSelector)
-        }
-
-        if (this._shellEl) {
-            this._drawerEl = this._shellEl.querySelector(this.options.drawerSelector)
-        } else if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
+        if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
             this._drawerEl = document.querySelector(this.options.drawerSelector)
         }
 
@@ -148,7 +138,7 @@ export default class NavigationDrawerAction extends ShopwareComponent {
     }
 
     _onDrawerOpen(drawerEl) {
-        if (drawerEl && this._shellEl && !this._shellEl.contains(drawerEl) && this._shellEl !== drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
 
@@ -156,7 +146,7 @@ export default class NavigationDrawerAction extends ShopwareComponent {
     }
 
     _onDrawerClose(drawerEl) {
-        if (drawerEl && this._shellEl && !this._shellEl.contains(drawerEl) && this._shellEl !== drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
 

@@ -114,8 +114,7 @@ Lazy-loaded side drawer from the header menu action. **Menu** owns drill-down; t
 | Hook | Attribute |
 |------|-----------|
 | Action | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
-| Shell | `#vi-navigation-drawer-shell` |
-| Drawer | `data-component="ViewsTheme:Drawer"` |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |

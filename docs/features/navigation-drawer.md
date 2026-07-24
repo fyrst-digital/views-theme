@@ -10,9 +10,9 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Navigation:Drawer:Action` | Lazy fetch/mount shell; toggle nested `Drawer` open/close |
-| `Navigation:Drawer` | Twig composition only (Drawer + Menu) — **no** menu JS |
-| `Drawer` | Panel chrome, open/close a11y, motion |
+| `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
+| `Navigation:Drawer` | Thin composition: `Drawer` as root + Menu (Account:Action → Dropdown pattern) — **no** JS |
+| `Drawer` | Panel chrome, open/close a11y, motion (mount root) |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level replace, focus |
 
 ## Features
@@ -31,8 +31,8 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 
 1. `ViewsTheme:Navigation:Drawer:Action` reads `drawerUrl` from `data-component-options`
 2. First click fetches `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
-3. Response HTML is appended to `document.body` (shell `#vi-navigation-drawer-shell`)
-4. Nested `ViewsTheme:Drawer` + `Navigation:Drawer:Menu` initialize; Action opens `Drawer`
+3. Response root is `ViewsTheme:Drawer` (`#vi-navigation-drawer`); appended to `document.body`
+4. Drawer + nested `Navigation:Drawer:Menu` initialize; Action opens Drawer
 5. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
 6. Subsequent clicks toggle via `getComponentInstanceByElement` + `open()` / `close()`
 
@@ -57,8 +57,7 @@ Both load `MenuOffcanvasPageletLoader`, dispatch `MenuOffcanvasPageletLoadedHook
 | Component | Attribute |
 |-----------|-----------|
 | Action button | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
-| Shell mount | `#vi-navigation-drawer-shell` |
-| Drawer root | `data-component="ViewsTheme:Drawer"` |
+| Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
@@ -89,7 +88,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Controller | `src/Controller/NavigationDrawerController.php` |
 | Drawer primitive | `src/Resources/views/components/Drawer.*` |
 | Backdrop / Close | `src/Resources/views/components/Drawer/Backdrop.*`, `Close.*` |
-| Navigation shell | `src/Resources/views/components/Navigation/Drawer.html.twig` |
+| Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
 | Menu (+ drill JS) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
 | Items | `src/Resources/views/components/Navigation/Drawer/{Item,Back,ShowAll,Active,ShowActive}.*` |

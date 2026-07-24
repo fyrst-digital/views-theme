@@ -7,26 +7,22 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
-<div
-    {{ attributes.defaults({
-        id: 'vi-navigation-drawer-shell',
-    }) }}
-    class="{{ cx.root.apply() }}"
+<twig:ViewsTheme:Drawer
+    {{ ...attributes.defaults({
+        id: 'vi-navigation-drawer',
+        side: 'start',
+        label: label,
+        class: cx.root.apply(),
+    }).all() }}
 >
-    <twig:ViewsTheme:Drawer
-        id="vi-navigation-drawer"
-        side="start"
-        :label="label"
-    >
-        <twig:block name="title_content">
-            {{ label }}
-        </twig:block>
+    <twig:block name="title_content">
+        {{ label }}
+    </twig:block>
 
-        <twig:block name="content">
-            <twig:ViewsTheme:Navigation:Drawer:Menu
-                :navigation="navigation"
-                :menuUrl="menuUrl"
-            />
-        </twig:block>
-    </twig:ViewsTheme:Drawer>
-</div>
+    <twig:block name="content">
+        <twig:ViewsTheme:Navigation:Drawer:Menu
+            :navigation="navigation"
+            :menuUrl="menuUrl"
+        />
+    </twig:block>
+</twig:ViewsTheme:Drawer>
