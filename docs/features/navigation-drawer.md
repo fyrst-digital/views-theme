@@ -68,12 +68,12 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 
 ### Level motion
 
+- Menu fills the panel body (`col` + flex) and scrolls (`overflow-y: auto`); level motion is transform-only
 - Menu body is a single `[data-level]` surface; drill keeps the outgoing level and appends the incoming one
 - Root sets `data-animating` + `data-direction` (`forward` \| `back`); CSS in `Menu.css` slides levels
 - Forward: outgoing exits start-ward (`-100%`), incoming enters from end; back is the reverse
-- Menu height morphs outgoing → incoming via WAAPI (same duration) so taller levels ease open instead of clipping then popping
 - Levels use an opaque body background and incoming stacks above outgoing so labels never show through
-- Token: `--vi-navigation-drawer-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for WAAPI + transform fallback
+- Token: `--vi-navigation-drawer-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for the transform fallback
 - Outgoing is `inert` during the slide
 - `prefers-reduced-motion: reduce` skips the slide and swaps the level immediately
 

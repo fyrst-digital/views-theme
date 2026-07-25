@@ -89,8 +89,6 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
     }
 
     async _slide(outgoing, incoming, direction) {
-        const fromH = outgoing.getBoundingClientRect().height
-        this.el.style.height = `${fromH}px`
         this.el.setAttribute('data-animating', 'true')
         this.el.setAttribute('data-direction', direction)
 
@@ -99,17 +97,7 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
         incoming.inert = true
         this.el.append(incoming)
 
-        const toH = incoming.getBoundingClientRect().height
         void this.el.offsetWidth
-
-        const heightAnim = this.el.animate(
-            [{ height: `${fromH}px` }, { height: `${toH}px` }],
-            {
-                duration: this._duration(),
-                easing: 'ease',
-                fill: 'forwards',
-            },
-        )
 
         await new Promise((resolve) => {
             requestAnimationFrame(() => {
@@ -119,15 +107,13 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
             })
         })
 
-        await Promise.all([this._waitTransform(incoming), heightAnim.finished])
+        await this._waitTransform(incoming)
 
-        heightAnim.cancel()
         outgoing.remove()
         incoming.removeAttribute('data-state')
         incoming.inert = false
         this.el.removeAttribute('data-animating')
         this.el.removeAttribute('data-direction')
-        this.el.style.height = ''
     }
 
     _waitTransform(el) {

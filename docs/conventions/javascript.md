@@ -131,7 +131,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)`
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Backdrop/Close `callMethod` `Drawer.close`
-- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` CSS slide + WAAPI height morph; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
+- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` CSS transform slide (no height JS); duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).
 
