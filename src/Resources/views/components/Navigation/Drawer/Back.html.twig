@@ -10,19 +10,22 @@
     ? menuUrl
     : path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.parentId }) %}
 {% set cx = vi_cva_from_file(cva) %}
+{% set rootClass = cx.root.apply() %}
+{% set iconClass = cx.icon.apply() %}
+{% set labelClass = cx.label.apply() %}
 
 <twig:ViewsTheme:Navigation:Drawer:Drill
-    class="{{ cx.root.apply() }}"
+    class="{{ rootClass }}"
     {{ ...attributes.defaults({
         href: href,
         title: 'general.back'|trans|striptags,
         direction: 'back',
     }).all() }}
 >
-    <span class="{{ cx.icon.apply() }}">
-        {{ vi_icon('caret-left') }}
-    </span>
-    <span class="{{ cx.label.apply() }}">
+    {{ vi_icon('caret-left', {
+        class: iconClass
+    }) }}
+    <span class="{{ labelClass }}">
         {{ 'general.back'|trans|sw_sanitize }}
     </span>
 </twig:ViewsTheme:Navigation:Drawer:Drill>

@@ -6,18 +6,13 @@
 {% set name = category.translated.name %}
 {% set cx = vi_cva_from_file(cva) %}
 
-<li
-    {{ attributes }}
+<a
+    {{ attributes.defaults({
+        href: category_url(category),
+        title: name,
+        target: category_linknewtab(category) ? '_blank' : null,
+    }) }}
     class="{{ cx.root.apply() }}"
 >
-    <a
-        {{ attributes.nested('link').defaults({
-            href: category_url(category),
-            title: name,
-            target: category_linknewtab(category) ? '_blank' : null,
-        }) }}
-        class="{{ cx.link.apply() }}"
-    >
-        {{ 'general.showCategory'|trans({'%category%': name})|sw_sanitize }}
-    </a>
-</li>
+    {{ 'general.showCategory'|trans({'%category%': name})|sw_sanitize }}
+</a>

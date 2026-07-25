@@ -16,43 +16,56 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
-    <div
-        {{ attributes.nested('level').defaults({
-            'data-level': '',
-        }) }}
-        class="{{ cx.level.apply() }}"
-    >
-        {% if not isRoot and active %}
-            <twig:ViewsTheme:Navigation:Drawer:ShowAll :menuUrl="menuUrl" />
-            <twig:ViewsTheme:Navigation:Drawer:Active :category="active" />
-            <twig:ViewsTheme:Navigation:Drawer:Back
-                :category="active"
-                :menuUrl="menuUrl"
-            />
-        {% else %}
-            <div {{ attributes.nested('headline') }} class="{{ cx.headline.apply() }}">
-                {{ 'general.categories'|trans|sw_sanitize }}
-            </div>
-        {% endif %}
+    {% block content %}        
+        <div
+            {{ attributes.nested('level').defaults({
+                'data-level': '',
+            }) }}
+            class="{{ cx.level.apply() }}"
+        >
 
-        <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
-            {% if not isRoot and active and active.type != 'folder' %}
-                <twig:ViewsTheme:Navigation:Drawer:ShowActive :category="active" />
-            {% endif %}
-
-            {% if children %}
-                {% for item in children.tree %}
-                    {% set hasChildren = item.category.visibleChildCount > 0 %}
-
-                    {% if item.category.type != 'folder' or hasChildren %}
-                        <twig:ViewsTheme:Navigation:Drawer:Item
-                            :item="item"
-                            :activeId="activeId"
+            {% block header %}
+                {% if not isRoot and active %}
+                    <div
+                        {{ attributes.nested('header') }}
+                        class="{{ cx.header.apply() }}"
+                    >
+                        <twig:ViewsTheme:Navigation:Drawer:Back
+                            class="btn btn-sm"
+                            icon:class="icon-size-2"
+                            :category="active"
                             :menuUrl="menuUrl"
                         />
+                        <twig:ViewsTheme:Navigation:Drawer:ShowAll 
+                            class="btn btn-sm"
+                            icon:class="icon-size-2"
+                            :menuUrl="menuUrl" />
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block list %}
+                <ul
+                    {{ attributes.nested('list') }} 
+                    class="{{ cx.list.apply() }}">
+                    {% if children %}
+                        {% for item in children.tree %}
+                            {% block item %}
+                                {% set hasChildren = item.category.visibleChildCount > 0 %}
+
+                                {% if item.category.type != 'folder' or hasChildren %}
+                                    <twig:ViewsTheme:Navigation:Drawer:Item
+                                        :item="item"
+                                        :activeId="activeId"
+                                        :menuUrl="menuUrl"
+                                        icon:class="meddl"
+                                    />
+                                {% endif %}
+                            {% endblock %}
+                        {% endfor %}
                     {% endif %}
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
+                </ul>
+            {% endblock %}
+        </div>
+    {% endblock %}
 </div>

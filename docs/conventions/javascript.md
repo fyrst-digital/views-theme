@@ -128,7 +128,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
-- Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)`
+- Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Backdrop/Close `callMethod` `Drawer.close`
 - Menu: one `_busy` flight (fetch + apply); dual `[data-level]` CSS transform slide (no height JS); duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately

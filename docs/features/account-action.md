@@ -36,7 +36,7 @@ Page:Header:Actions
 - **Responsive hide:** `host:class="vi-dropdown-host--lg-up"` hides host + force-dismisses open panel below `lg` (no anchor jump)
 - **Composition:** `class` → panel, `toggle:class` → button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults)
 - **Visible label:** prop `label` defaults to `account.myAccount`; `:label="false"` hides it (icon-only). CVA slot `label` / `label:class`
-- **Header wire-up:** `host:class="vi-dropdown-host--lg-up"`, `toggle:class="header-action"`, `:label="false"`
+- **Header wire-up:** `host:class="vi-dropdown-host--lg-up"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:label="false"`
 - **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
@@ -65,7 +65,7 @@ Shims remain as thin wrappers with `@deprecated` comments where kept.
     :label="false"
     class="mt-2 p-0 vi-account__dropdown"
     host:class="vi-dropdown-host--lg-up"
-    toggle:class="header-action"
+    toggle:class="header-action icon-size-3 icon-size-lg-4"
 />
 ```
 

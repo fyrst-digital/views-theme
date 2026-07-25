@@ -4,19 +4,21 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set rootClass = cx.root.apply() %}
+{% set iconClass = cx.icon.apply() %}
 
 <twig:ViewsTheme:Navigation:Drawer:Drill
-    class="{{ cx.root.apply() }}"
+    class="{{ rootClass }}"
     {{ ...attributes.defaults({
         href: menuUrl,
         title: 'general.mainMenu'|trans|striptags,
         direction: 'back',
     }).all() }}
 >
-    <span class="{{ cx.icon.apply() }}">
-        {{ vi_icon('list') }}
-    </span>
     <span class="{{ cx.label.apply() }}">
         {{ 'general.mainMenu'|trans|sw_sanitize }}
     </span>
+    {{ vi_icon('list', {
+        class: iconClass
+    }) }}
 </twig:ViewsTheme:Navigation:Drawer:Drill>

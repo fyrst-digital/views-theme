@@ -17,6 +17,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
 | `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide |
+| `Navigation:Drawer:Item` | Category row: label link → category; caret `Drill` → submenu (caret only if children) |
 | `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source, direction }` |
 
 ## Features
@@ -29,6 +30,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
 - Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
+- Item label opens the category; caret drills deeper; no caret when the category has no children
 - Close via `Drawer:Close` / `Drawer:Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
 
@@ -58,9 +60,15 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 5. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
 6. Subsequent clicks toggle via `getComponentInstanceByElement` + `open()` / `close()`
 
+### Menu item interaction
+
+- **Label** (`Item` link): navigates to the category page (`category_url`). Folders use `#` (no listing).
+- **Caret** (`Item` → `Drill`, only when `visibleChildCount > 0`): drills into the submenu; omitted for leaf categories.
+- **Back** / **ShowAll**: full-row `Drill` with `direction: back`.
+
 ### Drill-down flow
 
-1. `Navigation:Drawer:Drill` (Item with children, Back, ShowAll) handles click
+1. `Navigation:Drawer:Drill` (Item caret, Back, ShowAll) handles click
 2. Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` with `{ url, source, direction }` (`forward` default; Back/ShowAll pass `back`)
 3. Menu listens, ignores events whose `source` is outside itself; single `_busy` flight covers fetch + slide
 4. Fetches/caches HTML, parses with `<template>`, takes `:scope > [data-level]`

@@ -15,6 +15,10 @@
     --tw-color-brand-dark: var(--sw-color-brand-dark);
   }
 }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
 .btn-primary {
   --btn-color: var(--body-color);
 }
@@ -39,14 +43,10 @@
   --logo-width: 80px;
 }
 .header-action {
-  --icon-size: 20px;
   --btn-border-radius: var(--border-radius-pill);
   --btn-hover-bg: var(--sw-color-brand-light);
   --btn-active-bg: var(--btn-hover-bg);
   --btn-active-border-color: transparent;
-  @media (width >= 1024px) {
-    --icon-size: 24px;
-  }
   .badge {
     --badge-position: absolute;
     --badge-padding-x: 4px;

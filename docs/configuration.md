@@ -43,8 +43,22 @@ Path: `src/Resources/theme.json`.
 | Secondary / tertiary | `#71816D` / `#A393BF` |
 | Light / dark | `#faf5ee` / `#2E282A` |
 | Base grid | 8px (SCSS spacing scale) |
+| Icon sizes | `$icon-sizes` in `scss/override.scss`: 1→12px … 6→40px |
 
 Authoritative field defaults: `theme.json` / theme fields table below.
+
+**Icon size utility** (Bootstrap `$utilities`, sets `--icon-size` for `.icon`):
+
+| Class | Size |
+|-------|------|
+| `.icon-size-1` | 12px |
+| `.icon-size-2` | 16px |
+| `.icon-size-3` | 20px |
+| `.icon-size-4` | 24px |
+| `.icon-size-5` | 32px |
+| `.icon-size-6` | 40px |
+
+Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
 ### Inheritance and assets
 
