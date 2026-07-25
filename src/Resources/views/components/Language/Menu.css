@@ -1,0 +1,7 @@
+.vi-language-menu__flag-icon {
+  display: block;
+  width: var(--language-flag-width, 14px);
+  height: auto;
+  border-radius: var(--language-flag-radius, 0.125rem);
+  object-fit: cover;
+}

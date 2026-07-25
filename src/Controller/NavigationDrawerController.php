@@ -8,6 +8,7 @@ use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
+use Shopware\Storefront\Pagelet\Header\HeaderPageletLoaderInterface;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoadedHook;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +22,7 @@ class NavigationDrawerController extends StorefrontController
     public function __construct(
         private readonly ComponentRendererInterface $components,
         private readonly MenuOffcanvasPageletLoaderInterface $offcanvasLoader,
+        private readonly HeaderPageletLoaderInterface $headerLoader,
     ) {}
 
     #[Route(
@@ -40,8 +42,12 @@ class NavigationDrawerController extends StorefrontController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
+        $header = $this->headerLoader->load($request, $context);
+
         return $this->renderComponent('ViewsTheme:Navigation:Drawer', [
             'navigation' => $navigation,
+            'languages' => $header->getLanguages(),
+            'currencies' => $header->getCurrencies(),
         ]);
     }
 

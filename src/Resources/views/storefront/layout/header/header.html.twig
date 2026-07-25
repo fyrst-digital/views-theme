@@ -1,5 +1,30 @@
 {% sw_extends '@Storefront/storefront/layout/header/header.html.twig' %}
 
+{% block layout_top_bar %}
+    {% set languageCount = header.languages.count is defined ? header.languages.count : header.languages|default([])|length %}
+    {% set currencyCount = header.currencies.count is defined ? header.currencies.count : header.currencies|default([])|length %}
+
+    {% if languageCount > 1 or currencyCount > 1 %}
+        <div class="top-bar d-none d-lg-block">
+            <nav class="top-bar-nav d-flex justify-content-end gap-3"
+                 aria-label="{{ 'header.topBarAriaLabel'|trans|striptags }}">
+                <twig:ViewsTheme:Language:Action
+                    :languages="header.languages"
+                    position="top-bar"
+                    placement="bottom-end"
+                    toggle:class="top-bar-nav-btn btn-sm"
+                />
+                <twig:ViewsTheme:Currency:Action
+                    :currencies="header.currencies"
+                    position="top-bar"
+                    placement="bottom-end"
+                    toggle:class="top-bar-nav-btn btn-sm"
+                />
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block layout_header_navigation %}
     <twig:ViewsTheme:Page:Header:Main />
 {% endblock %}

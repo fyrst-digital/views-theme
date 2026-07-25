@@ -31,6 +31,7 @@ Full index: [docs/README.md](docs/README.md).
 | **Hard rules** (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
 | **UX Twig components** | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
+| CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) |
 | JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
@@ -38,6 +39,8 @@ Full index: [docs/README.md](docs/README.md).
 | Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
 | Navigation drawer | [docs/features/navigation-drawer.md](docs/features/navigation-drawer.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |
+| Language switch | [docs/features/language-switch.md](docs/features/language-switch.md) |
+| Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |

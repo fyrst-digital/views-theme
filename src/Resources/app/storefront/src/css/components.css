@@ -23,6 +23,12 @@
   }
 }
 
+.btn-sm {
+  --btn-padding-x: var(--spacing-2);
+  --btn-padding-y: var(--spacing-1);
+  --btn-font-size: 14px;
+}
+
 .btn-lg {
   --btn-padding-x: var(--spacing-4);
   --btn-padding-y: var(--spacing-3);
@@ -54,6 +60,22 @@
 
 .vi-account__dropdown {
   --dropdown-max-width: min(100vw - 40px, 280px);
+}
+
+.vi-language-action,
+.vi-currency-action {
+  --dropdown-max-width: min(100vw - 40px, 16rem);
+}
+.vi-language-action__toggle,
+.vi-currency-action__toggle {
+    --btn-gap: var(--spacing-2);
+    --btn-font-weight: 500;
+}
+
+.vi-language-menu__option, 
+.vi-currency-menu__option {
+  --dropdown-link-active-bg: var(--light);
+  --dropdown-link-hover-bg: var(--light);
 }
 
 .vi-account-actions__action {

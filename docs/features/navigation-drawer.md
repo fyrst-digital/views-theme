@@ -11,7 +11,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
-| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; Menu is Panel body |
+| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
@@ -27,6 +27,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
+- Drawer footer hosts `Language:Action` + `Currency:Action` (`position="offcanvas"`, `placement="top-start"`); languages/currencies loaded via `HeaderPageletLoader` in the drawer controller
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
 - Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
@@ -144,4 +145,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 - Replacing the desktop core navbar
 - Migrating cart/cookie offcanvas onto `Drawer`
-- Reopening via `?offcanvas=menu` (LanguageSwitch still targets core)
+- Reopening the theme drawer after language/currency switch (`redirectParameters[offcanvas]=menu` still targets core offcanvas param)

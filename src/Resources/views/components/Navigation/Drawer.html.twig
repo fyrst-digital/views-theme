@@ -1,5 +1,7 @@
 {% props
     navigation,
+    languages = null,
+    currencies = null,
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
     label = 'general.menuLink'|trans|striptags,
     wishlist = config('core.cart.wishlistEnabled'),
@@ -50,7 +52,24 @@
                 :menuUrl="menuUrl"
             />
             <twig:block name="footer">
-                <div class="bg-light p-6 border-top">FOOTER</div>
+                {% set languageCount = languages and languages.count is defined ? languages.count : (languages|default([])|length) %}
+                {% set currencyCount = currencies and currencies.count is defined ? currencies.count : (currencies|default([])|length) %}
+                {% if languageCount > 1 or currencyCount > 1 %}
+                    <div class="d-flex flex-wrap align-items-center gap-2 bg-light p-4 border-top">
+                        <twig:ViewsTheme:Language:Action
+                            :languages="languages"
+                            position="offcanvas"
+                            placement="top-start"
+                            toggle:class="btn-sm"
+                        />
+                        <twig:ViewsTheme:Currency:Action
+                            :currencies="currencies"
+                            position="offcanvas"
+                            placement="top-start"
+                            toggle:class="btn-sm"
+                        />
+                    </div>
+                {% endif %}
             </twig:block>
         </twig:ViewsTheme:Drawer:Panel>
     </twig:block>

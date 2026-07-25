@@ -1,0 +1,91 @@
+{% props
+    languages = null,
+    activeLanguageId = null,
+    position = 'top-bar',
+    size = 'sm',
+    label = null,
+    showCode = false,
+    showFlag = true,
+    placement = 'bottom-end',
+    cva = {},
+%}
+
+{% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
+{% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(null)) %}
+{% set languageCount = resolvedLanguages.count is defined ? resolvedLanguages.count : resolvedLanguages|length %}
+
+{% if languageCount > 1 %}
+    {% set activeLanguage = null %}
+    {% for language in resolvedLanguages %}
+        {% if language.id is same as(resolvedActiveLanguageId) %}
+            {% set activeLanguage = language %}
+        {% endif %}
+    {% endfor %}
+    {% if activeLanguage is null and languageCount > 0 %}
+        {% set activeLanguage = resolvedLanguages|first %}
+    {% endif %}
+
+    {% set defaultLabel = context.languageInfo.name|default(activeLanguage.translated.name|default(activeLanguage.name|default(''))) %}
+    {% set resolvedLabel = label is same as(false) ? false : (label is not null ? label : defaultLabel) %}
+    {% set activeTranslationCode = activeLanguage and activeLanguage.translationCode ? activeLanguage.translationCode.code : (context.languageInfo.localeCode|default(null)) %}
+    {% set languageCode = activeTranslationCode ? activeTranslationCode|lower|split('-')|first|upper : '' %}
+    {% set flagCode = activeTranslationCode ?: null %}
+    {% set flagCodeFallback = flagCode ? flagCode|split('-')|first : null %}
+
+    {% set cx = vi_cva_from_file(cva) %}
+    {% set rootClass = cx.root.apply() %}
+    {% set toggleClass = cx.toggle.apply({ size: size }) %}
+    {% set flagIconClass = cx.flagIcon.apply() %}
+    {% set labelClass = cx.label.apply() %}
+    {% set codeClass = cx.code.apply() %}
+    {% set caretClass = cx.caret.apply() %}
+    {% set toggleAriaLabel = 'header.languageTrigger'|trans({ '%lang%': defaultLabel })|striptags %}
+
+    <twig:ViewsTheme:Dropdown
+        class="{{ rootClass }}"
+        toggle:class="{{ toggleClass }}"
+        {{ ...attributes.defaults({
+            placement: placement,
+            'toggle:aria-label': toggleAriaLabel,
+            'toggle:title': toggleAriaLabel,
+            'toggle:aria-haspopup': 'listbox',
+        }).all() }}
+    >
+        <twig:block name="toggle">
+            {% if showFlag and flagCode %}
+                <img
+                    class="{{ flagIconClass }}"
+                    src="{{ asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') }}"
+                    alt=""
+                    width="14"
+                    loading="lazy"
+                    aria-hidden="true"
+                    {% if flagCodeFallback and flagCodeFallback is not same as(flagCode) %}
+                        onerror="this.onerror=null;this.src='{{ asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')|e('js') }}'"
+                    {% else %}
+                        onerror="this.remove()"
+                    {% endif %}
+                >
+            {% endif %}
+
+            {% if showCode and languageCode %}
+                <span class="{{ codeClass }}" aria-hidden="true">{{ languageCode }}</span>
+            {% endif %}
+
+            {% if resolvedLabel is not same as(false) %}
+                <span class="{{ labelClass }}">
+                    {{ resolvedLabel }}
+                </span>
+            {% endif %}
+
+            {{ vi_icon('caret-down', { class: caretClass }) }}
+        </twig:block>
+
+        <twig:ViewsTheme:Language:Menu
+            :languages="resolvedLanguages"
+            :activeLanguageId="resolvedActiveLanguageId"
+            :position="position"
+            :showFlag="showFlag"
+        />
+    </twig:ViewsTheme:Dropdown>
+{% endif %}

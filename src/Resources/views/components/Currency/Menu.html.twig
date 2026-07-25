@@ -1,0 +1,52 @@
+{% props
+    currencies = null,
+    activeCurrencyId = null,
+    position = 'top-bar',
+    cva = {},
+%}
+
+{% set resolvedCurrencies = currencies is not null ? currencies : (header.currencies|default(page.header.currencies|default([]))) %}
+{% set resolvedActiveCurrencyId = activeCurrencyId is not null ? activeCurrencyId : (context.currency.id|default(null)) %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<form
+    {{ attributes.defaults({
+        method: 'post',
+        action: path('frontend.checkout.configure'),
+        'data-form-add-dynamic-redirect': 'true',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <ul
+        {{ attributes.nested('list').defaults({
+            'aria-label': 'header.currencyList'|trans|striptags,
+        }) }}
+        class="{{ cx.list.apply() }}"
+    >
+        {% for currency in resolvedCurrencies %}
+            {% set isActive = currency.id is same as(resolvedActiveCurrencyId) %}
+
+            <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
+                <button
+                    {{ attributes.nested('option').defaults({
+                        type: 'submit',
+                        name: 'currencyId',
+                        id: position ~ '-' ~ currency.id,
+                        value: currency.id,
+                        'aria-current': isActive ? 'true' : null,
+                    }) }}
+                    class="{{ cx.option.apply({ active: isActive }) }}"
+                >
+                    <span {{ attributes.nested('symbol') }} class="{{ cx.symbol.apply() }}" aria-hidden="true">
+                        {{ currency.symbol }}
+                    </span>
+                    {{ currency.translated.name }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if position == 'offcanvas' %}
+        <input name="redirectParameters[offcanvas]" type="hidden" value="menu">
+    {% endif %}
+</form>
