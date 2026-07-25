@@ -2,6 +2,7 @@
     item,
     activeId = null,
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    image = null,
     cva = {},
 %}
 
@@ -28,22 +29,41 @@
         }) }}
         class="{{ cx.link.apply() }}{{ isActive ? ' active' : '' }}"
     >
-        <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        {% block image %}
+            {% if image %}
+                {% sw_thumbnails 'navigation-drawer-item-image' with {
+                    media: image,
+                    sizes: { default: '64px' },
+                    attributes: {
+                        class: cx.image.apply(),
+                        alt: (image.translated.alt ?: name),
+                        title: (image.translated.title ?: name),
+                        loading: 'lazy',
+                    },
+                } %}
+            {% endif %}
+        {% endblock %}
+
+        {% block label %}
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        {% endblock %}
     </a>
 
-    {% if hasChildren %}
-        <twig:ViewsTheme:Navigation:Drawer:Drill
-            class="{{ drillClass }}"
-            {{ ...attributes.nested('drill').defaults({
-                href: drillUrl,
-                url: drillUrl,
-                title: name,
-                'aria-label': name,
-            }).all() }}
-        >
-            {{ vi_icon('caret-right', {
-                class: iconClass
-            }) }}
-        </twig:ViewsTheme:Navigation:Drawer:Drill>
-    {% endif %}
+    {% block drill %}
+        {% if hasChildren %}
+            <twig:ViewsTheme:Navigation:Drawer:Drill
+                class="{{ drillClass }}"
+                {{ ...attributes.nested('drill').defaults({
+                    href: drillUrl,
+                    url: drillUrl,
+                    title: name,
+                    'aria-label': name,
+                }).all() }}
+            >
+                {{ vi_icon('caret-right', {
+                    class: iconClass
+                }) }}
+            </twig:ViewsTheme:Navigation:Drawer:Drill>
+        {% endif %}
+    {% endblock %}
 </li>

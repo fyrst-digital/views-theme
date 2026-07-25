@@ -10,6 +10,20 @@
 {% set active = navigation.active %}
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set navigationImageIds = [] %}
+{% if children %}
+    {% for treeItem in children.tree %}
+        {% set itemCustomFields = treeItem.category.translated.customFields|default({}) %}
+        {% set navigationImageId = itemCustomFields.vi_navigation_image ?? null %}
+        {% if navigationImageId %}
+            {% set navigationImageIds = navigationImageIds|merge([navigationImageId]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% set navigationImages = navigationImageIds is not empty
+    ? searchMedia(navigationImageIds, context.context)
+    : null %}
+
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Navigation:Drawer:Menu',
@@ -54,11 +68,14 @@
                                 {% set hasChildren = item.category.visibleChildCount > 0 %}
 
                                 {% if item.category.type != 'folder' or hasChildren %}
+                                    {% set itemCustomFields = item.category.translated.customFields|default({}) %}
+                                    {% set imageId = itemCustomFields.vi_navigation_image ?? null %}
+                                    {% set image = imageId and navigationImages ? navigationImages.get(imageId) : null %}
                                     <twig:ViewsTheme:Navigation:Drawer:Item
                                         :item="item"
                                         :activeId="activeId"
                                         :menuUrl="menuUrl"
-                                        icon:class="meddl"
+                                        :image="image"
                                     />
                                 {% endif %}
                             {% endblock %}

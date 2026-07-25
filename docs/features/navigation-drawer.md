@@ -31,7 +31,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
 - Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
-- Item label opens the category; caret drills deeper; no caret when the category has no children
+- Item label opens the category; optional `vi_navigation_image` thumb before the label; caret drills deeper; no caret when the category has no children
 - Close via `Drawer:Close` / `Drawer:Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
 
@@ -64,8 +64,18 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 ### Menu item interaction
 
 - **Label** (`Item` link): navigates to the category page (`category_url`). Folders use `#` (no listing).
+- **Image** (optional): category custom field `vi_navigation_image` (media UUID). When set, Menu batch-resolves media via `searchMedia` and passes it to Item; Item renders a thumb before the label inside the link. Omitted when unset.
 - **Caret** (`Item` → `Drill`, only when `visibleChildCount > 0`): drills into the submenu; omitted for leaf categories.
 - **Back** / **ShowAll**: full-row `Drill` with `direction: back`.
+
+### Category navigation image
+
+| Piece | Detail |
+|-------|--------|
+| Custom field | `vi_navigation_image` on category (media type, translated) |
+| Resolve | `Menu` collects IDs from the current level → `searchMedia(ids, context.context)` once |
+| Render | `Item` prop `image`; `{% sw_thumbnails %}` before label when present |
+| Size token | `--vi-navigation-drawer-item-image-size` (default `1.75rem`); radius `--vi-navigation-drawer-item-image-radius` (default `0.25rem`) |
 
 ### Drill-down flow
 
