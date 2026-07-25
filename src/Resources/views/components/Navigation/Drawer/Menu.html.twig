@@ -16,36 +16,43 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
-    {% if not isRoot and active %}
-        <twig:ViewsTheme:Navigation:Drawer:ShowAll :menuUrl="menuUrl" />
-        <twig:ViewsTheme:Navigation:Drawer:Active :category="active" />
-        <twig:ViewsTheme:Navigation:Drawer:Back
-            :category="active"
-            :menuUrl="menuUrl"
-        />
-    {% else %}
-        <div {{ attributes.nested('headline') }} class="{{ cx.headline.apply() }}">
-            {{ 'general.categories'|trans|sw_sanitize }}
-        </div>
-    {% endif %}
-
-    <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
-        {% if not isRoot and active and active.type != 'folder' %}
-            <twig:ViewsTheme:Navigation:Drawer:ShowActive :category="active" />
+    <div
+        {{ attributes.nested('level').defaults({
+            'data-level': '',
+        }) }}
+        class="{{ cx.level.apply() }}"
+    >
+        {% if not isRoot and active %}
+            <twig:ViewsTheme:Navigation:Drawer:ShowAll :menuUrl="menuUrl" />
+            <twig:ViewsTheme:Navigation:Drawer:Active :category="active" />
+            <twig:ViewsTheme:Navigation:Drawer:Back
+                :category="active"
+                :menuUrl="menuUrl"
+            />
+        {% else %}
+            <div {{ attributes.nested('headline') }} class="{{ cx.headline.apply() }}">
+                {{ 'general.categories'|trans|sw_sanitize }}
+            </div>
         {% endif %}
 
-        {% if children %}
-            {% for item in children.tree %}
-                {% set hasChildren = item.category.visibleChildCount > 0 %}
+        <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
+            {% if not isRoot and active and active.type != 'folder' %}
+                <twig:ViewsTheme:Navigation:Drawer:ShowActive :category="active" />
+            {% endif %}
 
-                {% if item.category.type != 'folder' or hasChildren %}
-                    <twig:ViewsTheme:Navigation:Drawer:Item
-                        :item="item"
-                        :activeId="activeId"
-                        :menuUrl="menuUrl"
-                    />
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    </ul>
+            {% if children %}
+                {% for item in children.tree %}
+                    {% set hasChildren = item.category.visibleChildCount > 0 %}
+
+                    {% if item.category.type != 'folder' or hasChildren %}
+                        <twig:ViewsTheme:Navigation:Drawer:Item
+                            :item="item"
+                            :activeId="activeId"
+                            :menuUrl="menuUrl"
+                        />
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
 </div>

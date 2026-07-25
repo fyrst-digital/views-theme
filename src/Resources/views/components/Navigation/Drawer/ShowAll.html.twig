@@ -10,6 +10,7 @@
     {{ ...attributes.defaults({
         href: menuUrl,
         title: 'general.mainMenu'|trans|striptags,
+        direction: 'back',
     }).all() }}
 >
     <span class="{{ cx.icon.apply() }}">

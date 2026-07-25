@@ -7,9 +7,7 @@
 {% set cx = vi_cva_from_file(cva) %}
 
 <li
-    {{ attributes.defaults({
-        'data-component': 'ViewsTheme:Navigation:Drawer:ShowActive',
-    }) }}
+    {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     <a

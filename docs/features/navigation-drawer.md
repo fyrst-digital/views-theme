@@ -16,8 +16,8 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
 | `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
-| `Navigation:Drawer:Menu` | Drill-down fetch, cache, level replace, focus |
-| `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source }` |
+| `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide |
+| `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source, direction }` |
 
 ## Features
 
@@ -61,10 +61,21 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 ### Drill-down flow
 
 1. `Navigation:Drawer:Drill` (Item with children, Back, ShowAll) handles click
-2. Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` with `{ url, source }`
-3. Menu listens, ignores events whose `source` is outside itself, fetches/caches HTML
-4. Parses with `<template>`, keeps Menu root, applies level via `replaceChildren(...next.children)`
-5. Focus moves to ShowActive link, else first Drill, else first focusable
+2. Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` with `{ url, source, direction }` (`forward` default; Back/ShowAll pass `back`)
+3. Menu listens, ignores events whose `source` is outside itself; single `_busy` flight covers fetch + slide
+4. Fetches/caches HTML, parses with `<template>`, takes `:scope > [data-level]`
+5. Level motion (see below)
+
+### Level motion
+
+- Menu body is a single `[data-level]` surface; drill keeps the outgoing level and appends the incoming one
+- Root sets `data-animating` + `data-direction` (`forward` \| `back`); CSS in `Menu.css` slides levels
+- Forward: outgoing exits start-ward (`-100%`), incoming enters from end; back is the reverse
+- Menu height morphs outgoing → incoming via WAAPI (same duration) so taller levels ease open instead of clipping then popping
+- Levels use an opaque body background and incoming stacks above outgoing so labels never show through
+- Token: `--vi-navigation-drawer-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for WAAPI + transform fallback
+- Outgoing is `inert` during the slide
+- `prefers-reduced-motion: reduce` skips the slide and swaps the level immediately
 
 ### Controller
 
@@ -86,14 +97,13 @@ Both load `MenuOffcanvasPageletLoader`, dispatch `MenuOffcanvasPageletLoadedHook
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Drill | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
-| Show active | `data-component="ViewsTheme:Navigation:Drawer:ShowActive"` |
 
 Action options (`data-component-options`): `drawerUrl`.
 
 Events:
 
 - `ViewsTheme:Drawer:Open` / `:Close` (payload: drawer element)
-- `ViewsTheme:Navigation:Drawer:Menu:Drill` (payload: `{ url, source }`)
+- `ViewsTheme:Navigation:Drawer:Menu:Drill` (payload: `{ url, source, direction }`)
 
 See [JavaScript conventions](../conventions/javascript.md).
 
@@ -117,7 +127,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Panel / Header / Backdrop / Close | `src/Resources/views/components/Drawer/{Panel,Header,Backdrop,Close}.*` |
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
-| Menu (+ drill orchestration) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
+| Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
 | Drill | `src/Resources/views/components/Navigation/Drawer/Drill.*` |
 | Items | `src/Resources/views/components/Navigation/Drawer/{Item,Back,ShowAll,Active,ShowActive}.*` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |

@@ -1,14 +1,11 @@
 export default class NavigationDrawerMenu extends ShopwareComponent {
     static options = {
         drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',
-        showActiveSelector: '[data-component="ViewsTheme:Navigation:Drawer:ShowActive"]',
-        drillSelector: '[data-component="ViewsTheme:Navigation:Drawer:Drill"]',
-        loadingAttr: 'aria-busy',
     }
 
     init() {
         this._cache = {}
-        this._loading = false
+        this._busy = false
         this._onDrill = this._onDrill.bind(this)
         window.Shopware.on(this.options.drillEvent, this._onDrill)
     }
@@ -18,71 +15,147 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
     }
 
     _onDrill(payload = {}) {
-        const { url, source } = payload
+        const { url, source, direction = 'forward' } = payload
 
-        if (!url || !source || !this.el.contains(source)) {
+        if (!url || !source || !this.el.contains(source) || this._busy) {
             return
         }
 
-        if (this._loading || source.getAttribute(this.options.loadingAttr) === 'true') {
+        if (source.getAttribute('aria-busy') === 'true') {
             return
         }
 
-        this._loadLevel(url, source)
+        this._go(url, source, direction === 'back' ? 'back' : 'forward')
     }
 
-    async _loadLevel(url, source) {
-        this._loading = true
-        source.setAttribute(this.options.loadingAttr, 'true')
+    async _go(url, source, direction) {
+        this._busy = true
+        source.setAttribute('aria-busy', 'true')
 
         try {
-            let html = this._cache[url]
-
-            if (!html) {
-                const response = await fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                })
-
-                if (!response.ok) {
-                    throw new Error(`Navigation menu fetch failed: ${response.status}`)
-                }
-
-                html = await response.text()
-                this._cache[url] = html
+            const html = await this._fetch(url)
+            const incoming = this._levelFromHtml(html)
+            if (!incoming) {
+                return
             }
 
-            this._replaceLevel(html)
+            const outgoing = this._level()
+
+            if (!outgoing || this._prefersReducedMotion()) {
+                if (outgoing) {
+                    outgoing.replaceWith(incoming)
+                } else {
+                    this.el.replaceChildren(incoming)
+                }
+            } else {
+                await this._slide(outgoing, incoming, direction)
+            }
         } catch (error) {
             console.error('NavigationDrawerMenu: Failed to load menu level', error)
         } finally {
-            this._loading = false
-            source.removeAttribute(this.options.loadingAttr)
+            this._busy = false
+            source.removeAttribute('aria-busy')
         }
     }
 
-    _parseRoot(html) {
+    async _fetch(url) {
+        let html = this._cache[url]
+
+        if (!html) {
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Navigation menu fetch failed: ${response.status}`)
+            }
+
+            html = await response.text()
+            this._cache[url] = html
+        }
+
+        return html
+    }
+
+    _level(root = this.el) {
+        return root.querySelector(':scope > [data-level]')
+    }
+
+    _levelFromHtml(html) {
         const template = document.createElement('template')
         template.innerHTML = html.trim()
-        return template.content.firstElementChild
+        const root = template.content.firstElementChild
+        return root ? this._level(root) : null
     }
 
-    _replaceLevel(html) {
-        const next = this._parseRoot(html)
-        if (!next) {
-            return
-        }
+    async _slide(outgoing, incoming, direction) {
+        const fromH = outgoing.getBoundingClientRect().height
+        this.el.style.height = `${fromH}px`
+        this.el.setAttribute('data-animating', 'true')
+        this.el.setAttribute('data-direction', direction)
 
-        this.el.replaceChildren(...next.children)
+        outgoing.inert = true
+        incoming.setAttribute('data-state', 'enter')
+        incoming.inert = true
+        this.el.append(incoming)
 
-        const focusTarget =
-            this.el.querySelector(`${this.options.showActiveSelector} a`) ||
-            this.el.querySelector(this.options.drillSelector) ||
-            this.el.querySelector('a, button')
+        const toH = incoming.getBoundingClientRect().height
+        void this.el.offsetWidth
 
-        if (focusTarget) {
+        const heightAnim = this.el.animate(
+            [{ height: `${fromH}px` }, { height: `${toH}px` }],
+            {
+                duration: this._duration(),
+                easing: 'ease',
+                fill: 'forwards',
+            },
+        )
+
+        await new Promise((resolve) => {
             requestAnimationFrame(() => {
-                window.focusHandler.setFocus(focusTarget, { focusVisible: true })
+                outgoing.setAttribute('data-state', 'out')
+                incoming.setAttribute('data-state', 'in')
+                resolve()
             })
-        }
+        })
+
+        await Promise.all([this._waitTransform(incoming), heightAnim.finished])
+
+        heightAnim.cancel()
+        outgoing.remove()
+        incoming.removeAttribute('data-state')
+        incoming.inert = false
+        this.el.removeAttribute('data-animating')
+        this.el.removeAttribute('data-direction')
+        this.el.style.height = ''
+    }
+
+    _waitTransform(el) {
+        return new Promise((resolve) => {
+            const done = (event) => {
+                if (event && (event.target !== el || event.propertyName !== 'transform')) {
+                    return
+                }
+
+                el.removeEventListener('transitionend', done)
+                window.clearTimeout(timer)
+                resolve()
+            }
+
+            el.addEventListener('transitionend', done)
+            const timer = window.setTimeout(() => done(), this._duration() + 50)
+        })
+    }
+
+    _duration() {
+        const raw = getComputedStyle(this.el)
+            .getPropertyValue('--vi-navigation-drawer-menu-duration')
+        const ms = parseFloat(raw)
+
+        return Number.isFinite(ms) ? ms : 250
+    }
+
+    _prefersReducedMotion() {
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches
     }
 }

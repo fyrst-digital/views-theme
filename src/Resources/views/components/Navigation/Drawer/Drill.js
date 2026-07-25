@@ -1,6 +1,7 @@
 export default class NavigationDrawerDrill extends ShopwareComponent {
     static options = {
         url: null,
+        direction: 'forward',
         drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',
         loadingAttr: 'aria-busy',
     }
@@ -30,6 +31,7 @@ export default class NavigationDrawerDrill extends ShopwareComponent {
         window.Shopware.emit(this.options.drillEvent, {
             url,
             source: this.el,
+            direction: this.options.direction === 'back' ? 'back' : 'forward',
         })
     }
 }

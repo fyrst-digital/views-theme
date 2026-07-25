@@ -2,6 +2,7 @@
     href,
     url = null,
     title = null,
+    direction = 'forward',
     cva = {},
 %}
 
@@ -14,6 +15,7 @@
         'data-component': 'ViewsTheme:Navigation:Drawer:Drill',
         'data-component-options': {
             url: url ?? href,
+            direction: direction,
         }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
