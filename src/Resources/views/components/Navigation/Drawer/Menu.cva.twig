@@ -1,6 +1,9 @@
 {
     root: {
-        base: 'vi-navigation-drawer-menu position-relative d-flex flex-column gap-2 col overflow-y-auto overflow-x-clip',
+        base: 'vi-navigation-drawer-menu position-relative d-flex flex-column col min-h-0 overflow-hidden',
+    },
+    scroll: {
+        base: 'vi-navigation-drawer-menu__scroll overflow-y-auto overflow-x-clip',
     },
     level: {
         base: 'vi-navigation-drawer-menu__level py-2 d-flex flex-column gap-2',
@@ -9,6 +12,6 @@
         base: 'vi-navigation-drawer-menu__header d-flex flex-wrap flex-row align-items-center justify-content-between px-1',
     },
     list: {
-        base: 'list-unstyled mb-0 d-flex flex-column',
+        base: 'list-unstyled mb-0 p-0 d-flex flex-column',
     },
 }

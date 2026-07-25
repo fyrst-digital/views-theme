@@ -13,10 +13,10 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
 | `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
-| `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
+| `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
 | `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
-| `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide |
+| `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide; composes `Scroll:Area` as scrollport |
 | `Navigation:Drawer:Item` | Category row: label link → category; caret `Drill` → submenu (caret only if children) |
 | `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source, direction }` |
 
@@ -87,9 +87,12 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 
 ### Level motion
 
-- Menu fills the panel body (`col` + flex) and scrolls (`overflow-y: auto`); level motion is transform-only
-- Menu body is a single `[data-level]` surface; drill keeps the outgoing level and appends the incoming one
-- Root sets `data-animating` + `data-direction` (`forward` \| `back`); CSS in `Menu.css` slides levels
+- Flex scroll chain: Panel body (`min-h-0` + `overflow-hidden` + column flex) → Menu (`col` + `min-h-0` + `overflow-hidden`) → nested `Scroll:Area` (`flex-1 min-h-0`, edge fades) so long levels scroll inside the panel
+- Menu owns drill orchestration; `Scroll:Area` is the scrollport (not Menu root) — same composition pattern as Search results
+- Menu body is a single `[data-level]` surface inside `Scroll:Area`; drill keeps the outgoing level and appends the incoming one to the scrollport
+- After each level swap, scroll resets to top and Scroll:Area edge flags re-sync
+- Two-phase slide: set `data-direction` + level states `from`/`enter` (absolute `inset: 0` in the relative scrollport, no transition) → set `data-animating` → flip to `out`/`in`
+- Scrollport (`.vi-navigation-drawer-menu__scroll`) uses `flex: 1 1 0` + `min-height: 0` so height comes from the Menu column, not content — levels can be absolute without a JS height lock
 - Forward: outgoing exits start-ward (`-100%`), incoming enters from end; back is the reverse
 - Levels use an opaque body background and incoming stacks above outgoing so labels never show through
 - Token: `--vi-navigation-drawer-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for the transform fallback
@@ -115,6 +118,7 @@ Both load `MenuOffcanvasPageletLoader`, dispatch `MenuOffcanvasPageletLoadedHook
 | Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
+| Menu scrollport | `data-component="ViewsTheme:Scroll:Area"` (nested under Menu) |
 | Drill | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
 Action options (`data-component-options`): `drawerUrl`.
@@ -147,6 +151,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
 | Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
+| Scroll area (menu scrollport) | `src/Resources/views/components/Scroll/Area.*` |
 | Drill | `src/Resources/views/components/Navigation/Drawer/Drill.*` |
 | Items | `src/Resources/views/components/Navigation/Drawer/{Item,Back,ShowAll,Active,ShowActive}.*` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |

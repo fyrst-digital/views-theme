@@ -9,6 +9,10 @@
 {% set children = navigation.getChildren(activeId) %}
 {% set active = navigation.active %}
 {% set cx = vi_cva_from_file(cva) %}
+{% set scrollClass = cx.scroll.apply() %}
+{% set levelClass = cx.level.apply() %}
+{% set headerClass = cx.header.apply() %}
+{% set listClass = cx.list.apply() %}
 
 {% set navigationImageIds = [] %}
 {% if children %}
@@ -30,59 +34,55 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
-    {% block content %}        
+    <twig:ViewsTheme:Scroll:Area
+        class="{{ scrollClass }}"
+        {{ ...attributes.nested('scroll').all() }}
+    >
         <div
             {{ attributes.nested('level').defaults({
                 'data-level': '',
             }) }}
-            class="{{ cx.level.apply() }}"
+            class="{{ levelClass }}"
         >
+            {% if not isRoot and active %}
+                <div
+                    {{ attributes.nested('header') }}
+                    class="{{ headerClass }}"
+                >
+                    <twig:ViewsTheme:Navigation:Drawer:Back
+                        class="btn btn-sm"
+                        icon:class="icon-size-2"
+                        :category="active"
+                        :menuUrl="menuUrl"
+                    />
+                    <twig:ViewsTheme:Navigation:Drawer:ShowAll
+                        class="btn btn-sm"
+                        icon:class="icon-size-2"
+                        :menuUrl="menuUrl" />
+                </div>
+            {% endif %}
 
-            {% block header %}
-                {% if not isRoot and active %}
-                    <div
-                        {{ attributes.nested('header') }}
-                        class="{{ cx.header.apply() }}"
-                    >
-                        <twig:ViewsTheme:Navigation:Drawer:Back
-                            class="btn btn-sm"
-                            icon:class="icon-size-2"
-                            :category="active"
-                            :menuUrl="menuUrl"
-                        />
-                        <twig:ViewsTheme:Navigation:Drawer:ShowAll 
-                            class="btn btn-sm"
-                            icon:class="icon-size-2"
-                            :menuUrl="menuUrl" />
-                    </div>
+            <ul
+                {{ attributes.nested('list') }}
+                class="{{ listClass }}">
+                {% if children %}
+                    {% for item in children.tree %}
+                        {% set hasChildren = item.category.visibleChildCount > 0 %}
+
+                        {% if item.category.type != 'folder' or hasChildren %}
+                            {% set itemCustomFields = item.category.translated.customFields|default({}) %}
+                            {% set imageId = itemCustomFields.vi_navigation_image ?? null %}
+                            {% set image = imageId and navigationImages ? navigationImages.get(imageId) : null %}
+                            <twig:ViewsTheme:Navigation:Drawer:Item
+                                :item="item"
+                                :activeId="activeId"
+                                :menuUrl="menuUrl"
+                                :image="image"
+                            />
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-            {% endblock %}
-
-            {% block list %}
-                <ul
-                    {{ attributes.nested('list') }} 
-                    class="{{ cx.list.apply() }}">
-                    {% if children %}
-                        {% for item in children.tree %}
-                            {% block item %}
-                                {% set hasChildren = item.category.visibleChildCount > 0 %}
-
-                                {% if item.category.type != 'folder' or hasChildren %}
-                                    {% set itemCustomFields = item.category.translated.customFields|default({}) %}
-                                    {% set imageId = itemCustomFields.vi_navigation_image ?? null %}
-                                    {% set image = imageId and navigationImages ? navigationImages.get(imageId) : null %}
-                                    <twig:ViewsTheme:Navigation:Drawer:Item
-                                        :item="item"
-                                        :activeId="activeId"
-                                        :menuUrl="menuUrl"
-                                        :image="image"
-                                    />
-                                {% endif %}
-                            {% endblock %}
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-            {% endblock %}
+            </ul>
         </div>
-    {% endblock %}
+    </twig:ViewsTheme:Scroll:Area>
 </div>

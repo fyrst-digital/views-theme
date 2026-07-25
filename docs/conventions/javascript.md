@@ -126,24 +126,25 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
+| Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Backdrop/Close `callMethod` `Drawer.close`
-- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` CSS transform slide (no height JS); duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
+- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).
 
 ### Scroll area
 
-Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `--scroll-fade`).
+Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `--scroll-fade`). Base CVA: `vi-scroll-area overflow-y-auto` — callers add axis extras (e.g. `overflow-x-clip`) via `class`.
 
 | Hook | Attribute |
 |------|-----------|
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
-JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block.
+JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block. Used by Search results and Navigation drawer menu.
 
 ### Dropdown
 

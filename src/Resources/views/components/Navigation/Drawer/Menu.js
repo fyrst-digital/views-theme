@@ -1,6 +1,7 @@
 export default class NavigationDrawerMenu extends ShopwareComponent {
     static options = {
         drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',
+        scrollSelector: '[data-component="ViewsTheme:Scroll:Area"]',
     }
 
     init() {
@@ -39,17 +40,22 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
                 return
             }
 
-            const outgoing = this._level()
+            const port = this._scrollEl()
+            const outgoing = this._level(port)
 
             if (!outgoing || this._prefersReducedMotion()) {
                 if (outgoing) {
                     outgoing.replaceWith(incoming)
+                } else if (port) {
+                    port.replaceChildren(incoming)
                 } else {
                     this.el.replaceChildren(incoming)
                 }
             } else {
-                await this._slide(outgoing, incoming, direction)
+                await this._slide(outgoing, incoming, direction, port)
             }
+
+            this._resetScroll(port)
         } catch (error) {
             console.error('NavigationDrawerMenu: Failed to load menu level', error)
         } finally {
@@ -77,7 +83,15 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
         return html
     }
 
-    _level(root = this.el) {
+    _scrollEl(root = this.el) {
+        return root.querySelector(`:scope > ${this.options.scrollSelector}`)
+    }
+
+    _level(root = this._scrollEl()) {
+        if (!root) {
+            return null
+        }
+
         return root.querySelector(':scope > [data-level]')
     }
 
@@ -85,27 +99,34 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
         const template = document.createElement('template')
         template.innerHTML = html.trim()
         const root = template.content.firstElementChild
-        return root ? this._level(root) : null
+        if (!root) {
+            return null
+        }
+
+        return this._level(this._scrollEl(root) || root)
     }
 
-    async _slide(outgoing, incoming, direction) {
-        this.el.setAttribute('data-animating', 'true')
+    async _slide(outgoing, incoming, direction, port = this._scrollEl()) {
+        const host = port || this.el
+
+        // Phase 1: start poses (absolute + inset:0 via CSS), no transition yet.
         this.el.setAttribute('data-direction', direction)
-
         outgoing.inert = true
-        incoming.setAttribute('data-state', 'enter')
+        outgoing.setAttribute('data-state', 'from')
         incoming.inert = true
-        this.el.append(incoming)
+        incoming.setAttribute('data-state', 'enter')
+        host.append(incoming)
 
-        void this.el.offsetWidth
+        void host.offsetWidth
+        await this._nextFrame()
 
-        await new Promise((resolve) => {
-            requestAnimationFrame(() => {
-                outgoing.setAttribute('data-state', 'out')
-                incoming.setAttribute('data-state', 'in')
-                resolve()
-            })
-        })
+        // Phase 2: enable transition, flip to end poses.
+        this.el.setAttribute('data-animating', 'true')
+        void host.offsetWidth
+        await this._nextFrame()
+
+        outgoing.setAttribute('data-state', 'out')
+        incoming.setAttribute('data-state', 'in')
 
         await this._waitTransform(incoming)
 
@@ -114,6 +135,21 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
         incoming.inert = false
         this.el.removeAttribute('data-animating')
         this.el.removeAttribute('data-direction')
+    }
+
+    _nextFrame() {
+        return new Promise((resolve) => {
+            requestAnimationFrame(() => resolve())
+        })
+    }
+
+    _resetScroll(port = this._scrollEl()) {
+        if (!port) {
+            return
+        }
+
+        port.scrollTop = 0
+        port.dispatchEvent(new Event('scroll'))
     }
 
     _waitTransform(el) {
