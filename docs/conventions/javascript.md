@@ -33,17 +33,26 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 **Event name casing:** PascalCase segments (`Namespace:Feature:Action`), e.g. `ViewsTheme:Drawer:Open`, `ViewsTheme:Navigation:Drawer:Menu:Drill`.
 
-## Lazy-loaded drawer shells (critical)
+## Lazy-loaded shells (critical)
 
-Applies to **lazy-mounted `ViewsTheme:Drawer` shells** fetched by an Action (e.g. Navigation drawer). Does **not** cover in-session Menu drill level HTML caches.
+Applies to **lazy-mounted shells** fetched by an Action:
+
+- `ViewsTheme:Drawer` (e.g. Navigation drawer)
+- `ViewsTheme:Search:Overlay`
+
+Does **not** cover in-session Menu drill level HTML caches or suggest result fragments.
 
 | Phase | Required |
 |-------|----------|
 | **Open** | Always **(re)fetch** HTML. Never keep a string cache of a previous response for reuse. |
-| **Close** | After close completes (`ViewsTheme:Drawer:Close`), **remove** the drawer root from the DOM. Do not keep a closed mount for the next open. |
+| **Close** | After close completes (`*:Close` event), **remove** the shell root from the DOM. Do not keep a closed mount for the next open. |
 | **Re-open** | Full fetch + mount again. |
 
-The Action owns this lifecycle; the generic `Drawer` primitive only open/closes. Reference: `Navigation/Drawer/Action.js`.
+The Action owns this lifecycle; the shell primitive only open/closes.
+
+**Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
+
+References: `Navigation/Drawer/Action.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
 
 ## Co-located component JS
 
@@ -121,9 +130,11 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` (legacy) |
 
-Search: Backdrop/Close call `Shopware.callMethod('ViewsTheme:Search:Overlay', 'close')`. Overlay emits `ViewsTheme:Search:Overlay:Open` / `:Close` via `emitQueued` (payload: overlay element).  
-Closed overlay sets `inert` (plus `aria-hidden`) so tab order skips it; while open, Tab is trapped inside the dialog.  
-Suggest HTML is inserted as the form’s next sibling. Product grid scrolls via nested `Scroll:Area`.
+- Action lifecycle (critical): **(re)fetch + mount on every open**; `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Open/Close payload: `{ el, term }` via `emitQueued` (Action stores `term` / aria); Overlay calls `Bar.onOpened(term)` once for restore + suggest
+- Backdrop/Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
+- While open, Tab is trapped inside the dialog; closed mount is not kept (unmounted)
+- Suggest HTML is inserted as the form’s next sibling; product grid scrolls via nested `Scroll:Area`
 
 See [Search overlay](../features/search-overlay.md).
 
@@ -142,7 +153,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
-- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root (no HTML/DOM cache) — see [Lazy-loaded drawer shells](#lazy-loaded-drawer-shells-critical)
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root (no HTML/DOM cache) — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`

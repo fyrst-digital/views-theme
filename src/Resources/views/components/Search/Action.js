@@ -9,7 +9,7 @@ export default class SearchAction extends ShopwareComponent {
 
     init() {
         this._overlayEl = null
-        this._overlayHtml = null
+        this._preservedTerm = ''
         this._loading = false
         this._onClick = this._onClick.bind(this)
         this._onOverlayOpen = this._onOverlayOpen.bind(this)
@@ -34,12 +34,8 @@ export default class SearchAction extends ShopwareComponent {
         }
 
         const overlay = this._getOverlayInstance()
-        if (overlay) {
-            if (typeof overlay.isOpen === 'function' && overlay.isOpen()) {
-                overlay.close()
-            } else {
-                overlay.open()
-            }
+        if (overlay && typeof overlay.isOpen === 'function' && overlay.isOpen()) {
+            overlay.close()
             return
         }
 
@@ -56,24 +52,21 @@ export default class SearchAction extends ShopwareComponent {
         this.el.setAttribute('aria-busy', 'true')
 
         try {
-            if (!this._overlayHtml) {
-                const response = await fetch(this.options.overlayUrl, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                })
+            const response = await fetch(this.options.overlayUrl, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
 
-                if (!response.ok) {
-                    throw new Error(`Overlay fetch failed: ${response.status}`)
-                }
-
-                this._overlayHtml = await response.text()
+            if (!response.ok) {
+                throw new Error(`Overlay fetch failed: ${response.status}`)
             }
 
-            this._mountOverlay(this._overlayHtml)
+            const html = await response.text()
+            this._replaceOverlay(html)
             await this._waitForOverlayInstance()
 
             const overlay = this._getOverlayInstance()
             if (overlay && typeof overlay.open === 'function') {
-                overlay.open()
+                await overlay.open({ term: this._preservedTerm || null })
             }
         } catch (error) {
             console.error('SearchAction: Failed to open search overlay', error)
@@ -83,17 +76,19 @@ export default class SearchAction extends ShopwareComponent {
         }
     }
 
-    _mountOverlay(html) {
-        const existing = document.querySelector(this.options.overlaySelector)
-        if (existing) {
-            this._overlayEl = existing
-            return
-        }
-
+    _parseRoot(html) {
         const template = document.createElement('template')
         template.innerHTML = html.trim()
-        const overlayEl = template.content.firstElementChild
+        return template.content.firstElementChild
+    }
 
+    _replaceOverlay(html) {
+        const existing = document.querySelector(this.options.overlaySelector)
+        if (existing) {
+            existing.remove()
+        }
+
+        const overlayEl = this._parseRoot(html)
         if (!overlayEl) {
             throw new Error('SearchAction: Overlay markup is empty')
         }
@@ -129,12 +124,33 @@ export default class SearchAction extends ShopwareComponent {
         )
     }
 
-    _onOverlayOpen() {
+    _onOverlayOpen(payload) {
+        const el = payload?.el ?? null
+        if (el && this._overlayEl && el !== this._overlayEl) {
+            return
+        }
+
         this.el.setAttribute('aria-expanded', 'true')
     }
 
-    _onOverlayClose() {
+    _onOverlayClose(payload) {
+        const el = payload?.el ?? null
+        const term = payload?.term
+        if (el && this._overlayEl && el !== this._overlayEl) {
+            return
+        }
+
+        this._preservedTerm = typeof term === 'string' ? term : ''
         this.el.setAttribute('aria-expanded', 'false')
         this.el.focus()
+        this._unmountOverlay()
+    }
+
+    _unmountOverlay() {
+        const el = this._overlayEl || document.querySelector(this.options.overlaySelector)
+        if (el) {
+            el.remove()
+        }
+        this._overlayEl = null
     }
 }

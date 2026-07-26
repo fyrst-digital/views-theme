@@ -19,7 +19,6 @@ export default class Drawer extends ShopwareComponent {
         this.el.inert = true
         this.el.setAttribute(this.options.openAttr, 'false')
         document.addEventListener('keydown', this._onKeydown)
-        this.open()
     }
 
     destroy() {

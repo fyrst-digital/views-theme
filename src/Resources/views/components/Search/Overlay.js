@@ -3,7 +3,8 @@ export default class SearchOverlay extends ShopwareComponent {
         openClass: 'd-flex',
         closedClass: 'd-none',
         bodyOpenClass: 'overflow-hidden',
-        inputSelector: 'input[type="search"]',
+        barComponentName: 'ViewsTheme:Search:Bar',
+        barSelector: '[data-component="ViewsTheme:Search:Bar"]',
         openEvent: 'ViewsTheme:Search:Overlay:Open',
         closeEvent: 'ViewsTheme:Search:Overlay:Close',
     }
@@ -11,11 +12,9 @@ export default class SearchOverlay extends ShopwareComponent {
     init() {
         this._open = false
         this._onKeydown = this._onKeydown.bind(this)
-        this._input = this.el.querySelector(this.options.inputSelector)
 
         this.el.inert = true
         document.addEventListener('keydown', this._onKeydown)
-        this.open()
     }
 
     destroy() {
@@ -24,20 +23,25 @@ export default class SearchOverlay extends ShopwareComponent {
         this.el.inert = true
     }
 
-    open() {
-        if (this._open) {
-            this._focusInput()
-            return
+    async open({ term = null } = {}) {
+        if (!this._open) {
+            this._open = true
+            this.el.inert = false
+            this.el.classList.remove(this.options.closedClass)
+            this.el.classList.add(this.options.openClass)
+            this.el.setAttribute('aria-hidden', 'false')
+            this._setBodyLock(true)
         }
 
-        this._open = true
-        this.el.inert = false
-        this.el.classList.remove(this.options.closedClass)
-        this.el.classList.add(this.options.openClass)
-        this.el.setAttribute('aria-hidden', 'false')
-        this._setBodyLock(true)
-        this._focusInput()
-        window.Shopware.emitQueued(this.options.openEvent, this.el)
+        const bar = await this._waitForBar()
+        bar?.onOpened?.(term)
+
+        window.Shopware.emitQueued(this.options.openEvent, {
+            el: this.el,
+            term,
+        })
+
+        bar?.focusInput?.()
     }
 
     close() {
@@ -45,17 +49,50 @@ export default class SearchOverlay extends ShopwareComponent {
             return
         }
 
+        const term = this._bar()?.getTerm?.() ?? ''
+
         this._open = false
         this.el.classList.remove(this.options.openClass)
         this.el.classList.add(this.options.closedClass)
         this.el.setAttribute('aria-hidden', 'true')
         this.el.inert = true
         this._setBodyLock(false)
-        window.Shopware.emitQueued(this.options.closeEvent, this.el)
+
+        window.Shopware.emitQueued(this.options.closeEvent, {
+            el: this.el,
+            term,
+        })
     }
 
     isOpen() {
         return this._open
+    }
+
+    _bar() {
+        const barEl = this.el.querySelector(this.options.barSelector)
+        if (!barEl || !window.Shopware) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(
+            this.options.barComponentName,
+            barEl,
+        )
+    }
+
+    async _waitForBar(retries = 20) {
+        for (let i = 0; i < retries; i++) {
+            const bar = this._bar()
+            if (bar) {
+                return bar
+            }
+
+            await new Promise((resolve) => {
+                requestAnimationFrame(resolve)
+            })
+        }
+
+        return this._bar()
     }
 
     _onKeydown(event) {
@@ -100,16 +137,6 @@ export default class SearchOverlay extends ShopwareComponent {
             event.preventDefault()
             window.focusHandler.setFocus(first, { focusVisible: true })
         }
-    }
-
-    _focusInput() {
-        if (!this._input) {
-            return
-        }
-
-        requestAnimationFrame(() => {
-            this._input.focus()
-        })
     }
 
     _setBodyLock(locked) {

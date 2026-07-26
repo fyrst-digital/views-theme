@@ -18,7 +18,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
 | JS: `data-component`, no CSS selectors, no `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
 | JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
-| **Lazy drawer shells (critical):** never cache HTML/DOM; unmount on close; always (re)fetch on open | [javascript.md — Lazy-loaded drawer shells](javascript.md#lazy-loaded-drawer-shells-critical) |
+| **Lazy shells (critical):** never cache HTML/DOM; unmount on close; always (re)fetch on open (Search term via Open/Close payload only) | [javascript.md — Lazy-loaded shells](javascript.md#lazy-loaded-shells-critical) |
 | Removed class-map APIs (`vi_define_classes`, `vi_attr_classes`, `vi_classes`) | [css-classes.md](css-classes.md) |
 | **CSS vars (critical):** component CSS only `var(--token, fallback)` — never assign `--token` there; theme assigns overrides | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
