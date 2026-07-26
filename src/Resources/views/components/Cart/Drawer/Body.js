@@ -1,6 +1,6 @@
 export default class CartDrawerBody extends ShopwareComponent {
     static options = {
-        partialsUrl: null,
+        drawerUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
         headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
         itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
@@ -30,16 +30,16 @@ export default class CartDrawerBody extends ShopwareComponent {
         }
 
         this._clearError()
-        await this._refreshPartials()
+        await this._refresh()
     }
 
-    async _refreshPartials() {
+    async _refresh() {
         if (this._busy) {
             this._queued = true
             return
         }
 
-        if (!this.options.partialsUrl) {
+        if (!this.options.drawerUrl) {
             return
         }
 
@@ -49,11 +49,11 @@ export default class CartDrawerBody extends ShopwareComponent {
         try {
             do {
                 this._queued = false
-                const html = await this._fetchHtml(this.options.partialsUrl)
-                this._applyPartials(html)
+                const html = await this._fetchHtml(this.options.drawerUrl)
+                this._apply(html)
             } while (this._queued)
         } catch (error) {
-            console.error('CartDrawerBody: Failed to refresh cart partials', error)
+            console.error('CartDrawerBody: Failed to refresh cart drawer', error)
             this._showError(null)
         } finally {
             this._busy = false
@@ -67,27 +67,23 @@ export default class CartDrawerBody extends ShopwareComponent {
         })
 
         if (!response.ok) {
-            throw new Error(`Partials fetch failed: ${response.status}`)
+            throw new Error(`Drawer fetch failed: ${response.status}`)
         }
 
         return response.text()
     }
 
-    _parseRoot(html) {
+    _parseFragment(html) {
         const template = document.createElement('template')
         template.innerHTML = html.trim()
-        return template.content.firstElementChild
+        return template.content
     }
 
-    _applyPartials(html) {
-        const root = this._parseRoot(html)
-        if (!root) {
-            return
-        }
-
-        this._replaceFrom(root, this.options.itemsComponent, this.el)
-        this._replaceFrom(root, this.options.footerComponent, this.el)
-        this._replaceFrom(root, this.options.headingComponent, this._drawerEl || document)
+    _apply(html) {
+        const source = this._parseFragment(html)
+        this._replaceFrom(source, this.options.itemsComponent, this.el)
+        this._replaceFrom(source, this.options.footerComponent, this.el)
+        this._replaceFrom(source, this.options.headingComponent, this._drawerEl || document)
     }
 
     _replaceFrom(sourceRoot, componentName, targetRoot) {

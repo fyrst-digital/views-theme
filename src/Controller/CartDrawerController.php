@@ -37,21 +37,6 @@ class CartDrawerController extends StorefrontController
         ]);
     }
 
-    #[Route(
-        path: '/vi/cart/drawer/partials',
-        name: 'frontend.views-theme.cart.drawer.partials',
-        defaults: ['XmlHttpRequest' => true],
-        methods: ['GET'],
-    )]
-    public function partials(Request $request, SalesChannelContext $context): Response
-    {
-        $page = $this->cartPageLoader->load($request, $context);
-
-        return $this->renderComponent('ViewsTheme:Cart:Drawer:Partials', [
-            'page' => $page,
-        ]);
-    }
-
     /**
      * @param array<string, mixed> $props
      */

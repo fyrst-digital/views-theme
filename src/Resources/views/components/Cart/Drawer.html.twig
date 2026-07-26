@@ -1,6 +1,6 @@
 {% props
     page,
-    partialsUrl = path('frontend.views-theme.cart.drawer.partials'),
+    drawerUrl = path('frontend.views-theme.cart.drawer'),
     label = 'checkout.cartTitle'|trans|striptags,
     cva = {},
 %}
@@ -34,7 +34,7 @@
             <twig:block name="content">
                 <twig:ViewsTheme:Cart:Drawer:Body
                     :page="page"
-                    :partialsUrl="partialsUrl"
+                    :drawerUrl="drawerUrl"
                 />
             </twig:block>
         </twig:ViewsTheme:Drawer:Panel>

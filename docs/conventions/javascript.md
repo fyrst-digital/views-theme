@@ -217,7 +217,7 @@ Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache,
 See [Navigation bar](../features/navigation-bar.md).
 ### Cart drawer
 
-Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open partials; Action owns shell lifecycle + badge.
+Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open island refresh; Action owns shell lifecycle + badge.
 
 | Hook | Attribute |
 |------|-----------|
@@ -233,7 +233,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
 - Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
-- Body on `Changed`: one partials fetch → swap Items / Footer / Heading by `data-component` identity
+- Body on `Changed`: re-fetch drawer HTML → swap Items / Footer / Heading by `data-component` identity (shell stays mounted)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).

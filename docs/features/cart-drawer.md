@@ -12,7 +12,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
-| `Cart:Drawer:Body` | While open: on `Cart:Changed` fetches partials once and swaps Heading / Items / Footer roots |
+| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Heading / Items / Footer roots |
 | `Cart:Drawer:Items` | Line list or empty state |
 | `Cart:Drawer:Footer` | Promotion, shipping calculation, summary, checkout CTA |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
@@ -62,30 +62,29 @@ Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoi
 
 AJAX POSTs **omit** `redirectTo` / `forwardTo` (and use `redirect: 'manual'`). Empty `redirectTo` makes core redirect to the home page; `fetch` would follow that into a page route and get **403** (`preventPageLoadingFromXmlHttpRequest`). Twig forms still keep `redirectTo` for no-JS progressive enhancement; Cart strips those fields before POST.
 
-After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Badge updates itself; Body (if mounted) refreshes partials.
+After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Badge updates itself; Body (if mounted) re-fetches drawer HTML and swaps islands.
 
 Core `AddToCart` silent path: `openOffcanvasAfterAddToCart = '0'` (meta + Cart init). Cart subscribes to existing `AddToCart` plugin instances for `addToCartWithoutOffcanvas` and treats that as a successful add for badge refresh. Callers may also emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly.
 
-### Partial DOM updates (drawer open)
+### In-open DOM updates
 
 1. Sub-components emit cart intents
 2. `Cart` performs HTTP and emits `Cart:Changed`
-3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer.partials` (one cart load) and replaces roots by `data-component` identity:
+3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
    - `ViewsTheme:Cart:Drawer:Items`
    - `ViewsTheme:Cart:Drawer:Footer`
    - `ViewsTheme:Cart:Drawer:Heading`
 4. Parse with `<template>`; latest-wins while a fetch is in flight
 
-Shell open remains a full refetch. Partials are only for in-session mutations while the drawer stays open.
+Shell stays mounted (open state, focus trap). Only the three islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts.
 
 ### Controller
 
 | Route name | Path | Method | Renders |
 |------------|------|--------|---------|
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` | `GET` (XHR) | `ViewsTheme:Cart:Drawer` |
-| `frontend.views-theme.cart.drawer.partials` | `/vi/cart/drawer/partials` | `GET` (XHR) | `ViewsTheme:Cart:Drawer:Partials` |
 
-Both load `CheckoutCartPageLoader` and render via `ComponentRendererInterface`.
+Loads `CheckoutCartPageLoader` and renders via `ComponentRendererInterface`. Used for shell open and in-open island refresh.
 
 ### LineItem (shared UX)
 
@@ -111,13 +110,13 @@ No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressiv
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
-| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (partial swap targets) |
+| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (island swap targets) |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
 
-Action options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
+Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
 
 Events:
 
@@ -135,7 +134,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Cart owner | `src/Resources/views/components/Cart.*` |
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
-| Body / partials | `src/Resources/views/components/Cart/Drawer/{Body,Partials,Items,Footer,Heading}.*` |
+| Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Items,Footer,Heading}.*` |
 | Line item | `src/Resources/views/components/LineItem/**` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 
