@@ -7,17 +7,18 @@ Header account control: domain `Account:Action` composed with the generic `Dropd
 ```
 Page:Header:Actions
   └─ Account:Action
-       └─ Dropdown (flat: button + panel, no wrapper)
-            ├─ toggle button → user icon
-            └─ panel (host) → Account:Menu
-                 ├─ guest → Login → Login:Actions (Button submit + recover)
-                 │         + register CTA
-                  └─ customer → Account:Actions
+       └─ Dropdown
+            └─ host (vi-dropdown-host; header: --lg-up)
+                 ├─ toggle button → user icon
+                 └─ panel (popover) → Account:Menu
+                      ├─ guest → Login → Login:Actions (Button submit + recover)
+                      │         + register CTA
+                      └─ customer → Account:Actions
 ```
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Account:Action` | `components/Account/Action.*` | Header action shell (size CVA, a11y labels) |
+| `Account:Action` | `components/Account/Action.*` | Action shell (size CVA, optional visible `label`, a11y) |
 | `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, `aria-expanded` |
 | `Account:Menu` | `components/Account/Menu.*` | Account panel body (no dropdown chrome) |
 | `Account:Actions` | `components/Account/Actions.*` | Logged-in nav links (`Button` + `activeRoute`) |
@@ -27,18 +28,20 @@ Page:Header:Actions
 
 ## Dropdown behavior
 
-- **DOM:** Flat siblings — `<button class="vi-dropdown__toggle">` + `<div class="vi-dropdown" popover>` (no wrapper). Root attrs / root CVA / `data-component` on the **panel**
+- **DOM:** Host wrapper `vi-dropdown-host` (`display: contents`) → toggle button + panel popover. `data-component` on the **host**; panel keeps `class` / root CVA (`vi-dropdown`)
 - **Open/close:** HTML Popover (`popover="auto"` + `popovertarget`) — Escape and outside click included
-- **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). No JS positioning
+- **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). Values: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`. No JS positioning
 - **Slots:** `toggle` (button content), default `content` (panel body)
-- **JS (a11y only):** host is the panel; finds toggle via `[popovertarget]`; syncs `aria-expanded` only (no focus moves)
-- **Styling:** Bootstrap utilities first in `Dropdown.cva.twig`. Co-located `Dropdown.css`: popover UA reset + anchor placement only
-- **Header wire-up:** `toggle:class="header-action"` (icon chrome on the button, not the panel)
+- **JS (a11y only):** host root; finds panel `[popover]` + toggle `[popovertarget]`; syncs `aria-expanded` only
+- **Responsive hide:** `host:class="vi-dropdown-host--lg-up"` hides host + force-dismisses open panel below `lg` (no anchor jump)
+- **Composition:** `class` → panel, `toggle:class` → button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults)
+- **Visible label:** prop `label` defaults to `account.myAccount`; `:label="false"` hides it (icon-only). CVA slot `label` / `label:class`
+- **Header wire-up:** `host:class="vi-dropdown-host--lg-up"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:label="false"`
 - **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
 
-- Toggle: `aria-haspopup="dialog"`, labelled with `account.myAccount`
+- Toggle: `aria-haspopup="dialog"`, `aria-label` / `title` from `account.myAccount` (kept when icon-only or with visible label)
 - Guest menu root: `role="dialog"` + `aria-label`
 - Customer: nav links from `Account:Actions` (no dialog role); `aria-current="page"` when `activeRoute` (default: `app.request` `_route`) matches the action route
 
@@ -55,14 +58,30 @@ Shims remain as thin wrappers with `@deprecated` comments where kept.
 
 ## Wire-up
 
-`Page:Header:Actions` renders:
+`Page:Header:Actions` (visible from `lg` up; icon-only):
 
 ```twig
 <twig:ViewsTheme:Account:Action
+    :label="false"
     class="mt-2 p-0 vi-account__dropdown"
+    host:class="vi-dropdown-host--lg-up"
+    toggle:class="header-action icon-size-3 icon-size-lg-4"
+/>
+```
+
+Below `lg`, `vi-dropdown-host--lg-up` hides the host and force-dismisses an open panel (same CSS cascade — no corner jump).
+
+`Navigation:Drawer` title (mobile entry; default label snippet). `placement` / `toggle:*` forward to `Dropdown` via attributes defaults (`bottom-start` so the panel opens into the drawer):
+
+```twig
+<twig:ViewsTheme:Account:Action
+    class="p-0 vi-account__dropdown"
+    placement="bottom-start"
     toggle:class="header-action"
 />
 ```
+
+See [Navigation drawer](navigation-drawer.md) and [UX components — Attributes](../conventions/ux-components.md#attributes).
 
 ## Account:Login field forwarding
 
@@ -73,7 +92,7 @@ Shims remain as thin wrappers with `@deprecated` comments where kept.
 | `username:*` | email `Form:Input` |
 | `password:*` | password `Form:Input` |
 
-Defaults live in Login (type, id, name, label, placeholder, autocomplete, error, validationRules, class). Field `id`s are unique per instance (`vi-login-{n}-mail` / `-password`) so header menu + login page can coexist. Caller keys override; `class` concatenates. Deeper nests pass through (e.g. `username:input:class`).
+Defaults live in Login (type, id, name, label, placeholder, autocomplete, error, validationRules). Field root classes come from CVA slots `username` / `password` via `class="{{ cx.…apply() }}"` (not defaults). Field `id`s are unique per instance (`vi-login-{n}-mail` / `-password`) so header menu + login page can coexist. Caller `username:class` / `password:class` merge via CVA; deeper nests pass through (e.g. `username:input:class`).
 
 ```twig
 <twig:ViewsTheme:Account:Login

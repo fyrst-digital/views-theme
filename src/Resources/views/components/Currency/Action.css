@@ -1,0 +1,7 @@
+.vi-currency-action {
+  min-width: var(--currency-action-min-width, 10rem);
+}
+
+.vi-currency-action__caret {
+  flex-shrink: 0;
+}

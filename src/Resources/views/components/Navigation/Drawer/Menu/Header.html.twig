@@ -1,0 +1,49 @@
+{% props
+    category,
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block start %}
+            <div
+                {{ attributes.nested('start') }}
+                class="{{ cx.start.apply() }}"
+            >        
+                <twig:ViewsTheme:Navigation:Drawer:Back
+                    class="btn btn-sm"
+                    icon:class="icon-size-2"
+                    :showLabel="false"
+                    :category="category"
+                    :menuUrl="menuUrl"
+                    {{ ...attributes.nested('back').all() }}
+                />
+                <twig:ViewsTheme:Navigation:Drawer:ShowAll
+                    class="btn btn-sm"
+                    icon:class="icon-size-2"
+                    :showLabel="false"
+                    :menuUrl="menuUrl"
+                    {{ ...attributes.nested('showAll').all() }}
+                />
+            </div>
+        {% endblock %}
+        {% block end %}
+            <div
+                {{ attributes.nested('end') }}
+                class="{{ cx.end.apply() }}"
+            >       
+                <twig:ViewsTheme:Navigation:Drawer:Active
+                    class="btn btn-sm"
+                    :category="category"
+                    {{ ...attributes.nested('active').all() }}
+                />
+            </div>
+        {% endblock %}
+    {% endblock %}
+</div>

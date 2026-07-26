@@ -1,0 +1,34 @@
+{% props
+    category,
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    showLabel = true,
+    cva = {},
+%}
+
+{% set isAlternateRoot = category.id == context.salesChannel.footerCategoryId
+    or category.id == context.salesChannel.serviceCategoryId %}
+{% set href = (isAlternateRoot or category.parentId == context.salesChannel.navigationCategoryId)
+    ? menuUrl
+    : path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.parentId }) %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set rootClass = cx.root.apply() %}
+{% set iconClass = cx.icon.apply() %}
+{% set labelClass = cx.label.apply() %}
+
+<twig:ViewsTheme:Navigation:Drawer:Drill
+    class="{{ rootClass }}"
+    {{ ...attributes.defaults({
+        href: href,
+        title: 'general.back'|trans|striptags,
+        direction: 'back',
+    }).all() }}
+>
+    {{ vi_icon('caret-left', {
+        class: iconClass
+    }) }}
+    {% if showLabel is same as(true) %}
+        <span class="{{ labelClass }}">
+            {{ 'general.back'|trans|sw_sanitize }}
+        </span>
+    {% endif %}
+</twig:ViewsTheme:Navigation:Drawer:Drill>

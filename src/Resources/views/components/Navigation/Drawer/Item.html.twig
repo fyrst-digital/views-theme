@@ -1,0 +1,69 @@
+{% props
+    item,
+    activeId = null,
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    image = null,
+    cva = {},
+%}
+
+{% set category = item.category %}
+{% set isActive = activeId and category.id == activeId %}
+{% set hasChildren = category.visibleChildCount > 0 %}
+{% set name = category.translated.name %}
+{% set isFolder = category.type == 'folder' %}
+{% set drillUrl = path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.id }) %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set drillClass = cx.drill.apply() %}
+{% set iconClass = cx.icon.apply() %}
+
+<li
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    <a
+        {{ attributes.nested('link').defaults({
+            href: not isFolder ? category_url(category) : '#',
+            title: name,
+            'aria-current': isActive ? 'page' : null,
+            target: not isFolder and category_linknewtab(category) ? '_blank' : null,
+        }) }}
+        class="{{ cx.link.apply({ active: isActive }) }}"
+    >
+        {% block image %}
+            {% if image %}
+                {% sw_thumbnails 'navigation-drawer-item-image' with {
+                    media: image,
+                    sizes: { default: '64px' },
+                    attributes: {
+                        class: cx.image.apply(),
+                        alt: (image.translated.alt ?: name),
+                        title: (image.translated.title ?: name),
+                        loading: 'lazy',
+                    },
+                } %}
+            {% endif %}
+        {% endblock %}
+
+        {% block label %}
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        {% endblock %}
+    </a>
+
+    {% block drill %}
+        {% if hasChildren %}
+            <twig:ViewsTheme:Navigation:Drawer:Drill
+                class="{{ drillClass }}"
+                {{ ...attributes.nested('drill').defaults({
+                    href: drillUrl,
+                    url: drillUrl,
+                    title: name,
+                    'aria-label': name,
+                }).all() }}
+            >
+                {{ vi_icon('caret-right', {
+                    class: iconClass
+                }) }}
+            </twig:ViewsTheme:Navigation:Drawer:Drill>
+        {% endif %}
+    {% endblock %}
+</li>

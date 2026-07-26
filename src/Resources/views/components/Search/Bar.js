@@ -11,7 +11,6 @@ export default class SearchBar extends ShopwareComponent {
         delay: 250,
         inputSelector: 'input[type="search"]',
         viewAllSelector: '[data-action="view-all"]',
-        overlayOpenEvent: 'ViewsTheme:Search:Overlay:Open',
     }
 
     init() {
@@ -29,32 +28,47 @@ export default class SearchBar extends ShopwareComponent {
         this._onInput = this._onInput.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
         this._onSubmit = this._onSubmit.bind(this)
-        this._onOverlayOpen = this._onOverlayOpen.bind(this)
         this._onResultsClick = this._onResultsClick.bind(this)
         this._onResultsKeydown = this._onResultsKeydown.bind(this)
 
         this._input.addEventListener('input', this._onInput)
         this._input.addEventListener('keydown', this._onKeydown)
         this.el.addEventListener('submit', this._onSubmit)
-        window.Shopware.on(this.options.overlayOpenEvent, this._onOverlayOpen)
+    }
+
+    getTerm() {
+        return this._input?.value?.trim() ?? ''
+    }
+
+    setTerm(term) {
+        if (!this._input) {
+            return
+        }
+
+        this._input.value = typeof term === 'string' ? term : ''
+    }
+
+    focusInput() {
+        if (!this._input) {
+            return
+        }
+
+        requestAnimationFrame(() => {
+            this._input?.focus()
+        })
     }
 
     destroy() {
         this._input?.removeEventListener('input', this._onInput)
         this._input?.removeEventListener('keydown', this._onKeydown)
         this.el.removeEventListener('submit', this._onSubmit)
-        window.Shopware.off(this.options.overlayOpenEvent, this._onOverlayOpen)
 
         clearTimeout(this._debounceTimer)
         this._abortInFlight()
         this._clearResults()
     }
 
-    _term() {
-        return this._input.value.trim()
-    }
-
-    _emit(name, term = this._term()) {
+    _emit(name, term = this.getTerm()) {
         document.dispatchEvent(new CustomEvent(name, { detail: { term } }))
     }
 
@@ -62,16 +76,20 @@ export default class SearchBar extends ShopwareComponent {
         clearTimeout(this._debounceTimer)
         this._debounceTimer = setTimeout(() => {
             this._debounceTimer = null
-            const term = this._term()
-
-            if (term.length < this.options.minChars) {
-                this._abortInFlight()
-                this._clearResults()
-                return
-            }
-
-            void this._fetchSuggest(term)
+            this._syncSuggestFromInput()
         }, this.options.delay)
+    }
+
+    _syncSuggestFromInput() {
+        const term = this.getTerm()
+
+        if (term.length < this.options.minChars) {
+            this._abortInFlight()
+            this._clearResults()
+            return
+        }
+
+        void this._fetchSuggest(term)
     }
 
     async _fetchSuggest(term) {
@@ -183,7 +201,7 @@ export default class SearchBar extends ShopwareComponent {
     }
 
     _onSubmit(event) {
-        const term = this._term()
+        const term = this.getTerm()
 
         if (term.length < this.options.minChars) {
             event.preventDefault()
@@ -194,17 +212,31 @@ export default class SearchBar extends ShopwareComponent {
         this._emit(ANALYTICS.performed, term)
     }
 
-    _onOverlayOpen(overlayEl) {
-        if (!(overlayEl instanceof Element) || !overlayEl.contains(this.el)) {
-            return
+    /**
+     * Apply an optional restored term and run suggest when eligible.
+     * Called by Overlay.open only (Open bus event is for Action aria, not suggest).
+     */
+    onOpened(term = null) {
+        if (typeof term === 'string') {
+            this.setTerm(term)
         }
 
         if (this._resultsEl && !this._resultsEl.isConnected) {
             this._resultsEl = null
         }
 
-        const term = this._term()
-        if (term.length < this.options.minChars || this._resultsEl) {
+        this._syncSuggest()
+    }
+
+    _syncSuggest() {
+        const term = this.getTerm()
+        if (term.length < this.options.minChars) {
+            this._abortInFlight()
+            this._clearResults()
+            return
+        }
+
+        if (this._resultsEl) {
             return
         }
 
@@ -222,7 +254,7 @@ export default class SearchBar extends ShopwareComponent {
     }
 
     _onKeydown(event) {
-        if (event.key !== 'ArrowDown' || !this._term() || !this._suggestLinks.length) {
+        if (event.key !== 'ArrowDown' || !this.getTerm() || !this._suggestLinks.length) {
             return
         }
 

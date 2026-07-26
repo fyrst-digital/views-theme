@@ -13,6 +13,7 @@
     >
         {% block action %}
             <twig:ViewsTheme:Button
+                class="{{ cx.action.apply() }}"
                 {{ ...attributes.nested('action').defaults({
                     type: 'link',
                     color: 'light',
@@ -20,7 +21,6 @@
                     title: 'header.searchAllResults'|trans|striptags,
                     label: 'header.searchAllResults'|trans|sw_sanitize,
                     'data-action': 'view-all',
-                    class: cx.action.apply(),
                 }).all() }}
             />
         {% endblock %}

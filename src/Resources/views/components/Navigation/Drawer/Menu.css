@@ -1,0 +1,66 @@
+/* Definite height from Menu flex column — survives absolute levels during slide. */
+.vi-navigation-drawer-menu__scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    position: relative;
+}
+
+.vi-navigation-drawer-menu__level {
+    width: 100%;
+    background-color: var(--bs-body-bg, #fff);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .vi-navigation-drawer-menu[data-direction] .vi-navigation-drawer-menu__scroll {
+        overflow: hidden;
+    }
+
+    /* Fill the scrollport CB (flex height above). */
+    .vi-navigation-drawer-menu[data-direction] [data-level][data-state] {
+        position: absolute;
+        inset: 0;
+        width: auto;
+        overflow: hidden;
+        background-color: var(--bs-body-bg, #fff);
+    }
+
+    .vi-navigation-drawer-menu[data-direction] [data-level][data-state='out'],
+    .vi-navigation-drawer-menu[data-direction] [data-level][data-state='from'] {
+        z-index: 0;
+    }
+
+    .vi-navigation-drawer-menu[data-direction] [data-level][data-state='enter'],
+    .vi-navigation-drawer-menu[data-direction] [data-level][data-state='in'] {
+        z-index: 1;
+    }
+
+    .vi-navigation-drawer-menu[data-direction='forward'] [data-level][data-state='from'],
+    .vi-navigation-drawer-menu[data-direction='forward'] [data-level][data-state='in'] {
+        transform: translateX(0);
+    }
+
+    .vi-navigation-drawer-menu[data-direction='forward'] [data-level][data-state='enter'] {
+        transform: translateX(100%);
+    }
+
+    .vi-navigation-drawer-menu[data-direction='forward'] [data-level][data-state='out'] {
+        transform: translateX(-100%);
+    }
+
+    .vi-navigation-drawer-menu[data-direction='back'] [data-level][data-state='from'],
+    .vi-navigation-drawer-menu[data-direction='back'] [data-level][data-state='in'] {
+        transform: translateX(0);
+    }
+
+    .vi-navigation-drawer-menu[data-direction='back'] [data-level][data-state='enter'] {
+        transform: translateX(-100%);
+    }
+
+    .vi-navigation-drawer-menu[data-direction='back'] [data-level][data-state='out'] {
+        transform: translateX(100%);
+    }
+
+    .vi-navigation-drawer-menu[data-animating='true'] [data-level][data-state] {
+        transition: transform var(--vi-navigation-drawer-menu-duration, 250ms) ease;
+    }
+}

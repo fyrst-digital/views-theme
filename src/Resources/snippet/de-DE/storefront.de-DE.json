@@ -2,6 +2,9 @@
     "viewsTheme": {
         "search": {
             "productsHeading": "Produkte"
+        },
+        "navigationDrawer": {
+            "showAll": "Alle anzeigen"
         }
     },
     "variantsGrid": {

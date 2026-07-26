@@ -7,13 +7,14 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 ## Features
 
 - Header `Search:Action` opens `Search:Overlay` on click
-- Overlay HTML is fetched once from a dedicated theme widget and cached client-side
+- Overlay shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
+- Term hand-off is **event-only**: Close payload `{ el, term }` → Action stores string → `overlay.open({ term })` → Open payload → Bar `setTerm` + suggest. Action never touches the input DOM
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
 - `Search:Bar` owns suggest UX (debounce, fetch, DOM insert) — **not** core `SearchWidgetPlugin`
 - Suggest HTML is rendered by the theme controller via Symfony UX `ComponentRendererInterface` as `ViewsTheme:Search:Suggest` with explicit props
 - Close via isolated `Search:Overlay:Close` / `Search:Overlay:Backdrop`, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
-- Closed overlay uses `inert` (and `aria-hidden`) so focus cannot reach hidden UI; open state traps Tab within the dialog
+- Open state traps Tab within the dialog
 
 ## Layout notes
 
@@ -24,25 +25,25 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Flex scroll chain: panel (`min-h-0` + column flex) → Suggest (`flex-1 min-h-0`) → Results/`Scroll:Area` (`flex-1 min-h-0`) so long result lists scroll inside the panel.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (`showTieredPrices=false`, `showTaxNote=false`, list price via shared Price component).
 - Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`.
-- Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `--scroll-fade: 40px`); JS toggles `data-scroll-up` / `data-scroll-down` so fades hide at the corresponding edge (and when content does not overflow).
+- Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `--scroll-fade: 40px`); base overflow is `overflow-y-auto`; JS toggles `data-scroll-up` / `data-scroll-down` so fades hide at the corresponding edge (and when content does not overflow).
 
 ## How it works
 
 ### Open flow
 
 1. `ViewsTheme:Search:Action` reads `overlayUrl` from `data-component-options`
-2. First click fetches `frontend.views-theme.search.overlay`
-3. Response HTML is appended to `document.body`
-4. Shopware component system initializes `ViewsTheme:Search:Overlay` and nested `ViewsTheme:Search:Bar`
-5. Overlay `open()` clears `inert`, emits `ViewsTheme:Search:Overlay:Open` via `Shopware.emitQueued` (payload: overlay element); Action sets `aria-expanded`
-6. Subsequent clicks toggle the existing overlay instance via `getComponentInstanceByElement` + `open()` / `close()`
+2. If Overlay is already open → `close()` only (no fetch)
+3. Otherwise **always** fetches `frontend.views-theme.search.overlay`
+4. Response root is mounted on `document.body` (any leftover mount removed first)
+5. Action waits for Overlay instance, then `overlay.open({ term: preservedTerm })` (Action does not touch the input)
+6. Overlay opens chrome, waits for Bar, calls `Bar.onOpened(term)` (setTerm + suggest once), then `emitQueued` Open `{ el, term }` for Action aria, then `Bar.focusInput()`
+7. Action sets `aria-expanded` on Open
 
 ### Close flow
 
-1. `Search:Overlay:Backdrop` / `Search:Overlay:Close` call `Shopware.callMethod('ViewsTheme:Search:Overlay', 'close')`
-2. `Escape` also calls `close()`
-3. Overlay sets `inert`, emits `ViewsTheme:Search:Overlay:Close` via `Shopware.emitQueued` (payload: overlay element); Action updates aria and restores focus
-4. Input value and suggest DOM stay mounted while the overlay is closed (no click-outside teardown)
+1. Backdrop / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`, or Escape
+2. Overlay reads `Bar.getTerm()`, closes chrome, `emitQueued` Close `{ el, term }`
+3. Action stores `term`, updates aria, focuses the trigger, **removes** the overlay root
 
 ### Suggest flow
 
@@ -53,7 +54,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 3. Abort previous in-flight request
 4. Mount HTML **after the form**
 5. Wire keyboard focus + analytics custom events
-6. On `Shopware` event `ViewsTheme:Search:Overlay:Open` (payload: overlay element), if the bar is inside that overlay, the input still has a term ≥ `minChars`, and results are missing (or detached), re-fetch suggest
+6. On Open with restored `term`, suggest runs immediately (no debounce)
 
 ```
 frontend.views-theme.search.suggest
@@ -88,6 +89,13 @@ $this->components->createAndRender('ViewsTheme:Search:Suggest', [
 | View all | `data-action="view-all"` |
 
 Bar options (`data-component-options`): `suggestUrl`, `minChars`, `delay`.
+
+Events:
+
+| Event | Payload |
+|-------|---------|
+| `ViewsTheme:Search:Overlay:Open` | `{ el, term }` |
+| `ViewsTheme:Search:Overlay:Close` | `{ el, term }` |
 
 See [JavaScript conventions](../conventions/javascript.md).
 

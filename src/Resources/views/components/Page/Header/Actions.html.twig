@@ -14,29 +14,33 @@
     {% block content %}
 
         {% block menu %}
+            <twig:ViewsTheme:Navigation:Drawer:Action
+                class="header-action icon-size-3 icon-size-lg-4 d-lg-none" />
         {% endblock %}
 
         {% block search %}
             <twig:ViewsTheme:Search:Action 
-                class="header-action" />
+                class="header-action icon-size-3 icon-size-lg-4" />
         {% endblock %}
 
         {% block wishlist %}
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
-                    class="header-action position-relative" />
+                    :label="false"
+                    class="header-action icon-size-3 icon-size-lg-4 position-relative d-none d-lg-inline-flex" />
             {% endif %}
-        {% endblock %}  
+        {% endblock %}
 
         {% block account %}
-            <twig:ViewsTheme:Account:Action 
+            <twig:ViewsTheme:Account:Action
+                :label="false"
                 class="mt-2 p-0 vi-account__dropdown"
-                toggle:class="header-action" />
+                host:class="vi-dropdown-host--lg-up"
+                toggle:class="header-action icon-size-3 icon-size-lg-4" />
         {% endblock %}
 
         {% block cart %}
-            <twig:ViewsTheme:Page:Header:Action:Cart
-                class="{{ actionClass }}" />
+            <twig:ViewsTheme:Page:Header:Action:Cart />
         {% endblock %}
 
     {% endblock %}

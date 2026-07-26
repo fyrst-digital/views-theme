@@ -1,3 +1,8 @@
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
 .btn-primary {
   --btn-color: var(--body-color);
 }
@@ -18,6 +23,12 @@
   }
 }
 
+.btn-sm {
+  --btn-padding-x: var(--spacing-2);
+  --btn-padding-y: var(--spacing-1);
+  --btn-font-size: 14px;
+}
+
 .btn-lg {
   --btn-padding-x: var(--spacing-4);
   --btn-padding-y: var(--spacing-3);
@@ -29,15 +40,10 @@
 }
 
 .header-action {
-  --icon-size: 20px;
   --btn-border-radius: var(--border-radius-pill);
   --btn-hover-bg: var(--sw-color-brand-light);
   --btn-active-bg: var(--btn-hover-bg);
   --btn-active-border-color: transparent;
-
-  @variant lg {
-    --icon-size: 24px;
-  }
 
   .badge {
     --badge-position: absolute;
@@ -56,6 +62,26 @@
   --dropdown-max-width: min(100vw - 40px, 280px);
 }
 
+.vi-language-action,
+.vi-currency-action {
+  --dropdown-max-width: min(100vw - 40px, 16rem);
+}
+.vi-language-action__toggle,
+.vi-currency-action__toggle {
+    --btn-gap: var(--spacing-2);
+    --btn-font-weight: 500;
+}
+
+.vi-language-menu__option, 
+.vi-currency-menu__option {
+  --dropdown-link-active-bg: var(--light);
+  --dropdown-link-hover-bg: var(--light);
+}
+
 .vi-account-actions__action {
   --btn-hover-bg: var(--light);
+}
+
+.vi-navigation-drawer-menu {
+    --vi-navigation-drawer-menu-duration: 300ms;
 }

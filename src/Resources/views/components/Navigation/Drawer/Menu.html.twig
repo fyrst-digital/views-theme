@@ -1,0 +1,77 @@
+{% props
+    navigation,
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    cva = {},
+%}
+
+{% set activeId = shopware.navigation.id ?? context.salesChannel.navigationCategoryId %}
+{% set isRoot = activeId == context.salesChannel.navigationCategoryId %}
+{% set children = navigation.getChildren(activeId) %}
+{% set active = navigation.active %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set scrollClass = cx.scroll.apply() %}
+{% set levelClass = cx.level.apply() %}
+{% set listClass = cx.list.apply() %}
+
+{% set navigationImageIds = [] %}
+{% if children %}
+    {% for treeItem in children.tree %}
+        {% set itemCustomFields = treeItem.category.translated.customFields|default({}) %}
+        {% set navigationImageId = itemCustomFields.vi_navigation_image ?? null %}
+        {% if navigationImageId %}
+            {% set navigationImageIds = navigationImageIds|merge([navigationImageId]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% set navigationImages = navigationImageIds is not empty
+    ? searchMedia(navigationImageIds, context.context)
+    : null %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Navigation:Drawer:Menu',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <twig:ViewsTheme:Scroll:Area
+        class="{{ scrollClass }}"
+        {{ ...attributes.nested('scroll').all() }}
+    >
+        <div
+            {{ attributes.nested('level').defaults({
+                'data-level': '',
+            }) }}
+            class="{{ levelClass }}"
+        >
+            {% if not isRoot and active %}
+                <twig:ViewsTheme:Navigation:Drawer:Menu:Header
+                    :category="active"
+                    :menuUrl="menuUrl"
+                    {{ ...attributes.nested('header').all() }}
+                />
+            {% endif %}
+
+            <ul
+                {{ attributes.nested('list') }}
+                class="{{ listClass }}">
+                {% if children %}
+                    {% for item in children.tree %}
+                        {% set hasChildren = item.category.visibleChildCount > 0 %}
+
+                        {% if item.category.type != 'folder' or hasChildren %}
+                            {% set itemCustomFields = item.category.translated.customFields|default({}) %}
+                            {% set imageId = itemCustomFields.vi_navigation_image ?? null %}
+                            {% set image = imageId and navigationImages ? navigationImages.get(imageId) : null %}
+                            <twig:ViewsTheme:Navigation:Drawer:Item
+                                :item="item"
+                                :activeId="activeId"
+                                :menuUrl="menuUrl"
+                                :image="image"
+                            />
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </twig:ViewsTheme:Scroll:Area>
+</div>

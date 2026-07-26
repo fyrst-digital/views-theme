@@ -63,6 +63,15 @@ $font-sizes: (
   6: $h6-font-size
 );
 
+$icon-sizes: (
+  1: 12px,
+  2: 16px,
+  3: 20px,
+  4: 24px,
+  5: 32px,
+  6: 40px,
+);
+
 // BUtilities overrides
 $utilities: (
   "position": (
@@ -77,9 +86,27 @@ $utilities: (
     responsive: true,
     values: $font-sizes
   ),
+  "icon-size": (
+    property: --icon-size,
+    class: icon-size,
+    responsive: true,
+    values: $icon-sizes
+  ),
   "cursor": (
     property: cursor,
     values: pointer default text
+  ),
+  "overflow": (
+    property: overflow,
+    values: auto hidden visible scroll clip,
+  ),
+  "overflow-x": (
+    property: overflow-x,
+    values: auto hidden visible scroll clip,
+  ),
+  "overflow-y": (
+    property: overflow-y,
+    values: auto hidden visible scroll clip,
   ),
 );
 

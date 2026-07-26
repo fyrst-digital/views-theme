@@ -1,0 +1,24 @@
+{% props
+    href,
+    url = null,
+    title = null,
+    direction = 'forward',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<a
+    {{ attributes.defaults({
+        href: href,
+        title: title,
+        'data-component': 'ViewsTheme:Navigation:Drawer:Drill',
+        'data-component-options': {
+            url: url ?? href,
+            direction: direction,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}{% endblock %}
+</a>

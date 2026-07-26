@@ -1,0 +1,76 @@
+{% props
+    navigation,
+    languages = null,
+    currencies = null,
+    menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    label = 'general.menuLink'|trans|striptags,
+    wishlist = config('core.cart.wishlistEnabled'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<twig:ViewsTheme:Drawer
+    class="{{ cx.root.apply() }}"
+    {{ ...attributes.defaults({
+        id: 'vi-navigation-drawer',
+        side: 'start',
+        label: label,
+    }).all() }}
+>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...attributes.nested('panel').defaults({
+                side: 'start',
+            }).all() }}
+        >
+            <twig:block name="header">
+                <twig:ViewsTheme:Drawer:Header>
+                    <twig:block name="title">
+                        <div class="vi-drawer__title d-flex align-items-center gap-1 mb-0">
+                            {% if wishlist %}
+                                <twig:ViewsTheme:Wishlist:Action
+                                    class="position-relative"
+                                    label:class="fs-6"
+                                    badge:id="vi-navigation-drawer-wishlist-basket"
+                                    live:id="vi-navigation-drawer-wishlist-live"
+                                    aria-labelledby="vi-navigation-drawer-wishlist-live"
+                                />
+                            {% endif %}
+
+                            <twig:ViewsTheme:Account:Action
+                                class="mt-2 p-0 vi-account__dropdown"
+                                placement="bottom-center"
+                                label:class="fs-6"
+                            />
+                        </div>
+                    </twig:block>
+                </twig:ViewsTheme:Drawer:Header>
+            </twig:block>
+            <twig:ViewsTheme:Navigation:Drawer:Menu
+                :navigation="navigation"
+                :menuUrl="menuUrl"
+            />
+            <twig:block name="footer">
+                {% set languageCount = languages and languages.count is defined ? languages.count : (languages|default([])|length) %}
+                {% set currencyCount = currencies and currencies.count is defined ? currencies.count : (currencies|default([])|length) %}
+                {% if languageCount > 1 or currencyCount > 1 %}
+                    <div class="d-flex flex-wrap align-items-center gap-2 bg-light p-4 border-top">
+                        <twig:ViewsTheme:Language:Action
+                            :languages="languages"
+                            position="offcanvas"
+                            placement="top-start"
+                            toggle:class="btn-sm"
+                        />
+                        <twig:ViewsTheme:Currency:Action
+                            :currencies="currencies"
+                            position="offcanvas"
+                            placement="top-start"
+                            toggle:class="btn-sm"
+                        />
+                    </div>
+                {% endif %}
+            </twig:block>
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>

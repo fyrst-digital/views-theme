@@ -1,0 +1,70 @@
+{% props
+    languages = null,
+    activeLanguageId = null,
+    position = 'top-bar',
+    showFlag = true,
+    cva = {},
+%}
+
+{% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
+{% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(null)) %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<form
+    {{ attributes.defaults({
+        method: 'post',
+        action: path('frontend.checkout.switch-language'),
+        'data-form-add-dynamic-redirect': 'true',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <ul
+        {{ attributes.nested('list').defaults({
+            'aria-label': 'header.languageList'|trans|striptags,
+        }) }}
+        class="{{ cx.list.apply() }}"
+    >
+        {% for language in resolvedLanguages %}
+            {% set isActive = language.id is same as(resolvedActiveLanguageId) %}
+            {% set translationCode = language.translationCode|default(null) %}
+            {% set translatedCode = translationCode and translationCode.translated is defined ? translationCode.translated : null %}
+            {% set languageDisplay = translatedCode and translatedCode.name and translatedCode.territory
+                ? translatedCode.name ~ ' (' ~ translatedCode.territory ~ ')'
+                : (translatedCode.name|default(language.translated.name|default(language.name))) %}
+            {% set flagCode = translationCode ? translationCode.code : null %}
+            {% set flagCodeFallback = flagCode ? flagCode|split('-')|first : null %}
+
+            <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
+                <button
+                    {{ attributes.nested('option').defaults({
+                        type: 'submit',
+                        name: 'languageId',
+                        id: position ~ '-' ~ language.id,
+                        value: language.id,
+                        'aria-current': isActive ? 'true' : null,
+                    }) }}
+                    class="{{ cx.option.apply({ active: isActive }) }}"
+                >
+                    {% if showFlag and flagCode %}
+                        {% set flagSrc = asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') %}
+                        {% set flagFallbackSrc = flagCodeFallback and flagCodeFallback is not same as(flagCode)
+                            ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
+                            : null %}
+                        <twig:ViewsTheme:Language:Flag
+                            class="{{ cx.flagIcon.apply() }}"
+                            :src="flagSrc"
+                            :fallbackSrc="flagFallbackSrc"
+                            {{ ...attributes.nested('flagIcon').all() }}
+                        />
+                    {% endif %}
+
+                    {{ languageDisplay }}
+                </button>
+
+                {% if translationCode and app.request.attributes.get('_route_params')['_locale']|default(false) %}
+                    <input type="hidden" name="languageCode_{{ language.id }}" value="{{ translationCode.code }}">
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</form>

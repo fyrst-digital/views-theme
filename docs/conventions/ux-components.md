@@ -63,14 +63,27 @@ See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 | Target | Preferred pattern |
 |--------|-------------------|
 | DOM node (`<div>`, `<input>`, …) | `{{ attributes.defaults({ … }) }}` / `{{ attributes.nested('slot').defaults({ … }) }}` |
-| Child `<twig:…>` (overridable) | `{{ ...attributes.nested('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7) |
+| Child `<twig:…>` (overridable) | `class="{{ cx… }}"` + `{{ ...attributes.nested('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7; **no** `class` in defaults) |
 
 - Call `attributes.nested('slot')` **inline** — do not assign it to an intermediate variable.
 - Pass the defaults hash **inline** to `.defaults({ … })` — do not assign it to an intermediate variable.
 
 #### DOM nodes
 
-Stringifies the bag to HTML. On **this** component’s own root/slots, render **`class` only** via `class="{{ cx.… }}"` — not inside `defaults` (CVA owns classes). Non-class attrs go through `defaults` / `nested().defaults`.
+Stringifies the bag to HTML. Non-class attrs go through `defaults` / `nested().defaults`.
+
+#### `class` — never in `.defaults({…})`
+
+**Never** put `class` (or nested `slot:class`) inside `attributes.defaults({…})` / `nested(…).defaults({…})` — DOM or child spread.
+
+| Need | Pattern |
+|------|---------|
+| Own root / slot classes | `class="{{ cx.root.apply() }}"` / `class="{{ cx.label.apply() }}"` on the element |
+| Child root classes | `class="{{ cx.…apply() }}"` on the `<twig:…>` tag |
+| Child nested classes | `toggle:class="{{ cx.toggle.apply() }}"` (etc.) on the child tag |
+| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_cva*` → included in `cx.…apply()` |
+
+After `vi_cva` / `vi_cva_from_file`, root `class` is marked rendered; putting it in `.defaults({…})` on the same bag **drops** it (Symfony unsets rendered keys). Nested `slot:class` is stripped into the CVA slot — re-emit with `class="{{ cx.slot.apply() }}"` / `slot:class="…"`, not via defaults.
 
 #### Child components (preferred forward)
 
@@ -79,18 +92,18 @@ When a parent composes a child `<twig:…>` and callers may need to override tha
 Spread injects a **map** into the child mount: keys in the child’s `{% props %}` become props; the rest become the child’s `attributes` (including deeper nests like `input:class`).
 
 ```twig
-{# ✅ Preferred: defaults + caller `username:*` overrides #}
+{# ✅ class on the tag; defaults for non-class only #}
 <twig:ViewsTheme:Form:Input
+    class="{{ cx.username.apply() }}"
     {{ ...attributes.nested('username').defaults({
         type: 'email',
         id: 'loginMail',
         name: 'username',
         label: 'account.loginMailLabel'|trans|sw_sanitize,
-        class: 'vi-account-login__email flex-fill',
     }).all() }}
 />
 
-{# Caller #}
+{# Caller — username:class merges via Login CVA username slot #}
 <twig:ViewsTheme:Account:Login
     :username:label="false"
     username:placeholder="{{ 'account.loginMailLabel'|trans|sw_sanitize }}"
@@ -98,8 +111,7 @@ Spread injects a **map** into the child mount: keys in the child’s `{% props %
 />
 ```
 
-- Put child defaults in `.defaults({ … })`; caller nested keys win (`class` is concatenated).
-- **`class` inside the spread `.defaults({…})` is OK** — that hash is child mount data, not this component’s DOM `defaults`.
+- Put non-class child defaults in `.defaults({ … })`; caller nested keys win.
 - Use `:slot:prop="…"` for non-strings (e.g. `:username:label="false"`). Static `username:label="false"` is the string `"false"`.
 - Nest names (`username`, `password`, …) are a parent convention — document them on the feature page. Not automatic across layers; each parent must spread.
 - Skip spread only when the child call is fixed and must never be overridden from outside.
@@ -121,10 +133,69 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
     <twig:block name="footer">…</twig:block>
 </twig:ViewsTheme:Card>
 
-{# ❌ {% block %} inside <twig:…> #}
+{# ❌ {% block %} inside <twig:…> — double-defines the block / Twig error #}
+<twig:ViewsTheme:Child>
+    <twig:block name="title">
+        {% block title %}{% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Child>
 ```
 
 `class="{{ … }}"`, `:prop="expr"`, and `{% for %}` inside HTML tags are fine.
+
+### Nested blocks: parent `cx` / `attributes` are shadowed
+
+Child mount merges parent context, then **child props win**. If the child also defines `cx` or `attributes` (e.g. `Dropdown` inside `Account:Action`), those names inside `<twig:block>` refer to the **child**, not the parent.
+
+```twig
+{% set cx = vi_cva_from_file(cva) %}
+{% set labelClass = cx.label.apply() %}  {# bind before child mount #}
+
+<twig:ViewsTheme:Dropdown …>
+    <twig:block name="toggle">
+        {# ❌ cx is Dropdown’s CVA here — parent label:class is lost #}
+        {# ✅ use precomputed locals #}
+        <span class="{{ labelClass }}">{{ label }}</span>
+    </twig:block>
+</twig:ViewsTheme:Dropdown>
+```
+
+Parent props the child does **not** declare (e.g. `label` text) still resolve from the parent context.
+
+### Nested slots: props and single content owner
+
+Do **not** multi-hop blocks through nested `<twig:…>` hosts (no `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward).
+
+| Need | Pattern |
+|------|---------|
+| Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `attributes.nested(…).defaults({…})` |
+| Markup body | **One** component owns `{% block content %}` (the shell that wraps that DOM) |
+| Rich chrome override | Caller overrides a **whole** `{% block %}` on that shell (e.g. `header`) |
+
+```twig
+{# Panel owns body content; title is a prop #}
+{% props title = null %}
+…
+<twig:ViewsTheme:Drawer:Header
+    {{ ...attributes.nested('header').defaults({
+        title: title,
+    }).all() }}
+/>
+<div class="…">
+    {% block content %}{% endblock %}
+</div>
+
+{# Caller overrides panel and puts body on Panel — e.g. Navigation:Drawer #}
+<twig:ViewsTheme:Drawer title="{{ label }}" …>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel title="{{ label }}" …>
+            <twig:ViewsTheme:Some:Body />
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>
+```
+
+Do **not** nest `{% block foo %}` inside `<twig:block name="foo">` — that redefines the same block and fails at compile time.
 
 ## JavaScript
 
@@ -152,7 +223,9 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
-| Search:* (+ Action/Overlay JS), LanguageSwitch, Offcanvas, Navigation/Flyout | UX / component |
+| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout | UX / component |
+| Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
+| Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |
 | LineItem:*, Cart:*, Wishlist:* | UX / shells |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |

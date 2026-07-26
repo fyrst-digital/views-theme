@@ -1,6 +1,7 @@
 {% props
     href = path('frontend.wishlist.page'),
     title = 'header.wishlist'|trans|striptags,
+    label = 'header.wishlist'|trans|striptags,
     widgetsOptions = {},
     storageOptions = {},
     size = 'md',
@@ -38,6 +39,17 @@
 
     {% block icon %}
         {{ vi_icon('heart', { class: cx.icon.apply({ size: size }) }) }}
+    {% endblock %}
+
+    {% block label %}
+        {% if label is not same as(false) %}
+            <span
+                {{ attributes.nested('label') }}
+                class="{{ cx.label.apply() }}"
+            >
+                {{ label }}
+            </span>
+        {% endif %}
     {% endblock %}
 
     {% block live_region %}

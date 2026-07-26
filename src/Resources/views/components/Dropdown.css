@@ -1,3 +1,29 @@
+/* Host is display:contents so toggle stays in parent flex layout */
+.vi-dropdown-host {
+  display: contents;
+}
+
+/* Hide host (toggle + panel) below lg — same cascade, no anchor jump */
+.vi-dropdown-host--lg-up {
+  @media (max-width: 1023.98px) {
+    display: none;
+  }
+
+  /* Top-layer popover can outlive host box; force-dismiss without fade */
+  @media (max-width: 1023.98px) {
+    .vi-dropdown[popover] {
+      transition: none !important;
+      display: none !important;
+      opacity: 0 !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      translate: none !important;
+    }
+  }
+}
+
 /* Native popover + CSS anchor placement only — chrome in Dropdown.cva.twig */
 
 .vi-dropdown[popover] {
@@ -16,6 +42,14 @@
     left: anchor(left);
     right: auto;
     bottom: auto;
+  }
+
+  &[data-placement='bottom-center'] {
+    top: anchor(bottom);
+    left: anchor(center);
+    right: auto;
+    bottom: auto;
+    translate: -50% 0;
   }
 
   &[data-placement='top-end'] {
