@@ -33,6 +33,18 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 **Event name casing:** PascalCase segments (`Namespace:Feature:Action`), e.g. `ViewsTheme:Drawer:Open`, `ViewsTheme:Navigation:Drawer:Menu:Drill`.
 
+## Lazy-loaded drawer shells (critical)
+
+Applies to **lazy-mounted `ViewsTheme:Drawer` shells** fetched by an Action (e.g. Navigation drawer). Does **not** cover in-session Menu drill level HTML caches.
+
+| Phase | Required |
+|-------|----------|
+| **Open** | Always **(re)fetch** HTML. Never keep a string cache of a previous response for reuse. |
+| **Close** | After close completes (`ViewsTheme:Drawer:Close`), **remove** the drawer root from the DOM. Do not keep a closed mount for the next open. |
+| **Re-open** | Full fetch + mount again. |
+
+The Action owns this lifecycle; the generic `Drawer` primitive only open/closes. Reference: `Navigation/Drawer/Action.js`.
+
 ## Co-located component JS
 
 Interactive UX components ship `<Name>.js` next to `<Name>.html.twig`, extending global `ShopwareComponent`. Shopware builds them with Vite and loads them via import map — **no** `PluginManager.register`.
@@ -130,6 +142,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root (no HTML/DOM cache) — see [Lazy-loaded drawer shells](#lazy-loaded-drawer-shells-critical)
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`

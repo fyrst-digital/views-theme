@@ -9,7 +9,6 @@ export default class NavigationDrawerAction extends ShopwareComponent {
 
     init() {
         this._drawerEl = null
-        this._drawerHtml = null
         this._loading = false
         this._onClick = this._onClick.bind(this)
         this._onDrawerOpen = this._onDrawerOpen.bind(this)
@@ -34,12 +33,8 @@ export default class NavigationDrawerAction extends ShopwareComponent {
         }
 
         const drawer = this._getDrawerInstance()
-        if (drawer) {
-            if (typeof drawer.isOpen === 'function' && drawer.isOpen()) {
-                drawer.close()
-            } else {
-                drawer.open()
-            }
+        if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
+            drawer.close()
             return
         }
 
@@ -56,24 +51,21 @@ export default class NavigationDrawerAction extends ShopwareComponent {
         this.el.setAttribute('aria-busy', 'true')
 
         try {
-            if (!this._drawerHtml) {
-                const url = new URL(this.options.drawerUrl, window.location.origin)
-                if (window.activeNavigationId) {
-                    url.searchParams.set('navigationId', window.activeNavigationId)
-                }
-
-                const response = await fetch(url.toString(), {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                })
-
-                if (!response.ok) {
-                    throw new Error(`Drawer fetch failed: ${response.status}`)
-                }
-
-                this._drawerHtml = await response.text()
+            const url = new URL(this.options.drawerUrl, window.location.origin)
+            if (window.activeNavigationId) {
+                url.searchParams.set('navigationId', window.activeNavigationId)
             }
 
-            this._mountDrawer(this._drawerHtml)
+            const response = await fetch(url.toString(), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Drawer fetch failed: ${response.status}`)
+            }
+
+            const html = await response.text()
+            this._replaceDrawer(html)
             await this._waitForDrawerInstance()
 
             const drawer = this._getDrawerInstance()
@@ -94,11 +86,10 @@ export default class NavigationDrawerAction extends ShopwareComponent {
         return template.content.firstElementChild
     }
 
-    _mountDrawer(html) {
+    _replaceDrawer(html) {
         const existing = document.querySelector(this.options.drawerSelector)
         if (existing) {
-            this._drawerEl = existing
-            return
+            existing.remove()
         }
 
         const drawerEl = this._parseRoot(html)
@@ -152,5 +143,14 @@ export default class NavigationDrawerAction extends ShopwareComponent {
 
         this.el.setAttribute('aria-expanded', 'false')
         this.el.focus()
+        this._unmountDrawer()
+    }
+
+    _unmountDrawer() {
+        const el = this._drawerEl || document.querySelector(this.options.drawerSelector)
+        if (el) {
+            el.remove()
+        }
+        this._drawerEl = null
     }
 }

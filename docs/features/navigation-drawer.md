@@ -24,7 +24,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 ## Features
 
 - Header `Navigation:Drawer:Action` (list icon) opens the navigation drawer on click
-- Drawer HTML is fetched once from a theme route and cached client-side
+- Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-drawer-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
@@ -56,11 +56,12 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 ### Open flow
 
 1. `ViewsTheme:Navigation:Drawer:Action` reads `drawerUrl` from `data-component-options`
-2. First click fetches `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
-3. Response root is `ViewsTheme:Drawer` (`#vi-navigation-drawer`); appended to `document.body`
-4. Drawer + Panel + Menu + Drill children initialize; Action opens Drawer
-5. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
-6. Subsequent clicks toggle via `getComponentInstanceByElement` + `open()` / `close()`
+2. If Drawer is already open → `close()` only (no fetch); close finishes → Action **unmounts** `#vi-navigation-drawer`
+3. Otherwise **always** fetches `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
+4. Response root is `ViewsTheme:Drawer` (`#vi-navigation-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
+5. Drawer + Panel + Menu + Drill children initialize; Action opens Drawer
+6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
+7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, returns focus, **removes** the drawer root (next open is a full fetch + mount)
 
 ### Menu item interaction
 
