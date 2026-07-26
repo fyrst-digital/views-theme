@@ -79,6 +79,19 @@ Examples:
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
+## UX XHR component responses (critical)
+
+XHR controllers that render UX components via `ComponentRendererInterface` **must** run the same SEO/media placeholder replacement as core `StorefrontController::renderStorefront()`.
+
+| Rule | Detail |
+|------|--------|
+| Use | `AbstractComponentController::renderComponent()` |
+| Never | `new Response($this->components->createAndRender(…))` without replace |
+| Why | `category_url()` / `seoUrl()` emit placeholders (`{domain}/navigation/{id}#`); unresolved → 404 |
+| Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
+
+Controllers: `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`.
+
 ## Related
 
 - [Configuration](configuration.md)

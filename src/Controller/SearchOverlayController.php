@@ -6,7 +6,6 @@ namespace Fyrst\ViewsTheme\Controller;
 
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
 use Shopware\Storefront\Page\Suggest\SuggestPageLoadedHook;
 use Shopware\Storefront\Page\Suggest\SuggestPageLoader;
@@ -16,12 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\TwigComponent\ComponentRendererInterface;
 
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
-class SearchOverlayController extends StorefrontController
+class SearchOverlayController extends AbstractComponentController
 {
     public function __construct(
-        private readonly ComponentRendererInterface $components,
+        ComponentRendererInterface $components,
         private readonly SuggestPageLoader $suggestPageLoader,
-    ) {}
+    ) {
+        parent::__construct($components);
+    }
 
     #[Route(
         path: '/vi/search/overlay',
@@ -67,17 +68,5 @@ class SearchOverlayController extends StorefrontController
             'searchResult' => $page->getSearchResult(),
             'searchTerm' => $page->getSearchTerm(),
         ]);
-    }
-
-    /**
-     * @param array<string, mixed> $props
-     */
-    private function renderComponent(string $name, array $props = []): Response
-    {
-        $response = new Response($this->components->createAndRender($name, $props));
-        $response->headers->set('x-robots-tag', 'noindex');
-        $response->headers->set('Content-Type', 'text/html; charset=UTF-8');
-
-        return $response;
     }
 }
