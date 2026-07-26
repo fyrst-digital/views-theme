@@ -224,7 +224,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Offcanvas | UX / component |
-| Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Grid/Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
+| Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
 | Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
 | Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |

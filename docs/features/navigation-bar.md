@@ -12,8 +12,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 |-------|----------------|
 | `Navigation:Bar` | Horizontal top-level list; hover/focus intent; one flyout at a time; in-session HTML cache; active path; listens to Flyout Open/Close |
 | `Navigation:Bar:Item` | Top-level link or folder button + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) + `caret-down` when children exist |
-| `Navigation:Flyout` | Panel shell (`popover="manual"`, open/close motion, a11y region); `emitQueued` Open/Close |
-| `Navigation:Flyout:Grid` | CSS **grid** mega layout (columns + optional teaser) |
+| `Navigation:Flyout` | Panel shell (`popover="manual"`, mega grid layout, open/close motion, a11y region); `emitQueued` Open/Close |
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
 | `Navigation:Flyout:Item` | Nested category link/folder; recurses to max depth |
 | `Navigation:Flyout:Teaser` | Category image teaser when default `category.media` is set |
@@ -148,7 +147,7 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 - **Bar CSS:** `anchor-name` + button `appearance: none` (folder triggers). Active weight via JS `fw-semibold` (with `data-active`).
 - **Flyout chrome** (`bg-body`, `shadow`, `rounded-3`, `p-4`, `border-0`, `m-0`) in `Flyout.cva.twig` — same split as [Dropdown](../conventions/javascript.md#dropdown).
 - **Flyout CSS:** popover + bar anchor + open motion + hover-bridge `::before`; custom grid tracks (`minmax` / `auto-fill`); teaser `aspect-ratio` only.
-- **Grid CVA:** `d-grid gap-4 align-items-start`; columns same + `min-w-0`; teaser slot `min-w-0`.
+- **Flyout layout CVA:** root `d-grid gap-4 align-items-start` + `--teaser` variant; `columns` / `teaser` slots `min-w-0` (+ columns `d-grid gap-4`).
 - Flyout is HTML **Popover** (`popover="manual"`) + CSS **anchor positioning** to the bar (hover intent stays JS-owned, so not `popover="auto"` / `popovertarget`).
 - Placement: `position-anchor: --vi-navigation-bar`; `top: calc(anchor(bottom) + offset)`; `left`/`right: anchor(…)`. Full bar width, not per-item.
 - Open state: `:popover-open` + `@starting-style` / `allow-discrete`; `showPopover` / `hidePopover` from Flyout JS.
@@ -164,7 +163,7 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 | Bar | `src/Resources/views/components/Navigation/Bar.*` |
 | Bar item | `src/Resources/views/components/Navigation/Bar/Item.*` |
 | Flyout shell | `src/Resources/views/components/Navigation/Flyout.*` |
-| Grid / Column / Item / Teaser | `src/Resources/views/components/Navigation/Flyout/{Grid,Column,Item,Teaser}.*` |
+| Column / Item / Teaser | `src/Resources/views/components/Navigation/Flyout/{Column,Item,Teaser}.*` |
 | Header wire-up | `Page/Header/Main.html.twig`, `storefront/layout/header/header.html.twig` |
 
 ## Out of scope (v1)

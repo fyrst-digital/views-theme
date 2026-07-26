@@ -8,10 +8,11 @@
 {% set rootCategory = category ?? navigation.active %}
 {% set name = rootCategory ? rootCategory.translated.name : '' %}
 {% set flyoutId = rootCategory ? 'vi-navigation-flyout-' ~ rootCategory.id : 'vi-navigation-flyout' %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set gridClass = cx.grid.apply() %}
-
 {% set teaserImage = rootCategory and rootCategory.media ? rootCategory.media : null %}
+{% set hasTeaser = teaserImage is not null %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set columnsClass = cx.columns.apply() %}
+{% set teaserClass = cx.teaser.apply() %}
 
 <div
     {{ attributes.defaults({
@@ -19,17 +20,44 @@
         popover: 'manual',
         'data-component': 'ViewsTheme:Navigation:Flyout',
         'data-navigation-id': rootCategory ? rootCategory.id : null,
+        'data-has-teaser': hasTeaser ? 'true' : 'false',
         role: 'region',
         'aria-label': name,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ cx.root.apply({ teaser: hasTeaser }) }}"
 >
-    <twig:ViewsTheme:Navigation:Flyout:Grid
-        class="{{ gridClass }}"
-        :navigation="navigation"
-        :category="rootCategory"
-        :teaserImage="teaserImage"
-        :maxDepth="maxDepth"
-        {{ ...attributes.nested('grid').all() }}
-    />
+    {% block content %}
+
+        {% block columns %}
+            <div
+                {{ attributes.nested('columns') }}
+                class="{{ columnsClass }}"
+            >
+                {% for treeItem in navigation.tree %}
+                    {% set cat = treeItem.category %}
+                    {% set hasChildren = treeItem.children|length > 0 %}
+                    {% set itemSkipped = cat.type == 'folder' and not hasChildren %}
+
+                    {% if not itemSkipped %}
+                        <twig:ViewsTheme:Navigation:Flyout:Column
+                            :item="treeItem"
+                            :level="0"
+                            :maxDepth="maxDepth"
+                        />
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+
+        {% block teaser %}
+            {% if hasTeaser and rootCategory %}
+                <twig:ViewsTheme:Navigation:Flyout:Teaser
+                    class="{{ teaserClass }}"
+                    :category="rootCategory"
+                    :image="teaserImage"
+                    {{ ...attributes.nested('teaser').all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
 </div>

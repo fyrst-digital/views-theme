@@ -1,8 +1,16 @@
 {
     root: {
-        base: 'vi-navigation-flyout m-0 border-0 overflow-visible rounded-3 shadow bg-body text-body p-4',
+        base: 'vi-navigation-flyout m-0 border-0 overflow-visible rounded-3 shadow bg-body text-body p-6 d-flex flex-wrap flex-row gap-10 align-items-start',
+        variants: {
+            teaser: {
+                true: 'vi-navigation-flyout--teaser',
+            },
+        },
     },
-    grid: {
-        base: '',
+    columns: {
+        base: 'vi-navigation-flyout__columns col d-grid gap-6 align-items-start',
+    },
+    teaser: {
+        base: 'col-auto',
     },
 }

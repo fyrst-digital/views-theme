@@ -3,7 +3,7 @@
 .vi-navigation-flyout[popover] {
     inset: unset;
     position-anchor: --vi-navigation-bar;
-    top: calc(anchor(bottom) + var(--vi-navigation-flyout-offset, 0.5rem));
+    top: calc(anchor(bottom) + var(--vi-flyout-offset, 0.5rem));
     left: anchor(left);
     right: anchor(right);
     bottom: auto;
@@ -31,10 +31,10 @@
 @media (prefers-reduced-motion: no-preference) {
     .vi-navigation-flyout[popover] {
         transition:
-            opacity var(--vi-navigation-flyout-duration, 150ms) ease,
-            transform var(--vi-navigation-flyout-duration, 150ms) ease,
-            overlay var(--vi-navigation-flyout-duration, 150ms) allow-discrete,
-            display var(--vi-navigation-flyout-duration, 150ms) allow-discrete;
+            opacity var(--vi-flyout-duration, 150ms) ease,
+            transform var(--vi-flyout-duration, 150ms) ease,
+            overlay var(--vi-flyout-duration, 150ms) allow-discrete,
+            display var(--vi-flyout-duration, 150ms) allow-discrete;
     }
 
     .vi-navigation-flyout[popover]:not(:popover-open) {
@@ -57,15 +57,11 @@
     }
 }
 
-/* Custom grid tracks — no BS utility for minmax / auto-fill */
-.vi-navigation-flyout-grid--teaser {
-    grid-template-columns: minmax(0, 1fr) minmax(10rem, 14rem);
-}
-
-.vi-navigation-flyout-grid__columns {
-    grid-template-columns: repeat(auto-fill, minmax(var(--vi-navigation-flyout-col-min, 11rem), 1fr));
+.vi-navigation-flyout__columns {
+    grid-template-columns: repeat(auto-fill, minmax(var(--vi-column-min, 11rem), 1fr));
 }
 
 .vi-navigation-flyout-teaser__image {
-    aspect-ratio: var(--vi-navigation-flyout-teaser-aspect-ratio, 4 / 5);
+    max-width: var(--vi-image-max-w, none);
+    aspect-ratio: var(--vi-image-ar, 1 / 1);
 }
