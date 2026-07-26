@@ -19,8 +19,8 @@ Alert.cva.twig                        # optional co-located CVA defaults
 QuantityInput.html.twig               → ViewsTheme:QuantityInput
 Page/Header.html.twig                 → ViewsTheme:Page:Header
 Page/Header/Main.html.twig            → ViewsTheme:Page:Header:Main
-Page/Header/Action/Cart.html.twig
-Page/Header/Action/Cart.js            # co-located ShopwareComponent
+Cart/Drawer/Action.html.twig
+Cart/Drawer/Action.js                 # co-located ShopwareComponent
 Page/Footer/Bottom.html.twig          → ViewsTheme:Page:Footer:Bottom
 VariantsGrid/Container.html.twig
 VariantsGrid/Container.js
@@ -222,12 +222,12 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
-| Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
-| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout | UX / component |
+| Page:Header:*, Page:Footer:* | UX + `vi_cva` |
+| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
 | Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |
-| LineItem:*, Cart:*, Wishlist:* | UX / shells |
+| LineItem:* (+ Quantity/Remove JS), Cart:* (+ mutation owner), Wishlist:* | UX + JS |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
 | Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |

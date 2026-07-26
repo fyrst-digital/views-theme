@@ -1,0 +1,184 @@
+export default class CartDrawerAction extends ShopwareComponent {
+    static options = {
+        drawerUrl: null,
+        drawerComponentName: 'ViewsTheme:Drawer',
+        drawerSelector: '#vi-cart-drawer',
+        openEvent: 'ViewsTheme:Drawer:Open',
+        closeEvent: 'ViewsTheme:Drawer:Close',
+        changedEvent: 'ViewsTheme:Cart:Changed',
+        badgeSelector: '[data-cart-badge]',
+        badgeClass: 'vi-cart-drawer-action__badge badge bg-primary',
+    }
+
+    init() {
+        this._drawerEl = null
+        this._loading = false
+        this._onClick = this._onClick.bind(this)
+        this._onDrawerOpen = this._onDrawerOpen.bind(this)
+        this._onDrawerClose = this._onDrawerClose.bind(this)
+        this._onCartChanged = this._onCartChanged.bind(this)
+
+        this.el.addEventListener('click', this._onClick)
+        window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
+        window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+
+        this._renderBadge(window.cartCount || 0)
+    }
+
+    destroy() {
+        this.el.removeEventListener('click', this._onClick)
+        window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
+        window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+    }
+
+    async _onClick(event) {
+        event.preventDefault()
+
+        if (this._loading) {
+            return
+        }
+
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
+            drawer.close()
+            return
+        }
+
+        await this._loadAndMountDrawer()
+    }
+
+    async _loadAndMountDrawer() {
+        if (!this.options.drawerUrl) {
+            console.error('CartDrawerAction: drawerUrl is missing')
+            return
+        }
+
+        this._loading = true
+        this.el.setAttribute('aria-busy', 'true')
+
+        try {
+            const response = await fetch(this.options.drawerUrl, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Drawer fetch failed: ${response.status}`)
+            }
+
+            const html = await response.text()
+            this._replaceDrawer(html)
+            await this._waitForDrawerInstance()
+
+            const drawer = this._getDrawerInstance()
+            if (drawer && typeof drawer.open === 'function') {
+                drawer.open()
+            }
+        } catch (error) {
+            console.error('CartDrawerAction: Failed to open cart drawer', error)
+        } finally {
+            this._loading = false
+            this.el.removeAttribute('aria-busy')
+        }
+    }
+
+    _parseRoot(html) {
+        const template = document.createElement('template')
+        template.innerHTML = html.trim()
+        return template.content.firstElementChild
+    }
+
+    _replaceDrawer(html) {
+        const existing = document.querySelector(this.options.drawerSelector)
+        if (existing) {
+            existing.remove()
+        }
+
+        const drawerEl = this._parseRoot(html)
+        if (!drawerEl) {
+            throw new Error('CartDrawerAction: Drawer markup is empty')
+        }
+
+        document.body.appendChild(drawerEl)
+        this._drawerEl = drawerEl
+    }
+
+    async _waitForDrawerInstance(retries = 20) {
+        for (let i = 0; i < retries; i++) {
+            if (this._getDrawerInstance()) {
+                return
+            }
+
+            await new Promise((resolve) => {
+                requestAnimationFrame(resolve)
+            })
+        }
+    }
+
+    _getDrawerInstance() {
+        if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
+            this._drawerEl = document.querySelector(this.options.drawerSelector)
+        }
+
+        if (!this._drawerEl || !window.Shopware) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(
+            this.options.drawerComponentName,
+            this._drawerEl,
+        )
+    }
+
+    _onDrawerOpen(drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
+            return
+        }
+
+        this.el.setAttribute('aria-expanded', 'true')
+    }
+
+    _onDrawerClose(drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
+            return
+        }
+
+        this.el.setAttribute('aria-expanded', 'false')
+        this.el.focus()
+        this._unmountDrawer()
+    }
+
+    _unmountDrawer() {
+        const el = this._drawerEl || document.querySelector(this.options.drawerSelector)
+        if (el) {
+            el.remove()
+        }
+        this._drawerEl = null
+    }
+
+    _onCartChanged(payload) {
+        if (!payload || typeof payload.count !== 'number') {
+            return
+        }
+
+        window.cartCount = payload.count
+        this._renderBadge(payload.count)
+    }
+
+    _renderBadge(count) {
+        let badge = this.el.querySelector(this.options.badgeSelector)
+
+        if (count > 0) {
+            if (!badge) {
+                badge = document.createElement('span')
+                badge.setAttribute('data-cart-badge', '')
+                badge.className = this.options.badgeClass
+                this.el.appendChild(badge)
+            }
+            badge.textContent = String(count)
+        } else if (badge) {
+            badge.remove()
+        }
+    }
+}

@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer).
+ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer, cart drawer).
 
 ## Identity
 
@@ -75,6 +75,10 @@ Examples:
 | `frontend.views-theme.search.suggest` | `/vi/search/suggest` |
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
+| `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
+| `frontend.views-theme.cart.drawer.items` | `/vi/cart/drawer/items` |
+| `frontend.views-theme.cart.drawer.summary` | `/vi/cart/drawer/summary` |
+| `frontend.views-theme.cart.drawer.heading` | `/vi/cart/drawer/heading` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -86,3 +90,4 @@ Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) m
 - [Preferred delivery date](features/delivery-date.md)
 - [Search overlay](features/search-overlay.md)
 - [Navigation drawer](features/navigation-drawer.md)
+- [Cart drawer](features/cart-drawer.md)

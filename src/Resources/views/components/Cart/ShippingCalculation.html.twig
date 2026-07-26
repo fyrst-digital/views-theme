@@ -4,13 +4,17 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set collapseId = 'vi-cart-shipping-collapse' %}
 
 <form
     {{ attributes.defaults({
         name: 'precalc',
         method: 'post',
         action: path('frontend.checkout.configure'),
-        'data-form-auto-submit': 'true',
+        'data-component': 'ViewsTheme:Cart:ShippingCalculation',
+        'data-component-options': {
+            configureEvent: 'ViewsTheme:Cart:Configure',
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
 >
@@ -20,10 +24,10 @@
             <a
                 {{ attributes.nested('trigger').defaults({
                     'data-bs-toggle': 'collapse',
-                    href: '#collapseShippingCost',
+                    href: '#' ~ collapseId,
                     role: 'button',
                     'aria-expanded': 'false',
-                    'aria-controls': 'collapseExample',
+                    'aria-controls': collapseId,
                 }) }}
                 class="{{ cx.trigger.apply() }}"
             >
@@ -36,7 +40,7 @@
     {% block form_group %}
         <div
             {{ attributes.nested('collapse').defaults({
-                id: 'collapseShippingCost',
+                id: collapseId,
             }) }}
             class="{{ cx.collapse.apply() }}"
         >
@@ -46,7 +50,7 @@
                         <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                             <label
                                 {{ attributes.nested('label').defaults({
-                                    for: 'countryId',
+                                    for: 'vi-cart-countryId',
                                 }) }}
                                 class="{{ cx.label.apply() }}"
                             >
@@ -54,8 +58,7 @@
                             </label>
                             <select
                                 {{ attributes.nested('select').defaults({
-                                    type: 'text',
-                                    id: 'countryId',
+                                    id: 'vi-cart-countryId',
                                     name: 'countryId',
                                 }) }}
                                 class="{{ cx.select.apply() }}"
@@ -77,7 +80,7 @@
                     <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
                             {{ attributes.nested('label').defaults({
-                                for: 'paymentMethodId',
+                                for: 'vi-cart-paymentMethodId',
                             }) }}
                             class="{{ cx.label.apply() }}"
                         >
@@ -85,8 +88,7 @@
                         </label>
                         <select
                             {{ attributes.nested('select').defaults({
-                                type: 'text',
-                                id: 'paymentMethodId',
+                                id: 'vi-cart-paymentMethodId',
                                 name: 'paymentMethodId',
                             }) }}
                             class="{{ cx.select.apply() }}"
@@ -113,7 +115,7 @@
                     <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
                         <label
                             {{ attributes.nested('label').defaults({
-                                for: 'shippingMethodId',
+                                for: 'vi-cart-shippingMethodId',
                             }) }}
                             class="{{ cx.label.apply() }}"
                         >
@@ -121,8 +123,7 @@
                         </label>
                         <select
                             {{ attributes.nested('select').defaults({
-                                type: 'text',
-                                id: 'shippingMethodId',
+                                id: 'vi-cart-shippingMethodId',
                                 name: 'shippingMethodId',
                             }) }}
                             class="{{ cx.select.apply() }}"

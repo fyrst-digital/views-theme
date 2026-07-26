@@ -27,7 +27,7 @@
 
 {% set cx = vi_cva({
     root: {
-        base: 'vi-line-item-quantity line-item-quantity-container',
+        base: 'vi-line-item-quantity',
         variants: {
             digital: {
                 true: 'disabled',
@@ -40,7 +40,6 @@
 {% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
     ? quantityInformation.maxPurchase
     : config('core.cart.maxQuantity') %}
-{% set autoSubmitOptions = { delayChangeEvent: 800 } %}
 
 {% if showQuantitySelect
     and lineItem.quantityInformation
@@ -51,13 +50,19 @@
         {{ attributes.defaults({
             action: resolvedFormAction,
             method: 'post',
-            'data-form-auto-submit': autoSubmit is same as(true) ? 'true' : null,
-            'data-form-auto-submit-options': autoSubmit is same as(true) ? autoSubmitOptions|json_encode : null,
+            'data-component': 'ViewsTheme:LineItem:Element:Quantity',
+            'data-component-options': {
+                lineItemId: lineItem.id,
+                updateEvent: 'ViewsTheme:Cart:Update',
+                delay: 800,
+            }|json_encode,
         }) }}
         class="{{ cx.root.apply({ digital: isDigital }) }}"
     >
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-        <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+        {% if redirectParameters is not null %}
+            <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+        {% endif %}
 
         <twig:ViewsTheme:QuantityInput
             :quantity="lineItem.quantity"

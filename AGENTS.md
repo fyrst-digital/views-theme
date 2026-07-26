@@ -38,6 +38,7 @@ Full index: [docs/README.md](docs/README.md).
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
 | Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
 | Navigation drawer | [docs/features/navigation-drawer.md](docs/features/navigation-drawer.md) |
+| Cart drawer | [docs/features/cart-drawer.md](docs/features/cart-drawer.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |
 | Language switch | [docs/features/language-switch.md](docs/features/language-switch.md) |
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |

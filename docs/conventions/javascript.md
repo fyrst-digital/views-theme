@@ -37,7 +37,7 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 Applies to **lazy-mounted shells** fetched by an Action:
 
-- `ViewsTheme:Drawer` (e.g. Navigation drawer)
+- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer)
 - `ViewsTheme:Search:Overlay`
 
 Does **not** cover in-session Menu drill level HTML caches or suggest result fragments.
@@ -62,7 +62,13 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
-| Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
+| Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
+| Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
+| Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
+| Line item quantity | `ViewsTheme:LineItem:Element:Quantity` | `LineItem/Element/Quantity.js` |
+| Line item remove | `ViewsTheme:LineItem:Element:Remove` | `LineItem/Element/Remove.js` |
+| Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
+| Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
@@ -161,6 +167,26 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 - Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).
+
+### Cart drawer
+
+Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open partials; Action owns shell lifecycle + badge.
+
+| Hook | Attribute |
+|------|-----------|
+| Cart owner | `data-component="ViewsTheme:Cart"` |
+| Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
+| Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
+| Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
+| Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP → `ViewsTheme:Cart:Changed`
+- Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
+- Body on `Changed`: fragment swap for Items / Footer / Heading
+
+See [Cart drawer](../features/cart-drawer.md).
 
 ### Scroll area
 

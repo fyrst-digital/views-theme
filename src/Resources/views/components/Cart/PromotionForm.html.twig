@@ -1,14 +1,20 @@
 {% props
-    redirectTo = 'frontend.cart.offcanvas',
+    redirectTo = 'frontend.checkout.cart.page',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set inputId = 'vi-cart-promotion-input' %}
+{% set submitId = 'vi-cart-promotion-submit' %}
 
 <form
     {{ attributes.defaults({
         action: path('frontend.checkout.promotion.add'),
         method: 'post',
+        'data-component': 'ViewsTheme:Cart:PromotionForm',
+        'data-component-options': {
+            promoteEvent: 'ViewsTheme:Cart:Promote',
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
 >
@@ -20,7 +26,7 @@
         {% block label %}
             <label
                 {{ attributes.nested('label').defaults({
-                    for: 'addPromotionOffcanvasCartInput',
+                    for: inputId,
                 }) }}
                 class="{{ cx.label.apply() }}"
             >
@@ -34,10 +40,10 @@
                     {{ attributes.nested('input').defaults({
                         type: 'text',
                         name: 'code',
-                        id: 'addPromotionOffcanvasCartInput',
+                        id: inputId,
                         placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
                         'aria-label': 'checkout.addPromotionLabel'|trans|striptags,
-                        'aria-describedby': 'addPromotionOffcanvasCart',
+                        'aria-describedby': submitId,
                         required: 'required',
                     }) }}
                     class="{{ cx.input.apply() }}"
@@ -48,7 +54,7 @@
                 <button
                     {{ attributes.nested('submit').defaults({
                         type: 'submit',
-                        id: 'addPromotionOffcanvasCart',
+                        id: submitId,
                     }) }}
                     class="{{ cx.submit.apply() }}"
                 >

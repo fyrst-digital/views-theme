@@ -163,5 +163,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 ## Out of scope (v1)
 
 - Replacing the desktop core navbar
-- Migrating cart/cookie offcanvas onto `Drawer`
+- Cookie offcanvas → `Drawer` (cart drawer: [cart-drawer.md](cart-drawer.md))
 - Auto-reopening the theme drawer after language/currency switch (page reloads closed)

@@ -4,7 +4,6 @@
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
     formAction = null,
-    displayMode = 'default',
     cva = {},
 %}
 
@@ -12,32 +11,30 @@
     ? formAction
     : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
 {% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
-{% set loaderOptions = { skipLoadingIndicator: true } %}
 
 {% set cx = vi_cva({
     root: {
         base: 'vi-line-item-remove',
-        variants: {
-            displayMode: {
-                offcanvas: 'js-offcanvas-cart-remove-product',
-                default: '',
-            },
-        },
     },
-    button: { base: 'vi-line-item-remove__button btn btn-light btn-sm line-item-remove-button line-item-action' },
+    button: { base: 'vi-line-item-remove__button btn btn-light btn-sm' },
 }|replace_recursive(cva)) %}
 
 <form
     {{ attributes.defaults({
         action: resolvedFormAction,
         method: 'post',
-        'data-form-submit-loader': 'true',
-        'data-form-submit-loader-options': loaderOptions|json_encode,
+        'data-component': 'ViewsTheme:LineItem:Element:Remove',
+        'data-component-options': {
+            lineItemId: lineItem.id,
+            removeEvent: 'ViewsTheme:Cart:Remove',
+        }|json_encode,
     }) }}
-    class="{{ cx.root.apply({ displayMode: displayMode }) }}"
+    class="{{ cx.root.apply() }}"
 >
     <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-    <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+    {% if redirectParameters is not null %}
+        <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+    {% endif %}
 
     {% block button %}
         <button
@@ -45,7 +42,6 @@
                 type: 'submit',
                 'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
                 title: 'global.default.remove'|trans,
-                'data-product-id': lineItem.id,
             }) }}
             class="{{ cx.button.apply() }}"
         >
