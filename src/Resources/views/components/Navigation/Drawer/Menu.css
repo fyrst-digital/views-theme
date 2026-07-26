@@ -1,7 +1,3 @@
-.vi-navigation-drawer-menu {
-    --vi-navigation-drawer-menu-duration: 250ms;
-}
-
 /* Definite height from Menu flex column — survives absolute levels during slide. */
 .vi-navigation-drawer-menu__scroll {
     flex: 1 1 0;

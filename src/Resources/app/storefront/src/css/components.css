@@ -81,3 +81,7 @@
 .vi-account-actions__action {
   --btn-hover-bg: var(--light);
 }
+
+.vi-navigation-drawer-menu {
+    --vi-navigation-drawer-menu-duration: 300ms;
+}
