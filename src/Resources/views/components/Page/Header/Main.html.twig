@@ -23,6 +23,7 @@
                 <twig:ViewsTheme:Navigation:Bar
                     class="{{ cx.navigation.apply() }}"
                     :navigation="navigation"
+                    :navigationDepth="context.salesChannel.navigationCategoryDepth"
                     {{ ...attributes.nested('navigation').all() }}
                 />
             {% endif %}

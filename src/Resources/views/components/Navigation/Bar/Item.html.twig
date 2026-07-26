@@ -8,20 +8,19 @@
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
 {% set flyoutId = 'vi-navigation-flyout-' ~ category.id %}
-{% set flyoutUrl = hasChildren
-    ? path('frontend.views-theme.navigation.flyout', { navigationId: category.id })
-    : null %}
 {% set cx = vi_cva_from_file(cva) %}
 {% set caretClass = cx.caret.apply() %}
+{# UX ComponentAttributes: null becomes true — use false to omit #}
 {% set triggerDefaults = {
     title: name,
-    'data-flyout-trigger': hasChildren ? '' : null,
-    'data-navigation-id': hasChildren ? category.id : null,
-    'data-flyout-url': flyoutUrl,
-    'aria-haspopup': hasChildren ? 'true' : null,
-    'aria-expanded': hasChildren ? 'false' : null,
-    'aria-controls': hasChildren ? flyoutId : null,
-} %}
+}|merge(hasChildren ? {
+    'data-flyout-trigger': '',
+    'data-navigation-id': category.id,
+    'data-flyout-url': path('frontend.views-theme.navigation.flyout', { navigationId: category.id }),
+    'aria-haspopup': 'true',
+    'aria-expanded': 'false',
+    'aria-controls': flyoutId,
+} : {}) %}
 
 <li
     {{ attributes.defaults({
@@ -44,8 +43,7 @@
         <a
             {{ attributes.nested('link').defaults(triggerDefaults|merge({
                 href: category_url(category),
-                target: category_linknewtab(category) ? '_blank' : null,
-            })) }}
+            })|merge(category_linknewtab(category) ? { target: '_blank' } : {})) }}
             class="{{ cx.link.apply() }}"
         >
             <span class="{{ cx.label.apply() }}">{{ name }}</span>

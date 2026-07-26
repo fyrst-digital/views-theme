@@ -1,8 +1,11 @@
 {% props
     navigation,
+    navigationDepth = null,
     cva = {},
 %}
 
+{% set resolvedDepth = navigationDepth ?? context.salesChannel.navigationCategoryDepth ?? 1 %}
+{% set flyoutEnabled = resolvedDepth > 1 %}
 {% set cx = vi_cva_from_file(cva) %}
 {% set listClass = cx.list.apply() %}
 {% set hostClass = cx.host.apply() %}
@@ -20,8 +23,9 @@
     >
         {% for treeItem in navigation.tree %}
             {% set category = treeItem.category %}
-            {% set hasChildren = treeItem.children|length > 0 or category.visibleChildCount > 0 %}
-            {% set itemSkipped = category.type == 'folder' and not hasChildren %}
+            {% set hasTreeChildren = treeItem.children|length > 0 or category.visibleChildCount > 0 %}
+            {% set hasChildren = flyoutEnabled and hasTreeChildren %}
+            {% set itemSkipped = category.type == 'folder' and not hasTreeChildren %}
 
             {% if not itemSkipped %}
                 <twig:ViewsTheme:Navigation:Bar:Item

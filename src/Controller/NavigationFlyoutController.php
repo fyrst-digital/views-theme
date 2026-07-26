@@ -35,16 +35,26 @@ class NavigationFlyoutController extends StorefrontController
             return new Response('', Response::HTTP_BAD_REQUEST);
         }
 
-        $depth = $context->getSalesChannel()->getNavigationCategoryDepth();
-        if ($depth < 1) {
-            $depth = self::FALLBACK_DEPTH;
+        $scDepth = $context->getSalesChannel()->getNavigationCategoryDepth();
+        if ($scDepth < 1) {
+            $scDepth = self::FALLBACK_DEPTH;
         }
+
+        // Bar already consumes level 1; flyout shows remaining levels under the bar item.
+        // Shopware loadLevels loads (depth + 1) descendant levels for a root → loaderDepth = flyoutLevels - 1.
+        $flyoutLevels = max(0, $scDepth - 1);
+        if ($flyoutLevels < 1) {
+            return new Response('', Response::HTTP_NO_CONTENT);
+        }
+
+        $loaderDepth = max(0, $flyoutLevels - 1);
+        $twigMaxDepth = $loaderDepth;
 
         $navigation = $this->navigationLoader->load(
             $navigationId,
             $context,
             $navigationId,
-            $depth,
+            $loaderDepth,
         );
 
         $tree = $navigation->getTree();
@@ -55,7 +65,7 @@ class NavigationFlyoutController extends StorefrontController
         return $this->renderComponent('ViewsTheme:Navigation:Flyout', [
             'navigation' => $navigation,
             'category' => $navigation->getActive(),
-            'maxDepth' => $depth,
+            'maxDepth' => $twigMaxDepth,
         ]);
     }
 

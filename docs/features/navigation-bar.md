@@ -30,7 +30,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout/host enter; switching open flyouts uses a longer dwell (`switchDelay`)
 - Mega layout uses **CSS grid** for structure (not flexbox as the grid system)
 - Optional teaser from category custom field `vi_navigation_image` (same field as drawer)
-- Tree depth from sales channel `navigationCategoryDepth`; fallback **3**
+- Tree depth from sales channel `navigationCategoryDepth` (bar = level 1; flyout = remaining levels; no flyout when depth ≤ 1); fallback **3** only if depth &lt; 1
 - Close: pointer leave (intent delay), Escape, focus leaving bar/flyout pair
 - Only one flyout open; stale fetches aborted/ignored
 - `prefers-reduced-motion` skips open/close motion
@@ -100,13 +100,24 @@ Same idea as Drawer Menu level cache, scoped to the Bar instance (full page).
 
 ### Depth
 
-| Source | Value |
-|--------|--------|
-| Sales channel | `navigationCategoryDepth` (`SalesChannelEntity::getNavigationCategoryDepth()`) |
-| Fallback | `3` when depth &lt; 1 |
-| Loader | `NavigationLoaderInterface::load($id, $context, $id, $depth)` |
+Sales channel `navigationCategoryDepth` counts levels from the main navigation root. The bar is level **1**; the flyout shows only the **remaining** levels under a bar item.
 
-Twig recursion respects the same `maxDepth` prop.
+| SC depth | Bar | Flyout levels under bar item |
+|----------|-----|------------------------------|
+| **≤ 1** | Items only — no caret, no flyout trigger | None (`204` if fetched) |
+| **2** | Flyout when category has children | **1** (direct children only) |
+| **3** | Flyout when category has children | **2** (child + nested child) |
+| **N** | Flyout when category has children | **N − 1** |
+
+| Piece | Value |
+|-------|--------|
+| Source | `SalesChannelEntity::getNavigationCategoryDepth()` |
+| Fallback | `3` when depth &lt; 1 (misconfigured channel only) |
+| `flyoutLevels` | `max(0, scDepth - 1)` |
+| Loader depth | `max(0, flyoutLevels - 1)` — Shopware `loadLevels` loads `(depth + 1)` descendant levels for a root |
+| Twig `maxDepth` | Same as loader depth (`Column`/`Item` recurse while `level < maxDepth`) |
+
+Bar gates flyout with `navigationDepth > 1` (prop from header / `context.salesChannel.navigationCategoryDepth`), not only `visibleChildCount` (core still loads an extra level for counting).
 
 ### Controller
 
