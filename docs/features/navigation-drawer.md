@@ -164,4 +164,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 - Replacing the desktop core navbar
 - Migrating cart/cookie offcanvas onto `Drawer`
-- Reopening the theme drawer after language/currency switch (`redirectParameters[offcanvas]=menu` still targets core offcanvas param)
+- Auto-reopening the theme drawer after language/currency switch (page reloads closed)

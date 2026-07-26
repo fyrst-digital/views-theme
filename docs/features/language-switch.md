@@ -30,7 +30,7 @@ Navigation:Drawer footer (mobile)
 |------|---------|--------|
 | `languages` | `null` | Fallback: `header.languages` → `page.header.languages` |
 | `activeLanguageId` | `null` | Fallback: `context.context.languageId` |
-| `position` | `'top-bar'` | Option element ids; `'offcanvas'` adds redirect hidden field |
+| `position` | `'top-bar'` | Option element id prefix only (`top-bar` / `offcanvas`); no redirect side effects |
 | `size` | `'md'` | Toggle CVA size |
 | `label` | `null` | Default: `context.languageInfo.name`; `:label="false"` hides text |
 | `showCode` | `false` | Short locale code (e.g. `EN`) before label |
@@ -44,7 +44,7 @@ Navigation:Drawer footer (mobile)
 |------|---------|--------|
 | `languages` | `null` | Same fallbacks as Action |
 | `activeLanguageId` | `null` | Same fallbacks as Action |
-| `position` | `'top-bar'` | Ids + offcanvas redirect |
+| `position` | `'top-bar'` | Option element id prefix only |
 | `showFlag` | `true` | Flag next to each option |
 | `cva` | `{}` | Deep-merge |
 
@@ -54,7 +54,6 @@ Navigation:Drawer footer (mobile)
 - **Switch:** `POST` `frontend.checkout.switch-language` with submit button `name="languageId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"` (core FormAddDynamicRedirect)
 - **Locale routes:** hidden `languageCode_{id}` when `_route_params._locale` is set
-- **Offcanvas:** `position="offcanvas"` → `redirectParameters[offcanvas]=menu`
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Display:** optional flag + name (+ territory when translation code provides it) + `caret-down` on toggle
 - **Flags:** [lipis/flag-icons](https://github.com/lipis/flag-icons) **4×3** SVGs under `src/Resources/public/flags/`, named as Shopware `translationCode` (e.g. `de.svg`, `en-US.svg`, `cs.svg`). MIT license in that folder. Rendered via `Language:Flag` (`data-component="ViewsTheme:Language:Flag"`): primary `src`, optional `fallbackSrc` (language segment, e.g. `en-US` → `en.svg`); on `error`, try fallback once then remove the img — no inline handlers. `:showFlag="false"` hides them. Add more locales by copying upstream 4×3 SVGs under the matching code name (`en.svg` uses GB artwork).

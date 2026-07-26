@@ -29,7 +29,7 @@ Navigation:Drawer footer (mobile)
 |------|---------|--------|
 | `currencies` | `null` | Fallback: `header.currencies` → `page.header.currencies` |
 | `activeCurrencyId` | `null` | Fallback: `context.currency.id` |
-| `position` | `'top-bar'` | Option element ids; `'offcanvas'` adds redirect hidden field |
+| `position` | `'top-bar'` | Option element id prefix only (`top-bar` / `offcanvas`); no redirect side effects |
 | `size` | `'md'` | Toggle CVA size |
 | `label` | `null` | Default: `context.currency.translated.name`; `:label="false"` hides text |
 | `showSymbol` | `true` | Currency symbol before label |
@@ -42,7 +42,7 @@ Navigation:Drawer footer (mobile)
 |------|---------|--------|
 | `currencies` | `null` | Same fallbacks as Action |
 | `activeCurrencyId` | `null` | Same fallbacks as Action |
-| `position` | `'top-bar'` | Ids + offcanvas redirect |
+| `position` | `'top-bar'` | Option element id prefix only |
 | `cva` | `{}` | Deep-merge |
 
 ## Behavior
@@ -50,7 +50,7 @@ Navigation:Drawer footer (mobile)
 - **Open/close:** `Dropdown` HTML Popover + CSS anchor (no currency-specific JS)
 - **Switch:** `POST` `frontend.checkout.configure` with submit button `name="currencyId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"`
-- **Offcanvas:** `position="offcanvas"` → `redirectParameters[offcanvas]=menu`
+
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Toggle:** symbol (`aria-hidden`) + translated name + `caret-down` icon
 - **CSS:** co-located `Currency/Action.css` — consume tokens with fallbacks only (`var(--currency-action-min-width, 10rem)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
