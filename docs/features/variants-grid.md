@@ -45,7 +45,7 @@ The grid form posts to a dedicated controller:
 frontend.checkout.variants-grid.add
 ```
 
-This controller receives every row, ignores entries with `quantity <= 0`, creates the remaining line items, and adds them to the cart. The response is handled by Shopware's core `AddToCartPlugin`. ViewsTheme forces silent add (`openOffcanvasAfterAddToCart = '0'`) so the core offcanvas does not open; the header badge updates via `ViewsTheme:Cart:Changed`. Opening the theme [cart drawer](cart-drawer.md) on add is a follow-up.
+This controller receives every row, ignores entries with `quantity <= 0`, creates the remaining line items, and adds them to the cart. The response is handled by Shopware's core `AddToCartPlugin`. ViewsTheme forces silent add (`openOffcanvasAfterAddToCart = '0'`) so the core offcanvas does not open; the header badge updates via `ViewsTheme:Cart:Changed` when the plugin emits `addToCartWithoutOffcanvas`. Opening the theme [cart drawer](cart-drawer.md) on add is a follow-up.
 
 The same controller also provides an AJAX endpoint for lazy pagination:
 

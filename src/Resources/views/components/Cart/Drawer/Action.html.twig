@@ -20,12 +20,17 @@
         'data-component-options': {
             drawerUrl: drawerUrl,
             changedEvent: 'ViewsTheme:Cart:Changed',
+            badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
         }|json_encode,
     }) }}
     class="{{ cx.root.apply({ size: size }) }}"
 >
     {{ vi_icon('handbag') }}
-    {% if cartCount > 0 %}
-        <span data-cart-badge class="{{ cx.badge.apply() }}">{{ cartCount }}</span>
-    {% endif %}
+    <span
+        {{ attributes.nested('badge').defaults({
+            'data-component': 'ViewsTheme:Cart:Drawer:Action:Badge',
+            hidden: cartCount < 1,
+        }) }}
+        class="{{ cx.badge.apply() }}"
+    >{% if cartCount > 0 %}{{ cartCount }}{% endif %}</span>
 </button>

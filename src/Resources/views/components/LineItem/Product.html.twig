@@ -3,7 +3,6 @@
     showRemoveButton = true,
     showPrice = true,
     nestingLevel = 0,
-    autoSubmit = false,
     deliveries = null,
     cva = {},
 %}
@@ -20,9 +19,12 @@
     class="{{ cx.root.apply() }}"
 >
     {% block image %}
-        {% sw_include '@Storefront/storefront/component/line-item/element/image.html.twig' with {
-            lineItem: lineItem,
-        } %}
+        <twig:ViewsTheme:LineItem:Element:Image
+            :lineItem="lineItem"
+            :label="label"
+            :href="productLink"
+            class="{{ cx.image.apply() }}"
+        />
     {% endblock %}
 
     {% block content %}
@@ -72,7 +74,6 @@
                                         :productId="lineItem.referencedId"
                                         :showText="false"
                                         size="sm"
-                                        class="line-item-action"
                                     />
                                 {% endif %}
 
@@ -91,17 +92,8 @@
                         {{ attributes.nested('body') }}
                         class="{{ cx.body.apply() }}"
                     >
-                        {% if lineItem.payload.options is not empty %}
-                            {% sw_include '@Storefront/storefront/component/line-item/element/variant-characteristics.html.twig' with {
-                                lineItem: lineItem,
-                            } %}
-                        {% endif %}
-
-                        {% if lineItem.payload.features is not empty %}
-                            {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
-                                features: lineItem.payload.features,
-                            } %}
-                        {% endif %}
+                        <twig:ViewsTheme:LineItem:Element:Variants :lineItem="lineItem" />
+                        <twig:ViewsTheme:LineItem:Element:Features :lineItem="lineItem" />
 
                         {% if config('core.cart.showDeliveryTime') %}
                             <twig:ViewsTheme:LineItem:Element:DeliveryDate
@@ -124,7 +116,6 @@
                             <twig:ViewsTheme:LineItem:Element:Quantity
                                 :lineItem="lineItem"
                                 :nestingLevel="nestingLevel"
-                                :autoSubmit="autoSubmit"
                             />
                         </div>
 

@@ -1,9 +1,6 @@
 {% props
     page,
-    itemsUrl = path('frontend.views-theme.cart.drawer.items'),
-    summaryUrl = path('frontend.views-theme.cart.drawer.summary'),
-    headingUrl = path('frontend.views-theme.cart.drawer.heading'),
-    isEmpty = false,
+    partialsUrl = path('frontend.views-theme.cart.drawer.partials'),
     cva = {},
 %}
 
@@ -14,9 +11,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Cart:Drawer:Body',
         'data-component-options': {
-            itemsUrl: itemsUrl,
-            summaryUrl: summaryUrl,
-            headingUrl: headingUrl,
+            partialsUrl: partialsUrl,
             changedEvent: 'ViewsTheme:Cart:Changed',
             headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
             itemsComponent: 'ViewsTheme:Cart:Drawer:Items',

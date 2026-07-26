@@ -38,48 +38,17 @@ class CartDrawerController extends StorefrontController
     }
 
     #[Route(
-        path: '/vi/cart/drawer/items',
-        name: 'frontend.views-theme.cart.drawer.items',
+        path: '/vi/cart/drawer/partials',
+        name: 'frontend.views-theme.cart.drawer.partials',
         defaults: ['XmlHttpRequest' => true],
         methods: ['GET'],
     )]
-    public function items(Request $request, SalesChannelContext $context): Response
+    public function partials(Request $request, SalesChannelContext $context): Response
     {
         $page = $this->cartPageLoader->load($request, $context);
 
-        return $this->renderComponent('ViewsTheme:Cart:Drawer:Items', [
-            'cart' => $page->getCart(),
-        ]);
-    }
-
-    #[Route(
-        path: '/vi/cart/drawer/summary',
-        name: 'frontend.views-theme.cart.drawer.summary',
-        defaults: ['XmlHttpRequest' => true],
-        methods: ['GET'],
-    )]
-    public function summary(Request $request, SalesChannelContext $context): Response
-    {
-        $page = $this->cartPageLoader->load($request, $context);
-
-        return $this->renderComponent('ViewsTheme:Cart:Drawer:Footer', [
+        return $this->renderComponent('ViewsTheme:Cart:Drawer:Partials', [
             'page' => $page,
-        ]);
-    }
-
-    #[Route(
-        path: '/vi/cart/drawer/heading',
-        name: 'frontend.views-theme.cart.drawer.heading',
-        defaults: ['XmlHttpRequest' => true],
-        methods: ['GET'],
-    )]
-    public function heading(Request $request, SalesChannelContext $context): Response
-    {
-        $page = $this->cartPageLoader->load($request, $context);
-        $cart = $page->getCart();
-
-        return $this->renderComponent('ViewsTheme:Cart:Drawer:Heading', [
-            'productsQuantity' => $cart->getLineItems()->count(),
         ]);
     }
 

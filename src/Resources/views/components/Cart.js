@@ -13,10 +13,13 @@ export default class Cart extends ShopwareComponent {
         configureEvent: 'ViewsTheme:Cart:Configure',
         changedEvent: 'ViewsTheme:Cart:Changed',
         placeholderId: '00000000000000000000000000000000',
+        drawerSelector: '#vi-cart-drawer',
+        cartPageSelector: '.is-active-route-frontend-checkout-cart-page, .is-ctl-checkout.is-act-cartpage',
     }
 
     init() {
         this._busy = false
+        this._queued = null
         this._onAdd = this._onAdd.bind(this)
         this._onRemove = this._onRemove.bind(this)
         this._onUpdate = this._onUpdate.bind(this)
@@ -24,7 +27,6 @@ export default class Cart extends ShopwareComponent {
         this._onConfigure = this._onConfigure.bind(this)
         this._onAddToCartWithoutOffcanvas = this._onAddToCartWithoutOffcanvas.bind(this)
 
-        // Theme owns cart UX: never open core offcanvas after product add.
         window.openOffcanvasAfterAddToCart = '0'
 
         window.Shopware.on(this.options.addEvent, this._onAdd)
@@ -34,7 +36,6 @@ export default class Cart extends ShopwareComponent {
         window.Shopware.on(this.options.configureEvent, this._onConfigure)
 
         this._subscribeAddToCartPlugins()
-        this._patchPluginManager()
     }
 
     destroy() {
@@ -45,11 +46,11 @@ export default class Cart extends ShopwareComponent {
         window.Shopware.off(this.options.configureEvent, this._onConfigure)
 
         this._unsubscribeAddToCartPlugins()
-        this._restorePluginManager()
+        this._queued = null
     }
 
     _onAdd(payload) {
-        this._mutate('add', async () => {
+        this._enqueue('add', async () => {
             const formData = payload?.formData instanceof FormData
                 ? payload.formData
                 : this._buildAddFormData(payload)
@@ -59,7 +60,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onRemove(payload) {
-        this._mutate('remove', async () => {
+        this._enqueue('remove', async () => {
             const id = payload?.lineItemId
             if (!id) {
                 throw new Error('lineItemId is required')
@@ -72,7 +73,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onUpdate(payload) {
-        this._mutate('update', async () => {
+        this._enqueue('update', async () => {
             const id = payload?.lineItemId
             const quantity = payload?.quantity
             if (!id || quantity == null) {
@@ -87,7 +88,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onPromote(payload) {
-        this._mutate('promote', async () => {
+        this._enqueue('promote', async () => {
             const formData = payload?.formData instanceof FormData
                 ? payload.formData
                 : (() => {
@@ -102,7 +103,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onConfigure(payload) {
-        this._mutate('configure', async () => {
+        this._enqueue('configure', async () => {
             const formData = payload?.formData instanceof FormData
                 ? payload.formData
                 : new FormData()
@@ -119,11 +120,16 @@ export default class Cart extends ShopwareComponent {
         await this._emitChanged({ ok: true, action: 'add', source: 'AddToCart' })
     }
 
-    async _mutate(action, runner, payload = {}) {
+    _enqueue(action, runner, payload = {}) {
         if (this._busy) {
+            this._queued = { action, runner, payload }
             return
         }
 
+        void this._run(action, runner, payload)
+    }
+
+    async _run(action, runner, payload = {}) {
         this._busy = true
 
         try {
@@ -143,6 +149,11 @@ export default class Cart extends ShopwareComponent {
             })
         } finally {
             this._busy = false
+            const next = this._queued
+            this._queued = null
+            if (next) {
+                void this._run(next.action, next.runner, next.payload)
+            }
         }
     }
 
@@ -166,6 +177,22 @@ export default class Cart extends ShopwareComponent {
             error,
             source,
         })
+
+        if (ok) {
+            this._reloadCartPageIfNeeded()
+        }
+    }
+
+    _reloadCartPageIfNeeded() {
+        if (document.querySelector(this.options.drawerSelector)) {
+            return
+        }
+
+        if (!document.querySelector(this.options.cartPageSelector)) {
+            return
+        }
+
+        window.location.reload()
     }
 
     async _fetchCartCount() {
@@ -266,38 +293,5 @@ export default class Cart extends ShopwareComponent {
             }
         })
         this._addToCartSubscriptions = []
-    }
-
-    _patchPluginManager() {
-        const pluginManager = window.PluginManager
-        if (!pluginManager || typeof pluginManager.initializePlugins !== 'function') {
-            return
-        }
-
-        if (pluginManager.__viewsThemeCartPatched) {
-            return
-        }
-
-        this._originalInitializePlugins = pluginManager.initializePlugins.bind(pluginManager)
-        pluginManager.initializePlugins = (...args) => {
-            const result = this._originalInitializePlugins(...args)
-            window.openOffcanvasAfterAddToCart = '0'
-            this._unsubscribeAddToCartPlugins()
-            this._subscribeAddToCartPlugins()
-            return result
-        }
-        pluginManager.__viewsThemeCartPatched = true
-        this._pluginManagerPatched = true
-    }
-
-    _restorePluginManager() {
-        const pluginManager = window.PluginManager
-        if (!this._pluginManagerPatched || !pluginManager || !this._originalInitializePlugins) {
-            return
-        }
-
-        pluginManager.initializePlugins = this._originalInitializePlugins
-        delete pluginManager.__viewsThemeCartPatched
-        this._pluginManagerPatched = false
     }
 }

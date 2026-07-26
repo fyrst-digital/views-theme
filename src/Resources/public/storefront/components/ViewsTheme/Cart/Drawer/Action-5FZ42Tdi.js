@@ -1,2 +1,183 @@
-var e=class extends ShopwareComponent{static options={drawerUrl:null,drawerComponentName:`ViewsTheme:Drawer`,drawerSelector:`#vi-cart-drawer`,openEvent:`ViewsTheme:Drawer:Open`,closeEvent:`ViewsTheme:Drawer:Close`,changedEvent:`ViewsTheme:Cart:Changed`,badgeSelector:`[data-cart-badge]`,badgeClass:`vi-cart-drawer-action__badge badge bg-primary`};init(){this._drawerEl=null,this._loading=!1,this._onClick=this._onClick.bind(this),this._onDrawerOpen=this._onDrawerOpen.bind(this),this._onDrawerClose=this._onDrawerClose.bind(this),this._onCartChanged=this._onCartChanged.bind(this),this.el.addEventListener(`click`,this._onClick),window.Shopware.on(this.options.openEvent,this._onDrawerOpen),window.Shopware.on(this.options.closeEvent,this._onDrawerClose),window.Shopware.on(this.options.changedEvent,this._onCartChanged),this._renderBadge(window.cartCount||0)}destroy(){this.el.removeEventListener(`click`,this._onClick),window.Shopware.off(this.options.openEvent,this._onDrawerOpen),window.Shopware.off(this.options.closeEvent,this._onDrawerClose),window.Shopware.off(this.options.changedEvent,this._onCartChanged)}async _onClick(e){if(e.preventDefault(),this._loading)return;let t=this._getDrawerInstance();if(t&&typeof t.isOpen==`function`&&t.isOpen()){t.close();return}await this._loadAndMountDrawer()}async _loadAndMountDrawer(){if(!this.options.drawerUrl){console.error(`CartDrawerAction: drawerUrl is missing`);return}this._loading=!0,this.el.setAttribute(`aria-busy`,`true`);try{let e=await fetch(this.options.drawerUrl,{headers:{"X-Requested-With":`XMLHttpRequest`}});if(!e.ok)throw Error(`Drawer fetch failed: ${e.status}`);let t=await e.text();this._replaceDrawer(t),await this._waitForDrawerInstance();let n=this._getDrawerInstance();n&&typeof n.open==`function`&&n.open()}catch(e){console.error(`CartDrawerAction: Failed to open cart drawer`,e)}finally{this._loading=!1,this.el.removeAttribute(`aria-busy`)}}_parseRoot(e){let t=document.createElement(`template`);return t.innerHTML=e.trim(),t.content.firstElementChild}_replaceDrawer(e){let t=document.querySelector(this.options.drawerSelector);t&&t.remove();let n=this._parseRoot(e);if(!n)throw Error(`CartDrawerAction: Drawer markup is empty`);document.body.appendChild(n),this._drawerEl=n}async _waitForDrawerInstance(e=20){for(let t=0;t<e;t++){if(this._getDrawerInstance())return;await new Promise(e=>{requestAnimationFrame(e)})}}_getDrawerInstance(){return(!this._drawerEl||!document.body.contains(this._drawerEl))&&(this._drawerEl=document.querySelector(this.options.drawerSelector)),!this._drawerEl||!window.Shopware?null:window.Shopware.getComponentInstanceByElement(this.options.drawerComponentName,this._drawerEl)}_onDrawerOpen(e){e&&this._drawerEl&&e!==this._drawerEl||this.el.setAttribute(`aria-expanded`,`true`)}_onDrawerClose(e){e&&this._drawerEl&&e!==this._drawerEl||(this.el.setAttribute(`aria-expanded`,`false`),this.el.focus(),this._unmountDrawer())}_unmountDrawer(){let e=this._drawerEl||document.querySelector(this.options.drawerSelector);e&&e.remove(),this._drawerEl=null}_onCartChanged(e){!e||typeof e.count!=`number`||(window.cartCount=e.count,this._renderBadge(e.count))}_renderBadge(e){let t=this.el.querySelector(this.options.badgeSelector);e>0?(t||(t=document.createElement(`span`),t.setAttribute(`data-cart-badge`,``),t.className=this.options.badgeClass,this.el.appendChild(t)),t.textContent=String(e)):t&&t.remove()}};export{e as default};
-//# sourceMappingURL=Action-5FZ42Tdi.js.map
+var e=class extends ShopwareComponent {
+    static options = {
+        drawerUrl: null,
+        drawerComponentName: 'ViewsTheme:Drawer',
+        drawerSelector: '#vi-cart-drawer',
+        openEvent: 'ViewsTheme:Drawer:Open',
+        closeEvent: 'ViewsTheme:Drawer:Close',
+        changedEvent: 'ViewsTheme:Cart:Changed',
+        badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
+    }
+
+    init() {
+        this._drawerEl = null
+        this._loading = false
+        this._onClick = this._onClick.bind(this)
+        this._onDrawerOpen = this._onDrawerOpen.bind(this)
+        this._onDrawerClose = this._onDrawerClose.bind(this)
+        this._onCartChanged = this._onCartChanged.bind(this)
+
+        this.el.addEventListener('click', this._onClick)
+        window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
+        window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+
+        this._renderBadge(window.cartCount || 0)
+    }
+
+    destroy() {
+        this.el.removeEventListener('click', this._onClick)
+        window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
+        window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+    }
+
+    async _onClick(event) {
+        event.preventDefault()
+
+        if (this._loading) {
+            return
+        }
+
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
+            drawer.close()
+            return
+        }
+
+        await this._loadAndMountDrawer()
+    }
+
+    async _loadAndMountDrawer() {
+        if (!this.options.drawerUrl) {
+            console.error('CartDrawerAction: drawerUrl is missing')
+            return
+        }
+
+        this._loading = true
+        this.el.setAttribute('aria-busy', 'true')
+
+        try {
+            const response = await fetch(this.options.drawerUrl, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            })
+
+            if (!response.ok) {
+                throw new Error(`Drawer fetch failed: ${response.status}`)
+            }
+
+            const html = await response.text()
+            this._replaceDrawer(html)
+            await this._waitForDrawerInstance()
+
+            const drawer = this._getDrawerInstance()
+            if (drawer && typeof drawer.open === 'function') {
+                drawer.open()
+            }
+        } catch (error) {
+            console.error('CartDrawerAction: Failed to open cart drawer', error)
+        } finally {
+            this._loading = false
+            this.el.removeAttribute('aria-busy')
+        }
+    }
+
+    _parseRoot(html) {
+        const template = document.createElement('template')
+        template.innerHTML = html.trim()
+        return template.content.firstElementChild
+    }
+
+    _replaceDrawer(html) {
+        const existing = document.querySelector(this.options.drawerSelector)
+        if (existing) {
+            existing.remove()
+        }
+
+        const drawerEl = this._parseRoot(html)
+        if (!drawerEl) {
+            throw new Error('CartDrawerAction: Drawer markup is empty')
+        }
+
+        document.body.appendChild(drawerEl)
+        this._drawerEl = drawerEl
+    }
+
+    async _waitForDrawerInstance(retries = 20) {
+        for (let i = 0; i < retries; i++) {
+            if (this._getDrawerInstance()) {
+                return
+            }
+
+            await new Promise((resolve) => {
+                requestAnimationFrame(resolve)
+            })
+        }
+    }
+
+    _getDrawerInstance() {
+        if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
+            this._drawerEl = document.querySelector(this.options.drawerSelector)
+        }
+
+        if (!this._drawerEl || !window.Shopware) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(
+            this.options.drawerComponentName,
+            this._drawerEl,
+        )
+    }
+
+    _onDrawerOpen(drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
+            return
+        }
+
+        this.el.setAttribute('aria-expanded', 'true')
+    }
+
+    _onDrawerClose(drawerEl) {
+        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
+            return
+        }
+
+        this.el.setAttribute('aria-expanded', 'false')
+        this.el.focus()
+        this._unmountDrawer()
+    }
+
+    _unmountDrawer() {
+        const el = this._drawerEl || document.querySelector(this.options.drawerSelector)
+        if (el) {
+            el.remove()
+        }
+        this._drawerEl = null
+    }
+
+    _onCartChanged(payload) {
+        if (!payload || typeof payload.count !== 'number') {
+            return
+        }
+
+        window.cartCount = payload.count
+        this._renderBadge(payload.count)
+    }
+
+    _renderBadge(count) {
+        const badge = this.el.querySelector(`[data-component="${this.options.badgeComponent}"]`)
+        if (!badge) {
+            return
+        }
+
+        if (count > 0) {
+            badge.hidden = false
+            badge.textContent = String(count)
+        } else {
+            badge.hidden = true
+            badge.textContent = ''
+        }
+    }
+}
+export{e as default};

@@ -227,7 +227,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
 | Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |
-| LineItem:* (+ Quantity/Remove JS), Cart:* (+ mutation owner), Wishlist:* | UX + JS |
+| LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
 | Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |

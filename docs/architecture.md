@@ -76,9 +76,7 @@ Examples:
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
-| `frontend.views-theme.cart.drawer.items` | `/vi/cart/drawer/items` |
-| `frontend.views-theme.cart.drawer.summary` | `/vi/cart/drawer/summary` |
-| `frontend.views-theme.cart.drawer.heading` | `/vi/cart/drawer/heading` |
+| `frontend.views-theme.cart.drawer.partials` | `/vi/cart/drawer/partials` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 

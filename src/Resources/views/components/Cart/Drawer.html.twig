@@ -1,8 +1,6 @@
 {% props
     page,
-    itemsUrl = path('frontend.views-theme.cart.drawer.items'),
-    summaryUrl = path('frontend.views-theme.cart.drawer.summary'),
-    headingUrl = path('frontend.views-theme.cart.drawer.heading'),
+    partialsUrl = path('frontend.views-theme.cart.drawer.partials'),
     label = 'checkout.cartTitle'|trans|striptags,
     cva = {},
 %}
@@ -10,7 +8,6 @@
 {% set cx = vi_cva_from_file(cva) %}
 {% set cart = page.cart %}
 {% set productsQuantity = cart.lineItems|length %}
-{% set isEmpty = productsQuantity < 1 %}
 
 <twig:ViewsTheme:Drawer
     class="{{ cx.root.apply() }}"
@@ -37,10 +34,7 @@
             <twig:block name="content">
                 <twig:ViewsTheme:Cart:Drawer:Body
                     :page="page"
-                    :itemsUrl="itemsUrl"
-                    :summaryUrl="summaryUrl"
-                    :headingUrl="headingUrl"
-                    :isEmpty="isEmpty"
+                    :partialsUrl="partialsUrl"
                 />
             </twig:block>
         </twig:ViewsTheme:Drawer:Panel>

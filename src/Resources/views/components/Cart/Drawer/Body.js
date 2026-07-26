@@ -1,8 +1,6 @@
 export default class CartDrawerBody extends ShopwareComponent {
     static options = {
-        itemsUrl: null,
-        summaryUrl: null,
-        headingUrl: null,
+        partialsUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
         headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
         itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
@@ -12,6 +10,7 @@ export default class CartDrawerBody extends ShopwareComponent {
 
     init() {
         this._busy = false
+        this._queued = false
         this._onCartChanged = this._onCartChanged.bind(this)
         this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
         this._alertEl = this.el.querySelector('[role="alert"]')
@@ -21,6 +20,7 @@ export default class CartDrawerBody extends ShopwareComponent {
 
     destroy() {
         window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+        this._queued = false
     }
 
     async _onCartChanged(payload) {
@@ -30,16 +30,16 @@ export default class CartDrawerBody extends ShopwareComponent {
         }
 
         this._clearError()
-        await this._refreshFragments()
+        await this._refreshPartials()
     }
 
-    async _refreshFragments() {
+    async _refreshPartials() {
         if (this._busy) {
+            this._queued = true
             return
         }
 
-        const { itemsUrl, summaryUrl, headingUrl } = this.options
-        if (!itemsUrl || !summaryUrl || !headingUrl) {
+        if (!this.options.partialsUrl) {
             return
         }
 
@@ -47,17 +47,13 @@ export default class CartDrawerBody extends ShopwareComponent {
         this.el.setAttribute('aria-busy', 'true')
 
         try {
-            const [itemsHtml, summaryHtml, headingHtml] = await Promise.all([
-                this._fetchHtml(itemsUrl),
-                this._fetchHtml(summaryUrl),
-                this._fetchHtml(headingUrl),
-            ])
-
-            this._replaceComponent(this.options.itemsComponent, itemsHtml, this.el)
-            this._replaceComponent(this.options.footerComponent, summaryHtml, this.el)
-            this._replaceComponent(this.options.headingComponent, headingHtml, this._drawerEl || document)
+            do {
+                this._queued = false
+                const html = await this._fetchHtml(this.options.partialsUrl)
+                this._applyPartials(html)
+            } while (this._queued)
         } catch (error) {
-            console.error('CartDrawerBody: Failed to refresh cart fragments', error)
+            console.error('CartDrawerBody: Failed to refresh cart partials', error)
             this._showError(null)
         } finally {
             this._busy = false
@@ -71,7 +67,7 @@ export default class CartDrawerBody extends ShopwareComponent {
         })
 
         if (!response.ok) {
-            throw new Error(`Fragment fetch failed: ${response.status}`)
+            throw new Error(`Partials fetch failed: ${response.status}`)
         }
 
         return response.text()
@@ -83,13 +79,24 @@ export default class CartDrawerBody extends ShopwareComponent {
         return template.content.firstElementChild
     }
 
-    _replaceComponent(componentName, html, root) {
+    _applyPartials(html) {
+        const root = this._parseRoot(html)
         if (!root) {
             return
         }
 
-        const existing = root.querySelector(`[data-component="${componentName}"]`)
-        const next = this._parseRoot(html)
+        this._replaceFrom(root, this.options.itemsComponent, this.el)
+        this._replaceFrom(root, this.options.footerComponent, this.el)
+        this._replaceFrom(root, this.options.headingComponent, this._drawerEl || document)
+    }
+
+    _replaceFrom(sourceRoot, componentName, targetRoot) {
+        if (!targetRoot) {
+            return
+        }
+
+        const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
+        const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
 
         if (!existing || !next) {
             return

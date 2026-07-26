@@ -12,12 +12,7 @@
     : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
 {% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
 
-{% set cx = vi_cva({
-    root: {
-        base: 'vi-line-item-remove',
-    },
-    button: { base: 'vi-line-item-remove__button btn btn-light btn-sm' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <form
     {{ attributes.defaults({

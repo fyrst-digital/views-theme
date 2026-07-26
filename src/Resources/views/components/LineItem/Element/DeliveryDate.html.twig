@@ -12,9 +12,7 @@
     {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
 {% endif %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-line-item-delivery-date line-item-delivery-date' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 {% if deliveryPosition and deliveryPosition.deliveryDate %}
     <div

@@ -11,7 +11,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close; header badge via `ViewsTheme:Cart:Changed` |
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
-| `Cart:Drawer:Body` | While open: on `Cart:Changed` refetches heading / items / footer fragments and swaps roots |
+| `Cart:Drawer:Body` | While open: on `Cart:Changed` fetches partials once and swaps Heading / Items / Footer roots |
 | `Cart:Drawer:Items` | Line list or empty state |
 | `Cart:Drawer:Footer` | Promotion, shipping calculation, summary, checkout CTA |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
@@ -24,11 +24,12 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Header `Cart:Drawer:Action` (handbag icon + badge) opens the cart drawer on click
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
-- Line items via shared `LineItem:*` components; quantity and remove use AJAX + events
-- Promotion form, shipping pre-calculation, summary, checkout CTA
+- Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
+- Promotion form, shipping pre-calculation (`<details>`), summary, checkout CTA
 - Empty, loading (`aria-busy`), and error (`role="alert"`) states
 - Header badge tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
+- Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
 
 ## How it works
 
@@ -44,7 +45,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 ### Mutation API
 
-Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoints.
+Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoints. Concurrent intents use a **latest-wins** queue.
 
 | Event (request) | Payload | HTTP |
 |-----------------|---------|------|
@@ -58,19 +59,19 @@ Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoi
 |----------------|---------|
 | `ViewsTheme:Cart:Changed` | `{ ok, count, action, error?, source? }` |
 
-After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Action updates the badge; Body (if mounted) refreshes fragments.
+After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Action updates the badge; Body (if mounted) refreshes partials.
 
-Core `AddToCart` is forced to the silent path (`openOffcanvasAfterAddToCart = '0'`). Cart re-subscribes on `PluginManager.initializePlugins` and treats `addToCartWithoutOffcanvas` as a successful add for badge refresh.
+Core `AddToCart` silent path: `openOffcanvasAfterAddToCart = '0'` (meta + Cart init). Cart subscribes to existing `AddToCart` plugin instances for `addToCartWithoutOffcanvas` and treats that as a successful add for badge refresh. Callers may also emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly.
 
 ### Partial DOM updates (drawer open)
 
 1. Sub-components emit cart intents
 2. `Cart` performs HTTP and emits `Cart:Changed`
-3. `Cart:Drawer:Body` fetches fragments in parallel and replaces roots by `data-component` identity:
+3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer.partials` (one cart load) and replaces roots by `data-component` identity:
    - `ViewsTheme:Cart:Drawer:Items`
    - `ViewsTheme:Cart:Drawer:Footer`
    - `ViewsTheme:Cart:Drawer:Heading`
-4. Parse with `<template>`; single `_busy` flight
+4. Parse with `<template>`; latest-wins while a fetch is in flight
 
 Shell open remains a full refetch. Partials are only for in-session mutations while the drawer stays open.
 
@@ -79,11 +80,24 @@ Shell open remains a full refetch. Partials are only for in-session mutations wh
 | Route name | Path | Method | Renders |
 |------------|------|--------|---------|
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` | `GET` (XHR) | `ViewsTheme:Cart:Drawer` |
-| `frontend.views-theme.cart.drawer.items` | `/vi/cart/drawer/items` | `GET` (XHR) | `ViewsTheme:Cart:Drawer:Items` |
-| `frontend.views-theme.cart.drawer.summary` | `/vi/cart/drawer/summary` | `GET` (XHR) | `ViewsTheme:Cart:Drawer:Footer` |
-| `frontend.views-theme.cart.drawer.heading` | `/vi/cart/drawer/heading` | `GET` (XHR) | `ViewsTheme:Cart:Drawer:Heading` |
+| `frontend.views-theme.cart.drawer.partials` | `/vi/cart/drawer/partials` | `GET` (XHR) | `ViewsTheme:Cart:Drawer:Partials` |
 
-All load `CheckoutCartPageLoader` (cart + countries + payment/shipping methods) and render via `ComponentRendererInterface`.
+Both load `CheckoutCartPageLoader` and render via `ComponentRendererInterface`.
+
+### LineItem (shared UX)
+
+| Component | Role |
+|-----------|------|
+| `LineItem` | Type router → Product / Promotion / Container / Generic |
+| `LineItem:Product` | Image, label, wishlist, remove, variants, features, delivery, qty, price |
+| `LineItem:Element:Image` | Cover thumb / placeholder (`vi-*` only) |
+| `LineItem:Element:Variants` | `payload.options` |
+| `LineItem:Element:Features` | `payload.features` |
+| `LineItem:Element:DeliveryDate` | Delivery window when configured |
+| `LineItem:Element:Quantity` | Debounced emit `Cart:Update` |
+| `LineItem:Element:Remove` | Emit `Cart:Remove` |
+
+No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 
 ## Hooks
 
@@ -91,6 +105,7 @@ All load `CheckoutCartPageLoader` (cart + countries + payment/shipping methods) 
 |-----------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action button | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (presentational) |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
@@ -98,7 +113,7 @@ All load `CheckoutCartPageLoader` (cart + countries + payment/shipping methods) 
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
 
-Action options (`data-component-options`): `drawerUrl`, `changedEvent`.
+Action options (`data-component-options`): `drawerUrl`, `changedEvent`, `badgeComponent`.
 
 Events:
 
@@ -116,8 +131,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Cart owner | `src/Resources/views/components/Cart.*` |
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
-| Body / fragments | `src/Resources/views/components/Cart/Drawer/{Body,Items,Footer,Heading}.*` |
-| Line item qty/remove | `src/Resources/views/components/LineItem/Element/{Quantity,Remove}.*` |
+| Body / partials | `src/Resources/views/components/Cart/Drawer/{Body,Partials,Items,Footer,Heading}.*` |
+| Line item | `src/Resources/views/components/LineItem/**` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 
 ## Out of scope (v1)
@@ -125,4 +140,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 - Opening the theme drawer (or any shell) on product add / variants-grid success
 - Cookie offcanvas → `Drawer`
 - Full checkout / confirm page redesign
-- Cart page layout redesign (shared `LineItem:*` API only)
+- Cart page layout redesign (shared `LineItem:*` API + reload on mutation)

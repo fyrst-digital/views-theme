@@ -176,15 +176,17 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 |------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (presentational) |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP → `ViewsTheme:Cart:Changed`
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
 - Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
-- Body on `Changed`: fragment swap for Items / Footer / Heading
+- Body on `Changed`: one partials fetch → swap Items / Footer / Heading by `data-component` identity
+- Badge: Twig-owned node; Action updates text/`hidden` only (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
 

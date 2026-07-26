@@ -1,11 +1,13 @@
 {% props
     redirectTo = 'frontend.checkout.cart.page',
+    inputId = null,
+    submitId = null,
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set inputId = 'vi-cart-promotion-input' %}
-{% set submitId = 'vi-cart-promotion-submit' %}
+{% set resolvedInputId = inputId ?? ('vi-cart-promotion-input-' ~ random()) %}
+{% set resolvedSubmitId = submitId ?? ('vi-cart-promotion-submit-' ~ random()) %}
 
 <form
     {{ attributes.defaults({
@@ -26,7 +28,7 @@
         {% block label %}
             <label
                 {{ attributes.nested('label').defaults({
-                    for: inputId,
+                    for: resolvedInputId,
                 }) }}
                 class="{{ cx.label.apply() }}"
             >
@@ -40,10 +42,10 @@
                     {{ attributes.nested('input').defaults({
                         type: 'text',
                         name: 'code',
-                        id: inputId,
+                        id: resolvedInputId,
                         placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
                         'aria-label': 'checkout.addPromotionLabel'|trans|striptags,
-                        'aria-describedby': submitId,
+                        'aria-describedby': resolvedSubmitId,
                         required: 'required',
                     }) }}
                     class="{{ cx.input.apply() }}"
@@ -54,7 +56,7 @@
                 <button
                     {{ attributes.nested('submit').defaults({
                         type: 'submit',
-                        id: submitId,
+                        id: resolvedSubmitId,
                     }) }}
                     class="{{ cx.submit.apply() }}"
                 >

@@ -6,8 +6,7 @@ export default class CartDrawerAction extends ShopwareComponent {
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
         changedEvent: 'ViewsTheme:Cart:Changed',
-        badgeSelector: '[data-cart-badge]',
-        badgeClass: 'vi-cart-drawer-action__badge badge bg-primary',
+        badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
     }
 
     init() {
@@ -167,18 +166,17 @@ export default class CartDrawerAction extends ShopwareComponent {
     }
 
     _renderBadge(count) {
-        let badge = this.el.querySelector(this.options.badgeSelector)
+        const badge = this.el.querySelector(`[data-component="${this.options.badgeComponent}"]`)
+        if (!badge) {
+            return
+        }
 
         if (count > 0) {
-            if (!badge) {
-                badge = document.createElement('span')
-                badge.setAttribute('data-cart-badge', '')
-                badge.className = this.options.badgeClass
-                this.el.appendChild(badge)
-            }
+            badge.hidden = false
             badge.textContent = String(count)
-        } else if (badge) {
-            badge.remove()
+        } else {
+            badge.hidden = true
+            badge.textContent = ''
         }
     }
 }

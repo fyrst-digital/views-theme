@@ -1,2 +1,126 @@
-var e=class extends ShopwareComponent{static options={itemsUrl:null,summaryUrl:null,headingUrl:null,changedEvent:`ViewsTheme:Cart:Changed`,headingComponent:`ViewsTheme:Cart:Drawer:Heading`,itemsComponent:`ViewsTheme:Cart:Drawer:Items`,footerComponent:`ViewsTheme:Cart:Drawer:Footer`,drawerSelector:`#vi-cart-drawer`};init(){this._busy=!1,this._onCartChanged=this._onCartChanged.bind(this),this._drawerEl=this.el.closest(this.options.drawerSelector)||document.querySelector(this.options.drawerSelector),this._alertEl=this.el.querySelector(`[role="alert"]`),window.Shopware.on(this.options.changedEvent,this._onCartChanged)}destroy(){window.Shopware.off(this.options.changedEvent,this._onCartChanged)}async _onCartChanged(e){if(!e||e.ok===!1){this._showError(e?.error);return}this._clearError(),await this._refreshFragments()}async _refreshFragments(){if(this._busy)return;let{itemsUrl:e,summaryUrl:t,headingUrl:n}=this.options;if(!(!e||!t||!n)){this._busy=!0,this.el.setAttribute(`aria-busy`,`true`);try{let[r,i,a]=await Promise.all([this._fetchHtml(e),this._fetchHtml(t),this._fetchHtml(n)]);this._replaceComponent(this.options.itemsComponent,r,this.el),this._replaceComponent(this.options.footerComponent,i,this.el),this._replaceComponent(this.options.headingComponent,a,this._drawerEl||document)}catch(e){console.error(`CartDrawerBody: Failed to refresh cart fragments`,e),this._showError(null)}finally{this._busy=!1,this.el.removeAttribute(`aria-busy`)}}}async _fetchHtml(e){let t=await fetch(e,{headers:{"X-Requested-With":`XMLHttpRequest`}});if(!t.ok)throw Error(`Fragment fetch failed: ${t.status}`);return t.text()}_parseRoot(e){let t=document.createElement(`template`);return t.innerHTML=e.trim(),t.content.firstElementChild}_replaceComponent(e,t,n){if(!n)return;let r=n.querySelector(`[data-component="${e}"]`),i=this._parseRoot(t);!r||!i||r.replaceWith(i)}_showError(e){this._alertEl&&(this._alertEl.hidden=!1,this._alertEl.textContent=e||this._alertEl.dataset.fallback||``)}_clearError(){this._alertEl&&(this._alertEl.hidden=!0,this._alertEl.textContent=``)}};export{e as default};
-//# sourceMappingURL=Body-B0oSN7DE.js.map
+var e=class extends ShopwareComponent {
+    static options = {
+        partialsUrl: null,
+        changedEvent: 'ViewsTheme:Cart:Changed',
+        headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
+        itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
+        footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
+        drawerSelector: '#vi-cart-drawer',
+    }
+
+    init() {
+        this._busy = false
+        this._queued = false
+        this._onCartChanged = this._onCartChanged.bind(this)
+        this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
+        this._alertEl = this.el.querySelector('[role="alert"]')
+
+        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+    }
+
+    destroy() {
+        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+        this._queued = false
+    }
+
+    async _onCartChanged(payload) {
+        if (!payload || payload.ok === false) {
+            this._showError(payload?.error)
+            return
+        }
+
+        this._clearError()
+        await this._refreshPartials()
+    }
+
+    async _refreshPartials() {
+        if (this._busy) {
+            this._queued = true
+            return
+        }
+
+        if (!this.options.partialsUrl) {
+            return
+        }
+
+        this._busy = true
+        this.el.setAttribute('aria-busy', 'true')
+
+        try {
+            do {
+                this._queued = false
+                const html = await this._fetchHtml(this.options.partialsUrl)
+                this._applyPartials(html)
+            } while (this._queued)
+        } catch (error) {
+            console.error('CartDrawerBody: Failed to refresh cart partials', error)
+            this._showError(null)
+        } finally {
+            this._busy = false
+            this.el.removeAttribute('aria-busy')
+        }
+    }
+
+    async _fetchHtml(url) {
+        const response = await fetch(url, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+
+        if (!response.ok) {
+            throw new Error(`Partials fetch failed: ${response.status}`)
+        }
+
+        return response.text()
+    }
+
+    _parseRoot(html) {
+        const template = document.createElement('template')
+        template.innerHTML = html.trim()
+        return template.content.firstElementChild
+    }
+
+    _applyPartials(html) {
+        const root = this._parseRoot(html)
+        if (!root) {
+            return
+        }
+
+        this._replaceFrom(root, this.options.itemsComponent, this.el)
+        this._replaceFrom(root, this.options.footerComponent, this.el)
+        this._replaceFrom(root, this.options.headingComponent, this._drawerEl || document)
+    }
+
+    _replaceFrom(sourceRoot, componentName, targetRoot) {
+        if (!targetRoot) {
+            return
+        }
+
+        const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
+        const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
+
+        if (!existing || !next) {
+            return
+        }
+
+        existing.replaceWith(next)
+    }
+
+    _showError(message) {
+        if (!this._alertEl) {
+            return
+        }
+
+        this._alertEl.hidden = false
+        this._alertEl.textContent = message || this._alertEl.dataset.fallback || ''
+    }
+
+    _clearError() {
+        if (!this._alertEl) {
+            return
+        }
+
+        this._alertEl.hidden = true
+        this._alertEl.textContent = ''
+    }
+}
+export{e as default};
