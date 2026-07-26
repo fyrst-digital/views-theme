@@ -12,6 +12,7 @@
     ? path('frontend.views-theme.navigation.flyout', { navigationId: category.id })
     : null %}
 {% set cx = vi_cva_from_file(cva) %}
+{% set caretClass = cx.caret.apply() %}
 {% set triggerDefaults = {
     title: name,
     'data-flyout-trigger': hasChildren ? '' : null,
@@ -35,6 +36,9 @@
             class="{{ cx.link.apply() }}"
         >
             <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            {% if hasChildren %}
+                {{ vi_icon('caret-down', { class: caretClass }) }}
+            {% endif %}
         </button>
     {% else %}
         <a
@@ -45,6 +49,9 @@
             class="{{ cx.link.apply() }}"
         >
             <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            {% if hasChildren %}
+                {{ vi_icon('caret-down', { class: caretClass }) }}
+            {% endif %}
         </a>
     {% endif %}
 </li>

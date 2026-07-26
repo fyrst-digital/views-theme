@@ -11,7 +11,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Bar` | Horizontal top-level list; hover/focus intent; one flyout at a time; in-session HTML cache; active path; listens to Flyout Open/Close |
-| `Navigation:Bar:Item` | Top-level link or folder button + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) when children exist |
+| `Navigation:Bar:Item` | Top-level link or folder button + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) + `caret-down` when children exist |
 | `Navigation:Flyout` | Panel shell (open/close motion, a11y region); `emitQueued` Open/Close |
 | `Navigation:Flyout:Grid` | CSS **grid** mega layout (columns + optional teaser) |
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
@@ -24,8 +24,10 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Top-level categories **SSR** with the header pagelet (Bar only — no flyout HTML on first paint)
 - No home link in the bar
 - Hover or keyboard focus on an item with children opens a lazily fetched flyout
-- Leaf items navigate only (no flyout trigger)
+- Items with children show a decorative `caret-down` after the label
+- Leaf items navigate only (no flyout trigger, no caret)
 - Folder top-level items use `<button type="button">` (no `href="#"`)
+- Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout/host enter; switching open flyouts uses a longer dwell (`switchDelay`)
 - Mega layout uses **CSS grid** for structure (not flexbox as the grid system)
 - Optional teaser from category custom field `vi_navigation_image` (same field as drawer)
 - Tree depth from sales channel `navigationCategoryDepth`; fallback **3**
@@ -46,13 +48,16 @@ The header override replaces core `layout_header_navigation` content with `Page:
 
 ### Flyout open
 
-1. `Navigation:Bar` debounces hover/focus intent on a trigger
-2. Fetches `frontend.views-theme.navigation.flyout` for that `navigationId` (or serves in-session cache)
-3. Empty (`204` / blank) or failed fetch → resets trigger ARIA; no mount
-4. Mounts response root into `[data-flyout-host]` under Bar
-5. Waits for `ViewsTheme:Navigation:Flyout` instance → `open()`
-6. Flyout `emitQueued` `ViewsTheme:Navigation:Flyout:Open` `{ el }`
-7. Bar keeps trigger `aria-expanded="true"`
+1. `Navigation:Bar` schedules hover/focus intent on a trigger:
+   - **First open** (no flyout mounted): `debounceTime` (default 150ms)
+   - **Switch** (another item while a flyout is open): `switchDelay` (default 350ms) so a multi-row path into the panel does not steal the open category
+2. Pointer enter on non-trigger chrome inside the bar (flyout host / open panel / list gap) **clears** any pending open timer
+3. Fetches `frontend.views-theme.navigation.flyout` for that `navigationId` (or serves in-session cache)
+4. Empty (`204` / blank) or failed fetch → resets trigger ARIA; no mount
+5. Mounts response root into `[data-flyout-host]` under Bar
+6. Waits for `ViewsTheme:Navigation:Flyout` instance → `open()`
+7. Flyout `emitQueued` `ViewsTheme:Navigation:Flyout:Open` `{ el }`
+8. Bar keeps trigger `aria-expanded="true"`
 
 ### Flyout close
 
@@ -121,7 +126,7 @@ Renders `ViewsTheme:Navigation:Flyout` via `ComponentRendererInterface`. Empty t
 | Active trigger | `data-active="true"` (set by Bar JS) |
 | Flyout root | `data-component="ViewsTheme:Navigation:Flyout"` / `#vi-navigation-flyout-{id}` |
 
-Bar options (`data-component-options` defaults in JS): `debounceTime`, `closeDelay`.
+Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDelay`, `closeDelay`.
 
 ## Layout notes
 

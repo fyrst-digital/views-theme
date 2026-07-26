@@ -1,6 +1,7 @@
 export default class NavigationBar extends ShopwareComponent {
     static options = {
         debounceTime: 150,
+        switchDelay: 350,
         closeDelay: 200,
         flyoutComponentName: 'ViewsTheme:Navigation:Flyout',
         flyoutHostAttr: 'data-flyout-host',
@@ -93,6 +94,9 @@ export default class NavigationBar extends ShopwareComponent {
             if (this._isInside(event.target)) {
                 this._pointerInside = true
                 this._clearCloseTimer()
+                // Multi-row path: entering flyout/host must cancel a pending switch
+                // from intermediate bar items the pointer crossed.
+                this._clearOpenTimer()
             }
             return
         }
@@ -157,10 +161,14 @@ export default class NavigationBar extends ShopwareComponent {
             return
         }
 
+        const delay = this._openId && this._flyoutEl
+            ? this.options.switchDelay
+            : this.options.debounceTime
+
         this._clearOpenTimer()
         this._openTimer = window.setTimeout(() => {
             this._open(trigger)
-        }, this.options.debounceTime)
+        }, delay)
     }
 
     _scheduleClose() {
