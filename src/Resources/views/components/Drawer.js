@@ -6,7 +6,8 @@ export default class Drawer extends ShopwareComponent {
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
         openAttr: 'data-open',
-        duration: 250,
+        durationVar: '--vi-drawer-duration',
+        durationFallback: 250,
     }
 
     init() {
@@ -73,7 +74,7 @@ export default class Drawer extends ShopwareComponent {
 
         this._closeTimer = window.setTimeout(() => {
             this._finishClose()
-        }, this.options.duration + 50)
+        }, this._duration() + 50)
     }
 
     onPanelTransitionEnd() {
@@ -109,6 +110,14 @@ export default class Drawer extends ShopwareComponent {
             window.clearTimeout(this._closeTimer)
             this._closeTimer = null
         }
+    }
+
+    _duration() {
+        const raw = getComputedStyle(this.el)
+            .getPropertyValue(this.options.durationVar)
+        const ms = parseFloat(raw)
+
+        return Number.isFinite(ms) ? ms : this.options.durationFallback
     }
 
     _prefersReducedMotion() {

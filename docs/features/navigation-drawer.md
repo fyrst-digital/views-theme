@@ -138,8 +138,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 - Root uses `data-side` + `data-open` (`true`/`false`); CSS in `Drawer.css` drives slide/fade
 - `open()` shows the layer, reflows, then sets `data-open="true"`
-- `close()` sets `data-open="false"`; `Drawer:Panel` calls `onPanelTransitionEnd` on transform end (duration fallback remains)
-- Token: `--vi-drawer-duration` (default `250ms`)
+- `close()` sets `data-open="false"`; `Drawer:Panel` calls `onPanelTransitionEnd` on transform end (timeout fallback remains)
+- Token: `--vi-drawer-duration` (default `250ms`) — CSS is SoT; JS reads via options `durationVar` / `durationFallback` for the close timeout
 
 ## Key source files
 

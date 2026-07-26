@@ -131,6 +131,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
+- Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`
 - Backdrop/Close `callMethod` `Drawer.close`
 - Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
