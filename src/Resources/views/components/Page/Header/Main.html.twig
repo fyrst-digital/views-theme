@@ -1,18 +1,31 @@
 {% props
+    navigation = null,
     cva = {},
 %}
 
 {% set cx = vi_cva({
-    root: { base: 'd-flex flex-wrap flex-row align-items-center py-4' },
+    root: { base: 'd-flex flex-wrap flex-row align-items-center py-4 gap-3' },
+    navigation: { base: 'order-lg-0' },
 }|replace_recursive(cva)) %}
 
-<div 
+<div
     {{ attributes.without('class').without('data-component-template') }}
-    class="{{cx.root.apply()}}">
+    class="{{ cx.root.apply() }}"
+>
     {% block content %}
 
         {% block logo %}
             <twig:ViewsTheme:Page:Logo />
+        {% endblock %}
+
+        {% block navigation %}
+            {% if navigation %}
+                <twig:ViewsTheme:Navigation:Bar
+                    class="{{ cx.navigation.apply() }}"
+                    :navigation="navigation"
+                    {{ ...attributes.nested('navigation').all() }}
+                />
+            {% endif %}
         {% endblock %}
 
         {% block actions %}

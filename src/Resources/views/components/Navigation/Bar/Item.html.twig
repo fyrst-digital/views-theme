@@ -1,0 +1,50 @@
+{% props
+    item,
+    hasChildren = false,
+    cva = {},
+%}
+
+{% set category = item.category %}
+{% set name = category.translated.name %}
+{% set isFolder = category.type == 'folder' %}
+{% set flyoutId = 'vi-navigation-flyout-' ~ category.id %}
+{% set flyoutUrl = hasChildren
+    ? path('frontend.views-theme.navigation.flyout', { navigationId: category.id })
+    : null %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set triggerDefaults = {
+    title: name,
+    'data-flyout-trigger': hasChildren ? '' : null,
+    'data-navigation-id': hasChildren ? category.id : null,
+    'data-flyout-url': flyoutUrl,
+    'aria-haspopup': hasChildren ? 'true' : null,
+    'aria-expanded': hasChildren ? 'false' : null,
+    'aria-controls': hasChildren ? flyoutId : null,
+} %}
+
+<li
+    {{ attributes.defaults({
+        'data-navigation-id': category.id,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if isFolder %}
+        <button
+            type="button"
+            {{ attributes.nested('link').defaults(triggerDefaults) }}
+            class="{{ cx.link.apply() }}"
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        </button>
+    {% else %}
+        <a
+            {{ attributes.nested('link').defaults(triggerDefaults|merge({
+                href: category_url(category),
+                target: category_linknewtab(category) ? '_blank' : null,
+            })) }}
+            class="{{ cx.link.apply() }}"
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+        </a>
+    {% endif %}
+</li>

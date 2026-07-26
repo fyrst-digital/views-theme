@@ -1,0 +1,47 @@
+{% props
+    navigation,
+    category = null,
+    teaserImage = null,
+    maxDepth = 3,
+    cva = {},
+%}
+
+{% set hasTeaser = teaserImage is not null %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set columnsClass = cx.columns.apply() %}
+{% set teaserClass = cx.teaser.apply() %}
+
+<div
+    {{ attributes.defaults({
+        'data-has-teaser': hasTeaser ? 'true' : 'false',
+    }) }}
+    class="{{ cx.root.apply({ teaser: hasTeaser }) }}"
+>
+    <div
+        {{ attributes.nested('columns') }}
+        class="{{ columnsClass }}"
+    >
+        {% for treeItem in navigation.tree %}
+            {% set cat = treeItem.category %}
+            {% set hasChildren = treeItem.children|length > 0 %}
+            {% set itemSkipped = cat.type == 'folder' and not hasChildren %}
+
+            {% if not itemSkipped %}
+                <twig:ViewsTheme:Navigation:Flyout:Column
+                    :item="treeItem"
+                    :level="0"
+                    :maxDepth="maxDepth"
+                />
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if hasTeaser and category %}
+        <twig:ViewsTheme:Navigation:Flyout:Teaser
+            class="{{ teaserClass }}"
+            :category="category"
+            :image="teaserImage"
+            {{ ...attributes.nested('teaser').all() }}
+        />
+    {% endif %}
+</div>

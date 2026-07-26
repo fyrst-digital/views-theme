@@ -4,7 +4,7 @@ Lazy-loaded side drawer for the main category navigation, opened from the header
 
 All UI lives under UX components (`components/Drawer/*`, `components/Navigation/Drawer/*`). Markup is served by theme routes under `/vi/…` — not core `/widgets/menu/offcanvas`.
 
-Desktop navbar stays core for now; this feature owns the header **menu** action and mobile-style drill-down navigation.
+Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`Page:Header:Main`). This feature owns the header **menu** action and mobile-style drill-down navigation. Core navbar is left in place by bar v1 (not suppressed here).
 
 ## Ownership
 
@@ -162,6 +162,6 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Out of scope (v1)
 
-- Replacing the desktop core navbar
+- Desktop bar / flyout (see [Navigation bar](navigation-bar.md))
 - Migrating cart/cookie offcanvas onto `Drawer`
 - Auto-reopening the theme drawer after language/currency switch (page reloads closed)

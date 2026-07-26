@@ -1,0 +1,41 @@
+{% props
+    navigation,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set listClass = cx.list.apply() %}
+{% set hostClass = cx.host.apply() %}
+
+<nav
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Navigation:Bar',
+        'aria-label': 'header.navigationAriaLabel'|trans|striptags,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <ul
+        {{ attributes.nested('list') }}
+        class="{{ listClass }}"
+    >
+        {% for treeItem in navigation.tree %}
+            {% set category = treeItem.category %}
+            {% set hasChildren = treeItem.children|length > 0 or category.visibleChildCount > 0 %}
+            {% set itemSkipped = category.type == 'folder' and not hasChildren %}
+
+            {% if not itemSkipped %}
+                <twig:ViewsTheme:Navigation:Bar:Item
+                    :item="treeItem"
+                    :hasChildren="hasChildren"
+                />
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <div
+        {{ attributes.nested('host').defaults({
+            'data-flyout-host': '',
+        }) }}
+        class="{{ hostClass }}"
+    ></div>
+</nav>

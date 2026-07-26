@@ -1,0 +1,25 @@
+.vi-navigation-bar__host {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    z-index: 1030;
+    pointer-events: none;
+}
+
+.vi-navigation-bar__host:has([data-component="ViewsTheme:Navigation:Flyout"]) {
+    pointer-events: auto;
+}
+
+.vi-navigation-bar-item__link {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.vi-navigation-bar-item__link[data-active="true"] {
+    font-weight: 600;
+}

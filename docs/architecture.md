@@ -75,6 +75,7 @@ Examples:
 | `frontend.views-theme.search.suggest` | `/vi/search/suggest` |
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
+| `frontend.views-theme.navigation.flyout` | `/vi/navigation/flyout/{navigationId}` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -86,3 +87,4 @@ Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) m
 - [Preferred delivery date](features/delivery-date.md)
 - [Search overlay](features/search-overlay.md)
 - [Navigation drawer](features/navigation-drawer.md)
+- [Navigation bar](features/navigation-bar.md)

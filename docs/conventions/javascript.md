@@ -40,7 +40,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 - `ViewsTheme:Drawer` (e.g. Navigation drawer)
 - `ViewsTheme:Search:Overlay`
 
-Does **not** cover in-session Menu drill level HTML caches or suggest result fragments.
+Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
 | Phase | Required |
 |-------|----------|
@@ -52,7 +52,20 @@ The Action owns this lifecycle; the shell primitive only open/closes.
 
 **Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
 
-References: `Navigation/Drawer/Action.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
+### Exception: Navigation flyout HTML cache
+
+`ViewsTheme:Navigation:Bar` may keep an **in-session memory cache** of flyout HTML strings keyed by category id (hover thrash). Rules:
+
+| Rule | Required |
+|------|----------|
+| Storage | Memory on the Bar instance only — **no** `sessionStorage` / `localStorage` |
+| DOM | Still **unmount** the closed flyout root; reopen = cache hit → remount (or fetch on miss) |
+| Races | Abort in-flight fetch; ignore stale responses when the open target changes |
+| Lifetime | Cleared on hard reload (new page = new Bar instance) |
+
+See [Navigation bar](../features/navigation-bar.md).
+
+References: `Navigation/Drawer/Action.js`, `Navigation/Bar.js`, `Navigation/Flyout.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
 
 ## Co-located component JS
 
@@ -63,6 +76,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
 | Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
+| Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
+| Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
@@ -161,6 +176,31 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 - Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).
+
+### Navigation bar / flyout
+
+Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache, and mount; **Flyout** owns panel open/close motion and lifecycle events.
+
+| Hook | Attribute |
+|------|-----------|
+| Bar | `data-component="ViewsTheme:Navigation:Bar"` |
+| Flyout host | `data-flyout-host` (under Bar) |
+| Item trigger | `data-flyout-trigger` + `data-flyout-url` + `data-navigation-id` |
+| Flyout | `data-component="ViewsTheme:Navigation:Flyout"` |
+
+| Event | Emitter | Listener |
+|-------|---------|----------|
+| `ViewsTheme:Navigation:Flyout:Open` | Flyout (`emitQueued`, `{ el }`) | Bar (sync trigger ARIA; filter `contains(el)`) |
+| `ViewsTheme:Navigation:Flyout:Close` | Flyout (`emitQueued`, `{ el }`) | Bar **unmounts** flyout DOM + clears ARIA (string cache kept) |
+
+- Open: debounced hover/focus on trigger → fetch or memory cache → mount into host → `flyout.open()`
+- Close: leave delay, Escape, focus out → `flyout.close()` → Close event → Bar unmounts
+- Only one flyout; `AbortController` + request id ignore stale responses
+- Empty / failed fetch resets trigger ARIA (no stuck `aria-expanded`)
+- Active path: `window.activeNavigationId` / `window.activeNavigationPathIdList` → `data-active` on triggers
+- Cache exception: see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+
+See [Navigation bar](../features/navigation-bar.md).
 
 ### Scroll area
 

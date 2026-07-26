@@ -56,6 +56,14 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\NavigationFlyoutController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Shopware\Core\Content\Category\Service\NavigationLoader"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Service\VariantsLoader">
             <argument type="service" id="sales_channel.product.repository"/>
         </service>
