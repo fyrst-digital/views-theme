@@ -204,7 +204,7 @@ Do **not** nest `{% block foo %}` inside `<twig:block name="foo">` — that rede
 | Interactive UX root | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
 | Options | `data-component-options` | JSON |
 
-Do **not** use `data-ref` (removed). Prefer `data-action` or semantic selectors for internal hooks.
+Every `data-component` requires co-located `Name.js`. Do **not** use `data-ref`, `data-vi`, or other ad-hoc identity hooks. Prefer nested sub-components or semantic selectors for internal structure.
 
 Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:storefront`.
 

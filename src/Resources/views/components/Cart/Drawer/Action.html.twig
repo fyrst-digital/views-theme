@@ -19,8 +19,6 @@
         'data-component': 'ViewsTheme:Cart:Drawer:Action',
         'data-component-options': {
             drawerUrl: drawerUrl,
-            changedEvent: 'ViewsTheme:Cart:Changed',
-            badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
         }|json_encode,
     }) }}
     class="{{ cx.root.apply({ size: size }) }}"
@@ -29,6 +27,9 @@
     <span
         {{ attributes.nested('badge').defaults({
             'data-component': 'ViewsTheme:Cart:Drawer:Action:Badge',
+            'data-component-options': {
+                changedEvent: 'ViewsTheme:Cart:Changed',
+            }|json_encode,
             hidden: cartCount < 1,
         }) }}
         class="{{ cx.badge.apply() }}"

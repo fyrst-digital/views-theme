@@ -8,7 +8,8 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close; header badge via `ViewsTheme:Cart:Changed` |
+| `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
+
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` fetches partials once and swaps Heading / Items / Footer roots |
@@ -27,7 +28,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Promotion form, shipping pre-calculation (`<details>`), summary, checkout CTA
 - Empty, loading (`aria-busy`), and error (`role="alert"`) states
-- Header badge tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
+- Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
 - Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
 
@@ -59,7 +60,9 @@ Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoi
 |----------------|---------|
 | `ViewsTheme:Cart:Changed` | `{ ok, count, action, error?, source? }` |
 
-After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Action updates the badge; Body (if mounted) refreshes partials.
+AJAX POSTs **omit** `redirectTo` / `forwardTo` (and use `redirect: 'manual'`). Empty `redirectTo` makes core redirect to the home page; `fetch` would follow that into a page route and get **403** (`preventPageLoadingFromXmlHttpRequest`). Twig forms still keep `redirectTo` for no-JS progressive enhancement; Cart strips those fields before POST.
+
+After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Badge updates itself; Body (if mounted) refreshes partials.
 
 Core `AddToCart` silent path: `openOffcanvasAfterAddToCart = '0'` (meta + Cart init). Cart subscribes to existing `AddToCart` plugin instances for `addToCartWithoutOffcanvas` and treats that as a successful add for badge refresh. Callers may also emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly.
 
@@ -105,15 +108,16 @@ No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressiv
 |-----------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action button | `data-component="ViewsTheme:Cart:Drawer:Action"` |
-| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (presentational) |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
+| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (partial swap targets) |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
 
-Action options (`data-component-options`): `drawerUrl`, `changedEvent`, `badgeComponent`.
+Action options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
 
 Events:
 

@@ -1,37 +1,61 @@
 {
   "manifest": {
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart.js": {
-      "file": "ViewsTheme/Cart-i-ooUlFU.js",
+      "file": "ViewsTheme/Cart-BnLDn_Qu.js",
       "name": "ViewsTheme/Cart",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action.js": {
-      "file": "ViewsTheme/Cart/Drawer/Action-5FZ42Tdi.js",
+      "file": "ViewsTheme/Cart/Drawer/Action-B0oabolm.js",
       "name": "ViewsTheme/Cart/Drawer/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action/Badge.js": {
+      "file": "ViewsTheme/Cart/Drawer/Action/Badge-B9yIN-2_.js",
+      "name": "ViewsTheme/Cart/Drawer/Action/Badge",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action/Badge.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Body.js": {
-      "file": "ViewsTheme/Cart/Drawer/Body-B0oSN7DE.js",
+      "file": "ViewsTheme/Cart/Drawer/Body-BkL-6-7S.js",
       "name": "ViewsTheme/Cart/Drawer/Body",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Body.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Footer.js": {
+      "file": "ViewsTheme/Cart/Drawer/Footer-BSgL4l57.js",
+      "name": "ViewsTheme/Cart/Drawer/Footer",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Footer.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Heading.js": {
+      "file": "ViewsTheme/Cart/Drawer/Heading-C-GhgT9D.js",
+      "name": "ViewsTheme/Cart/Drawer/Heading",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Heading.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Items.js": {
+      "file": "ViewsTheme/Cart/Drawer/Items-DQr5Q6SH.js",
+      "name": "ViewsTheme/Cart/Drawer/Items",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Items.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/PromotionForm.js": {
-      "file": "ViewsTheme/Cart/PromotionForm-DHpibO8r.js",
+      "file": "ViewsTheme/Cart/PromotionForm-CAn31ago.js",
       "name": "ViewsTheme/Cart/PromotionForm",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/PromotionForm.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation.js": {
-      "file": "ViewsTheme/Cart/ShippingCalculation-CJVR3U34.js",
+      "file": "ViewsTheme/Cart/ShippingCalculation-DCZUh4oU.js",
       "name": "ViewsTheme/Cart/ShippingCalculation",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js": {
-      "file": "ViewsTheme/Checkout/DeliveryDateSelection-Bv8Jmsyn.js",
+      "file": "ViewsTheme/Checkout/DeliveryDateSelection-DvdRr8FN.js",
       "name": "ViewsTheme/Checkout/DeliveryDateSelection",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js",
       "isEntry": true
@@ -43,19 +67,19 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Backdrop.js": {
-      "file": "ViewsTheme/Drawer/Backdrop-DvYo88EM.js",
+      "file": "ViewsTheme/Drawer/Backdrop-BOI4DxhD.js",
       "name": "ViewsTheme/Drawer/Backdrop",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Close.js": {
-      "file": "ViewsTheme/Drawer/Close-DmGSXOtQ.js",
+      "file": "ViewsTheme/Drawer/Close-D6h9B1c9.js",
       "name": "ViewsTheme/Drawer/Close",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Close.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Panel.js": {
-      "file": "ViewsTheme/Drawer/Panel-N65KHcll.js",
+      "file": "ViewsTheme/Drawer/Panel-CM2q4IfC.js",
       "name": "ViewsTheme/Drawer/Panel",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Panel.js",
       "isEntry": true
@@ -67,79 +91,97 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js": {
-      "file": "ViewsTheme/Language/Flag-7cgSLZsp.js",
+      "file": "ViewsTheme/Language/Flag-Bd-UK9Mz.js",
       "name": "ViewsTheme/Language/Flag",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Quantity.js": {
-      "file": "ViewsTheme/LineItem/Element/Quantity-BlCM1JHK.js",
+      "file": "ViewsTheme/LineItem/Element/Quantity-UYC2cOei.js",
       "name": "ViewsTheme/LineItem/Element/Quantity",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Quantity.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Remove.js": {
-      "file": "ViewsTheme/LineItem/Element/Remove-CK4f_kjS.js",
+      "file": "ViewsTheme/LineItem/Element/Remove-CqM-vMH-.js",
       "name": "ViewsTheme/LineItem/Element/Remove",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Remove.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Bar.js": {
+      "file": "ViewsTheme/Navigation/Bar-BkJOG8Ne.js",
+      "name": "ViewsTheme/Navigation/Bar",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Bar.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Action.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Action-Dyon9Tsa.js",
+      "file": "ViewsTheme/Navigation/Drawer/Action-wye5I3nt.js",
       "name": "ViewsTheme/Navigation/Drawer/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Drill.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Drill-BvrVkHOL.js",
+      "file": "ViewsTheme/Navigation/Drawer/Drill-D-4RCgRB.js",
       "name": "ViewsTheme/Navigation/Drawer/Drill",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Drill.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Menu.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Menu-BaCEu_ym.js",
+      "file": "ViewsTheme/Navigation/Drawer/Menu-Bq3w2X5h.js",
       "name": "ViewsTheme/Navigation/Drawer/Menu",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Menu.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Flyout.js": {
+      "file": "ViewsTheme/Navigation/Flyout-CfoJ-7RD.js",
+      "name": "ViewsTheme/Navigation/Flyout",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Flyout.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/QuantityInput.js": {
+      "file": "ViewsTheme/QuantityInput-CQTIkUGt.js",
+      "name": "ViewsTheme/QuantityInput",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/QuantityInput.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js": {
-      "file": "ViewsTheme/Scroll/Area-BAvHWEpa.js",
+      "file": "ViewsTheme/Scroll/Area-BpU65Mvz.js",
       "name": "ViewsTheme/Scroll/Area",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-      "file": "ViewsTheme/Search/Action-DHjxi9ff.js",
+      "file": "ViewsTheme/Search/Action-D8TQWGR-.js",
       "name": "ViewsTheme/Search/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js": {
-      "file": "ViewsTheme/Search/Bar-T7Bm4Y4D.js",
+      "file": "ViewsTheme/Search/Bar-kJhtWYIP.js",
       "name": "ViewsTheme/Search/Bar",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
-      "file": "ViewsTheme/Search/Overlay-BFzj4O5L.js",
+      "file": "ViewsTheme/Search/Overlay-B9Wms08x.js",
       "name": "ViewsTheme/Search/Overlay",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js": {
-      "file": "ViewsTheme/Search/Overlay/Backdrop-D167CSoa.js",
+      "file": "ViewsTheme/Search/Overlay/Backdrop-CSVLHr45.js",
       "name": "ViewsTheme/Search/Overlay/Backdrop",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js": {
-      "file": "ViewsTheme/Search/Overlay/Close-BhHlWYwK.js",
+      "file": "ViewsTheme/Search/Overlay/Close-P1oGFhZM.js",
       "name": "ViewsTheme/Search/Overlay/Close",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-      "file": "ViewsTheme/VariantsGrid/Container-BsAt29kn.js",
+      "file": "ViewsTheme/VariantsGrid/Container-jc3WuM9B.js",
       "name": "ViewsTheme/VariantsGrid/Container",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
       "isEntry": true
@@ -198,6 +240,15 @@
       "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Language/Menu.css",
       "isEntry": true
     },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Bar.css": {
+      "file": "ViewsTheme/Navigation/Bar-DHlb-U4z.css",
+      "name": "ViewsTheme/Navigation/Bar.css",
+      "names": [
+        "ViewsTheme/Navigation/Bar.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Bar.css",
+      "isEntry": true
+    },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Drawer/Item.css": {
       "file": "ViewsTheme/Navigation/Drawer/Item-DEM32fdM.css",
       "name": "ViewsTheme/Navigation/Drawer/Item.css",
@@ -214,6 +265,24 @@
         "ViewsTheme/Navigation/Drawer/Menu.css"
       ],
       "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Drawer/Menu.css",
+      "isEntry": true
+    },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Flyout.css": {
+      "file": "ViewsTheme/Navigation/Flyout-C5uD1vFi.css",
+      "name": "ViewsTheme/Navigation/Flyout.css",
+      "names": [
+        "ViewsTheme/Navigation/Flyout.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Navigation/Flyout.css",
+      "isEntry": true
+    },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Page/Header/Main.css": {
+      "file": "ViewsTheme/Page/Header/Main-C08C2fAc.css",
+      "name": "ViewsTheme/Page/Header/Main.css",
+      "names": [
+        "ViewsTheme/Page/Header/Main.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Page/Header/Main.css",
       "isEntry": true
     },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Product/Cover.css": {

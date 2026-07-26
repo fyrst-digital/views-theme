@@ -5,8 +5,6 @@ export default class CartDrawerAction extends ShopwareComponent {
         drawerSelector: '#vi-cart-drawer',
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
-        changedEvent: 'ViewsTheme:Cart:Changed',
-        badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
     }
 
     init() {
@@ -15,21 +13,16 @@ export default class CartDrawerAction extends ShopwareComponent {
         this._onClick = this._onClick.bind(this)
         this._onDrawerOpen = this._onDrawerOpen.bind(this)
         this._onDrawerClose = this._onDrawerClose.bind(this)
-        this._onCartChanged = this._onCartChanged.bind(this)
 
         this.el.addEventListener('click', this._onClick)
         window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
-        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
-
-        this._renderBadge(window.cartCount || 0)
     }
 
     destroy() {
         this.el.removeEventListener('click', this._onClick)
         window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
-        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
     }
 
     async _onClick(event) {
@@ -154,29 +147,5 @@ export default class CartDrawerAction extends ShopwareComponent {
             el.remove()
         }
         this._drawerEl = null
-    }
-
-    _onCartChanged(payload) {
-        if (!payload || typeof payload.count !== 'number') {
-            return
-        }
-
-        window.cartCount = payload.count
-        this._renderBadge(payload.count)
-    }
-
-    _renderBadge(count) {
-        const badge = this.el.querySelector(`[data-component="${this.options.badgeComponent}"]`)
-        if (!badge) {
-            return
-        }
-
-        if (count > 0) {
-            badge.hidden = false
-            badge.textContent = String(count)
-        } else {
-            badge.hidden = true
-            badge.textContent = ''
-        }
     }
 }

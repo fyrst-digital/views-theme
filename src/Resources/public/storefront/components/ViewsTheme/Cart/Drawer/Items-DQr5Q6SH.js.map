@@ -1,0 +1,1 @@
+{"version":3,"file":"Items-DQr5Q6SH.js","names":[],"sources":["../../../../../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Items.js"],"sourcesContent":["export default class CartDrawerItems extends ShopwareComponent {\n    init() {}\n}\n"],"mappings":"AAAA,IAAqB,EAArB,cAA6C,iBAAkB,CAC3D,MAAO"}

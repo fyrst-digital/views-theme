@@ -52,7 +52,7 @@ export default class Cart extends ShopwareComponent {
     _onAdd(payload) {
         this._enqueue('add', async () => {
             const formData = payload?.formData instanceof FormData
-                ? payload.formData
+                ? this._forAjax(payload.formData)
                 : this._buildAddFormData(payload)
 
             await this._post(this.options.addPath, formData)
@@ -67,7 +67,6 @@ export default class Cart extends ShopwareComponent {
             }
 
             const formData = new FormData()
-            formData.append('redirectTo', '')
             await this._post(this._urlWithId(this.options.deletePath, id), formData)
         }, payload)
     }
@@ -82,7 +81,6 @@ export default class Cart extends ShopwareComponent {
 
             const formData = new FormData()
             formData.append('quantity', String(quantity))
-            formData.append('redirectTo', '')
             await this._post(this._urlWithId(this.options.changeQuantityPath, id), formData)
         }, payload)
     }
@@ -90,11 +88,10 @@ export default class Cart extends ShopwareComponent {
     _onPromote(payload) {
         this._enqueue('promote', async () => {
             const formData = payload?.formData instanceof FormData
-                ? payload.formData
+                ? this._forAjax(payload.formData)
                 : (() => {
                     const data = new FormData()
                     data.append('code', payload?.code || '')
-                    data.append('redirectTo', '')
                     return data
                 })()
 
@@ -105,12 +102,8 @@ export default class Cart extends ShopwareComponent {
     _onConfigure(payload) {
         this._enqueue('configure', async () => {
             const formData = payload?.formData instanceof FormData
-                ? payload.formData
+                ? this._forAjax(payload.formData)
                 : new FormData()
-
-            if (!formData.has('redirectTo')) {
-                formData.append('redirectTo', '')
-            }
 
             await this._post(this.options.configurePath, formData)
         }, payload)
@@ -217,17 +210,35 @@ export default class Cart extends ShopwareComponent {
             throw new Error('Mutation URL is missing')
         }
 
+        const body = formData instanceof FormData ? this._forAjax(formData) : formData
+
         const response = await fetch(url, {
             method: 'POST',
-            body: formData,
+            body,
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            redirect: 'manual',
         })
 
-        if (!response.ok) {
+        // Empty redirectTo must be omitted so core returns 200.
+        // redirect:manual also blocks following a 302 into a page route (403 XHR).
+        if (!response.ok && response.type !== 'opaqueredirect' && response.status !== 0) {
             throw new Error(`Cart mutation failed: ${response.status}`)
         }
 
         return response
+    }
+
+    /**
+     * Strip progressive-enhancement redirect fields so createActionResponse
+     * returns an empty 200 instead of redirecting to a page (XHR → 403).
+     */
+    _forAjax(formData) {
+        const data = formData instanceof FormData ? formData : new FormData()
+        data.delete('redirectTo')
+        data.delete('redirectParameters')
+        data.delete('forwardTo')
+        data.delete('forwardParameters')
+        return data
     }
 
     _urlWithId(template, id) {
@@ -252,7 +263,6 @@ export default class Cart extends ShopwareComponent {
             })
         })
 
-        formData.append('redirectTo', '')
         return formData
     }
 

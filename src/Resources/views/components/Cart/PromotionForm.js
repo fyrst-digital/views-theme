@@ -16,7 +16,6 @@ export default class CartPromotionForm extends ShopwareComponent {
         event.preventDefault()
 
         const formData = new FormData(this.el)
-        formData.set('redirectTo', '')
 
         window.Shopware.emit(this.options.promoteEvent, {
             code: formData.get('code'),

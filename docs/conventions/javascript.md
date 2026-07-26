@@ -13,11 +13,13 @@
 | Lifecycle / multi-listener | `emit` / `emitQueued` + `on` / `off` | `ViewsTheme:Drawer:Open` |
 | Unambiguous native controls | Semantic selectors | `input[type="search"]`, `button[type="submit"]` |
 
+**Critical:** Every `data-component` **must** have co-located `Name.js` (import-map entry). Shopware loads every `[data-component]` via dynamic `import()` — a missing module becomes a bare specifier URL and fails in the console. Parent-owned identity (partial swaps, nested roots) still uses `data-component` + real JS (minimal `ShopwareComponent` is fine when the parent owns behavior).
+
 Find nested components with `[data-component="ViewsTheme:…"]` (component identity), not ad-hoc hooks.
 
 **Deprecated for new code:** `data-action="…"` as JS hooks. Prefer a real sub-component. Legacy uses remain on Variants grid / Search until migrated.
 
-Do **not** use `data-ref` (removed).
+Do **not** use `data-ref`, `data-vi`, or other ad-hoc identity attributes (removed / forbidden).
 
 Prefer **event delegation** only when a single parent owns many identical children *and* those children are not worth components — default is still sub-components for interactive pieces.
 
@@ -80,7 +82,10 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
 | Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
+| Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
+| Cart drawer heading / items / footer | `ViewsTheme:Cart:Drawer:Heading` etc. | `Cart/Drawer/Heading.js` etc. |
+| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
 | Line item quantity | `ViewsTheme:LineItem:Element:Quantity` | `LineItem/Element/Quantity.js` |
 | Line item remove | `ViewsTheme:LineItem:Element:Remove` | `LineItem/Element/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
@@ -218,9 +223,10 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 |------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
-| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (presentational) |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (`Action/Badge.js` owns count) |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
+| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 
@@ -228,7 +234,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
 - Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
 - Body on `Changed`: one partials fetch → swap Items / Footer / Heading by `data-component` identity
-- Badge: Twig-owned node; Action updates text/`hidden` only (no CSS class strings in JS)
+- Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
 

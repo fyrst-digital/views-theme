@@ -31,7 +31,6 @@ export default class CartShippingCalculation extends ShopwareComponent {
 
     _emitConfigure() {
         const formData = new FormData(this.el)
-        formData.set('redirectTo', '')
 
         window.Shopware.emit(this.options.configureEvent, {
             formData,

@@ -1,0 +1,1 @@
+{"version":3,"file":"Footer-BSgL4l57.js","names":[],"sources":["../../../../../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Footer.js"],"sourcesContent":["export default class CartDrawerFooter extends ShopwareComponent {\n    init() {}\n}\n"],"mappings":"AAAA,IAAqB,EAArB,cAA8C,iBAAkB,CAC5D,MAAO"}
