@@ -1,11 +1,12 @@
-/* Popover + bar anchor + open motion — chrome in Flyout.cva.twig */
+/* Popover + dual anchor + open motion — chrome in Flyout.cva.twig */
+/* top: Bar (hover path); left/right: widthAnchor prop → --vi-flyout-width-anchor */
 
 .vi-navigation-flyout[popover] {
     inset: unset;
     position-anchor: --vi-navigation-bar;
     top: calc(anchor(bottom) + var(--vi-flyout-offset, 0.5rem));
-    left: anchor(left);
-    right: anchor(right);
+    left: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) left);
+    right: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) right);
     bottom: auto;
     width: auto;
     opacity: 0;

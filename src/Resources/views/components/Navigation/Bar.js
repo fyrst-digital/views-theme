@@ -3,6 +3,7 @@ export default class NavigationBar extends ShopwareComponent {
         debounceTime: 150,
         switchDelay: 350,
         closeDelay: 200,
+        widthAnchor: '--vi-navigation-bar',
         flyoutComponentName: 'ViewsTheme:Navigation:Flyout',
         triggerAttr: 'data-flyout-trigger',
         navigationIdAttr: 'data-navigation-id',
@@ -313,8 +314,18 @@ export default class NavigationBar extends ShopwareComponent {
             return
         }
 
+        this._applyWidthAnchor(root)
         this.el.append(root)
         this._flyoutEl = root
+    }
+
+    _applyWidthAnchor(root) {
+        const anchor = this.options.widthAnchor
+        if (!anchor || typeof anchor !== 'string') {
+            return
+        }
+
+        root.style.setProperty('--vi-flyout-width-anchor', anchor)
     }
 
     _unmountFlyout() {

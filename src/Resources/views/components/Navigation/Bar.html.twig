@@ -1,6 +1,7 @@
 {% props
     navigation,
     navigationDepth = null,
+    widthAnchor = '--vi-navigation-bar',
     cva = {},
 %}
 
@@ -13,6 +14,9 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Navigation:Bar',
         'aria-label': 'header.navigationAriaLabel'|trans|striptags,
+        'data-component-options': {
+            widthAnchor: widthAnchor,
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
 >

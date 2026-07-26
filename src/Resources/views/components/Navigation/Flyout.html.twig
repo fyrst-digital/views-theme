@@ -2,6 +2,7 @@
     navigation,
     category = null,
     maxDepth = 3,
+    widthAnchor = '--vi-navigation-bar',
     cva = {},
 %}
 
@@ -23,6 +24,7 @@
         'data-has-teaser': hasTeaser ? 'true' : 'false',
         role: 'region',
         'aria-label': name,
+        style: '--vi-flyout-width-anchor: ' ~ widthAnchor,
     }) }}
     class="{{ cx.root.apply({ teaser: hasTeaser }) }}"
 >
