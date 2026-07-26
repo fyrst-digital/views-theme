@@ -20,6 +20,7 @@ Navigation:Drawer footer (mobile)
 | `Language:Action` | `components/Language/Action.*` | Shell: resolve languages/active, Dropdown chrome, a11y; hidden when ≤1 language |
 | `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, `aria-expanded` |
 | `Language:Menu` | `components/Language/Menu.*` | Panel body: switch form + options (no dropdown chrome) |
+| `Language:Flag` | `components/Language/Flag.*` | Flag `<img>` + CSP-safe load error handling (fallback src → remove) |
 
 ## Props
 
@@ -49,14 +50,14 @@ Navigation:Drawer footer (mobile)
 
 ## Behavior
 
-- **Open/close:** `Dropdown` HTML Popover + CSS anchor (no language-specific JS)
+- **Open/close:** `Dropdown` HTML Popover + CSS anchor
 - **Switch:** `POST` `frontend.checkout.switch-language` with submit button `name="languageId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"` (core FormAddDynamicRedirect)
 - **Locale routes:** hidden `languageCode_{id}` when `_route_params._locale` is set
 - **Offcanvas:** `position="offcanvas"` → `redirectParameters[offcanvas]=menu`
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Display:** optional flag + name (+ territory when translation code provides it) + `caret-down` on toggle
-- **Flags:** [lipis/flag-icons](https://github.com/lipis/flag-icons) **4×3** SVGs under `src/Resources/public/flags/`, named as Shopware `translationCode` (e.g. `de.svg`, `en-US.svg`, `cs.svg`). MIT license in that folder. Exact code first; `onerror` may fall back to the language segment when that file exists (`en-US` → `en.svg`), else removes the img. `:showFlag="false"` hides them. Add more locales by copying upstream 4×3 SVGs under the matching code name (`en.svg` uses GB artwork).
+- **Flags:** [lipis/flag-icons](https://github.com/lipis/flag-icons) **4×3** SVGs under `src/Resources/public/flags/`, named as Shopware `translationCode` (e.g. `de.svg`, `en-US.svg`, `cs.svg`). MIT license in that folder. Rendered via `Language:Flag` (`data-component="ViewsTheme:Language:Flag"`): primary `src`, optional `fallbackSrc` (language segment, e.g. `en-US` → `en.svg`); on `error`, try fallback once then remove the img — no inline handlers. `:showFlag="false"` hides them. Add more locales by copying upstream 4×3 SVGs under the matching code name (`en.svg` uses GB artwork).
 - **CSS:** co-located `Language/Action.css` + `Language/Menu.css` — consume tokens with fallbacks only (`var(--language-flag-width, 14px)`, `var(--language-flag-aspect-ratio, 4 / 3)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
 
 ## Dropdown composition

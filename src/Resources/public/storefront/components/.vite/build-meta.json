@@ -36,6 +36,12 @@
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Dropdown.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js": {
+      "file": "ViewsTheme/Language/Flag-B7kQm2xF.js",
+      "name": "ViewsTheme/Language/Flag",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Action.js": {
       "file": "ViewsTheme/Navigation/Drawer/Action-fGF7LuVB.js",
       "name": "ViewsTheme/Navigation/Drawer/Action",

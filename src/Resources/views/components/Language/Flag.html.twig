@@ -1,0 +1,23 @@
+{% props
+    src,
+    fallbackSrc = null,
+    width = 14,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<img
+    {{ attributes.defaults({
+        src: src,
+        alt: '',
+        width: width,
+        loading: 'lazy',
+        'aria-hidden': 'true',
+        'data-component': 'ViewsTheme:Language:Flag',
+        'data-component-options': {
+            fallbackSrc: fallbackSrc,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>

@@ -53,19 +53,15 @@
     >
         <twig:block name="toggle">
             {% if showFlag and flagCode %}
-                <img
+                {% set flagSrc = asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') %}
+                {% set flagFallbackSrc = flagCodeFallback and flagCodeFallback is not same as(flagCode)
+                    ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
+                    : null %}
+                <twig:ViewsTheme:Language:Flag
                     class="{{ flagIconClass }}"
-                    src="{{ asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') }}"
-                    alt=""
-                    width="14"
-                    loading="lazy"
-                    aria-hidden="true"
-                    {% if flagCodeFallback and flagCodeFallback is not same as(flagCode) %}
-                        onerror="this.onerror=null;this.src='{{ asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')|e('js') }}'"
-                    {% else %}
-                        onerror="this.remove()"
-                    {% endif %}
-                >
+                    :src="flagSrc"
+                    :fallbackSrc="flagFallbackSrc"
+                />
             {% endif %}
 
             {% if showCode and languageCode %}

@@ -27,7 +27,7 @@
             'aria-current': isActive ? 'page' : null,
             target: not isFolder and category_linknewtab(category) ? '_blank' : null,
         }) }}
-        class="{{ cx.link.apply() }}{{ isActive ? ' active' : '' }}"
+        class="{{ cx.link.apply({ active: isActive }) }}"
     >
         {% block image %}
             {% if image %}
