@@ -5,7 +5,8 @@
 
 {% set cx = vi_cva({
     root: { base: 'd-flex flex-wrap flex-row align-items-center py-4 gap-3' },
-    navigation: { base: 'order-lg-0' },
+    navigation: { base: 'order-lg-0 col' },
+    actions: { base: 'col-lg-auto' },
 }|replace_recursive(cva)) %}
 
 <div
@@ -30,7 +31,8 @@
         {% endblock %}
 
         {% block actions %}
-            <twig:ViewsTheme:Page:Header:Actions />
+            <twig:ViewsTheme:Page:Header:Actions 
+                class="{{ cx.actions.apply() }}" />
         {% endblock %}
     {% endblock %}
 </div>

@@ -27,7 +27,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Leaf items navigate only (no flyout trigger, no caret)
 - Folder top-level items use `<button type="button">` (no `href="#"`)
 - Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout enter; switching open flyouts uses a longer dwell (`switchDelay`)
-- Mega layout uses **CSS grid** for structure (not flexbox as the grid system)
+- Mega layout uses **CSS multi-column** (`column-width`) for category groups (packs top→bottom; no equal-height row gaps)
 - Optional teaser from default category media (`category.media`; core navbar parity)
 - Tree depth from sales channel `navigationCategoryDepth` (bar = level 1; flyout = remaining levels; no flyout when depth ≤ 1); fallback **3** only if depth &lt; 1
 - Close: pointer leave (intent delay), Escape, focus leaving bar/flyout pair
@@ -146,14 +146,14 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 - **Bootstrap utilities first (CVA).** Co-located CSS only for what utilities cannot express.
 - **Bar CSS:** `anchor-name` + button `appearance: none` (folder triggers). Active weight via JS `fw-semibold` (with `data-active`).
 - **Flyout chrome** (`bg-body`, `shadow`, `rounded-3`, `p-4`, `border-0`, `m-0`) in `Flyout.cva.twig` — same split as [Dropdown](../conventions/javascript.md#dropdown).
-- **Flyout CSS:** popover + bar anchor + open motion + hover-bridge `::before`; custom grid tracks (`minmax` / `auto-fill`); teaser `aspect-ratio` only.
-- **Flyout layout CVA:** root `d-grid gap-4 align-items-start` + `--teaser` variant; `columns` / `teaser` slots `min-w-0` (+ columns `d-grid gap-4`).
+- **Flyout CSS:** popover + bar anchor + open motion + hover-bridge `::before`; columns multi-column (`column-width` / `column-gap`); column groups `break-inside: avoid` + block-end margin; teaser `aspect-ratio` only.
+- **Flyout layout CVA:** root `d-flex flex-wrap flex-row gap-10 align-items-start` + `--teaser` variant; `columns` `col min-w-0`; teaser `col-auto`.
 - Flyout is HTML **Popover** (`popover="manual"`) + CSS **anchor positioning** to the bar (hover intent stays JS-owned, so not `popover="auto"` / `popovertarget`).
 - Placement: `position-anchor: --vi-navigation-bar`; `top: calc(anchor(bottom) + offset)`; `left`/`right: anchor(…)`. Full bar width, not per-item.
 - Open state: `:popover-open` + `@starting-style` / `allow-discrete`; `showPopover` / `hidePopover` from Flyout JS.
 - Type hierarchy: column **heading** `text-body fw-semibold` + BS link-underline hover; child links `link-secondary` + link-underline hover.
 - Teaser: `rounded-3 overflow-hidden` + image `object-fit-cover` (CVA); not CMS promo blocks.
-- Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-offset`, `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-teaser-aspect-ratio`. Everything else via CVA / `class`.
+- Tokens (component CSS reads only; theme may override): `--vi-flyout-offset`, `--vi-flyout-duration`, `--vi-column-min`, `--vi-column-gap`, `--vi-image-max-w`, `--vi-image-ar` (and `--vi-navigation-flyout-offset` on the hover bridge). Everything else via CVA / `class`.
 
 ## Key source files
 
