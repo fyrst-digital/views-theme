@@ -16,7 +16,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 | `Navigation:Flyout:Grid` | CSS **grid** mega layout (columns + optional teaser) |
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
 | `Navigation:Flyout:Item` | Nested category link/folder; recurses to max depth |
-| `Navigation:Flyout:Teaser` | Category image teaser when `vi_navigation_image` is set |
+| `Navigation:Flyout:Teaser` | Category image teaser when default `category.media` is set |
 | `Page:Header:Main` | Composes Bar from `navigation` prop (`d-lg+` via Bar CVA) |
 
 ## Features
@@ -29,7 +29,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Folder top-level items use `<button type="button">` (no `href="#"`)
 - Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout/host enter; switching open flyouts uses a longer dwell (`switchDelay`)
 - Mega layout uses **CSS grid** for structure (not flexbox as the grid system)
-- Optional teaser from category custom field `vi_navigation_image` (same field as drawer)
+- Optional teaser from default category media (`category.media`; core navbar parity)
 - Tree depth from sales channel `navigationCategoryDepth` (bar = level 1; flyout = remaining levels; no flyout when depth ≤ 1); fallback **3** only if depth &lt; 1
 - Close: pointer leave (intent delay), Escape, focus leaving bar/flyout pair
 - Only one flyout open; stale fetches aborted/ignored
@@ -90,13 +90,15 @@ Bar → Flyout API after mount uses `getComponentInstanceByElement` + `open()` /
 
 Same idea as Drawer Menu level cache, scoped to the Bar instance (full page).
 
-### Category navigation image
+### Category teaser image
 
 | Piece | Detail |
 |-------|--------|
-| Custom field | `vi_navigation_image` on category (media UUID, translated) |
-| Resolve | Flyout root collects id → `searchMedia` once |
+| Source | Default category media (`category.media`) on the flyout root (bar item) |
+| Load | Associated by navigation loader (`media` association) — no custom field / `searchMedia` |
 | Render | `Flyout:Teaser` when media present |
+
+Drawer list thumbs still use custom field `vi_navigation_image` (separate concern).
 
 ### Depth
 
@@ -145,7 +147,8 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 - Mega structure: `.vi-navigation-flyout-grid` / `__columns` use `display: grid`. Flex is OK inside cells for small alignment only.
 - Type hierarchy: column **heading** `text-body fw-semibold`; child links muted via `--bs-secondary-color` / gray fallback; underline on hover.
 - Teaser is a rounded image card (`rounded-3 overflow-hidden`); not CMS promo blocks (title/CTA out of scope).
-- Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-bg`, `--vi-navigation-flyout-shadow`, `--vi-navigation-flyout-padding`, `--vi-navigation-flyout-radius`, `--vi-navigation-flyout-gap`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-col-gap`, `--vi-navigation-flyout-teaser-fit`, `--vi-navigation-flyout-teaser-aspect-ratio`, `--vi-navigation-flyout-teaser-radius`.
+- Host gap under the bar: `--vi-navigation-flyout-offset` (default `0.5rem`) as `padding-top` on `.vi-navigation-bar__host` so the pointer path stays inside the host.
+- Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-offset`, `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-bg`, `--vi-navigation-flyout-shadow`, `--vi-navigation-flyout-padding`, `--vi-navigation-flyout-radius`, `--vi-navigation-flyout-gap`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-col-gap`, `--vi-navigation-flyout-teaser-fit`, `--vi-navigation-flyout-teaser-aspect-ratio`, `--vi-navigation-flyout-teaser-radius`.
 
 ## Key source files
 

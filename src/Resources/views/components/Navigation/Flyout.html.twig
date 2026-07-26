@@ -11,12 +11,7 @@
 {% set cx = vi_cva_from_file(cva) %}
 {% set gridClass = cx.grid.apply() %}
 
-{% set rootCustomFields = rootCategory ? (rootCategory.translated.customFields|default({})) : {} %}
-{% set teaserImageId = rootCustomFields.vi_navigation_image ?? null %}
-{% set teaserImages = teaserImageId
-    ? searchMedia([teaserImageId], context.context)
-    : null %}
-{% set teaserImage = teaserImageId and teaserImages ? teaserImages.get(teaserImageId) : null %}
+{% set teaserImage = rootCategory and rootCategory.media ? rootCategory.media : null %}
 
 <div
     {{ attributes.defaults({

@@ -2,6 +2,8 @@
     position: absolute;
     inset-inline: 0;
     top: 100%;
+    /* Visual gap under bar; padding keeps the path inside the host (no dead zone). */
+    padding-top: var(--vi-navigation-flyout-offset, 0.5rem);
     z-index: 1030;
     pointer-events: none;
 }
