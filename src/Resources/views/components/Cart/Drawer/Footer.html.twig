@@ -1,0 +1,40 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cart = page.cart %}
+{% set isEmpty = cart.lineItems|length < 1 %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Footer',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if not isEmpty %}
+        {% block promotion %}
+            <twig:ViewsTheme:Cart:PromotionForm />
+        {% endblock %}
+
+        {% block shipping %}
+            <twig:ViewsTheme:Cart:ShippingCalculation :page="page" />
+        {% endblock %}
+
+        {% block summary %}
+            <twig:ViewsTheme:Cart:Summary :summary="cart" />
+        {% endblock %}
+
+        {% block checkout %}
+            <a
+                {{ attributes.nested('checkout').defaults({
+                    href: path('frontend.checkout.confirm.page'),
+                }) }}
+                class="{{ cx.checkout.apply() }}"
+            >
+                {{ 'checkout.proceedToCheckout'|trans|sw_sanitize }}
+            </a>
+        {% endblock %}
+    {% endif %}
+</div>

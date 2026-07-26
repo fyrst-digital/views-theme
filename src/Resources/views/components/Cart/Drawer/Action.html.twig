@@ -1,0 +1,36 @@
+{% props
+    size = 'md',
+    drawerUrl = path('frontend.views-theme.cart.drawer'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cart = context.extensions.cart ?? null %}
+{% set cartCount = cart ? cart.lineItems|length : 0 %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        title: 'checkout.cartTitle'|trans|striptags,
+        'aria-label': 'checkout.cartTitle'|trans|striptags,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-cart-drawer',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Cart:Drawer:Action',
+        'data-component-options': {
+            drawerUrl: drawerUrl,
+            changedEvent: 'ViewsTheme:Cart:Changed',
+            badgeComponent: 'ViewsTheme:Cart:Drawer:Action:Badge',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply({ size: size }) }}"
+>
+    {{ vi_icon('handbag') }}
+    <span
+        {{ attributes.nested('badge').defaults({
+            'data-component': 'ViewsTheme:Cart:Drawer:Action:Badge',
+            hidden: cartCount < 1,
+        }) }}
+        class="{{ cx.badge.apply() }}"
+    >{% if cartCount > 0 %}{{ cartCount }}{% endif %}</span>
+</button>

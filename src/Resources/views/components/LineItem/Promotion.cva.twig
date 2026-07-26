@@ -1,9 +1,23 @@
 {
-    root: { base: 'vi-line-item vi-line-item--promotion line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    label: { base: 'vi-line-item__label line-item-label discount-name' },
-    image: { base: 'vi-line-item__image line-item-img discount-icon' },
-    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+    root: {
+        base: 'vi-line-item vi-line-item--promotion d-flex gap-3',
+    },
+    content: {
+        base: 'vi-line-item__content d-flex flex-column flex-grow-1 min-w-0 gap-2',
+    },
+    header: {
+        base: 'vi-line-item__header d-flex align-items-start justify-content-between gap-2',
+    },
+    name: {
+        base: 'vi-line-item__name min-w-0',
+    },
+    label: {
+        base: 'vi-line-item__label',
+    },
+    image: {
+        base: 'vi-line-item__image d-flex align-items-center justify-content-center shrink-0 rounded-2 bg-body-secondary w-20 h-20',
+    },
+    totalPrice: {
+        base: 'vi-line-item__total-price fw-semibold text-end',
+    },
 }

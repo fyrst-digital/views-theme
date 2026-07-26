@@ -1,0 +1,22 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-cart-drawer-partials' },
+}|replace_recursive(cva)) %}
+{% set cart = page.cart %}
+{% set productsQuantity = cart.lineItems|length %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Partials',
+        hidden: true,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <twig:ViewsTheme:Cart:Drawer:Heading :productsQuantity="productsQuantity" />
+    <twig:ViewsTheme:Cart:Drawer:Items :cart="cart" />
+    <twig:ViewsTheme:Cart:Drawer:Footer :page="page" />
+</div>

@@ -1,0 +1,63 @@
+{% props
+    lineItem,
+    label = null,
+    href = null,
+    sizes = { default: '100px' },
+    cva = {},
+%}
+
+{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
+{% set cover = lineItem.cover ?? null %}
+{% set cx = vi_cva_from_file(cva) %}
+
+{% set media %}
+    {% if cover and cover.url and cover.isSpatialObject() == false %}
+        {% set mediaAttrs = {
+            title: (cover.translated.title ?: resolvedLabel),
+            alt: (cover.translated.alt ?: resolvedLabel),
+            loading: 'lazy',
+            class: cx.image.apply(),
+        } %}
+
+        {% if cover.getMediaType().getName() === 'VIDEO' %}
+            {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                media: cover,
+                attributes: mediaAttrs,
+            } %}
+        {% else %}
+            {% sw_thumbnails 'vi-line-item-image' with {
+                media: cover,
+                sizes: sizes,
+                attributes: mediaAttrs,
+            } %}
+        {% endif %}
+    {% else %}
+        <div
+            {{ attributes.nested('placeholder') }}
+            class="{{ cx.placeholder.apply() }}"
+            aria-hidden="true"
+        >
+            {{ vi_icon('placeholder') }}
+        </div>
+    {% endif %}
+{% endset %}
+
+{% if href %}
+    <a
+        {{ attributes.defaults({
+            href: href,
+            title: resolvedLabel,
+            tabindex: '-1',
+        }) }}
+        class="{{ cx.root.apply() }}"
+    >
+        {{ media }}
+    </a>
+{% else %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {{ media }}
+    </div>
+{% endif %}

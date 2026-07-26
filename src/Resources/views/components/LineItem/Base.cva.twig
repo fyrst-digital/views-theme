@@ -1,7 +1,17 @@
 {
-    root: { base: 'vi-line-item line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    actions: { base: 'vi-line-item__actions line-item-actions' },
+    root: {
+        base: 'vi-line-item d-flex gap-3',
+    },
+    content: {
+        base: 'vi-line-item__content d-flex flex-column flex-grow-1 min-w-0 gap-2',
+    },
+    header: {
+        base: 'vi-line-item__header d-flex align-items-start justify-content-between gap-2',
+    },
+    name: {
+        base: 'vi-line-item__name min-w-0',
+    },
+    actions: {
+        base: 'vi-line-item__actions d-flex align-items-center gap-1 shrink-0',
+    },
 }

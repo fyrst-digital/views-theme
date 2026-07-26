@@ -1,14 +1,22 @@
 {% props
-    redirectTo = 'frontend.cart.offcanvas',
+    redirectTo = 'frontend.checkout.cart.page',
+    inputId = null,
+    submitId = null,
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set resolvedInputId = inputId ?? ('vi-cart-promotion-input-' ~ random()) %}
+{% set resolvedSubmitId = submitId ?? ('vi-cart-promotion-submit-' ~ random()) %}
 
 <form
     {{ attributes.defaults({
         action: path('frontend.checkout.promotion.add'),
         method: 'post',
+        'data-component': 'ViewsTheme:Cart:PromotionForm',
+        'data-component-options': {
+            promoteEvent: 'ViewsTheme:Cart:Promote',
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
 >
@@ -20,7 +28,7 @@
         {% block label %}
             <label
                 {{ attributes.nested('label').defaults({
-                    for: 'addPromotionOffcanvasCartInput',
+                    for: resolvedInputId,
                 }) }}
                 class="{{ cx.label.apply() }}"
             >
@@ -34,10 +42,10 @@
                     {{ attributes.nested('input').defaults({
                         type: 'text',
                         name: 'code',
-                        id: 'addPromotionOffcanvasCartInput',
+                        id: resolvedInputId,
                         placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
                         'aria-label': 'checkout.addPromotionLabel'|trans|striptags,
-                        'aria-describedby': 'addPromotionOffcanvasCart',
+                        'aria-describedby': resolvedSubmitId,
                         required: 'required',
                     }) }}
                     class="{{ cx.input.apply() }}"
@@ -48,7 +56,7 @@
                 <button
                     {{ attributes.nested('submit').defaults({
                         type: 'submit',
-                        id: 'addPromotionOffcanvasCart',
+                        id: resolvedSubmitId,
                     }) }}
                     class="{{ cx.submit.apply() }}"
                 >

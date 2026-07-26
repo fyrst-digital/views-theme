@@ -1,12 +1,35 @@
 {
-    root: { base: 'vi-line-item vi-line-item--product line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    label: { base: 'vi-line-item__label line-item-label product-name' },
-    actions: { base: 'vi-line-item__actions line-item-actions' },
-    body: { base: 'vi-line-item__body line-item-body' },
-    footer: { base: 'vi-line-item__footer line-item-footer' },
-    quantity: { base: 'vi-line-item__quantity line-item-quantity' },
-    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+    root: {
+        base: 'vi-line-item vi-line-item--product d-flex gap-3',
+    },
+    image: {
+        base: 'vi-line-item__image',
+    },
+    content: {
+        base: 'vi-line-item__content d-flex flex-column flex-grow-1 min-w-0 gap-2',
+    },
+    header: {
+        base: 'vi-line-item__header d-flex align-items-start justify-content-between gap-2',
+    },
+    name: {
+        base: 'vi-line-item__name min-w-0',
+    },
+    label: {
+        base: 'vi-line-item__label text-decoration-none',
+    },
+    actions: {
+        base: 'vi-line-item__actions d-flex align-items-center gap-1 shrink-0',
+    },
+    body: {
+        base: 'vi-line-item__body d-flex flex-column gap-1',
+    },
+    footer: {
+        base: 'vi-line-item__footer d-flex align-items-center justify-content-between gap-2',
+    },
+    quantity: {
+        base: 'vi-line-item__quantity',
+    },
+    totalPrice: {
+        base: 'vi-line-item__total-price fw-semibold text-end',
+    },
 }

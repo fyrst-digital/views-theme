@@ -1,0 +1,28 @@
+{% props
+    lineItem,
+    cva = {},
+%}
+
+{% set options = lineItem.payload.options ?? [] %}
+{% if options is empty %}
+    {% set options = [] %}
+{% endif %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% if options is not empty %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {% for option in options %}
+            <span {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
+                <span {{ attributes.nested('group') }} class="{{ cx.group.apply() }}">{{ option.group }}:</span>
+                <span {{ attributes.nested('value') }} class="{{ cx.value.apply() }}">{{ option.option }}</span>
+            </span>
+            {% if not loop.last %}
+                <span {{ attributes.nested('divider') }} class="{{ cx.divider.apply() }}" aria-hidden="true">|</span>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

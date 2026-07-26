@@ -37,7 +37,7 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 Applies to **lazy-mounted shells** fetched by an Action:
 
-- `ViewsTheme:Drawer` (e.g. Navigation drawer)
+- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer)
 - `ViewsTheme:Search:Overlay`
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
@@ -78,6 +78,13 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
 | Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
 | Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
+| Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
+| Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
+| Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
+| Line item quantity | `ViewsTheme:LineItem:Element:Quantity` | `LineItem/Element/Quantity.js` |
+| Line item remove | `ViewsTheme:LineItem:Element:Remove` | `LineItem/Element/Remove.js` |
+| Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
+| Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
@@ -203,6 +210,27 @@ Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache,
 - Cache exception: see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 
 See [Navigation bar](../features/navigation-bar.md).
+### Cart drawer
+
+Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open partials; Action owns shell lifecycle + badge.
+
+| Hook | Attribute |
+|------|-----------|
+| Cart owner | `data-component="ViewsTheme:Cart"` |
+| Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (presentational) |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
+| Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
+| Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
+| Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
+- Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
+- Body on `Changed`: one partials fetch → swap Items / Footer / Heading by `data-component` identity
+- Badge: Twig-owned node; Action updates text/`hidden` only (no CSS class strings in JS)
+
+See [Cart drawer](../features/cart-drawer.md).
 
 ### Scroll area
 
