@@ -33,7 +33,7 @@ Navigation:Drawer footer (mobile)
 | `size` | `'md'` | Toggle CVA size |
 | `label` | `null` | Default: `context.languageInfo.name`; `:label="false"` hides text |
 | `showCode` | `false` | Short locale code (e.g. `EN`) before label |
-| `showFlag` | `true` | Country/locale flag from `bundles/viewstheme/flags/{locale}.svg` |
+| `showFlag` | `true` | Flag from `bundles/viewstheme/flags/{translationCode}.svg` (language-segment fallback) |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
 | `cva` | `{}` | Deep-merge CVA overrides |
 
@@ -56,8 +56,8 @@ Navigation:Drawer footer (mobile)
 - **Offcanvas:** `position="offcanvas"` → `redirectParameters[offcanvas]=menu`
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Display:** optional flag + name (+ territory when translation code provides it) + `caret-down` on toggle
-- **Flags:** SVG assets under `src/Resources/public/flags/` (`{translationCode.code}.svg`, e.g. `de.svg`, `en-US.svg`); `:showFlag="false"` hides them
-- **CSS:** co-located `Language/Action.css` + `Language/Menu.css` — consume tokens with fallbacks only (`var(--language-flag-width, 1.25rem)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
+- **Flags:** [lipis/flag-icons](https://github.com/lipis/flag-icons) **4×3** SVGs under `src/Resources/public/flags/`, named as Shopware `translationCode` (e.g. `de.svg`, `en-US.svg`, `cs.svg`). MIT license in that folder. Exact code first; `onerror` may fall back to the language segment when that file exists (`en-US` → `en.svg`), else removes the img. `:showFlag="false"` hides them. Add more locales by copying upstream 4×3 SVGs under the matching code name (`en.svg` uses GB artwork).
+- **CSS:** co-located `Language/Action.css` + `Language/Menu.css` — consume tokens with fallbacks only (`var(--language-flag-width, 14px)`, `var(--language-flag-aspect-ratio, 4 / 3)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
 
 ## Dropdown composition
 

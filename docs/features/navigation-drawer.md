@@ -75,7 +75,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 | Custom field | `vi_navigation_image` on category (media type, translated) |
 | Resolve | `Menu` collects IDs from the current level → `searchMedia(ids, context.context)` once |
 | Render | `Item` prop `image`; `{% sw_thumbnails %}` before label when present |
-| Size token | `--vi-navigation-drawer-item-image-size` (default `1.75rem`); radius `--vi-navigation-drawer-item-image-radius` (default `0.25rem`) |
+| Image tokens | `--vi-navigation-drawer-item-image-size` (`1.75rem`), `--vi-navigation-drawer-item-image-radius` (`0.25rem`), `--vi-navigation-drawer-item-image-aspect-ratio` (`1 / 1`), `--vi-navigation-drawer-item-image-fit` (`cover`) |
 
 ### Drill-down flow
 
