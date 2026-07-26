@@ -132,6 +132,8 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 
 - Styling is Bootstrap utilities first (CVA). Co-located `Bar.css` / `Flyout.css` for positioning, grid, and motion only.
 - Mega structure: `.vi-navigation-flyout-grid` / `__columns` use `display: grid`. Flex is OK inside cells for small alignment only.
+- Type hierarchy: column **heading** `text-body fw-semibold`; child links muted via `--bs-secondary-color` / gray fallback; underline on hover.
+- Teaser is a rounded image card (`rounded-3 overflow-hidden`); not CMS promo blocks (title/CTA out of scope).
 - Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-bg`, `--vi-navigation-flyout-shadow`, `--vi-navigation-flyout-padding`, `--vi-navigation-flyout-radius`, `--vi-navigation-flyout-gap`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-col-gap`, `--vi-navigation-flyout-teaser-fit`, `--vi-navigation-flyout-teaser-aspect-ratio`, `--vi-navigation-flyout-teaser-radius`.
 
 ## Key source files
