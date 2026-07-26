@@ -4,7 +4,6 @@ export default class NavigationBar extends ShopwareComponent {
         switchDelay: 350,
         closeDelay: 200,
         flyoutComponentName: 'ViewsTheme:Navigation:Flyout',
-        flyoutHostAttr: 'data-flyout-host',
         triggerAttr: 'data-flyout-trigger',
         navigationIdAttr: 'data-navigation-id',
         flyoutUrlAttr: 'data-flyout-url',
@@ -94,7 +93,7 @@ export default class NavigationBar extends ShopwareComponent {
             if (this._isInside(event.target)) {
                 this._pointerInside = true
                 this._clearCloseTimer()
-                // Multi-row path: entering flyout/host must cancel a pending switch
+                // Multi-row path: entering flyout must cancel a pending switch
                 // from intermediate bar items the pointer crossed.
                 this._clearOpenTimer()
             }
@@ -303,11 +302,6 @@ export default class NavigationBar extends ShopwareComponent {
     }
 
     _mountFlyout(html) {
-        const host = this._host()
-        if (!host) {
-            throw new Error('NavigationBar: flyout host missing')
-        }
-
         this._unmountFlyout()
 
         if (!html) {
@@ -319,7 +313,7 @@ export default class NavigationBar extends ShopwareComponent {
             return
         }
 
-        host.replaceChildren(root)
+        this.el.append(root)
         this._flyoutEl = root
     }
 
@@ -327,12 +321,10 @@ export default class NavigationBar extends ShopwareComponent {
         if (this._flyoutEl) {
             this._flyoutEl.remove()
             this._flyoutEl = null
+            return
         }
 
-        const host = this._host()
-        if (host) {
-            host.replaceChildren()
-        }
+        this.el.querySelector(`[data-component="${this.options.flyoutComponentName}"]`)?.remove()
     }
 
     _parseRoot(html) {
@@ -365,10 +357,6 @@ export default class NavigationBar extends ShopwareComponent {
             this.options.flyoutComponentName,
             this._flyoutEl,
         )
-    }
-
-    _host() {
-        return this.el.querySelector(`[${this.options.flyoutHostAttr}]`)
     }
 
     _triggerFromEvent(event) {
@@ -444,6 +432,7 @@ export default class NavigationBar extends ShopwareComponent {
             }
 
             el.setAttribute(this.options.activeAttr, 'true')
+            el.classList.add('fw-semibold')
             if (activeId && String(id) === String(activeId)) {
                 el.setAttribute('aria-current', 'page')
             }

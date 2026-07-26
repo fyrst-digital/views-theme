@@ -12,7 +12,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 |-------|----------------|
 | `Navigation:Bar` | Horizontal top-level list; hover/focus intent; one flyout at a time; in-session HTML cache; active path; listens to Flyout Open/Close |
 | `Navigation:Bar:Item` | Top-level link or folder button + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) + `caret-down` when children exist |
-| `Navigation:Flyout` | Panel shell (open/close motion, a11y region); `emitQueued` Open/Close |
+| `Navigation:Flyout` | Panel shell (`popover="manual"`, open/close motion, a11y region); `emitQueued` Open/Close |
 | `Navigation:Flyout:Grid` | CSS **grid** mega layout (columns + optional teaser) |
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
 | `Navigation:Flyout:Item` | Nested category link/folder; recurses to max depth |
@@ -27,7 +27,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Items with children show a decorative `caret-down` after the label
 - Leaf items navigate only (no flyout trigger, no caret)
 - Folder top-level items use `<button type="button">` (no `href="#"`)
-- Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout/host enter; switching open flyouts uses a longer dwell (`switchDelay`)
+- Multi-row bar: path into the flyout may cross other triggers — pending open is cancelled on flyout enter; switching open flyouts uses a longer dwell (`switchDelay`)
 - Mega layout uses **CSS grid** for structure (not flexbox as the grid system)
 - Optional teaser from default category media (`category.media`; core navbar parity)
 - Tree depth from sales channel `navigationCategoryDepth` (bar = level 1; flyout = remaining levels; no flyout when depth ≤ 1); fallback **3** only if depth &lt; 1
@@ -45,24 +45,25 @@ The header override replaces core `layout_header_navigation` content with `Page:
 3. Bar lists top-level items only (`navigation.tree`)
 4. Items with children expose `data-flyout-trigger`, `data-flyout-url`, `data-navigation-id`, and ARIA attrs
 5. Active styling from `window.activeNavigationId` / `window.activeNavigationPathIdList` → `data-active` on the trigger control
+6. Bar root sets CSS `anchor-name: --vi-navigation-bar` (no empty mount host)
 
 ### Flyout open
 
 1. `Navigation:Bar` schedules hover/focus intent on a trigger:
    - **First open** (no flyout mounted): `debounceTime` (default 150ms)
    - **Switch** (another item while a flyout is open): `switchDelay` (default 350ms) so a multi-row path into the panel does not steal the open category
-2. Pointer enter on non-trigger chrome inside the bar (flyout host / open panel / list gap) **clears** any pending open timer
+2. Pointer enter on non-trigger chrome inside the bar (open panel / list gap) **clears** any pending open timer
 3. Fetches `frontend.views-theme.navigation.flyout` for that `navigationId` (or serves in-session cache)
 4. Empty (`204` / blank) or failed fetch → resets trigger ARIA; no mount
-5. Mounts response root into `[data-flyout-host]` under Bar
-6. Waits for `ViewsTheme:Navigation:Flyout` instance → `open()`
+5. Appends response root as last child of Bar (`popover="manual"`)
+6. Waits for `ViewsTheme:Navigation:Flyout` instance → `open()` → `showPopover()`
 7. Flyout `emitQueued` `ViewsTheme:Navigation:Flyout:Open` `{ el }`
 8. Bar keeps trigger `aria-expanded="true"`
 
 ### Flyout close
 
 1. Leave delay / Escape / focus out → Bar calls `flyout.close()`
-2. Flyout runs close motion (or instant if reduced motion)
+2. Flyout `hidePopover()` + close motion (or instant if reduced motion)
 3. Flyout `emitQueued` `ViewsTheme:Navigation:Flyout:Close` `{ el }`
 4. Bar filters with `contains(el)` → **unmounts** flyout DOM and clears trigger ARIA
 5. HTML string remains in Bar `_cache` for the page lifetime
@@ -134,21 +135,26 @@ Renders `ViewsTheme:Navigation:Flyout` via `ComponentRendererInterface`. Empty t
 | Hook | Attribute |
 |------|-----------|
 | Bar | `data-component="ViewsTheme:Navigation:Bar"` |
-| Flyout host | `data-flyout-host` (under Bar) |
+| Bar anchor | CSS `anchor-name: --vi-navigation-bar` on `.vi-navigation-bar` |
 | Item trigger | `data-flyout-trigger` + `data-flyout-url` + `data-navigation-id` |
 | Active trigger | `data-active="true"` (set by Bar JS) |
-| Flyout root | `data-component="ViewsTheme:Navigation:Flyout"` / `#vi-navigation-flyout-{id}` |
+| Flyout root | `data-component="ViewsTheme:Navigation:Flyout"` / `#vi-navigation-flyout-{id}` / `popover="manual"` |
 
 Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDelay`, `closeDelay`.
 
 ## Layout notes
 
-- Styling is Bootstrap utilities first (CVA). Co-located `Bar.css` / `Flyout.css` for positioning, grid, and motion only.
-- Mega structure: `.vi-navigation-flyout-grid` / `__columns` use `display: grid`. Flex is OK inside cells for small alignment only.
-- Type hierarchy: column **heading** `text-body fw-semibold`; child links muted via `--bs-secondary-color` / gray fallback; underline on hover.
-- Teaser is a rounded image card (`rounded-3 overflow-hidden`); not CMS promo blocks (title/CTA out of scope).
-- Host gap under the bar: `--vi-navigation-flyout-offset` (default `0.5rem`) as `padding-top` on `.vi-navigation-bar__host` so the pointer path stays inside the host.
-- Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-offset`, `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-bg`, `--vi-navigation-flyout-shadow`, `--vi-navigation-flyout-padding`, `--vi-navigation-flyout-radius`, `--vi-navigation-flyout-gap`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-col-gap`, `--vi-navigation-flyout-teaser-fit`, `--vi-navigation-flyout-teaser-aspect-ratio`, `--vi-navigation-flyout-teaser-radius`.
+- **Bootstrap utilities first (CVA).** Co-located CSS only for what utilities cannot express.
+- **Bar CSS:** `anchor-name` + button `appearance: none` (folder triggers). Active weight via JS `fw-semibold` (with `data-active`).
+- **Flyout chrome** (`bg-body`, `shadow`, `rounded-3`, `p-4`, `border-0`, `m-0`) in `Flyout.cva.twig` — same split as [Dropdown](../conventions/javascript.md#dropdown).
+- **Flyout CSS:** popover + bar anchor + open motion + hover-bridge `::before`; custom grid tracks (`minmax` / `auto-fill`); teaser `aspect-ratio` only.
+- **Grid CVA:** `d-grid gap-4 align-items-start`; columns same + `min-w-0`; teaser slot `min-w-0`.
+- Flyout is HTML **Popover** (`popover="manual"`) + CSS **anchor positioning** to the bar (hover intent stays JS-owned, so not `popover="auto"` / `popovertarget`).
+- Placement: `position-anchor: --vi-navigation-bar`; `top: calc(anchor(bottom) + offset)`; `left`/`right: anchor(…)`. Full bar width, not per-item.
+- Open state: `:popover-open` + `@starting-style` / `allow-discrete`; `showPopover` / `hidePopover` from Flyout JS.
+- Type hierarchy: column **heading** `text-body fw-semibold` + BS link-underline hover; child links `link-secondary` + link-underline hover.
+- Teaser: `rounded-3 overflow-hidden` + image `object-fit-cover` (CVA); not CMS promo blocks.
+- Tokens (component CSS reads only; theme may override): `--vi-navigation-flyout-offset`, `--vi-navigation-flyout-duration`, `--vi-navigation-flyout-col-min`, `--vi-navigation-flyout-teaser-aspect-ratio`. Everything else via CVA / `class`.
 
 ## Key source files
 
@@ -169,6 +175,7 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 - Touch-first flyout as primary mobile nav
 - Persisted flyout HTML across reloads
 - Home link in the bar
+- Per-item anchored mini-menus (bar-level full-width only)
 
 ## Related
 

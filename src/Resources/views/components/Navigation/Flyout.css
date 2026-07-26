@@ -1,72 +1,71 @@
-.vi-navigation-flyout {
-    --_duration: var(--vi-navigation-flyout-duration, 150ms);
-    --_bg: var(--vi-navigation-flyout-bg, var(--bs-body-bg, #fff));
-    --_shadow: var(--vi-navigation-flyout-shadow, 0 0.75rem 2rem rgba(0, 0, 0, 0.08));
-    --_padding: var(--vi-navigation-flyout-padding, 1.5rem 1.75rem);
-    --_radius: var(--vi-navigation-flyout-radius, 0.75rem);
+/* Popover + bar anchor + open motion — chrome in Flyout.cva.twig */
 
-    background: var(--_bg);
-    box-shadow: var(--_shadow);
-    border-radius: var(--_radius);
-    padding: var(--_padding);
+.vi-navigation-flyout[popover] {
+    inset: unset;
+    position-anchor: --vi-navigation-bar;
+    top: calc(anchor(bottom) + var(--vi-navigation-flyout-offset, 0.5rem));
+    left: anchor(left);
+    right: anchor(right);
+    bottom: auto;
+    width: auto;
     opacity: 0;
     transform: translateY(-0.25rem);
-    transition:
-        opacity var(--_duration) ease,
-        transform var(--_duration) ease;
     pointer-events: none;
 }
 
-.vi-navigation-flyout[data-open="true"] {
+/* Hover bridge across the visual gap under the bar */
+.vi-navigation-flyout[popover]::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: var(--vi-navigation-flyout-offset, 0.5rem);
+}
+
+.vi-navigation-flyout[popover]:popover-open {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+    .vi-navigation-flyout[popover] {
+        transition:
+            opacity var(--vi-navigation-flyout-duration, 150ms) ease,
+            transform var(--vi-navigation-flyout-duration, 150ms) ease,
+            overlay var(--vi-navigation-flyout-duration, 150ms) allow-discrete,
+            display var(--vi-navigation-flyout-duration, 150ms) allow-discrete;
+    }
+
+    .vi-navigation-flyout[popover]:not(:popover-open) {
+        opacity: 0;
+        transform: translateY(-0.25rem);
+    }
+
+    @starting-style {
+        .vi-navigation-flyout[popover]:popover-open {
+            opacity: 0;
+            transform: translateY(-0.25rem);
+        }
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .vi-navigation-flyout {
+    .vi-navigation-flyout[popover] {
         transition: none;
         transform: none;
     }
 }
 
-.vi-navigation-flyout-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--vi-navigation-flyout-gap, 2rem);
-    align-items: start;
-}
-
+/* Custom grid tracks — no BS utility for minmax / auto-fill */
 .vi-navigation-flyout-grid--teaser {
     grid-template-columns: minmax(0, 1fr) minmax(10rem, 14rem);
 }
 
 .vi-navigation-flyout-grid__columns {
-    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(var(--vi-navigation-flyout-col-min, 11rem), 1fr));
-    gap: var(--vi-navigation-flyout-col-gap, 1.5rem 2rem);
-    align-items: start;
-    min-width: 0;
-}
-
-.vi-navigation-flyout-grid__teaser {
-    min-width: 0;
-}
-
-.vi-navigation-flyout-item__link {
-    color: var(--bs-secondary-color, var(--bs-gray-600, #6c757d));
-}
-
-.vi-navigation-flyout-item__link:hover,
-.vi-navigation-flyout-column__heading:hover {
-    color: var(--bs-body-color, inherit);
-    text-decoration: underline;
 }
 
 .vi-navigation-flyout-teaser__image {
-    display: block;
-    width: 100%;
-    object-fit: var(--vi-navigation-flyout-teaser-fit, cover);
     aspect-ratio: var(--vi-navigation-flyout-teaser-aspect-ratio, 4 / 5);
-    border-radius: var(--vi-navigation-flyout-teaser-radius, 0.75rem);
 }

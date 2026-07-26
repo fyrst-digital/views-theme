@@ -1,6 +1,5 @@
 export default class NavigationFlyout extends ShopwareComponent {
     static options = {
-        openAttr: 'data-open',
         durationVar: '--vi-navigation-flyout-duration',
         durationFallback: 150,
         openEvent: 'ViewsTheme:Navigation:Flyout:Open',
@@ -11,7 +10,6 @@ export default class NavigationFlyout extends ShopwareComponent {
         this._open = false
         this._closing = false
         this._closeTimer = null
-        this.el.setAttribute(this.options.openAttr, 'false')
     }
 
     destroy() {
@@ -27,12 +25,9 @@ export default class NavigationFlyout extends ShopwareComponent {
         this._closing = false
         this._open = true
 
-        this.el.setAttribute(this.options.openAttr, 'false')
-        void this.el.offsetWidth
-
-        requestAnimationFrame(() => {
-            this.el.setAttribute(this.options.openAttr, 'true')
-        })
+        if (typeof this.el.showPopover === 'function') {
+            this.el.showPopover()
+        }
 
         window.Shopware.emitQueued(this.options.openEvent, { el: this.el })
     }
@@ -48,7 +43,10 @@ export default class NavigationFlyout extends ShopwareComponent {
 
         this._open = false
         this._closing = true
-        this.el.setAttribute(this.options.openAttr, 'false')
+
+        if (typeof this.el.hidePopover === 'function' && this.el.matches(':popover-open')) {
+            this.el.hidePopover()
+        }
 
         if (this._prefersReducedMotion()) {
             this._finishClose()

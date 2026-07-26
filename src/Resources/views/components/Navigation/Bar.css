@@ -1,27 +1,8 @@
-.vi-navigation-bar__host {
-    position: absolute;
-    inset-inline: 0;
-    top: 100%;
-    /* Visual gap under bar; padding keeps the path inside the host (no dead zone). */
-    padding-top: var(--vi-navigation-flyout-offset, 0.5rem);
-    z-index: 1030;
-    pointer-events: none;
+.vi-navigation-bar {
+    anchor-name: --vi-navigation-bar;
 }
 
-.vi-navigation-bar__host:has([data-component="ViewsTheme:Navigation:Flyout"]) {
-    pointer-events: auto;
-}
-
+/* Folder triggers are <button>; strip UA chrome (no BS utility for appearance) */
 .vi-navigation-bar-item__link {
     appearance: none;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    text-align: inherit;
-    cursor: pointer;
-}
-
-.vi-navigation-bar-item__link[data-active="true"] {
-    font-weight: 600;
 }

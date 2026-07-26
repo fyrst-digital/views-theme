@@ -8,7 +8,6 @@
 {% set flyoutEnabled = resolvedDepth > 1 %}
 {% set cx = vi_cva_from_file(cva) %}
 {% set listClass = cx.list.apply() %}
-{% set hostClass = cx.host.apply() %}
 
 <nav
     {{ attributes.defaults({
@@ -35,11 +34,4 @@
             {% endif %}
         {% endfor %}
     </ul>
-
-    <div
-        {{ attributes.nested('host').defaults({
-            'data-flyout-host': '',
-        }) }}
-        class="{{ hostClass }}"
-    ></div>
 </nav>

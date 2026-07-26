@@ -179,22 +179,24 @@ See [Navigation drawer](../features/navigation-drawer.md).
 
 ### Navigation bar / flyout
 
-Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache, and mount; **Flyout** owns panel open/close motion and lifecycle events.
+Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache, and mount; **Flyout** owns popover open/close motion and lifecycle events.
 
 | Hook | Attribute |
 |------|-----------|
 | Bar | `data-component="ViewsTheme:Navigation:Bar"` |
-| Flyout host | `data-flyout-host` (under Bar) |
+| Bar anchor | CSS `anchor-name: --vi-navigation-bar` |
 | Item trigger | `data-flyout-trigger` + `data-flyout-url` + `data-navigation-id` |
-| Flyout | `data-component="ViewsTheme:Navigation:Flyout"` |
+| Flyout | `data-component="ViewsTheme:Navigation:Flyout"` / `popover="manual"` |
 
 | Event | Emitter | Listener |
 |-------|---------|----------|
 | `ViewsTheme:Navigation:Flyout:Open` | Flyout (`emitQueued`, `{ el }`) | Bar (sync trigger ARIA; filter `contains(el)`) |
 | `ViewsTheme:Navigation:Flyout:Close` | Flyout (`emitQueued`, `{ el }`) | Bar **unmounts** flyout DOM + clears ARIA (string cache kept) |
 
-- Open: debounced hover/focus on trigger → fetch or memory cache → mount into host → `flyout.open()`
-- Close: leave delay, Escape, focus out → `flyout.close()` → Close event → Bar unmounts
+- Open: debounced hover/focus on trigger → fetch or memory cache → append flyout under Bar → `flyout.open()` → `showPopover()`
+- Close: leave delay, Escape, focus out → `flyout.close()` → `hidePopover()` → Close event → Bar unmounts
+- Placement: CSS anchor to the bar (`position-anchor` / `anchor()`); full bar width — not per-item
+- `popover="manual"` (hover intent + delays stay JS; unlike click `Dropdown` `auto` + `popovertarget`)
 - Only one flyout; `AbortController` + request id ignore stale responses
 - Empty / failed fetch resets trigger ARIA (no stuck `aria-expanded`)
 - Active path: `window.activeNavigationId` / `window.activeNavigationPathIdList` → `data-active` on triggers
