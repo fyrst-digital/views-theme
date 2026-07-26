@@ -11,7 +11,6 @@
 {% set cx = vi_cva_from_file(cva) %}
 {% set scrollClass = cx.scroll.apply() %}
 {% set levelClass = cx.level.apply() %}
-{% set headerClass = cx.header.apply() %}
 {% set listClass = cx.list.apply() %}
 
 {% set navigationImageIds = [] %}
@@ -45,21 +44,11 @@
             class="{{ levelClass }}"
         >
             {% if not isRoot and active %}
-                <div
-                    {{ attributes.nested('header') }}
-                    class="{{ headerClass }}"
-                >
-                    <twig:ViewsTheme:Navigation:Drawer:Back
-                        class="btn btn-sm"
-                        icon:class="icon-size-2"
-                        :category="active"
-                        :menuUrl="menuUrl"
-                    />
-                    <twig:ViewsTheme:Navigation:Drawer:ShowAll
-                        class="btn btn-sm"
-                        icon:class="icon-size-2"
-                        :menuUrl="menuUrl" />
-                </div>
+                <twig:ViewsTheme:Navigation:Drawer:Menu:Header
+                    :category="active"
+                    :menuUrl="menuUrl"
+                    {{ ...attributes.nested('header').all() }}
+                />
             {% endif %}
 
             <ul

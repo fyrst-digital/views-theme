@@ -17,6 +17,7 @@ Desktop navbar stays core for now; this feature owns the header **menu** action 
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
 | `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide; composes `Scroll:Area` as scrollport |
+| `Navigation:Drawer:Menu:Header` | Non-root level chrome: Back + ShowAll + Active (presentational) |
 | `Navigation:Drawer:Item` | Category row: label link → category; caret `Drill` → submenu (caret only if children) |
 | `Navigation:Drawer:Drill` | Emits menu drill event with `{ url, source, direction }` |
 
@@ -66,7 +67,8 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 - **Label** (`Item` link): navigates to the category page (`category_url`). Folders use `#` (no listing).
 - **Image** (optional): category custom field `vi_navigation_image` (media UUID). When set, Menu batch-resolves media via `searchMedia` and passes it to Item; Item renders a thumb before the label inside the link. Omitted when unset.
 - **Caret** (`Item` → `Drill`, only when `visibleChildCount > 0`): drills into the submenu; omitted for leaf categories.
-- **Back** / **ShowAll**: full-row `Drill` with `direction: back`.
+- **Back** / **ShowAll**: full-row `Drill` with `direction: back`; ShowAll label `viewsTheme.navigationDrawer.showAll` (en: “Show all”)
+- **Active**: “show category” link to the current level’s category page (after ShowAll in the level header)
 
 ### Category navigation image
 
@@ -153,7 +155,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
 | Scroll area (menu scrollport) | `src/Resources/views/components/Scroll/Area.*` |
 | Drill | `src/Resources/views/components/Navigation/Drawer/Drill.*` |
-| Items | `src/Resources/views/components/Navigation/Drawer/{Item,Back,ShowAll,Active,ShowActive}.*` |
+| Menu header | `src/Resources/views/components/Navigation/Drawer/Menu/Header.*` |
+| Items | `src/Resources/views/components/Navigation/Drawer/{Item,Back,ShowAll,Active}.*` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 
 ## Out of scope (v1)

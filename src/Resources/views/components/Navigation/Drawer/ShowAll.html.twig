@@ -1,5 +1,6 @@
 {% props
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    showLabel = true,
     cva = {},
 %}
 
@@ -11,14 +12,16 @@
     class="{{ rootClass }}"
     {{ ...attributes.defaults({
         href: menuUrl,
-        title: 'general.mainMenu'|trans|striptags,
+        title: 'viewsTheme.navigationDrawer.showAll'|trans|striptags,
         direction: 'back',
     }).all() }}
 >
-    <span class="{{ cx.label.apply() }}">
-        {{ 'general.mainMenu'|trans|sw_sanitize }}
-    </span>
     {{ vi_icon('list', {
         class: iconClass
     }) }}
+    {% if showLabel is same as(true) %}
+        <span class="{{ cx.label.apply() }}">
+            {{ 'viewsTheme.navigationDrawer.showAll'|trans|sw_sanitize }}
+        </span>
+    {% endif %}
 </twig:ViewsTheme:Navigation:Drawer:Drill>

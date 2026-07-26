@@ -1,6 +1,7 @@
 {% props
     category,
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
+    showLabel = true,
     cva = {},
 %}
 
@@ -25,7 +26,9 @@
     {{ vi_icon('caret-left', {
         class: iconClass
     }) }}
-    <span class="{{ labelClass }}">
-        {{ 'general.back'|trans|sw_sanitize }}
-    </span>
+    {% if showLabel is same as(true) %}
+        <span class="{{ labelClass }}">
+            {{ 'general.back'|trans|sw_sanitize }}
+        </span>
+    {% endif %}
 </twig:ViewsTheme:Navigation:Drawer:Drill>
