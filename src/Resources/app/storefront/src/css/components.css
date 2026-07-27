@@ -7,6 +7,10 @@
   --btn-color: var(--body-color);
 }
 
+.btn-secondary {
+  --btn-color: var(--white);
+}
+
 [class*="btn-outline"] {
   text-decoration-line: underline !important;
 }

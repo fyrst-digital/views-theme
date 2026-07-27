@@ -14,7 +14,7 @@
                 'outline-secondary': 'btn-outline-secondary',
             },
             size: {
-                sm: 'btn-sm',
+                sm: 'btn-sm gap-2',
                 md: 'btn-md',
                 lg: 'btn-lg',
             },
@@ -25,6 +25,13 @@
             }
         },
     },
-    icon: { base: '' },
+    icon: { 
+        base: '',
+        variants: {
+            size: {
+                sm: 'icon-size-2'
+            }
+        }
+    },
     label: { base: '' },
 }

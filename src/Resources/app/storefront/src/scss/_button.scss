@@ -3,7 +3,6 @@
   --#{$prefix}btn-line-height: 1.5;
   --#{$prefix}btn-padding-x: var(--#{$prefix}spacing-3);
   --#{$prefix}btn-padding-y: var(--#{$prefix}spacing-2);
-  gap: var(--#{$prefix}btn-gap, var(--#{$prefix}spacing-3));
   align-items: center;
   text-decoration-color: var(--btn-decoration-color, rgba(from currentColor r g b / var(--btn-decoration-color-opacity, 30%))) !important;
   text-underline-offset: var(--btn-underline-offset, .25em);

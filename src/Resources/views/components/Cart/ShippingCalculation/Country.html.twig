@@ -1,0 +1,32 @@
+{% props
+    countries,
+    selectedId = null,
+    id = 'vi-cart-countryId',
+    size = 'sm',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set resolvedSelectedId = selectedId ?? context.shippingLocation.country.id %}
+{% set selectOptions = [] %}
+
+{% for country in countries %}
+    {% set selectOptions = selectOptions|merge([{
+        value: country.id,
+        label: country.translated.name,
+    }]) %}
+{% endfor %}
+
+{% if not context.customer %}
+    <twig:ViewsTheme:Form:Select
+        class="{{ cx.root.apply() }}"
+        {{ ...attributes.defaults({
+            id: id,
+            name: 'countryId',
+            label: 'checkout.shippingCountry'|trans|sw_sanitize,
+            size: size,
+            options: selectOptions,
+            value: resolvedSelectedId,
+        }).all() }}
+    />
+{% endif %}

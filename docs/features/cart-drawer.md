@@ -22,7 +22,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:Element:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
-| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion form = `<form>` + `Form:Input:Group` + `Button` |
+| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `Form:Select` via `ShippingCalculation:*` children |
 
 ## Features
 
@@ -137,6 +137,29 @@ Nest names (via `Cart:Options` → `promotion:*`):
 | `promotion:field:*` | `Form:Input:Group` props / nested attrs (`field:input:class`, …) |
 | `promotion:submit:*` | Submit `Button` props / attrs |
 | `promotion:redirectTo` | Hidden redirect route name |
+
+### Shipping calculation
+
+`Cart:ShippingCalculation` owns the `<form>`, hidden `redirectTo`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Field UI is composed:
+
+| Piece | Component |
+|-------|-----------|
+| Country (guest only) | `ViewsTheme:Cart:ShippingCalculation:Country` → `Form:Select` (`:options` + `:value`) |
+| Payment method | `ViewsTheme:Cart:ShippingCalculation:PaymentMethod` → `Form:Select` (`:options` + `:value`; leading disabled row when current method unavailable) |
+| Shipping method | `ViewsTheme:Cart:ShippingCalculation:ShippingMethod` → same as payment |
+
+Children stay **anonymous** (no PHP class). They map entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
+
+Nest names (via `Cart:Options` → `shipping:*`):
+
+| Nest | Target |
+|------|--------|
+| `shipping:country:*` | Country → `Form:Select` props / nested attrs (`country:select:class`, …) |
+| `shipping:payment:*` | PaymentMethod → `Form:Select` |
+| `shipping:shipping:*` | ShippingMethod → `Form:Select` |
+| `shipping:size` | Default size for all three selects (`sm` / `md` / `lg`; default `sm`) |
+| `shipping:redirectTo` | Hidden redirect route name |
+| `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
 Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
 

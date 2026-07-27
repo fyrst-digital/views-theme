@@ -25,6 +25,7 @@
                 class="{{ cx.shipping.apply() }}"
                 {{ ...attributes.nested('shipping').defaults({
                     page: page,
+                    redirectTo: redirectTo,
                 }).all() }}
             />
         {% endblock %}

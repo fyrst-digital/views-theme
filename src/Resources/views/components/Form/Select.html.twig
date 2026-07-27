@@ -1,0 +1,118 @@
+{% props
+    id = null,
+    name = null,
+    label = null,
+    options = [],
+    value = null,
+    size = null,
+    autocomplete = null,
+    disabled = false,
+    description = null,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = null,
+    cva = {},
+%}
+
+{% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
+{% set isInvalid = error is not empty or (
+    violationPath is not empty
+    and violations
+    and violations.getViolations(violationPath) is not empty
+) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block label %}
+        {% if label %}
+            <label
+                {{ attributes.nested('label').defaults({
+                    for: id,
+                }) }}
+                class="{{ cx.label.apply({size: size}) }}"
+            >
+                {{ label|raw }}
+
+                {% if isRequired %}
+                    <span
+                        {{ attributes.nested('required').defaults({
+                            'aria-hidden': 'true',
+                        }) }}
+                        class="{{ cx.required.apply() }}"
+                    >
+                        {{ 'general.required'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </label>
+        {% endif %}
+    {% endblock %}
+
+    {% block select %}
+        <select
+            {{ attributes.nested('select').defaults({
+                id: id,
+                name: name,
+                autocomplete: autocomplete is not empty ? autocomplete : false,
+                disabled: disabled is same as(true) ? true : false,
+                'data-validation': validationRules is not empty ? validationRules : false,
+                'aria-required': isRequired ? 'true' : false,
+                'aria-describedby': ariaDescribedBy,
+            }) }}
+            class="{{ cx.select.apply({ invalid: isInvalid, size: size }) }}"
+        >
+            {% block options %}
+                {% if options|length > 0 %}
+                    {% for option in options %}
+                        <option
+                            value="{{ option.value }}"
+                            {% if option.disabled|default(false) %}disabled="disabled"{% endif %}
+                            {% if value is not null
+                                ? option.value == value
+                                : option.selected|default(false)
+                            %}selected="selected"{% endif %}
+                        >{{ option.label }}</option>
+                    {% endfor %}
+                {% endif %}
+            {% endblock %}
+        </select>
+    {% endblock %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <small
+                {{ attributes.nested('description').defaults({
+                    id: descriptionId,
+                }) }}
+                class="{{ cx.description.apply() }}"
+            >
+                {{ description }}
+            </small>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ attributes.nested('feedback').defaults({
+                id: feedbackId,
+            }) }}
+            class="{{ cx.feedback.apply() }}"
+        >
+            {% block feedback_violations %}
+                {% if violationPath is not empty and violations and violations.getViolations(violationPath) is not empty %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: violations,
+                        violationPath: violationPath,
+                    } %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

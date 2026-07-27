@@ -218,10 +218,11 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, Button, QuantityInput, Form:Input, Form:Input:Group | UX + `vi_cva` (convention-aligned attrs/props) |
+| Alert, Button, QuantityInput, Form:Input, Form:Input:Group, Form:Select | UX + `vi_cva` (convention-aligned attrs/props) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Form:Input:Group | UX + `vi_cva`; used by Cart:PromotionForm (+ Button in append) |
+| Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |

@@ -1,5 +1,6 @@
 {% props
     type = 'button',
+    tag = null,
     icon = null,
     label = null,
     href = null,
@@ -7,18 +8,18 @@
     title = null,
     color = 'primary',
     size = 'md',
-    justify = 'center', 
+    justify = 'center',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set tag = type is same as('link') ? 'a' : 'button' %}
+{% set element = tag is not empty ? tag : (type is same as('link') ? 'a' : 'button') %}
 
-<{{ tag }}
+<{{ element }}
     {{ attributes.defaults({
-        type: type is same as('link') ? false : type,
-        href: type is same as('link') ? href : false,
-        target: type is same as('link') and target ? target : false,
+        type: element is same as('button') ? type : false,
+        href: element is same as('a') ? href : false,
+        target: element is same as('a') and target ? target : false,
         title: title ?? label,
     }) }}
     class="{{ cx.root.apply({ color: color, size: size, justify: justify }) }}"
@@ -38,4 +39,5 @@
             </span>
         {% endif %}
     {% endblock %}
-</{{ tag }}>
+</{{ element }}>
+

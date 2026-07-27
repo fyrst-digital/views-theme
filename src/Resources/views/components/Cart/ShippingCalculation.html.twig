@@ -1,9 +1,13 @@
 {% props
     page,
+    redirectTo = 'frontend.checkout.cart.page',
+    size = 'sm',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set summaryClass = cx.summary.apply() %}
+{% set summaryLabel = 'checkout.shippingCosts'|trans|sw_sanitize %}
 
 <form
     {{ attributes.defaults({
@@ -21,117 +25,50 @@
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
         {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
             <details {{ attributes.nested('details') }} class="{{ cx.details.apply() }}">
-                <summary
-                    {{ attributes.nested('summary') }}
-                    class="{{ cx.summary.apply() }}"
-                >
-                    {{ 'checkout.shippingCosts'|trans|sw_sanitize }}
-                    {{ vi_icon('caret-down') }}
-                </summary>
+                <twig:ViewsTheme:Button
+                    class="{{ summaryClass }}"
+                    {{ ...attributes.nested('summary').defaults({
+                        tag: 'summary',
+                        label: summaryLabel,
+                        icon: 'caret-down',
+                        color: 'secondary',
+                        size: size,
+                        justify: 'center',
+                    }).all() }}
+                />
 
                 <div {{ attributes.nested('selects') }} class="{{ cx.selects.apply() }}">
                     {% block country %}
-                        {% if not context.customer %}
-                            <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
-                                <label
-                                    {{ attributes.nested('label').defaults({
-                                        for: 'vi-cart-countryId',
-                                    }) }}
-                                    class="{{ cx.label.apply() }}"
-                                >
-                                    {{ 'checkout.shippingCountry'|trans|sw_sanitize }}
-                                </label>
-                                <select
-                                    {{ attributes.nested('select').defaults({
-                                        id: 'vi-cart-countryId',
-                                        name: 'countryId',
-                                    }) }}
-                                    class="{{ cx.select.apply() }}"
-                                >
-                                    {% for country in page.countries %}
-                                        <option
-                                            value="{{ country.id }}"
-                                            {{ country.id == context.shippingLocation.country.id ? 'selected="selected"' : '' }}
-                                        >
-                                            {{ country.translated.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        {% endif %}
+                        <twig:ViewsTheme:Cart:ShippingCalculation:Country
+                            class="{{ cx.country.apply() }}"
+                            {{ ...attributes.nested('country').defaults({
+                                countries: page.countries,
+                                size: size,
+                            }).all() }}
+                        />
                     {% endblock %}
 
                     {% block payment_method %}
-                        <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
-                            <label
-                                {{ attributes.nested('label').defaults({
-                                    for: 'vi-cart-paymentMethodId',
-                                }) }}
-                                class="{{ cx.label.apply() }}"
-                            >
-                                {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
-                            </label>
-                            <select
-                                {{ attributes.nested('select').defaults({
-                                    id: 'vi-cart-paymentMethodId',
-                                    name: 'paymentMethodId',
-                                }) }}
-                                class="{{ cx.select.apply() }}"
-                            >
-                                {% if context.paymentMethod.id not in page.paymentMethods.ids %}
-                                    <option value="{{ context.paymentMethod.id }}" selected="selected" disabled="disabled">
-                                        {{ context.paymentMethod.translated.name }}
-                                        {{ 'checkout.notAvailableSuffix'|trans|sw_sanitize }}
-                                    </option>
-                                {% endif %}
-                                {% for payment in page.paymentMethods %}
-                                    <option
-                                        value="{{ payment.id }}"
-                                        {% if payment.id == context.paymentMethod.id %}selected="selected"{% endif %}
-                                    >
-                                        {{ payment.translated.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <twig:ViewsTheme:Cart:ShippingCalculation:PaymentMethod
+                            class="{{ cx.payment.apply() }}"
+                            {{ ...attributes.nested('payment').defaults({
+                                paymentMethods: page.paymentMethods,
+                                size: size,
+                            }).all() }}
+                        />
                     {% endblock %}
 
                     {% block shipping_method %}
-                        <div {{ attributes.nested('formGroup') }} class="{{ cx.formGroup.apply() }}">
-                            <label
-                                {{ attributes.nested('label').defaults({
-                                    for: 'vi-cart-shippingMethodId',
-                                }) }}
-                                class="{{ cx.label.apply() }}"
-                            >
-                                {{ 'checkout.shippingMethod'|trans|sw_sanitize }}
-                            </label>
-                            <select
-                                {{ attributes.nested('select').defaults({
-                                    id: 'vi-cart-shippingMethodId',
-                                    name: 'shippingMethodId',
-                                }) }}
-                                class="{{ cx.select.apply() }}"
-                            >
-                                {% if context.shippingMethod.id not in page.shippingMethods.ids %}
-                                    <option value="{{ context.shippingMethod.id }}" selected="selected" disabled="disabled">
-                                        {{ context.shippingMethod.translated.name }}
-                                        {{ 'checkout.notAvailableSuffix'|trans|sw_sanitize }}
-                                    </option>
-                                {% endif %}
-                                {% for shipping in page.shippingMethods %}
-                                    <option
-                                        value="{{ shipping.id }}"
-                                        {% if shipping.id == context.shippingMethod.id %}selected="selected"{% endif %}
-                                    >
-                                        {{ shipping.translated.name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <twig:ViewsTheme:Cart:ShippingCalculation:ShippingMethod
+                            class="{{ cx.shipping.apply() }}"
+                            {{ ...attributes.nested('shipping').defaults({
+                                shippingMethods: page.shippingMethods,
+                                size: size,
+                            }).all() }}
+                        />
                     {% endblock %}
 
-                    <input type="hidden" name="redirectTo" value="frontend.checkout.cart.page">
+                    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
                 </div>
             </details>
         {% endif %}
