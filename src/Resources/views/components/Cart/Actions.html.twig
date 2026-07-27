@@ -1,0 +1,19 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block checkout %}
+            <twig:ViewsTheme:Cart:Action:Checkout
+                class="{{ cx.checkout.apply() }}"
+                {{ ...attributes.nested('checkout').defaults({}).all() }}
+            />
+        {% endblock %}
+    {% endblock %}
+</div>

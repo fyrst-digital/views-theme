@@ -4,6 +4,7 @@
     showPrice = true,
     nestingLevel = 0,
     deliveries = null,
+    tag = 'li',
     cva = {},
 %}
 
@@ -18,6 +19,8 @@
         :showPrice="showPrice"
         :nestingLevel="nestingLevel"
         :deliveries="deliveries"
+        :tag="tag"
         class="{{ cx.root.apply() }}"
+        {{ ...attributes }}
     />
 {% endblock %}

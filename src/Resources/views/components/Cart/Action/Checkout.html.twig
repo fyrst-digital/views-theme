@@ -1,0 +1,22 @@
+{% props
+    href = path('frontend.checkout.confirm.page'),
+    label = 'checkout.proceedToCheckout'|trans|sw_sanitize,
+    title = 'checkout.proceedToCheckout'|trans|striptags,
+    color = 'primary',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% block content %}
+    <twig:ViewsTheme:Button
+        class="{{ cx.root.apply() }}"
+        {{ ...attributes.defaults({
+            type: 'link',
+            href: href,
+            label: label,
+            title: title,
+            color: color,
+        }).all() }}
+    />
+{% endblock %}

@@ -26,13 +26,12 @@
         {% block list %}
             <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
                 {% for lineItem in cart.lineItems %}
-                    <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
-                        <twig:ViewsTheme:LineItem
-                            :lineItem="lineItem"
-                            :deliveries="cart.deliveries"
-                            :showRemoveButton="true"
-                        />
-                    </li>
+                    <twig:ViewsTheme:LineItem
+                        :lineItem="lineItem"
+                        :deliveries="cart.deliveries"
+                        :showRemoveButton="true"
+                        class="{{ cx.item.apply() }}"
+                    />
                 {% endfor %}
             </ul>
         {% endblock %}

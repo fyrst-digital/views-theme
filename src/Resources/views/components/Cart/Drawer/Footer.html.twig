@@ -14,27 +14,16 @@
     class="{{ cx.root.apply() }}"
 >
     {% if not isEmpty %}
-        {% block promotion %}
-            <twig:ViewsTheme:Cart:PromotionForm />
-        {% endblock %}
-
-        {% block shipping %}
-            <twig:ViewsTheme:Cart:ShippingCalculation :page="page" />
-        {% endblock %}
-
         {% block summary %}
             <twig:ViewsTheme:Cart:Summary :summary="cart" />
         {% endblock %}
 
-        {% block checkout %}
-            <a
-                {{ attributes.nested('checkout').defaults({
-                    href: path('frontend.checkout.confirm.page'),
-                }) }}
-                class="{{ cx.checkout.apply() }}"
-            >
-                {{ 'checkout.proceedToCheckout'|trans|sw_sanitize }}
-            </a>
+        {% block options %}
+            <twig:ViewsTheme:Cart:Options :page="page" />
+        {% endblock %}
+
+        {% block actions %}
+            <twig:ViewsTheme:Cart:Actions />
         {% endblock %}
     {% endif %}
 </div>

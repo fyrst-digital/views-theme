@@ -79,6 +79,13 @@ $utilities: (
     responsive: true,
     values: static relative absolute fixed sticky
   ),
+  "display": (
+    responsive: true,
+    print: true,
+    property: display,
+    class: d,
+    values: inline inline-block block grid inline-grid table table-row table-cell flex inline-flex contents none
+  ),
   "font-size": (
     rfs: true,
     property: font-size,

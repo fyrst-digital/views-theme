@@ -15,11 +15,14 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
 | `Cart:Drawer:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; consumed on render so messages do not leak to page content |
 | `Cart:Drawer:Items` | Line list or empty state |
-| `Cart:Drawer:Footer` | Promotion, shipping calculation, summary, checkout CTA |
+| `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` |
+| `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
+| `Cart:Actions` | CTA wrapper (layout); default content is checkout |
+| `Cart:Action:Checkout` | Confirm-page link via generic `Button` |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:Element:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
-| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` |
+| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`) |
 
 ## Features
 
@@ -27,7 +30,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
-- Promotion form, shipping pre-calculation (`<details>`), summary, checkout CTA
+- Summary, cart options (promotion form + shipping pre-calculation `<details>`), checkout CTA (`Cart:Actions` → `Cart:Action:Checkout` → `Button`)
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
@@ -92,8 +95,8 @@ Loads `CheckoutCartPageLoader` and renders via `ComponentRendererInterface`. Use
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Type router → Product / Promotion / Container / Generic |
-| `LineItem:Product` | Image, label, wishlist, remove, variants, features, delivery, qty, price |
+| `LineItem` | Type router → Product / Promotion / Container / Generic; prop `tag` (default `li`) forwarded to leaf root |
+| `LineItem:Product` | Image, label, wishlist, remove, variants, features, delivery, qty, price; root tag from `tag` |
 | `LineItem:Element:Image` | Cover thumb / placeholder (`vi-*` only) |
 | `LineItem:Element:Variants` | `payload.options` |
 | `LineItem:Element:Features` | `payload.features` |
@@ -137,6 +140,9 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
 | Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Flashes,Items,Footer,Heading}.*` |
+| Options | `src/Resources/views/components/Cart/Options.*` |
+| Actions | `src/Resources/views/components/Cart/Actions.*` |
+| Checkout CTA | `src/Resources/views/components/Cart/Action/Checkout.*` |
 | Line item | `src/Resources/views/components/LineItem/**` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 

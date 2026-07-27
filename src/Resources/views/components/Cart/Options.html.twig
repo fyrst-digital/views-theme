@@ -1,0 +1,32 @@
+{% props
+    page,
+    redirectTo = 'frontend.checkout.cart.page',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% block promotion %}
+            <twig:ViewsTheme:Cart:PromotionForm
+                class="{{ cx.promotion.apply() }}"
+                {{ ...attributes.nested('promotion').defaults({
+                    redirectTo: redirectTo,
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block shipping %}
+            <twig:ViewsTheme:Cart:ShippingCalculation
+                class="{{ cx.shipping.apply() }}"
+                {{ ...attributes.nested('shipping').defaults({
+                    page: page,
+                }).all() }}
+            />
+        {% endblock %}
+    {% endblock %}
+</div>

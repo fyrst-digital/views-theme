@@ -4,11 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: { base: 'vi-cart-summary-item cart-summary-item' },
-    label: { base: 'vi-cart-summary-item__label cart-summary-item-label' },
-    value: { base: 'vi-cart-summary-item__value cart-summary-item-value' },
-}|replace_recursive(cva)) %}
+{% set cx = vi_cva_from_file(cva) %}
 
 <dl
     {{ attributes }}

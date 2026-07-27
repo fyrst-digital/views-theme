@@ -38,11 +38,7 @@
     {% endblock %}
 
     {% block content %}
-        <twig:ViewsTheme:Scroll:Area class="{{ cx.scroll.apply() }}">
-            <twig:block name="content">
-                <twig:ViewsTheme:Cart:Drawer:Items :cart="cart" />
-            </twig:block>
-        </twig:ViewsTheme:Scroll:Area>
+        <twig:ViewsTheme:Cart:Drawer:Items :cart="cart" />
     {% endblock %}
 
     {% block footer %}

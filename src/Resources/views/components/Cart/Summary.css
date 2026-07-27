@@ -1,0 +1,3 @@
+.vi-cart-summary {
+    grid-template-columns: var(--summary-cols, minmax(0, 1fr) auto);
+}
