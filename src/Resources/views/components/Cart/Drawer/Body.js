@@ -2,6 +2,7 @@ export default class CartDrawerBody extends ShopwareComponent {
     static options = {
         drawerUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
+        flashesComponent: 'ViewsTheme:Cart:Drawer:Flashes',
         headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
         itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
         footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
@@ -13,7 +14,7 @@ export default class CartDrawerBody extends ShopwareComponent {
         this._queued = false
         this._onCartChanged = this._onCartChanged.bind(this)
         this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
-        this._alertEl = this.el.querySelector('[role="alert"]')
+        this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
         window.Shopware.on(this.options.changedEvent, this._onCartChanged)
     }
@@ -81,6 +82,7 @@ export default class CartDrawerBody extends ShopwareComponent {
 
     _apply(html) {
         const source = this._parseFragment(html)
+        this._replaceFrom(source, this.options.flashesComponent, this.el)
         this._replaceFrom(source, this.options.itemsComponent, this.el)
         this._replaceFrom(source, this.options.footerComponent, this.el)
         this._replaceFrom(source, this.options.headingComponent, this._drawerEl || document)

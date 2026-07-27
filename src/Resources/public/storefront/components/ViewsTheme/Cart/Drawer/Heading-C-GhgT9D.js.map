@@ -1,1 +1,0 @@
-{"version":3,"file":"Heading-C-GhgT9D.js","names":[],"sources":["../../../../../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Heading.js"],"sourcesContent":["export default class CartDrawerHeading extends ShopwareComponent {\n    init() {}\n}\n"],"mappings":"AAAA,IAAqB,EAArB,cAA+C,iBAAkB,CAC7D,MAAO"}

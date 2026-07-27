@@ -13,6 +13,7 @@
         'data-component-options': {
             drawerUrl: drawerUrl,
             changedEvent: 'ViewsTheme:Cart:Changed',
+            flashesComponent: 'ViewsTheme:Cart:Drawer:Flashes',
             headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
             itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
             footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
@@ -21,6 +22,10 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Drawer:Flashes />
+    {% endblock %}
+
     {% block alert %}
         <div
             {{ attributes.nested('alert').defaults({

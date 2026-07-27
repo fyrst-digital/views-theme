@@ -84,7 +84,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
 | Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
-| Cart drawer heading / items / footer | `ViewsTheme:Cart:Drawer:Heading` etc. | `Cart/Drawer/Heading.js` etc. |
+| Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
 | Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
 | Line item quantity | `ViewsTheme:LineItem:Element:Quantity` | `LineItem/Element/Quantity.js` |
 | Line item remove | `ViewsTheme:LineItem:Element:Remove` | `LineItem/Element/Remove.js` |
@@ -226,14 +226,14 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (`Action/Badge.js` owns count) |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
-| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
+| Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
 - Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
-- Body on `Changed`: re-fetch drawer HTML → swap Items / Footer / Heading by `data-component` identity (shell stays mounted)
+- Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).

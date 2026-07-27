@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={overlayComponentName:`ViewsTheme:Search:Overlay`};init(){this._onClick=this._onClick.bind(this),this.el.addEventListener(`click`,this._onClick)}destroy(){this.el.removeEventListener(`click`,this._onClick)}_onClick(e){e.preventDefault(),window.Shopware.callMethod(this.options.overlayComponentName,`close`)}};export{e as default};
+//# sourceMappingURL=Close-C0HapXEh.js.map

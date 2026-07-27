@@ -12,7 +12,8 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
-| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Heading / Items / Footer roots |
+| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
+| `Cart:Drawer:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; consumed on render so messages do not leak to page content |
 | `Cart:Drawer:Items` | Line list or empty state |
 | `Cart:Drawer:Footer` | Promotion, shipping calculation, summary, checkout CTA |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
@@ -27,7 +28,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Promotion form, shipping pre-calculation (`<details>`), summary, checkout CTA
-- Empty, loading (`aria-busy`), and error (`role="alert"`) states
+- Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
 - Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
@@ -71,12 +72,13 @@ Core `AddToCart` silent path: `openOffcanvasAfterAddToCart = '0'` (meta + Cart i
 1. Sub-components emit cart intents
 2. `Cart` performs HTTP and emits `Cart:Changed`
 3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
+   - `ViewsTheme:Cart:Drawer:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
    - `ViewsTheme:Cart:Drawer:Items`
    - `ViewsTheme:Cart:Drawer:Footer`
    - `ViewsTheme:Cart:Drawer:Heading`
 4. Parse with `<template>`; latest-wins while a fetch is in flight
 
-Shell stays mounted (open state, focus trap). Only the three islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts.
+Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
 
 ### Controller
 
@@ -110,7 +112,7 @@ No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressiv
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
-| Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (island swap targets) |
+| Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (island swap targets) |
 | Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
@@ -134,7 +136,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Cart owner | `src/Resources/views/components/Cart.*` |
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
-| Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Items,Footer,Heading}.*` |
+| Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Flashes,Items,Footer,Heading}.*` |
 | Line item | `src/Resources/views/components/LineItem/**` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 
