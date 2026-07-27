@@ -8,6 +8,9 @@
 {% set cx = vi_cva_from_file(cva) %}
 {% set resolvedInputId = inputId ?? ('vi-cart-promotion-input-' ~ random()) %}
 {% set resolvedSubmitId = submitId ?? ('vi-cart-promotion-submit-' ~ random()) %}
+{% set submitClass = cx.submit.apply() %}
+{% set submitTitle = 'checkout.addPromotionLabel'|trans|striptags %}
+{% set parentAttributes = attributes %}
 
 <form
     {{ attributes.defaults({
@@ -24,45 +27,31 @@
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
     {% endblock %}
 
-    {% block input_group %}
-        {% block label %}
-            <label
-                {{ attributes.nested('label').defaults({
-                    for: resolvedInputId,
-                }) }}
-                class="{{ cx.label.apply() }}"
-            >
-                {{ 'checkout.addPromotionLabel'|trans|sw_sanitize }}
-            </label>
-        {% endblock %}
-
-        <div {{ attributes.nested('inputGroup') }} class="{{ cx.inputGroup.apply() }}">
-            {% block input %}
-                <input
-                    {{ attributes.nested('input').defaults({
-                        type: 'text',
-                        name: 'code',
-                        id: resolvedInputId,
-                        placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
-                        'aria-label': 'checkout.addPromotionLabel'|trans|striptags,
-                        'aria-describedby': resolvedSubmitId,
-                        required: 'required',
-                    }) }}
-                    class="{{ cx.input.apply() }}"
-                >
-            {% endblock %}
-
-            {% block submit %}
-                <button
-                    {{ attributes.nested('submit').defaults({
+    {% block field %}
+        <twig:ViewsTheme:Form:Input:Group
+            class="{{ cx.field.apply() }}"
+            label:class="visually-hidden"
+            {{ ...attributes.nested('field').defaults({
+                id: resolvedInputId,
+                name: 'code',
+                label: 'checkout.addPromotionLabel'|trans|sw_sanitize,
+                placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
+                validationRules: 'required',
+                size: 'sm',
+            }).all() }}
+        >
+            <twig:block name="append">
+                <twig:ViewsTheme:Button
+                    class="{{ submitClass }}"
+                    {{ ...parentAttributes.nested('submit').defaults({
                         type: 'submit',
                         id: resolvedSubmitId,
-                    }) }}
-                    class="{{ cx.submit.apply() }}"
-                >
-                    {{ vi_icon('ticket') }}
-                </button>
-            {% endblock %}
-        </div>
+                        title: submitTitle,
+                        color: 'secondary',
+                        icon: 'ticket',
+                    }).all() }}
+                />
+            </twig:block>
+        </twig:ViewsTheme:Form:Input:Group>
     {% endblock %}
 </form>

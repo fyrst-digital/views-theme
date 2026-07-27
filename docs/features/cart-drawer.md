@@ -22,7 +22,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:Element:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
-| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`) |
+| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion form = `<form>` + `Form:Input:Group` + `Button` |
 
 ## Features
 
@@ -120,6 +120,23 @@ No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressiv
 | Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
+
+### Promotion form
+
+`Cart:PromotionForm` owns the `<form>`, hidden `redirectTo`, and promote JS. Field UI is composed:
+
+| Piece | Component |
+|-------|-----------|
+| Control + label | `ViewsTheme:Form:Input:Group` ([form-input](form-input.md#forminputgroup)) |
+| Submit | `ViewsTheme:Button` (`type="submit"`, `icon="ticket"`, `color="secondary"`) in Group `append` |
+
+Nest names (via `Cart:Options` → `promotion:*`):
+
+| Nest | Target |
+|------|--------|
+| `promotion:field:*` | `Form:Input:Group` props / nested attrs (`field:input:class`, …) |
+| `promotion:submit:*` | Submit `Button` props / attrs |
+| `promotion:redirectTo` | Hidden redirect route name |
 
 Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
 

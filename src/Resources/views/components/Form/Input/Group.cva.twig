@@ -1,0 +1,25 @@
+{
+    root: { base: 'vi-form-input-group form-group' },
+    label: { base: 'vi-form-input-group__label form-label' },
+    required: { base: 'vi-form-input-group__required form-required-label' },
+    group: {
+        base: 'vi-form-input-group__group input-group',
+        variants: {
+            size: {
+                sm: 'input-group-sm',
+                md: '',
+                lg: 'input-group-lg',
+            },
+        },
+    },
+    input: {
+        base: 'vi-form-input-group__control form-control',
+        variants: {
+            invalid: {
+                true: 'is-invalid',
+            },
+        },
+    },
+    description: { base: 'vi-form-input-group__description form-text' },
+    feedback: { base: 'vi-form-input-group__feedback form-field-feedback' },
+}
