@@ -15,7 +15,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
-| `Drawer:Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` |
+| `Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` (`Backdrop` via `componentName`) |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide; composes `Scroll:Area` as scrollport |
 | `Navigation:Drawer:Menu:Header` | Non-root level chrome: Back + ShowAll + Active (presentational) |
 | `Navigation:Drawer:Item` | Category row: label link → category; caret `Drill` → submenu (caret only if children) |
@@ -33,7 +33,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
 - Item label opens the category; optional `vi_navigation_image` thumb before the label; caret drills deeper; no caret when the category has no children
-- Close via `Drawer:Close` / `Drawer:Backdrop`, Escape, or toggling the action again
+- Close via `Drawer:Close` / `Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
 
 ### Header actions in the drawer title
@@ -118,7 +118,7 @@ Both load `MenuOffcanvasPageletLoader`, dispatch `MenuOffcanvasPageletLoadedHook
 | Action button | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
-| Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Menu scrollport | `data-component="ViewsTheme:Scroll:Area"` (nested under Menu) |
@@ -135,7 +135,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Generic Drawer
 
-`ViewsTheme:Drawer` is reusable (side `start` \| `end`, `title` prop, Panel/Backdrop/Close). Callers that need a body override the `panel` block and put content on `Drawer:Panel` (no multi-hop block capture). Navigation does this; other features may reuse the same pattern later.
+`ViewsTheme:Drawer` is reusable (side `start` \| `end`, `title` prop, Panel/Close + shared `Backdrop`). Callers that need a body override the `panel` block and put content on `Drawer:Panel` (no multi-hop block capture). Navigation does this; other features may reuse the same pattern later.
 
 ### Motion
 
@@ -150,7 +150,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 |------|------|
 | Controller | `src/Controller/NavigationDrawerController.php` |
 | Drawer primitive | `src/Resources/views/components/Drawer.*` |
-| Panel / Header / Backdrop / Close | `src/Resources/views/components/Drawer/{Panel,Header,Backdrop,Close}.*` |
+| Panel / Header / Close | `src/Resources/views/components/Drawer/{Panel,Header,Close}.*` |
+| Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
 | Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |

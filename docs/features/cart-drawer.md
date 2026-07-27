@@ -17,8 +17,9 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Items` | Line list or empty state |
 | `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
-| `Cart:Actions` | CTA wrapper (layout); default content is checkout |
-| `Cart:Action:Checkout` | Confirm-page link via generic `Button` |
+| `Cart:Actions` | CTA wrapper (layout); default content is checkout + cart |
+| `Cart:Action:Checkout` | Confirm-page link via generic `Button`; label `viewsTheme.cart.checkout` |
+| `Cart:Action:Cart` | Cart-page link via generic `Button`; label `viewsTheme.cart.cart` |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
@@ -30,7 +31,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
-- Summary, cart options (promotion form + shipping pre-calculation `<details>`), checkout CTA (`Cart:Actions` → `Cart:Action:Checkout` → `Button`)
+- Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`)
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
@@ -216,6 +217,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Options | `src/Resources/views/components/Cart/Options.*` |
 | Actions | `src/Resources/views/components/Cart/Actions.*` |
 | Checkout CTA | `src/Resources/views/components/Cart/Action/Checkout.*` |
+| Cart CTA | `src/Resources/views/components/Cart/Action/Cart.*` |
 | Line item | `src/Resources/views/components/LineItem/**` |
 | Header wire-up | `src/Resources/views/components/Page/Header/Actions.html.twig` |
 

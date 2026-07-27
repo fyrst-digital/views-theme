@@ -14,3 +14,14 @@
     border-color: var(--btn-active-border-color);
   }
 }
+
+.btn-white {
+  @include button-variant(
+    $white,
+    $border-color,
+    $hover-background: shade-color($white, $btn-hover-bg-shade-amount),
+    $hover-border: shade-color($white, $btn-hover-border-shade-amount),
+    $active-background: shade-color($white, $btn-active-bg-shade-amount),
+    $active-border: shade-color($white, $btn-active-border-shade-amount)
+  );
+}

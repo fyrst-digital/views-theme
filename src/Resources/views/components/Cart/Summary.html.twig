@@ -17,6 +17,8 @@
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
+        {% block prepend %}{% endblock %}
+
         {% block total %}
             {% if showTotal is not same as(false) %}
                 <twig:ViewsTheme:Cart:Summary:Item
@@ -79,7 +81,8 @@
                     />
                 {% endfor %}
             {% endif %}
-        {% endblock %}        
-    {% endblock %}
+        {% endblock %}
 
+        {% block append %}{% endblock %}
+    {% endblock %}
 </div>

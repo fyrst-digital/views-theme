@@ -1,0 +1,3 @@
+.vi-backdrop {
+    backdrop-filter: blur(var(--backdrop-blur, 40px));
+}

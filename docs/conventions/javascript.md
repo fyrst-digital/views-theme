@@ -94,12 +94,11 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
 | Search overlay | `ViewsTheme:Search:Overlay` | `Search/Overlay.js` |
-| Search overlay backdrop | `ViewsTheme:Search:Overlay:Backdrop` | `Search/Overlay/Backdrop.js` |
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
+| Backdrop (shared) | `ViewsTheme:Backdrop` | `Backdrop.js` |
 | Drawer | `ViewsTheme:Drawer` | `Drawer.js` |
 | Drawer panel | `ViewsTheme:Drawer:Panel` | `Drawer/Panel.js` |
-| Drawer backdrop | `ViewsTheme:Drawer:Backdrop` | `Drawer/Backdrop.js` |
 | Drawer close | `ViewsTheme:Drawer:Close` | `Drawer/Close.js` |
 | Navigation drawer action | `ViewsTheme:Navigation:Drawer:Action` | `Navigation/Drawer/Action.js` |
 | Navigation drawer menu | `ViewsTheme:Navigation:Drawer:Menu` | `Navigation/Drawer/Menu.js` |
@@ -152,14 +151,14 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 |------|-----------|
 | Action | `data-component="ViewsTheme:Search:Action"` |
 | Overlay | `data-component="ViewsTheme:Search:Overlay"` |
-| Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` (legacy) |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Open/Close payload: `{ el, term }` via `emitQueued` (Action stores `term` / aria); Overlay calls `Bar.onOpened(term)` once for restore + suggest
-- Backdrop/Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
+- Backdrop (`componentName`) / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
 - While open, Tab is trapped inside the dialog; closed mount is not kept (unmounted)
 - Suggest HTML is inserted as the form’s next sibling; product grid scrolls via nested `Scroll:Area`
 
@@ -174,7 +173,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Action | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
-| Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
@@ -184,7 +183,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`
-- Backdrop/Close `callMethod` `Drawer.close`
+- Backdrop (`componentName`) / Close `callMethod` `Drawer.close`
 - Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).

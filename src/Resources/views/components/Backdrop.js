@@ -1,6 +1,6 @@
-export default class SearchOverlayBackdrop extends ShopwareComponent {
+export default class Backdrop extends ShopwareComponent {
     static options = {
-        overlayComponentName: 'ViewsTheme:Search:Overlay',
+        componentName: null,
     }
 
     init() {
@@ -14,6 +14,6 @@ export default class SearchOverlayBackdrop extends ShopwareComponent {
 
     _onClick(event) {
         event.preventDefault()
-        window.Shopware.callMethod(this.options.overlayComponentName, 'close')
+        window.Shopware.callMethod(this.options.componentName, 'close')
     }
 }

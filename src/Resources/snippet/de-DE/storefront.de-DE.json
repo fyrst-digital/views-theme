@@ -5,6 +5,10 @@
         },
         "navigationDrawer": {
             "showAll": "Alle anzeigen"
+        },
+        "cart": {
+            "checkout": "Zur Kasse",
+            "cart": "Warenkorb"
         }
     },
     "variantsGrid": {

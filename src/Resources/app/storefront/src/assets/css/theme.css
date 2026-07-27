@@ -86,3 +86,6 @@
 .vi-navigation-drawer-menu {
   --vi-navigation-drawer-menu-duration: 300ms;
 }
+.vi-cart-drawer {
+  --vi-drawer-width: min(420px, 100vw);
+}

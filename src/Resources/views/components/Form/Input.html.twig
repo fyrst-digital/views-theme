@@ -9,6 +9,7 @@
     minlength = null,
     maxlength = null,
     disabled = false,
+    size = null,
     description = null,
     validationRules = null,
     violationPath = null,
@@ -73,7 +74,7 @@
                 'aria-required': isRequired ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}
-            class="{{ cx.input.apply({ invalid: isInvalid }) }}"
+            class="{{ cx.input.apply({ invalid: isInvalid, size: size }) }}"
         >
     {% endblock %}
 

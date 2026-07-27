@@ -9,7 +9,7 @@
     minlength = null,
     maxlength = null,
     disabled = false,
-    size = null,
+    size = 'md',
     description = null,
     validationRules = null,
     violationPath = null,
@@ -19,14 +19,8 @@
 %}
 
 {% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
-{% set isInvalid = error is not empty or (
-    violationPath is not empty
-    and violations
-    and violations.getViolations(violationPath) is not empty
-) %}
 {% set feedbackId = id ~ '-feedback' %}
 {% set descriptionId = id ~ '-description' %}
-{% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
 {% set isRequired = validationRules is not empty and 'required' in validationRules %}
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -66,23 +60,29 @@
             {% block prepend %}{% endblock %}
 
             {% block input %}
-                <input
-                    {{ attributes.nested('input').defaults({
+                <twig:ViewsTheme:Form:Input
+                    class="{{ cx.input.apply() }}"
+                    {{ ...attributes.nested('input').defaults({
                         type: type,
                         id: id,
                         name: name,
-                        value: value is not empty ? value : false,
-                        placeholder: placeholder is not empty ? placeholder : false,
-                        autocomplete: autocomplete is not empty ? autocomplete : false,
-                        minlength: minlength is not empty ? minlength : false,
-                        maxlength: maxlength is not empty ? maxlength : false,
-                        disabled: disabled is same as(true) ? true : false,
-                        'data-validation': validationRules is not empty ? validationRules : false,
-                        'aria-required': isRequired ? 'true' : false,
-                        'aria-describedby': ariaDescribedBy,
-                    }) }}
-                    class="{{ cx.input.apply({ invalid: isInvalid }) }}"
+                        value: value,
+                        size: size,
+                        placeholder: placeholder,
+                        autocomplete: autocomplete,
+                        minlength: minlength,
+                        maxlength: maxlength,
+                        disabled: disabled,
+                        validationRules: validationRules,
+                        violationPath: violationPath,
+                        error: error,
+                        formViolations: formViolations,
+                        label: false,
+                        description: null,
+                    }).all() }}
                 >
+                    <twig:block name="feedback"></twig:block>
+                </twig:ViewsTheme:Form:Input>
             {% endblock %}
 
             {% block append %}{% endblock %}
