@@ -21,7 +21,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Action:Checkout` | Confirm-page link via generic `Button` |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
-| `LineItem:Element:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
+| `LineItem:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
 | `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `Form:Select` via `ShippingCalculation:*` children |
 
 ## Features
@@ -93,18 +93,51 @@ Loads `CheckoutCartPageLoader` and renders via `ComponentRendererInterface`. Use
 
 ### LineItem (shared UX)
 
+```text
+LineItem:Product
+├─ Product:Cover
+└─ LineItem:Content
+   ├─ LineItem:Header → Product:Name + LineItem:Remove
+   ├─ LineItem:Body → Product:Variations + Features + DeliveryDate
+   └─ LineItem:Footer → Quantity + Price
+```
+
 | Component | Role |
 |-----------|------|
 | `LineItem` | Type router → Product / Promotion / Container / Generic; prop `tag` (default `li`) forwarded to leaf root |
-| `LineItem:Product` | Image, label, wishlist, remove, variants, features, delivery, qty, price; root tag from `tag` |
-| `LineItem:Element:Image` | Cover thumb / placeholder (`vi-*` only) |
-| `LineItem:Element:Variants` | `payload.options` |
-| `LineItem:Element:Features` | `payload.features` |
-| `LineItem:Element:DeliveryDate` | Delivery window when configured |
-| `LineItem:Element:Quantity` | Debounced emit `Cart:Update` |
-| `LineItem:Element:Remove` | Emit `Cart:Remove` |
+| `LineItem:Product` | Thin orchestrator; root tag from `tag` |
+| `LineItem:Content` | Right column stack |
+| `LineItem:Header` | Name + optional remove |
+| `LineItem:Body` | Variations / features / delivery |
+| `LineItem:Footer` | Quantity + line total |
+| `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
+| `Product:Cover` | Line thumb / placeholder |
+| `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
+| `Product:Variations` | `payload.options` |
+| `LineItem:Features` | `payload.features` |
+| `LineItem:DeliveryDate` | Delivery window when configured |
+| `LineItem:Quantity` | Debounced emit `Cart:Update` |
+| `LineItem:Remove` | Emit `Cart:Remove` |
+| `LineItem:Promotion` | Slim promotion row; reuses `Content` + `Price` |
 
-No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
+Region-nested override keys on `LineItem:Product`:
+
+| Nest | Target |
+|------|--------|
+| `cover` | `Product:Cover` |
+| `content` | `LineItem:Content` |
+| `header` | `LineItem:Header` |
+| `header:name` | `Product:Name` |
+| `header:remove` | `LineItem:Remove` |
+| `body` | `LineItem:Body` |
+| `body:variations` | `Product:Variations` |
+| `body:features` | `LineItem:Features` |
+| `body:deliveryDate` | `LineItem:DeliveryDate` |
+| `footer` | `LineItem:Footer` |
+| `footer:quantityInput` | `LineItem:Quantity` |
+| `footer:price` | `LineItem:Price` |
+
+No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 
 ## Hooks
 
@@ -116,8 +149,8 @@ No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressiv
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (island swap targets) |
-| Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
-| Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
+| Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
+| Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
 

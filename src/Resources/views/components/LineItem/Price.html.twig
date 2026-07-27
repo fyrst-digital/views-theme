@@ -1,0 +1,16 @@
+{% props
+    lineItem,
+    showPrice = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% if showPrice is same as(true) and lineItem.payload.discountScope != 'delivery' %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {{ lineItem.price.totalPrice|currency }}
+    </div>
+{% endif %}

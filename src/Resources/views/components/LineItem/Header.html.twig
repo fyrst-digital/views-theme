@@ -1,0 +1,27 @@
+{% props
+    lineItem,
+    label = null,
+    productLink = null,
+    nestingLevel = 0,
+    cva = {},
+%}
+
+{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block name %}
+        <twig:ViewsTheme:Product:Name
+            class="{{ cx.name.apply() }}"
+            link:class="text-decoration-none"
+            {{ ...attributes.nested('name').defaults({
+                name: resolvedLabel,
+                url: productLink,
+                showLink: productLink is not null,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

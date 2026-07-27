@@ -22,41 +22,31 @@
     {% endblock %}
 
     {% block content %}
-        <div
-            {{ attributes.nested('content') }}
-            class="{{ cx.content.apply() }}"
+        <twig:ViewsTheme:LineItem:Content
+            {{ ...attributes.nested('content').all() }}
         >
-            {% block header %}
+            <div
+                {{ attributes.nested('header') }}
+                class="{{ cx.header.apply() }}"
+            >
                 <div
-                    {{ attributes.nested('header') }}
-                    class="{{ cx.header.apply() }}"
+                    {{ attributes.nested('name') }}
+                    class="{{ cx.name.apply() }}"
                 >
-                    {% block name %}
-                        <div
-                            {{ attributes.nested('name') }}
-                            class="{{ cx.name.apply() }}"
-                        >
-                            <span
-                                {{ attributes.nested('label') }}
-                                class="{{ cx.label.apply() }}"
-                            >
-                                {{ label|raw }}
-                            </span>
-                        </div>
-                    {% endblock %}
+                    <span
+                        {{ attributes.nested('label') }}
+                        class="{{ cx.label.apply() }}"
+                    >
+                        {{ label|raw }}
+                    </span>
                 </div>
-            {% endblock %}
+            </div>
 
-            {% block details %}
-                <div
-                    {{ attributes.nested('totalPrice') }}
-                    class="{{ cx.totalPrice.apply() }}"
-                >
-                    {% if lineItem.payload.discountScope != 'delivery' %}
-                        {{ lineItem.price.totalPrice|currency }}
-                    {% endif %}
-                </div>
-            {% endblock %}
-        </div>
+            <twig:ViewsTheme:LineItem:Price
+                {{ ...attributes.nested('price').defaults({
+                    lineItem: lineItem,
+                }).all() }}
+            />
+        </twig:ViewsTheme:LineItem:Content>
     {% endblock %}
 </{{ tag|raw }}>

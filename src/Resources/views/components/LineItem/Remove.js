@@ -1,4 +1,4 @@
-export default class LineItemElementRemove extends ShopwareComponent {
+export default class LineItemRemove extends ShopwareComponent {
     static options = {
         lineItemId: null,
         removeEvent: 'ViewsTheme:Cart:Remove',

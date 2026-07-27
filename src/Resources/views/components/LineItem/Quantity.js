@@ -1,4 +1,4 @@
-export default class LineItemElementQuantity extends ShopwareComponent {
+export default class LineItemQuantity extends ShopwareComponent {
     static options = {
         lineItemId: null,
         updateEvent: 'ViewsTheme:Cart:Update',

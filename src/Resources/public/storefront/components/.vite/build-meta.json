@@ -102,18 +102,6 @@
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js",
       "isEntry": true
     },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Quantity.js": {
-      "file": "ViewsTheme/LineItem/Element/Quantity-D1lyCLWi.js",
-      "name": "ViewsTheme/LineItem/Element/Quantity",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Quantity.js",
-      "isEntry": true
-    },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Remove.js": {
-      "file": "ViewsTheme/LineItem/Element/Remove-emMOVxf9.js",
-      "name": "ViewsTheme/LineItem/Element/Remove",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Element/Remove.js",
-      "isEntry": true
-    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Bar.js": {
       "file": "ViewsTheme/Navigation/Bar-Bmnj9UCd.js",
       "name": "ViewsTheme/Navigation/Bar",

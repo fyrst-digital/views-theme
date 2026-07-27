@@ -1,0 +1,52 @@
+{% props
+    lineItem,
+    deliveries = null,
+    cva = {},
+%}
+
+{% set options = lineItem.payload.options ?? [] %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block variations %}
+        {% if options is not empty %}
+            <twig:ViewsTheme:Product:Variations
+                class="d-flex flex-wrap align-items-center gap-1 text-body-secondary small"
+                {{ ...attributes.nested('variations').defaults({
+                    variations: options,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block features %}
+        <twig:ViewsTheme:LineItem:Features
+            {{ ...attributes.nested('features').defaults({
+                lineItem: lineItem,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block deliveryDate %}
+        {% if config('core.cart.showDeliveryTime') %}
+            <twig:ViewsTheme:LineItem:DeliveryDate
+                {{ ...attributes.nested('deliveryDate').defaults({
+                    lineItem: lineItem,
+                    deliveries: deliveries,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block price %}
+        <twig:ViewsTheme:LineItem:Price
+            {{ ...attributes.nested('price').defaults({
+                lineItem: lineItem,
+                showPrice: showPrice,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

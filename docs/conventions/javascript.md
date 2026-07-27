@@ -86,8 +86,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
 | Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
 | Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
-| Line item quantity | `ViewsTheme:LineItem:Element:Quantity` | `LineItem/Element/Quantity.js` |
-| Line item remove | `ViewsTheme:LineItem:Element:Remove` | `LineItem/Element/Remove.js` |
+| Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
+| Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
 | Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
@@ -227,8 +227,8 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
-| Quantity | `data-component="ViewsTheme:LineItem:Element:Quantity"` |
-| Remove | `data-component="ViewsTheme:LineItem:Element:Remove"` |
+| Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
+| Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`

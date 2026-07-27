@@ -1,2 +1,0 @@
-var e=class extends ShopwareComponent{static options={lineItemId:null,removeEvent:`ViewsTheme:Cart:Remove`};init(){this._onSubmit=this._onSubmit.bind(this),this.el.addEventListener(`submit`,this._onSubmit)}destroy(){this.el.removeEventListener(`submit`,this._onSubmit)}_onSubmit(e){e.preventDefault(),this.options.lineItemId&&window.Shopware.emit(this.options.removeEvent,{lineItemId:this.options.lineItemId,source:this.el})}};export{e as default};
-//# sourceMappingURL=Remove-emMOVxf9.js.map

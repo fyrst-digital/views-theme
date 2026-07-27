@@ -1,5 +1,5 @@
 {% props
-    product,
+    product = null,
     showLink = true,
     url = null,
     name = null,
@@ -7,8 +7,11 @@
     cva = {},
 %}
 
-{% set productName = name is not null ? name : product.translated.name %}
-{% set productUrl = url is not null ? url : seoUrl('frontend.detail.page', { productId: product.id }) %}
+{% set productName = name is not null ? name : (product ? product.translated.name : null) %}
+{% set productUrl = url is not null
+    ? url
+    : (product ? seoUrl('frontend.detail.page', { productId: product.id }) : null) %}
+{% set linked = showLink is same as(true) and productUrl is not null %}
 {% set cx = vi_cva({
     root: { base: 'vi-product-name' },
     link: { base: 'vi-product-name__link' },
@@ -18,7 +21,7 @@
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    {% if showLink is same as(true) %}
+    {% if linked %}
         <a
             {{ attributes.nested('link').defaults({
                 href: productUrl,
@@ -26,9 +29,9 @@
             }) }}
             class="{{ cx.link.apply() }}"
         >
-            {{ productName }}
+            {{ productName|raw }}
         </a>
     {% else %}
-        {{ productName }}
+        {{ productName|raw }}
     {% endif %}
 </{{ tag|raw }}>
