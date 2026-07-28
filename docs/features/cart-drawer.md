@@ -8,7 +8,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
+| `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close. Composes `ViewsTheme:Button` (`color="none"`, `icon="handbag"`); `Cart:Drawer:Action:Badge` in Button `append` |
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
@@ -156,7 +156,7 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 | Component | Attribute |
 |-----------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
-| Action button | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Action (`Button` root) | `data-component="ViewsTheme:Cart:Drawer:Action"` |
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |

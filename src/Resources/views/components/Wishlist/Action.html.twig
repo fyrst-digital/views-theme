@@ -2,6 +2,8 @@
     href = path('frontend.wishlist.page'),
     title = 'header.wishlist'|trans|striptags,
     label = 'header.wishlist'|trans|striptags,
+    badgeId = 'wishlist-basket',
+    liveId = 'wishlist-basket-live-area',
     widgetsOptions = {},
     storageOptions = {},
     size = 'md',
@@ -9,57 +11,38 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set liveClass = cx.live.apply() %}
+{% set labelClass = cx.label.apply() %}
+{% set buttonLabel = label is same as(false) ? null : label %}
 
-<a
-    {{ attributes.defaults({
+<twig:ViewsTheme:Button
+    class="{{ cx.root.apply({ size: size }) }}"
+    label:class="{{ labelClass }}"
+    {{ ...attributes.defaults({
+        type: 'link',
         href: href,
         title: title,
-        'aria-labelledby': 'wishlist-basket-live-area',
-    }).without('class').without('data-component-template') }}
-    class="{{ cx.root.apply({ size: size }) }}"
+        icon: 'heart',
+        label: buttonLabel,
+        color: 'none',
+        size: size,
+        'aria-labelledby': liveId,
+    }).all() }}
 >
-    {% block badge %}
+    <twig:block name="prepend">
+        <twig:ViewsTheme:Wishlist:Action:Badge
+            :id="badgeId"
+            :widgetsOptions="widgetsOptions"
+            :storageOptions="storageOptions"
+        />
+    </twig:block>
+
+    <twig:block name="append">
         <span
-            {{ attributes.nested('badge').defaults({
-                id: 'wishlist-basket',
-                'data-wishlist-storage': 'true',
-                'data-wishlist-storage-options': {
-                    listPath: path('frontend.wishlist.product.list'),
-                    mergePath: path('frontend.wishlist.product.merge'),
-                    pageletPath: path('frontend.wishlist.product.merge.pagelet'),
-                }|merge(storageOptions)|json_encode,
-                'data-wishlist-widget': 'true',
-                'data-wishlist-widget-options': {
-                    showCounter: true,
-                }|merge(widgetsOptions)|json_encode,
-            }) }}
-            class="{{ cx.badge.apply() }}"
+            id="{{ liveId }}"
+            class="{{ liveClass }}"
+            data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
+            aria-live="polite"
         ></span>
-    {% endblock %}
-
-    {% block icon %}
-        {{ vi_icon('heart', { class: cx.icon.apply({ size: size }) }) }}
-    {% endblock %}
-
-    {% block label %}
-        {% if label is not same as(false) %}
-            <span
-                {{ attributes.nested('label') }}
-                class="{{ cx.label.apply() }}"
-            >
-                {{ label }}
-            </span>
-        {% endif %}
-    {% endblock %}
-
-    {% block live_region %}
-        <span
-            {{ attributes.nested('live').defaults({
-                id: 'wishlist-basket-live-area',
-                'data-wishlist-live-area-text': 'header.wishlistAriaLiveTemplate'|trans,
-                'aria-live': 'polite',
-            }) }}
-            class="{{ cx.live.apply() }}"
-        ></span>
-    {% endblock %}
-</a>
+    </twig:block>
+</twig:ViewsTheme:Button>

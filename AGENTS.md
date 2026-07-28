@@ -29,6 +29,7 @@ Full index: [docs/README.md](docs/README.md).
 | Topic | Doc |
 |-------|-----|
 | **Hard rules** (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
+| **Agent workflow** (refactors; no builds) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
 | **UX Twig components** | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
 | CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) |

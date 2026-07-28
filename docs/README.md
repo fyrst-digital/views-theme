@@ -21,6 +21,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 ## Conventions
 
 - [Hard rules (checklist)](conventions/hard-rules.md)
+- [Agent workflow](conventions/agent-workflow.md) (holistic refactors; no build steps)
 - [UX Twig components](conventions/ux-components.md) (target)
 - [CSS class API](conventions/css-classes.md) (legacy + UX notes)
 - [JavaScript selectors](conventions/javascript.md)

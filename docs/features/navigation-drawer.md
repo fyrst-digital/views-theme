@@ -10,7 +10,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close |
+| `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close. Composes `ViewsTheme:Button` (`color="none"`, `icon="list"`) |
 | `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
@@ -40,14 +40,14 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 `Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
-`Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
+`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend`; live region is inline in `append`. `Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
 
-Wishlist uses drawer-scoped ids so it can coexist with the header instance:
+Wishlist uses drawer-scoped **props** (`badgeId` / `liveId`) so it can coexist with the header instance:
 
-| Element | Header (default) | Drawer |
-|---------|------------------|--------|
-| Badge | `wishlist-basket` | `vi-navigation-drawer-wishlist-basket` |
-| Live region | `wishlist-basket-live-area` | `vi-navigation-drawer-wishlist-live` |
+| Element | Prop | Header (default) | Drawer |
+|---------|------|------------------|--------|
+| Badge | `badgeId` | `wishlist-basket` | `vi-navigation-drawer-wishlist-basket` |
+| Live region | `liveId` | `wishlist-basket-live-area` | `vi-navigation-drawer-wishlist-live` |
 
 Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile entry).
 
@@ -120,7 +120,7 @@ Header load + `header-pagelet-loaded` run only on full drawer open (not menu dri
 
 | Component | Attribute |
 |-----------|-----------|
-| Action button | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
+| Action (`Button` root) | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |

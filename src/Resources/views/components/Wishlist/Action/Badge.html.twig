@@ -1,0 +1,25 @@
+{% props
+    id = 'wishlist-basket',
+    widgetsOptions = {},
+    storageOptions = {},
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<span
+    {{ attributes.defaults({
+        id: id,
+        'data-wishlist-storage': 'true',
+        'data-wishlist-storage-options': {
+            listPath: path('frontend.wishlist.product.list'),
+            mergePath: path('frontend.wishlist.product.merge'),
+            pageletPath: path('frontend.wishlist.product.merge.pagelet'),
+        }|merge(storageOptions)|json_encode,
+        'data-wishlist-widget': 'true',
+        'data-wishlist-widget-options': {
+            showCounter: true,
+        }|merge(widgetsOptions)|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+></span>

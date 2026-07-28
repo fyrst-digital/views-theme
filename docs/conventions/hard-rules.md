@@ -12,6 +12,8 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 
 | Topic | Doc |
 |-------|-----|
+| **Holistic refactors (critical):** prefer root-cause / shared-pattern fixes — no hacky quick fixes | [agent-workflow.md — Holistic refactors](agent-workflow.md#prefer-holistic-refactors-critical) |
+| **No build steps (critical):** never run asset/theme/JS compile or watch | [agent-workflow.md — No build](agent-workflow.md#never-run-a-build-step-critical) |
 | UX tags, props, CVA, attributes, BEM `vi-*`, scope (`components/` only) | [ux-components.md](ux-components.md) |
 | Component template checklist | [components.md](components.md) |
 | `vi_cva` / `vi_cva_from_file` | [vi-cva.md](../twig/vi-cva.md) |
@@ -29,6 +31,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 
 ## Related
 
+- [Agent workflow](agent-workflow.md) — holistic refactors; no build steps
 - [UX Twig components](ux-components.md)
 - [JavaScript](javascript.md)
 - [Architecture](../architecture.md)

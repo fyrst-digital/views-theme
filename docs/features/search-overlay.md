@@ -6,7 +6,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 ## Features
 
-- Header `Search:Action` opens `Search:Overlay` on click
+- Header `Search:Action` opens `Search:Overlay` on click. Composes `ViewsTheme:Button` (`color="none"`, `icon="magnifying-glass"`)
 - Overlay shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Term hand-off is **event-only**: Close payload `{ el, term }` → Action stores string → `overlay.open({ term })` → Open payload → Bar `setTerm` + suggest. Action never touches the input DOM
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
@@ -80,7 +80,7 @@ $this->components->createAndRender('ViewsTheme:Search:Suggest', [
 
 | Component | Attribute |
 |-----------|-----------|
-| Action button | `data-component="ViewsTheme:Search:Action"` |
+| Action (`Button` root) | `data-component="ViewsTheme:Search:Action"` |
 | Overlay root | `data-component="ViewsTheme:Search:Overlay"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
