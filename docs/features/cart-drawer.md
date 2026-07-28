@@ -23,7 +23,8 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
-| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `Form:Select` via `ShippingCalculation:*` children |
+| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `ShippingCalculation:Selection` → field adapters → `Form:Select` |
+| `Cart:ShippingCalculation:Open` | Summary shipping label button; `callMethod(ShippingCalculation, toggle)` to open/close the `<details>` |
 
 ## Features
 
@@ -154,6 +155,7 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
+| Shipping calculation open | `data-component="ViewsTheme:Cart:ShippingCalculation:Open"` |
 
 ### Promotion form
 
@@ -174,25 +176,27 @@ Nest names (via `Cart:Options` → `promotion:*`):
 
 ### Shipping calculation
 
-`Cart:ShippingCalculation` owns the `<form>`, hidden `redirectTo`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Field UI is composed:
+`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary shipping label uses `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
 
 | Piece | Component |
 |-------|-----------|
-| Country (guest only) | `ViewsTheme:Cart:ShippingCalculation:Country` → `Form:Select` (`:options` + `:value`) |
-| Payment method | `ViewsTheme:Cart:ShippingCalculation:PaymentMethod` → `Form:Select` (`:options` + `:value`; leading disabled row when current method unavailable) |
-| Shipping method | `ViewsTheme:Cart:ShippingCalculation:ShippingMethod` → same as payment |
+| Selection stack + `redirectTo` | `ViewsTheme:Cart:ShippingCalculation:Selection` |
+| Country (guest only) | `…:Selection` → `…:Country` → `Form:Select` (`:options` + `:value`) |
+| Payment method | `…:Selection` → `…:PaymentMethod` → `Form:Select` (+ leading disabled row when unavailable) |
+| Shipping method | `…:Selection` → `…:ShippingMethod` → same as payment |
 
-Children stay **anonymous** (no PHP class). They map entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
+Children stay **anonymous** (no PHP class). Field adapters map entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
 
 Nest names (via `Cart:Options` → `shipping:*`):
 
 | Nest | Target |
 |------|--------|
-| `shipping:country:*` | Country → `Form:Select` props / nested attrs (`country:select:class`, …) |
-| `shipping:payment:*` | PaymentMethod → `Form:Select` |
-| `shipping:shipping:*` | ShippingMethod → `Form:Select` |
-| `shipping:size` | Default size for all three selects (`sm` / `md` / `lg`; default `sm`) |
-| `shipping:redirectTo` | Hidden redirect route name |
+| `shipping:selection:*` | Selection root / props |
+| `shipping:selection:country:*` | Country → `Form:Select` props / nested attrs (`selection:country:select:class`, …) |
+| `shipping:selection:payment:*` | PaymentMethod → `Form:Select` |
+| `shipping:selection:shipping:*` | ShippingMethod → `Form:Select` |
+| `shipping:size` | Default size for all three selects (`sm` / `md` / `lg`; default `sm`; forwarded into Selection) |
+| `shipping:redirectTo` | Hidden redirect route name (forwarded into Selection) |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
 Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.

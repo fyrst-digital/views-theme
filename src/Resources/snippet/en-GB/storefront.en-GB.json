@@ -8,7 +8,8 @@
         },
         "cart": {
             "checkout": "Checkout",
-            "cart": "Cart"
+            "cart": "Cart",
+            "summaryNote": "Taxes and shipping will be calculated in the checkout."
         }
     },
     "variantsGrid": {

@@ -8,7 +8,8 @@
         },
         "cart": {
             "checkout": "Zur Kasse",
-            "cart": "Warenkorb"
+            "cart": "Warenkorb",
+            "summaryNote": "Steuern und Versandkosten werden an der Kasse berechnet."
         }
     },
     "variantsGrid": {

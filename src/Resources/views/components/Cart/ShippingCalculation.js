@@ -16,6 +16,24 @@ export default class CartShippingCalculation extends ShopwareComponent {
         this.el.removeEventListener('submit', this._onSubmit)
     }
 
+    toggle() {
+        const details = this.el.querySelector('details')
+        if (!(details instanceof HTMLDetailsElement)) {
+            return
+        }
+
+        details.open = !details.open
+
+        if (!details.open) {
+            return
+        }
+
+        const summary = details.querySelector('summary')
+        if (summary instanceof HTMLElement) {
+            summary.focus({ preventScroll: true })
+        }
+    }
+
     _onSubmit(event) {
         event.preventDefault()
         this._emitConfigure()

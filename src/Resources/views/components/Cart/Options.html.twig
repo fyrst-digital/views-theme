@@ -11,20 +11,20 @@
     class="{{ cx.root.apply() }}"
 >
     {% block content %}
-        {% block promotion %}
-            <twig:ViewsTheme:Cart:PromotionForm
-                class="{{ cx.promotion.apply() }}"
-                {{ ...attributes.nested('promotion').defaults({
-                    redirectTo: redirectTo,
-                }).all() }}
-            />
-        {% endblock %}
-
         {% block shipping %}
             <twig:ViewsTheme:Cart:ShippingCalculation
                 class="{{ cx.shipping.apply() }}"
                 {{ ...attributes.nested('shipping').defaults({
                     page: page,
+                    redirectTo: redirectTo,
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block promotion %}
+            <twig:ViewsTheme:Cart:PromotionForm
+                class="{{ cx.promotion.apply() }}"
+                {{ ...attributes.nested('promotion').defaults({
                     redirectTo: redirectTo,
                 }).all() }}
             />

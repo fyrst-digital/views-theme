@@ -8,6 +8,7 @@
 {% set cx = vi_cva_from_file(cva) %}
 {% set summaryClass = cx.summary.apply() %}
 {% set summaryLabel = 'checkout.shippingCosts'|trans|sw_sanitize %}
+{% set selectionClass = cx.selection.apply() %}
 
 <form
     {{ attributes.defaults({
@@ -37,39 +38,16 @@
                     }).all() }}
                 />
 
-                <div {{ attributes.nested('selects') }} class="{{ cx.selects.apply() }}">
-                    {% block country %}
-                        <twig:ViewsTheme:Cart:ShippingCalculation:Country
-                            class="{{ cx.country.apply() }}"
-                            {{ ...attributes.nested('country').defaults({
-                                countries: page.countries,
-                                size: size,
-                            }).all() }}
-                        />
-                    {% endblock %}
-
-                    {% block payment_method %}
-                        <twig:ViewsTheme:Cart:ShippingCalculation:PaymentMethod
-                            class="{{ cx.payment.apply() }}"
-                            {{ ...attributes.nested('payment').defaults({
-                                paymentMethods: page.paymentMethods,
-                                size: size,
-                            }).all() }}
-                        />
-                    {% endblock %}
-
-                    {% block shipping_method %}
-                        <twig:ViewsTheme:Cart:ShippingCalculation:ShippingMethod
-                            class="{{ cx.shipping.apply() }}"
-                            {{ ...attributes.nested('shipping').defaults({
-                                shippingMethods: page.shippingMethods,
-                                size: size,
-                            }).all() }}
-                        />
-                    {% endblock %}
-
-                    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-                </div>
+                {% block selection %}
+                    <twig:ViewsTheme:Cart:ShippingCalculation:Selection
+                        class="{{ selectionClass }}"
+                        {{ ...attributes.nested('selection').defaults({
+                            page: page,
+                            redirectTo: redirectTo,
+                            size: size,
+                        }).all() }}
+                    />
+                {% endblock %}
             </details>
         {% endif %}
     {% endblock %}

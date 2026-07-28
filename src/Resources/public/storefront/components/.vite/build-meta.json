@@ -1,13 +1,19 @@
 {
   "manifest": {
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Backdrop.js": {
+      "file": "ViewsTheme/Backdrop-CH_NwSBP.js",
+      "name": "ViewsTheme/Backdrop",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Backdrop.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart.js": {
-      "file": "ViewsTheme/Cart-BnLDn_Qu.js",
+      "file": "ViewsTheme/Cart-CxTCpRmy.js",
       "name": "ViewsTheme/Cart",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action.js": {
-      "file": "ViewsTheme/Cart/Drawer/Action-B0oabolm.js",
+      "file": "ViewsTheme/Cart/Drawer/Action-CY3aomk4.js",
       "name": "ViewsTheme/Cart/Drawer/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Action.js",
       "isEntry": true
@@ -19,63 +25,63 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Body.js": {
-      "file": "ViewsTheme/Cart/Drawer/Body-Bxw31Axt.js",
+      "file": "ViewsTheme/Cart/Drawer/Body-D9V0e43g.js",
       "name": "ViewsTheme/Cart/Drawer/Body",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Body.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Flashes.js": {
-      "file": "ViewsTheme/Cart/Drawer/Flashes-BfO8GFxX.js",
+      "file": "ViewsTheme/Cart/Drawer/Flashes-0Rm7Vsl-.js",
       "name": "ViewsTheme/Cart/Drawer/Flashes",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Flashes.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Footer.js": {
-      "file": "ViewsTheme/Cart/Drawer/Footer-C0if-m2l.js",
+      "file": "ViewsTheme/Cart/Drawer/Footer-CsROKBuR.js",
       "name": "ViewsTheme/Cart/Drawer/Footer",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Footer.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Heading.js": {
-      "file": "ViewsTheme/Cart/Drawer/Heading-CXje7LDZ.js",
+      "file": "ViewsTheme/Cart/Drawer/Heading-kQvatwQY.js",
       "name": "ViewsTheme/Cart/Drawer/Heading",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Heading.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Items.js": {
-      "file": "ViewsTheme/Cart/Drawer/Items-BI7l_aOk.js",
+      "file": "ViewsTheme/Cart/Drawer/Items-CsTu6rOm.js",
       "name": "ViewsTheme/Cart/Drawer/Items",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Items.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/PromotionForm.js": {
-      "file": "ViewsTheme/Cart/PromotionForm-CAn31ago.js",
+      "file": "ViewsTheme/Cart/PromotionForm-Bczc7z0B.js",
       "name": "ViewsTheme/Cart/PromotionForm",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/PromotionForm.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation.js": {
-      "file": "ViewsTheme/Cart/ShippingCalculation-DCZUh4oU.js",
+      "file": "ViewsTheme/Cart/ShippingCalculation-s5O4h9CA.js",
       "name": "ViewsTheme/Cart/ShippingCalculation",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation/Open.js": {
+      "file": "ViewsTheme/Cart/ShippingCalculation/Open-U3-4VQcc.js",
+      "name": "ViewsTheme/Cart/ShippingCalculation/Open",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/ShippingCalculation/Open.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js": {
-      "file": "ViewsTheme/Checkout/DeliveryDateSelection-DvdRr8FN.js",
+      "file": "ViewsTheme/Checkout/DeliveryDateSelection-CFfG1KTb.js",
       "name": "ViewsTheme/Checkout/DeliveryDateSelection",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Checkout/DeliveryDateSelection.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer.js": {
-      "file": "ViewsTheme/Drawer-BrWnMzF9.js",
+      "file": "ViewsTheme/Drawer-KuFMDbKs.js",
       "name": "ViewsTheme/Drawer",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer.js",
-      "isEntry": true
-    },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Backdrop.js": {
-      "file": "ViewsTheme/Drawer/Backdrop-BOI4DxhD.js",
-      "name": "ViewsTheme/Drawer/Backdrop",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Drawer/Close.js": {
@@ -91,7 +97,7 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Dropdown.js": {
-      "file": "ViewsTheme/Dropdown-DdM2M44l.js",
+      "file": "ViewsTheme/Dropdown-CN_3bIDF.js",
       "name": "ViewsTheme/Dropdown",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Dropdown.js",
       "isEntry": true
@@ -102,70 +108,76 @@
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Language/Flag.js",
       "isEntry": true
     },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Quantity.js": {
+      "file": "ViewsTheme/LineItem/Quantity-B_6ceXcD.js",
+      "name": "ViewsTheme/LineItem/Quantity",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Quantity.js",
+      "isEntry": true
+    },
+    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Remove.js": {
+      "file": "ViewsTheme/LineItem/Remove-D0ZDPODC.js",
+      "name": "ViewsTheme/LineItem/Remove",
+      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/LineItem/Remove.js",
+      "isEntry": true
+    },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Bar.js": {
-      "file": "ViewsTheme/Navigation/Bar-Bmnj9UCd.js",
+      "file": "ViewsTheme/Navigation/Bar-Dww5h9Hf.js",
       "name": "ViewsTheme/Navigation/Bar",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Bar.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Action.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Action-pCNT-ISQ.js",
+      "file": "ViewsTheme/Navigation/Drawer/Action-CcNu9h9M.js",
       "name": "ViewsTheme/Navigation/Drawer/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Drill.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Drill-BRNMMSMS.js",
+      "file": "ViewsTheme/Navigation/Drawer/Drill-DW5_o77s.js",
       "name": "ViewsTheme/Navigation/Drawer/Drill",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Drill.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Menu.js": {
-      "file": "ViewsTheme/Navigation/Drawer/Menu-DVHkzF4m.js",
+      "file": "ViewsTheme/Navigation/Drawer/Menu-boJZ6xuh.js",
       "name": "ViewsTheme/Navigation/Drawer/Menu",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Drawer/Menu.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Flyout.js": {
-      "file": "ViewsTheme/Navigation/Flyout-CsfCfMmJ.js",
+      "file": "ViewsTheme/Navigation/Flyout-CZridMcW.js",
       "name": "ViewsTheme/Navigation/Flyout",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Navigation/Flyout.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/QuantityInput.js": {
-      "file": "ViewsTheme/QuantityInput-CQTIkUGt.js",
+      "file": "ViewsTheme/QuantityInput-B6YzV3bS.js",
       "name": "ViewsTheme/QuantityInput",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/QuantityInput.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js": {
-      "file": "ViewsTheme/Scroll/Area-Bmvq653A.js",
+      "file": "ViewsTheme/Scroll/Area-CJlMCdYR.js",
       "name": "ViewsTheme/Scroll/Area",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Scroll/Area.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js": {
-      "file": "ViewsTheme/Search/Action-BnNp25dn.js",
+      "file": "ViewsTheme/Search/Action-BAIq0lvE.js",
       "name": "ViewsTheme/Search/Action",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Action.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js": {
-      "file": "ViewsTheme/Search/Bar-2fFxXnuS.js",
+      "file": "ViewsTheme/Search/Bar-fkILgaNI.js",
       "name": "ViewsTheme/Search/Bar",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Bar.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js": {
-      "file": "ViewsTheme/Search/Overlay-8v4INM1P.js",
+      "file": "ViewsTheme/Search/Overlay-Bga7dOUx.js",
       "name": "ViewsTheme/Search/Overlay",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay.js",
-      "isEntry": true
-    },
-    "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js": {
-      "file": "ViewsTheme/Search/Overlay/Backdrop-Ck4d6xG-.js",
-      "name": "ViewsTheme/Search/Overlay/Backdrop",
-      "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Backdrop.js",
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Search/Overlay/Close.js": {
@@ -175,9 +187,27 @@
       "isEntry": true
     },
     "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js": {
-      "file": "ViewsTheme/VariantsGrid/Container-BsAt29kn.js",
+      "file": "ViewsTheme/VariantsGrid/Container-3YjMsahR.js",
       "name": "ViewsTheme/VariantsGrid/Container",
       "src": "../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/VariantsGrid/Container.js",
+      "isEntry": true
+    },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Backdrop.css": {
+      "file": "ViewsTheme/Backdrop-CiX5fWFB.css",
+      "name": "ViewsTheme/Backdrop.css",
+      "names": [
+        "ViewsTheme/Backdrop.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Backdrop.css",
+      "isEntry": true
+    },
+    "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Cart/Summary.css": {
+      "file": "ViewsTheme/Cart/Summary-CaA2d_NJ.css",
+      "name": "ViewsTheme/Cart/Summary.css",
+      "names": [
+        "ViewsTheme/Cart/Summary.css"
+      ],
+      "src": "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Cart/Summary.css",
       "isEntry": true
     },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Currency/Action.css": {
@@ -199,7 +229,7 @@
       "isEntry": true
     },
     "../../../../../../shopware/storefront/Resources/app/storefront/sw-plain-css:ViewsTheme/Drawer.css": {
-      "file": "ViewsTheme/Drawer-BxzBza35.css",
+      "file": "ViewsTheme/Drawer-DcPtPM6_.css",
       "name": "ViewsTheme/Drawer.css",
       "names": [
         "ViewsTheme/Drawer.css"

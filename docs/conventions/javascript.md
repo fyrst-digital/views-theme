@@ -90,6 +90,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
 | Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
+| Cart shipping calculation open | `ViewsTheme:Cart:ShippingCalculation:Open` | `Cart/ShippingCalculation/Open.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
