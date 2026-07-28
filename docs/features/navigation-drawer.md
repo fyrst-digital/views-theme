@@ -28,7 +28,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
-- Drawer footer hosts `Language:Action` + `Currency:Action` (`position="offcanvas"`, `placement="top-start"`); languages/currencies loaded via `HeaderPageletLoader` in the drawer controller
+- Drawer footer hosts `Language:Action` + `Currency:Action` (`placement="top-start"`); languages/currencies loaded via `HeaderPageletLoader` in the drawer controller
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
 - Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`

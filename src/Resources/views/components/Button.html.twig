@@ -24,6 +24,8 @@
     }) }}
     class="{{ cx.root.apply({ color: color, size: size, justify: justify }) }}"
 >
+    {% block prepend %}{% endblock %}
+
     {% block icon %}
         {% if icon %}
             {{ vi_icon(icon, {
@@ -39,5 +41,6 @@
             </span>
         {% endif %}
     {% endblock %}
-</{{ element }}>
 
+    {% block append %}{% endblock %}
+</{{ element }}>

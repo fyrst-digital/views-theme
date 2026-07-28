@@ -1,8 +1,7 @@
 {% props
     languages = null,
     activeLanguageId = null,
-    position = 'top-bar',
-    size = 'sm',
+    id = null,
     label = null,
     showCode = false,
     showFlag = true,
@@ -27,6 +26,7 @@
 
     {% set defaultLabel = context.languageInfo.name|default(activeLanguage.translated.name|default(activeLanguage.name|default(''))) %}
     {% set resolvedLabel = label is same as(false) ? false : (label is not null ? label : defaultLabel) %}
+    {% set buttonLabel = resolvedLabel is same as(false) ? null : resolvedLabel %}
     {% set activeTranslationCode = activeLanguage and activeLanguage.translationCode ? activeLanguage.translationCode.code : (context.languageInfo.localeCode|default(null)) %}
     {% set languageCode = activeTranslationCode ? activeTranslationCode|lower|split('-')|first|upper : '' %}
     {% set flagCode = activeTranslationCode ?: null %}
@@ -34,53 +34,66 @@
 
     {% set cx = vi_cva_from_file(cva) %}
     {% set rootClass = cx.root.apply() %}
-    {% set toggleClass = cx.toggle.apply({ size: size }) %}
+    {% set toggleClass = cx.toggle.apply() %}
     {% set flagIconClass = cx.flagIcon.apply() %}
     {% set labelClass = cx.label.apply() %}
     {% set codeClass = cx.code.apply() %}
     {% set caretClass = cx.caret.apply() %}
     {% set toggleAriaLabel = 'header.languageTrigger'|trans({ '%lang%': defaultLabel })|striptags %}
+    {% set resolvedId = id ?? ('vi-language-action-' ~ random()) %}
+    {% set anchorName = '--' ~ resolvedId %}
 
     <twig:ViewsTheme:Dropdown
         class="{{ rootClass }}"
-        toggle:class="{{ toggleClass }}"
+        :id="resolvedId"
         {{ ...attributes.defaults({
             placement: placement,
-            'toggle:aria-label': toggleAriaLabel,
-            'toggle:title': toggleAriaLabel,
-            'toggle:aria-haspopup': 'listbox',
-        }).all() }}
+        }).without('class').all() }}
     >
         <twig:block name="toggle">
-            {% if showFlag and flagCode %}
-                {% set flagSrc = asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') %}
-                {% set flagFallbackSrc = flagCodeFallback and flagCodeFallback is not same as(flagCode)
-                    ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
-                    : null %}
-                <twig:ViewsTheme:Language:Flag
-                    class="{{ flagIconClass }}"
-                    :src="flagSrc"
-                    :fallbackSrc="flagFallbackSrc"
-                />
-            {% endif %}
+            <twig:ViewsTheme:Button
+                class="{{ toggleClass }}"
+                label:class="{{ labelClass }}"
+                type="button"
+                color="none"
+                size="sm"
+                :label="buttonLabel"
+                title="{{ toggleAriaLabel }}"
+                aria-label="{{ toggleAriaLabel }}"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="{{ resolvedId }}"
+                popovertarget="{{ resolvedId }}"
+                style="anchor-name: {{ anchorName }}"
+            >
+                <twig:block name="prepend">
+                    {% if showFlag and flagCode %}
+                        {% set flagSrc = asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') %}
+                        {% set flagFallbackSrc = flagCodeFallback and flagCodeFallback is not same as(flagCode)
+                            ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
+                            : null %}
+                        <twig:ViewsTheme:Language:Flag
+                            class="{{ flagIconClass }}"
+                            :src="flagSrc"
+                            :fallbackSrc="flagFallbackSrc"
+                        />
+                    {% endif %}
 
-            {% if showCode and languageCode %}
-                <span class="{{ codeClass }}" aria-hidden="true">{{ languageCode }}</span>
-            {% endif %}
+                    {% if showCode and languageCode %}
+                        <span class="{{ codeClass }}" aria-hidden="true">{{ languageCode }}</span>
+                    {% endif %}
+                </twig:block>
 
-            {% if resolvedLabel is not same as(false) %}
-                <span class="{{ labelClass }}">
-                    {{ resolvedLabel }}
-                </span>
-            {% endif %}
-
-            {{ vi_icon('caret-down', { class: caretClass }) }}
+                <twig:block name="append">
+                    {{ vi_icon('caret-down', { class: caretClass }) }}
+                </twig:block>
+            </twig:ViewsTheme:Button>
         </twig:block>
 
         <twig:ViewsTheme:Language:Menu
             :languages="resolvedLanguages"
             :activeLanguageId="resolvedActiveLanguageId"
-            :position="position"
+            :id="resolvedId"
             :showFlag="showFlag"
         />
     </twig:ViewsTheme:Dropdown>

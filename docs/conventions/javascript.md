@@ -250,15 +250,15 @@ JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the componentâ€
 
 ### Dropdown
 
-Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Default toggle is `ViewsTheme:Button` (`color`, `buttonSize` â†’ Button `size`, optional `icon` / `label`). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
 
 | Hook | Attribute |
 |------|-----------|
 | Host | `data-component="ViewsTheme:Dropdown"` |
 | Panel | `[popover].vi-dropdown` |
-| Toggle | `[popovertarget]` / `vi-dropdown__toggle` |
+| Toggle | `Button` with `[popovertarget]` / `vi-dropdown__toggle` |
 
-JS runs on the host, resolves panel + toggle inside, and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the button. Use `host:class="vi-dropdown-host--lg-up"` to hide the whole control below `lg` without popover anchor jump.
+JS runs on the host, resolves panel + toggle inside (`[popovertarget]`), and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the Button. Override the whole `toggle` block for rich chrome (no multi-hop into Button). Use `host:class="vi-dropdown-host--lg-up"` to hide the whole control below `lg` without popover anchor jump.
 
 Build storefront assets from Shopware root: `make build-storefront`.
 
