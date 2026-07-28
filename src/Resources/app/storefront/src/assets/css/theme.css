@@ -48,7 +48,7 @@
   --btn-font-size: 20px;
 }
 .header-main {
-  --logo-width: 80px;
+  --vi-logo-w: 80px;
 }
 .header-action {
   --btn-border-radius: var(--border-radius-pill);
@@ -67,10 +67,10 @@
   --columns: 4;
 }
 .vi-account__dropdown {
-  --dropdown-max-width: min(100vw - 40px, 280px);
+  --vi-max-w: min(100vw - 40px, 280px);
 }
 .vi-language-action, .vi-currency-action {
-  --dropdown-max-width: min(100vw - 40px, 16rem);
+  --vi-max-w: min(100vw - 40px, 16rem);
 }
 .vi-language-action__toggle, .vi-currency-action__toggle {
   --btn-gap: var(--spacing-2);
@@ -84,7 +84,7 @@
   --btn-hover-bg: var(--light);
 }
 .vi-navigation-drawer-menu {
-  --vi-navigation-drawer-menu-duration: 300ms;
+  --vi-menu-duration: 300ms;
 }
 .vi-cart-drawer {
   --vi-drawer-width: min(420px, 100vw);

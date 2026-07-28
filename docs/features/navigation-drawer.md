@@ -78,7 +78,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 | Custom field | `vi_navigation_image` on category (media type, translated) |
 | Resolve | `Menu` collects IDs from the current level → `searchMedia(ids, context.context)` once |
 | Render | `Item` prop `image`; `{% sw_thumbnails %}` before label when present |
-| Image tokens | `--vi-navigation-drawer-item-image-size` (`1.75rem`), `--vi-navigation-drawer-item-image-radius` (`0.25rem`), `--vi-navigation-drawer-item-image-aspect-ratio` (`1 / 1`), `--vi-navigation-drawer-item-image-fit` (`cover`) |
+| Image tokens | `--vi-image-size` (`1.75rem`), `--vi-image-radius` (`0.25rem`), `--vi-image-ar` (`1 / 1`), `--vi-image-fit` (`cover`) |
 
 ### Drill-down flow
 
@@ -98,7 +98,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 - Scrollport (`.vi-navigation-drawer-menu__scroll`) uses `flex: 1 1 0` + `min-height: 0` so height comes from the Menu column, not content — levels can be absolute without a JS height lock
 - Forward: outgoing exits start-ward (`-100%`), incoming enters from end; back is the reverse
 - Levels use an opaque body background and incoming stacks above outgoing so labels never show through
-- Token: `--vi-navigation-drawer-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for the transform fallback
+- Token: `--vi-menu-duration` (default `250ms`) — CSS is SoT; JS reads it for the transform fallback
 - Outgoing is `inert` during the slide
 - `prefers-reduced-motion: reduce` skips the slide and swaps the level immediately
 

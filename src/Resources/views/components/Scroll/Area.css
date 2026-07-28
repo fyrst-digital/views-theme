@@ -1,20 +1,16 @@
-.vi-scroll-area {
-  --scroll-fade: 40px;
-}
-
 .vi-scroll-area[data-scroll-up='true'][data-scroll-down='true'] {
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 var(--scroll-fade),
-    #000 calc(100% - var(--scroll-fade)),
+    #000 var(--vi-fade, 40px),
+    #000 calc(100% - var(--vi-fade, 40px)),
     transparent
   );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 var(--scroll-fade),
-    #000 calc(100% - var(--scroll-fade)),
+    #000 var(--vi-fade, 40px),
+    #000 calc(100% - var(--vi-fade, 40px)),
     transparent
   );
 }
@@ -23,13 +19,13 @@
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 var(--scroll-fade),
+    #000 var(--vi-fade, 40px),
     #000 100%
   );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 var(--scroll-fade),
+    #000 var(--vi-fade, 40px),
     #000 100%
   );
 }
@@ -38,13 +34,13 @@
   -webkit-mask-image: linear-gradient(
     to bottom,
     #000 0,
-    #000 calc(100% - var(--scroll-fade)),
+    #000 calc(100% - var(--vi-fade, 40px)),
     transparent
   );
   mask-image: linear-gradient(
     to bottom,
     #000 0,
-    #000 calc(100% - var(--scroll-fade)),
+    #000 calc(100% - var(--vi-fade, 40px)),
     transparent
   );
 }

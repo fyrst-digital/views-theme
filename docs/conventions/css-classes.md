@@ -39,24 +39,24 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 ```css
 /* ❌ NEVER — explicit token assignment in component CSS */
 .vi-language-action {
-  --language-flag-width: 1.25rem;
-  --dropdown-max-width: min(100vw - 1.5rem, 16rem);
+  --vi-flag-w: 1.25rem;
+  --vi-max-w: min(100vw - 1.5rem, 16rem);
 }
 .vi-language-action__flag-icon {
-  width: var(--language-flag-width);
+  width: var(--vi-flag-w);
 }
 
 /* ✅ ALWAYS — consume with fallback */
 .vi-language-action {
-  min-width: var(--language-action-min-width, 10rem);
+  min-width: var(--vi-min-w, 10rem);
 }
 .vi-language-action__flag-icon {
-  width: var(--language-flag-width, 1.25rem);
-  border-radius: var(--language-flag-radius, 0.125rem);
+  width: var(--vi-flag-w, 1.25rem);
+  border-radius: var(--vi-flag-radius, 0.125rem);
 }
 ```
 
-Reference: `Dropdown.css` uses `max-width: var(--dropdown-max-width, min(100vw - 1.5rem, 22rem))`.
+Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem))`.
 
 ### Theme CSS — assign to override
 
@@ -66,12 +66,36 @@ Theme (and other callers) may set tokens on a host/class so component rules pick
 /* ✅ theme override */
 .vi-language-action,
 .vi-currency-action {
-  --dropdown-max-width: min(100vw - 40px, 16rem);
+  --vi-max-w: min(100vw - 40px, 16rem);
 }
 .vi-account__dropdown {
-  --dropdown-max-width: min(100vw - 40px, 280px);
+  --vi-max-w: min(100vw - 40px, 280px);
 }
 ```
+
+### Token naming
+
+Prefer **short** `--vi-*` names. The host selector scopes the token — do not encode the full component path.
+
+| Kind | Pattern | Examples |
+|------|---------|----------|
+| Shell / motion (theme-facing) | `--vi-{shell}-{property}` | `--vi-drawer-duration`, `--vi-flyout-offset`, `--vi-menu-duration` |
+| Local layout on a host | `--vi-{property}` | `--vi-image-size`, `--vi-max-w`, `--vi-fade`, `--vi-min-w` |
+| CSS anchors (`anchor-name`) | `--vi-{element}` | `--vi-navigation-bar`, `--vi-header-main` (identity; not theme knobs) |
+
+```css
+/* ❌ long / unprefixed path in the name */
+--vi-navigation-drawer-item-image-aspect-ratio
+--language-flag-aspect-ratio
+--dropdown-max-width
+
+/* ✅ short; set on the host */
+.vi-navigation-drawer-item__image { width: var(--vi-image-size, 1.75rem); }
+.vi-dropdown[popover] { max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem)); }
+.vi-navigation-drawer-menu { --vi-menu-duration: 300ms; /* theme assign */ }
+```
+
+Do **not** rename design-system / Bootstrap APIs (`--bs-*`, `--btn-*`, `--badge-*`, `--sw-*`, `--spacing-*`, …).
 
 ### When to use a `.cva.twig` file
 

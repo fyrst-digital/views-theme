@@ -171,7 +171,7 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
 
     _duration() {
         const raw = getComputedStyle(this.el)
-            .getPropertyValue('--vi-navigation-drawer-menu-duration')
+            .getPropertyValue('--vi-menu-duration')
             .trim()
         if (!raw) {
             return 250

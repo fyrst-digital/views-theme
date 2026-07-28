@@ -57,7 +57,7 @@ Navigation:Drawer footer (mobile)
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Display:** optional flag + name (+ territory when translation code provides it) + `caret-down` on toggle
 - **Flags:** [lipis/flag-icons](https://github.com/lipis/flag-icons) **4×3** SVGs under `src/Resources/public/flags/`, named as Shopware `translationCode` (e.g. `de.svg`, `en-US.svg`, `cs.svg`). MIT license in that folder. Rendered via `Language:Flag` (`data-component="ViewsTheme:Language:Flag"`): primary `src`, optional `fallbackSrc` (language segment, e.g. `en-US` → `en.svg`); on `error`, try fallback once then remove the img — no inline handlers. `:showFlag="false"` hides them. Add more locales by copying upstream 4×3 SVGs under the matching code name (`en.svg` uses GB artwork).
-- **CSS:** co-located `Language/Action.css` + `Language/Menu.css` — consume tokens with fallbacks only (`var(--language-flag-width, 14px)`, `var(--language-flag-aspect-ratio, 4 / 3)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
+- **CSS:** co-located `Language/Action.css` + `Language/Menu.css` — consume tokens with fallbacks only (`var(--vi-flag-w, 14px)`, `var(--vi-flag-ar, 4 / 3)`, `var(--vi-min-w, 10rem)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--vi-max-w` on the action host for Dropdown). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
 
 ## Dropdown composition
 

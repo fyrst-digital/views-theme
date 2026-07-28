@@ -53,7 +53,7 @@ Navigation:Drawer footer (mobile)
 
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Toggle:** symbol (`aria-hidden`) + translated name + `caret-down` icon
-- **CSS:** co-located `Currency/Action.css` — consume tokens with fallbacks only (`var(--currency-action-min-width, 10rem)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--dropdown-max-width`). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
+- **CSS:** co-located `Currency/Action.css` + `Currency/Menu.css` — consume tokens with fallbacks only (`var(--vi-min-w, 10rem)`, `var(--vi-symbol-min-w, 20px)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--vi-max-w` on the action host for Dropdown). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
 
 ## Dropdown composition
 

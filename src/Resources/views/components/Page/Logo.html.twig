@@ -65,7 +65,7 @@
                             {{ attributes.nested('image').defaults({
                                 src: imgLogoPath|sw_encode_url,
                                 alt: 'header.logoLink'|trans|striptags,
-                                style: 'width: var(--logo-width, auto)',
+                                style: 'width: var(--vi-logo-w, auto)',
                             }) }}
                             class="{{ cx.image.apply() }}"
                         >

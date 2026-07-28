@@ -28,7 +28,7 @@
 
 .vi-dropdown[popover] {
   inset: unset;
-  max-width: var(--dropdown-max-width, min(100vw - 1.5rem, 22rem));
+  max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem));
 
   &[data-placement='bottom-end'] {
     top: anchor(bottom);
@@ -68,9 +68,9 @@
 
   @media (prefers-reduced-motion: no-preference) {
     transition:
-      opacity var(--dropdown-duration, 200ms) ease,
-      overlay var(--dropdown-duration, 200ms) allow-discrete,
-      display var(--dropdown-duration, 200ms) allow-discrete;
+      opacity var(--vi-duration, 200ms) ease,
+      overlay var(--vi-duration, 200ms) allow-discrete,
+      display var(--vi-duration, 200ms) allow-discrete;
 
     &:not(:popover-open) {
       opacity: 0;
