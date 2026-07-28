@@ -30,27 +30,40 @@ abstract class AbstractComponentController extends StorefrontController
      */
     protected function renderComponent(string $name, array $props = []): Response
     {
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        $content = $this->components->createAndRender($name, $props);
-
-        if ($request !== null) {
-            /** @var SalesChannelContext|null $salesChannelContext */
-            $salesChannelContext = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-            $host = $request->attributes->get(RequestTransformer::STOREFRONT_URL);
-
-            if ($salesChannelContext instanceof SalesChannelContext && \is_string($host)) {
-                $mediaUrlReplacer = $this->container->get(MediaUrlPlaceholderHandlerInterface::class);
-                $seoUrlReplacer = $this->container->get(SeoUrlPlaceholderHandlerInterface::class);
-
-                $content = $mediaUrlReplacer->replace($content);
-                $content = $seoUrlReplacer->replace($content, $host, $salesChannelContext);
-            }
-        }
+        $content = $this->replaceStorefrontPlaceholders(
+            $this->components->createAndRender($name, $props),
+        );
 
         $response = new Response($content);
         $response->headers->set('x-robots-tag', 'noindex');
         $response->headers->set('Content-Type', 'text/html; charset=UTF-8');
 
         return $response;
+    }
+
+    /**
+     * Shared SoT for media then SEO placeholder replacement (core renderStorefront parity).
+     * Safe to call on any raw HTML string (e.g. future JSON fragment payloads).
+     */
+    protected function replaceStorefrontPlaceholders(string $content): string
+    {
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        if ($request === null) {
+            return $content;
+        }
+
+        $mediaUrlReplacer = $this->container->get(MediaUrlPlaceholderHandlerInterface::class);
+        $content = $mediaUrlReplacer->replace($content);
+
+        /** @var SalesChannelContext|null $salesChannelContext */
+        $salesChannelContext = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+        $host = $request->attributes->get(RequestTransformer::STOREFRONT_URL);
+
+        if ($salesChannelContext instanceof SalesChannelContext && \is_string($host) && $host !== '') {
+            $seoUrlReplacer = $this->container->get(SeoUrlPlaceholderHandlerInterface::class);
+            $content = $seoUrlReplacer->replace($content, $host, $salesChannelContext);
+        }
+
+        return $content;
     }
 }

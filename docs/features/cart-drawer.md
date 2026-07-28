@@ -91,7 +91,17 @@ Shell stays mounted (open state, focus trap). Only the islands are swapped — B
 |------------|------|--------|---------|
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` | `GET` (XHR) | `ViewsTheme:Cart:Drawer` |
 
-Loads `CheckoutCartPageLoader` and renders via `ComponentRendererInterface`. Used for shell open and in-open island refresh.
+| Piece | Detail |
+|-------|--------|
+| Loader | `CheckoutCartPageLoader` — same DTO as the cart page (not `OffcanvasCartPageLoader`) |
+| App hook | `CheckoutCartPageLoadedHook` (`checkout-cart-page-loaded`) after load, before render |
+| Symfony event | `CheckoutCartPageLoadedEvent` (dispatched inside the loader) |
+| Render | `AbstractComponentController::renderComponent()` → `ViewsTheme:Cart:Drawer` with prop `page` |
+| SEO/media | Placeholder replace on the response — see [architecture — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |
+
+Used for shell open and in-open island refresh. Third parties that enrich cart **page** data (App scripts on `checkout-cart-page-loaded`, or subscribers to `CheckoutCartPageLoadedEvent`) apply to the drawer automatically. Do **not** target `checkout-offcanvas-widget-loaded` for this UI.
+
+See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks).
 
 ### LineItem (shared UX)
 

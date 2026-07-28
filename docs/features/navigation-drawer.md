@@ -109,7 +109,12 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` | `GET` (XHR) |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` | `GET` (XHR) |
 
-Both load `MenuOffcanvasPageletLoader`, dispatch `MenuOffcanvasPageletLoadedHook`, then render UX components via `ComponentRendererInterface`.
+| Action | Load | App hooks | Render |
+|--------|------|-----------|--------|
+| `drawer` | `MenuOffcanvasPageletLoader` → navigation; then `HeaderPageletLoader` → languages/currencies | `MenuOffcanvasPageletLoadedHook`, then `HeaderPageletLoadedHook` | `ViewsTheme:Navigation:Drawer` via `renderComponent()` |
+| `menu` | `MenuOffcanvasPageletLoader` only | `MenuOffcanvasPageletLoadedHook` | `ViewsTheme:Navigation:Drawer:Menu` via `renderComponent()` |
+
+Header load + `header-pagelet-loaded` run only on full drawer open (not menu drill). See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks).
 
 ## Hooks
 

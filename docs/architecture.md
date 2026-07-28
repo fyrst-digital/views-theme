@@ -86,12 +86,37 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 
 | Rule | Detail |
 |------|--------|
-| Use | `AbstractComponentController::renderComponent()` |
+| Use | `AbstractComponentController::renderComponent()` (Response wrapper) |
+| SoT | `AbstractComponentController::replaceStorefrontPlaceholders()` — media always, then SEO when context + storefront host are present |
 | Never | `new Response($this->components->createAndRender(…))` without replace |
 | Why | `category_url()` / `seoUrl()` emit placeholders (`{domain}/navigation/{id}#`); unresolved → 404 |
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 
-Controllers: `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`.
+Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`.
+
+Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
+
+## Theme XHR controllers — data + App hooks
+
+Controllers orchestrate core data into ViewsTheme UX components. They do not reimplement cart/nav/search domain logic.
+
+| Step | Required |
+|------|----------|
+| 1 | Load via core loader / service (prefer interfaces) |
+| 2 | Fire the matching App `*LoadedHook` when core defines one for that DTO |
+| 3 | Map DTO → component props (thin) |
+| 4 | `renderComponent()` only — never raw `createAndRender` |
+
+| Theme route / controller | Loader | App hook | Notes |
+|--------------------------|--------|----------|--------|
+| Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
+| Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
+| Nav drawer langs/currencies (same action) | `HeaderPageletLoader` | `header-pagelet-loaded` | Header chrome only on full drawer open |
+| Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |
+| Search suggest (`SearchOverlayController`) | `SuggestPageLoader` | `suggest-page-loaded` | |
+| Nav flyout (`NavigationFlyoutController`) | `NavigationLoaderInterface` | *(none — no core pagelet hook)* | Tree API + theme depth math |
+
+**Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 
 ## Related
 

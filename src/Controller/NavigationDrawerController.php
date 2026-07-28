@@ -7,6 +7,7 @@ namespace Fyrst\ViewsTheme\Controller;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
+use Shopware\Storefront\Pagelet\Header\HeaderPageletLoadedHook;
 use Shopware\Storefront\Pagelet\Header\HeaderPageletLoaderInterface;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoadedHook;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoaderInterface;
@@ -44,6 +45,8 @@ class NavigationDrawerController extends AbstractComponentController
         }
 
         $header = $this->headerLoader->load($request, $context);
+
+        $this->hook(new HeaderPageletLoadedHook($header, $context));
 
         return $this->renderComponent('ViewsTheme:Navigation:Drawer', [
             'navigation' => $navigation,
