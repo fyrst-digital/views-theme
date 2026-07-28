@@ -1,6 +1,6 @@
 export default class NavigationFlyout extends ShopwareComponent {
     static options = {
-        durationVar: '--vi-navigation-flyout-duration',
+        durationVar: '--vi-flyout-duration',
         durationFallback: 150,
         openEvent: 'ViewsTheme:Navigation:Flyout:Open',
         closeEvent: 'ViewsTheme:Navigation:Flyout:Close',

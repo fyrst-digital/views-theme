@@ -112,11 +112,20 @@ export default class Drawer extends ShopwareComponent {
     }
 
     _duration() {
-        const raw = getComputedStyle(this.el)
-            .getPropertyValue(this.options.durationVar)
-        const ms = parseFloat(raw)
+        const raw = getComputedStyle(this.el).getPropertyValue(this.options.durationVar).trim()
+        if (!raw) {
+            return this.options.durationFallback
+        }
 
-        return Number.isFinite(ms) ? ms : this.options.durationFallback
+        if (raw.endsWith('ms')) {
+            return Number.parseFloat(raw) || this.options.durationFallback
+        }
+
+        if (raw.endsWith('s')) {
+            return (Number.parseFloat(raw) || 0) * 1000 || this.options.durationFallback
+        }
+
+        return Number.parseFloat(raw) || this.options.durationFallback
     }
 
     _prefersReducedMotion() {

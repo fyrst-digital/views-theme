@@ -207,6 +207,7 @@ Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache,
 
 - Open: debounced hover/focus on trigger → fetch or memory cache → append flyout under Bar → `flyout.open()` → `showPopover()`
 - Close: leave delay, Escape, focus out → `flyout.close()` → `hidePopover()` → Close event → Bar unmounts
+- Flyout close timeout reads CSS var from options `durationVar` (default `--vi-flyout-duration`) / `durationFallback` (parity with Drawer `--vi-drawer-duration`)
 - Placement: dual CSS anchors — top under Bar, left/right to Header:Main (full header width, hover path intact)
 - `popover="manual"` (hover intent + delays stay JS; unlike click `Dropdown` `auto` + `popovertarget`)
 - Only one flyout; `AbortController` + request id ignore stale responses

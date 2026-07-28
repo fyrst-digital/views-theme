@@ -1,4 +1,5 @@
 /* Popover + dual anchor + open motion — chrome in Flyout.cva.twig */
+/* Tokens: --vi-flyout-duration, --vi-flyout-offset, --vi-flyout-width-anchor */
 /* top: Bar (hover path); left/right: widthAnchor prop → --vi-flyout-width-anchor */
 
 .vi-navigation-flyout[popover] {
@@ -14,13 +15,13 @@
     pointer-events: none;
 }
 
-/* Hover bridge across the visual gap under the bar */
+/* Hover bridge across the visual gap under the bar (same offset as top) */
 .vi-navigation-flyout[popover]::before {
     content: '';
     position: absolute;
     inset-inline: 0;
     bottom: 100%;
-    height: var(--vi-navigation-flyout-offset, 0.5rem);
+    height: var(--vi-flyout-offset, 0.5rem);
 }
 
 .vi-navigation-flyout[popover]:popover-open {

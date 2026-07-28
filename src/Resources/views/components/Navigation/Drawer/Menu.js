@@ -172,9 +172,20 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
     _duration() {
         const raw = getComputedStyle(this.el)
             .getPropertyValue('--vi-navigation-drawer-menu-duration')
-        const ms = parseFloat(raw)
+            .trim()
+        if (!raw) {
+            return 250
+        }
 
-        return Number.isFinite(ms) ? ms : 250
+        if (raw.endsWith('ms')) {
+            return Number.parseFloat(raw) || 250
+        }
+
+        if (raw.endsWith('s')) {
+            return (Number.parseFloat(raw) || 0) * 1000 || 250
+        }
+
+        return Number.parseFloat(raw) || 250
     }
 
     _prefersReducedMotion() {
