@@ -1,0 +1,47 @@
+{% props
+    lineItem,
+    label = null,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    formAction = null,
+    cva = {},
+%}
+
+{% set resolvedFormAction = formAction is not null
+    ? formAction
+    : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
+{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<form
+    {{ attributes.defaults({
+        action: resolvedFormAction,
+        method: 'post',
+        'data-component': 'ViewsTheme:LineItem:Remove',
+        'data-component-options': {
+            lineItemId: lineItem.id,
+            removeEvent: 'ViewsTheme:Cart:Remove',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+    {% if redirectParameters is not null %}
+        <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+    {% endif %}
+
+    {% block button %}
+        <twig:ViewsTheme:Button
+            class="{{ cx.button.apply() }}"
+            {{ ...attributes.nested('button').defaults({
+                type: 'submit',
+                icon: 'trash',
+                color: 'link',
+                size: 'sm',
+                title: 'global.default.remove'|trans,
+                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
+            }).all() }}
+        />
+    {% endblock %}
+</form>

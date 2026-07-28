@@ -34,7 +34,7 @@
                 <div {{ attributes.nested('summaryList') }} class="{{ cx.summaryList.apply() }}">
                     {% block page_account_order_item_detail_shipping_costs %}
                         {% if order.deliveries|length > 0 %}
-                            <twig:ViewsTheme:Cart:SummaryItem
+                            <twig:ViewsTheme:Cart:Summary:Item
                                 label="{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}"
                                 value="{{ order.shippingTotal|currency(order.currency.isoCode) }}"
                                 class="summary-item-shipping"
@@ -51,7 +51,7 @@
                             {% set totalAmountValue = order.amountNet|currency(order.currency.isoCode) %}
                         {% endif %}
 
-                        <twig:ViewsTheme:Cart:SummaryItem
+                        <twig:ViewsTheme:Cart:Summary:Item
                             label="{{ totalAmountLabel }}"
                             value="{{ totalAmountValue }}"
                             class="summary-item-grand-total"
@@ -61,7 +61,7 @@
                     {% block page_account_order_item_detail_vat %}
                         {% if not order.isTaxFree %}
                             {% for calculatedTax in order.price.calculatedTaxes %}
-                                <twig:ViewsTheme:Cart:SummaryItem
+                                <twig:ViewsTheme:Cart:Summary:Item
                                     label="{{ 'checkout.summaryTax'|trans({
                                         '%rate%': calculatedTax.taxRate
                                     })|sw_sanitize }}"

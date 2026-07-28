@@ -1,0 +1,62 @@
+{% props
+    item,
+    level = 0,
+    maxDepth = 3,
+    cva = {},
+%}
+
+{% set category = item.category %}
+{% set name = category.translated.name %}
+{% set isFolder = category.type == 'folder' %}
+{% set children = item.children %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set listClass = cx.list.apply() %}
+{% set itemClass = cx.item.apply() %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if isFolder %}
+        <div
+            {{ attributes.nested('heading') }}
+            class="{{ cx.heading.apply() }}"
+            title="{{ name }}"
+        >
+            {{ name }}
+        </div>
+    {% else %}
+        <a
+            {{ attributes.nested('heading').defaults({
+                href: category_url(category),
+                title: name,
+                target: category_linknewtab(category) ? '_blank' : null,
+            }) }}
+            class="{{ cx.heading.apply() }}"
+        >
+            {{ name }}
+        </a>
+    {% endif %}
+
+    {% if children|length > 0 and level < maxDepth %}
+        <ul
+            {{ attributes.nested('list') }}
+            class="{{ listClass }}"
+        >
+            {% for child in children %}
+                {% set childCat = child.category %}
+                {% set childHasChildren = child.children|length > 0 %}
+                {% set childSkipped = childCat.type == 'folder' and not childHasChildren %}
+
+                {% if not childSkipped %}
+                    <twig:ViewsTheme:Navigation:Flyout:Item
+                        class="{{ itemClass }}"
+                        :item="child"
+                        :level="level + 1"
+                        :maxDepth="maxDepth"
+                    />
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

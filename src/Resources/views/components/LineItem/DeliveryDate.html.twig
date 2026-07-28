@@ -1,0 +1,27 @@
+{% props
+    lineItem,
+    deliveries = null,
+    cva = {},
+%}
+
+{% set resolvedDeliveries = deliveries is not null ? deliveries : page.cart.deliveries|default(null) %}
+
+{% set deliveryPosition = null %}
+{% if resolvedDeliveries and resolvedDeliveries.count > 0 %}
+    {% set delivery = resolvedDeliveries.first %}
+    {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
+{% endif %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% if deliveryPosition and deliveryPosition.deliveryDate %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {{ 'checkout.lineItemDeliveryDate'|trans({
+            '%earliest%': deliveryPosition.deliveryDate.earliest|format_date('short', locale=app.request.locale),
+            '%latest%': deliveryPosition.deliveryDate.latest|format_date('short', locale=app.request.locale),
+        })|sw_sanitize }}
+    </div>
+{% endif %}

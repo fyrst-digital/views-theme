@@ -1,0 +1,41 @@
+{% props
+    navigation,
+    navigationDepth = null,
+    widthAnchor = '--vi-navigation-bar',
+    cva = {},
+%}
+
+{% set resolvedDepth = navigationDepth ?? context.salesChannel.navigationCategoryDepth ?? 1 %}
+{% set flyoutEnabled = resolvedDepth > 1 %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set listClass = cx.list.apply() %}
+
+<nav
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Navigation:Bar',
+        'aria-label': 'header.navigationAriaLabel'|trans|striptags,
+        'data-component-options': {
+            widthAnchor: widthAnchor,
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <ul
+        {{ attributes.nested('list') }}
+        class="{{ listClass }}"
+    >
+        {% for treeItem in navigation.tree %}
+            {% set category = treeItem.category %}
+            {% set hasTreeChildren = treeItem.children|length > 0 or category.visibleChildCount > 0 %}
+            {% set hasChildren = flyoutEnabled and hasTreeChildren %}
+            {% set itemSkipped = category.type == 'folder' and not hasTreeChildren %}
+
+            {% if not itemSkipped %}
+                <twig:ViewsTheme:Navigation:Bar:Item
+                    :item="treeItem"
+                    :hasChildren="hasChildren"
+                />
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>

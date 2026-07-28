@@ -1,0 +1,40 @@
+{% props
+    page,
+    drawerUrl = path('frontend.views-theme.cart.drawer'),
+    label = 'checkout.cartTitle'|trans|striptags,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cart = page.cart %}
+{% set productsQuantity = cart.lineItems|length %}
+
+<twig:ViewsTheme:Drawer
+    class="{{ cx.root.apply() }}"
+    {{ ...attributes.defaults({
+        id: 'vi-cart-drawer',
+        side: 'end',
+        label: label,
+    }).all() }}
+>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...attributes.nested('panel').defaults({
+                side: 'end',
+            }).all() }}
+        >
+            <twig:block name="header">
+                <twig:ViewsTheme:Drawer:Header>
+                    <twig:block name="title">
+                        <twig:ViewsTheme:Cart:Drawer:Heading :productsQuantity="productsQuantity" />
+                    </twig:block>
+                </twig:ViewsTheme:Drawer:Header>
+            </twig:block>
+
+            <twig:ViewsTheme:Cart:Drawer:Body
+                :page="page"
+                :drawerUrl="drawerUrl"
+            />
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>

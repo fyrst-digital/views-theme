@@ -1,0 +1,25 @@
+{% props
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set flashes = app.flashes %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Flashes',
+        hidden: flashes is empty,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {% for type, messages in flashes %}
+            <twig:ViewsTheme:Alert
+                :type="type"
+                :list="messages"
+                announceOnLoad
+                :ariaLive="type == 'danger' ? 'assertive' : 'polite'"
+            />
+        {% endfor %}
+    {% endblock %}
+</div>

@@ -1,0 +1,75 @@
+/* Popover + dual anchor + open motion — chrome in Flyout.cva.twig */
+/* Tokens: --vi-flyout-duration, --vi-flyout-offset, --vi-flyout-width-anchor */
+/* top: Bar (hover path); left/right: widthAnchor prop → --vi-flyout-width-anchor */
+
+.vi-navigation-flyout[popover] {
+    inset: unset;
+    position-anchor: --vi-navigation-bar;
+    top: calc(anchor(bottom) + var(--vi-flyout-offset, 0.5rem));
+    left: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) left);
+    right: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) right);
+    bottom: auto;
+    width: auto;
+    opacity: 0;
+    transform: translateY(-0.25rem);
+    pointer-events: none;
+}
+
+/* Hover bridge across the visual gap under the bar (same offset as top) */
+.vi-navigation-flyout[popover]::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: var(--vi-flyout-offset, 0.5rem);
+}
+
+.vi-navigation-flyout[popover]:popover-open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .vi-navigation-flyout[popover] {
+        transition:
+            opacity var(--vi-flyout-duration, 150ms) ease,
+            transform var(--vi-flyout-duration, 150ms) ease,
+            overlay var(--vi-flyout-duration, 150ms) allow-discrete,
+            display var(--vi-flyout-duration, 150ms) allow-discrete;
+    }
+
+    .vi-navigation-flyout[popover]:not(:popover-open) {
+        opacity: 0;
+        transform: translateY(-0.25rem);
+    }
+
+    @starting-style {
+        .vi-navigation-flyout[popover]:popover-open {
+            opacity: 0;
+            transform: translateY(-0.25rem);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vi-navigation-flyout[popover] {
+        transition: none;
+        transform: none;
+    }
+}
+
+.vi-navigation-flyout__columns {
+    column-width: var(--vi-column-min, 160px);
+    column-gap: var(--vi-column-gap, var(--spacing-8));
+}
+
+.vi-navigation-flyout-column {
+    break-inside: avoid;
+    margin-block-end: var(--vi-column-gap, var(--spacing-8));
+}
+
+.vi-navigation-flyout-teaser__image {
+    max-width: var(--vi-image-max-w, none);
+    aspect-ratio: var(--vi-image-ar, 1 / 1);
+}

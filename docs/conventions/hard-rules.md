@@ -12,6 +12,8 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 
 | Topic | Doc |
 |-------|-----|
+| **Holistic refactors (critical):** prefer root-cause / shared-pattern fixes — no hacky quick fixes | [agent-workflow.md — Holistic refactors](agent-workflow.md#prefer-holistic-refactors-critical) |
+| **No build steps (critical):** never run asset/theme/JS compile or watch | [agent-workflow.md — No build](agent-workflow.md#never-run-a-build-step-critical) |
 | UX tags, props, CVA, attributes, BEM `vi-*`, scope (`components/` only) | [ux-components.md](ux-components.md) |
 | Component template checklist | [components.md](components.md) |
 | `vi_cva` / `vi_cva_from_file` | [vi-cva.md](../twig/vi-cva.md) |
@@ -22,11 +24,14 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | Removed class-map APIs (`vi_define_classes`, `vi_attr_classes`, `vi_classes`) | [css-classes.md](css-classes.md) |
 | **CSS vars (critical):** component CSS only `var(--token, fallback)` — never assign `--token` there; theme assigns overrides | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
+| **XHR UX HTML (critical):** always `AbstractComponentController::renderComponent()` — never raw `createAndRender` Response | [architecture.md — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |
+| **XHR data hooks:** after core loader, fire matching App `*LoadedHook` when core defines one | [architecture.md — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks) |
 | Design tokens (font, brand colors, grid) | [configuration.md](../configuration.md) |
 | Plugin / theme config | [configuration.md](../configuration.md) |
 
 ## Related
 
+- [Agent workflow](agent-workflow.md) — holistic refactors; no build steps
 - [UX Twig components](ux-components.md)
 - [JavaScript](javascript.md)
 - [Architecture](../architecture.md)

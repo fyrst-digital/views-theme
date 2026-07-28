@@ -6,8 +6,8 @@ namespace Fyrst\ViewsTheme\Controller;
 
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
+use Shopware\Storefront\Pagelet\Header\HeaderPageletLoadedHook;
 use Shopware\Storefront\Pagelet\Header\HeaderPageletLoaderInterface;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoadedHook;
 use Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoaderInterface;
@@ -17,13 +17,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\TwigComponent\ComponentRendererInterface;
 
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
-class NavigationDrawerController extends StorefrontController
+class NavigationDrawerController extends AbstractComponentController
 {
     public function __construct(
-        private readonly ComponentRendererInterface $components,
+        ComponentRendererInterface $components,
         private readonly MenuOffcanvasPageletLoaderInterface $offcanvasLoader,
         private readonly HeaderPageletLoaderInterface $headerLoader,
-    ) {}
+    ) {
+        parent::__construct($components);
+    }
 
     #[Route(
         path: '/vi/navigation/drawer',
@@ -43,6 +45,8 @@ class NavigationDrawerController extends StorefrontController
         }
 
         $header = $this->headerLoader->load($request, $context);
+
+        $this->hook(new HeaderPageletLoadedHook($header, $context));
 
         return $this->renderComponent('ViewsTheme:Navigation:Drawer', [
             'navigation' => $navigation,
@@ -71,17 +75,5 @@ class NavigationDrawerController extends StorefrontController
         return $this->renderComponent('ViewsTheme:Navigation:Drawer:Menu', [
             'navigation' => $navigation,
         ]);
-    }
-
-    /**
-     * @param array<string, mixed> $props
-     */
-    private function renderComponent(string $name, array $props = []): Response
-    {
-        $response = new Response($this->components->createAndRender($name, $props));
-        $response->headers->set('x-robots-tag', 'noindex');
-        $response->headers->set('Content-Type', 'text/html; charset=UTF-8');
-
-        return $response;
     }
 }

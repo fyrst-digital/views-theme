@@ -1,0 +1,40 @@
+{% props
+    shippingMethods,
+    selectedId = null,
+    selectedName = null,
+    id = 'vi-cart-shippingMethodId',
+    size = 'sm',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set resolvedSelectedId = selectedId ?? context.shippingMethod.id %}
+{% set resolvedSelectedName = selectedName ?? context.shippingMethod.translated.name %}
+{% set selectOptions = [] %}
+
+{% if resolvedSelectedId not in shippingMethods.ids %}
+    {% set selectOptions = selectOptions|merge([{
+        value: resolvedSelectedId,
+        label: resolvedSelectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
+        disabled: true,
+    }]) %}
+{% endif %}
+
+{% for shipping in shippingMethods %}
+    {% set selectOptions = selectOptions|merge([{
+        value: shipping.id,
+        label: shipping.translated.name,
+    }]) %}
+{% endfor %}
+
+<twig:ViewsTheme:Form:Select
+    class="{{ cx.root.apply() }}"
+    {{ ...attributes.defaults({
+        id: id,
+        name: 'shippingMethodId',
+        label: 'checkout.shippingMethod'|trans|sw_sanitize,
+        size: size,
+        options: selectOptions,
+        value: resolvedSelectedId,
+    }).all() }}
+/>

@@ -1,30 +1,65 @@
-{% extends '@Storefront/storefront/layout/navigation/flyout.html.twig' %}
+{% props
+    navigation,
+    category = null,
+    maxDepth = 3,
+    widthAnchor = '--vi-navigation-bar',
+    cva = {},
+%}
 
-{#
-  Extends core flyout (uses parent()). Lives under components/ only —
-  not a storefront layout override. Include explicitly when needed.
-#}
+{% set rootCategory = category ?? navigation.active %}
+{% set name = rootCategory ? rootCategory.translated.name : '' %}
+{% set flyoutId = rootCategory ? 'vi-navigation-flyout-' ~ rootCategory.id : 'vi-navigation-flyout' %}
+{% set teaserImage = rootCategory and rootCategory.media ? rootCategory.media : null %}
+{% set hasTeaser = teaserImage is not null %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set columnsClass = cx.columns.apply() %}
+{% set teaserClass = cx.teaser.apply() %}
 
-{% block layout_navigation_flyout_bar %}
-{% endblock %}
+<div
+    {{ attributes.defaults({
+        id: flyoutId,
+        popover: 'manual',
+        'data-component': 'ViewsTheme:Navigation:Flyout',
+        'data-navigation-id': rootCategory ? rootCategory.id : null,
+        'data-has-teaser': hasTeaser ? 'true' : 'false',
+        role: 'region',
+        'aria-label': name,
+        style: '--vi-flyout-width-anchor: ' ~ widthAnchor,
+    }) }}
+    class="{{ cx.root.apply({ teaser: hasTeaser }) }}"
+>
+    {% block content %}
 
-{% block layout_navigation_flyout_categories %}
-    <div class="vi-navigation-flyout__categories navigation-flyout-categories categories-root">
-        {% block layout_navigation_flyout_categories_recoursion %}
-            {{ parent() }}
+        {% block columns %}
+            <div
+                {{ attributes.nested('columns') }}
+                class="{{ columnsClass }}"
+            >
+                {% for treeItem in navigation.tree %}
+                    {% set cat = treeItem.category %}
+                    {% set hasChildren = treeItem.children|length > 0 %}
+                    {% set itemSkipped = cat.type == 'folder' and not hasChildren %}
+
+                    {% if not itemSkipped %}
+                        <twig:ViewsTheme:Navigation:Flyout:Column
+                            :item="treeItem"
+                            :level="0"
+                            :maxDepth="maxDepth"
+                        />
+                    {% endif %}
+                {% endfor %}
+            </div>
         {% endblock %}
-    </div>
-{% endblock %}
 
-{% block layout_navigation_flyout_teaser %}
-    {% if category.media %}
-        <div class="vi-navigation-flyout__teaser navigation-flyout-teaser">
-            {% block layout_navigation_flyout_teaser_image %}
-                {{ parent() }}
-            {% endblock %}
-
-            {% block layout_navigation_flyout_teaser_content %}
-            {% endblock %}
-        </div>
-    {% endif %}
-{% endblock %}
+        {% block teaser %}
+            {% if hasTeaser and rootCategory %}
+                <twig:ViewsTheme:Navigation:Flyout:Teaser
+                    class="{{ teaserClass }}"
+                    :category="rootCategory"
+                    :image="teaserImage"
+                    {{ ...attributes.nested('teaser').all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</div>

@@ -1,0 +1,8 @@
+.vi-navigation-bar {
+    anchor-name: --vi-navigation-bar;
+}
+
+/* Folder triggers are <button>; strip UA chrome (no BS utility for appearance) */
+.vi-navigation-bar-item__link {
+    appearance: none;
+}

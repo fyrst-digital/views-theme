@@ -5,6 +5,11 @@
         },
         "navigationDrawer": {
             "showAll": "Alle anzeigen"
+        },
+        "cart": {
+            "checkout": "Zur Kasse",
+            "cart": "Warenkorb",
+            "summaryNote": "Steuern und Versandkosten werden an der Kasse berechnet."
         }
     },
     "variantsGrid": {

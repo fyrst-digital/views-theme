@@ -1,12 +1,13 @@
 {% props
     currencies = null,
     activeCurrencyId = null,
-    position = 'top-bar',
+    id = null,
     cva = {},
 %}
 
 {% set resolvedCurrencies = currencies is not null ? currencies : (header.currencies|default(page.header.currencies|default([]))) %}
 {% set resolvedActiveCurrencyId = activeCurrencyId is not null ? activeCurrencyId : (context.currency.id|default(null)) %}
+{% set resolvedId = id ?? ('vi-currency-menu-' ~ random()) %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
@@ -31,7 +32,7 @@
                     {{ attributes.nested('option').defaults({
                         type: 'submit',
                         name: 'currencyId',
-                        id: position ~ '-' ~ currency.id,
+                        id: resolvedId ~ '-' ~ currency.id,
                         value: currency.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}

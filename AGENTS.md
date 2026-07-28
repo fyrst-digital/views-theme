@@ -29,6 +29,7 @@ Full index: [docs/README.md](docs/README.md).
 | Topic | Doc |
 |-------|-----|
 | **Hard rules** (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
+| **Agent workflow** (refactors; no builds) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
 | **UX Twig components** | [docs/conventions/ux-components.md](docs/conventions/ux-components.md) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
 | CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) |
@@ -38,6 +39,8 @@ Full index: [docs/README.md](docs/README.md).
 | Preferred delivery date | [docs/features/delivery-date.md](docs/features/delivery-date.md) |
 | Search overlay | [docs/features/search-overlay.md](docs/features/search-overlay.md) |
 | Navigation drawer | [docs/features/navigation-drawer.md](docs/features/navigation-drawer.md) |
+| Navigation bar / flyout | [docs/features/navigation-bar.md](docs/features/navigation-bar.md) |
+| Cart drawer | [docs/features/cart-drawer.md](docs/features/cart-drawer.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |
 | Language switch | [docs/features/language-switch.md](docs/features/language-switch.md) |
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |

@@ -44,6 +44,7 @@ $border-radius-xxl: 2rem;
 $border-radius-pill: 50rem;
 
 $light: $sw-color-brand-light;
+$dark: $sw-color-brand-dark;
 
 $border-color: #d4d4d4;
 
@@ -78,6 +79,13 @@ $utilities: (
     property: position,
     responsive: true,
     values: static relative absolute fixed sticky
+  ),
+  "display": (
+    responsive: true,
+    print: true,
+    property: display,
+    class: d,
+    values: inline inline-block block grid inline-grid table table-row table-cell flex inline-flex contents none
   ),
   "font-size": (
     rfs: true,

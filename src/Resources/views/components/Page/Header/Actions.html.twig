@@ -40,9 +40,11 @@
         {% endblock %}
 
         {% block cart %}
-            <twig:ViewsTheme:Page:Header:Action:Cart />
+            <twig:ViewsTheme:Cart:Drawer:Action
+                class="header-action icon-size-3 icon-size-lg-4" />
         {% endblock %}
 
     {% endblock %}
 
+    <twig:ViewsTheme:Cart />
 </div>

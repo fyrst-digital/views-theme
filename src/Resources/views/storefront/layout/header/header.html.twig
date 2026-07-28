@@ -10,15 +10,11 @@
                  aria-label="{{ 'header.topBarAriaLabel'|trans|striptags }}">
                 <twig:ViewsTheme:Language:Action
                     :languages="header.languages"
-                    position="top-bar"
                     placement="bottom-end"
-                    toggle:class="top-bar-nav-btn btn-sm"
                 />
                 <twig:ViewsTheme:Currency:Action
                     :currencies="header.currencies"
-                    position="top-bar"
                     placement="bottom-end"
-                    toggle:class="top-bar-nav-btn btn-sm"
                 />
             </nav>
         </div>
@@ -26,5 +22,5 @@
 {% endblock %}
 
 {% block layout_header_navigation %}
-    <twig:ViewsTheme:Page:Header:Main />
+    <twig:ViewsTheme:Page:Header:Main :navigation="header.navigation" />
 {% endblock %}

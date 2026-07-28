@@ -1,0 +1,39 @@
+{% props
+    cart,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set isEmpty = cart.lineItems|length < 1 %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Items',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if isEmpty %}
+        {% block empty %}
+            <div
+                {{ attributes.nested('empty') }}
+                class="{{ cx.empty.apply() }}"
+                role="status"
+            >
+                {{ 'checkout.cartEmpty'|trans|sw_sanitize }}
+            </div>
+        {% endblock %}
+    {% else %}
+        {% block list %}
+            <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
+                {% for lineItem in cart.lineItems %}
+                    <twig:ViewsTheme:LineItem
+                        :lineItem="lineItem"
+                        :deliveries="cart.deliveries"
+                        :showRemoveButton="true"
+                        class="{{ cx.item.apply() }}"
+                    />
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endif %}
+</div>

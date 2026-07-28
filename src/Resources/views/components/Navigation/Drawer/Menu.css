@@ -61,6 +61,6 @@
     }
 
     .vi-navigation-drawer-menu[data-animating='true'] [data-level][data-state] {
-        transition: transform var(--vi-navigation-drawer-menu-duration, 250ms) ease;
+        transition: transform var(--vi-menu-duration, 250ms) ease;
     }
 }

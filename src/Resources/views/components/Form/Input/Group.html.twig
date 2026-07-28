@@ -1,0 +1,122 @@
+{% props
+    id = null,
+    name = null,
+    type = 'text',
+    label = null,
+    value = null,
+    placeholder = null,
+    autocomplete = null,
+    minlength = null,
+    maxlength = null,
+    disabled = false,
+    size = 'md',
+    description = null,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = null,
+    cva = {},
+%}
+
+{% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block label %}
+        {% if label %}
+            <label
+                {{ attributes.nested('label').defaults({
+                    for: id,
+                }) }}
+                class="{{ cx.label.apply() }}"
+            >
+                {{ label|raw }}
+
+                {% if isRequired %}
+                    <span
+                        {{ attributes.nested('required').defaults({
+                            'aria-hidden': 'true',
+                        }) }}
+                        class="{{ cx.required.apply() }}"
+                    >
+                        {{ 'general.required'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </label>
+        {% endif %}
+    {% endblock %}
+
+    {% block group %}
+        <div
+            {{ attributes.nested('group') }}
+            class="{{ cx.group.apply({ size: size }) }}"
+        >
+            {% block prepend %}{% endblock %}
+
+            {% block input %}
+                <twig:ViewsTheme:Form:Input
+                    class="{{ cx.input.apply() }}"
+                    {{ ...attributes.nested('input').defaults({
+                        type: type,
+                        id: id,
+                        name: name,
+                        value: value,
+                        size: size,
+                        placeholder: placeholder,
+                        autocomplete: autocomplete,
+                        minlength: minlength,
+                        maxlength: maxlength,
+                        disabled: disabled,
+                        validationRules: validationRules,
+                        violationPath: violationPath,
+                        error: error,
+                        formViolations: formViolations,
+                        label: false,
+                        description: null,
+                    }).all() }}
+                >
+                    <twig:block name="feedback"></twig:block>
+                </twig:ViewsTheme:Form:Input>
+            {% endblock %}
+
+            {% block append %}{% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <small
+                {{ attributes.nested('description').defaults({
+                    id: descriptionId,
+                }) }}
+                class="{{ cx.description.apply() }}"
+            >
+                {{ description }}
+            </small>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ attributes.nested('feedback').defaults({
+                id: feedbackId,
+            }) }}
+            class="{{ cx.feedback.apply() }}"
+        >
+            {% block feedback_violations %}
+                {% if violationPath is not empty and violations and violations.getViolations(violationPath) is not empty %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: violations,
+                        violationPath: violationPath,
+                    } %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

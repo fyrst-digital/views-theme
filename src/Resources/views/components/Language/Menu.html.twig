@@ -1,13 +1,14 @@
 {% props
     languages = null,
     activeLanguageId = null,
-    position = 'top-bar',
+    id = null,
     showFlag = true,
     cva = {},
 %}
 
 {% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
 {% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(null)) %}
+{% set resolvedId = id ?? ('vi-language-menu-' ~ random()) %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
@@ -39,7 +40,7 @@
                     {{ attributes.nested('option').defaults({
                         type: 'submit',
                         name: 'languageId',
-                        id: position ~ '-' ~ language.id,
+                        id: resolvedId ~ '-' ~ language.id,
                         value: language.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}

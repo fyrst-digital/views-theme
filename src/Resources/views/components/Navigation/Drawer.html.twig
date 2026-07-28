@@ -32,8 +32,8 @@
                                 <twig:ViewsTheme:Wishlist:Action
                                     class="position-relative"
                                     label:class="fs-6"
-                                    badge:id="vi-navigation-drawer-wishlist-basket"
-                                    live:id="vi-navigation-drawer-wishlist-live"
+                                    badgeId="vi-navigation-drawer-wishlist-basket"
+                                    liveId="vi-navigation-drawer-wishlist-live"
                                     aria-labelledby="vi-navigation-drawer-wishlist-live"
                                 />
                             {% endif %}
@@ -41,7 +41,7 @@
                             <twig:ViewsTheme:Account:Action
                                 class="mt-2 p-0 vi-account__dropdown"
                                 placement="bottom-center"
-                                label:class="fs-6"
+                                toggle:label:class="fs-6"
                             />
                         </div>
                     </twig:block>
@@ -58,15 +58,11 @@
                     <div class="d-flex flex-wrap align-items-center gap-2 bg-light p-4 border-top">
                         <twig:ViewsTheme:Language:Action
                             :languages="languages"
-                            position="offcanvas"
                             placement="top-start"
-                            toggle:class="btn-sm"
                         />
                         <twig:ViewsTheme:Currency:Action
                             :currencies="currencies"
-                            position="offcanvas"
                             placement="top-start"
-                            toggle:class="btn-sm"
                         />
                     </div>
                 {% endif %}

@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer).
+ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer, cart drawer).
 
 ## Identity
 
@@ -75,8 +75,48 @@ Examples:
 | `frontend.views-theme.search.suggest` | `/vi/search/suggest` |
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
+| `frontend.views-theme.navigation.flyout` | `/vi/navigation/flyout/{navigationId}` |
+| `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
+
+## UX XHR component responses (critical)
+
+XHR controllers that render UX components via `ComponentRendererInterface` **must** run the same SEO/media placeholder replacement as core `StorefrontController::renderStorefront()`.
+
+| Rule | Detail |
+|------|--------|
+| Use | `AbstractComponentController::renderComponent()` (Response wrapper) |
+| SoT | `AbstractComponentController::replaceStorefrontPlaceholders()` — media always, then SEO when context + storefront host are present |
+| Never | `new Response($this->components->createAndRender(…))` without replace |
+| Why | `category_url()` / `seoUrl()` emit placeholders (`{domain}/navigation/{id}#`); unresolved → 404 |
+| Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
+
+Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`.
+
+Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
+
+## Theme XHR controllers — data + App hooks
+
+Controllers orchestrate core data into ViewsTheme UX components. They do not reimplement cart/nav/search domain logic.
+
+| Step | Required |
+|------|----------|
+| 1 | Load via core loader / service (prefer interfaces) |
+| 2 | Fire the matching App `*LoadedHook` when core defines one for that DTO |
+| 3 | Map DTO → component props (thin) |
+| 4 | `renderComponent()` only — never raw `createAndRender` |
+
+| Theme route / controller | Loader | App hook | Notes |
+|--------------------------|--------|----------|--------|
+| Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
+| Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
+| Nav drawer langs/currencies (same action) | `HeaderPageletLoader` | `header-pagelet-loaded` | Header chrome only on full drawer open |
+| Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |
+| Search suggest (`SearchOverlayController`) | `SuggestPageLoader` | `suggest-page-loaded` | |
+| Nav flyout (`NavigationFlyoutController`) | `NavigationLoaderInterface` | *(none — no core pagelet hook)* | Tree API + theme depth math |
+
+**Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 
 ## Related
 
@@ -86,3 +126,5 @@ Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) m
 - [Preferred delivery date](features/delivery-date.md)
 - [Search overlay](features/search-overlay.md)
 - [Navigation drawer](features/navigation-drawer.md)
+- [Navigation bar](features/navigation-bar.md)
+- [Cart drawer](features/cart-drawer.md)

@@ -1,22 +1,40 @@
 {% props
+    navigation = null,
+    widthAnchor = '--vi-header-main',
     cva = {},
 %}
 
 {% set cx = vi_cva({
-    root: { base: 'd-flex flex-wrap flex-row align-items-center py-4' },
+    root: { base: 'vi-header-main d-flex flex-wrap flex-row align-items-center py-4 gap-3' },
+    navigation: { base: 'order-lg-0 col' },
+    actions: { base: 'col-lg-auto' },
 }|replace_recursive(cva)) %}
 
-<div 
+<div
     {{ attributes.without('class').without('data-component-template') }}
-    class="{{cx.root.apply()}}">
+    class="{{ cx.root.apply() }}"
+>
     {% block content %}
 
         {% block logo %}
             <twig:ViewsTheme:Page:Logo />
         {% endblock %}
 
+        {% block navigation %}
+            {% if navigation %}
+                <twig:ViewsTheme:Navigation:Bar
+                    class="{{ cx.navigation.apply() }}"
+                    :navigation="navigation"
+                    :navigationDepth="context.salesChannel.navigationCategoryDepth"
+                    :widthAnchor="widthAnchor"
+                    {{ ...attributes.nested('navigation').all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
         {% block actions %}
-            <twig:ViewsTheme:Page:Header:Actions />
+            <twig:ViewsTheme:Page:Header:Actions 
+                class="{{ cx.actions.apply() }}" />
         {% endblock %}
     {% endblock %}
 </div>

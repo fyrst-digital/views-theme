@@ -1,12 +1,8 @@
 {
-    root: { base: 'vi-line-item vi-line-item--product line-item js-cart-item line-item-' ~ lineItem.type },
-    content: { base: 'vi-line-item__content line-item-content' },
-    header: { base: 'vi-line-item__header line-item-header' },
-    name: { base: 'vi-line-item__name line-item-name' },
-    label: { base: 'vi-line-item__label line-item-label product-name' },
-    actions: { base: 'vi-line-item__actions line-item-actions' },
-    body: { base: 'vi-line-item__body line-item-body' },
-    footer: { base: 'vi-line-item__footer line-item-footer' },
-    quantity: { base: 'vi-line-item__quantity line-item-quantity' },
-    totalPrice: { base: 'vi-line-item__total-price line-item-total-price' },
+    root: {
+        base: 'vi-line-item vi-line-item__product d-flex gap-3 align-items-start',
+    },
+    image: {
+        base: 'vi-line-item__image shrink-0 block overflow-hidden rounded-2 w-20 h-20',
+    },
 }

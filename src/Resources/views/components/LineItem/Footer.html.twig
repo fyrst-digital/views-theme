@@ -1,0 +1,49 @@
+{% props
+    lineItem,
+    showPrice = true,
+    nestingLevel = 0,
+    showRemoveButton = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block price %}
+        <twig:ViewsTheme:LineItem:Price
+            class="{{ cx.price.apply() }}"
+            {{ ...attributes.nested('price').defaults({
+                lineItem: lineItem,
+                showPrice: showPrice,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block quantity %}
+        <div
+            {{ attributes.nested('quantity') }}
+            class="{{ cx.quantity.apply() }}"
+        >
+            <twig:ViewsTheme:LineItem:Quantity
+                {{ ...attributes.nested('quantityInput').defaults({
+                    lineItem: lineItem,
+                    nestingLevel: nestingLevel,
+                }).all() }}
+            />
+
+            {% block remove %}
+                {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
+                    <twig:ViewsTheme:LineItem:Remove
+                        class="{{ cx.remove.apply() }}"
+                        {{ ...attributes.nested('remove').defaults({
+                            lineItem: lineItem,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

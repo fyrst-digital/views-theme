@@ -1,0 +1,47 @@
+{% props
+    page,
+    drawerUrl = path('frontend.views-theme.cart.drawer'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cart = page.cart %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Body',
+        'data-component-options': {
+            drawerUrl: drawerUrl,
+            changedEvent: 'ViewsTheme:Cart:Changed',
+            flashesComponent: 'ViewsTheme:Cart:Drawer:Flashes',
+            headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
+            itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
+            footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
+            drawerSelector: '#vi-cart-drawer',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Drawer:Flashes />
+    {% endblock %}
+
+    {% block alert %}
+        <div
+            {{ attributes.nested('alert').defaults({
+                role: 'alert',
+                hidden: true,
+                'data-fallback': 'error.message-default'|trans|striptags,
+            }) }}
+            class="{{ cx.alert.apply() }}"
+        ></div>
+    {% endblock %}
+
+    {% block content %}
+        <twig:ViewsTheme:Cart:Drawer:Items :cart="cart" />
+    {% endblock %}
+
+    {% block footer %}
+        <twig:ViewsTheme:Cart:Drawer:Footer :page="page" />
+    {% endblock %}
+</div>

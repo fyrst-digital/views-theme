@@ -1,0 +1,55 @@
+{% props
+    item,
+    hasChildren = false,
+    cva = {},
+%}
+
+{% set category = item.category %}
+{% set name = category.translated.name %}
+{% set isFolder = category.type == 'folder' %}
+{% set flyoutId = 'vi-navigation-flyout-' ~ category.id %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set caretClass = cx.caret.apply() %}
+{# UX ComponentAttributes: null becomes true — use false to omit #}
+{% set triggerDefaults = {
+    title: name,
+}|merge(hasChildren ? {
+    'data-flyout-trigger': '',
+    'data-navigation-id': category.id,
+    'data-flyout-url': path('frontend.views-theme.navigation.flyout', { navigationId: category.id }),
+    'aria-haspopup': 'true',
+    'aria-expanded': 'false',
+    'aria-controls': flyoutId,
+} : {}) %}
+
+<li
+    {{ attributes.defaults({
+        'data-navigation-id': category.id,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if isFolder %}
+        <button
+            type="button"
+            {{ attributes.nested('link').defaults(triggerDefaults) }}
+            class="{{ cx.link.apply() }}"
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            {% if hasChildren %}
+                {{ vi_icon('caret-down', { class: caretClass }) }}
+            {% endif %}
+        </button>
+    {% else %}
+        <a
+            {{ attributes.nested('link').defaults(triggerDefaults|merge({
+                href: category_url(category),
+            })|merge(category_linknewtab(category) ? { target: '_blank' } : {})) }}
+            class="{{ cx.link.apply() }}"
+        >
+            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            {% if hasChildren %}
+                {{ vi_icon('caret-down', { class: caretClass }) }}
+            {% endif %}
+        </a>
+    {% endif %}
+</li>

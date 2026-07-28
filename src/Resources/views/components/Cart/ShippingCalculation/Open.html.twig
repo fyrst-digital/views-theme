@@ -1,0 +1,21 @@
+{% props
+    label = 'checkout.summaryShipping'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Cart:ShippingCalculation:Open',
+        'data-component-options': {
+            shippingCalculationComponentName: 'ViewsTheme:Cart:ShippingCalculation',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block label %}
+        {{ label|raw }}
+    {% endblock %}
+</button>

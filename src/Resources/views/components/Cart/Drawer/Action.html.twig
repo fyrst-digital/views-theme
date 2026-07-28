@@ -1,0 +1,32 @@
+{% props
+    size = 'md',
+    drawerUrl = path('frontend.views-theme.cart.drawer'),
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set cart = context.extensions.cart ?? null %}
+{% set cartCount = cart ? cart.lineItems|length : 0 %}
+
+<twig:ViewsTheme:Button
+    class="{{ cx.root.apply({ size: size }) }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        icon: 'handbag',
+        color: 'none',
+        size: size,
+        title: 'checkout.cartTitle'|trans|striptags,
+        'aria-label': 'checkout.cartTitle'|trans|striptags,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-cart-drawer',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Cart:Drawer:Action',
+        'data-component-options': {
+            drawerUrl: drawerUrl,
+        }|json_encode,
+    }).all() }}
+>
+    <twig:block name="append">
+        <twig:ViewsTheme:Cart:Drawer:Action:Badge :count="cartCount" />
+    </twig:block>
+</twig:ViewsTheme:Button>

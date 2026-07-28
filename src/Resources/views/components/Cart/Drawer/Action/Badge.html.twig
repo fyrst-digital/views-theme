@@ -1,0 +1,18 @@
+{% props
+    count = 0,
+    changedEvent = 'ViewsTheme:Cart:Changed',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<span
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Action:Badge',
+        'data-component-options': {
+            changedEvent: changedEvent,
+        }|json_encode,
+        hidden: count < 1,
+    }) }}
+    class="{{ cx.root.apply() }}"
+>{% if count > 0 %}{{ count }}{% endif %}</span>

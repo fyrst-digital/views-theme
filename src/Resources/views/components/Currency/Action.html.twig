@@ -1,8 +1,7 @@
 {% props
     currencies = null,
     activeCurrencyId = null,
-    position = 'top-bar',
-    size = 'sm',
+    id = null,
     label = null,
     showSymbol = true,
     placement = 'bottom-end',
@@ -16,42 +15,57 @@
 {% if currencyCount > 1 %}
     {% set defaultLabel = context.currency.translated.name|default('') %}
     {% set resolvedLabel = label is same as(false) ? false : (label is not null ? label : defaultLabel) %}
+    {% set buttonLabel = resolvedLabel is same as(false) ? null : resolvedLabel %}
     {% set currencySymbol = context.currency.symbol|default('') %}
 
     {% set cx = vi_cva_from_file(cva) %}
+    {% set toggleClass = cx.toggle.apply() %}
     {% set labelClass = cx.label.apply() %}
     {% set symbolClass = cx.symbol.apply() %}
     {% set caretClass = cx.caret.apply() %}
     {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': defaultLabel })|striptags %}
+    {% set resolvedId = id ?? ('vi-currency-action-' ~ random()) %}
+    {% set anchorName = '--' ~ resolvedId %}
 
     <twig:ViewsTheme:Dropdown
         class="{{ cx.root.apply() }}"
-        toggle:class="{{ cx.toggle.apply({ size: size }) }}"
+        :id="resolvedId"
         {{ ...attributes.defaults({
             placement: placement,
-            'toggle:aria-label': toggleAriaLabel,
-            'toggle:title': toggleAriaLabel,
-            'toggle:aria-haspopup': 'listbox',
-        }).all() }}
+        }).without('class').all() }}
     >
         <twig:block name="toggle">
-            {% if showSymbol and currencySymbol %}
-                <span class="{{ symbolClass }}" aria-hidden="true">{{ currencySymbol }}</span>
-            {% endif %}
+            <twig:ViewsTheme:Button
+                class="{{ toggleClass }}"
+                label:class="{{ labelClass }}"
+                type="button"
+                color="none"
+                size="sm"
+                :label="buttonLabel"
+                title="{{ toggleAriaLabel }}"
+                aria-label="{{ toggleAriaLabel }}"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="{{ resolvedId }}"
+                popovertarget="{{ resolvedId }}"
+                style="anchor-name: {{ anchorName }}"
+            >
+                <twig:block name="prepend">
+                    {% if showSymbol and currencySymbol %}
+                        <span class="{{ symbolClass }}" aria-hidden="true">{{ currencySymbol }}</span>
+                    {% endif %}
+                </twig:block>
 
-            {% if resolvedLabel is not same as(false) %}
-                <span class="{{ labelClass }}">
-                    {{ resolvedLabel }}
-                </span>
-            {% endif %}
-
-            {{ vi_icon('caret-down', { class: caretClass }) }}
+                <twig:block name="append">
+                    {{ vi_icon('caret-down', { class: caretClass }) }}
+                </twig:block>
+            </twig:ViewsTheme:Button>
         </twig:block>
 
         <twig:ViewsTheme:Currency:Menu
             :currencies="resolvedCurrencies"
             :activeCurrencyId="resolvedActiveCurrencyId"
-            :position="position"
+            :id="resolvedId"
         />
     </twig:ViewsTheme:Dropdown>
 {% endif %}

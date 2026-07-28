@@ -6,13 +6,13 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 ## Features
 
-- Header `Search:Action` opens `Search:Overlay` on click
+- Header `Search:Action` opens `Search:Overlay` on click. Composes `ViewsTheme:Button` (`color="none"`, `icon="magnifying-glass"`)
 - Overlay shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Term hand-off is **event-only**: Close payload `{ el, term }` → Action stores string → `overlay.open({ term })` → Open payload → Bar `setTerm` + suggest. Action never touches the input DOM
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
 - `Search:Bar` owns suggest UX (debounce, fetch, DOM insert) — **not** core `SearchWidgetPlugin`
 - Suggest HTML is rendered by the theme controller via Symfony UX `ComponentRendererInterface` as `ViewsTheme:Search:Suggest` with explicit props
-- Close via isolated `Search:Overlay:Close` / `Search:Overlay:Backdrop`, Escape, or toggling the action again
+- Close via isolated `Search:Overlay:Close` / shared `Backdrop`, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
 - Open state traps Tab within the dialog
 
@@ -20,12 +20,12 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 - Styling is **Bootstrap utilities first** (in sibling `*.cva.twig`). Co-located component CSS (e.g. `Bar.css`, `Overlay.css`, `Scroll/Area.css`) is last resort only — no global `search.scss`.
 - Overlay open/close toggles `d-none` / `d-flex` in `Overlay.js`.
-- Backdrop and Close are nested UX components under `Search/Overlay/`.
+- Close is nested under `Search/Overlay/`; backdrop uses shared `ViewsTheme:Backdrop`.
 - Suggest is inserted as the **next sibling after the bar form**.
 - Flex scroll chain: panel (`min-h-0` + column flex) → Suggest (`flex-1 min-h-0`) → Results/`Scroll:Area` (`flex-1 min-h-0`) so long result lists scroll inside the panel.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (`showTieredPrices=false`, `showTaxNote=false`, list price via shared Price component).
 - Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`.
-- Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `--scroll-fade: 40px`); base overflow is `overflow-y-auto`; JS toggles `data-scroll-up` / `data-scroll-down` so fades hide at the corresponding edge (and when content does not overflow).
+- Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `var(--vi-fade, 40px)`); base overflow is `overflow-y-auto`; JS toggles `data-scroll-up` / `data-scroll-down` so fades hide at the corresponding edge (and when content does not overflow).
 
 ## How it works
 
@@ -80,9 +80,9 @@ $this->components->createAndRender('ViewsTheme:Search:Suggest', [
 
 | Component | Attribute |
 |-----------|-----------|
-| Action button | `data-component="ViewsTheme:Search:Action"` |
+| Action (`Button` root) | `data-component="ViewsTheme:Search:Action"` |
 | Overlay root | `data-component="ViewsTheme:Search:Overlay"` |
-| Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
 | Search bar | `data-component="ViewsTheme:Search:Bar"` |
 | Scroll area (results grid) | `data-component="ViewsTheme:Scroll:Area"` |
@@ -105,7 +105,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 |------|------|
 | Controller | `src/Controller/SearchOverlayController.php` |
 | Overlay | `src/Resources/views/components/Search/Overlay.*` |
-| Backdrop / Close | `src/Resources/views/components/Search/Overlay/Backdrop.*`, `Close.*` |
+| Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
+| Close | `src/Resources/views/components/Search/Overlay/Close.*` |
 | Action | `src/Resources/views/components/Search/Action.*` |
 | Bar | `src/Resources/views/components/Search/Bar.*` |
 | Suggest | `src/Resources/views/components/Search/Suggest.*` |

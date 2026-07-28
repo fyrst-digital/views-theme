@@ -1,6 +1,6 @@
 # Account action
 
-Header account control: domain `Account:Action` composed with the generic `Dropdown` primitive and `Account:Menu` panel body.
+Header account control: domain `Account:Action` composed with the generic `Dropdown` primitive (default `Button` toggle) and `Account:Menu` panel body.
 
 ## Composition
 
@@ -9,7 +9,7 @@ Page:Header:Actions
   └─ Account:Action
        └─ Dropdown
             └─ host (vi-dropdown-host; header: --lg-up)
-                 ├─ toggle button → user icon
+                 ├─ toggle → Button (icon=user, optional label)
                  └─ panel (popover) → Account:Menu
                       ├─ guest → Login → Login:Actions (Button submit + recover)
                       │         + register CTA
@@ -18,8 +18,9 @@ Page:Header:Actions
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Account:Action` | `components/Account/Action.*` | Action shell (size CVA, optional visible `label`, a11y) |
-| `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, `aria-expanded` |
+| `Account:Action` | `components/Account/Action.*` | Action shell (`buttonSize` / `color` / optional `label`, a11y) |
+| `Dropdown` | `components/Dropdown.*` | Open/close, anchor placement, `aria-expanded`; default toggle is `Button` |
+| `Button` | `components/Button.*` | Default toggle control |
 | `Account:Menu` | `components/Account/Menu.*` | Account panel body (no dropdown chrome) |
 | `Account:Actions` | `components/Account/Actions.*` | Logged-in nav links (`Button` + `activeRoute`) |
 | `Account:Login` | `components/Account/Login.*` | Login form (`Form:Input` fields + actions) |
@@ -28,14 +29,14 @@ Page:Header:Actions
 
 ## Dropdown behavior
 
-- **DOM:** Host wrapper `vi-dropdown-host` (`display: contents`) → toggle button + panel popover. `data-component` on the **host**; panel keeps `class` / root CVA (`vi-dropdown`)
-- **Open/close:** HTML Popover (`popover="auto"` + `popovertarget`) — Escape and outside click included
+- **DOM:** Host wrapper `vi-dropdown-host` (`display: contents`) → default toggle `Button` + panel popover. `data-component` on the **host**; panel keeps `class` / root CVA (`vi-dropdown`)
+- **Open/close:** HTML Popover (`popover="auto"` + `popovertarget` on the Button) — Escape and outside click included
 - **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). Values: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`. No JS positioning
-- **Slots:** `toggle` (button content), default `content` (panel body)
+- **Slots:** default `toggle` is Dropdown-owned `Button` (`color`, `buttonSize`, `icon`, `label`); override the whole `toggle` block for rich chrome (see Language/Currency). Default `content` = panel body
 - **JS (a11y only):** host root; finds panel `[popover]` + toggle `[popovertarget]`; syncs `aria-expanded` only
 - **Responsive hide:** `host:class="vi-dropdown-host--lg-up"` hides host + force-dismisses open panel below `lg` (no anchor jump)
-- **Composition:** `class` → panel, `toggle:class` → button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults)
-- **Visible label:** prop `label` defaults to `account.myAccount`; `:label="false"` hides it (icon-only). CVA slot `label` / `label:class`
+- **Composition:** `class` → panel, `toggle:class` → Button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults)
+- **Visible label:** prop `label` defaults to `account.myAccount`; `:label="false"` hides it (icon-only). Button label classes via `toggle:label:class`
 - **Header wire-up:** `host:class="vi-dropdown-host--lg-up"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:label="false"`
 - **Build:** from Shopware root — `make build-storefront`
 
@@ -71,13 +72,13 @@ Shims remain as thin wrappers with `@deprecated` comments where kept.
 
 Below `lg`, `vi-dropdown-host--lg-up` hides the host and force-dismisses an open panel (same CSS cascade — no corner jump).
 
-`Navigation:Drawer` title (mobile entry; default label snippet). `placement` / `toggle:*` forward to `Dropdown` via attributes defaults (`bottom-start` so the panel opens into the drawer):
+`Navigation:Drawer` title (mobile entry; default label snippet):
 
 ```twig
 <twig:ViewsTheme:Account:Action
-    class="p-0 vi-account__dropdown"
-    placement="bottom-start"
-    toggle:class="header-action"
+    class="mt-2 p-0 vi-account__dropdown"
+    placement="bottom-center"
+    toggle:label:class="fs-6"
 />
 ```
 

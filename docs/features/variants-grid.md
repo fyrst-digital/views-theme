@@ -45,7 +45,7 @@ The grid form posts to a dedicated controller:
 frontend.checkout.variants-grid.add
 ```
 
-This controller receives every row, ignores entries with `quantity <= 0`, creates the remaining line items, and adds them to the cart. The response is handled by Shopware's core `AddToCartPlugin`, which opens the offcanvas cart.
+This controller receives every row, ignores entries with `quantity <= 0`, creates the remaining line items, and adds them to the cart. The response is handled by Shopware's core `AddToCartPlugin`. Theme product-add → [cart drawer](cart-drawer.md) / badge wiring is a follow-up (alpha).
 
 The same controller also provides an AJAX endpoint for lazy pagination:
 

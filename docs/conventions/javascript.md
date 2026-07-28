@@ -13,11 +13,13 @@
 | Lifecycle / multi-listener | `emit` / `emitQueued` + `on` / `off` | `ViewsTheme:Drawer:Open` |
 | Unambiguous native controls | Semantic selectors | `input[type="search"]`, `button[type="submit"]` |
 
+**Critical:** Every `data-component` **must** have co-located `Name.js` (import-map entry). Shopware loads every `[data-component]` via dynamic `import()` — a missing module becomes a bare specifier URL and fails in the console. Parent-owned identity (partial swaps, nested roots) still uses `data-component` + real JS (minimal `ShopwareComponent` is fine when the parent owns behavior).
+
 Find nested components with `[data-component="ViewsTheme:…"]` (component identity), not ad-hoc hooks.
 
 **Deprecated for new code:** `data-action="…"` as JS hooks. Prefer a real sub-component. Legacy uses remain on Variants grid / Search until migrated.
 
-Do **not** use `data-ref` (removed).
+Do **not** use `data-ref`, `data-vi`, or other ad-hoc identity attributes (removed / forbidden).
 
 Prefer **event delegation** only when a single parent owns many identical children *and* those children are not worth components — default is still sub-components for interactive pieces.
 
@@ -37,10 +39,10 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 Applies to **lazy-mounted shells** fetched by an Action:
 
-- `ViewsTheme:Drawer` (e.g. Navigation drawer)
+- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer)
 - `ViewsTheme:Search:Overlay`
 
-Does **not** cover in-session Menu drill level HTML caches or suggest result fragments.
+Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
 | Phase | Required |
 |-------|----------|
@@ -52,7 +54,20 @@ The Action owns this lifecycle; the shell primitive only open/closes.
 
 **Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
 
-References: `Navigation/Drawer/Action.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
+### Exception: Navigation flyout HTML cache
+
+`ViewsTheme:Navigation:Bar` may keep an **in-session memory cache** of flyout HTML strings keyed by category id (hover thrash). Rules:
+
+| Rule | Required |
+|------|----------|
+| Storage | Memory on the Bar instance only — **no** `sessionStorage` / `localStorage` |
+| DOM | Still **unmount** the closed flyout root; reopen = cache hit → remount (or fetch on miss) |
+| Races | Abort in-flight fetch; ignore stale responses when the open target changes |
+| Lifetime | Cleared on hard reload (new page = new Bar instance) |
+
+See [Navigation bar](../features/navigation-bar.md).
+
+References: `Navigation/Drawer/Action.js`, `Navigation/Bar.js`, `Navigation/Flyout.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
 
 ## Co-located component JS
 
@@ -62,17 +77,28 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
-| Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
+| Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
+| Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
+| Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
+| Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
+| Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
+| Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
+| Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
+| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
+| Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
+| Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
+| Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
+| Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
+| Cart shipping calculation open | `ViewsTheme:Cart:ShippingCalculation:Open` | `Cart/ShippingCalculation/Open.js` |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
 | Search overlay | `ViewsTheme:Search:Overlay` | `Search/Overlay.js` |
-| Search overlay backdrop | `ViewsTheme:Search:Overlay:Backdrop` | `Search/Overlay/Backdrop.js` |
 | Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
+| Backdrop (shared) | `ViewsTheme:Backdrop` | `Backdrop.js` |
 | Drawer | `ViewsTheme:Drawer` | `Drawer.js` |
 | Drawer panel | `ViewsTheme:Drawer:Panel` | `Drawer/Panel.js` |
-| Drawer backdrop | `ViewsTheme:Drawer:Backdrop` | `Drawer/Backdrop.js` |
 | Drawer close | `ViewsTheme:Drawer:Close` | `Drawer/Close.js` |
 | Navigation drawer action | `ViewsTheme:Navigation:Drawer:Action` | `Navigation/Drawer/Action.js` |
 | Navigation drawer menu | `ViewsTheme:Navigation:Drawer:Menu` | `Navigation/Drawer/Menu.js` |
@@ -125,14 +151,14 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 |------|-----------|
 | Action | `data-component="ViewsTheme:Search:Action"` |
 | Overlay | `data-component="ViewsTheme:Search:Overlay"` |
-| Backdrop | `data-component="ViewsTheme:Search:Overlay:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` (legacy) |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Open/Close payload: `{ el, term }` via `emitQueued` (Action stores `term` / aria); Overlay calls `Bar.onOpened(term)` once for restore + suggest
-- Backdrop/Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
+- Backdrop (`componentName`) / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
 - While open, Tab is trapped inside the dialog; closed mount is not kept (unmounted)
 - Suggest HTML is inserted as the form’s next sibling; product grid scrolls via nested `Scroll:Area`
 
@@ -147,7 +173,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Action | `data-component="ViewsTheme:Navigation:Drawer:Action"` |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
-| Backdrop | `data-component="ViewsTheme:Drawer:Backdrop"` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
 | Close | `data-component="ViewsTheme:Drawer:Close"` |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
@@ -157,14 +183,64 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`
-- Backdrop/Close `callMethod` `Drawer.close`
-- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-navigation-drawer-menu-duration`; reduced motion swaps immediately
+- Backdrop (`componentName`) / Close `callMethod` `Drawer.close`
+- Menu: one `_busy` flight (fetch + apply); dual `[data-level]` slide in nested `Scroll:Area` (absolute `inset: 0` stage; two-phase `from`/`enter` → `data-animating` → `out`/`in`); scroll resets after swap; duration from `--vi-menu-duration`; reduced motion swaps immediately
 
 See [Navigation drawer](../features/navigation-drawer.md).
 
+### Navigation bar / flyout
+
+Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache, and mount; **Flyout** owns popover open/close motion and lifecycle events.
+
+| Hook | Attribute |
+|------|-----------|
+| Bar | `data-component="ViewsTheme:Navigation:Bar"` |
+| Flyout anchors | Bar `--vi-navigation-bar` (top); width via Bar option `widthAnchor` → mount sets `--vi-flyout-width-anchor` |
+| Item trigger | `data-flyout-trigger` + `data-flyout-url` + `data-navigation-id` |
+| Flyout | `data-component="ViewsTheme:Navigation:Flyout"` / `popover="manual"` |
+
+| Event | Emitter | Listener |
+|-------|---------|----------|
+| `ViewsTheme:Navigation:Flyout:Open` | Flyout (`emitQueued`, `{ el }`) | Bar (sync trigger ARIA; filter `contains(el)`) |
+| `ViewsTheme:Navigation:Flyout:Close` | Flyout (`emitQueued`, `{ el }`) | Bar **unmounts** flyout DOM + clears ARIA (string cache kept) |
+
+- Open: debounced hover/focus on trigger → fetch or memory cache → append flyout under Bar → `flyout.open()` → `showPopover()`
+- Close: leave delay, Escape, focus out → `flyout.close()` → `hidePopover()` → Close event → Bar unmounts
+- Flyout close timeout reads CSS var from options `durationVar` (default `--vi-flyout-duration`) / `durationFallback` (parity with Drawer `--vi-drawer-duration`)
+- Placement: dual CSS anchors — top under Bar, left/right to Header:Main (full header width, hover path intact)
+- `popover="manual"` (hover intent + delays stay JS; unlike click `Dropdown` `auto` + `popovertarget`)
+- Only one flyout; `AbortController` + request id ignore stale responses
+- Empty / failed fetch resets trigger ARIA (no stuck `aria-expanded`)
+- Active path: `window.activeNavigationId` / `window.activeNavigationPathIdList` → `data-active` on triggers
+- Cache exception: see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+
+See [Navigation bar](../features/navigation-bar.md).
+### Cart drawer
+
+Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open island refresh; Action owns shell lifecycle + badge.
+
+| Hook | Attribute |
+|------|-----------|
+| Cart owner | `data-component="ViewsTheme:Cart"` |
+| Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
+| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (`Action/Badge.js` owns count) |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
+| Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
+| Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
+| Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
+| Remove | `data-component="ViewsTheme:LineItem:Remove"` |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
+- Theme owns header drawer open + in-drawer mutations only; core product-add / offcanvas is out of scope (alpha — Product components later)
+- Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
+- Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
+
+See [Cart drawer](../features/cart-drawer.md).
+
 ### Scroll area
 
-Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `--scroll-fade`). Base CVA: `vi-scroll-area overflow-y-auto` — callers add axis extras (e.g. `overflow-x-clip`) via `class`.
+Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `var(--vi-fade, 40px)`). Base CVA: `vi-scroll-area overflow-y-auto` — callers add axis extras (e.g. `overflow-x-clip`) via `class`.
 
 | Hook | Attribute |
 |------|-----------|
@@ -174,15 +250,15 @@ JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component�
 
 ### Dropdown
 
-Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Default toggle is `ViewsTheme:Button` (`color`, `buttonSize` → Button `size`, optional `icon` / `label`). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
 
 | Hook | Attribute |
 |------|-----------|
 | Host | `data-component="ViewsTheme:Dropdown"` |
 | Panel | `[popover].vi-dropdown` |
-| Toggle | `[popovertarget]` / `vi-dropdown__toggle` |
+| Toggle | `Button` with `[popovertarget]` / `vi-dropdown__toggle` |
 
-JS runs on the host, resolves panel + toggle inside, and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the button. Use `host:class="vi-dropdown-host--lg-up"` to hide the whole control below `lg` without popover anchor jump.
+JS runs on the host, resolves panel + toggle inside (`[popovertarget]`), and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the Button. Override the whole `toggle` block for rich chrome (no multi-hop into Button). Use `host:class="vi-dropdown-host--lg-up"` to hide the whole control below `lg` without popover anchor jump.
 
 Build storefront assets from Shopware root: `make build-storefront`.
 

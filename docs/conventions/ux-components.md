@@ -19,8 +19,8 @@ Alert.cva.twig                        # optional co-located CVA defaults
 QuantityInput.html.twig               → ViewsTheme:QuantityInput
 Page/Header.html.twig                 → ViewsTheme:Page:Header
 Page/Header/Main.html.twig            → ViewsTheme:Page:Header:Main
-Page/Header/Action/Cart.html.twig
-Page/Header/Action/Cart.js            # co-located ShopwareComponent
+Cart/Drawer/Action.html.twig
+Cart/Drawer/Action.js                 # co-located ShopwareComponent
 Page/Footer/Bottom.html.twig          → ViewsTheme:Page:Footer:Bottom
 VariantsGrid/Container.html.twig
 VariantsGrid/Container.js
@@ -107,7 +107,7 @@ Spread injects a **map** into the child mount: keys in the child’s `{% props %
 <twig:ViewsTheme:Account:Login
     :username:label="false"
     username:placeholder="{{ 'account.loginMailLabel'|trans|sw_sanitize }}"
-    username:input:class="form-control-lg"
+    username:size="lg"
 />
 ```
 
@@ -204,7 +204,7 @@ Do **not** nest `{% block foo %}` inside `<twig:block name="foo">` — that rede
 | Interactive UX root | `data-component="ViewsTheme:…"` | `ViewsTheme:VariantsGrid:Container` |
 | Options | `data-component-options` | JSON |
 
-Do **not** use `data-ref` (removed). Prefer `data-action` or semantic selectors for internal hooks.
+Every `data-component` requires co-located `Name.js`. Do **not** use `data-ref`, `data-vi`, or other ad-hoc identity hooks. Prefer nested sub-components or semantic selectors for internal structure.
 
 Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:storefront`.
 
@@ -218,16 +218,19 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, Button, QuantityInput, Form:Input | UX + `vi_cva` (convention-aligned attrs/props) |
+| Alert, Button, QuantityInput, Form:Input, Form:Input:Group, Form:Select | UX + `vi_cva` (convention-aligned attrs/props) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
+| Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
+| Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
-| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout | UX / component |
+| Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
+| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
-| Drawer (+ Panel/Header/Backdrop/Close; Panel/Backdrop/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
+| Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells |
-| LineItem:*, Cart:*, Wishlist:* | UX / shells |
+| LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
 | Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |

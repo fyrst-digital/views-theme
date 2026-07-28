@@ -1,15 +1,20 @@
 {% props
-    id,
-    name,
+    id = null,
+    name = null,
     cover = null,
     displayMode = 'standard',
     sizes = {},
     showLink = true,
+    url = null,
     tag = 'div',
     cva = {},
 %}
 
-{% set rootTag = showLink is same as(true) ? 'a' : tag %}
+{% set coverUrl = url is not null
+    ? url
+    : (id is not null ? seoUrl('frontend.detail.page', { productId: id }) : null) %}
+{% set linked = showLink is same as(true) and coverUrl is not null %}
+{% set rootTag = linked ? 'a' : tag %}
 
 {% set cx = vi_cva({
     root: { base: 'vi-product-cover is-' ~ displayMode },
@@ -20,13 +25,13 @@
 
 <{{ rootTag|raw }}
     {{ attributes.defaults({
-        href: showLink is same as(true) ? seoUrl('frontend.detail.page', { productId: id }) : null,
-        title: showLink is same as(true) ? name : null,
+        href: linked ? coverUrl : null,
+        title: linked ? name : null,
     }) }}
     class="{{ cx.root.apply() }}"
 >
     {% block media %}
-        {% if cover.url and cover.isSpatialObject() == false %}
+        {% if cover and cover.url and cover.isSpatialObject() == false %}
             {% set mediaAttrs = {
                 title: (cover.translated.title ?: name),
             } %}
@@ -70,8 +75,9 @@
                 <div
                     {{ attributes.nested('placeholder') }}
                     class="{{ cx.placeholder.apply() }}"
+                    aria-hidden="true"
                 >
-                    {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                    {{ vi_icon('placeholder') }}
                 </div>
             {% endblock %}
         {% endif %}

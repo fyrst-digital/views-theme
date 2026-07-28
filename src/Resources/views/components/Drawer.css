@@ -8,12 +8,12 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .vi-drawer-backdrop {
+    .vi-drawer .vi-backdrop {
         opacity: 0;
         transition: opacity var(--vi-drawer-duration, 250ms) ease;
     }
 
-    .vi-drawer[data-open='true'] .vi-drawer-backdrop {
+    .vi-drawer[data-open='true'] .vi-backdrop {
         opacity: 1;
     }
 

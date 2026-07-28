@@ -1,0 +1,40 @@
+{% props
+    paymentMethods,
+    selectedId = null,
+    selectedName = null,
+    id = 'vi-cart-paymentMethodId',
+    size = 'sm',
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+{% set resolvedSelectedId = selectedId ?? context.paymentMethod.id %}
+{% set resolvedSelectedName = selectedName ?? context.paymentMethod.translated.name %}
+{% set selectOptions = [] %}
+
+{% if resolvedSelectedId not in paymentMethods.ids %}
+    {% set selectOptions = selectOptions|merge([{
+        value: resolvedSelectedId,
+        label: resolvedSelectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
+        disabled: true,
+    }]) %}
+{% endif %}
+
+{% for payment in paymentMethods %}
+    {% set selectOptions = selectOptions|merge([{
+        value: payment.id,
+        label: payment.translated.name,
+    }]) %}
+{% endfor %}
+
+<twig:ViewsTheme:Form:Select
+    class="{{ cx.root.apply() }}"
+    {{ ...attributes.defaults({
+        id: id,
+        name: 'paymentMethodId',
+        label: 'checkout.paymentMethod'|trans|sw_sanitize,
+        size: size,
+        options: selectOptions,
+        value: resolvedSelectedId,
+    }).all() }}
+/>

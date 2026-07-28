@@ -1,0 +1,50 @@
+{% props
+    category,
+    image,
+    cva = {},
+%}
+
+{% set name = category.translated.name %}
+{% set isFolder = category.type == 'folder' %}
+{% set cx = vi_cva_from_file(cva) %}
+{% set imageClass = cx.image.apply() %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% if isFolder %}
+        <div class="{{ cx.link.apply() }}">
+            {% sw_thumbnails 'navigation-flyout-teaser-image' with {
+                media: image,
+                sizes: { default: '320px' },
+                attributes: {
+                    class: imageClass,
+                    alt: (image.translated.alt ?: name),
+                    title: (image.translated.title ?: name),
+                    loading: 'lazy',
+                },
+            } %}
+        </div>
+    {% else %}
+        <a
+            {{ attributes.nested('link').defaults({
+                href: category_url(category),
+                title: name,
+                target: category_linknewtab(category) ? '_blank' : null,
+            }) }}
+            class="{{ cx.link.apply() }}"
+        >
+            {% sw_thumbnails 'navigation-flyout-teaser-image' with {
+                media: image,
+                sizes: { default: '320px' },
+                attributes: {
+                    class: imageClass,
+                    alt: (image.translated.alt ?: name),
+                    title: (image.translated.title ?: name),
+                    loading: 'lazy',
+                },
+            } %}
+        </a>
+    {% endif %}
+</div>

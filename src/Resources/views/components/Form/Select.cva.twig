@@ -1,0 +1,33 @@
+{
+    root: { base: 'form-group' },
+    label: { 
+        base: 'form-label',
+        variants: {
+            size: {
+                sm: 'fs-6',
+            }
+        } 
+    },
+    required: { 
+        base: 'form-required-label' 
+    },
+    select: {
+        base: 'form-select cursor-pointer',
+        variants: {
+            invalid: {
+                true: 'is-invalid',
+            },
+            size: {
+                sm: 'form-select-sm',
+                md: '',
+                lg: 'form-select-lg',
+            },
+        },
+    },
+    description: { 
+        base: 'form-text' 
+    },
+    feedback: { 
+        base: 'form-field-feedback' 
+    },
+}

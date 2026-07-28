@@ -3,8 +3,8 @@
     showRemoveButton = true,
     showPrice = true,
     nestingLevel = 0,
-    autoSubmit = false,
     deliveries = null,
+    tag = 'li',
     cva = {},
 %}
 
@@ -15,132 +15,55 @@
     ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId })
     : null %}
 
-<div
+<{{ tag|raw }}
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block image %}
-        {% sw_include '@Storefront/storefront/component/line-item/element/image.html.twig' with {
-            lineItem: lineItem,
-        } %}
+        <twig:ViewsTheme:Product:Cover
+            class="{{ cx.image.apply() }}"
+            image:class="w-100 h-100 object-fit-cover"
+            placeholder:class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary text-body-secondary"
+            {{ ...attributes.nested('cover').defaults({
+                id: lineItem.referencedId,
+                name: label,
+                cover: lineItem.cover ?? null,
+                showLink: productLink is not null,
+                url: productLink,
+                sizes: { default: '100px' },
+                tabindex: productLink is not null ? '-1' : null,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block content %}
-        <div
-            {{ attributes.nested('content') }}
-            class="{{ cx.content.apply() }}"
+        <twig:ViewsTheme:LineItem:Content
+            {{ ...attributes.nested('content').all() }}
         >
-            {% block header %}
-                <div
-                    {{ attributes.nested('header') }}
-                    class="{{ cx.header.apply() }}"
-                >
-                    {% block name %}
-                        <div
-                            {{ attributes.nested('name') }}
-                            class="{{ cx.name.apply() }}"
-                        >
-                            {% if productLink is not null %}
-                                <a
-                                    {{ attributes.nested('label').defaults({
-                                        href: productLink,
-                                        title: label,
-                                    }) }}
-                                    class="{{ cx.label.apply() }}"
-                                >
-                                    {{ label|raw }}
-                                </a>
-                            {% else %}
-                                <span
-                                    {{ attributes.nested('label') }}
-                                    class="{{ cx.label.apply() }}"
-                                >
-                                    {{ label|raw }}
-                                </span>
-                            {% endif %}
-                        </div>
-                    {% endblock %}
+            <twig:ViewsTheme:LineItem:Header
+                {{ ...attributes.nested('header').defaults({
+                    lineItem: lineItem,
+                    label: label,
+                    productLink: productLink,
+                    showRemoveButton: showRemoveButton,
+                    nestingLevel: nestingLevel,
+                }).all() }}
+            />
 
-                    {% block actions %}
-                        <div
-                            {{ attributes.nested('actions') }}
-                            class="{{ cx.actions.apply() }}"
-                        >
-                            {% block actions_inner %}
-                                {% if config('core.cart.wishlistEnabled') and lineItem.referencedId %}
-                                    <twig:ViewsTheme:Product:Action:Wishlist
-                                        :productId="lineItem.referencedId"
-                                        :showText="false"
-                                        size="sm"
-                                        class="line-item-action"
-                                    />
-                                {% endif %}
+            <twig:ViewsTheme:LineItem:Body
+                {{ ...attributes.nested('body').defaults({
+                    lineItem: lineItem,
+                    deliveries: deliveries,
+                }).all() }}
+            />
 
-                                {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
-                                    <twig:ViewsTheme:LineItem:Element:Remove :lineItem="lineItem" />
-                                {% endif %}
-                            {% endblock %}
-                        </div>
-                    {% endblock %}
-                </div>
-            {% endblock %}
-
-            {% block details %}
-                {% block body %}
-                    <div
-                        {{ attributes.nested('body') }}
-                        class="{{ cx.body.apply() }}"
-                    >
-                        {% if lineItem.payload.options is not empty %}
-                            {% sw_include '@Storefront/storefront/component/line-item/element/variant-characteristics.html.twig' with {
-                                lineItem: lineItem,
-                            } %}
-                        {% endif %}
-
-                        {% if lineItem.payload.features is not empty %}
-                            {% sw_include '@Storefront/storefront/component/product/feature/list.html.twig' with {
-                                features: lineItem.payload.features,
-                            } %}
-                        {% endif %}
-
-                        {% if config('core.cart.showDeliveryTime') %}
-                            <twig:ViewsTheme:LineItem:Element:DeliveryDate
-                                :lineItem="lineItem"
-                                :deliveries="deliveries"
-                            />
-                        {% endif %}
-                    </div>
-                {% endblock %}
-
-                {% block footer %}
-                    <div
-                        {{ attributes.nested('footer') }}
-                        class="{{ cx.footer.apply() }}"
-                    >
-                        <div
-                            {{ attributes.nested('quantity') }}
-                            class="{{ cx.quantity.apply() }}"
-                        >
-                            <twig:ViewsTheme:LineItem:Element:Quantity
-                                :lineItem="lineItem"
-                                :nestingLevel="nestingLevel"
-                                :autoSubmit="autoSubmit"
-                            />
-                        </div>
-
-                        {% if showPrice is same as(true) %}
-                            <div
-                                {{ attributes.nested('totalPrice') }}
-                                class="{{ cx.totalPrice.apply() }}"
-                            >
-                                {% if lineItem.payload.discountScope != 'delivery' %}
-                                    {{ lineItem.price.totalPrice|currency }}
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-            {% endblock %}
-        </div>
+            <twig:ViewsTheme:LineItem:Footer
+                {{ ...attributes.nested('footer').defaults({
+                    lineItem: lineItem,
+                    showPrice: showPrice,
+                    nestingLevel: nestingLevel,
+                }).all() }}
+            />
+        </twig:ViewsTheme:LineItem:Content>
     {% endblock %}
-</div>
+</{{ tag|raw }}>

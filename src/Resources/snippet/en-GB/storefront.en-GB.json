@@ -5,6 +5,11 @@
         },
         "navigationDrawer": {
             "showAll": "Show all"
+        },
+        "cart": {
+            "checkout": "Checkout",
+            "cart": "Cart",
+            "summaryNote": "Taxes and shipping will be calculated in the checkout."
         }
     },
     "variantsGrid": {

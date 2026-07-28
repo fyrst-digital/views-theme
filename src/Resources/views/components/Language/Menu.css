@@ -1,8 +1,8 @@
 .vi-language-menu__flag-icon {
   display: block;
-  width: var(--language-flag-width, 14px);
+  width: var(--vi-flag-w, 14px);
   height: auto;
-  aspect-ratio: var(--language-flag-aspect-ratio, 4 / 3);
-  border-radius: var(--language-flag-radius, 0.125rem);
+  aspect-ratio: var(--vi-flag-ar, 4 / 3);
+  border-radius: var(--vi-flag-radius, 0.125rem);
   object-fit: cover;
 }

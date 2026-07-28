@@ -1,6 +1,10 @@
 {% props
     id = null,
     placement = 'bottom-end',
+    color = 'none',
+    buttonSize = 'md',
+    icon = null,
+    label = null,
     cva = {},
 %}
 
@@ -14,19 +18,23 @@
     }) }}
     class="{{ cx.host.apply() }}"
 >
-    <button
-        {{ attributes.nested('toggle').defaults({
-            type: 'button',
-            popovertarget: dropdownId,
-            'aria-expanded': 'false',
-            'aria-haspopup': 'true',
-            'aria-controls': dropdownId,
-        }) }}
-        class="{{ cx.toggle.apply() }}"
-        style="anchor-name: {{ anchorName }}"
-    >
-        {% block toggle %}{% endblock %}
-    </button>
+    {% block toggle %}
+        <twig:ViewsTheme:Button
+            class="{{ cx.toggle.apply() }}"
+            {{ ...attributes.nested('toggle').defaults({
+                type: 'button',
+                color: color,
+                size: buttonSize,
+                icon: icon,
+                label: label,
+                popovertarget: dropdownId,
+                'aria-expanded': 'false',
+                'aria-haspopup': 'true',
+                'aria-controls': dropdownId,
+                style: 'anchor-name: ' ~ anchorName,
+            }).all() }}
+        />
+    {% endblock %}
 
     <div
         {{ attributes.defaults({

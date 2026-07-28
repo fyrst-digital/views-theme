@@ -6,9 +6,13 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
-<button
-    {{ attributes.defaults({
+<twig:ViewsTheme:Button
+    class="{{ cx.root.apply({ size: size }) }}"
+    {{ ...attributes.defaults({
         type: 'button',
+        icon: 'list',
+        color: 'none',
+        size: size,
         'aria-label': 'general.menuLink'|trans|striptags,
         'aria-haspopup': 'dialog',
         'aria-controls': 'vi-navigation-drawer',
@@ -17,8 +21,5 @@
         'data-component-options': {
             drawerUrl: drawerUrl,
         }|json_encode,
-    }) }}
-    class="{{ cx.root.apply({ size: size }) }}"
->
-    {{ vi_icon('list') }}
-</button>
+    }).all() }}
+/>

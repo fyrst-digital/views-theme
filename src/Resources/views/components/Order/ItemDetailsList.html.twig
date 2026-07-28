@@ -5,13 +5,12 @@
 %}
 
 {% set cx = vi_cva({
-    root: { base: 'order-line-item' },
+    root: { base: 'vi-order-line-item' },
 }|replace_recursive(cva)) %}
 
 {% block page_account_order_item_detail_line_item %}
     <twig:ViewsTheme:LineItem
         :lineItem="lineItem"
-        :autoSubmit="false"
         :showRemoveButton="false"
         class="{{ cx.root.apply() }}"
     />

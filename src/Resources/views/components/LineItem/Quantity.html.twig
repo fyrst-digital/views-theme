@@ -1,0 +1,72 @@
+{% props
+    lineItem,
+    nestingLevel = 0,
+    showQuantitySelect = true,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    formAction = null,
+    cva = {},
+%}
+
+{% set resolvedFormAction = formAction is not null
+    ? formAction
+    : path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) %}
+{% set quantityInformation = lineItem.quantityInformation %}
+
+{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
+{% set isDigital = lineItem.payload.productType is defined and lineItem.payload.productType == DIGITAL_CONST %}
+{% if feature('v6.8.0.0') %}
+    {% set isDigital = isDigital or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% else %}
+    {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+    {% set isDigital = isDigital
+        or (lineItem.states is defined and DOWNLOAD_STATE in lineItem.states)
+        or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% endif %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
+    ? quantityInformation.maxPurchase
+    : config('core.cart.maxQuantity') %}
+
+{% if showQuantitySelect
+    and lineItem.quantityInformation
+    and lineItem.stackable
+    and nestingLevel < 1
+%}
+    <form
+        {{ attributes.defaults({
+            action: resolvedFormAction,
+            method: 'post',
+            'data-component': 'ViewsTheme:LineItem:Quantity',
+            'data-component-options': {
+                lineItemId: lineItem.id,
+                updateEvent: 'ViewsTheme:Cart:Update',
+                delay: 800,
+            }|json_encode,
+        }) }}
+        class="{{ cx.root.apply({ digital: isDigital }) }}"
+    >
+        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+        {% if redirectParameters is not null %}
+            <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+        {% endif %}
+
+        <twig:ViewsTheme:QuantityInput
+            :quantity="lineItem.quantity"
+            :minQuantity="quantityInformation.minPurchase|default(1)"
+            :maxQuantity="maxQuantity"
+            :purchaseSteps="quantityInformation.purchaseSteps|default(1)"
+            size="sm"
+            :disabled="isDigital"
+        />
+    </form>
+{% else %}
+    <div
+        {{ attributes }}
+        class="{{ cx.root.apply({ digital: isDigital }) }}"
+    >
+        {{ lineItem.quantity }}
+    </div>
+{% endif %}

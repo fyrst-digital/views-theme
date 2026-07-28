@@ -1,0 +1,19 @@
+{% props
+    productsQuantity = 0,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Drawer:Heading',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    <twig:ViewsTheme:Cart:Heading
+        :productsQuantity="productsQuantity"
+        countDisplay="inline"
+        titleTag="div"
+    />
+</div>

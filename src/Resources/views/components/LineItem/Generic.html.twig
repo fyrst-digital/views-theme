@@ -3,8 +3,8 @@
     showRemoveButton = true,
     showPrice = true,
     nestingLevel = 0,
-    autoSubmit = false,
     deliveries = null,
+    tag = 'li',
     cva = {},
 %}
 
@@ -18,8 +18,9 @@
         :showRemoveButton="showRemoveButton"
         :showPrice="showPrice"
         :nestingLevel="nestingLevel"
-        :autoSubmit="autoSubmit"
         :deliveries="deliveries"
+        :tag="tag"
         class="{{ cx.root.apply() }}"
+        {{ ...attributes }}
     />
 {% endblock %}

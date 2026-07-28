@@ -1,0 +1,37 @@
+{% props
+    cartJsonUrl = path('frontend.checkout.cart.json') ~ '?includes[cart][]=lineItems&includes[line_item][]=id',
+    changeQuantityPath = path('frontend.checkout.line-item.change-quantity', { id: '00000000000000000000000000000000' }),
+    deletePath = path('frontend.checkout.line-item.delete', { id: '00000000000000000000000000000000' }),
+    addPath = path('frontend.checkout.line-item.add'),
+    promotePath = path('frontend.checkout.promotion.add'),
+    configurePath = path('frontend.checkout.configure'),
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-cart' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes.defaults({
+        hidden: true,
+        'data-component': 'ViewsTheme:Cart',
+        'data-component-options': {
+            cartJsonUrl: cartJsonUrl,
+            changeQuantityPath: changeQuantityPath,
+            deletePath: deletePath,
+            addPath: addPath,
+            promotePath: promotePath,
+            configurePath: configurePath,
+            addEvent: 'ViewsTheme:Cart:Add',
+            removeEvent: 'ViewsTheme:Cart:Remove',
+            updateEvent: 'ViewsTheme:Cart:Update',
+            promoteEvent: 'ViewsTheme:Cart:Promote',
+            configureEvent: 'ViewsTheme:Cart:Configure',
+            changedEvent: 'ViewsTheme:Cart:Changed',
+            drawerSelector: '#vi-cart-drawer',
+            cartPageSelector: '.is-active-route-frontend-checkout-cart-page, .is-ctl-checkout.is-act-cartpage',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+></div>
