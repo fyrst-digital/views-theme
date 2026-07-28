@@ -32,8 +32,6 @@
     <script>
       {% set cart = context.extensions.cart ?? null %}
       window.cartCount = {{ cart ? cart.lineItems|length : 0 }};
-      {# Theme owns cart drawer UX — never open core OffCanvasCart after add. #}
-      window.openOffcanvasAfterAddToCart = '0';
     </script>
   {% endblock %}
 {% endblock %}

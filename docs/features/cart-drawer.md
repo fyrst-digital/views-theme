@@ -35,7 +35,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`)
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
-- Product **add does not open** the theme drawer or core offcanvas (`window.openOffcanvasAfterAddToCart = '0'`); badge updates only. Open-on-add is a follow-up
+- Theme does **not** intercept core product-add / offcanvas (alpha). Product-add → theme drawer + badge is a follow-up with theme Product components
 - Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
 
 ## How it works
@@ -70,7 +70,7 @@ AJAX POSTs **omit** `redirectTo` / `forwardTo` (and use `redirect: 'manual'`). E
 
 After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Badge updates itself; Body (if mounted) re-fetches drawer HTML and swaps islands.
 
-Core `AddToCart` silent path: `openOffcanvasAfterAddToCart = '0'` (meta + Cart init). Cart subscribes to existing `AddToCart` plugin instances for `addToCartWithoutOffcanvas` and treats that as a successful add for badge refresh. Callers may also emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly.
+Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. Core storefront product-add is not wired into this bus yet (alpha).
 
 ### In-open DOM updates
 

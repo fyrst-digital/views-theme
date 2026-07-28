@@ -77,7 +77,6 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
-| Header cart | `ViewsTheme:Page:Header:Action:Cart` | `Page/Header/Action/Cart.js` |
 | Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
 | Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
@@ -233,7 +232,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
-- Product add does **not** open drawer/offcanvas (`openOffcanvasAfterAddToCart = '0'`); badge only
+- Theme owns header drawer open + in-drawer mutations only; core product-add / offcanvas is out of scope (alpha — Product components later)
 - Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 

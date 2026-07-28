@@ -25,17 +25,12 @@ export default class Cart extends ShopwareComponent {
         this._onUpdate = this._onUpdate.bind(this)
         this._onPromote = this._onPromote.bind(this)
         this._onConfigure = this._onConfigure.bind(this)
-        this._onAddToCartWithoutOffcanvas = this._onAddToCartWithoutOffcanvas.bind(this)
-
-        window.openOffcanvasAfterAddToCart = '0'
 
         window.Shopware.on(this.options.addEvent, this._onAdd)
         window.Shopware.on(this.options.removeEvent, this._onRemove)
         window.Shopware.on(this.options.updateEvent, this._onUpdate)
         window.Shopware.on(this.options.promoteEvent, this._onPromote)
         window.Shopware.on(this.options.configureEvent, this._onConfigure)
-
-        this._subscribeAddToCartPlugins()
     }
 
     destroy() {
@@ -45,7 +40,6 @@ export default class Cart extends ShopwareComponent {
         window.Shopware.off(this.options.promoteEvent, this._onPromote)
         window.Shopware.off(this.options.configureEvent, this._onConfigure)
 
-        this._unsubscribeAddToCartPlugins()
         this._queued = null
     }
 
@@ -107,10 +101,6 @@ export default class Cart extends ShopwareComponent {
 
             await this._post(this.options.configurePath, formData)
         }, payload)
-    }
-
-    async _onAddToCartWithoutOffcanvas() {
-        await this._emitChanged({ ok: true, action: 'add', source: 'AddToCart' })
     }
 
     _enqueue(action, runner, payload = {}) {
@@ -264,44 +254,5 @@ export default class Cart extends ShopwareComponent {
         })
 
         return formData
-    }
-
-    _subscribeAddToCartPlugins() {
-        this._addToCartSubscriptions = []
-        const pluginManager = window.PluginManager
-        if (!pluginManager || typeof pluginManager.getPluginInstances !== 'function') {
-            return
-        }
-
-        const instances = pluginManager.getPluginInstances('AddToCart')
-        if (!instances) {
-            return
-        }
-
-        instances.forEach((instance) => {
-            if (!instance?.$emitter) {
-                return
-            }
-
-            instance.$emitter.subscribe('addToCartWithoutOffcanvas', this._onAddToCartWithoutOffcanvas)
-            this._addToCartSubscriptions.push({
-                emitter: instance.$emitter,
-                eventName: 'addToCartWithoutOffcanvas',
-                callback: this._onAddToCartWithoutOffcanvas,
-            })
-        })
-    }
-
-    _unsubscribeAddToCartPlugins() {
-        if (!this._addToCartSubscriptions) {
-            return
-        }
-
-        this._addToCartSubscriptions.forEach(({ emitter, eventName, callback }) => {
-            if (emitter && typeof emitter.unsubscribe === 'function') {
-                emitter.unsubscribe(eventName, callback)
-            }
-        })
-        this._addToCartSubscriptions = []
     }
 }
