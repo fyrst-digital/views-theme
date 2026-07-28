@@ -118,6 +118,12 @@
 .icon-ticket-bold {
  	--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath fill='currentColor' d='M232 108a12 12 0 0 0 12-12V64a20 20 0 0 0-20-20H32a20 20 0 0 0-20 20v32a12 12 0 0 0 12 12a20 20 0 0 1 0 40a12 12 0 0 0-12 12v32a20 20 0 0 0 20 20h192a20 20 0 0 0 20-20v-32a12 12 0 0 0-12-12a20 20 0 0 1 0-40M36 170.34a44 44 0 0 0 0-84.68V68h52v120H36Zm184 0V188H112V68h108v17.66a44 44 0 0 0 0 84.68'/%3E%3C/svg%3E"); 
 }
+.icon-trash-bold {
+ 	--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath fill='currentColor' d='M216 48h-36V36a28 28 0 0 0-28-28h-48a28 28 0 0 0-28 28v12H40a12 12 0 0 0 0 24h4v136a20 20 0 0 0 20 20h128a20 20 0 0 0 20-20V72h4a12 12 0 0 0 0-24M100 36a4 4 0 0 1 4-4h48a4 4 0 0 1 4 4v12h-56Zm88 168H68V72h120Zm-72-100v64a12 12 0 0 1-24 0v-64a12 12 0 0 1 24 0m48 0v64a12 12 0 0 1-24 0v-64a12 12 0 0 1 24 0'/%3E%3C/svg%3E"); 
+}
+.icon-truck-bold {
+ 	--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath fill='currentColor' d='m255.14 115.54l-14-35A19.89 19.89 0 0 0 222.58 68H196v-4a12 12 0 0 0-12-12H32a20 20 0 0 0-20 20v112a20 20 0 0 0 20 20h14.06a36 36 0 0 0 67.88 0h44.12a36 36 0 0 0 67.88 0H236a20 20 0 0 0 20-20v-64a21.7 21.7 0 0 0-.86-4.46M196 92h23.88l6.4 16H196ZM80 204a12 12 0 1 1 12-12a12 12 0 0 1-12 12m92-41.92A36.32 36.32 0 0 0 158.06 180h-44.12a36 36 0 0 0-67.88 0H36v-40h136Zm0-46.08H36V76h136Zm20 88a12 12 0 1 1 12-12a12 12 0 0 1-12 12m40-24h-6.06A36.09 36.09 0 0 0 196 156.23V132h36Z'/%3E%3C/svg%3E"); 
+}
 .icon-user-bold {
  	--svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath fill='currentColor' d='M234.38 210a123.36 123.36 0 0 0-60.78-53.23a76 76 0 1 0-91.2 0A123.36 123.36 0 0 0 21.62 210a12 12 0 1 0 20.77 12c18.12-31.32 50.12-50 85.61-50s67.49 18.69 85.61 50a12 12 0 0 0 20.77-12M76 96a52 52 0 1 1 52 52a52.06 52.06 0 0 1-52-52'/%3E%3C/svg%3E"); 
 }

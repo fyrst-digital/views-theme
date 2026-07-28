@@ -40,13 +40,4 @@
             />
         {% endif %}
     {% endblock %}
-
-    {% block price %}
-        <twig:ViewsTheme:LineItem:Price
-            {{ ...attributes.nested('price').defaults({
-                lineItem: lineItem,
-                showPrice: showPrice,
-            }).all() }}
-        />
-    {% endblock %}
 </div>

@@ -16,7 +16,6 @@
     {% block name %}
         <twig:ViewsTheme:Product:Name
             class="{{ cx.name.apply() }}"
-            link:class="text-decoration-none"
             {{ ...attributes.nested('name').defaults({
                 name: resolvedLabel,
                 url: productLink,

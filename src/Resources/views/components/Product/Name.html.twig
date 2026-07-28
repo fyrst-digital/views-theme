@@ -13,8 +13,8 @@
     : (product ? seoUrl('frontend.detail.page', { productId: product.id }) : null) %}
 {% set linked = showLink is same as(true) and productUrl is not null %}
 {% set cx = vi_cva({
-    root: { base: 'vi-product-name' },
-    link: { base: 'vi-product-name__link' },
+    root: { base: 'vi-product-name d-inline-flex align-items-center fw-semibold' },
+    link: { base: 'vi-product-name__link link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-50-hover' },
 }|replace_recursive(cva)) %}
 
 <{{ tag|raw }}

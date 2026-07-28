@@ -99,9 +99,9 @@ Loads `CheckoutCartPageLoader` and renders via `ComponentRendererInterface`. Use
 LineItem:Product
 ├─ Product:Cover
 └─ LineItem:Content
-   ├─ LineItem:Header → Product:Name + LineItem:Remove
+   ├─ LineItem:Header → Product:Name
    ├─ LineItem:Body → Product:Variations + Features + DeliveryDate
-   └─ LineItem:Footer → Quantity + Price
+   └─ LineItem:Footer → Price + Quantity + Remove
 ```
 
 | Component | Role |
@@ -109,9 +109,9 @@ LineItem:Product
 | `LineItem` | Type router → Product / Promotion / Container / Generic; prop `tag` (default `li`) forwarded to leaf root |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
-| `LineItem:Header` | Name + optional remove |
+| `LineItem:Header` | Product name |
 | `LineItem:Body` | Variations / features / delivery |
-| `LineItem:Footer` | Quantity + line total |
+| `LineItem:Footer` | Line total + quantity + remove (one row) |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
@@ -130,14 +130,14 @@ Region-nested override keys on `LineItem:Product`:
 | `content` | `LineItem:Content` |
 | `header` | `LineItem:Header` |
 | `header:name` | `Product:Name` |
-| `header:remove` | `LineItem:Remove` |
 | `body` | `LineItem:Body` |
 | `body:variations` | `Product:Variations` |
 | `body:features` | `LineItem:Features` |
 | `body:deliveryDate` | `LineItem:DeliveryDate` |
 | `footer` | `LineItem:Footer` |
-| `footer:quantityInput` | `LineItem:Quantity` |
 | `footer:price` | `LineItem:Price` |
+| `footer:quantityInput` | `LineItem:Quantity` |
+| `footer:remove` | `LineItem:Remove` |
 
 No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 

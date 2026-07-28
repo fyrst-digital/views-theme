@@ -32,15 +32,16 @@
     {% endif %}
 
     {% block button %}
-        <button
-            {{ attributes.nested('button').defaults({
-                type: 'submit',
-                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
-                title: 'global.default.remove'|trans,
-            }) }}
+        <twig:ViewsTheme:Button
             class="{{ cx.button.apply() }}"
-        >
-            {{ vi_icon('x') }}
-        </button>
+            {{ ...attributes.nested('button').defaults({
+                type: 'submit',
+                icon: 'trash',
+                color: 'link',
+                size: 'sm',
+                title: 'global.default.remove'|trans,
+                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
+            }).all() }}
+        />
     {% endblock %}
 </form>

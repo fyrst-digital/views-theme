@@ -12,6 +12,16 @@
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
+    {% block price %}
+        <twig:ViewsTheme:LineItem:Price
+            class="{{ cx.price.apply() }}"
+            {{ ...attributes.nested('price').defaults({
+                lineItem: lineItem,
+                showPrice: showPrice,
+            }).all() }}
+        />
+    {% endblock %}
+
     {% block quantity %}
         <div
             {{ attributes.nested('quantity') }}
