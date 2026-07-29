@@ -14,13 +14,9 @@
 >
     {% if isEmpty %}
         {% block empty %}
-            <div
-                {{ attributes.nested('empty') }}
-                class="{{ cx.empty.apply() }}"
-                role="status"
-            >
-                {{ 'checkout.cartEmpty'|trans|sw_sanitize }}
-            </div>
+            <twig:ViewsTheme:Cart:Empty
+                {{ ...attributes.nested('empty').all() }}
+            />
         {% endblock %}
     {% else %}
         {% block list %}

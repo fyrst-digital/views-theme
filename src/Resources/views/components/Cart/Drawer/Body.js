@@ -96,11 +96,19 @@ export default class CartDrawerBody extends ShopwareComponent {
         const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
         const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
 
-        if (!existing || !next) {
+        if (existing && next) {
+            existing.replaceWith(next)
             return
         }
 
-        existing.replaceWith(next)
+        if (existing && !next) {
+            existing.remove()
+            return
+        }
+
+        if (!existing && next) {
+            targetRoot.appendChild(next)
+        }
     }
 
     _showError(message) {

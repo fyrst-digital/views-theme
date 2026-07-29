@@ -5,8 +5,6 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 {% set cart = page.cart %}
-{% set isEmpty = cart.lineItems|length < 1 %}
-
 {% set classes = {
     summaryNote: cx.summaryNote.apply()
 } %}
@@ -17,68 +15,66 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
-    {% if not isEmpty %}
-        {% block summary %}
-            <div class="{{ cx.summary.apply() }}">
-                <twig:ViewsTheme:Cart:Summary 
-                    :summary="cart"
-                    :showGrandTotal="false"
-                    :showNetTotal="false"
-                    :showTax="false">
-                    <twig:block name="total">
-                        {% if showTotal is not same as(false) %}
-                            <twig:ViewsTheme:Cart:Summary:Item
-                                label="{{ 'checkout.subtotalAmount'|trans|sw_sanitize }}"
-                                value="{{ summary.price.positionPrice|currency }}"
-                                class="fs-4"
-                                label:class="fw-semibold"
-                                value:class="fw-semibold"
-                            />
-                        {% endif %}
-                    </twig:block>
-                    <twig:block name="shippings">
-                        {% if summary.deliveries is defined and showShipping is not same as(false) %}
-                            {% for delivery in summary.deliveries %}
-                                <twig:ViewsTheme:Cart:Summary:Item
-                                    label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
-                                    value="{{ delivery.shippingCosts.totalPrice|currency }}"
-                                    class="fs-5"
-                                    label:class="fw-medium"
-                                    value:class="fw-medium"
-                                >
-                                    <twig:block name="label">
-                                        <dt {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
-                                            <twig:ViewsTheme:Cart:ShippingCalculation:Open
-                                                label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
-                                            />
-                                        </dt>
-                                    </twig:block>
-                                </twig:ViewsTheme:Cart:Summary:Item>
-                            {% endfor %}
-                        {% endif %}
-                    </twig:block>
-                </twig:ViewsTheme:Cart:Summary>
-
-                <div
-                    {{ attributes.nested('summaryNote').defaults({}) }}
-                    class="{{ classes.summaryNote }}">
-                    {{ 'viewsTheme.cart.summaryNote'|trans|sw_sanitize }}
-                    {% if summary.price.taxStatus == 'gross' %}
-                        {{ 'general.grossTaxInformation'|trans|sw_sanitize }}
-                    {% else %}
-                        {{ 'general.netTaxInformation'|trans|sw_sanitize }}
+    {% block summary %}
+        <div class="{{ cx.summary.apply() }}">
+            <twig:ViewsTheme:Cart:Summary 
+                :summary="cart"
+                :showGrandTotal="false"
+                :showNetTotal="false"
+                :showTax="false">
+                <twig:block name="total">
+                    {% if showTotal is not same as(false) %}
+                        <twig:ViewsTheme:Cart:Summary:Item
+                            label="{{ 'checkout.subtotalAmount'|trans|sw_sanitize }}"
+                            value="{{ summary.price.positionPrice|currency }}"
+                            class="fs-4"
+                            label:class="fw-semibold"
+                            value:class="fw-semibold"
+                        />
                     {% endif %}
-                </div>
+                </twig:block>
+                <twig:block name="shippings">
+                    {% if summary.deliveries is defined and showShipping is not same as(false) %}
+                        {% for delivery in summary.deliveries %}
+                            <twig:ViewsTheme:Cart:Summary:Item
+                                label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
+                                value="{{ delivery.shippingCosts.totalPrice|currency }}"
+                                class="fs-5"
+                                label:class="fw-medium"
+                                value:class="fw-medium"
+                            >
+                                <twig:block name="label">
+                                    <dt {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
+                                        <twig:ViewsTheme:Cart:ShippingCalculation:Open
+                                            label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
+                                        />
+                                    </dt>
+                                </twig:block>
+                            </twig:ViewsTheme:Cart:Summary:Item>
+                        {% endfor %}
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Cart:Summary>
+
+            <div
+                {{ attributes.nested('summaryNote').defaults({}) }}
+                class="{{ classes.summaryNote }}">
+                {{ 'viewsTheme.cart.summaryNote'|trans|sw_sanitize }}
+                {% if summary.price.taxStatus == 'gross' %}
+                    {{ 'general.grossTaxInformation'|trans|sw_sanitize }}
+                {% else %}
+                    {{ 'general.netTaxInformation'|trans|sw_sanitize }}
+                {% endif %}
             </div>
-        {% endblock %}
+        </div>
+    {% endblock %}
 
-        {% block options %}
-            <twig:ViewsTheme:Cart:Options 
-                :page="page" />
-        {% endblock %}
+    {% block options %}
+        <twig:ViewsTheme:Cart:Options 
+            :page="page" />
+    {% endblock %}
 
-        {% block actions %}
-            <twig:ViewsTheme:Cart:Actions />
-        {% endblock %}
-    {% endif %}
+    {% block actions %}
+        <twig:ViewsTheme:Cart:Actions />
+    {% endblock %}
 </div>

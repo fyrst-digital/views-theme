@@ -42,6 +42,8 @@
     {% endblock %}
 
     {% block footer %}
-        <twig:ViewsTheme:Cart:Drawer:Footer :page="page" />
+        {% if cart.lineItems|length >= 1 %}
+            <twig:ViewsTheme:Cart:Drawer:Footer :page="page" />
+        {% endif %}
     {% endblock %}
 </div>

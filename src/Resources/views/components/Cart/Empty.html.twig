@@ -1,0 +1,17 @@
+{% props
+    message = 'checkout.cartEmpty'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'status',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block content %}
+        {{ message }}
+    {% endblock %}
+</div>

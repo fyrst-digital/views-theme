@@ -14,8 +14,9 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
 | `Cart:Drawer:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; consumed on render so messages do not leak to page content |
-| `Cart:Drawer:Items` | Line list or empty state |
-| `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` |
+| `Cart:Drawer:Items` | Line list, or `Cart:Empty` when no line items |
+| `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
+| `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
 | `Cart:Actions` | CTA wrapper (layout); default content is checkout + cart |
 | `Cart:Action:Checkout` | Confirm-page link via generic `Button`; label `viewsTheme.cart.checkout` |
@@ -32,7 +33,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
-- Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`)
+- Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Theme does **not** intercept core product-add / offcanvas (alpha). Product-add → theme drawer + badge is a follow-up with theme Product components
@@ -79,9 +80,9 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. Cor
 3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
    - `ViewsTheme:Cart:Drawer:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
    - `ViewsTheme:Cart:Drawer:Items`
-   - `ViewsTheme:Cart:Drawer:Footer`
+   - `ViewsTheme:Cart:Drawer:Footer` (optional — remove when missing in response, append when newly present)
    - `ViewsTheme:Cart:Drawer:Heading`
-4. Parse with `<template>`; latest-wins while a fetch is in flight
+4. Parse with `<template>`; latest-wins while a fetch is in flight. Island swap: both → replace; existing only → remove; next only → append to target root
 
 Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
 
@@ -228,6 +229,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
 | Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Flashes,Items,Footer,Heading}.*` |
+| Empty state | `src/Resources/views/components/Cart/Empty.*` |
 | Options | `src/Resources/views/components/Cart/Options.*` |
 | Actions | `src/Resources/views/components/Cart/Actions.*` |
 | Checkout CTA | `src/Resources/views/components/Cart/Action/Checkout.*` |
