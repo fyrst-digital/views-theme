@@ -217,7 +217,7 @@ class ViUtilities extends AbstractExtension
             return $this->htmlTemplateToCvaTemplate($templateRef);
         }
 
-        // Bare component path: "Alert" / "Product/Box/Default" / "ViewsTheme:Alert"
+        // Bare component path: "Alert" / "Product/Box" / "ViewsTheme:Alert"
         $path = ltrim(str_replace(':', '/', $templateRef), '/');
 
         if (!str_starts_with($path, '@') && !str_starts_with($path, 'components/')) {

@@ -157,6 +157,7 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | View all results | `data-action="view-all"` (legacy) |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Public Action API: `open({ term }?)` / `close()` via `callMethod('ViewsTheme:Search:Action', …)`; already-open re-applies term without remount
 - Open/Close payload: `{ el, term }` via `emitQueued` (Action stores `term` / aria); Overlay calls `Bar.onOpened(term)` once for restore + suggest
 - Backdrop (`componentName`) / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
 - While open, Tab is trapped inside the dialog; closed mount is not kept (unmounted)
@@ -180,6 +181,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root (no HTML/DOM cache) — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Public Action API: `open()` / `close()` via `callMethod('ViewsTheme:Navigation:Drawer:Action', …)`
 - Drill `emit`s `ViewsTheme:Navigation:Drawer:Menu:Drill` `{ url, source, direction }`; Menu `on`s and filters with `contains(source)` (Item uses Drill on the caret only; label is a plain category link)
 - Panel `callMethod`s `Drawer.onPanelTransitionEnd` on transform `transitionend`
 - Drawer close timeout reads CSS var from options `durationVar` (default `--vi-drawer-duration`) / `durationFallback`

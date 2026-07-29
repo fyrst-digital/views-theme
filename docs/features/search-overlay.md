@@ -6,7 +6,8 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 ## Features
 
-- Header `Search:Action` opens `Search:Overlay` on click. Composes `ViewsTheme:Button` (`color="none"`, `icon="magnifying-glass"`)
+- Header `Search:Action` toggles `Search:Overlay` on click. Composes `ViewsTheme:Button` (`color="none"`, `icon="magnifying-glass"`)
+- Public API: `open({ term }?)` / `close()` via `Shopware.callMethod('ViewsTheme:Search:Action', 'open'|'close')`. Optional `term` sets preserved query; if overlay already open, re-applies via Overlay `open({ term })` without remount
 - Overlay shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Term hand-off is **event-only**: Close payload `{ el, term }` → Action stores string → `overlay.open({ term })` → Open payload → Bar `setTerm` + suggest. Action never touches the input DOM
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
@@ -32,10 +33,10 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 ### Open flow
 
 1. `ViewsTheme:Search:Action` reads `overlayUrl` from `data-component-options`
-2. If Overlay is already open → `close()` only (no fetch)
-3. Otherwise **always** fetches `frontend.views-theme.search.overlay`
+2. **Click:** if Overlay open → shell `close()` (no fetch); else Action `open()`
+3. **`open({ term }?)`** (click or `callMethod`): optional `term` updates preserved string; if already open → Overlay `open({ term })` only; else **always** fetch `frontend.views-theme.search.overlay`
 4. Response root is mounted on `document.body` (any leftover mount removed first)
-5. Action waits for Overlay instance, then `overlay.open({ term: preservedTerm })` (Action does not touch the input)
+5. Action waits for Overlay instance, then `overlay.open({ term: preservedTerm })` (logs if instance never mounts; Action does not touch the input)
 6. Overlay opens chrome, waits for Bar, calls `Bar.onOpened(term)` (setTerm + suggest once), then `emitQueued` Open `{ el, term }` for Action aria, then `Bar.focusInput()`
 7. Action sets `aria-expanded` on Open
 

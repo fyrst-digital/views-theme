@@ -25,6 +25,30 @@ export default class NavigationDrawerAction extends ShopwareComponent {
         window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
     }
 
+    /**
+     * Public API — header click and callMethod.
+     * No-op when already open.
+     */
+    async open() {
+        if (this._loading) {
+            return
+        }
+
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
+            return
+        }
+
+        await this._loadAndMountDrawer()
+    }
+
+    async close() {
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.close === 'function') {
+            drawer.close()
+        }
+    }
+
     async _onClick(event) {
         event.preventDefault()
 
@@ -38,7 +62,7 @@ export default class NavigationDrawerAction extends ShopwareComponent {
             return
         }
 
-        await this._loadAndMountDrawer()
+        await this.open()
     }
 
     async _loadAndMountDrawer() {
@@ -69,9 +93,12 @@ export default class NavigationDrawerAction extends ShopwareComponent {
             await this._waitForDrawerInstance()
 
             const drawer = this._getDrawerInstance()
-            if (drawer && typeof drawer.open === 'function') {
-                drawer.open()
+            if (!drawer || typeof drawer.open !== 'function') {
+                console.error('NavigationDrawerAction: Drawer component did not mount')
+                return
             }
+
+            drawer.open()
         } catch (error) {
             console.error('NavigationDrawerAction: Failed to open navigation drawer', error)
         } finally {

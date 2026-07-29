@@ -50,7 +50,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 2. **Click:** if Drawer open → `close()` (no fetch); else `open()`
 3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer`
 4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
-5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()`
+5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()` (logs if instance never mounts)
 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, returns focus, **removes** the drawer root
 8. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)

@@ -10,7 +10,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Navigation:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close. Composes `ViewsTheme:Button` (`color="none"`, `icon="list"`) |
+| `Navigation:Drawer:Action` | Lazy fetch/mount; toggle open/close. Public `open()` / `close()` (`callMethod`). Composes `ViewsTheme:Button` (`color="none"`, `icon="list"`) |
 | `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
@@ -23,7 +23,8 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 ## Features
 
-- Header `Navigation:Drawer:Action` (list icon) opens the navigation drawer on click
+- Header `Navigation:Drawer:Action` (list icon) toggles the navigation drawer on click
+- Public API: `open()` / `close()` via `Shopware.callMethod('ViewsTheme:Navigation:Drawer:Action', 'open'|'close')`
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
@@ -56,10 +57,10 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 ### Open flow
 
 1. `ViewsTheme:Navigation:Drawer:Action` reads `drawerUrl` from `data-component-options`
-2. If Drawer is already open → `close()` only (no fetch); close finishes → Action **unmounts** `#vi-navigation-drawer`
-3. Otherwise **always** fetches `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
+2. **Click:** if Drawer open → shell `close()` (no fetch); else Action `open()`
+3. **`open()`** (click or `callMethod`): if already open → no-op; else **always** fetch `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
 4. Response root is `ViewsTheme:Drawer` (`#vi-navigation-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
-5. Drawer + Panel + Menu + Drill children initialize; Action opens Drawer
+5. Drawer + Panel + Menu + Drill children initialize; Action calls Drawer `open()` (logs if instance never mounts)
 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, returns focus, **removes** the drawer root (next open is a full fetch + mount)
 

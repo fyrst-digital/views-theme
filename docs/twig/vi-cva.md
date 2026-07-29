@@ -26,7 +26,7 @@ Uses [`Twig\Extra\Html\Cva`](https://twig.symfony.com/html_cva) from `twig/html-
 | `config` | `array` | Slot map: each key is a DOM slot (`root`, `label`, …) |
 | `cva` | `array` | Caller overrides (deep-merged via `array_replace_recursive`) |
 | `attributes` | `ComponentAttributes` | Optional; defaults to component `attributes` from context |
-| template ref (2nd arg) | `string` | Optional explicit `.cva.twig` path, `.html.twig` sibling, or short name (`Alert`, `Product/Box/Default`) |
+| template ref (2nd arg) | `string` | Optional explicit `.cva.twig` path, `.html.twig` sibling, or short name (`Alert`, `Product/Box`) |
 
 Returns `array<string, ViCvaSlot>`. Updates context `attributes` so nested `slot:class` keys are stripped after binding.
 
@@ -37,8 +37,8 @@ For multi-slot or variant-heavy components, keep defaults in a **sibling** file:
 ```text
 Alert.html.twig
 Alert.cva.twig
-Product/Box/Default.html.twig
-Product/Box/Default.cva.twig
+Product/Box.html.twig
+Product/Box.cva.twig
 ```
 
 ```twig
@@ -70,10 +70,10 @@ A single Twig **hash expression** (not a full template). Optional `{# comments #
 Evaluated with the **component context**, so dynamic bases work:
 
 ```twig
-{# Product/Box/Default.cva.twig #}
+{# Product/Box.cva.twig #}
 {
-    root: { base: 'vi-product-box product-box layout-' ~ layout },
-    image: { base: 'vi-product-box__image' },
+    root: { base: 'vi-product-box product-box layout-' ~ resolvedLayout },
+    content: { base: 'vi-product-box__content' },
 }
 ```
 

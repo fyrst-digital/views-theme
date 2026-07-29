@@ -1,14 +1,13 @@
 # Product box
 
-Listing / CMS product card UI. Core includes `component/product/card/box.html.twig`; the theme bridge mounts UX `Product:Box:*`.
+Listing / CMS product card UI. Core includes `component/product/card/box.html.twig`; the theme bridge mounts UX `Product:Box`.
 
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
-| Storefront bridge | `storefront/component/product/card/box.html.twig` — thin `sw_extends`; replaces core layout switch with `Product:Box:Base` |
-| `Product:Box:Base` | Layout router + image `sizes`; maps `standard`/empty → `default`; image layout forces `displayMode` `cover` when standard |
-| `Product:Box:Default` | Card shell: cover overlays + content mounts Header / Body / Footer |
+| Storefront bridge | `storefront/component/product/card/box.html.twig` — thin `sw_extends`; replaces core layout switch with `Product:Box` |
+| `Product:Box` | Card shell: layout/displayMode/`sizes` resolve + cover overlays + content mounts Header / Body / Footer |
 | `Product:Box:Header` | Rating + name (listing). **Not** PDP `Product:Header` (breadcrumb + name) |
 | `Product:Box:Body` | Variations + description (omits root when empty) |
 | `Product:Box:Footer` | Price + `Product:Actions` |
@@ -33,7 +32,7 @@ Every core call site that includes `box.html.twig` picks up the theme card:
 
 {% block component_product_box_include %}
     {% if product %}
-        <twig:ViewsTheme:Product:Box:Base
+        <twig:ViewsTheme:Product:Box
             :product="product"
             :layout="layout|default('standard')"
             :displayMode="displayMode|default('standard')"
@@ -43,60 +42,49 @@ Every core call site that includes `box.html.twig` picks up the theme card:
 {% endblock %}
 ```
 
-This is an intentional **new** `views/storefront/` bridge (same role as header → `Page:Header:Main`). Do not add further storefront product-card files; extend UX under `components/Product/Box/*`.
+This is an intentional **new** `views/storefront/` bridge (same role as header → `Page:Header:Main`). Do not add further storefront product-card files; extend UX under `components/Product/Box*`.
 
 `Product:Listing` (components shell that also mounts Box) is **not** theme-inherited yet — grid column wrappers stay on core listing.
 
 ## Composition
 
 ```
-Product:Box:Base
-  └─ Product:Box:Default
-       ├─ Product:Cover (url, displayMode, sizes; class product-image-wrapper)
-       │    ├─ prepend → Product:Badges
-       │    ├─ media
-       │    └─ append → Product:Action:Wishlist (if wishlist enabled)
-       └─ content
-            ├─ Product:Box:Header
-            │    ├─ Review:Rating
-            │    └─ Product:Name
-            ├─ Product:Box:Body
-            │    ├─ Product:Variations
-            │    └─ Product:Description
-            └─ Product:Box:Footer
-                 ├─ Product:Price
-                 └─ Product:Actions
-                      ├─ Product:Action:Buy   (when buyable in listing)
-                      └─ Product:Action:Detail (otherwise)
+Product:Box
+  ├─ Product:Cover (url, displayMode, sizes; class product-image-wrapper)
+  │    ├─ prepend → Product:Badges
+  │    ├─ media
+  │    └─ append → Product:Action:Wishlist (if wishlist enabled)
+  └─ content
+       ├─ Product:Box:Header
+       │    ├─ Review:Rating
+       │    └─ Product:Name
+       ├─ Product:Box:Body
+       │    ├─ Product:Variations
+       │    └─ Product:Description
+       └─ Product:Box:Footer
+            ├─ Product:Price
+            └─ Product:Actions
+                 ├─ Product:Action:Buy   (when buyable in listing)
+                 └─ Product:Action:Detail (otherwise)
 ```
 
 ## Props
 
-### `Product:Box:Base`
+### `Product:Box`
 
 | Prop | Default | Notes |
 |------|---------|--------|
 | `product` | required | Sales channel product |
-| `layout` | `default` | Core passes `standard` / `image` / `minimal` / `wishlist`; empty/`standard` → `default`. Only Default implemented; others fall back to Default |
+| `layout` | `default` | Core passes `standard` / `image` / `minimal` / `wishlist`; empty/`standard` → `default` (CVA `layout-*`). Only one shell; variants share markup |
 | `displayMode` | `standard` | Passed to Cover; image layout + standard → `cover` |
-| `referrerCategoryId` | `null` | Forwarded to Default for PDP SEO args |
-| `cva` | `{}` | Deep-merged into Default CVA |
-
-### `Product:Box:Default`
-
-| Prop | Default | Notes |
-|------|---------|--------|
-| `product` | required | |
-| `layout` | `default` | CVA root class `layout-{{ layout }}` |
-| `displayMode` | `standard` | Cover fit mode |
-| `sizes` | breakpoint map (+ `xxl`) | Thumbnails sizes |
+| `sizes` | `null` | Thumbnail sizes; `null` → layout-based default map (incl. `xxl`) |
 | `showDescription` / `showVariations` | `true` | Forwarded to Body |
 | `showPrice` / `showActions` | `true` | Forwarded to Footer |
 | `priceShowPrice` | `true` | Forwarded to Footer → Price |
 | `priceShowTieredPrices` | `false` | Listing cards use “From …” + last tier; tier table stays off by default |
 | `priceShowTaxNote` | `null` | Forwarded; Footer resolves `null` → `core.listing.allowBuyInListing` |
 | `referrerCategoryId` | `null` | Merged into detail `seoUrl` args (with optional `page.searchTerm` when child listing) |
-| `cva` | `{}` | Multi-slot via `Default.cva.twig` |
+| `cva` | `{}` | Multi-slot via `Box.cva.twig` |
 
 Nested overrides: `header:…`, `body:…`, `footer:…` (and deeper nests on children).
 
@@ -126,7 +114,7 @@ No root markup when neither section renders. Variations skipped for display-pare
 | `product` | required | |
 | `href` | `null` | Detail URL for Actions |
 | `showPrice` / `showActions` | `true` | |
-| `priceShowPrice` / `priceShowTieredPrices` / `priceShowTaxNote` | see Default | Price flags |
+| `priceShowPrice` / `priceShowTieredPrices` / `priceShowTaxNote` | see Box | Price flags |
 | `showQuantity` | `false` | Forwarded to Actions → Buy |
 | `cva` | `{}` | `Footer.cva.twig`: `root`, `price`, `actions` |
 
@@ -141,11 +129,11 @@ No root markup when neither section renders. Variations skipped for display-pare
 
 Buy when available, not tiered-from, no children, and `core.listing.allowBuyInListing`; otherwise Detail.
 
-### CVA slots (`Default.cva.twig`)
+### CVA slots (`Box.cva.twig`)
 
 `root`, `content`, `header`, `body`, `footer`
 
-Root base includes legacy `product-box` for residual core CSS compatibility.
+Root base includes legacy `product-box` for residual core CSS compatibility. Root class uses `resolvedLayout` (`layout-default`, …).
 
 ## Behaviour notes
 
@@ -161,10 +149,10 @@ Root base includes legacy `product-box` for residual core CSS compatibility.
 
 ## Known gaps
 
-- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render Default
+- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell
 - Root class `layout-*` vs core `box-*` — residual core card CSS may not fully apply
 - No dedicated Box co-located CSS yet (Cover has CSS; root may lean on core `product-box`)
-- Cover children not nest+spread from Default (fixed badges/wishlist mounts)
+- Cover children not nest+spread from Box (fixed badges/wishlist mounts)
 - `Product:Listing` / `Search:Pagelet` / `Wishlist:Listing` shells not storefront-bridged
 
 ## Files
@@ -172,6 +160,7 @@ Root base includes legacy `product-box` for residual core CSS compatibility.
 | Role | Path |
 |------|------|
 | Bridge | `storefront/component/product/card/box.html.twig` |
-| Box parts | `components/Product/Box/{Base,Default,Header,Body,Footer}.html.twig` (+ `.cva.twig` where needed) |
+| Box | `components/Product/Box.html.twig` + `Box.cva.twig` |
+| Parts | `components/Product/Box/{Header,Body,Footer}.html.twig` (+ `.cva.twig` where needed) |
 | Actions | `components/Product/Actions.html.twig` + `Actions.cva.twig` |
 | Children | `components/Product/{Cover,Badges,Name,Variations,Description,Price}.html.twig`, `Action/{Buy,Detail,Wishlist}.html.twig` |

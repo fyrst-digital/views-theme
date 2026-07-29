@@ -110,9 +110,12 @@ export default class CartDrawerAction extends ShopwareComponent {
             await this._waitForDrawerInstance()
 
             const drawer = this._getDrawerInstance()
-            if (drawer && typeof drawer.open === 'function') {
-                drawer.open()
+            if (!drawer || typeof drawer.open !== 'function') {
+                console.error('CartDrawerAction: Drawer component did not mount')
+                return
             }
+
+            drawer.open()
         } catch (error) {
             console.error('CartDrawerAction: Failed to open cart drawer', error)
         } finally {

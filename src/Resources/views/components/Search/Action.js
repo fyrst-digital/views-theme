@@ -26,6 +26,37 @@ export default class SearchAction extends ShopwareComponent {
         window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
     }
 
+    /**
+     * Public API — header click and callMethod.
+     * Optional term: set preserved term and/or re-apply when already open.
+     */
+    async open({ term } = {}) {
+        if (this._loading) {
+            return
+        }
+
+        if (typeof term === 'string') {
+            this._preservedTerm = term
+        }
+
+        const overlay = this._getOverlayInstance()
+        if (overlay && typeof overlay.isOpen === 'function' && overlay.isOpen()) {
+            if (typeof overlay.open === 'function') {
+                await overlay.open({ term: this._preservedTerm || null })
+            }
+            return
+        }
+
+        await this._loadAndMountOverlay()
+    }
+
+    async close() {
+        const overlay = this._getOverlayInstance()
+        if (overlay && typeof overlay.close === 'function') {
+            overlay.close()
+        }
+    }
+
     async _onClick(event) {
         event.preventDefault()
 
@@ -39,7 +70,7 @@ export default class SearchAction extends ShopwareComponent {
             return
         }
 
-        await this._loadAndMountOverlay()
+        await this.open()
     }
 
     async _loadAndMountOverlay() {
@@ -65,9 +96,12 @@ export default class SearchAction extends ShopwareComponent {
             await this._waitForOverlayInstance()
 
             const overlay = this._getOverlayInstance()
-            if (overlay && typeof overlay.open === 'function') {
-                await overlay.open({ term: this._preservedTerm || null })
+            if (!overlay || typeof overlay.open !== 'function') {
+                console.error('SearchAction: Overlay component did not mount')
+                return
             }
+
+            await overlay.open({ term: this._preservedTerm || null })
         } catch (error) {
             console.error('SearchAction: Failed to open search overlay', error)
         } finally {
