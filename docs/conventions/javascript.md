@@ -80,6 +80,9 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
 | Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
+| Wishlist owner | `ViewsTheme:Wishlist` | `Wishlist.js` |
+| Wishlist action badge | `ViewsTheme:Wishlist:Action:Badge` | `Wishlist/Action/Badge.js` |
+| Product wishlist toggle | `ViewsTheme:Product:Action:Wishlist` | `Product/Action/Wishlist.js` |
 | Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
 | Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |

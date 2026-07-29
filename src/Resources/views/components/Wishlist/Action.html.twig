@@ -4,8 +4,6 @@
     label = 'header.wishlist'|trans|striptags,
     badgeId = 'wishlist-basket',
     liveId = 'wishlist-basket-live-area',
-    widgetsOptions = {},
-    storageOptions = {},
     size = 'md',
     cva = {},
 %}
@@ -32,8 +30,7 @@
     <twig:block name="prepend">
         <twig:ViewsTheme:Wishlist:Action:Badge
             :id="badgeId"
-            :widgetsOptions="widgetsOptions"
-            :storageOptions="storageOptions"
+            :liveId="liveId"
         />
     </twig:block>
 
@@ -41,7 +38,6 @@
         <span
             id="{{ liveId }}"
             class="{{ liveClass }}"
-            data-wishlist-live-area-text="{{ 'header.wishlistAriaLiveTemplate'|trans }}"
             aria-live="polite"
         ></span>
     </twig:block>

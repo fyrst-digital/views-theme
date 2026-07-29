@@ -4,77 +4,44 @@
     size = 'md',
     color = 'light',
     appearance = null,
-    addToWishlistOptions = {},
+    icon = 'heart',
+    iconActive = 'heart-fill',
     cva = {},
 %}
 
 {% if productId is not empty %}
-    {% set resolvedOptions = {
-        productId: productId,
-        router: {
-            add: {
-                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: productId }),
-                path: path('frontend.wishlist.product.add', { productId: productId }),
-            },
-            remove: {
-                path: path('frontend.wishlist.product.remove', { productId: productId }),
-            },
-        },
-        texts: {
-            add: 'listing.addToWishlist'|trans|sw_sanitize,
-            remove: 'listing.removeFromWishlist'|trans|sw_sanitize,
-        },
-    }|replace_recursive(addToWishlistOptions) %}
+    {% set addLabel = 'listing.addToWishlist'|trans|sw_sanitize %}
+    {% set removeLabel = 'listing.removeFromWishlist'|trans|sw_sanitize %}
+    {% set buttonLabel = showText is same as(true) ? addLabel : null %}
 
-    {% set isCircle = appearance is same as('circle') %}
-    {% set rootBase = 'vi-product-action-wishlist product-wishlist-' ~ productId
-        ~ ' product-wishlist-not-added product-wishlist-loading'
-        ~ (isCircle
-            ? ' product-wishlist-action-circle product-wishlist-btn btn btn-' ~ color ~ ' z-2'
-            : ' product-wishlist-action') %}
+    {% set cx = vi_cva_from_file(cva) %}
 
-    {% set cx = vi_cva({
-        root: { base: rootBase },
-        icon: { base: 'vi-product-action-wishlist__icon wishlist-icon' },
-        label: {
-            base: 'vi-product-action-wishlist__label product-wishlist-btn-content product-wishlist-btn-content-' ~ size,
-        },
-        wrapper: { base: 'vi-product-action-wishlist-wrap product-wishlist' },
-    }|replace_recursive(cva)) %}
-
-    <div
-        {{ attributes.nested('wrapper') }}
-        class="{{ cx.wrapper.apply() }}"
-    >
-        <button
-            {{ attributes.defaults({
-                type: 'button',
-                title: resolvedOptions.texts.add,
-                'data-add-to-wishlist': 'true',
-                'data-add-to-wishlist-options': resolvedOptions|json_encode,
-            }) }}
-            class="{{ cx.root.apply() }}"
-        >
-            {% block icon %}
-                <span
-                    {{ attributes.nested('icon') }}
-                    class="{{ cx.icon.apply() }}"
-                >
-                    {{ vi_icon('heart', { class: 'wishlist icon-wishlist-added icon-wishlist' }) }}
-                    {{ vi_icon('heart', { class: 'wishlist icon-wishlist-not-added icon-wishlist' }) }}
-                </span>
-            {% endblock %}
-
-            {% block label %}
-                {% if showText %}
-                    <span
-                        {{ attributes.nested('label') }}
-                        class="{{ cx.label.apply() }}"
-                    >
-                        {{ resolvedOptions.texts.add }}
-                    </span>
-                {% endif %}
-            {% endblock %}
-        </button>
-    </div>
+    <twig:ViewsTheme:Button
+        class="{{ cx.root.apply({ appearance: appearance }) }}"
+        {{ ...attributes.defaults({
+            type: 'button',
+            icon: icon,
+            label: buttonLabel,
+            color: color,
+            size: size,
+            title: addLabel,
+            'aria-pressed': 'false',
+            'aria-label': addLabel,
+            'data-component': 'ViewsTheme:Product:Action:Wishlist',
+            'data-component-options': {
+                productId: productId,
+                showText: showText is same as(true),
+                texts: {
+                    add: addLabel,
+                    remove: removeLabel,
+                },
+                icons: {
+                    add: icon,
+                    remove: iconActive,
+                },
+                toggleEvent: 'ViewsTheme:Wishlist:Toggle',
+                changedEvent: 'ViewsTheme:Wishlist:Changed',
+            }|json_encode,
+        }).all() }}
+    />
 {% endif %}

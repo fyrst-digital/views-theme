@@ -1,7 +1,9 @@
 {% props
     id = 'wishlist-basket',
-    widgetsOptions = {},
-    storageOptions = {},
+    liveId = 'wishlist-basket-live-area',
+    liveText = 'header.wishlistAriaLiveTemplate'|trans,
+    count = 0,
+    changedEvent = 'ViewsTheme:Wishlist:Changed',
     cva = {},
 %}
 
@@ -10,16 +12,13 @@
 <span
     {{ attributes.defaults({
         id: id,
-        'data-wishlist-storage': 'true',
-        'data-wishlist-storage-options': {
-            listPath: path('frontend.wishlist.product.list'),
-            mergePath: path('frontend.wishlist.product.merge'),
-            pageletPath: path('frontend.wishlist.product.merge.pagelet'),
-        }|merge(storageOptions)|json_encode,
-        'data-wishlist-widget': 'true',
-        'data-wishlist-widget-options': {
-            showCounter: true,
-        }|merge(widgetsOptions)|json_encode,
+        hidden: count < 1,
+        'data-component': 'ViewsTheme:Wishlist:Action:Badge',
+        'data-component-options': {
+            changedEvent: changedEvent,
+            liveId: liveId,
+            liveText: liveText,
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
-></span>
+>{% if count > 0 %}{{ count }}{% endif %}</span>

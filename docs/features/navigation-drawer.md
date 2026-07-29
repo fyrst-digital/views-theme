@@ -41,7 +41,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 `Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
-`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend`; live region is inline in `append`. `Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
+`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. `Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
 
 Wishlist uses drawer-scoped **props** (`badgeId` / `liveId`) so it can coexist with the header instance:
 

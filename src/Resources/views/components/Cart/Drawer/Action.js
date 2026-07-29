@@ -186,7 +186,6 @@ export default class CartDrawerAction extends ShopwareComponent {
         }
 
         this.el.setAttribute('aria-expanded', 'false')
-        this.el.focus()
         this._unmountDrawer()
     }
 

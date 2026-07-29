@@ -1,0 +1,32 @@
+{% props
+    listPath = path('frontend.wishlist.product.list'),
+    mergePath = path('frontend.wishlist.product.merge'),
+    addPath = path('frontend.wishlist.product.add', { productId: '00000000000000000000000000000000' }),
+    removePath = path('frontend.wishlist.product.remove', { productId: '00000000000000000000000000000000' }),
+    loggedIn = context.customer is not null and not context.customer.guest,
+    cva = {},
+%}
+
+{% set cx = vi_cva({
+    root: { base: 'vi-wishlist' },
+}|replace_recursive(cva)) %}
+
+<div
+    {{ attributes.defaults({
+        hidden: true,
+        'data-component': 'ViewsTheme:Wishlist',
+        'data-component-options': {
+            listPath: listPath,
+            mergePath: mergePath,
+            addPath: addPath,
+            removePath: removePath,
+            loggedIn: loggedIn,
+            placeholderId: '00000000000000000000000000000000',
+            storageKeyPrefix: 'wishlist-',
+            cookieName: 'wishlist-enabled',
+            toggleEvent: 'ViewsTheme:Wishlist:Toggle',
+            changedEvent: 'ViewsTheme:Wishlist:Changed',
+        }|json_encode,
+    }) }}
+    class="{{ cx.root.apply() }}"
+></div>

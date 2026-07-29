@@ -141,11 +141,10 @@ Root base includes legacy `product-box` for residual core CSS compatibility. Roo
 - `Product:Action:Detail` → `Button` (`type="link"`, `color="light"`, label `listing.boxProductDetails`)
 - Detail URLs: `seoUrl('frontend.detail.page', routeArguments)` with optional `search` + `referrerCategoryId` (core parity); Box passes resolved `href` into Header / Footer
 - Price display uses `calculatedPrices.last` when tiered; “From” prefix when `count > 1` (no tier table on box by default)
-- Wishlist: Cover `append`, `appearance="circle"`; options default to core `productId` + router add/remove + texts; dual heart icons with core state classes; core `AddToWishlist` plugin
+- Wishlist: Cover `append`, `appearance="circle"`; `Product:Action:Wishlist` → `ViewsTheme:Wishlist:Toggle` (theme owner); Button + `aria-pressed` (see [wishlist.md](wishlist.md))
 - Badges: Cover `prepend` (no Box image wrapper)
 - Cover root gets `product-image-wrapper` from Box for residual listing positioning (wishlist circle)
 - Buy: co-located `Buy.js` → `ViewsTheme:Cart:Add` (theme `Cart` owner); form kept for no-JS. Not core `data-add-to-cart` / OffCanvas. Successful add opens cart drawer via `Cart:Drawer:Action` (`openOnAdd` / `openOnActions`)
-- Wishlist relies on core plugin (`data-add-to-wishlist`)
 
 ## Known gaps
 
