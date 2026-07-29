@@ -1,0 +1,27 @@
+{% props
+    product = null,
+    href = null,
+    label = 'listing.boxProductDetails'|trans|sw_sanitize,
+    title = null,
+    color = 'light',
+    cva = {},
+%}
+
+{% set detailHref = href is not null
+    ? href
+    : (product ? seoUrl('frontend.detail.page', { productId: product.id }) : null) %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% block content %}
+    <twig:ViewsTheme:Button
+        class="{{ cx.root.apply() }}"
+        {{ ...attributes.defaults({
+            type: 'link',
+            href: detailHref,
+            label: label,
+            title: title,
+            color: color,
+        }).all() }}
+    />
+{% endblock %}

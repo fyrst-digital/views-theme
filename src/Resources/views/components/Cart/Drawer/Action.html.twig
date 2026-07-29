@@ -1,8 +1,14 @@
 {% props
     size = 'md',
     drawerUrl = path('frontend.views-theme.cart.drawer'),
+    openOnAdd = true,
+    openOnActions = null,
     cva = {},
 %}
+
+{% set resolvedOpenOnActions = openOnActions is iterable
+    ? openOnActions
+    : (openOnAdd is same as(true) ? ['add'] : []) %}
 
 {% set cx = vi_cva_from_file(cva) %}
 {% set cart = context.extensions.cart ?? null %}
@@ -23,10 +29,12 @@
         'data-component': 'ViewsTheme:Cart:Drawer:Action',
         'data-component-options': {
             drawerUrl: drawerUrl,
+            openOnActions: resolvedOpenOnActions,
+            changedEvent: 'ViewsTheme:Cart:Changed',
         }|json_encode,
     }).all() }}
 >
-    <twig:block name="append">
+    <twig:block name="prepend">
         <twig:ViewsTheme:Cart:Drawer:Action:Badge :count="cartCount" />
     </twig:block>
 </twig:ViewsTheme:Button>

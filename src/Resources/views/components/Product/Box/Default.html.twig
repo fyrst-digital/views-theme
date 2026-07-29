@@ -14,8 +14,8 @@
     showPrice = true,
     showActions = true,
     priceShowPrice = true,
-    priceShowTieredPrices = true,
-    priceShowTaxNote = false,
+    priceShowTieredPrices = false,
+    priceShowTaxNote = null,
     referrerCategoryId = null,
     cva = {},
 %}
@@ -25,10 +25,14 @@
 {% set brand = product.manufacturer.translated.name|default('') %}
 {% set price = product.calculatedPrice.unitPrice %}
 {% set cover = product.cover.media %}
-{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
-{% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
-{% set displayFrom = product.calculatedPrices.count > 1 %}
-{% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+{% set searchTerm = page.searchTerm|default(null) %}
+{% set routeArguments = product.childCount > 0 and searchTerm
+    ? { productId: id, search: searchTerm }
+    : { productId: id } %}
+{% if referrerCategoryId %}
+    {% set routeArguments = routeArguments|merge({ referrerCategoryId: referrerCategoryId }) %}
+{% endif %}
+{% set productUrl = seoUrl('frontend.detail.page', routeArguments) %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -39,38 +43,29 @@
     class="{{ cx.root.apply() }}"
 >
     {% block image %}
-        <div
-            {{ attributes.nested('image') }}
-            class="{{ cx.image.apply() }}"
+        <twig:ViewsTheme:Product:Cover
+            :id="id"
+            :name="name"
+            :cover="cover"
+            :displayMode="displayMode"
+            :sizes="sizes"
+            :url="productUrl"
+            class="product-image-wrapper"
         >
-            {% block image_prepend %}{% endblock %}
-
-            {% block badges %}
+            <twig:block name="prepend">
                 <twig:ViewsTheme:Product:Badges :product="product" />
-            {% endblock %}
+            </twig:block>
 
-            {% block cover %}
-                <twig:ViewsTheme:Product:Cover
-                    :id="id"
-                    :name="name"
-                    :cover="cover"
-                    :displayMode="displayMode"
-                    :sizes="sizes"
-                />
-            {% endblock %}
-
-            {% block wishlist %}
+            <twig:block name="append">
                 {% if config('core.cart.wishlistEnabled') %}
                     <twig:ViewsTheme:Product:Action:Wishlist
                         :productId="id"
                         :showText="false"
-                        class="product-box-wishlist-action"
+                        appearance="circle"
                     />
                 {% endif %}
-            {% endblock %}
-
-            {% block image_append %}{% endblock %}
-        </div>
+            </twig:block>
+        </twig:ViewsTheme:Product:Cover>
     {% endblock %}
 
     {% block content %}
@@ -79,95 +74,40 @@
             class="{{ cx.content.apply() }}"
         >
             {% block header %}
-                <div class="vi-product-box__header">
-                    {% block rating %}
-                        {% if config('core.listing.showReview') and product.ratingAverage %}
-                            <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block name %}
-                        <twig:ViewsTheme:Product:Name :product="product" />
-                    {% endblock %}
-                </div>
+                <twig:ViewsTheme:Product:Box:Header
+                    class="{{ cx.header.apply() }}"
+                    {{ ...attributes.nested('header').defaults({
+                        product: product,
+                        href: productUrl,
+                    }).all() }}
+                />
             {% endblock %}
 
             {% block body %}
-                {% set showBody = (not displayParent and product.variation and showVariations is same as(true))
-                    or (showDescription is same as(true)) %}
-
-                {% if showBody %}
-                    <div
-                        {{ attributes.nested('body') }}
-                        class="{{ cx.body.apply() }}"
-                    >
-                        {% block variations %}
-                            {% if not displayParent and product.variation and showVariations is same as(true) %}
-                                <twig:ViewsTheme:Product:Variations
-                                    :product="product"
-                                    :variations="product.variation"
-                                />
-                            {% endif %}
-                        {% endblock %}
-
-                        {% block description %}
-                            {% if showDescription is same as(true) %}
-                                <twig:ViewsTheme:Product:Description
-                                    :product="product"
-                                    :outputTags="false"
-                                />
-                            {% endif %}
-                        {% endblock %}
-                    </div>
-                {% endif %}
+                <twig:ViewsTheme:Product:Box:Body
+                    class="{{ cx.body.apply() }}"
+                    {{ ...attributes.nested('body').defaults({
+                        product: product,
+                        showVariations: showVariations,
+                        showDescription: showDescription,
+                    }).all() }}
+                />
             {% endblock %}
 
             {% block footer %}
-                <div
-                    {{ attributes.nested('footer') }}
+                <twig:ViewsTheme:Product:Box:Footer
                     class="{{ cx.footer.apply() }}"
-                >
-                    {% block price %}
-                        {% if showPrice is same as(true) %}
-                            <twig:ViewsTheme:Product:Price
-                                :product="product"
-                                :showPrice="priceShowPrice"
-                                :showTieredPrices="priceShowTieredPrices"
-                                :showTaxNote="priceShowTaxNote"
-                            />
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block actions %}
-                        {% if showActions is same as(true) %}
-                            <div
-                                {{ attributes.nested('actions') }}
-                                class="{{ cx.actions.apply() }}"
-                            >
-                                {% block actions_prepend %}{% endblock %}
-
-                                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                                    {% block action_buy %}
-                                        <twig:ViewsTheme:Product:Action:Buy :product="product" />
-                                    {% endblock %}
-                                {% else %}
-                                    {% block action_details %}
-                                        <a
-                                            {{ attributes.nested('details').defaults({
-                                                href: seoUrl('frontend.detail.page', { productId: id }),
-                                            }) }}
-                                            class="{{ cx.details.apply() }}"
-                                        >
-                                            {{ 'listing.boxProductDetails'|trans|sw_sanitize }}
-                                        </a>
-                                    {% endblock %}
-                                {% endif %}
-
-                                {% block actions_append %}{% endblock %}
-                            </div>
-                        {% endif %}
-                    {% endblock %}
-                </div>
+                    {{ ...attributes.nested('footer').defaults({
+                        product: product,
+                        href: productUrl,
+                        showPrice: showPrice,
+                        showActions: showActions,
+                        priceShowPrice: priceShowPrice,
+                        priceShowTieredPrices: priceShowTieredPrices,
+                        priceShowTaxNote: priceShowTaxNote,
+                        showQuantity: false,
+                    }).all() }}
+                />
             {% endblock %}
         </div>
     {% endblock %}

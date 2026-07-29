@@ -1,0 +1,49 @@
+{% props
+    product,
+    href = null,
+    showPrice = true,
+    showActions = true,
+    priceShowPrice = true,
+    priceShowTieredPrices = false,
+    priceShowTaxNote = null,
+    showQuantity = false,
+    cva = {},
+%}
+
+{% set resolvedPriceShowTaxNote = priceShowTaxNote is not null
+    ? priceShowTaxNote
+    : config('core.listing.allowBuyInListing') %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block price %}
+        {% if showPrice is same as(true) %}
+            <twig:ViewsTheme:Product:Price
+                class="{{ cx.price.apply() }}"
+                {{ ...attributes.nested('price').defaults({
+                    product: product,
+                    showPrice: priceShowPrice,
+                    showTieredPrices: priceShowTieredPrices,
+                    showTaxNote: resolvedPriceShowTaxNote,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block actions %}
+        {% if showActions is same as(true) %}
+            <twig:ViewsTheme:Product:Actions
+                class="{{ cx.actions.apply() }}"
+                {{ ...attributes.nested('actions').defaults({
+                    product: product,
+                    href: href,
+                    showQuantity: showQuantity,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</div>

@@ -39,6 +39,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` ([UX guide](conventions/ux-components.md)).
 - **Page overrides** only in existing `views/storefront/` files.
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md).
 
 ### Storefront JS
 

@@ -8,7 +8,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Cart:Drawer:Action` | Lazy fetch/mount; toggle `Drawer` open/close. Composes `ViewsTheme:Button` (`color="none"`, `icon="handbag"`); `Cart:Drawer:Action:Badge` in Button `append` |
+| `Cart:Drawer:Action` | Lazy fetch/mount; toggle open/close; auto-open on configured `Cart:Changed` actions. Public `open()` / `close()` (`callMethod`). Composes `Button` + badge |
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
@@ -29,27 +29,31 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 ## Features
 
-- Header `Cart:Drawer:Action` (handbag icon + badge) opens the cart drawer on click
+- Header `Cart:Drawer:Action` (handbag icon + badge) toggles the cart drawer on click
+- Successful `Cart:Changed` with `action` in `openOnActions` (default `['add']`) calls Action `open()` — fetch + mount if closed; no-op if already open (Body refreshes)
+- Twig: `openOnAdd` (default `true`) → `openOnActions: ['add']`; pass `:openOnActions="[]"` or `openOnAdd={false}` to disable; full list overrides convenience
+- Public API: `open()` / `close()` via `Shopware.callMethod('ViewsTheme:Cart:Drawer:Action', 'open'|'close')`
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
-- Theme does **not** intercept core product-add / offcanvas (alpha). Product-add → theme drawer + badge is a follow-up with theme Product components
+- Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
 - Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
 
 ## How it works
 
 ### Open flow
 
-1. `ViewsTheme:Cart:Drawer:Action` reads `drawerUrl` from `data-component-options`
-2. If Drawer is already open → `close()` only (no fetch); close finishes → Action **unmounts** `#vi-cart-drawer`
-3. Otherwise **always** fetches `frontend.views-theme.cart.drawer`
+1. `ViewsTheme:Cart:Drawer:Action` reads `drawerUrl` / `openOnActions` from `data-component-options`
+2. **Click:** if Drawer open → `close()` (no fetch); else `open()`
+3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer`
 4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
-5. Drawer + Panel + Body + LineItem children initialize; Action opens Drawer
+5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()`
 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, returns focus, **removes** the drawer root
+8. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
 
 ### Mutation API
 
@@ -71,7 +75,7 @@ AJAX POSTs **omit** `redirectTo` / `forwardTo` (and use `redirect: 'manual'`). E
 
 After a successful mutation, Cart refreshes `window.cartCount` from `frontend.checkout.cart.json` and emits `Changed`. Badge updates itself; Body (if mounted) re-fetches drawer HTML and swaps islands.
 
-Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. Core storefront product-add is not wired into this bus yet (alpha).
+Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Product:Action:Buy` emits `Cart:Add` with form `FormData`. Variants grid still uses core AddToCart (follow-up).
 
 ### In-open DOM updates
 

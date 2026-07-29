@@ -1,0 +1,37 @@
+{% props
+    product,
+    href = null,
+    showRating = true,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block rating %}
+        {% if showRating is same as(true)
+            and config('core.listing.showReview')
+            and product.ratingAverage
+        %}
+            <twig:ViewsTheme:Review:Rating
+                class="{{ cx.rating.apply() }}"
+                {{ ...attributes.nested('rating').defaults({
+                    points: product.ratingAverage,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block name %}
+        <twig:ViewsTheme:Product:Name
+            class="{{ cx.name.apply() }}"
+            {{ ...attributes.nested('name').defaults({
+                product: product,
+                url: href,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

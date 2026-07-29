@@ -229,7 +229,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
-| Product:* | UX + Listing/BuyContainer shells |
+| Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
 | Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |

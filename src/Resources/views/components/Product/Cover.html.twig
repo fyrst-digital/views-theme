@@ -30,6 +30,8 @@
     }) }}
     class="{{ cx.root.apply() }}"
 >
+    {% block prepend %}{% endblock %}
+
     {% block media %}
         {% if cover and cover.url and cover.isSpatialObject() == false %}
             {% set mediaAttrs = {
@@ -82,4 +84,6 @@
             {% endblock %}
         {% endif %}
     {% endblock %}
+
+    {% block append %}{% endblock %}
 </{{ rootTag|raw }}>

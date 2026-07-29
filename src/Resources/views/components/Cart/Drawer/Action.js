@@ -5,6 +5,9 @@ export default class CartDrawerAction extends ShopwareComponent {
         drawerSelector: '#vi-cart-drawer',
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
+        changedEvent: 'ViewsTheme:Cart:Changed',
+        /** Cart:Changed.action values that auto-open when ok (empty = never) */
+        openOnActions: ['add'],
     }
 
     init() {
@@ -13,16 +16,43 @@ export default class CartDrawerAction extends ShopwareComponent {
         this._onClick = this._onClick.bind(this)
         this._onDrawerOpen = this._onDrawerOpen.bind(this)
         this._onDrawerClose = this._onDrawerClose.bind(this)
+        this._onCartChanged = this._onCartChanged.bind(this)
 
         this.el.addEventListener('click', this._onClick)
         window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
     }
 
     destroy() {
         this.el.removeEventListener('click', this._onClick)
         window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
+        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+    }
+
+    /**
+     * Public API — header click, callMethod, and openOnActions auto-open.
+     * No-op when already open (Body refreshes on Cart:Changed).
+     */
+    async open() {
+        if (this._loading) {
+            return
+        }
+
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
+            return
+        }
+
+        await this._loadAndMountDrawer()
+    }
+
+    async close() {
+        const drawer = this._getDrawerInstance()
+        if (drawer && typeof drawer.close === 'function') {
+            drawer.close()
+        }
     }
 
     async _onClick(event) {
@@ -38,7 +68,23 @@ export default class CartDrawerAction extends ShopwareComponent {
             return
         }
 
-        await this._loadAndMountDrawer()
+        await this.open()
+    }
+
+    _onCartChanged(payload) {
+        if (!payload?.ok) {
+            return
+        }
+
+        const actions = Array.isArray(this.options.openOnActions)
+            ? this.options.openOnActions
+            : []
+
+        if (!actions.includes(payload.action)) {
+            return
+        }
+
+        void this.open()
     }
 
     async _loadAndMountDrawer() {

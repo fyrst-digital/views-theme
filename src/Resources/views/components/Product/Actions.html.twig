@@ -1,0 +1,47 @@
+{% props
+    product,
+    href = null,
+    showQuantity = false,
+    cva = {},
+%}
+
+{% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+{% set displayFrom = product.calculatedPrices.count > 1 %}
+{% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+{% set detailHref = href is not null
+    ? href
+    : seoUrl('frontend.detail.page', { productId: product.id }) %}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block prepend %}{% endblock %}
+
+    {% block content %}
+        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+            {% block buy %}
+                <twig:ViewsTheme:Product:Action:Buy
+                    class="{{ cx.buy.apply() }}"
+                    {{ ...attributes.nested('buy').defaults({
+                        product: product,
+                        showQuantity: showQuantity,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% else %}
+            {% block detail %}
+                <twig:ViewsTheme:Product:Action:Detail
+                    class="{{ cx.detail.apply() }}"
+                    {{ ...attributes.nested('detail').defaults({
+                        href: detailHref,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+
+    {% block append %}{% endblock %}
+</div>

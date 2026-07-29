@@ -5,15 +5,17 @@
     showQuantity = true,
     buyLabel = 'listing.boxAddProduct'|trans|sw_sanitize,
     buyIcon = 'handbag',
+    buyColor = 'primary',
+    buySize = 'md',
     cva = {},
 %}
 
 {% set resolvedFormId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
-{% set showQuantityField = not product.type is defined
+{% set allowsQuantity = not product.type is defined
     or product.type != DIGITAL_CONST
-    or (product.type == DIGITAL_CONST and product.maxPurchase !== 1)
-    and showQuantity is not same as(true) %}
+    or (product.type == DIGITAL_CONST and product.maxPurchase !== 1) %}
+{% set showQuantityField = allowsQuantity and showQuantity is same as(true) %}
 
 {% set productUnit = false %}
 {% if product.translated.packUnit %}
@@ -34,11 +36,10 @@
         action: formAction,
         method: 'post',
         id: resolvedFormId,
-        'data-add-to-cart': 'true',
-        'data-add-to-cart-options': product.isCloseout ? {
-            stockAdjustedText: 'component.product.quantitySelect.stockAdjusted'|trans|striptags,
-            outOfStockText: 'component.product.quantitySelect.outOfStock'|trans|striptags,
-        }|json_encode : false,
+        'data-component': 'ViewsTheme:Product:Action:Buy',
+        'data-component-options': {
+            addEvent: 'ViewsTheme:Cart:Add',
+        }|json_encode,
     }) }}
     class="{{ cx.root.apply() }}"
 >
@@ -63,18 +64,16 @@
     {% endblock %}
 
     {% block button %}
-        <button
-            {{ attributes.nested('button').defaults({
-                type: 'submit',
-            }) }}
+        <twig:ViewsTheme:Button
             class="{{ cx.button.apply() }}"
-        >
-            {% block button_icon %}
-                {{ vi_icon(buyIcon) }}
-            {% endblock %}
-            {% block button_label %}
-                {{ buyLabel }}
-            {% endblock %}
-        </button>
+            {{ ...attributes.nested('button').defaults({
+                type: 'submit',
+                icon: buyIcon,
+                label: buyLabel,
+                color: buyColor,
+                size: buySize,
+                title: buyLabel,
+            }).all() }}
+        />
     {% endblock %}
 </form>

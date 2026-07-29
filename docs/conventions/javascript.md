@@ -232,7 +232,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
-- Theme owns header drawer open + in-drawer mutations only; core product-add / offcanvas is out of scope (alpha — Product components later)
+- Theme owns header drawer open + in-drawer mutations; `Product:Action:Buy` → `Cart:Add` → badge + Action `open()` when `openOnActions` includes `add` (default). Public `callMethod(…, 'open'|'close')`. Variants grid still core AddToCart
 - Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 

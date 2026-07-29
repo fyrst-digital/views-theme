@@ -1,46 +1,80 @@
 {% props
     productId,
     showText = false,
-    size = null,
+    size = 'md',
     color = 'light',
+    appearance = null,
     addToWishlistOptions = {},
     cva = {},
 %}
 
-{% set cx = vi_cva({
-    root: {
-        base: 'vi-product-action-wishlist btn product-wishlist-' ~ productId ~ ' product-wishlist-action product-wishlist-not-added product-wishlist-loading btn-' ~ color ~ (size is not null ? ' btn-' ~ size : ''),
-    },
-    icon: { base: 'vi-product-action-wishlist__icon wishlist-icon' },
-    label: {
-        base: 'vi-product-action-wishlist__label product-wishlist-btn-content' ~ (size is not null ? ' product-wishlist-btn-content-' ~ size : ''),
-    },
-}|replace_recursive(cva)) %}
+{% if productId is not empty %}
+    {% set resolvedOptions = {
+        productId: productId,
+        router: {
+            add: {
+                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: productId }),
+                path: path('frontend.wishlist.product.add', { productId: productId }),
+            },
+            remove: {
+                path: path('frontend.wishlist.product.remove', { productId: productId }),
+            },
+        },
+        texts: {
+            add: 'listing.addToWishlist'|trans|sw_sanitize,
+            remove: 'listing.removeFromWishlist'|trans|sw_sanitize,
+        },
+    }|replace_recursive(addToWishlistOptions) %}
 
-<button
-    {{ attributes.defaults({
-        type: 'button',
-        title: 'listing.addToWishlist'|trans|sw_sanitize,
-        'data-add-to-wishlist': 'true',
-        'data-add-to-wishlist-options': addToWishlistOptions|json_encode,
-    }) }}
-    class="{{ cx.root.apply() }}"
->
-    {% block icon %}
-        <span
-            {{ attributes.nested('icon') }}
-            class="{{ cx.icon.apply() }}"
-        ></span>
-    {% endblock %}
+    {% set isCircle = appearance is same as('circle') %}
+    {% set rootBase = 'vi-product-action-wishlist product-wishlist-' ~ productId
+        ~ ' product-wishlist-not-added product-wishlist-loading'
+        ~ (isCircle
+            ? ' product-wishlist-action-circle product-wishlist-btn btn btn-' ~ color ~ ' z-2'
+            : ' product-wishlist-action') %}
 
-    {% block label %}
-        {% if showText %}
-            <span
-                {{ attributes.nested('label') }}
-                class="{{ cx.label.apply() }}"
-            >
-                {{ 'listing.addToWishlist'|trans|sw_sanitize }}
-            </span>
-        {% endif %}
-    {% endblock %}
-</button>
+    {% set cx = vi_cva({
+        root: { base: rootBase },
+        icon: { base: 'vi-product-action-wishlist__icon wishlist-icon' },
+        label: {
+            base: 'vi-product-action-wishlist__label product-wishlist-btn-content product-wishlist-btn-content-' ~ size,
+        },
+        wrapper: { base: 'vi-product-action-wishlist-wrap product-wishlist' },
+    }|replace_recursive(cva)) %}
+
+    <div
+        {{ attributes.nested('wrapper') }}
+        class="{{ cx.wrapper.apply() }}"
+    >
+        <button
+            {{ attributes.defaults({
+                type: 'button',
+                title: resolvedOptions.texts.add,
+                'data-add-to-wishlist': 'true',
+                'data-add-to-wishlist-options': resolvedOptions|json_encode,
+            }) }}
+            class="{{ cx.root.apply() }}"
+        >
+            {% block icon %}
+                <span
+                    {{ attributes.nested('icon') }}
+                    class="{{ cx.icon.apply() }}"
+                >
+                    {{ vi_icon('heart', { class: 'wishlist icon-wishlist-added icon-wishlist' }) }}
+                    {{ vi_icon('heart', { class: 'wishlist icon-wishlist-not-added icon-wishlist' }) }}
+                </span>
+            {% endblock %}
+
+            {% block label %}
+                {% if showText %}
+                    <span
+                        {{ attributes.nested('label') }}
+                        class="{{ cx.label.apply() }}"
+                    >
+                        {{ resolvedOptions.texts.add }}
+                    </span>
+                {% endif %}
+            {% endblock %}
+        </button>
+    </div>
+{% endif %}

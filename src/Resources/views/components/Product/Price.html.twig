@@ -20,7 +20,7 @@
 {% endif %}
 
 {% if prices.count > 0 %}
-    {% set price = prices.first %}
+    {% set price = prices.last %}
 {% endif %}
 
 {% set hasListPrice = price.listPrice and price.listPrice.percentage > 0 %}

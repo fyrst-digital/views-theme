@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/component/product/card/box.html.twig' %}
+
+{% block component_product_box_include %}
+    {% if product %}
+        <twig:ViewsTheme:Product:Box:Base
+            :product="product"
+            :layout="layout|default('standard')"
+            :displayMode="displayMode|default('standard')"
+            :referrerCategoryId="referrerCategoryId|default(null)"
+        />
+    {% endif %}
+{% endblock %}

@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_cva`, `vi_cva_from_file`, utilities |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, account action, language/currency switch, form input |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, account action, language/currency switch, form input, product box |
 
 ## Conventions
 
@@ -48,6 +48,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Language switch](features/language-switch.md)
 - [Currency switch](features/currency-switch.md)
 - [Form input](features/form-input.md)
+- [Product box](features/product-box.md)
 
 ## Related
 
