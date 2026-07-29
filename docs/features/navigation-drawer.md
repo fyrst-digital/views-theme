@@ -4,7 +4,7 @@ Lazy-loaded side drawer for the main category navigation, opened from the header
 
 All UI lives under UX components (`components/Drawer/*`, `components/Navigation/Drawer/*`). Markup is served by theme routes under `/vi/…` — not core `/widgets/menu/offcanvas`.
 
-Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`Page:Header:Main`). This feature owns the header **menu** action and mobile-style drill-down navigation. Core navbar is left in place by bar v1 (not suppressed here).
+Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`Page:Header:Main`). This feature owns the header **menu** action and mobile-style drill-down navigation. Core navbar and offcanvas seed markup are suppressed in `storefront/layout/header.html.twig`.
 
 ## Ownership
 
@@ -168,6 +168,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Out of scope (v1)
 
-- Replacing the desktop core navbar
 - Cookie offcanvas → `Drawer` (cart drawer: [cart-drawer.md](cart-drawer.md))
 - Auto-reopening the theme drawer after language/currency switch (page reloads closed)

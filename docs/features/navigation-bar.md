@@ -4,7 +4,7 @@ Desktop top-level category bar with lazy mega-menu flyouts. Complements the [Nav
 
 All UI lives under UX components (`components/Navigation/Bar*`, `components/Navigation/Flyout*`). Flyout markup is served by a theme route under `/vi/…`.
 
-The header override replaces core `layout_header_navigation` content with `Page:Header:Main`, which composes the theme Bar from the header pagelet. Core main-nav markup is not rendered in that block.
+The header override replaces core `layout_header_navigation` content with `Page:Header:Main`, which composes the theme Bar from the header pagelet. Parent `storefront/layout/header.html.twig` empties core `base_navigation` (navbar) and `base_offcanvas_navigation` so only the theme Bar / Drawer own main nav.
 
 ## Ownership
 
@@ -168,6 +168,7 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 | Flyout shell | `src/Resources/views/components/Navigation/Flyout.*` |
 | Column / Item / Teaser | `src/Resources/views/components/Navigation/Flyout/{Column,Item,Teaser}.*` |
 | Header wire-up | `Page/Header/Main.html.twig`, `storefront/layout/header/header.html.twig` |
+| Core nav suppress | `storefront/layout/header.html.twig` (empty `base_navigation`, `base_offcanvas_navigation`) |
 
 ## Out of scope (v1)
 
