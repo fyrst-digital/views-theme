@@ -3,10 +3,6 @@
     showPrice = true,
     showTieredPrices = true,
     showTaxNote = false,
-    taxUrl = path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }),
-    taxText = context.taxState == 'gross'
-        ? 'general.grossTaxInformation'|trans|sw_sanitize
-        : 'general.netTaxInformation'|trans|sw_sanitize,
     cva = {},
 %}
 
@@ -29,7 +25,13 @@
 
 {% block tiered %}
     {% if prices.count > 1 and showTieredPrices is same as(true) %}
-        <twig:ViewsTheme:Product:PricesTiered :product="product" :prices="prices" />
+        <twig:ViewsTheme:Product:Price:Tiered
+            class="{{ cx.tiered.apply() }}"
+            {{ ...attributes.nested('tiered').defaults({
+                product: product,
+                prices: prices,
+            }).all() }}
+        />
     {% endif %}
 {% endblock %}
 
@@ -99,21 +101,9 @@
 
 {% block tax %}
     {% if showTaxNote is same as(true) %}
-        <div
-            {{ attributes.nested('tax') }}
+        <twig:ViewsTheme:Product:Price:Tax
             class="{{ cx.tax.apply() }}"
-        >
-            <button
-                {{ attributes.nested('taxAction').defaults({
-                    type: 'button',
-                    'data-ajax-modal': 'true',
-                    'data-url': taxUrl,
-                    'aria-haspopup': 'dialog',
-                }) }}
-                class="{{ cx.taxAction.apply() }}"
-            >
-                {{ taxText }}
-            </button>
-        </div>
+            {{ ...attributes.nested('tax').all() }}
+        />
     {% endif %}
 {% endblock %}

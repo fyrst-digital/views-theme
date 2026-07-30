@@ -1,44 +1,24 @@
 {% props
     product,
-    showVariations = true,
     showDescription = true,
     cva = {},
 %}
 
-{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
-{% set showVariationsBlock = not displayParent and product.variation and showVariations is same as(true) %}
-{% set showDescriptionBlock = showDescription is same as(true) %}
-{% set showBody = showVariationsBlock or showDescriptionBlock %}
-
-{% if showBody %}
+{% if showDescription is same as(true) %}
     {% set cx = vi_cva_from_file(cva) %}
 
     <div
         {{ attributes }}
         class="{{ cx.root.apply() }}"
     >
-        {% block variations %}
-            {% if showVariationsBlock %}
-                <twig:ViewsTheme:Product:Variations
-                    class="{{ cx.variations.apply() }}"
-                    {{ ...attributes.nested('variations').defaults({
-                        product: product,
-                        variations: product.variation,
-                    }).all() }}
-                />
-            {% endif %}
-        {% endblock %}
-
         {% block description %}
-            {% if showDescriptionBlock %}
-                <twig:ViewsTheme:Product:Description
-                    class="{{ cx.description.apply() }}"
-                    {{ ...attributes.nested('description').defaults({
-                        product: product,
-                        outputTags: false,
-                    }).all() }}
-                />
-            {% endif %}
+            <twig:ViewsTheme:Product:Description
+                class="{{ cx.description.apply() }}"
+                {{ ...attributes.nested('description').defaults({
+                    product: product,
+                    outputTags: false,
+                }).all() }}
+            />
         {% endblock %}
     </div>
 {% endif %}

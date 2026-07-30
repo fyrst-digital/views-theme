@@ -1,0 +1,21 @@
+{% props
+    url = path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') }),
+    text = context.taxState == 'gross'
+        ? 'general.grossTaxInformation'|trans|sw_sanitize
+        : 'general.netTaxInformation'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<a
+    {{ attributes.defaults({
+        href: url,
+        'data-ajax-modal': 'true',
+        'data-url': url,
+        'aria-haspopup': 'dialog',
+    }) }}
+    class="{{ cx.root.apply() }}"
+>
+    {{ text }}
+</a>

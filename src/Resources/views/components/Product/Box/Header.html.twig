@@ -2,8 +2,12 @@
     product,
     href = null,
     showRating = true,
+    showVariations = true,
     cva = {},
 %}
+
+{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
+{% set showVariationsBlock = not displayParent and product.variation and showVariations is same as(true) %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -33,5 +37,17 @@
                 url: href,
             }).all() }}
         />
+    {% endblock %}
+
+    {% block variations %}
+        {% if showVariationsBlock %}
+            <twig:ViewsTheme:Product:Variations
+                class="{{ cx.variations.apply() }}"
+                {{ ...attributes.nested('variations').defaults({
+                    product: product,
+                    variations: product.variation,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 </div>
