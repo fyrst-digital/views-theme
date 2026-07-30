@@ -6,8 +6,8 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 
 | Piece | Responsibility |
 |-------|----------------|
-| Storefront bridge | `storefront/component/product/card/box.html.twig` — thin `sw_extends`; replaces core layout switch with `Product:Box` |
-| `Product:Box` | Card shell: layout/displayMode/`sizes` resolve + cover overlays + content mounts Header / Body / Footer |
+| Storefront bridge | `storefront/component/product/card/box.html.twig` — thin `sw_extends`; maps core `standard`/empty → `default`, mounts `Product:Box` |
+| `Product:Box` | Card shell: `layout` + layout-aware `sizes` defaults; cover overlays + Header / Body / Footer |
 | `Product:Box:Header` | Rating + name + variations (listing). **Not** PDP `Product:Header` (breadcrumb + name) |
 | `Product:Box:Body` | Description only (omits root when off) |
 | `Product:Box:Footer` | Price + `Product:Actions` |
@@ -33,15 +33,21 @@ Every core call site that includes `box.html.twig` picks up the theme card:
 
 {% block component_product_box_include %}
     {% if product %}
+        {% set boxLayout = layout|default('default') %}
+        {% if boxLayout is empty or boxLayout is same as('standard') %}
+            {% set boxLayout = 'default' %}
+        {% endif %}
+
         <twig:ViewsTheme:Product:Box
             :product="product"
-            :layout="layout|default('standard')"
-            :displayMode="displayMode|default('standard')"
+            :layout="boxLayout"
             :referrerCategoryId="referrerCategoryId|default(null)"
         />
     {% endif %}
 {% endblock %}
 ```
+
+Core CMS may still send `layout=standard` and a `displayMode` config. The bridge normalizes layout only; **`displayMode` is not part of the theme Box/Cover API** (image fit is CSS tokens on Cover).
 
 This is an intentional **new** `views/storefront/` bridge (same role as header → `Page:Header:Main`). Do not add further storefront product-card files; extend UX under `components/Product/Box*`.
 
@@ -51,7 +57,7 @@ This is an intentional **new** `views/storefront/` bridge (same role as header �
 
 ```
 Product:Box
-  ├─ Product:Cover (url, displayMode, sizes; class product-image-wrapper)
+  ├─ Product:Cover (url, sizes; fit via CSS tokens)
   │    ├─ prepend → Product:Badges
   │    ├─ media
   │    └─ append → Product:Action:Wishlist (if wishlist enabled)
@@ -79,9 +85,8 @@ Product:Box
 | Prop | Default | Notes |
 |------|---------|--------|
 | `product` | required | Sales channel product |
-| `layout` | `default` | Core passes `standard` / `image` / `minimal` / `wishlist`; empty/`standard` → `default` (CVA `layout-*`). Only one shell; variants share markup |
-| `displayMode` | `standard` | Passed to Cover; image layout + standard → `cover` |
-| `sizes` | `null` | Thumbnail sizes; `null` → layout-based default map (incl. `xxl`) |
+| `layout` | `default` | Theme values: `default`, `image`, … (CVA `layout-*`). Core `standard`/empty mapped at bridge/listing only |
+| `sizes` | fixed map (`xs`…`xxl`) | Thumbnail sizes; override with `:sizes` |
 | `showDescription` | `true` | Forwarded to Body |
 | `showVariations` | `true` | Forwarded to Header (skipped for display-parent listing) |
 | `showPrice` / `showActions` | `true` | Forwarded to Footer |
@@ -140,7 +145,7 @@ Buy when available, not tiered-from, no children, and `core.listing.allowBuyInLi
 
 `root`, `content`, `header`, `body`, `footer`
 
-Root base includes legacy `product-box` for residual core CSS compatibility. Root class uses `resolvedLayout` (`layout-default`, …).
+Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover image fit: `--vi-image-fit` / `--vi-image-ar` (default cover / 1:1).
 
 ## Behaviour notes
 
@@ -151,13 +156,12 @@ Root base includes legacy `product-box` for residual core CSS compatibility. Roo
 - Wishlist: Cover `append`, `appearance="circle"`; `Product:Action:Wishlist` → `ViewsTheme:Wishlist:Toggle` (theme owner); Button + `aria-pressed` (see [wishlist.md](wishlist.md))
 - Badges: Cover `prepend` (no Box image wrapper)
 - Cover root gets `product-image-wrapper` from Box for residual listing positioning (wishlist circle)
-- Buy: co-located `Buy.js` → `ViewsTheme:Cart:Add` (theme `Cart` owner); form kept for no-JS. Not core `data-add-to-cart` / OffCanvas. Successful add opens cart drawer via `Cart:Drawer:Action` (`openOnAdd` / `openOnActions`)
+- Buy: co-located `Buy.js` → `ViewsTheme:Cart:Add` (theme `Cart` owner); form kept for no-JS. Not core `data-add-to-cart` / OffCanvas. Successful add opens cart drawer via `Cart:Drawer:Action` (`openOnActions` includes `add` by default)
 
 ## Known gaps
 
-- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell
-- Root class `layout-*` vs core `box-*` — residual core card CSS may not fully apply
-- No dedicated Box co-located CSS yet (Cover has CSS; root may lean on core `product-box`)
+- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell; style via `layout-*` + tokens
+- No dedicated Box co-located CSS yet (Cover has CSS)
 - Cover children not nest+spread from Box (fixed badges/wishlist mounts)
 - `Product:Listing` / `Search:Pagelet` / `Wishlist:Listing` shells not storefront-bridged
 

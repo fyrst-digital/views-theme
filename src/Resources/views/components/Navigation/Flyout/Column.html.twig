@@ -10,17 +10,21 @@
 {% set isFolder = category.type == 'folder' %}
 {% set children = item.children %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set listClass = cx.list.apply() %}
-{% set itemClass = cx.item.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    heading: cx.heading.apply(),
+    list: cx.list.apply(),
+    item: cx.item.apply(),
+} %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ classes.root }}"
 >
     {% if isFolder %}
         <div
             {{ attributes.nested('heading') }}
-            class="{{ cx.heading.apply() }}"
+            class="{{ classes.heading }}"
             title="{{ name }}"
         >
             {{ name }}
@@ -32,7 +36,7 @@
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,
             }) }}
-            class="{{ cx.heading.apply() }}"
+            class="{{ classes.heading }}"
         >
             {{ name }}
         </a>
@@ -41,7 +45,7 @@
     {% if children|length > 0 and level < maxDepth %}
         <ul
             {{ attributes.nested('list') }}
-            class="{{ listClass }}"
+            class="{{ classes.list }}"
         >
             {% for child in children %}
                 {% set childCat = child.category %}
@@ -50,7 +54,7 @@
 
                 {% if not childSkipped %}
                     <twig:ViewsTheme:Navigation:Flyout:Item
-                        class="{{ itemClass }}"
+                        class="{{ classes.item }}"
                         :item="child"
                         :level="level + 1"
                         :maxDepth="maxDepth"

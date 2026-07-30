@@ -9,9 +9,12 @@
 {% set children = navigation.getChildren(activeId) %}
 {% set active = navigation.active %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set scrollClass = cx.scroll.apply() %}
-{% set levelClass = cx.level.apply() %}
-{% set listClass = cx.list.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    scroll: cx.scroll.apply(),
+    level: cx.level.apply(),
+    list: cx.list.apply(),
+} %}
 
 {% set navigationImageIds = [] %}
 {% if children %}
@@ -31,17 +34,17 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Navigation:Drawer:Menu',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ classes.root }}"
 >
     <twig:ViewsTheme:Scroll:Area
-        class="{{ scrollClass }}"
+        class="{{ classes.scroll }}"
         {{ ...attributes.nested('scroll').all() }}
     >
         <div
             {{ attributes.nested('level').defaults({
                 'data-level': '',
             }) }}
-            class="{{ levelClass }}"
+            class="{{ classes.level }}"
         >
             {% if not isRoot and active %}
                 <twig:ViewsTheme:Navigation:Drawer:Menu:Header
@@ -53,7 +56,7 @@
 
             <ul
                 {{ attributes.nested('list') }}
-                class="{{ listClass }}">
+                class="{{ classes.list }}">
                 {% if children %}
                     {% for item in children.tree %}
                         {% set hasChildren = item.category.visibleChildCount > 0 %}

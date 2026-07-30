@@ -20,40 +20,40 @@
     new: { base: 'vi-product-badges__new badge product-badge badge-new' },
 }|replace_recursive(cva)) %}
 
-<div
+<span
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block discount %}
         {% if listPrice and not hasRange and not displayFromVariants %}
-            <div
+            <span
                 {{ attributes.nested('discount') }}
                 class="{{ cx.discount.apply() }}"
             >
                 {{ price.listPrice.percentage|number_format(0) }} %
-            </div>
+            </span>
         {% endif %}
     {% endblock %}
 
     {% block topseller %}
         {% if product.markAsTopseller %}
-            <div
+            <span
                 {{ attributes.nested('topseller') }}
                 class="{{ cx.topseller.apply() }}"
             >
                 {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
-            </div>
+            </span>
         {% endif %}
     {% endblock %}
 
     {% block new %}
         {% if product.isNew %}
-            <div
+            <span
                 {{ attributes.nested('new') }}
                 class="{{ cx.new.apply() }}"
             >
                 {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
-            </div>
+            </span>
         {% endif %}
     {% endblock %}
-</div>
+</span>

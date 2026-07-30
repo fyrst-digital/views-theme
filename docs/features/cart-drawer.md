@@ -31,7 +31,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 - Header `Cart:Drawer:Action` (handbag icon + badge) toggles the cart drawer on click
 - Successful `Cart:Changed` with `action` in `openOnActions` (default `['add']`) calls Action `open()` — fetch + mount if closed; no-op if already open (Body refreshes)
-- Twig: `openOnAdd` (default `true`) → `openOnActions: ['add']`; pass `:openOnActions="[]"` or `openOnAdd={false}` to disable; full list overrides convenience
+- Twig/JS: `openOnActions` (default `['add']`); pass `:openOnActions="[]"` to disable auto-open
 - Public API: `open()` / `close()` via `Shopware.callMethod('ViewsTheme:Cart:Drawer:Action', 'open'|'close')`
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)

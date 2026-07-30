@@ -17,41 +17,59 @@ Navigation:Drawer footer (mobile)
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Language:Action` | `components/Language/Action.*` | Shell: languages/active via prop defaults; owns full `Button` toggle override; hidden when ≤1 language |
+| `Language:Action` | `components/Language/Action.*` (+ **`Action.php`**) | Class-backed shell: view-model in PHP; owns full `Button` toggle; hidden when ≤1 language |
 | `Dropdown` | `components/Dropdown.*` | Host + panel (open/close, anchor placement, `aria-expanded`) |
 | `Button` | `components/Button.*` | Toggle control (`color` / `size`; empty `prepend` / `append` blocks) |
 | `Language:Menu` | `components/Language/Menu.*` | Panel body: switch form + options (no dropdown chrome) |
 | `Language:Flag` | `components/Language/Flag.*` | Flag `<img>` + CSP-safe load error handling (fallback src → remove) |
 
-## Props
+## Class component
 
-### `Language:Action`
+`Language:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-| Prop | Default | Notes |
-|------|---------|--------|
-| `languages` | `header.languages` → `page.header.languages` | Prop default in `{% props %}` |
-| `activeLanguageId` | `context.context.languageId` | Prop default |
-| `id` | `'vi-language-action-' ~ random()` | Base id for Dropdown + option buttons (`{id}-{languageId}`) |
-| `label` | `null` | Default: `context.languageInfo.name`; `:label="false"` hides text |
+- `Action.php` — `mount()` resolves defaults (active language id, label, id), finds active entity, derives `visible`, `ariaName`, `languageCode`, `flagCode` / `flagCodeFallback`
+- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `asset()` for flags, `|trans` for aria)
+
+Must stay registered via the components `**/*.php` service prototype (autoconfigure).
+
+## Props / fields
+
+### Inputs (`Language:Action`)
+
+| Prop | Default (in `mount`) | Notes |
+|------|----------------------|--------|
+| `languages` | `[]` if omitted | Call sites pass `header.languages` / drawer `languages` |
+| `activeLanguageId` | sales-channel language id | |
+| `id` | `vi-language-action-{random}` | Base id for Dropdown + option buttons |
+| `toggleLabel` | languageInfo name / active name | Named to avoid Dropdown/Button `label` shadowing; `:toggleLabel="false"` hides text |
 | `showCode` | `false` | Short locale code (e.g. `EN`) in Button `prepend` |
-| `showFlag` | `true` | Flag in Button `prepend` from `bundles/viewstheme/flags/{translationCode}.svg` |
+| `showFlag` | `true` | Flag in Button `prepend` |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
 | `cva` | `{}` | Deep-merge CVA overrides |
+
+### Derived (template-facing)
+
+| Field | Notes |
+|-------|--------|
+| `visible` | `true` when more than one language |
+| `ariaName` | Always-on name for title / aria-label |
+| `languageCode` | Short upper code for `showCode` |
+| `flagCode` / `flagCodeFallback` | For `Language:Flag` asset paths |
 
 ### `Language:Menu`
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `languages` | same as Action | Prop default |
-| `activeLanguageId` | same as Action | Prop default |
-| `id` | `'vi-language-menu-' ~ random()` | Base for option button ids (`{id}-{languageId}`); Action passes its `id` |
+| `languages` | `header.languages` → `page.header.languages` | Prop default (anonymous) |
+| `activeLanguageId` | `context.context.languageId` | Prop default |
+| `id` | `'vi-language-menu-' ~ random()` | Action passes its `id` |
 | `showFlag` | `true` | Flag next to each option |
 | `cva` | `{}` | Deep-merge |
 
 ## Behavior
 
 - **Open/close:** `Dropdown` HTML Popover + CSS anchor
-- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="white"`, hard attrs for popover/ARIA). No multi-hop blocks into Dropdown’s default Button.
+- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="none"`, hard attrs for popover/ARIA). No multi-hop blocks into Dropdown’s default Button.
 - **Switch:** `POST` `frontend.checkout.switch-language` with submit button `name="languageId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"` (core FormAddDynamicRedirect)
 - **Locale routes:** hidden `languageCode_{id}` when `_route_params._locale` is set
@@ -64,8 +82,8 @@ Navigation:Drawer footer (mobile)
 
 Same patterns as [Account action](account-action.md):
 
-- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `white`)
-- Pre-bind parent `cx` slots / `buttonLabel` before Dropdown mount (nested name shadowing — Dropdown also has `color` / `label` / `buttonSize`)
+- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `none`)
+- Pre-bind parent CVA into a `classes` hash before Dropdown mount (nested `cx` shadowing). Action uses `toggleLabel` (not `label`) so the value is not shadowed inside Dropdown’s `toggle` block.
 - No `class` inside `attributes.defaults`
 - Do **not** nest `{% block %}` inside `<twig:block>` to fill Button slots through Dropdown — Action owns the Button
 
@@ -80,7 +98,7 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 />
 ```
 
-Optional stable `id="vi-header-language"`. Toggle is always `Button` `size="sm"` `color="white"`.
+Optional stable `id="vi-header-language"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
 Navigation drawer footer — languages passed from `NavigationDrawerController` (via `HeaderPageletLoader`):
 
@@ -96,4 +114,4 @@ Navigation drawer footer — languages passed from `NavigationDrawerController` 
 - [Currency switch](currency-switch.md)
 - [Account action](account-action.md) (Dropdown composition reference)
 - [Navigation drawer](navigation-drawer.md)
-- [UX components](../conventions/ux-components.md)
+- [UX components](../conventions/ux-components.md) · [class components](../conventions/ux-components.md#class-components-php-backed)

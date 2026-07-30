@@ -11,8 +11,11 @@
 {% set teaserImage = category and category.media ? category.media : null %}
 {% set hasTeaser = teaserImage is not null %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set columnsClass = cx.columns.apply() %}
-{% set teaserClass = cx.teaser.apply() %}
+{% set classes = {
+    root: cx.root.apply({ teaser: hasTeaser }),
+    columns: cx.columns.apply(),
+    teaser: cx.teaser.apply(),
+} %}
 
 <div
     {{ attributes.defaults({
@@ -25,14 +28,14 @@
         'aria-label': name,
         style: '--vi-flyout-width-anchor: ' ~ widthAnchor,
     }) }}
-    class="{{ cx.root.apply({ teaser: hasTeaser }) }}"
+    class="{{ classes.root }}"
 >
     {% block content %}
 
         {% block columns %}
             <div
                 {{ attributes.nested('columns') }}
-                class="{{ columnsClass }}"
+                class="{{ classes.columns }}"
             >
                 {% for treeItem in navigation.tree %}
                     {% set cat = treeItem.category %}
@@ -53,7 +56,7 @@
         {% block teaser %}
             {% if hasTeaser and category %}
                 <twig:ViewsTheme:Navigation:Flyout:Teaser
-                    class="{{ teaserClass }}"
+                    class="{{ classes.teaser }}"
                     :category="category"
                     :image="teaserImage"
                     {{ ...attributes.nested('teaser').all() }}

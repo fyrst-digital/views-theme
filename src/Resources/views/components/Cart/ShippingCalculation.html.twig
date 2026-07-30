@@ -6,9 +6,13 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set summaryClass = cx.summary.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    details: cx.details.apply(),
+    summary: cx.summary.apply(),
+    selection: cx.selection.apply(),
+} %}
 {% set summaryLabel = 'checkout.shippingCosts'|trans|sw_sanitize %}
-{% set selectionClass = cx.selection.apply() %}
 
 <form
     {{ attributes.defaults({
@@ -20,14 +24,14 @@
             configureEvent: 'ViewsTheme:Cart:Configure',
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ classes.root }}"
 >
     {% block panel %}
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
         {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
-            <details {{ attributes.nested('details') }} class="{{ cx.details.apply() }}">
+            <details {{ attributes.nested('details') }} class="{{ classes.details }}">
                 <twig:ViewsTheme:Button
-                    class="{{ summaryClass }}"
+                    class="{{ classes.summary }}"
                     {{ ...attributes.nested('summary').defaults({
                         tag: 'summary',
                         label: summaryLabel,
@@ -40,7 +44,7 @@
 
                 {% block selection %}
                     <twig:ViewsTheme:Cart:ShippingCalculation:Selection
-                        class="{{ selectionClass }}"
+                        class="{{ classes.selection }}"
                         {{ ...attributes.nested('selection').defaults({
                             page: page,
                             redirectTo: redirectTo,

@@ -1,31 +1,17 @@
-{% props
-    currencies = header.currencies|default(page.header.currencies|default([])),
-    activeCurrencyId = context.currency.id|default(null),
-    id = 'vi-currency-action-' ~ random(),
-    label = null,
-    showSymbol = true,
-    placement = 'bottom-end',
-    cva = {},
-%}
-
-{% set currencyCount = currencies.count is defined ? currencies.count : currencies|length %}
-
-{% if currencyCount > 1 %}
-    {% set defaultLabel = context.currency.translated.name|default('') %}
-    {% set resolvedLabel = label is same as(false) ? false : (label is not null ? label : defaultLabel) %}
-    {% set buttonLabel = resolvedLabel is same as(false) ? null : resolvedLabel %}
-    {% set currencySymbol = context.currency.symbol|default('') %}
-
+{% if visible %}
     {% set cx = vi_cva_from_file(cva) %}
-    {% set toggleClass = cx.toggle.apply() %}
-    {% set labelClass = cx.label.apply() %}
-    {% set symbolClass = cx.symbol.apply() %}
-    {% set caretClass = cx.caret.apply() %}
-    {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': defaultLabel })|striptags %}
+    {% set classes = {
+        root: cx.root.apply(),
+        toggle: cx.toggle.apply(),
+        label: cx.label.apply(),
+        symbol: cx.symbol.apply(),
+        caret: cx.caret.apply(),
+    } %}
+    {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': ariaName })|striptags %}
     {% set anchorName = '--' ~ id %}
 
     <twig:ViewsTheme:Dropdown
-        class="{{ cx.root.apply() }}"
+        class="{{ classes.root }}"
         :id="id"
         {{ ...attributes.defaults({
             placement: placement,
@@ -33,12 +19,12 @@
     >
         <twig:block name="toggle">
             <twig:ViewsTheme:Button
-                class="{{ toggleClass }}"
-                label:class="{{ labelClass }}"
+                class="{{ classes.toggle }}"
+                label:class="{{ classes.label }}"
                 type="button"
                 color="none"
                 size="sm"
-                :label="buttonLabel"
+                :label="toggleLabel"
                 title="{{ toggleAriaLabel }}"
                 aria-label="{{ toggleAriaLabel }}"
                 aria-haspopup="listbox"
@@ -49,12 +35,12 @@
             >
                 <twig:block name="prepend">
                     {% if showSymbol and currencySymbol %}
-                        <span class="{{ symbolClass }}" aria-hidden="true">{{ currencySymbol }}</span>
+                        <span class="{{ classes.symbol }}" aria-hidden="true">{{ currencySymbol }}</span>
                     {% endif %}
                 </twig:block>
 
                 <twig:block name="append">
-                    {{ vi_icon('caret-down', { class: caretClass }) }}
+                    {{ vi_icon('caret-down', { class: classes.caret }) }}
                 </twig:block>
             </twig:ViewsTheme:Button>
         </twig:block>

@@ -1,8 +1,14 @@
 {% props
     product,
     layout = 'default',
-    displayMode = 'standard',
-    sizes = null,
+    sizes = {
+        xs: '500px',
+        sm: '315px',
+        md: '390px',
+        lg: '350px',
+        xl: '280px',
+        xxl: '280px',
+    },
     showDescription = true,
     showVariations = true,
     showPrice = true,
@@ -13,30 +19,6 @@
     referrerCategoryId = null,
     cva = {},
 %}
-
-{% set resolvedLayout = layout is empty or layout is same as('standard') ? 'default' : layout %}
-{% set resolvedDisplayMode = resolvedLayout is same as('image') and displayMode is same as('standard')
-    ? 'cover'
-    : displayMode %}
-
-{% set resolvedSizes = sizes is not null ? sizes : {
-    xs: '500px',
-    sm: '315px',
-    md: '390px',
-    lg: '350px',
-    xl: '280px',
-    xxl: '280px',
-} %}
-{% if sizes is null and resolvedLayout is same as('image') %}
-    {% set resolvedSizes = {
-        xs: '500px',
-        sm: '500px',
-        md: '390px',
-        lg: '350px',
-        xl: '280px',
-        xxl: '280px',
-    } %}
-{% endif %}
 
 {% set id = product.id %}
 {% set name = product.translated.name %}
@@ -65,8 +47,7 @@
             :id="id"
             :name="name"
             :cover="cover"
-            :displayMode="resolvedDisplayMode"
-            :sizes="resolvedSizes"
+            :sizes="sizes"
             :url="productUrl"
         >
             <twig:block name="prepend">

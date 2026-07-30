@@ -72,7 +72,7 @@ Evaluated with the **component context**, so dynamic bases work:
 ```twig
 {# Product/Box.cva.twig #}
 {
-    root: { base: 'vi-product-box product-box layout-' ~ resolvedLayout },
+    root: { base: 'vi-product-box layout-' ~ layout },
     content: { base: 'vi-product-box__content' },
 }
 ```

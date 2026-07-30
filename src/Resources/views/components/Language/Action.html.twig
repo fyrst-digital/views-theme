@@ -1,47 +1,18 @@
-{% props
-    languages = header.languages|default(page.header.languages|default([])),
-    activeLanguageId = context.context.languageId|default(null),
-    id = 'vi-language-action-' ~ random(),
-    label = null,
-    showCode = false,
-    showFlag = true,
-    placement = 'bottom-end',
-    cva = {},
-%}
-
-{% set languageCount = languages.count is defined ? languages.count : languages|length %}
-
-{% if languageCount > 1 %}
-    {% set activeLanguage = null %}
-    {% for language in languages %}
-        {% if language.id is same as(activeLanguageId) %}
-            {% set activeLanguage = language %}
-        {% endif %}
-    {% endfor %}
-    {% if activeLanguage is null and languageCount > 0 %}
-        {% set activeLanguage = languages|first %}
-    {% endif %}
-
-    {% set defaultLabel = context.languageInfo.name|default(activeLanguage.translated.name|default(activeLanguage.name|default(''))) %}
-    {% set resolvedLabel = label is same as(false) ? false : (label is not null ? label : defaultLabel) %}
-    {% set buttonLabel = resolvedLabel is same as(false) ? null : resolvedLabel %}
-    {% set activeTranslationCode = activeLanguage and activeLanguage.translationCode ? activeLanguage.translationCode.code : (context.languageInfo.localeCode|default(null)) %}
-    {% set languageCode = activeTranslationCode ? activeTranslationCode|lower|split('-')|first|upper : '' %}
-    {% set flagCode = activeTranslationCode ?: null %}
-    {% set flagCodeFallback = flagCode ? flagCode|split('-')|first : null %}
-
+{% if visible %}
     {% set cx = vi_cva_from_file(cva) %}
-    {% set rootClass = cx.root.apply() %}
-    {% set toggleClass = cx.toggle.apply() %}
-    {% set flagIconClass = cx.flagIcon.apply() %}
-    {% set labelClass = cx.label.apply() %}
-    {% set codeClass = cx.code.apply() %}
-    {% set caretClass = cx.caret.apply() %}
-    {% set toggleAriaLabel = 'header.languageTrigger'|trans({ '%lang%': defaultLabel })|striptags %}
+    {% set classes = {
+        root: cx.root.apply(),
+        toggle: cx.toggle.apply(),
+        flagIcon: cx.flagIcon.apply(),
+        label: cx.label.apply(),
+        code: cx.code.apply(),
+        caret: cx.caret.apply(),
+    } %}
+    {% set toggleAriaLabel = 'header.languageTrigger'|trans({ '%lang%': ariaName })|striptags %}
     {% set anchorName = '--' ~ id %}
 
     <twig:ViewsTheme:Dropdown
-        class="{{ rootClass }}"
+        class="{{ classes.root }}"
         :id="id"
         {{ ...attributes.defaults({
             placement: placement,
@@ -49,12 +20,12 @@
     >
         <twig:block name="toggle">
             <twig:ViewsTheme:Button
-                class="{{ toggleClass }}"
-                label:class="{{ labelClass }}"
+                class="{{ classes.toggle }}"
+                label:class="{{ classes.label }}"
                 type="button"
                 color="none"
                 size="sm"
-                :label="buttonLabel"
+                :label="toggleLabel"
                 title="{{ toggleAriaLabel }}"
                 aria-label="{{ toggleAriaLabel }}"
                 aria-haspopup="listbox"
@@ -70,19 +41,19 @@
                             ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
                             : null %}
                         <twig:ViewsTheme:Language:Flag
-                            class="{{ flagIconClass }}"
+                            class="{{ classes.flagIcon }}"
                             :src="flagSrc"
                             :fallbackSrc="flagFallbackSrc"
                         />
                     {% endif %}
 
                     {% if showCode and languageCode %}
-                        <span class="{{ codeClass }}" aria-hidden="true">{{ languageCode }}</span>
+                        <span class="{{ classes.code }}" aria-hidden="true">{{ languageCode }}</span>
                     {% endif %}
                 </twig:block>
 
                 <twig:block name="append">
-                    {{ vi_icon('caret-down', { class: caretClass }) }}
+                    {{ vi_icon('caret-down', { class: classes.caret }) }}
                 </twig:block>
             </twig:ViewsTheme:Button>
         </twig:block>

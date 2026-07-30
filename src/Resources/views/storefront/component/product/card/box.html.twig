@@ -2,10 +2,14 @@
 
 {% block component_product_box_include %}
     {% if product %}
+        {% set boxLayout = layout|default('default') %}
+        {% if boxLayout is empty or boxLayout is same as('standard') %}
+            {% set boxLayout = 'default' %}
+        {% endif %}
+
         <twig:ViewsTheme:Product:Box
             :product="product"
-            :layout="layout|default('standard')"
-            :displayMode="displayMode|default('standard')"
+            :layout="boxLayout"
             :referrerCategoryId="referrerCategoryId|default(null)"
         />
     {% endif %}

@@ -5,11 +5,14 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set rootClass = cx.root.apply() %}
-{% set iconClass = cx.icon.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    icon: cx.icon.apply(),
+    label: cx.label.apply(),
+} %}
 
 <twig:ViewsTheme:Navigation:Drawer:Drill
-    class="{{ rootClass }}"
+    class="{{ classes.root }}"
     {{ ...attributes.defaults({
         href: menuUrl,
         title: 'viewsTheme.navigationDrawer.showAll'|trans|striptags,
@@ -17,10 +20,10 @@
     }).all() }}
 >
     {{ vi_icon('list', {
-        class: iconClass
+        class: classes.icon
     }) }}
     {% if showLabel is same as(true) %}
-        <span class="{{ cx.label.apply() }}">
+        <span class="{{ classes.label }}">
             {{ 'viewsTheme.navigationDrawer.showAll'|trans|sw_sanitize }}
         </span>
     {% endif %}

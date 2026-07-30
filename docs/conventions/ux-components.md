@@ -11,25 +11,77 @@ Namespace: **`ViewsTheme`** (plugin bundle name).
 
 ## Directory layout
 
-Anonymous components under `src/Resources/views/components/`:
+Components under `src/Resources/views/components/`:
 
 ```text
-Alert.html.twig                       → ViewsTheme:Alert
+Alert.html.twig                       → ViewsTheme:Alert (anonymous)
 Alert.cva.twig                        # optional co-located CVA defaults
 QuantityInput.html.twig               → ViewsTheme:QuantityInput
-Page/Header.html.twig                 → ViewsTheme:Page:Header
-Page/Header/Main.html.twig            → ViewsTheme:Page:Header:Main
+Language/Action.html.twig             → ViewsTheme:Language:Action
+Language/Action.php                   # optional class-backed (view-model)
+Language/Action.cva.twig
 Cart/Drawer/Action.html.twig
 Cart/Drawer/Action.js                 # co-located ShopwareComponent
-Page/Footer/Bottom.html.twig          → ViewsTheme:Page:Footer:Bottom
+Page/Header/Main.html.twig            → ViewsTheme:Page:Header:Main
 VariantsGrid/Container.html.twig
 VariantsGrid/Container.js
 ```
 
 - PascalCase directories / leaf file names.
 - Prefer **named files** (`Cart.html.twig` + `Cart.js`), not `index.*` (avoids import-map `:index` suffix).
-- Co-located JS/SCSS/CVA share the leaf name when needed (`Name.cva.twig` for `vi_cva_from_file`).
+- Co-located JS/SCSS/CVA/PHP share the leaf name when needed (`Name.cva.twig` for `vi_cva_from_file`; `Name.php` for class components).
 - **`Page`** = global storefront layout chrome (header, footer, …).
+
+### Class components (PHP-backed)
+
+**Anonymous first** for pure composition and simple `{% props %}` defaults.
+
+A **class component is a valid, preferred pattern** when the template would otherwise own heavy view-model work (collection scans, multi-field codes/flags, visibility gates). Keep Twig as **composition only** (CVA, attributes, blocks, child tags).
+
+| | Anonymous | Class-backed |
+|--|-----------|--------------|
+| Props | `{% props %}` | Public properties + `mount()` |
+| Logic | Twig only | PHP `mount()` / getters (view-model) |
+| Registration | Path only | **Service + `autoconfigure`** (required) |
+| Tag | `<twig:ViewsTheme:…>` | Same (co-located class under bundle component namespace) |
+
+**Rules:**
+
+- Co-locate `Name.php` next to `Name.html.twig`.
+- Namespace: `Fyrst\ViewsTheme\Resources\views\components\…` (Shopware `getTwigComponentNamespace()`).
+- `#[AsTwigComponent]` on the class; **no** `{% props %}` in the template (public props are the API).
+- Register via the `services.xml` prototype for `Resources/views/components/**/*.php` with **`autowire` + `autoconfigure`**. `autoconfigure` alone tags `#[AsTwigComponent]` but does **not** inject constructor deps (`Too few arguments to function …::__construct()`). Without registration, Twig **silently** falls back to the anonymous template and ignores the PHP class.
+- Scope: **view-model only** (defaults from sales-channel context, derive display fields, `visible`). No DAL, cart rules, or business workflows.
+- Twig still owns CVA, `attributes`, nested children, `asset()`, `|trans`.
+
+```php
+// src/Resources/views/components/Language/Action.php
+namespace Fyrst\ViewsTheme\Resources\views\components\Language;
+
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+
+#[AsTwigComponent]
+class Action
+{
+    public mixed $languages = null;
+    public bool $visible = false;
+    // …
+
+    public function mount(mixed $languages = null /* … */): void
+    {
+        // resolve defaults + derived fields
+    }
+}
+```
+
+```twig
+{# Action.html.twig — composition only #}
+{% if visible %}
+    <twig:ViewsTheme:Dropdown …>…</twig:ViewsTheme:Dropdown>
+{% endif %}
+```
+
+Pilots: `Language:Action`, `Currency:Action`.
 
 ## Props / CVA / attributes
 
@@ -70,15 +122,13 @@ Ambient outer-scope values (e.g. page `formViolations`) belong in the prop defau
 %}
 ```
 
-**Keep** post-props `{% set %}` only when the value is not a plain default:
+**Keep** post-props `{% set %}` only when the value is not a plain default (or move multi-step derivation into a [class component](#class-components-php-backed)):
 
-| Keep `{% set %}` | Examples |
-|------------------|----------|
-| Transform of a prop | `layout` `standard` → `default` |
-| Multi-step / loops | find active language in a collection |
-| Tri-state API | `label is same as(false)` vs null vs string |
+| Keep `{% set %}` / class `mount()` | Examples |
+|------------------------------------|----------|
+| Transform of a prop | rename/normalize only when it must stay inside the component |
+| Multi-step / loops | find active language — prefer class `mount()` |
 | Non-prop local | `options = lineItem.payload.options`, `linked`, `cx` |
-| “Omitted” must stay distinguishable | `sizes is null` then layout-specific map |
 
 #### Examples of prop defaults
 
@@ -200,20 +250,33 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
 
 Child mount merges parent context, then **child props win**. If the child also defines `cx` or `attributes` (e.g. `Dropdown` inside `Account:Action`), those names inside `<twig:block>` refer to the **child**, not the parent.
 
+**Preferred:** pre-bind applied class strings into a **`classes`** hash (not named `cx`) before the child mount. Keys match CVA slots.
+
 ```twig
 {% set cx = vi_cva_from_file(cva) %}
-{% set labelClass = cx.label.apply() %}  {# bind before child mount #}
+{% set classes = {
+    root: cx.root.apply(),
+    toggle: cx.toggle.apply(),
+    label: cx.label.apply(),
+} %}
 
-<twig:ViewsTheme:Dropdown …>
+<twig:ViewsTheme:Dropdown class="{{ classes.root }}" …>
     <twig:block name="toggle">
-        {# ❌ cx is Dropdown’s CVA here — parent label:class is lost #}
-        {# ✅ use precomputed locals #}
-        <span class="{{ labelClass }}">{{ label }}</span>
+        {# ❌ cx is Dropdown’s CVA here #}
+        {# ✅ classes.* was bound in the parent #}
+        <span class="{{ classes.label }}">…</span>
     </twig:block>
 </twig:ViewsTheme:Dropdown>
 ```
 
-Parent props the child does **not** declare (e.g. `label` text) still resolve from the parent context.
+- Use `classes.slot` in `class="…"`, `slot:class="…"`, and `{ class: classes.slot }`.
+- Variants: `root: cx.root.apply({ size: size })` inside the hash.
+- Single-slot on own DOM with no nested host may still use inline `cx.root.apply()`.
+- Do **not** use N locals (`toggleClass`, `labelClass`, …).
+
+Parent props the child does **not** declare still resolve from the parent context.
+
+When composing hosts that declare common names (`label`, `color`, `id`, …), prefer **distinct parent prop names** (e.g. `toggleLabel`) or pre-bind before the child mount — otherwise values inside `<twig:block>` are the child’s defaults (`null`).
 
 ### Nested slots: props and single content owner
 
@@ -280,7 +343,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
-| Language:Action / Language:Menu, Currency:Action / Currency:Menu (via Dropdown) | UX + `vi_cva` |
+| Language:Action / Currency:Action (class-backed PHP) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |

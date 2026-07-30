@@ -37,7 +37,7 @@ src/
 
 ### Twig
 
-- **UX components** under `views/components/` as `<twig:ViewsTheme:…>` ([UX guide](conventions/ux-components.md)).
+- **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
 - **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md).
 

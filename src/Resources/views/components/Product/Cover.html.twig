@@ -2,7 +2,6 @@
     id = null,
     name = null,
     cover = null,
-    displayMode = 'standard',
     sizes = {},
     showLink = true,
     url = id is not null ? seoUrl('frontend.detail.page', { productId: id }) : null,
@@ -14,7 +13,7 @@
 {% set rootTag = linked ? 'a' : tag %}
 
 {% set cx = vi_cva({
-    root: { base: 'vi-product-cover is-' ~ displayMode },
+    root: { base: 'vi-product-cover position-relative' },
     image: { base: 'vi-product-cover__image rounded-3 w-100 d-block' },
     video: { base: 'vi-product-cover__video' },
     placeholder: { base: 'vi-product-cover__placeholder' },
@@ -56,10 +55,6 @@
                     loading: 'lazy',
                     class: cx.image.apply(),
                 }) %}
-
-                {% if displayMode == 'cover' or displayMode == 'contain' %}
-                    {% set mediaAttrs = mediaAttrs|merge({ 'data-object-fit': displayMode }) %}
-                {% endif %}
 
                 {% block image %}
                     {% sw_thumbnails 'product-image-thumbnails' with {

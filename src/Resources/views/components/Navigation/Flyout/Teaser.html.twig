@@ -7,19 +7,23 @@
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set imageClass = cx.image.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    link: cx.link.apply(),
+    image: cx.image.apply(),
+} %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ classes.root }}"
 >
     {% if isFolder %}
-        <div class="{{ cx.link.apply() }}">
+        <div class="{{ classes.link }}">
             {% sw_thumbnails 'navigation-flyout-teaser-image' with {
                 media: image,
                 sizes: { default: '320px' },
                 attributes: {
-                    class: imageClass,
+                    class: classes.image,
                     alt: (image.translated.alt ?: name),
                     title: (image.translated.title ?: name),
                     loading: 'lazy',
@@ -33,13 +37,13 @@
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,
             }) }}
-            class="{{ cx.link.apply() }}"
+            class="{{ classes.link }}"
         >
             {% sw_thumbnails 'navigation-flyout-teaser-image' with {
                 media: image,
                 sizes: { default: '320px' },
                 attributes: {
-                    class: imageClass,
+                    class: classes.image,
                     alt: (image.translated.alt ?: name),
                     title: (image.translated.title ?: name),
                     loading: 'lazy',

@@ -58,10 +58,14 @@
             {% block element_product_listing_col %}
                 {% for product in searchResult %}
                     {% block element_product_listing_box %}
+                        {% set listingBoxLayout = boxLayout|default('default') %}
+                        {% if listingBoxLayout is empty or listingBoxLayout is same as('standard') %}
+                            {% set listingBoxLayout = 'default' %}
+                        {% endif %}
+
                         <twig:ViewsTheme:Product:Box
                             :product="product"
-                            :layout="boxLayout"
-                            :displayMode="displayMode"
+                            :layout="listingBoxLayout"
                         />
                     {% endblock %}
                 {% endfor %}

@@ -17,38 +17,55 @@ Navigation:Drawer footer (mobile)
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Currency:Action` | `components/Currency/Action.*` | Shell: currencies/active via prop defaults; owns full `Button` toggle override; hidden when ≤1 currency |
+| `Currency:Action` | `components/Currency/Action.*` (+ **`Action.php`**) | Class-backed shell: view-model in PHP; owns full `Button` toggle; hidden when ≤1 currency |
 | `Dropdown` | `components/Dropdown.*` | Host + panel (open/close, anchor placement, `aria-expanded`) |
 | `Button` | `components/Button.*` | Toggle control (`color` / `size`; empty `prepend` / `append` blocks) |
 | `Currency:Menu` | `components/Currency/Menu.*` | Panel body: configure form + options (no dropdown chrome) |
 
-## Props
+## Class component
 
-### `Currency:Action`
+`Currency:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-| Prop | Default | Notes |
-|------|---------|--------|
-| `currencies` | `header.currencies` → `page.header.currencies` | Prop default in `{% props %}` |
-| `activeCurrencyId` | `context.currency.id` | Prop default |
-| `id` | `'vi-currency-action-' ~ random()` | Base id for Dropdown + option buttons (`{id}-{currencyId}`) |
-| `label` | `null` | Default: `context.currency.translated.name`; `:label="false"` hides text |
+- `Action.php` — `mount()` resolves defaults (active currency id, label, id), derives `visible`, `ariaName`, `currencySymbol`
+- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `|trans` for aria)
+
+Must stay registered via the components `**/*.php` service prototype (autoconfigure).
+
+## Props / fields
+
+### Inputs (`Currency:Action`)
+
+| Prop | Default (in `mount`) | Notes |
+|------|----------------------|--------|
+| `currencies` | `[]` if omitted | Call sites pass `header.currencies` / drawer `currencies` |
+| `activeCurrencyId` | context currency id | |
+| `id` | `vi-currency-action-{random}` | Base id for Dropdown + option buttons |
+| `toggleLabel` | active currency translated name | Named to avoid Dropdown/Button `label` shadowing; `:toggleLabel="false"` hides text |
 | `showSymbol` | `true` | Currency symbol in Button `prepend` |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
 | `cva` | `{}` | Deep-merge CVA overrides |
+
+### Derived (template-facing)
+
+| Field | Notes |
+|-------|--------|
+| `visible` | `true` when more than one currency |
+| `ariaName` | Always-on name for title / aria-label |
+| `currencySymbol` | Context currency symbol |
 
 ### `Currency:Menu`
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `currencies` | same as Action | Prop default |
-| `activeCurrencyId` | same as Action | Prop default |
-| `id` | `'vi-currency-menu-' ~ random()` | Base for option button ids (`{id}-{currencyId}`); Action passes its `id` |
+| `currencies` | same as Action call-site defaults | Prop default (anonymous) |
+| `activeCurrencyId` | `context.currency.id` | Prop default |
+| `id` | `'vi-currency-menu-' ~ random()` | Action passes its `id` |
 | `cva` | `{}` | Deep-merge |
 
 ## Behavior
 
 - **Open/close:** `Dropdown` HTML Popover + CSS anchor (no currency-specific JS)
-- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="white"`, hard attrs for popover/ARIA)
+- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="none"`, hard attrs for popover/ARIA)
 - **Switch:** `POST` `frontend.checkout.configure` with submit button `name="currencyId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"`
 - **Active option:** CVA `active` variant + `aria-current="true"`
@@ -59,8 +76,8 @@ Navigation:Drawer footer (mobile)
 
 Same patterns as [Account action](account-action.md) / [Language switch](language-switch.md):
 
-- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `white`)
-- Pre-bind parent `cx` slots / `buttonLabel` before Dropdown mount (nested name shadowing)
+- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `none`)
+- Pre-bind parent CVA into a `classes` hash before Dropdown mount (nested `cx` shadowing). Action uses `toggleLabel` (not `label`) so the value is not shadowed inside Dropdown’s `toggle` block.
 - No `class` inside `attributes.defaults`
 - Do **not** multi-hop blocks through Dropdown into Button
 
@@ -75,7 +92,7 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 />
 ```
 
-Optional stable `id="vi-header-currency"`. Toggle is always `Button` `size="sm"` `color="white"`.
+Optional stable `id="vi-header-currency"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
 Navigation drawer footer — currencies passed from `NavigationDrawerController` (via `HeaderPageletLoader`):
 
@@ -91,4 +108,4 @@ Navigation drawer footer — currencies passed from `NavigationDrawerController`
 - [Language switch](language-switch.md)
 - [Account action](account-action.md)
 - [Navigation drawer](navigation-drawer.md)
-- [UX components](../conventions/ux-components.md)
+- [UX components](../conventions/ux-components.md) · [class components](../conventions/ux-components.md#class-components-php-backed)

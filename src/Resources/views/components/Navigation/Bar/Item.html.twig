@@ -9,7 +9,12 @@
 {% set isFolder = category.type == 'folder' %}
 {% set flyoutId = 'vi-navigation-flyout-' ~ category.id %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set caretClass = cx.caret.apply() %}
+{% set classes = {
+    root: cx.root.apply(),
+    link: cx.link.apply(),
+    label: cx.label.apply(),
+    caret: cx.caret.apply(),
+} %}
 {# UX ComponentAttributes: null becomes true — use false to omit #}
 {% set triggerDefaults = {
     title: name,
@@ -26,17 +31,17 @@
     {{ attributes.defaults({
         'data-navigation-id': category.id,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ classes.root }}"
 >
     {% if isFolder %}
         <button
             type="button"
             {{ attributes.nested('link').defaults(triggerDefaults) }}
-            class="{{ cx.link.apply() }}"
+            class="{{ classes.link }}"
         >
-            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            <span class="{{ classes.label }}">{{ name }}</span>
             {% if hasChildren %}
-                {{ vi_icon('caret-down', { class: caretClass }) }}
+                {{ vi_icon('caret-down', { class: classes.caret }) }}
             {% endif %}
         </button>
     {% else %}
@@ -44,11 +49,11 @@
             {{ attributes.nested('link').defaults(triggerDefaults|merge({
                 href: category_url(category),
             })|merge(category_linknewtab(category) ? { target: '_blank' } : {})) }}
-            class="{{ cx.link.apply() }}"
+            class="{{ classes.link }}"
         >
-            <span class="{{ cx.label.apply() }}">{{ name }}</span>
+            <span class="{{ classes.label }}">{{ name }}</span>
             {% if hasChildren %}
-                {{ vi_icon('caret-down', { class: caretClass }) }}
+                {{ vi_icon('caret-down', { class: classes.caret }) }}
             {% endif %}
         </a>
     {% endif %}
