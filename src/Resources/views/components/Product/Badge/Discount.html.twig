@@ -1,0 +1,17 @@
+{% props
+    percentage = null,
+    label = percentage is not null ? (percentage|number_format(0) ~ ' %') : null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% block content %}
+    <twig:ViewsTheme:Badge
+        class="{{ cx.root.apply() }}"
+        {{ ...attributes.defaults({
+            type: 'discount',
+            label: label,
+        }).all() }}
+    />
+{% endblock %}

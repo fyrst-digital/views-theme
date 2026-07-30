@@ -1,59 +1,37 @@
-{% props
-    product,
-    cva = {},
-%}
+{% if visible %}
+    {% set cx = vi_cva_from_file(cva) %}
 
-{% set price = product.calculatedPrice %}
-{% if product.calculatedPrices.count > 0 %}
-    {% set price = product.calculatedPrices.last %}
+    <span
+        {{ attributes }}
+        class="{{ cx.root.apply() }}"
+    >
+        {% block discount %}
+            {% if showDiscount %}
+                <twig:ViewsTheme:Product:Badge:Discount
+                    class="{{ cx.discount.apply() }}"
+                    {{ ...attributes.nested('discount').defaults({
+                        percentage: discountPercent,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
+        {% block topseller %}
+            {% if showTopseller %}
+                <twig:ViewsTheme:Product:Badge:Topseller
+                    class="{{ cx.topseller.apply() }}"
+                    {{ ...attributes.nested('topseller').all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
+        {% block new %}
+            {% if showNew %}
+                <twig:ViewsTheme:Product:Badge:New
+                    class="{{ cx.new.apply() }}"
+                    {{ ...attributes.nested('new').all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    </span>
 {% endif %}
-
-{% set listPrice = price.listPrice.percentage > 0 %}
-{% set hasRange = product.calculatedPrices.count > 1 %}
-{% set displayParent = product.variantListingConfig.displayParent and product.parentId === null %}
-{% set displayFromVariants = displayParent and price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
-
-{% set cx = vi_cva({
-    root: { base: 'vi-product-badges' },
-    discount: { base: 'vi-product-badges__discount badge product-badge badge-discount' },
-    topseller: { base: 'vi-product-badges__topseller badge product-badge badge-topseller' },
-    new: { base: 'vi-product-badges__new badge product-badge badge-new' },
-}|replace_recursive(cva)) %}
-
-<span
-    {{ attributes }}
-    class="{{ cx.root.apply() }}"
->
-    {% block discount %}
-        {% if listPrice and not hasRange and not displayFromVariants %}
-            <span
-                {{ attributes.nested('discount') }}
-                class="{{ cx.discount.apply() }}"
-            >
-                {{ price.listPrice.percentage|number_format(0) }} %
-            </span>
-        {% endif %}
-    {% endblock %}
-
-    {% block topseller %}
-        {% if product.markAsTopseller %}
-            <span
-                {{ attributes.nested('topseller') }}
-                class="{{ cx.topseller.apply() }}"
-            >
-                {{ 'listing.boxLabelTopseller'|trans|sw_sanitize }}
-            </span>
-        {% endif %}
-    {% endblock %}
-
-    {% block new %}
-        {% if product.isNew %}
-            <span
-                {{ attributes.nested('new') }}
-                class="{{ cx.new.apply() }}"
-            >
-                {{ 'listing.boxLabelNew'|trans|sw_sanitize }}
-            </span>
-        {% endif %}
-    {% endblock %}
-</span>

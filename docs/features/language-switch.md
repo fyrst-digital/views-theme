@@ -27,7 +27,7 @@ Navigation:Drawer footer (mobile)
 
 `Language:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-- `Action.php` — `mount()` resolves defaults (active language id, label, id), finds active entity, derives `visible`, `ariaName`, `languageCode`, `flagCode` / `flagCodeFallback`
+- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active language id, label, id), finds active entity, derives `visible`, `ariaName`, `languageCode`, `flagCode` / `flagCodeFallback`
 - `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `asset()` for flags, `|trans` for aria)
 
 Must stay registered via the components `**/*.php` service prototype (autoconfigure).
@@ -36,7 +36,7 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 
 ### Inputs (`Language:Action`)
 
-| Prop | Default (in `mount`) | Notes |
+| Prop | Default (class / PostMount) | Notes |
 |------|----------------------|--------|
 | `languages` | `[]` if omitted | Call sites pass `header.languages` / drawer `languages` |
 | `activeLanguageId` | sales-channel language id | |

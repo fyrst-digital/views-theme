@@ -1,0 +1,25 @@
+{
+    root: {
+        base: 'vi-badge d-inline-flex fw-semibold lh-sm',
+        variants: {
+            color: {
+                default: 'bg-white text-dark',
+                light: 'bg-light text-dark',
+                dark: 'bg-dark text-white',
+                danger: 'bg-danger text-white'
+            },
+            size: {
+                sm: 'fs-6 px-2 py-1',
+                md: 'fs-5 px-3 py-1',
+            },
+            pill: {
+                true: 'rounded-pill',
+            }
+        },
+        compoundVariants: [{
+            pill: [false],
+            size: ['md', 'sm'],
+            class: 'rounded-2'
+        }]
+    },
+}

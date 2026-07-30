@@ -11,6 +11,7 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
  * View-model for Language:Action — derivation lives here; Twig only composes.
@@ -18,7 +19,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 class Action
 {
-    public mixed $languages = null;
+    public mixed $languages = [];
 
     public ?string $activeLanguageId = null;
 
@@ -53,33 +54,22 @@ class Action
     }
 
     /**
-     * @param array<string, mixed> $cva
+     * @param array<string, mixed> $data
      */
-    public function mount(
-        mixed $languages = null,
-        ?string $activeLanguageId = null,
-        ?string $id = null,
-        string|false|null $toggleLabel = null,
-        bool $showCode = false,
-        bool $showFlag = true,
-        string $placement = 'bottom-end',
-        array $cva = [],
-    ): void {
+    #[PostMount]
+    public function postMount(array $data): void
+    {
         $context = $this->salesChannelContext();
 
-        $this->languages = $languages ?? [];
-        $this->activeLanguageId = $activeLanguageId ?? $context?->getLanguageId();
-        $this->id = $id ?? ('vi-language-action-' . bin2hex(random_bytes(4)));
-        $this->showCode = $showCode;
-        $this->showFlag = $showFlag;
-        $this->placement = $placement;
-        $this->cva = $cva;
+        $this->languages ??= [];
+        $this->activeLanguageId ??= $context?->getLanguageId();
+        $this->id ??= 'vi-language-action-' . bin2hex(random_bytes(4));
 
         $count = $this->countItems($this->languages);
         $this->visible = $count > 1;
 
         if (!$this->visible) {
-            $this->toggleLabel = $toggleLabel === false ? false : ($toggleLabel ?? '');
+            $this->toggleLabel = $this->toggleLabel === false ? false : ($this->toggleLabel ?? '');
 
             return;
         }
@@ -104,11 +94,7 @@ class Action
 
         $this->ariaName = $languageInfoName !== '' ? $languageInfoName : $activeName;
 
-        if ($toggleLabel === false) {
-            $this->toggleLabel = false;
-        } elseif ($toggleLabel !== null) {
-            $this->toggleLabel = $toggleLabel;
-        } else {
+        if ($this->toggleLabel === null) {
             $this->toggleLabel = $this->ariaName;
         }
 

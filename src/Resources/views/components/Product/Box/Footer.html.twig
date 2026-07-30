@@ -1,15 +1,3 @@
-{% props
-    product,
-    href = null,
-    showPrice = true,
-    showActions = true,
-    priceShowPrice = true,
-    priceShowTieredPrices = false,
-    priceShowTaxNote = config('core.listing.allowBuyInListing'),
-    showQuantity = false,
-    cva = {},
-%}
-
 {% set cx = vi_cva_from_file(cva) %}
 
 <div

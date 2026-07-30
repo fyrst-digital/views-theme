@@ -1,0 +1,20 @@
+{% props
+    color = 'default',
+    size = 'md',
+    pill = false,
+    label = null,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+<span
+    {{ attributes }}
+    class="{{ cx.root.apply({ color: color, size: size, pill: pill }) }}"
+>
+    {% block content %}
+        {% if label is not null %}
+            {{ label }}
+        {% endif %}
+    {% endblock %}
+</span>

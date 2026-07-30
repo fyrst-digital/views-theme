@@ -26,7 +26,7 @@ Navigation:Drawer footer (mobile)
 
 `Currency:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-- `Action.php` — `mount()` resolves defaults (active currency id, label, id), derives `visible`, `ariaName`, `currencySymbol`
+- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active currency id, label, id), derives `visible`, `ariaName`, `currencySymbol`
 - `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `|trans` for aria)
 
 Must stay registered via the components `**/*.php` service prototype (autoconfigure).
@@ -35,7 +35,7 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 
 ### Inputs (`Currency:Action`)
 
-| Prop | Default (in `mount`) | Notes |
+| Prop | Default (class / PostMount) | Notes |
 |------|----------------------|--------|
 | `currencies` | `[]` if omitted | Call sites pass `header.currencies` / drawer `currencies` |
 | `activeCurrencyId` | context currency id | |

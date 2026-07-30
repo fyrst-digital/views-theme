@@ -7,7 +7,7 @@ All components under `src/Resources/views/components/` use **Shopware UX Twig co
 Full guide: [UX Twig components](ux-components.md).
 
 1. PascalCase path → `<twig:ViewsTheme:…>`
-2. Inputs: anonymous → `{% props %}` + simple defaults; heavy view-model → [class component](ux-components.md#class-components-php-backed) (`Name.php` + `mount()`). No wasteful `resolved*` — [Props](ux-components.md#props)
+2. Inputs: anonymous → `{% props %}` + simple defaults; heavy view-model → [class component](ux-components.md#class-components-php-backed) (`Name.php` + `#[PostMount]`). No wasteful `resolved*` — [Props](ux-components.md#props)
 3. `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva({ … }|replace_recursive(cva))`; prop `cva = {}`; BEM `vi-*` roots
 4. Attrs: DOM → `attributes.defaults` / `nested` (**never** `class` in defaults); overridable child `<twig:…>` → `class="{{ cx… }}"` + **prefer** `{{ ...attributes.nested('slot').defaults({…}).all() }}` — [ux-components.md § Attributes](ux-components.md#attributes)
 5. Short `{% block %}` names

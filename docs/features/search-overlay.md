@@ -113,4 +113,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Suggest | `src/Resources/views/components/Search/Suggest.*` |
 | Suggest children | `src/Resources/views/components/Search/Suggest/{Heading,Results,Item,Summary,Empty}.*` |
 | Scroll area | `src/Resources/views/components/Scroll/Area.*` |
-| Product pieces used by suggest | `src/Resources/views/components/Product/Cover.html.twig`, `Name.html.twig`, `Price.html.twig` |
+| Product pieces used by suggest | `src/Resources/views/components/Product/Cover.{php,html.twig,cva.twig}`, `Name.html.twig`, `Price.html.twig` |

@@ -5,9 +5,15 @@
 %}
 
 {% set cx = vi_cva({
-    root: { base: 'vi-product-variations' },
+    root: { base: 'vi-product-variations d-flex flex-row flex-wrap gap-1' },
     item: { base: 'vi-product-variations__item' },
 }|replace_recursive(cva)) %}
+{% set attrs = {
+    item: attributes.nested('item')
+} %}
+{% set classes = {
+    item: cx.item.apply()
+} %}
 
 {% if variations is not empty %}
     <div
@@ -15,13 +21,14 @@
         class="{{ cx.root.apply() }}"
     >
         {% for variation in variations %}
-            <div
-                {{ attributes.nested('item') }}
-                class="{{ cx.item.apply() }}"
-            >
-                {{ variation.group }}:
-                {{ variation.option }}
-            </div>
+            <twig:ViewsTheme:Badge
+                class="{{ classes.item }}"
+                {{ ...attrs.item.defaults({
+                    color: 'light',
+                    size: 'sm',
+                    label: variation.option ,
+                }).all() }}
+            />
         {% endfor %}
     </div>
 {% endif %}

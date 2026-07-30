@@ -83,6 +83,11 @@
             <argument type="service" id="sales_channel.product.repository"/>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder">
+            <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface"/>
+            <argument type="service" id="request_stack"/>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>

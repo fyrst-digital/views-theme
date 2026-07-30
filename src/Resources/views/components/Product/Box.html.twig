@@ -1,39 +1,3 @@
-{% props
-    product,
-    layout = 'default',
-    sizes = {
-        xs: '500px',
-        sm: '315px',
-        md: '390px',
-        lg: '350px',
-        xl: '280px',
-        xxl: '280px',
-    },
-    showDescription = true,
-    showVariations = true,
-    showPrice = true,
-    showActions = true,
-    priceShowPrice = true,
-    priceShowTieredPrices = false,
-    priceShowTaxNote = null,
-    referrerCategoryId = null,
-    cva = {},
-%}
-
-{% set id = product.id %}
-{% set name = product.translated.name %}
-{% set brand = product.manufacturer.translated.name|default('') %}
-{% set price = product.calculatedPrice.unitPrice %}
-{% set cover = product.cover.media %}
-{% set searchTerm = page.searchTerm|default(null) %}
-{% set routeArguments = product.childCount > 0 and searchTerm
-    ? { productId: id, search: searchTerm }
-    : { productId: id } %}
-{% if referrerCategoryId %}
-    {% set routeArguments = routeArguments|merge({ referrerCategoryId: referrerCategoryId }) %}
-{% endif %}
-{% set productUrl = seoUrl('frontend.detail.page', routeArguments) %}
-
 {% set cx = vi_cva_from_file(cva) %}
 
 <div
@@ -44,18 +8,24 @@
 >
     {% block image %}
         <twig:ViewsTheme:Product:Cover
-            :id="id"
-            :name="name"
-            :cover="cover"
+            :product="product"
             :sizes="sizes"
-            :url="productUrl"
+            :referrerCategoryId="referrerCategoryId"
         >
             <twig:block name="prepend">
-                <twig:ViewsTheme:Product:Badges :product="product" />
+                <twig:ViewsTheme:Product:Badges 
+                    class="position-absolute m-4"
+                    topseller:size="sm"
+                    topseller:color="dark"
+                    :topseller:pill="true"
+                    discount:size="sm"
+                    discount:color="danger"
+                    :discount:pill="true"
+                    :product="product" />
             </twig:block>
 
             <twig:block name="append">
-                {% if config('core.cart.wishlistEnabled') %}
+                {% if wishlistEnabled %}
                     <twig:ViewsTheme:Product:Action:Wishlist
                         :productId="id"
                         :showText="false"
@@ -77,8 +47,8 @@
                     class="{{ cx.header.apply() }}"
                     {{ ...attributes.nested('header').defaults({
                         product: product,
-                        href: productUrl,
                         showVariations: showVariations,
+                        referrerCategoryId: referrerCategoryId,
                     }).all() }}
                 />
             {% endblock %}
@@ -98,13 +68,13 @@
                     class="{{ cx.footer.apply() }}"
                     {{ ...attributes.nested('footer').defaults({
                         product: product,
-                        href: productUrl,
                         showPrice: showPrice,
                         showActions: showActions,
                         priceShowPrice: priceShowPrice,
                         priceShowTieredPrices: priceShowTieredPrices,
                         priceShowTaxNote: priceShowTaxNote,
                         showQuantity: false,
+                        referrerCategoryId: referrerCategoryId,
                     }).all() }}
                 />
             {% endblock %}

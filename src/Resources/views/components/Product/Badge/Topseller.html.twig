@@ -1,0 +1,16 @@
+{% props
+    label = 'listing.boxLabelTopseller'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% set cx = vi_cva_from_file(cva) %}
+
+{% block content %}
+    <twig:ViewsTheme:Badge
+        class="{{ cx.root.apply() }}"
+        {{ ...attributes.defaults({
+            type: 'topseller',
+            label: label,
+        }).all() }}
+    />
+{% endblock %}

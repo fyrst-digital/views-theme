@@ -40,8 +40,8 @@ A **class component is a valid, preferred pattern** when the template would othe
 
 | | Anonymous | Class-backed |
 |--|-----------|--------------|
-| Props | `{% props %}` | Public properties + `mount()` |
-| Logic | Twig only | PHP `mount()` / getters (view-model) |
+| Props | `{% props %}` | Public properties (defaults on the class only) |
+| Logic | Twig only | PHP `#[PostMount]` / getters (view-model) |
 | Registration | Path only | **Service + `autoconfigure`** (required) |
 | Tag | `<twig:ViewsTheme:…>` | Same (co-located class under bundle component namespace) |
 
@@ -54,22 +54,36 @@ A **class component is a valid, preferred pattern** when the template would othe
 - Scope: **view-model only** (defaults from sales-channel context, derive display fields, `visible`). No DAL, cart rules, or business workflows.
 - Twig still owns CVA, `attributes`, nested children, `asset()`, `|trans`.
 
+#### Class props vs `#[PostMount]` (no dual defaults)
+
+Symfony UX hydrates public props **after** `mount()` and **before** `#[PostMount]`. Defaults live **once** on the public property. Do **not** re-list the same defaults on `mount()` parameters and re-assign pass-through props.
+
+| Concern | Where |
+|---------|--------|
+| Input API + simple defaults | Public properties only |
+| Derivation / null→context / normalize | `#[PostMount]` reading `$this->*` |
+| `mount()` | Avoid unless a real pre-hydrate need exists |
+
 ```php
 // src/Resources/views/components/Language/Action.php
 namespace Fyrst\ViewsTheme\Resources\views\components\Language;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 #[AsTwigComponent]
 class Action
 {
-    public mixed $languages = null;
+    public mixed $languages = [];
+    public bool $showFlag = true;
     public bool $visible = false;
     // …
 
-    public function mount(mixed $languages = null /* … */): void
+    /** @param array<string, mixed> $data */
+    #[PostMount]
+    public function postMount(array $data): void
     {
-        // resolve defaults + derived fields
+        // resolve context defaults + derived fields from $this->*
     }
 }
 ```
@@ -81,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`.
+Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Box:Header` / `Footer`.
 
 ## Props / CVA / attributes
 
@@ -124,10 +138,10 @@ Ambient outer-scope values (e.g. page `formViolations`) belong in the prop defau
 
 **Keep** post-props `{% set %}` only when the value is not a plain default (or move multi-step derivation into a [class component](#class-components-php-backed)):
 
-| Keep `{% set %}` / class `mount()` | Examples |
-|------------------------------------|----------|
+| Keep `{% set %}` / class `#[PostMount]` | Examples |
+|-----------------------------------------|----------|
 | Transform of a prop | rename/normalize only when it must stay inside the component |
-| Multi-step / loops | find active language — prefer class `mount()` |
+| Multi-step / loops | find active language — prefer class `#[PostMount]` |
 | Non-prop local | `options = lineItem.payload.options`, `linked`, `cx` |
 
 #### Examples of prop defaults
@@ -346,6 +360,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Language:Action / Currency:Action (class-backed PHP) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge |
+| Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
+| Product:Box / Cover / Box:Header / Box:Footer (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action / Account:Menu, Address:*, Checkout:*, Order:* | UX / shells |
 | Dropdown (Popover + CSS anchor, a11y JS) | UX + `vi_cva` + CSS/JS |

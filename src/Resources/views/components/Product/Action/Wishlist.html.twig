@@ -18,6 +18,7 @@
 
     <twig:ViewsTheme:Button
         class="{{ cx.root.apply({ appearance: appearance }) }}"
+        icon:class="{{ cx.icon.apply({ appearance: appearance }) }}"
         {{ ...attributes.defaults({
             type: 'button',
             icon: icon,

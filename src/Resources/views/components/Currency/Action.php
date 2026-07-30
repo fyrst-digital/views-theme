@@ -9,6 +9,7 @@ use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
  * View-model for Currency:Action — derivation lives here; Twig only composes.
@@ -16,7 +17,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 class Action
 {
-    public mixed $currencies = null;
+    public mixed $currencies = [];
 
     public ?string $activeCurrencyId = null;
 
@@ -45,26 +46,17 @@ class Action
     }
 
     /**
-     * @param array<string, mixed> $cva
+     * @param array<string, mixed> $data
      */
-    public function mount(
-        mixed $currencies = null,
-        ?string $activeCurrencyId = null,
-        ?string $id = null,
-        string|false|null $toggleLabel = null,
-        bool $showSymbol = true,
-        string $placement = 'bottom-end',
-        array $cva = [],
-    ): void {
+    #[PostMount]
+    public function postMount(array $data): void
+    {
         $context = $this->salesChannelContext();
         $currency = $context?->getCurrency();
 
-        $this->currencies = $currencies ?? [];
-        $this->activeCurrencyId = $activeCurrencyId ?? $currency?->getId();
-        $this->id = $id ?? ('vi-currency-action-' . bin2hex(random_bytes(4)));
-        $this->showSymbol = $showSymbol;
-        $this->placement = $placement;
-        $this->cva = $cva;
+        $this->currencies ??= [];
+        $this->activeCurrencyId ??= $currency?->getId();
+        $this->id ??= 'vi-currency-action-' . bin2hex(random_bytes(4));
 
         $this->currencySymbol = $currency?->getSymbol() ?? '';
         $currencyName = '';
@@ -76,11 +68,7 @@ class Action
         }
         $this->ariaName = $currencyName;
 
-        if ($toggleLabel === false) {
-            $this->toggleLabel = false;
-        } elseif ($toggleLabel !== null) {
-            $this->toggleLabel = $toggleLabel;
-        } else {
+        if ($this->toggleLabel === null) {
             $this->toggleLabel = $this->ariaName;
         }
 
