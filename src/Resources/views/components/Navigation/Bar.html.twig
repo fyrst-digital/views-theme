@@ -1,12 +1,11 @@
 {% props
     navigation,
-    navigationDepth = null,
+    navigationDepth = context.salesChannel.navigationCategoryDepth ?? 1,
     widthAnchor = '--vi-navigation-bar',
     cva = {},
 %}
 
-{% set resolvedDepth = navigationDepth ?? context.salesChannel.navigationCategoryDepth ?? 1 %}
-{% set flyoutEnabled = resolvedDepth > 1 %}
+{% set flyoutEnabled = navigationDepth > 1 %}
 {% set cx = vi_cva_from_file(cva) %}
 {% set listClass = cx.list.apply() %}
 

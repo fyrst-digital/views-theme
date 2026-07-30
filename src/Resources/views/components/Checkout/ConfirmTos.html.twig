@@ -4,16 +4,14 @@
     tosSnippet = 'checkout.confirmTermsText'|trans({
         '%url%': path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
     }),
-    formViolations = null,
-    page = null,
+    formViolations = __context.formViolations|default(null),
+    page = __context.page|default(null),
     cva = {},
 %}
 
-{% set pageEntity = page is not null ? page : (_context.page|default(null)) %}
-{% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
 {% set cx = vi_cva_from_file(cva) %}
-{% set tosInvalid = violations and violations.getViolations('/tos') is not empty %}
-{% set revocationInvalid = violations and violations.getViolations('/revocation') is not empty %}
+{% set tosInvalid = formViolations and formViolations.getViolations('/tos') is not empty %}
+{% set revocationInvalid = formViolations and formViolations.getViolations('/revocation') is not empty %}
 
 <div
     {{ attributes }}
@@ -62,7 +60,7 @@
     {% endblock %}
 
     {% block revocation_control %}
-        {% if pageEntity and pageEntity.showRevocation() %}
+        {% if page and page.showRevocation() %}
             <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
                 <input
                     {{ attributes.nested('revocationCheckbox').defaults({

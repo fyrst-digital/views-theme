@@ -1,17 +1,14 @@
 {% props
-    deliveryDate = null,
+    deliveryDate = page.extensions.viewsTheme.deliveryDate|default({}),
     title = 'checkout.preferredDeliveryDate.title'|trans|sw_sanitize,
     label = 'checkout.preferredDeliveryDate.label'|trans|sw_sanitize,
     helpText = 'checkout.preferredDeliveryDate.helpText'|trans|sw_sanitize,
     cva = {},
 %}
 
-{% set resolvedDeliveryDate = deliveryDate is not null
-    ? deliveryDate
-    : page.extensions.viewsTheme.deliveryDate|default({}) %}
 {% set cx = vi_cva_from_file(cva) %}
 
-{% if resolvedDeliveryDate.active|default(false) %}
+{% if deliveryDate.active|default(false) %}
     <div
         {{ attributes.defaults({
             'data-component': 'ViewsTheme:Checkout:DeliveryDateSelection',
@@ -48,8 +45,8 @@
                             id: 'PreferredDeliveryDate',
                             form: 'confirmOrderForm',
                             name: 'viewsThemeDeliveryDate',
-                            min: resolvedDeliveryDate.min|default(''),
-                            max: resolvedDeliveryDate.max|default(''),
+                            min: deliveryDate.min|default(''),
+                            max: deliveryDate.max|default(''),
                             value: '',
                         }) }}
                         class="{{ cx.input.apply() }}"

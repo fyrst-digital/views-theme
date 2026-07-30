@@ -1,17 +1,13 @@
 {% props
     product = null,
     showLink = true,
-    url = null,
-    name = null,
+    url = product ? seoUrl('frontend.detail.page', { productId: product.id }) : null,
+    name = product ? product.translated.name : null,
     tag = 'div',
     cva = {},
 %}
 
-{% set productName = name is not null ? name : (product ? product.translated.name : null) %}
-{% set productUrl = url is not null
-    ? url
-    : (product ? seoUrl('frontend.detail.page', { productId: product.id }) : null) %}
-{% set linked = showLink is same as(true) and productUrl is not null %}
+{% set linked = showLink is same as(true) and url is not null %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <{{ tag|raw }}
@@ -21,14 +17,14 @@
     {% if linked %}
         <a
             {{ attributes.nested('link').defaults({
-                href: productUrl,
-                title: productName,
+                href: url,
+                title: name,
             }) }}
             class="{{ cx.link.apply() }}"
         >
-            {{ productName|raw }}
+            {{ name|raw }}
         </a>
     {% else %}
-        {{ productName|raw }}
+        {{ name|raw }}
     {% endif %}
 </{{ tag|raw }}>

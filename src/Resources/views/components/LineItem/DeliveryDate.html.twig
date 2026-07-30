@@ -1,14 +1,12 @@
 {% props
     lineItem,
-    deliveries = null,
+    deliveries = page.cart.deliveries|default(null),
     cva = {},
 %}
 
-{% set resolvedDeliveries = deliveries is not null ? deliveries : page.cart.deliveries|default(null) %}
-
 {% set deliveryPosition = null %}
-{% if resolvedDeliveries and resolvedDeliveries.count > 0 %}
-    {% set delivery = resolvedDeliveries.first %}
+{% if deliveries and deliveries.count > 0 %}
+    {% set delivery = deliveries.first %}
     {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
 {% endif %}
 

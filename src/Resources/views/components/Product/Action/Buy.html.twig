@@ -1,7 +1,7 @@
 {% props
     product,
     formAction = path('frontend.checkout.line-item.add'),
-    formId = null,
+    formId = 'ProductBuyForm' ~ product.id,
     showQuantity = true,
     buyLabel = 'listing.boxAddProduct'|trans|sw_sanitize,
     buyIcon = 'handbag',
@@ -10,7 +10,6 @@
     cva = {},
 %}
 
-{% set resolvedFormId = formId is not null ? formId : 'ProductBuyForm' ~ product.id %}
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
 {% set allowsQuantity = not product.type is defined
     or product.type != DIGITAL_CONST
@@ -35,7 +34,7 @@
     {{ attributes.defaults({
         action: formAction,
         method: 'post',
-        id: resolvedFormId,
+        id: formId,
         'data-component': 'ViewsTheme:Product:Action:Buy',
         'data-component-options': {
             addEvent: 'ViewsTheme:Cart:Add',

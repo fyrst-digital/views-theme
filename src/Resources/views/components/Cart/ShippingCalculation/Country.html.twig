@@ -1,13 +1,12 @@
 {% props
     countries,
-    selectedId = null,
+    selectedId = context.shippingLocation.country.id,
     id = 'vi-cart-countryId',
     size = 'sm',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set resolvedSelectedId = selectedId ?? context.shippingLocation.country.id %}
 {% set selectOptions = [] %}
 
 {% for country in countries %}
@@ -26,7 +25,7 @@
             label: 'checkout.shippingCountry'|trans|sw_sanitize,
             size: size,
             options: selectOptions,
-            value: resolvedSelectedId,
+            value: selectedId,
         }).all() }}
     />
 {% endif %}

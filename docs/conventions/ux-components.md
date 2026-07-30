@@ -36,9 +36,62 @@ VariantsGrid/Container.js
 ### Props
 
 - Declare inputs with `{% props %}`.
-- Defaults live **only** in `{% props %}` (including `|trans`, `path(…)`, etc.).
+- Defaults live **only** in `{% props %}` (including `|trans`, `path(…)`, `config(…)`, `random()`, other props, `page` / `context` / `header`, ambient `__context.*`).
+- Symfony applies a default only when the prop is **missing or `null`** (`!isset`). Defaults evaluate **in declaration order** — declare dependencies before dependents.
 - Do **not** reassign prop names with `{% set prop = … %}` after the props block.
 - Non-prop locals (e.g. `cx` from `vi_cva_from_file`) are fine.
+
+#### Preferred: fallbacks in `{% props %}` (not `resolved*`)
+
+Put simple fallbacks in the prop default. Use the prop name in the template. Do **not** add `{% set resolvedX = x is not null ? x : … %}` for that.
+
+```twig
+{# ✅ #}
+{% props
+    product = null,
+    variations = product.variation|default([]),
+    cva = {},
+%}
+
+{% if variations is not empty %}
+    {% for variation in variations %}…{% endfor %}
+{% endif %}
+
+{# ❌ waste — same behavior as the prop default #}
+{% props product = null, variations = null, cva = {} %}
+{% set resolvedVariations = variations is not null ? variations : product.variation|default([]) %}
+```
+
+Ambient outer-scope values (e.g. page `formViolations`) belong in the prop default via `__context`:
+
+```twig
+{% props
+    formViolations = __context.formViolations|default(null),
+%}
+```
+
+**Keep** post-props `{% set %}` only when the value is not a plain default:
+
+| Keep `{% set %}` | Examples |
+|------------------|----------|
+| Transform of a prop | `layout` `standard` → `default` |
+| Multi-step / loops | find active language in a collection |
+| Tri-state API | `label is same as(false)` vs null vs string |
+| Non-prop local | `options = lineItem.payload.options`, `linked`, `cx` |
+| “Omitted” must stay distinguishable | `sizes is null` then layout-specific map |
+
+#### Examples of prop defaults
+
+```twig
+{% props
+    lineItem,
+    formAction = path('frontend.checkout.line-item.delete', { id: lineItem.id }),
+    label = lineItem.label|trans|sw_sanitize,
+    searchTerm = page.searchTerm|default(''),
+    id = 'vi-dropdown-' ~ random(),
+    cva = {},
+%}
+```
 
 ### CVA
 

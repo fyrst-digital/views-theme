@@ -17,7 +17,7 @@ Navigation:Drawer footer (mobile)
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Currency:Action` | `components/Currency/Action.*` | Shell: resolve currencies/active; owns full `Button` toggle override; hidden when ≤1 currency |
+| `Currency:Action` | `components/Currency/Action.*` | Shell: currencies/active via prop defaults; owns full `Button` toggle override; hidden when ≤1 currency |
 | `Dropdown` | `components/Dropdown.*` | Host + panel (open/close, anchor placement, `aria-expanded`) |
 | `Button` | `components/Button.*` | Toggle control (`color` / `size`; empty `prepend` / `append` blocks) |
 | `Currency:Menu` | `components/Currency/Menu.*` | Panel body: configure form + options (no dropdown chrome) |
@@ -28,9 +28,9 @@ Navigation:Drawer footer (mobile)
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `currencies` | `null` | Fallback: `header.currencies` → `page.header.currencies` |
-| `activeCurrencyId` | `null` | Fallback: `context.currency.id` |
-| `id` | `null` | Base id for Dropdown + option buttons (`{id}-{currencyId}`). Default: `vi-currency-action-{random}` |
+| `currencies` | `header.currencies` → `page.header.currencies` | Prop default in `{% props %}` |
+| `activeCurrencyId` | `context.currency.id` | Prop default |
+| `id` | `'vi-currency-action-' ~ random()` | Base id for Dropdown + option buttons (`{id}-{currencyId}`) |
 | `label` | `null` | Default: `context.currency.translated.name`; `:label="false"` hides text |
 | `showSymbol` | `true` | Currency symbol in Button `prepend` |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
@@ -40,9 +40,9 @@ Navigation:Drawer footer (mobile)
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `currencies` | `null` | Same fallbacks as Action |
-| `activeCurrencyId` | `null` | Same fallbacks as Action |
-| `id` | `null` | Base for option button ids (`{id}-{currencyId}`). From Action, or `vi-currency-menu-{random}` |
+| `currencies` | same as Action | Prop default |
+| `activeCurrencyId` | same as Action | Prop default |
+| `id` | `'vi-currency-menu-' ~ random()` | Base for option button ids (`{id}-{currencyId}`); Action passes its `id` |
 | `cva` | `{}` | Deep-merge |
 
 ## Behavior

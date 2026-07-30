@@ -1,7 +1,7 @@
 {% props
-    languages = null,
-    activeLanguageId = null,
-    id = null,
+    languages = header.languages|default(page.header.languages|default([])),
+    activeLanguageId = context.context.languageId|default(null),
+    id = 'vi-language-action-' ~ random(),
     label = null,
     showCode = false,
     showFlag = true,
@@ -9,19 +9,17 @@
     cva = {},
 %}
 
-{% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
-{% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(null)) %}
-{% set languageCount = resolvedLanguages.count is defined ? resolvedLanguages.count : resolvedLanguages|length %}
+{% set languageCount = languages.count is defined ? languages.count : languages|length %}
 
 {% if languageCount > 1 %}
     {% set activeLanguage = null %}
-    {% for language in resolvedLanguages %}
-        {% if language.id is same as(resolvedActiveLanguageId) %}
+    {% for language in languages %}
+        {% if language.id is same as(activeLanguageId) %}
             {% set activeLanguage = language %}
         {% endif %}
     {% endfor %}
     {% if activeLanguage is null and languageCount > 0 %}
-        {% set activeLanguage = resolvedLanguages|first %}
+        {% set activeLanguage = languages|first %}
     {% endif %}
 
     {% set defaultLabel = context.languageInfo.name|default(activeLanguage.translated.name|default(activeLanguage.name|default(''))) %}
@@ -40,12 +38,11 @@
     {% set codeClass = cx.code.apply() %}
     {% set caretClass = cx.caret.apply() %}
     {% set toggleAriaLabel = 'header.languageTrigger'|trans({ '%lang%': defaultLabel })|striptags %}
-    {% set resolvedId = id ?? ('vi-language-action-' ~ random()) %}
-    {% set anchorName = '--' ~ resolvedId %}
+    {% set anchorName = '--' ~ id %}
 
     <twig:ViewsTheme:Dropdown
         class="{{ rootClass }}"
-        :id="resolvedId"
+        :id="id"
         {{ ...attributes.defaults({
             placement: placement,
         }).without('class').all() }}
@@ -62,8 +59,8 @@
                 aria-label="{{ toggleAriaLabel }}"
                 aria-haspopup="listbox"
                 aria-expanded="false"
-                aria-controls="{{ resolvedId }}"
-                popovertarget="{{ resolvedId }}"
+                aria-controls="{{ id }}"
+                popovertarget="{{ id }}"
                 style="anchor-name: {{ anchorName }}"
             >
                 <twig:block name="prepend">
@@ -91,9 +88,9 @@
         </twig:block>
 
         <twig:ViewsTheme:Language:Menu
-            :languages="resolvedLanguages"
-            :activeLanguageId="resolvedActiveLanguageId"
-            :id="resolvedId"
+            :languages="languages"
+            :activeLanguageId="activeLanguageId"
+            :id="id"
             :showFlag="showFlag"
         />
     </twig:ViewsTheme:Dropdown>

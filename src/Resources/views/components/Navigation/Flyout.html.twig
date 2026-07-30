@@ -1,15 +1,14 @@
 {% props
     navigation,
-    category = null,
+    category = navigation.active,
     maxDepth = 3,
     widthAnchor = '--vi-navigation-bar',
     cva = {},
 %}
 
-{% set rootCategory = category ?? navigation.active %}
-{% set name = rootCategory ? rootCategory.translated.name : '' %}
-{% set flyoutId = rootCategory ? 'vi-navigation-flyout-' ~ rootCategory.id : 'vi-navigation-flyout' %}
-{% set teaserImage = rootCategory and rootCategory.media ? rootCategory.media : null %}
+{% set name = category ? category.translated.name : '' %}
+{% set flyoutId = category ? 'vi-navigation-flyout-' ~ category.id : 'vi-navigation-flyout' %}
+{% set teaserImage = category and category.media ? category.media : null %}
 {% set hasTeaser = teaserImage is not null %}
 {% set cx = vi_cva_from_file(cva) %}
 {% set columnsClass = cx.columns.apply() %}
@@ -20,7 +19,7 @@
         id: flyoutId,
         popover: 'manual',
         'data-component': 'ViewsTheme:Navigation:Flyout',
-        'data-navigation-id': rootCategory ? rootCategory.id : null,
+        'data-navigation-id': category ? category.id : null,
         'data-has-teaser': hasTeaser ? 'true' : 'false',
         role: 'region',
         'aria-label': name,
@@ -52,10 +51,10 @@
         {% endblock %}
 
         {% block teaser %}
-            {% if hasTeaser and rootCategory %}
+            {% if hasTeaser and category %}
                 <twig:ViewsTheme:Navigation:Flyout:Teaser
                     class="{{ teaserClass }}"
-                    :category="rootCategory"
+                    :category="category"
                     :image="teaserImage"
                     {{ ...attributes.nested('teaser').all() }}
                 />

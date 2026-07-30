@@ -1,22 +1,17 @@
 {% props
     lineItem,
-    label = null,
+    label = lineItem.label|trans|sw_sanitize,
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
-    formAction = null,
+    formAction = path('frontend.checkout.line-item.delete', { id: lineItem.id }),
     cva = {},
 %}
-
-{% set resolvedFormAction = formAction is not null
-    ? formAction
-    : path('frontend.checkout.line-item.delete', { id: lineItem.id }) %}
-{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
     {{ attributes.defaults({
-        action: resolvedFormAction,
+        action: formAction,
         method: 'post',
         'data-component': 'ViewsTheme:LineItem:Remove',
         'data-component-options': {
@@ -40,7 +35,7 @@
                 color: 'link',
                 size: 'sm',
                 title: 'global.default.remove'|trans,
-                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': resolvedLabel })|striptags,
+                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags,
             }).all() }}
         />
     {% endblock %}

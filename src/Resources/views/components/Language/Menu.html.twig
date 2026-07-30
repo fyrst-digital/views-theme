@@ -1,14 +1,11 @@
 {% props
-    languages = null,
-    activeLanguageId = null,
-    id = null,
+    languages = header.languages|default(page.header.languages|default([])),
+    activeLanguageId = context.context.languageId|default(null),
+    id = 'vi-language-menu-' ~ random(),
     showFlag = true,
     cva = {},
 %}
 
-{% set resolvedLanguages = languages is not null ? languages : (header.languages|default(page.header.languages|default([]))) %}
-{% set resolvedActiveLanguageId = activeLanguageId is not null ? activeLanguageId : (context.context.languageId|default(null)) %}
-{% set resolvedId = id ?? ('vi-language-menu-' ~ random()) %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
@@ -25,8 +22,8 @@
         }) }}
         class="{{ cx.list.apply() }}"
     >
-        {% for language in resolvedLanguages %}
-            {% set isActive = language.id is same as(resolvedActiveLanguageId) %}
+        {% for language in languages %}
+            {% set isActive = language.id is same as(activeLanguageId) %}
             {% set translationCode = language.translationCode|default(null) %}
             {% set translatedCode = translationCode and translationCode.translated is defined ? translationCode.translated : null %}
             {% set languageDisplay = translatedCode and translatedCode.name and translatedCode.territory
@@ -40,7 +37,7 @@
                     {{ attributes.nested('option').defaults({
                         type: 'submit',
                         name: 'languageId',
-                        id: resolvedId ~ '-' ~ language.id,
+                        id: id ~ '-' ~ language.id,
                         value: language.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}

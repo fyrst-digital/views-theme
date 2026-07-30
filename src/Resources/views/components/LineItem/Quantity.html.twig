@@ -4,13 +4,10 @@
     showQuantitySelect = true,
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
-    formAction = null,
+    formAction = path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }),
     cva = {},
 %}
 
-{% set resolvedFormAction = formAction is not null
-    ? formAction
-    : path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) %}
 {% set quantityInformation = lineItem.quantityInformation %}
 
 {% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
@@ -37,7 +34,7 @@
 %}
     <form
         {{ attributes.defaults({
-            action: resolvedFormAction,
+            action: formAction,
             method: 'post',
             'data-component': 'ViewsTheme:LineItem:Quantity',
             'data-component-options': {

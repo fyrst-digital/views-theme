@@ -1,21 +1,19 @@
 {% props
     paymentMethods,
-    selectedId = null,
-    selectedName = null,
+    selectedId = context.paymentMethod.id,
+    selectedName = context.paymentMethod.translated.name,
     id = 'vi-cart-paymentMethodId',
     size = 'sm',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set resolvedSelectedId = selectedId ?? context.paymentMethod.id %}
-{% set resolvedSelectedName = selectedName ?? context.paymentMethod.translated.name %}
 {% set selectOptions = [] %}
 
-{% if resolvedSelectedId not in paymentMethods.ids %}
+{% if selectedId not in paymentMethods.ids %}
     {% set selectOptions = selectOptions|merge([{
-        value: resolvedSelectedId,
-        label: resolvedSelectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
+        value: selectedId,
+        label: selectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
         disabled: true,
     }]) %}
 {% endif %}
@@ -35,6 +33,6 @@
         label: 'checkout.paymentMethod'|trans|sw_sanitize,
         size: size,
         options: selectOptions,
-        value: resolvedSelectedId,
+        value: selectedId,
     }).all() }}
 />

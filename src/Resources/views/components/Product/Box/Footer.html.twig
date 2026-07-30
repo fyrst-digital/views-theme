@@ -5,14 +5,10 @@
     showActions = true,
     priceShowPrice = true,
     priceShowTieredPrices = false,
-    priceShowTaxNote = false,
+    priceShowTaxNote = config('core.listing.allowBuyInListing'),
     showQuantity = false,
     cva = {},
 %}
-
-{% set resolvedPriceShowTaxNote = priceShowTaxNote is not null
-    ? priceShowTaxNote
-    : config('core.listing.allowBuyInListing') %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -28,7 +24,7 @@
                     product: product,
                     showPrice: priceShowPrice,
                     showTieredPrices: priceShowTieredPrices,
-                    showTaxNote: resolvedPriceShowTaxNote,
+                    showTaxNote: priceShowTaxNote,
                 }).all() }}
             />
         {% endif %}

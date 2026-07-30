@@ -1,10 +1,8 @@
 {% props
-    searchTerm = null,
+    searchTerm = page.searchTerm|default(''),
     searchWidgetOptions = {},
     cva = {},
 %}
-
-{% set resolvedSearchTerm = searchTerm is not null ? searchTerm : page.searchTerm|default('') %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
@@ -47,7 +45,7 @@
                                         autocapitalize: 'off',
                                         placeholder: 'header.searchPlaceholder'|trans|striptags,
                                         'aria-label': 'header.searchPlaceholder'|trans|striptags,
-                                        value: resolvedSearchTerm,
+                                        value: searchTerm,
                                     }) }}
                                     class="{{ cx.input.apply() }}"
                                 >

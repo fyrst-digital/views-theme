@@ -1,16 +1,14 @@
 {% props
-    currencies = null,
-    activeCurrencyId = null,
-    id = null,
+    currencies = header.currencies|default(page.header.currencies|default([])),
+    activeCurrencyId = context.currency.id|default(null),
+    id = 'vi-currency-action-' ~ random(),
     label = null,
     showSymbol = true,
     placement = 'bottom-end',
     cva = {},
 %}
 
-{% set resolvedCurrencies = currencies is not null ? currencies : (header.currencies|default(page.header.currencies|default([]))) %}
-{% set resolvedActiveCurrencyId = activeCurrencyId is not null ? activeCurrencyId : (context.currency.id|default(null)) %}
-{% set currencyCount = resolvedCurrencies.count is defined ? resolvedCurrencies.count : resolvedCurrencies|length %}
+{% set currencyCount = currencies.count is defined ? currencies.count : currencies|length %}
 
 {% if currencyCount > 1 %}
     {% set defaultLabel = context.currency.translated.name|default('') %}
@@ -24,12 +22,11 @@
     {% set symbolClass = cx.symbol.apply() %}
     {% set caretClass = cx.caret.apply() %}
     {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': defaultLabel })|striptags %}
-    {% set resolvedId = id ?? ('vi-currency-action-' ~ random()) %}
-    {% set anchorName = '--' ~ resolvedId %}
+    {% set anchorName = '--' ~ id %}
 
     <twig:ViewsTheme:Dropdown
         class="{{ cx.root.apply() }}"
-        :id="resolvedId"
+        :id="id"
         {{ ...attributes.defaults({
             placement: placement,
         }).without('class').all() }}
@@ -46,8 +43,8 @@
                 aria-label="{{ toggleAriaLabel }}"
                 aria-haspopup="listbox"
                 aria-expanded="false"
-                aria-controls="{{ resolvedId }}"
-                popovertarget="{{ resolvedId }}"
+                aria-controls="{{ id }}"
+                popovertarget="{{ id }}"
                 style="anchor-name: {{ anchorName }}"
             >
                 <twig:block name="prepend">
@@ -63,9 +60,9 @@
         </twig:block>
 
         <twig:ViewsTheme:Currency:Menu
-            :currencies="resolvedCurrencies"
-            :activeCurrencyId="resolvedActiveCurrencyId"
-            :id="resolvedId"
+            :currencies="currencies"
+            :activeCurrencyId="activeCurrencyId"
+            :id="id"
         />
     </twig:ViewsTheme:Dropdown>
 {% endif %}

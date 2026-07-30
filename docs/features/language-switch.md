@@ -17,7 +17,7 @@ Navigation:Drawer footer (mobile)
 
 | Component | Path | Role |
 |-----------|------|------|
-| `Language:Action` | `components/Language/Action.*` | Shell: resolve languages/active; owns full `Button` toggle override; hidden when ≤1 language |
+| `Language:Action` | `components/Language/Action.*` | Shell: languages/active via prop defaults; owns full `Button` toggle override; hidden when ≤1 language |
 | `Dropdown` | `components/Dropdown.*` | Host + panel (open/close, anchor placement, `aria-expanded`) |
 | `Button` | `components/Button.*` | Toggle control (`color` / `size`; empty `prepend` / `append` blocks) |
 | `Language:Menu` | `components/Language/Menu.*` | Panel body: switch form + options (no dropdown chrome) |
@@ -29,9 +29,9 @@ Navigation:Drawer footer (mobile)
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `languages` | `null` | Fallback: `header.languages` → `page.header.languages` |
-| `activeLanguageId` | `null` | Fallback: `context.context.languageId` |
-| `id` | `null` | Base id for Dropdown + option buttons (`{id}-{languageId}`). Default: `vi-language-action-{random}` |
+| `languages` | `header.languages` → `page.header.languages` | Prop default in `{% props %}` |
+| `activeLanguageId` | `context.context.languageId` | Prop default |
+| `id` | `'vi-language-action-' ~ random()` | Base id for Dropdown + option buttons (`{id}-{languageId}`) |
 | `label` | `null` | Default: `context.languageInfo.name`; `:label="false"` hides text |
 | `showCode` | `false` | Short locale code (e.g. `EN`) in Button `prepend` |
 | `showFlag` | `true` | Flag in Button `prepend` from `bundles/viewstheme/flags/{translationCode}.svg` |
@@ -42,9 +42,9 @@ Navigation:Drawer footer (mobile)
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `languages` | `null` | Same fallbacks as Action |
-| `activeLanguageId` | `null` | Same fallbacks as Action |
-| `id` | `null` | Base for option button ids (`{id}-{languageId}`). From Action, or `vi-language-menu-{random}` |
+| `languages` | same as Action | Prop default |
+| `activeLanguageId` | same as Action | Prop default |
+| `id` | `'vi-language-menu-' ~ random()` | Base for option button ids (`{id}-{languageId}`); Action passes its `id` |
 | `showFlag` | `true` | Flag next to each option |
 | `cva` | `{}` | Deep-merge |
 

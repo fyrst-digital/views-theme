@@ -1,21 +1,19 @@
 {% props
     shippingMethods,
-    selectedId = null,
-    selectedName = null,
+    selectedId = context.shippingMethod.id,
+    selectedName = context.shippingMethod.translated.name,
     id = 'vi-cart-shippingMethodId',
     size = 'sm',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set resolvedSelectedId = selectedId ?? context.shippingMethod.id %}
-{% set resolvedSelectedName = selectedName ?? context.shippingMethod.translated.name %}
 {% set selectOptions = [] %}
 
-{% if resolvedSelectedId not in shippingMethods.ids %}
+{% if selectedId not in shippingMethods.ids %}
     {% set selectOptions = selectOptions|merge([{
-        value: resolvedSelectedId,
-        label: resolvedSelectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
+        value: selectedId,
+        label: selectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
         disabled: true,
     }]) %}
 {% endif %}
@@ -35,6 +33,6 @@
         label: 'checkout.shippingMethod'|trans|sw_sanitize,
         size: size,
         options: selectOptions,
-        value: resolvedSelectedId,
+        value: selectedId,
     }).all() }}
 />

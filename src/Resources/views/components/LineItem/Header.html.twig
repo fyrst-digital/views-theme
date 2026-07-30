@@ -1,12 +1,11 @@
 {% props
     lineItem,
-    label = null,
+    label = lineItem.label|trans|sw_sanitize,
     productLink = null,
     nestingLevel = 0,
     cva = {},
 %}
 
-{% set resolvedLabel = label is not null ? label : lineItem.label|trans|sw_sanitize %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <div
@@ -17,7 +16,7 @@
         <twig:ViewsTheme:Product:Name
             class="{{ cx.name.apply() }}"
             {{ ...attributes.nested('name').defaults({
-                name: resolvedLabel,
+                name: label,
                 url: productLink,
                 showLink: productLink is not null,
             }).all() }}

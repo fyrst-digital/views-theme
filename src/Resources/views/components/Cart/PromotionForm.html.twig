@@ -1,13 +1,11 @@
 {% props
     redirectTo = 'frontend.checkout.cart.page',
-    inputId = null,
-    submitId = null,
+    inputId = 'vi-cart-promotion-input-' ~ random(),
+    submitId = 'vi-cart-promotion-submit-' ~ random(),
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set resolvedInputId = inputId ?? ('vi-cart-promotion-input-' ~ random()) %}
-{% set resolvedSubmitId = submitId ?? ('vi-cart-promotion-submit-' ~ random()) %}
 {% set submitClass = cx.submit.apply() %}
 {% set submitTitle = 'checkout.addPromotionLabel'|trans|striptags %}
 {% set parentAttributes = attributes %}
@@ -32,7 +30,7 @@
             class="{{ cx.field.apply() }}"
             label:class="visually-hidden"
             {{ ...attributes.nested('field').defaults({
-                id: resolvedInputId,
+                id: inputId,
                 name: 'code',
                 label: 'checkout.addPromotionLabel'|trans|sw_sanitize,
                 placeholder: 'checkout.addPromotionPlaceholder'|trans|striptags,
@@ -44,7 +42,7 @@
                     class="{{ submitClass }}"
                     {{ ...parentAttributes.nested('submit').defaults({
                         type: 'submit',
-                        id: resolvedSubmitId,
+                        id: submitId,
                         title: submitTitle,
                         color: 'secondary',
                         icon: 'ticket',

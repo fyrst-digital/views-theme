@@ -43,7 +43,7 @@ Reusable form field primitives owned by the theme:
 | `validationRules` | `null` | Comma list → `data-validation` (Storefront form-handler) |
 | `violationPath` | `null` | Server violation key (e.g. `'/email'`) |
 | `error` | `false` | Force invalid styling without violations |
-| `formViolations` | `null` | Falls back to `_context.formViolations` |
+| `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
 | `cva` | `{}` | Slot class overrides |
 
 ## Classes / slots
@@ -189,7 +189,7 @@ Stacked select field: optional label + `<select>` + description / feedback. Does
 | `validationRules` | `null` | Comma list → `data-validation` |
 | `violationPath` | `null` | Server violation key |
 | `error` | `false` | Force invalid styling without violations |
-| `formViolations` | `null` | Falls back to `_context.formViolations` |
+| `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
 | `cva` | `{}` | Slot class overrides |
 
 ### Option hash

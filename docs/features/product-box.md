@@ -87,7 +87,7 @@ Product:Box
 | `showPrice` / `showActions` | `true` | Forwarded to Footer |
 | `priceShowPrice` | `true` | Forwarded to Footer → Price |
 | `priceShowTieredPrices` | `false` | Listing cards use “From …” + last tier; tier table stays off by default |
-| `priceShowTaxNote` | `null` | Forwarded; Footer resolves `null` → `core.listing.allowBuyInListing` |
+| `priceShowTaxNote` | `null` | Forwarded; Footer prop default is `config('core.listing.allowBuyInListing')` when omitted/`null` |
 | `referrerCategoryId` | `null` | Merged into detail `seoUrl` args (with optional `page.searchTerm` when child listing) |
 | `cva` | `{}` | Multi-slot via `Box.cva.twig` |
 
@@ -120,7 +120,8 @@ No root markup when description is off.
 | `product` | required | |
 | `href` | `null` | Detail URL for Actions |
 | `showPrice` / `showActions` | `true` | |
-| `priceShowPrice` / `priceShowTieredPrices` / `priceShowTaxNote` | see Box | Price flags |
+| `priceShowPrice` / `priceShowTieredPrices` | see Box | Price flags |
+| `priceShowTaxNote` | `config('core.listing.allowBuyInListing')` | Prop default in `{% props %}` |
 | `showQuantity` | `false` | Forwarded to Actions → Buy |
 | `cva` | `{}` | `Footer.cva.twig`: `root`, `price`, `actions` |
 

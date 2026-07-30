@@ -1,13 +1,10 @@
 {% props
-    currencies = null,
-    activeCurrencyId = null,
-    id = null,
+    currencies = header.currencies|default(page.header.currencies|default([])),
+    activeCurrencyId = context.currency.id|default(null),
+    id = 'vi-currency-menu-' ~ random(),
     cva = {},
 %}
 
-{% set resolvedCurrencies = currencies is not null ? currencies : (header.currencies|default(page.header.currencies|default([]))) %}
-{% set resolvedActiveCurrencyId = activeCurrencyId is not null ? activeCurrencyId : (context.currency.id|default(null)) %}
-{% set resolvedId = id ?? ('vi-currency-menu-' ~ random()) %}
 {% set cx = vi_cva_from_file(cva) %}
 
 <form
@@ -24,15 +21,15 @@
         }) }}
         class="{{ cx.list.apply() }}"
     >
-        {% for currency in resolvedCurrencies %}
-            {% set isActive = currency.id is same as(resolvedActiveCurrencyId) %}
+        {% for currency in currencies %}
+            {% set isActive = currency.id is same as(activeCurrencyId) %}
 
             <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
                 <button
                     {{ attributes.nested('option').defaults({
                         type: 'submit',
                         name: 'currencyId',
-                        id: resolvedId ~ '-' ~ currency.id,
+                        id: id ~ '-' ~ currency.id,
                         value: currency.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}

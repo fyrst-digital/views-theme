@@ -5,15 +5,12 @@
     displayMode = 'standard',
     sizes = {},
     showLink = true,
-    url = null,
+    url = id is not null ? seoUrl('frontend.detail.page', { productId: id }) : null,
     tag = 'div',
     cva = {},
 %}
 
-{% set coverUrl = url is not null
-    ? url
-    : (id is not null ? seoUrl('frontend.detail.page', { productId: id }) : null) %}
-{% set linked = showLink is same as(true) and coverUrl is not null %}
+{% set linked = showLink is same as(true) and url is not null %}
 {% set rootTag = linked ? 'a' : tag %}
 
 {% set cx = vi_cva({
@@ -25,7 +22,7 @@
 
 <{{ rootTag|raw }}
     {{ attributes.defaults({
-        href: linked ? coverUrl : null,
+        href: linked ? url : null,
         title: linked ? name : null,
     }) }}
     class="{{ cx.root.apply() }}"

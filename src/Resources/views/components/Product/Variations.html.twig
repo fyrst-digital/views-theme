@@ -1,25 +1,20 @@
 {% props
     product = null,
-    variations = null,
+    variations = product ? product.variation|default([]) : [],
     cva = {},
 %}
-
-{% set resolvedVariations = variations is not null ? variations : product.variation|default([]) %}
-{% if resolvedVariations is empty %}
-    {% set resolvedVariations = [] %}
-{% endif %}
 
 {% set cx = vi_cva({
     root: { base: 'vi-product-variations' },
     item: { base: 'vi-product-variations__item' },
 }|replace_recursive(cva)) %}
 
-{% if resolvedVariations is not empty %}
+{% if variations is not empty %}
     <div
         {{ attributes }}
         class="{{ cx.root.apply() }}"
     >
-        {% for variation in resolvedVariations %}
+        {% for variation in variations %}
             <div
                 {{ attributes.nested('item') }}
                 class="{{ cx.item.apply() }}"

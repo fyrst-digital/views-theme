@@ -11,15 +11,14 @@
     validationRules = null,
     violationPath = null,
     error = false,
-    formViolations = null,
+    formViolations = __context.formViolations|default(null),
     cva = {},
 %}
 
-{% set violations = formViolations is not null ? formViolations : (_context.formViolations|default(null)) %}
 {% set isInvalid = error is not empty or (
     violationPath is not empty
-    and violations
-    and violations.getViolations(violationPath) is not empty
+    and formViolations
+    and formViolations.getViolations(violationPath) is not empty
 ) %}
 {% set feedbackId = id ~ '-feedback' %}
 {% set descriptionId = id ~ '-description' %}
@@ -106,9 +105,9 @@
             class="{{ cx.feedback.apply() }}"
         >
             {% block feedback_violations %}
-                {% if violationPath is not empty and violations and violations.getViolations(violationPath) is not empty %}
+                {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}
                     {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
-                        formViolations: violations,
+                        formViolations: formViolations,
                         violationPath: violationPath,
                     } %}
                 {% endif %}

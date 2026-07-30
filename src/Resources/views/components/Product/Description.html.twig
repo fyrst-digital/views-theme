@@ -1,11 +1,9 @@
 {% props
     product = null,
-    description = null,
+    description = product ? product.translated.description|default('') : '',
     outputTags = true,
     cva = {},
 %}
-
-{% set productDescription = description is not null ? description : product.translated.description|default('') %}
 
 {% set cx = vi_cva({
     root: { base: 'vi-product-description' },
@@ -18,8 +16,8 @@
     class="{{ cx.root.apply() }}"
 >
     {% if outputTags is same as(true) %}
-        {{ productDescription|raw }}
+        {{ description|raw }}
     {% else %}
-        {{ productDescription|striptags }}
+        {{ description|striptags }}
     {% endif %}
 </div>
