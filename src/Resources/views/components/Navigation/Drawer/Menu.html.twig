@@ -48,9 +48,10 @@
         >
             {% if not isRoot and active %}
                 <twig:ViewsTheme:Navigation:Drawer:Menu:Header
-                    :category="active"
-                    :menuUrl="menuUrl"
-                    {{ ...attributes.nested('header').all() }}
+                    {{ ...attributes.nested('header').defaults({
+                        category: active,
+                        menuUrl: menuUrl,
+                    }).all() }}
                 />
             {% endif %}
 

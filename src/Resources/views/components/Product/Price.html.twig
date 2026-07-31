@@ -1,48 +1,13 @@
-{% props
-    product,
-    showPrice = true,
-    showTieredPrices = true,
-    showTaxNote = false,
-    cva = {},
-%}
-
-{% set price = product.calculatedPrice %}
-{% set prices = product.calculatedPrices %}
-{% set displayFromVariants = false %}
-
-{% if product.variantListingConfig.displayParent and product.parentId === null %}
-    {% set displayFromVariants = price.unitPrice !== product.calculatedCheapestPrice.unitPrice %}
-    {% set price = product.calculatedCheapestPrice %}
-{% endif %}
-
-{% if prices.count > 0 %}
-    {% set price = prices.last %}
-{% endif %}
-
-{% set hasListPrice = price.listPrice and price.listPrice.percentage > 0 %}
-
 {% set cx = vi_cva_from_file(cva) %}
 
-{% block tiered %}
-    {% if prices.count > 1 and showTieredPrices is same as(true) %}
-        <twig:ViewsTheme:Product:Price:Tiered
-            class="{{ cx.tiered.apply() }}"
-            {{ ...attributes.nested('tiered').defaults({
-                product: product,
-                prices: prices,
-            }).all() }}
-        />
-    {% endif %}
-{% endblock %}
-
 {% block price %}
-    {% if showPrice is same as(true) %}
+    {% if showPrice and price %}
         <div
             {{ attributes }}
             class="{{ cx.root.apply() }}"
         >
             {% block prefix %}
-                {% if prices.count > 1 or displayFromVariants %}
+                {% if showFromPrefix %}
                     <span
                         {{ attributes.nested('prefix') }}
                         class="{{ cx.prefix.apply() }}"
@@ -55,7 +20,7 @@
             {% block unit %}
                 <span
                     {{ attributes.nested('unit') }}
-                    class="{{ cx.unit.apply() }}{{ hasListPrice ? ' text-danger' : '' }}"
+                    class="{{ cx.unit.apply({ hasListPrice: hasListPrice }) }}"
                 >
                     {{ price.unitPrice|currency }}
                 </span>
@@ -73,7 +38,7 @@
             {% endblock %}
 
             {% block reference %}
-                {% if price.referencePrice is not null %}
+                {% if hasReferencePrice %}
                     <span
                         {{ attributes.nested('reference') }}
                         class="{{ cx.reference.apply() }}"
@@ -86,7 +51,7 @@
             {% endblock %}
 
             {% block average %}
-                {% if price.regulationPrice.price is not null %}
+                {% if hasRegulationPrice %}
                     <span
                         {{ attributes.nested('average') }}
                         class="{{ cx.average.apply() }}"
@@ -96,14 +61,5 @@
                 {% endif %}
             {% endblock %}
         </div>
-    {% endif %}
-{% endblock %}
-
-{% block tax %}
-    {% if showTaxNote is same as(true) %}
-        <twig:ViewsTheme:Product:Price:Tax
-            class="{{ cx.tax.apply() }}"
-            {{ ...attributes.nested('tax').all() }}
-        />
     {% endif %}
 {% endblock %}

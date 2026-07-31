@@ -50,9 +50,10 @@
                             : null %}
                         <twig:ViewsTheme:Language:Flag
                             class="{{ cx.flagIcon.apply() }}"
-                            :src="flagSrc"
-                            :fallbackSrc="flagFallbackSrc"
-                            {{ ...attributes.nested('flagIcon').all() }}
+                            {{ ...attributes.nested('flagIcon').defaults({
+                                src: flagSrc,
+                                fallbackSrc: flagFallbackSrc,
+                            }).all() }}
                         />
                     {% endif %}
 

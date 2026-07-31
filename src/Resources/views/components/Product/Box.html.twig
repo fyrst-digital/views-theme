@@ -47,7 +47,6 @@
                     class="{{ cx.header.apply() }}"
                     {{ ...attributes.nested('header').defaults({
                         product: product,
-                        showVariations: showVariations,
                         referrerCategoryId: referrerCategoryId,
                     }).all() }}
                 />
@@ -70,8 +69,8 @@
                         product: product,
                         showPrice: showPrice,
                         showActions: showActions,
+                        showVariations: showVariations,
                         priceShowPrice: priceShowPrice,
-                        priceShowTieredPrices: priceShowTieredPrices,
                         priceShowTaxNote: priceShowTaxNote,
                         showQuantity: false,
                         referrerCategoryId: referrerCategoryId,

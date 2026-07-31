@@ -24,16 +24,4 @@
             }).all() }}
         />
     {% endblock %}
-
-    {% block variations %}
-        {% if showVariationsBlock %}
-            <twig:ViewsTheme:Product:Variations
-                class="{{ cx.variations.apply() }}"
-                {{ ...attributes.nested('variations').defaults({
-                    product: product,
-                    variations: variations,
-                }).all() }}
-            />
-        {% endif %}
-    {% endblock %}
 </div>

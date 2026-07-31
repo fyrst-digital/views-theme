@@ -57,9 +57,10 @@
             {% if hasTeaser and category %}
                 <twig:ViewsTheme:Navigation:Flyout:Teaser
                     class="{{ classes.teaser }}"
-                    :category="category"
-                    :image="teaserImage"
-                    {{ ...attributes.nested('teaser').all() }}
+                    {{ ...attributes.nested('teaser').defaults({
+                        category: category,
+                        image: teaserImage,
+                    }).all() }}
                 />
             {% endif %}
         {% endblock %}

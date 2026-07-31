@@ -88,6 +88,8 @@
             <argument type="service" id="request_stack"/>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Service\ProductPriceResolver"/>
+
         <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>

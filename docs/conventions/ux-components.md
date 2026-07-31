@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Box:Header` / `Footer`.
+Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Footer`.
 
 ## Props / CVA / attributes
 
@@ -202,14 +202,19 @@ Stringifies the bag to HTML. Non-class attrs go through `defaults` / `nested().d
 
 After `vi_cva` / `vi_cva_from_file`, root `class` is marked rendered; putting it in `.defaults({…})` on the same bag **drops** it (Symfony unsets rendered keys). Nested `slot:class` is stripped into the CVA slot — re-emit with `class="{{ cx.slot.apply() }}"` / `slot:class="…"`, not via defaults.
 
-#### Child components (preferred forward)
+#### Child components (defaults forward)
 
-When a parent composes a child `<twig:…>` and callers may need to override that child’s props or nested attrs, **prefer nest + spread + defaults** over a long hardcoded prop list or parallel props (`usernameLabel`, …).
-
-Spread injects a **map** into the child mount: keys in the child’s `{% props %}` become props; the rest become the child’s `attributes` (including deeper nests like `input:class`).
+When a parent composes an **overridable** child `<twig:…>`, use **only** nest + spread + defaults. Do **not** hardcode `:prop` / `:nested:prop` on the tag next to the same nest (no parallel props like `usernameLabel`, …).
 
 ```twig
-{# ✅ class on the tag; defaults for non-class only #}
+class="{{ cx.slot.apply() }}"
+{{ ...attributes.nested('slot').defaults({ … }).all() }}
+```
+
+Spread injects a **map** into the child mount: keys in the child’s `{% props %}` become props; the rest become the child’s `attributes` (including deeper nests like `button:label`, `input:class`).
+
+```twig
+{# ✅ class on the tag; all non-class inputs in defaults #}
 <twig:ViewsTheme:Form:Input
     class="{{ cx.username.apply() }}"
     {{ ...attributes.nested('username').defaults({
@@ -220,18 +225,54 @@ Spread injects a **map** into the child mount: keys in the child’s `{% props %
     }).all() }}
 />
 
+{# ✅ nested child props — quote colon keys; real booleans #}
+<twig:ViewsTheme:Product:Action:Buy
+    class="{{ cx.buy.apply() }}"
+    {{ ...attributes.nested('buy').defaults({
+        product: product,
+        showQuantity: showQuantity,
+        'button:label': false,
+    }).all() }}
+/>
+
+{# ❌ avoid — hardcoded props + bare nest (duplicate / order-dependent) #}
+<twig:ViewsTheme:Product:Action:Buy
+    class="{{ cx.buy.apply() }}"
+    :product="product"
+    :showQuantity="showQuantity"
+    :button:label="false"
+    {{ ...attributes.nested('buy').all() }}
+/>
+
 {# Caller — username:class merges via Login CVA username slot #}
 <twig:ViewsTheme:Account:Login
     :username:label="false"
     username:placeholder="{{ 'account.loginMailLabel'|trans|sw_sanitize }}"
     username:size="lg"
 />
+
+{# Caller — deeper nest on Buy via Actions #}
+<twig:ViewsTheme:Product:Actions
+    :product="product"
+    :buy:button:label="true"
+    buy:buyLabel="{{ 'custom.add'|trans }}"
+/>
 ```
 
-- Put non-class child defaults in `.defaults({ … })`; caller nested keys win.
-- Use `:slot:prop="…"` for non-strings (e.g. `:username:label="false"`). Static `username:label="false"` is the string `"false"`.
-- Nest names (`username`, `password`, …) are a parent convention — document them on the feature page. Not automatic across layers; each parent must spread.
-- Skip spread only when the child call is fixed and must never be overridden from outside.
+- Put **all** non-class child inputs in `.defaults({ … })` — domain props and nested chrome (`'button:label': false`).
+- Colon keys in the defaults hash must be **quoted** (`'button:label'`). Use real non-strings (`false`, numbers, objects) — not stringified `"false"`.
+- Caller nested keys win (`.defaults` does not overwrite existing). Override from outside with `:slot:prop` / `:slot:nested:prop` / `slot:…`.
+- Nest names (`buy`, `username`, `password`, …) are a parent convention — document them on the feature page. Not automatic across layers; each parent must spread.
+- Call `attributes.nested('slot')` and pass the defaults hash **inline** — no intermediate variables.
+
+##### Exceptions (do not force defaults)
+
+| Case | Pattern |
+|------|---------|
+| Loop / per-item data | Hardcoded `:item="child"`, `:variant="variant"`, … (not from parent `attributes`) |
+| Sealed leaf | Fixed child with **no** public nest API — hardcoded props only, no `nested('…')` |
+| Root host wrapper | Child *is* the component root — `{{ ...attributes.defaults({ … }).all() }}` (no `nested()`) |
+| Nested CVA classes | `label:class="{{ classes.label }}"` / `icon:class="…"` stay on the tag |
 
 ## Nested components (Symfony UX)
 

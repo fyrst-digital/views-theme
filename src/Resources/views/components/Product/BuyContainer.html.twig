@@ -80,12 +80,19 @@
     {% block component_product_buy_container_prices %}
         <div {{ attributes.nested('prices') }} class="{{ cx.prices.apply() }}">
             {% block buy_widget_price %}
+                {% if options.prices.showTieredPrices|default(true) and product.calculatedPrices.count > 1 %}
+                    <twig:ViewsTheme:Product:Price:Tiered
+                        :product="product"
+                        :prices="product.calculatedPrices"
+                    />
+                {% endif %}
                 <twig:ViewsTheme:Product:Price
                     :product="product"
                     :showPrice="options.prices.showPrice|default(false)"
-                    :showTaxNote="options.prices.showTaxNote|default(true)"
-                    :showTieredPrices="options.prices.showTieredPrices|default(true)"
                 />
+                {% if options.prices.showTaxNote|default(true) %}
+                    <twig:ViewsTheme:Product:Price:Tax />
+                {% endif %}
             {% endblock %}
         </div>
     {% endblock %}

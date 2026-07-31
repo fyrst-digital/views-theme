@@ -36,7 +36,7 @@ class Box
      */
     public array $sizes = self::DEFAULT_SIZES;
 
-    public bool $showDescription = true;
+    public bool $showDescription = false;
 
     public bool $showVariations = true;
 
@@ -45,8 +45,6 @@ class Box
     public bool $showActions = true;
 
     public bool $priceShowPrice = true;
-
-    public bool $priceShowTieredPrices = false;
 
     public mixed $priceShowTaxNote = false;
 

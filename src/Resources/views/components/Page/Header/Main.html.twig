@@ -24,10 +24,11 @@
             {% if navigation %}
                 <twig:ViewsTheme:Navigation:Bar
                     class="{{ cx.navigation.apply() }}"
-                    :navigation="navigation"
-                    :navigationDepth="context.salesChannel.navigationCategoryDepth"
-                    :widthAnchor="widthAnchor"
-                    {{ ...attributes.nested('navigation').all() }}
+                    {{ ...attributes.nested('navigation').defaults({
+                        navigation: navigation,
+                        navigationDepth: context.salesChannel.navigationCategoryDepth,
+                        widthAnchor: widthAnchor,
+                    }).all() }}
                 />
             {% endif %}
         {% endblock %}

@@ -19,17 +19,19 @@
                 <twig:ViewsTheme:Navigation:Drawer:Back
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    :showLabel="false"
-                    :category="category"
-                    :menuUrl="menuUrl"
-                    {{ ...attributes.nested('back').all() }}
+                    {{ ...attributes.nested('back').defaults({
+                        showLabel: false,
+                        category: category,
+                        menuUrl: menuUrl,
+                    }).all() }}
                 />
                 <twig:ViewsTheme:Navigation:Drawer:ShowAll
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    :showLabel="false"
-                    :menuUrl="menuUrl"
-                    {{ ...attributes.nested('showAll').all() }}
+                    {{ ...attributes.nested('showAll').defaults({
+                        showLabel: false,
+                        menuUrl: menuUrl,
+                    }).all() }}
                 />
             </div>
         {% endblock %}
@@ -40,8 +42,9 @@
             >       
                 <twig:ViewsTheme:Navigation:Drawer:Active
                     class="btn btn-sm"
-                    :category="category"
-                    {{ ...attributes.nested('active').all() }}
+                    {{ ...attributes.nested('active').defaults({
+                        category: category,
+                    }).all() }}
                 />
             </div>
         {% endblock %}

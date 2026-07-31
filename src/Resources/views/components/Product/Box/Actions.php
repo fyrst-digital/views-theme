@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
 
-use Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -14,30 +13,25 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Box:Header — detail href + rating gate; Twig only composes.
+ * View-model for Product:Box:Actions — listing buy/detail gate; Twig only composes.
  */
 #[AsTwigComponent]
-class Header
+class Actions
 {
     public mixed $product = null;
 
     public ?string $href = null;
 
-    public bool $showRating = true;
-
-    public ?string $referrerCategoryId = null;
-
-    public ?string $searchTerm = null;
+    public bool $showQuantity = false;
 
     /**
      * @var array<string, mixed>
      */
     public array $cva = [];
 
-    public bool $showRatingBlock = false;
+    public bool $displayBuyButton = false;
 
     public function __construct(
-        private readonly ProductDetailUrlBuilder $productDetailUrlBuilder,
         private readonly SystemConfigService $systemConfigService,
         private readonly RequestStack $requestStack,
     ) {
@@ -53,20 +47,18 @@ class Header
             return;
         }
 
-        $this->href ??= $this->productDetailUrlBuilder->forProduct(
-            $this->product,
-            $this->referrerCategoryId,
-            $this->searchTerm,
+        $isAvailable = !$this->product->getIsCloseout()
+            || $this->product->getStock() >= $this->product->getMinPurchase();
+        $displayFrom = $this->product->getCalculatedPrices()->count() > 1;
+        $allowBuy = (bool) $this->systemConfigService->get(
+            'core.listing.allowBuyInListing',
+            $this->salesChannelContext()?->getSalesChannelId(),
         );
 
-        $ratingAverage = $this->product->getRatingAverage();
-        $this->showRatingBlock = $this->showRating
-            && (bool) $this->systemConfigService->get(
-                'core.listing.showReview',
-                $this->salesChannelContext()?->getSalesChannelId(),
-            )
-            && $ratingAverage !== null
-            && $ratingAverage > 0;
+        $this->displayBuyButton = $isAvailable
+            && !$displayFrom
+            && ($this->product->getChildCount() ?? 0) <= 0
+            && $allowBuy;
     }
 
     private function salesChannelContext(): ?SalesChannelContext

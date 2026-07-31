@@ -4,30 +4,53 @@
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
-    {% block price %}
-        {% if showPrice is same as(true) %}
-            <twig:ViewsTheme:Product:Price
-                class="{{ cx.price.apply() }}"
-                {{ ...attributes.nested('price').defaults({
-                    product: product,
-                    showPrice: priceShowPrice,
-                    showTieredPrices: priceShowTieredPrices,
-                    showTaxNote: priceShowTaxNote,
-                }).all() }}
-            />
-        {% endif %}
-    {% endblock %}
+    {% block content %}
+        
+        <div
+            {{ attributes.nested('container') }}
+            class="{{ cx.container.apply() }}"
+            >
+            {% block price %}
+                {% if showPrice is same as(true) %}
+                    <twig:ViewsTheme:Product:Price
+                        class="{{ cx.price.apply() }}"
+                        {{ ...attributes.nested('price').defaults({
+                            product: product,
+                            showPrice: priceShowPrice,
+                        }).all() }}
+                    />
+                    {% if priceShowTaxNote %}
+                        <twig:ViewsTheme:Product:Price:Tax
+                            {{ ...attributes.nested('tax').all() }}
+                        />
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
 
-    {% block actions %}
-        {% if showActions is same as(true) %}
-            <twig:ViewsTheme:Product:Actions
-                class="{{ cx.actions.apply() }}"
-                {{ ...attributes.nested('actions').defaults({
-                    product: product,
-                    href: href,
-                    showQuantity: showQuantity,
-                }).all() }}
-            />
-        {% endif %}
+            {% block variations %}
+                {% if showVariationsBlock %}
+                    <twig:ViewsTheme:Product:Variations
+                        class="{{ cx.variations.apply() }}"
+                        {{ ...attributes.nested('variations').defaults({
+                            product: product,
+                            variations: variations,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
+        </div>
+
+        {% block actions %}
+            {% if showActions is same as(true) %}
+                <twig:ViewsTheme:Product:Box:Actions
+                    class="{{ cx.actions.apply() }}"
+                    {{ ...attributes.nested('actions').defaults({
+                        product: product,
+                        href: href,
+                        showQuantity: showQuantity,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
     {% endblock %}
 </div>

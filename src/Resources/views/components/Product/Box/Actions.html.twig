@@ -1,0 +1,35 @@
+{% set cx = vi_cva_from_file(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ cx.root.apply() }}"
+>
+    {% block prepend %}{% endblock %}
+
+    {% block content %}
+        {% if displayBuyButton %}
+            {% block buy %}
+                <twig:ViewsTheme:Product:Action:Buy
+                    class="{{ cx.buy.apply() }}"
+                    {{ ...attributes.nested('buy').defaults({
+                        product: product,
+                        showQuantity: showQuantity,
+                        'button:label': false,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% else %}
+            {% block detail %}
+                <twig:ViewsTheme:Product:Action:Detail
+                    class="{{ cx.detail.apply() }}"
+                    {{ ...attributes.nested('detail').defaults({
+                        product: product,
+                        href: href,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+
+    {% block append %}{% endblock %}
+</div>

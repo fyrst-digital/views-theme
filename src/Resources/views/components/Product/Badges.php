@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
-use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Fyrst\ViewsTheme\Service\ProductPriceResolver;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -32,6 +32,11 @@ class Badges
 
     public ?float $discountPercent = null;
 
+    public function __construct(
+        private readonly ProductPriceResolver $productPriceResolver,
+    ) {
+    }
+
     /**
      * @param array<string, mixed> $data
      */
@@ -44,38 +49,11 @@ class Badges
 
         $this->showTopseller = (bool) $this->product->getMarkAsTopseller();
         $this->showNew = $this->product->isNew();
-        $this->resolveDiscount($this->product);
+
+        $data = $this->productPriceResolver->resolve($this->product);
+        $this->showDiscount = $data->showDiscountBadge;
+        $this->discountPercent = $data->discountPercent;
+
         $this->visible = $this->showDiscount || $this->showTopseller || $this->showNew;
-    }
-
-    private function resolveDiscount(SalesChannelProductEntity $product): void
-    {
-        $prices = $product->getCalculatedPrices();
-        $price = $prices->count() > 0 ? $prices->last() : $product->getCalculatedPrice();
-
-        if (!$price instanceof CalculatedPrice) {
-            return;
-        }
-
-        $listPrice = $price->getListPrice();
-        $hasListPrice = $listPrice !== null && $listPrice->getPercentage() > 0;
-        $hasRange = $prices->count() > 1;
-
-        $variantConfig = $product->getVariantListingConfig();
-        $displayParent = $variantConfig !== null
-            && $variantConfig->getDisplayParent()
-            && $product->getParentId() === null;
-
-        $displayFromVariants = false;
-        if ($displayParent) {
-            $displayFromVariants = $price->getUnitPrice() !== $product->getCalculatedCheapestPrice()->getUnitPrice();
-        }
-
-        if (!$hasListPrice || $hasRange || $displayFromVariants) {
-            return;
-        }
-
-        $this->showDiscount = true;
-        $this->discountPercent = $listPrice->getPercentage();
     }
 }
