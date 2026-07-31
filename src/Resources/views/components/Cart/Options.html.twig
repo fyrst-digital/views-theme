@@ -6,6 +6,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    shipping: attributes.nested('shipping'),
+    promotion: attributes.nested('promotion'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -14,7 +19,7 @@
         {% block shipping %}
             <twig:ViewsTheme:Cart:ShippingCalculation
                 class="{{ cx.shipping.apply() }}"
-                {{ ...attributes.nested('shipping').defaults({
+                {{ ...attrs.shipping.defaults({
                     page: page,
                     redirectTo: redirectTo,
                 }).all() }}
@@ -24,7 +29,7 @@
         {% block promotion %}
             <twig:ViewsTheme:Cart:PromotionForm
                 class="{{ cx.promotion.apply() }}"
-                {{ ...attributes.nested('promotion').defaults({
+                {{ ...attrs.promotion.defaults({
                     redirectTo: redirectTo,
                 }).all() }}
             />

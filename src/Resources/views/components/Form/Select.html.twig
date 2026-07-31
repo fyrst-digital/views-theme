@@ -26,6 +26,14 @@
 {% set isRequired = validationRules is not empty and 'required' in validationRules %}
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    label: attributes.nested('label'),
+    required: attributes.nested('required'),
+    select: attributes.nested('select'),
+    description: attributes.nested('description'),
+    feedback: attributes.nested('feedback'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -33,7 +41,7 @@
     {% block label %}
         {% if label %}
             <label
-                {{ attributes.nested('label').defaults({
+                {{ attrs.label.defaults({
                     for: id,
                 }) }}
                 class="{{ cx.label.apply({size: size}) }}"
@@ -42,7 +50,7 @@
 
                 {% if isRequired %}
                     <span
-                        {{ attributes.nested('required').defaults({
+                        {{ attrs.required.defaults({
                             'aria-hidden': 'true',
                         }) }}
                         class="{{ cx.required.apply() }}"
@@ -56,7 +64,7 @@
 
     {% block select %}
         <select
-            {{ attributes.nested('select').defaults({
+            {{ attrs.select.defaults({
                 id: id,
                 name: name,
                 autocomplete: autocomplete is not empty ? autocomplete : false,
@@ -87,7 +95,7 @@
     {% block description %}
         {% if description is not empty %}
             <small
-                {{ attributes.nested('description').defaults({
+                {{ attrs.description.defaults({
                     id: descriptionId,
                 }) }}
                 class="{{ cx.description.apply() }}"
@@ -99,7 +107,7 @@
 
     {% block feedback %}
         <div
-            {{ attributes.nested('feedback').defaults({
+            {{ attrs.feedback.defaults({
                 id: feedbackId,
             }) }}
             class="{{ cx.feedback.apply() }}"

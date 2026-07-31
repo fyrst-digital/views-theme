@@ -13,6 +13,11 @@
     image: { base: 'img-fluid' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    text: attributes.nested('text'),
+    image: attributes.nested('image'),
+} %}
+
 {% set resolvedLogoPath = logoPath %}
 {% if theme_config('sw-logo-mobile') %}
     {% set resolvedLogoPath = theme_config('sw-logo-mobile') %}
@@ -32,7 +37,7 @@
     {% if textLogo is not empty %}
         {% block text %}
             <span
-                {{ attributes.nested('text').without('class') }}
+                {{ attrs.text.without('class') }}
                 class="{{ cx.text.apply() }}"
             >
                 {{ textLogo|raw }}
@@ -62,7 +67,7 @@
                 {% block image %}
                     {% if imgLogoPath %}
                         <img
-                            {{ attributes.nested('image').defaults({
+                            {{ attrs.image.defaults({
                                 src: imgLogoPath|sw_encode_url,
                                 alt: 'header.logoLink'|trans|striptags,
                                 style: 'width: var(--vi-logo-w, auto)',

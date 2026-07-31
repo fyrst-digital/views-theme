@@ -7,6 +7,10 @@
 {% if showDescription is same as(true) %}
     {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    description: attributes.nested('description'),
+} %}
+
     <div
         {{ attributes }}
         class="{{ cx.root.apply() }}"
@@ -14,7 +18,7 @@
         {% block description %}
             <twig:ViewsTheme:Product:Description
                 class="{{ cx.description.apply() }}"
-                {{ ...attributes.nested('description').defaults({
+                {{ ...attrs.description.defaults({
                     product: product,
                     outputTags: false,
                 }).all() }}

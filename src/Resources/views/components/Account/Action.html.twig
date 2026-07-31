@@ -1,23 +1,19 @@
 {% props
-    buttonSize = 'md',
     activeRoute = null,
-    label = 'account.myAccount'|trans|striptags,
-    color = 'none',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
-{% set buttonLabel = label is same as(false) ? null : label %}
 
 <twig:ViewsTheme:Dropdown
     class="{{ cx.root.apply() }}"
     toggle:class="{{ cx.toggle.apply() }}"
-    :color="color"
-    :buttonSize="buttonSize"
-    icon="user"
-    :label="buttonLabel"
     {{ ...attributes.defaults({
         placement: 'bottom-end',
+        'toggle:icon': 'user',
+        'toggle:label': 'account.myAccount'|trans|striptags,
+        'toggle:color': 'none',
+        'toggle:size': 'md',
         'toggle:aria-label': 'account.myAccount'|trans|striptags,
         'toggle:title': 'account.myAccount'|trans|striptags,
         'toggle:aria-haspopup': 'dialog',

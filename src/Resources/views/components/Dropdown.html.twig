@@ -1,18 +1,19 @@
 {% props
     id = 'vi-dropdown-' ~ random(),
     placement = 'bottom-end',
-    color = 'none',
-    buttonSize = 'md',
-    icon = null,
-    label = null,
     cva = {},
 %}
 
 {% set anchorName = '--' ~ id %}
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    host: attributes.nested('host'),
+    toggle: attributes.nested('toggle'),
+} %}
+
 <div
-    {{ attributes.nested('host').defaults({
+    {{ attrs.host.defaults({
         'data-component': 'ViewsTheme:Dropdown',
     }) }}
     class="{{ cx.host.apply() }}"
@@ -20,12 +21,12 @@
     {% block toggle %}
         <twig:ViewsTheme:Button
             class="{{ cx.toggle.apply() }}"
-            {{ ...attributes.nested('toggle').defaults({
+            {{ ...attrs.toggle.defaults({
                 type: 'button',
-                color: color,
-                size: buttonSize,
-                icon: icon,
-                label: label,
+                color: 'none',
+                size: 'md',
+                icon: null,
+                label: null,
                 popovertarget: id,
                 'aria-expanded': 'false',
                 'aria-haspopup': 'true',

@@ -10,6 +10,12 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    description: attributes.nested('description'),
+    username: attributes.nested('username'),
+    password: attributes.nested('password'),
+} %}
+
 {% set loginId = 'vi-login-' ~ random() %}
 
 <form
@@ -57,7 +63,7 @@
     {% block description %}
         {% if description is not empty %}
             <div
-                {{ attributes.nested('description') }}
+                {{ attrs.description }}
                 class="{{ cx.description.apply() }}"
             >
                 {{ description }}
@@ -68,7 +74,7 @@
     {% block username %}
         <twig:ViewsTheme:Form:Input
             class="{{ cx.username.apply() }}"
-            {{ ...attributes.nested('username').defaults({
+            {{ ...attrs.username.defaults({
                 type: 'email',
                 id: loginId ~ '-mail',
                 name: 'username',
@@ -84,7 +90,7 @@
     {% block password %}
         <twig:ViewsTheme:Form:Input
             class="{{ cx.password.apply() }}"
-            {{ ...attributes.nested('password').defaults({
+            {{ ...attrs.password.defaults({
                 type: 'password',
                 id: loginId ~ '-password',
                 name: 'password',

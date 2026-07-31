@@ -8,10 +8,14 @@
     separator: { base: 'vi-breadcrumb__separator breadcrumb-placeholder' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    separator: attributes.nested('separator'),
+} %}
+
 {% block layout_breadcrumb_placeholder %}
     {% if key != breadcrumbKeys|last %}
         <div
-            {{ attributes.nested('separator').defaults({
+            {{ attrs.separator.defaults({
                 'aria-hidden': 'true',
             }) }}
             class="{{ cx.separator.apply() }}"

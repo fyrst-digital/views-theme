@@ -1,5 +1,13 @@
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    prefix: attributes.nested('prefix'),
+    unit: attributes.nested('unit'),
+    listPrice: attributes.nested('listPrice'),
+    reference: attributes.nested('reference'),
+    average: attributes.nested('average'),
+} %}
+
 {% block price %}
     {% if showPrice and price %}
         <div
@@ -9,7 +17,7 @@
             {% block prefix %}
                 {% if showFromPrefix %}
                     <span
-                        {{ attributes.nested('prefix') }}
+                        {{ attrs.prefix }}
                         class="{{ cx.prefix.apply() }}"
                     >
                         {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
@@ -19,7 +27,7 @@
 
             {% block unit %}
                 <span
-                    {{ attributes.nested('unit') }}
+                    {{ attrs.unit }}
                     class="{{ cx.unit.apply({ hasListPrice: hasListPrice }) }}"
                 >
                     {{ price.unitPrice|currency }}
@@ -29,7 +37,7 @@
             {% block listPrice %}
                 {% if hasListPrice %}
                     <span
-                        {{ attributes.nested('listPrice') }}
+                        {{ attrs.listPrice }}
                         class="{{ cx.listPrice.apply() }}"
                     >
                         {{ price.listPrice.price|currency }}
@@ -40,7 +48,7 @@
             {% block reference %}
                 {% if hasReferencePrice %}
                     <span
-                        {{ attributes.nested('reference') }}
+                        {{ attrs.reference }}
                         class="{{ cx.reference.apply() }}"
                     >
                         {{ price.referencePrice.price|currency }} /
@@ -53,7 +61,7 @@
             {% block average %}
                 {% if hasRegulationPrice %}
                     <span
-                        {{ attributes.nested('average') }}
+                        {{ attrs.average }}
                         class="{{ cx.average.apply() }}"
                     >
                         {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}

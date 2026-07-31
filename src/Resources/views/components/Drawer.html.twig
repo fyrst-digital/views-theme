@@ -8,6 +8,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    panel: attributes.nested('panel'),
+} %}
+
 <div
     {{ attributes.defaults({
         id: id,
@@ -31,7 +35,7 @@
 
     {% block panel %}
         <twig:ViewsTheme:Drawer:Panel
-            {{ ...attributes.nested('panel').defaults({
+            {{ ...attrs.panel.defaults({
                 side: side,
                 title: title,
             }).all() }}

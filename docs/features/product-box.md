@@ -23,7 +23,7 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 | `Badge` | Generic label leaf (`type` CVA variants) |
 | `Product:Price:Tiered` | Tier table — parent-mounted (e.g. BuyContainer), not nested in Price |
 | `Product:Price:Tax` | Tax note — parent-mounted (BuyContainer, Box:Footer), not nested in Price |
-| `Product:Action:Buy` / `Detail` / `Wishlist` | Buy form, details Button, wishlist toggle |
+| `Product:Action:Buy` (class-backed) / `Detail` / `Wishlist` | Buy form (quantity gate + pack unit VM), details Button, wishlist toggle |
 | `Review:Rating` | Stars when reviews enabled |
 
 ## Wire-up
@@ -164,6 +164,28 @@ No root markup when description is off.
 
 Buy when `displayBuyButton`; otherwise Detail (`product` + `href`).
 
+### `Product:Action:Buy` (class-backed)
+
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
+| `product` | required | Sales channel product |
+| `formId` | `ProductBuyForm` + product id | Form `id` (root attr; overridable) |
+| `showQuantity` | `true` | Request visible qty control |
+| `showQuantityField` | derived | `showQuantity` ∧ not digital-single |
+| `productUnit` | derived | Pack unit / plural for QuantityInput `unit` |
+| `cva` | `{}` | slots: `root`, `button` |
+
+**Root attrs** (via `attributes.defaults`): `action` → `path('frontend.checkout.line-item.add')`.
+
+**Nests** (no parallel chrome / qty props on Buy):
+
+| Nest | Target | Defaults in `attrs.*.defaults` |
+|------|--------|--------------------------------|
+| `button:…` | `Button` | submit, icon `handbag`, label/title `listing.boxAddProduct`, color `primary`, size `md` |
+| `quantityInput:…` | `QuantityInput` | `inputName` / qty / min / max / steps from `product`; `unit: productUnit` |
+
+Co-located `Buy.js` → `ViewsTheme:Cart:Add`. Overrides: `button:label`, `quantityInput:size`, root `action`, …
+
 ### `Product:Actions`
 
 Shared anonymous shell (same Buy/Detail leaves). Not used by Box — prefer `Product:Box:Actions` on the card.
@@ -199,7 +221,7 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 
 ## Behaviour notes
 
-- Listing buy mounts `Product:Action:Buy` via nest+defaults (`showQuantity: false`, `'button:label': false`; hidden min purchase only). Caller overrides: `buy:*` / `buy:button:label`
+- Listing buy mounts `Product:Action:Buy` via nest+defaults (`showQuantity: false`, `'button:label': false`; hidden min purchase only). Caller overrides: `buy:button:label` / `buy:quantityInput:*` (not parallel props like `buyLabel`)
 - `Product:Action:Detail` → `Button` (`type="link"`, `color="light"`, label `listing.boxProductDetails`)
 - Detail URLs: `ProductDetailUrlBuilder` (`productId`, optional `search` when child + term, optional `referrerCategoryId`). Owned by **Cover**, **Box:Header**, **Box:Footer** — not Box. Optional `href`/`url` override still wins
 - Price math lives in `ProductPriceResolver` → `ProductPriceData` (used by `Product:Price` + `Product:Badges`). Display: cheapest when parent listing, else `calculatedPrices.last` when tiered; “From” prefix when range or variant spread. Discount badge only when list price on last/base, not range, not from-variants. Tier table + tax are parent-mounted siblings (`Product:Price:Tiered` / `Product:Price:Tax`) — not nested in Price. Unit danger color: CVA `unit` variant `hasListPrice`
@@ -227,6 +249,6 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 | Price resolve | `src/Service/ProductPriceResolver.php`, `ProductPriceData.php` |
 | Actions (shared) | `components/Product/Actions.html.twig` + `Actions.cva.twig` |
 | Price | `components/Product/Price.{php,html.twig,cva.twig}`, `Price/{Tiered,Tax}.{html.twig,cva.twig}` |
-| Children | `components/Product/{Name,Variations,Description}.html.twig`, `Action/{Buy,Detail,Wishlist}.html.twig` |
+| Children | `components/Product/{Name,Variations,Description}.html.twig`, `Action/Buy.{php,html.twig,js}`, `Action/{Detail,Wishlist,BuyParameter}.html.twig` |
 | Badges | `components/Product/Badges.{php,html.twig,cva.twig}`, `Product/Badge/{Discount,Topseller,New}.{html.twig,cva.twig}` |
 | Badge (generic) | `components/Badge.{html.twig,cva.twig}` |

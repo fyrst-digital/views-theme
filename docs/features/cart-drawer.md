@@ -151,8 +151,8 @@ Region-nested override keys on `LineItem:Product`:
 | `body:deliveryDate` | `LineItem:DeliveryDate` |
 | `footer` | `LineItem:Footer` |
 | `footer:price` | `LineItem:Price` |
-| `footer:quantityInput` | `LineItem:Quantity` |
-| `footer:remove` | `LineItem:Remove` |
+| `footer:quantityInput` | `LineItem:Quantity` (further `quantityInput:*` → `QuantityInput`) |
+| `footer:remove` | `LineItem:Remove` (`button:*` → remove Button) |
 
 No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 
@@ -207,10 +207,10 @@ Nest names (via `Cart:Options` → `shipping:*`):
 | Nest | Target |
 |------|--------|
 | `shipping:selection:*` | Selection root / props |
-| `shipping:selection:country:*` | Country → `Form:Select` props / nested attrs (`selection:country:select:class`, …) |
+| `shipping:selection:country:*` | Country → `Form:Select` (default `size: sm` in nest defaults) |
 | `shipping:selection:payment:*` | PaymentMethod → `Form:Select` |
 | `shipping:selection:shipping:*` | ShippingMethod → `Form:Select` |
-| `shipping:size` | Default size for all three selects (`sm` / `md` / `lg`; default `sm`; forwarded into Selection) |
+| `shipping:summary:*` | Disclosure `Button` (`tag=summary`; default size `sm`) |
 | `shipping:redirectTo` | Hidden redirect route name (forwarded into Selection) |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 

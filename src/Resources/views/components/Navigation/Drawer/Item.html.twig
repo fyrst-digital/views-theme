@@ -21,13 +21,17 @@
     drill: cx.drill.apply(),
     icon: cx.icon.apply(),
 } %}
+{% set attrs = {
+    link: attributes.nested('link'),
+    drill: attributes.nested('drill'),
+} %}
 
 <li
     {{ attributes }}
     class="{{ classes.root }}"
 >
     <a
-        {{ attributes.nested('link').defaults({
+        {{ attrs.link.defaults({
             href: not isFolder ? category_url(category) : '#',
             title: name,
             'aria-current': isActive ? 'page' : null,
@@ -59,7 +63,7 @@
         {% if hasChildren %}
             <twig:ViewsTheme:Navigation:Drawer:Drill
                 class="{{ classes.drill }}"
-                {{ ...attributes.nested('drill').defaults({
+                {{ ...attrs.drill.defaults({
                     href: drillUrl,
                     url: drillUrl,
                     title: name,

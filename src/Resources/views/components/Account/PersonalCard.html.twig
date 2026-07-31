@@ -10,17 +10,23 @@
     actions: { base: 'vi-account-personal-card__actions card-actions' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    body: attributes.nested('body'),
+    title: attributes.nested('title'),
+    actions: attributes.nested('actions'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     <div
-        {{ attributes.nested('body') }}
+        {{ attrs.body }}
         class="{{ cx.body.apply() }}"
     >
         {% block title %}
             <h4
-                {{ attributes.nested('title') }}
+                {{ attrs.title }}
                 class="{{ cx.title.apply() }}"
             >
                 {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
@@ -50,7 +56,7 @@
 
         {% block actions %}
             <div
-                {{ attributes.nested('actions') }}
+                {{ attrs.actions }}
                 class="{{ cx.actions.apply() }}"
             >
                 {% block actions_content %}{% endblock %}

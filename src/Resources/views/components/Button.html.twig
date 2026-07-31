@@ -13,6 +13,10 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    label: attributes.nested('label'),
+} %}
+
 {% set element = tag is not empty ? tag : (type is same as('link') ? 'a' : 'button') %}
 
 <{{ element }}
@@ -36,7 +40,7 @@
 
     {% block label %}
         {% if label %}
-            <span {{ attributes.nested('label') }} class="{{ cx.label.apply({ size: size }) }}">
+            <span {{ attrs.label }} class="{{ cx.label.apply({ size: size }) }}">
                 {{ label }}
             </span>
         {% endif %}

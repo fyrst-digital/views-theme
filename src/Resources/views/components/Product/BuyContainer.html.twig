@@ -23,6 +23,14 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    reviews: attributes.nested('reviews'),
+    reviewLabel: attributes.nested('reviewLabel'),
+    reviewLink: attributes.nested('reviewLink'),
+    prices: attributes.nested('prices'),
+    actions: attributes.nested('actions'),
+} %}
+
 {% block buy_widget_data %}
     {% block buy_widget_data_rich_snippet_url %}
         {{ parent() }}
@@ -54,12 +62,12 @@
                 {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
             {% endif %}
 
-            <div {{ attributes.nested('reviews') }} class="{{ cx.reviews.apply() }}">
+            <div {{ attrs.reviews }} class="{{ cx.reviews.apply() }}">
                 <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
-                <div {{ attributes.nested('reviewLabel') }} class="{{ cx.reviewLabel.apply() }}">
+                <div {{ attrs.reviewLabel }} class="{{ cx.reviewLabel.apply() }}">
                     {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
                     <a
-                        {{ attributes.nested('reviewLink').defaults({
+                        {{ attrs.reviewLink.defaults({
                             'data-bs-toggle': 'tab',
                             'data-off-canvas-tabs': 'true',
                             'data-remote-click': 'true',
@@ -78,7 +86,7 @@
     {% endblock %}
 
     {% block component_product_buy_container_prices %}
-        <div {{ attributes.nested('prices') }} class="{{ cx.prices.apply() }}">
+        <div {{ attrs.prices }} class="{{ cx.prices.apply() }}">
             {% block buy_widget_price %}
                 {% if options.prices.showTieredPrices|default(true) and product.calculatedPrices.count > 1 %}
                     <twig:ViewsTheme:Product:Price:Tiered
@@ -137,7 +145,7 @@
 
         {% block component_product_buy_container_actions_container %}
             {% if options.showActions is same as(true) %}
-                <div {{ attributes.nested('actions') }} class="{{ cx.actions.apply() }}">
+                <div {{ attrs.actions }} class="{{ cx.actions.apply() }}">
                     {% block component_product_buy_container_action_prepend %}{% endblock %}
 
                     {% block component_product_buy_container_wishlist %}

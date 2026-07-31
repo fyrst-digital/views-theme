@@ -1,5 +1,9 @@
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    placeholder: attributes.nested('placeholder'),
+} %}
+
 <{{ rootTag|raw }}
     {{ attributes.defaults({
         href: linked ? url : null,
@@ -48,7 +52,7 @@
         {% else %}
             {% block placeholder %}
                 <div
-                    {{ attributes.nested('placeholder') }}
+                    {{ attrs.placeholder }}
                     class="{{ cx.placeholder.apply() }}"
                     aria-hidden="true"
                 >

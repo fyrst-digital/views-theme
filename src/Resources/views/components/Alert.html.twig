@@ -12,6 +12,14 @@
 
 {% set alertType = type is same as('error') ? 'danger' : type %}
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    icon: attributes.nested('icon'),
+    content: attributes.nested('content'),
+    heading: attributes.nested('heading'),
+    list: attributes.nested('list'),
+    dismiss: attributes.nested('dismiss'),
+} %}
+
 {% set alertAriaJsOptions = { ariaLive: ariaLive } %}
 {% set iconName = 'x' %}
 {% if alertType is same as('danger') %}
@@ -35,7 +43,7 @@
 >
     {% block icon %}
         {% if icon is not same as(false) and icon is not same as('false') %}
-            <div {{ attributes.nested('icon') }} class="{{ cx.icon.apply() }}">
+            <div {{ attrs.icon }} class="{{ cx.icon.apply() }}">
                 {% block icon_element %}
                     {{ vi_icon(iconName) }}
                 {% endblock %}
@@ -44,10 +52,10 @@
     {% endblock %}
 
     {% block content_container %}
-        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
+        <div {{ attrs.content }} class="{{ cx.content.apply() }}">
             {% block heading %}
                 {% if heading %}
-                    <div {{ attributes.nested('heading') }} class="{{ cx.heading.apply() }}">
+                    <div {{ attrs.heading }} class="{{ cx.heading.apply() }}">
                         {{ heading }}
                     </div>
                 {% endif %}
@@ -55,7 +63,7 @@
 
             {% block content %}
                 {% if list|length > 1 %}
-                    <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
+                    <ul {{ attrs.list }} class="{{ cx.list.apply() }}">
                         {% for entry in list %}
                             <li>{{ entry|sw_sanitize }}</li>
                         {% endfor %}
@@ -74,7 +82,7 @@
     {% block dismiss %}
         {% if dismissible %}
             <button
-                {{ attributes.nested('dismiss').defaults({
+                {{ attrs.dismiss.defaults({
                     type: 'button',
                     'data-bs-dismiss': 'alert',
                     'aria-label': 'global.default.close'|trans|striptags,

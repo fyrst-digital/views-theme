@@ -6,6 +6,15 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    image: attributes.nested('image'),
+    content: attributes.nested('content'),
+    header: attributes.nested('header'),
+    name: attributes.nested('name'),
+    label: attributes.nested('label'),
+    price: attributes.nested('price'),
+} %}
+
 {% set label = lineItem.label|trans|sw_sanitize %}
 
 <{{ tag|raw }}
@@ -14,7 +23,7 @@
 >
     {% block image %}
         <div
-            {{ attributes.nested('image') }}
+            {{ attrs.image }}
             class="{{ cx.image.apply() }}"
         >
             {{ vi_icon('tag') }}
@@ -23,18 +32,18 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...attributes.nested('content').all() }}
+            {{ ...attrs.content.all() }}
         >
             <div
-                {{ attributes.nested('header') }}
+                {{ attrs.header }}
                 class="{{ cx.header.apply() }}"
             >
                 <div
-                    {{ attributes.nested('name') }}
+                    {{ attrs.name }}
                     class="{{ cx.name.apply() }}"
                 >
                     <span
-                        {{ attributes.nested('label') }}
+                        {{ attrs.label }}
                         class="{{ cx.label.apply() }}"
                     >
                         {{ label|raw }}
@@ -43,7 +52,7 @@
             </div>
 
             <twig:ViewsTheme:LineItem:Price
-                {{ ...attributes.nested('price').defaults({
+                {{ ...attrs.price.defaults({
                     lineItem: lineItem,
                 }).all() }}
             />

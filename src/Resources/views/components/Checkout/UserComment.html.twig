@@ -4,6 +4,13 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    title: attributes.nested('title'),
+    control: attributes.nested('control'),
+    label: attributes.nested('label'),
+    textarea: attributes.nested('textarea'),
+} %}
+
 {% set commentKey = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') %}
 
 <div
@@ -12,16 +19,16 @@
 >
     {% if title %}
         {% block title %}
-            <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
+            <div {{ attrs.title }} class="{{ cx.title.apply() }}">
                 {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
             </div>
         {% endblock %}
     {% endif %}
 
     {% block control %}
-        <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
+        <div {{ attrs.control }} class="{{ cx.control.apply() }}">
             <label
-                {{ attributes.nested('label').defaults({
+                {{ attrs.label.defaults({
                     for: commentKey,
                 }) }}
                 class="{{ cx.label.apply() }}"
@@ -29,7 +36,7 @@
                 {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
             </label>
             <textarea
-                {{ attributes.nested('textarea').defaults({
+                {{ attrs.textarea.defaults({
                     placeholder: 'checkout.customerCommentPlaceholder'|trans|sw_sanitize,
                     id: commentKey,
                     form: 'confirmOrderForm',

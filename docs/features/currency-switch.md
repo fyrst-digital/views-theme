@@ -26,8 +26,8 @@ Navigation:Drawer footer (mobile)
 
 `Currency:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active currency id, label, id), derives `visible`, `ariaName`, `currencySymbol`
-- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `|trans` for aria)
+- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active currency id, id), derives `visible`, `ariaName`, `currencySymbol`
+- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `|trans` for aria); toggle chrome via nest `toggle:*`
 
 Must stay registered via the components `**/*.php` service prototype (autoconfigure).
 
@@ -40,10 +40,11 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 | `currencies` | `[]` if omitted | Call sites pass `header.currencies` / drawer `currencies` |
 | `activeCurrencyId` | context currency id | |
 | `id` | `vi-currency-action-{random}` | Base id for Dropdown + option buttons |
-| `toggleLabel` | active currency translated name | Named to avoid Dropdown/Button `label` shadowing; `:toggleLabel="false"` hides text |
 | `showSymbol` | `true` | Currency symbol in Button `prepend` |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
 | `cva` | `{}` | Deep-merge CVA overrides |
+
+**Nest** `toggle:…` → owned `Button` (defaults: `label: ariaName`, `size: sm`, `color: none`, popover/ARIA). Override: `:toggle:label="false"`, …
 
 ### Derived (template-facing)
 
@@ -65,7 +66,7 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 ## Behavior
 
 - **Open/close:** `Dropdown` HTML Popover + CSS anchor (no currency-specific JS)
-- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="none"`, hard attrs for popover/ARIA)
+- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button`; chrome via pre-bound `attrs.toggle.defaults` (no parallel `toggleLabel` prop)
 - **Switch:** `POST` `frontend.checkout.configure` with submit button `name="currencyId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"`
 - **Active option:** CVA `active` variant + `aria-current="true"`
@@ -76,9 +77,9 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 
 Same patterns as [Account action](account-action.md) / [Language switch](language-switch.md):
 
-- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `none`)
-- Pre-bind parent CVA into a `classes` hash before Dropdown mount (nested `cx` shadowing). Action uses `toggleLabel` (not `label`) so the value is not shadowed inside Dropdown’s `toggle` block.
-- No `class` inside `attributes.defaults`
+- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action
+- Pre-bind parent CVA into a `classes` hash and `attrs.toggle` before Dropdown mount (nested `cx` / `attributes` shadowing)
+- No `class` inside `attributes.defaults`; no parallel chrome props
 - Do **not** multi-hop blocks through Dropdown into Button
 
 ## Wire-up

@@ -1,5 +1,13 @@
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    container: attributes.nested('container'),
+    price: attributes.nested('price'),
+    tax: attributes.nested('tax'),
+    variations: attributes.nested('variations'),
+    actions: attributes.nested('actions'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -7,21 +15,21 @@
     {% block content %}
         
         <div
-            {{ attributes.nested('container') }}
+            {{ attrs.container }}
             class="{{ cx.container.apply() }}"
             >
             {% block price %}
                 {% if showPrice is same as(true) %}
                     <twig:ViewsTheme:Product:Price
                         class="{{ cx.price.apply() }}"
-                        {{ ...attributes.nested('price').defaults({
+                        {{ ...attrs.price.defaults({
                             product: product,
                             showPrice: priceShowPrice,
                         }).all() }}
                     />
                     {% if priceShowTaxNote %}
                         <twig:ViewsTheme:Product:Price:Tax
-                            {{ ...attributes.nested('tax').all() }}
+                            {{ ...attrs.tax.all() }}
                         />
                     {% endif %}
                 {% endif %}
@@ -31,7 +39,7 @@
                 {% if showVariationsBlock %}
                     <twig:ViewsTheme:Product:Variations
                         class="{{ cx.variations.apply() }}"
-                        {{ ...attributes.nested('variations').defaults({
+                        {{ ...attrs.variations.defaults({
                             product: product,
                             variations: variations,
                         }).all() }}
@@ -44,7 +52,7 @@
             {% if showActions is same as(true) %}
                 <twig:ViewsTheme:Product:Box:Actions
                     class="{{ cx.actions.apply() }}"
-                    {{ ...attributes.nested('actions').defaults({
+                    {{ ...attrs.actions.defaults({
                         product: product,
                         href: href,
                         showQuantity: showQuantity,

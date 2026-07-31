@@ -6,6 +6,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    panel: attributes.nested('panel'),
+} %}
+
 <div
     {{ attributes.defaults({
         id: 'vi-search-overlay',
@@ -28,7 +32,7 @@
 
     {% block panel %}
         <div
-            {{ attributes.nested('panel') }}
+            {{ attrs.panel }}
             class="{{ cx.panel.apply() }}"
         >
             {% block bar %}

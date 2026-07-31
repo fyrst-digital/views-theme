@@ -15,6 +15,13 @@
     login: { base: 'product-detail-review-login' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    listContent: attributes.nested('listContent'),
+    formContainer: attributes.nested('formContainer'),
+    form: attributes.nested('form'),
+    login: attributes.nested('login'),
+} %}
+
 {% block component_review_alert %}
     {% if ratingSuccess == 1 %}
         <twig:ViewsTheme:Alert type="success" content="{{ 'detail.reviewFormSuccessAlert'|trans|sw_sanitize }}" />
@@ -38,7 +45,7 @@
 
 {% block component_review_list_content %}
     {% for review in reviews %}
-        <div {{ attributes.nested('listContent') }} class="{{ cx.listContent.apply() }}">
+        <div {{ attrs.listContent }} class="{{ cx.listContent.apply() }}">
             {% component 'ViewsTheme:Review:Item' with { review: review } %}{% endcomponent %}
         </div>
     {% endfor %}
@@ -46,17 +53,17 @@
 
 {% block component_review_form_container %}
     <div
-        {{ attributes.nested('formContainer').defaults({
+        {{ attrs.formContainer.defaults({
             id: 'review-form',
         }) }}
         class="{{ cx.formContainer.apply() }}"
     >
         {% if context.customer and not context.customer.guest %}
-            <div {{ attributes.nested('form') }} class="{{ cx.form.apply() }}">
+            <div {{ attrs.form }} class="{{ cx.form.apply() }}">
                 {% component 'ViewsTheme:Review:Form' %}{% endcomponent %}
             </div>
         {% else %}
-            <div {{ attributes.nested('login') }} class="{{ cx.login.apply() }}">
+            <div {{ attrs.login }} class="{{ cx.login.apply() }}">
                 {% sw_include '@Storefront/storefront/component/review/review-login.html.twig' %}
             </div>
         {% endif %}

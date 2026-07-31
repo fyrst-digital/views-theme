@@ -1,38 +1,16 @@
-{% props
-    product,
-    formAction = path('frontend.checkout.line-item.add'),
-    formId = 'ProductBuyForm' ~ product.id,
-    showQuantity = true,
-    buyLabel = 'listing.boxAddProduct'|trans|sw_sanitize,
-    buyIcon = 'handbag',
-    buyColor = 'primary',
-    buySize = 'md',
-    cva = {},
-%}
-
-{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
-{% set allowsQuantity = not product.type is defined
-    or product.type != DIGITAL_CONST
-    or (product.type == DIGITAL_CONST and product.maxPurchase !== 1) %}
-{% set showQuantityField = allowsQuantity and showQuantity is same as(true) %}
-
-{% set productUnit = false %}
-{% if product.translated.packUnit %}
-    {% if product.minPurchase > 1 and product.translated.packUnitPlural %}
-        {% set productUnit = product.translated.packUnitPlural %}
-    {% elseif product.translated.packUnit %}
-        {% set productUnit = product.translated.packUnit %}
-    {% endif %}
-{% endif %}
-
 {% set cx = vi_cva({
     root: { base: 'vi-product-action-buy' },
     button: { base: 'vi-product-action-buy__button' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    button: attributes.nested('button'),
+    quantityInput: attributes.nested('quantityInput'),
+} %}
+
 <form
     {{ attributes.defaults({
-        action: formAction,
+        action: path('frontend.checkout.line-item.add'),
         method: 'post',
         id: formId,
         'data-component': 'ViewsTheme:Product:Action:Buy',
@@ -52,12 +30,14 @@
     {% block quantity %}
         {% if showQuantityField %}
             <twig:ViewsTheme:QuantityInput
-                inputName="lineItems[{{ product.id }}][quantity]"
-                :quantity="product.minPurchase"
-                :minQuantity="product.minPurchase"
-                :maxQuantity="product.calculatedMaxPurchase"
-                :purchaseSteps="product.purchaseSteps"
-                :unit="productUnit"
+                {{ ...attrs.quantityInput.defaults({
+                    inputName: 'lineItems[' ~ product.id ~ '][quantity]',
+                    quantity: product.minPurchase,
+                    minQuantity: product.minPurchase,
+                    maxQuantity: product.calculatedMaxPurchase,
+                    purchaseSteps: product.purchaseSteps,
+                    unit: productUnit,
+                }).all() }}
             />
         {% endif %}
     {% endblock %}
@@ -65,13 +45,13 @@
     {% block button %}
         <twig:ViewsTheme:Button
             class="{{ cx.button.apply() }}"
-            {{ ...attributes.nested('button').defaults({
+            {{ ...attrs.button.defaults({
                 type: 'submit',
-                icon: buyIcon,
-                label: buyLabel,
-                color: buyColor,
-                size: buySize,
-                title: buyLabel,
+                icon: 'handbag',
+                label: 'listing.boxAddProduct'|trans|sw_sanitize,
+                color: 'primary',
+                size: 'md',
+                title: 'listing.boxAddProduct'|trans|sw_sanitize,
             }).all() }}
         />
     {% endblock %}

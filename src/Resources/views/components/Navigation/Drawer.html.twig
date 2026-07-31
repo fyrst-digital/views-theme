@@ -10,6 +10,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    panel: attributes.nested('panel'),
+} %}
+
 <twig:ViewsTheme:Drawer
     class="{{ cx.root.apply() }}"
     {{ ...attributes.defaults({
@@ -20,7 +24,7 @@
 >
     <twig:block name="panel">
         <twig:ViewsTheme:Drawer:Panel
-            {{ ...attributes.nested('panel').defaults({
+            {{ ...attrs.panel.defaults({
                 side: 'start',
             }).all() }}
         >

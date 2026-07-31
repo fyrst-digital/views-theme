@@ -8,6 +8,14 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    title: attributes.nested('title'),
+    control: attributes.nested('control'),
+    label: attributes.nested('label'),
+    input: attributes.nested('input'),
+    help: attributes.nested('help'),
+} %}
+
 {% if deliveryDate.active|default(false) %}
     <div
         {{ attributes.defaults({
@@ -17,18 +25,18 @@
     >
         {% block title %}
             {% if title is not same as(false) %}
-                <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
+                <div {{ attrs.title }} class="{{ cx.title.apply() }}">
                     {{ title }}
                 </div>
             {% endif %}
         {% endblock %}
 
         {% block control %}
-            <div {{ attributes.nested('control') }} class="{{ cx.control.apply() }}">
+            <div {{ attrs.control }} class="{{ cx.control.apply() }}">
                 {% block label %}
                     {% if label is not same as(false) %}
                         <label
-                            {{ attributes.nested('label').defaults({
+                            {{ attrs.label.defaults({
                                 for: 'PreferredDeliveryDate',
                             }) }}
                             class="{{ cx.label.apply() }}"
@@ -40,7 +48,7 @@
 
                 {% block input %}
                     <input
-                        {{ attributes.nested('input').defaults({
+                        {{ attrs.input.defaults({
                             type: 'date',
                             id: 'PreferredDeliveryDate',
                             form: 'confirmOrderForm',
@@ -55,7 +63,7 @@
 
                 {% block help %}
                     {% if helpText is not same as(false) %}
-                        <div {{ attributes.nested('help') }} class="{{ cx.help.apply() }}">
+                        <div {{ attrs.help }} class="{{ cx.help.apply() }}">
                             {{ helpText }}
                         </div>
                     {% endif %}

@@ -10,18 +10,23 @@
     body: { base: 'vi-account-login-card__body card-body login-card-body' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    header: attributes.nested('header'),
+    body: attributes.nested('body'),
+} %}
+
 {% block component_account_login %}
     <div {{ attributes }} class="{{ cx.root.apply() }}">
         {% block component_account_login_header %}
             {% if cardTitle %}
-                <h4 {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
+                <h4 {{ attrs.header }} class="{{ cx.header.apply() }}">
                     {{ cardTitle }}
                 </h4>
             {% endif %}
         {% endblock %}
 
         {% block component_account_login_form %}
-            <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
+            <div {{ attrs.body }} class="{{ cx.body.apply() }}">
                 <twig:ViewsTheme:Account:Login
                     :loginError="loginError|default(false)"
                     :errorSnippet="errorSnippet|default(null)"

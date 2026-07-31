@@ -1,17 +1,19 @@
 {% props
     lineItem,
-    label = lineItem.label|trans|sw_sanitize,
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
-    formAction = path('frontend.checkout.line-item.delete', { id: lineItem.id }),
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    button: attributes.nested('button'),
+} %}
+
 <form
     {{ attributes.defaults({
-        action: formAction,
+        action: path('frontend.checkout.line-item.delete', { id: lineItem.id }),
         method: 'post',
         'data-component': 'ViewsTheme:LineItem:Remove',
         'data-component-options': {
@@ -29,13 +31,15 @@
     {% block button %}
         <twig:ViewsTheme:Button
             class="{{ cx.button.apply() }}"
-            {{ ...attributes.nested('button').defaults({
+            {{ ...attrs.button.defaults({
                 type: 'submit',
                 icon: 'trash',
                 color: 'link',
                 size: 'sm',
                 title: 'global.default.remove'|trans,
-                'aria-label': 'checkout.removeLineItem'|trans({ '%lineItemLabel%': label })|striptags,
+                'aria-label': 'checkout.removeLineItem'|trans({
+                    '%lineItemLabel%': lineItem.label|trans|sw_sanitize,
+                })|striptags,
             }).all() }}
         />
     {% endblock %}

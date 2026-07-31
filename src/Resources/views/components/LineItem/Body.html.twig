@@ -7,6 +7,12 @@
 {% set options = lineItem.payload.options ?? [] %}
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    variations: attributes.nested('variations'),
+    features: attributes.nested('features'),
+    deliveryDate: attributes.nested('deliveryDate'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -15,7 +21,7 @@
         {% if options is not empty %}
             <twig:ViewsTheme:Product:Variations
                 class="d-flex flex-wrap align-items-center gap-1 text-body-secondary small"
-                {{ ...attributes.nested('variations').defaults({
+                {{ ...attrs.variations.defaults({
                     variations: options,
                 }).all() }}
             />
@@ -24,7 +30,7 @@
 
     {% block features %}
         <twig:ViewsTheme:LineItem:Features
-            {{ ...attributes.nested('features').defaults({
+            {{ ...attrs.features.defaults({
                 lineItem: lineItem,
             }).all() }}
         />
@@ -33,7 +39,7 @@
     {% block deliveryDate %}
         {% if config('core.cart.showDeliveryTime') %}
             <twig:ViewsTheme:LineItem:DeliveryDate
-                {{ ...attributes.nested('deliveryDate').defaults({
+                {{ ...attrs.deliveryDate.defaults({
                     lineItem: lineItem,
                     deliveries: deliveries,
                 }).all() }}

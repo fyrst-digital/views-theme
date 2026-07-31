@@ -15,6 +15,10 @@
     label: cx.label.apply(),
     caret: cx.caret.apply(),
 } %}
+{% set attrs = {
+    link: attributes.nested('link'),
+} %}
+
 {# UX ComponentAttributes: null becomes true — use false to omit #}
 {% set triggerDefaults = {
     title: name,
@@ -36,7 +40,7 @@
     {% if isFolder %}
         <button
             type="button"
-            {{ attributes.nested('link').defaults(triggerDefaults) }}
+            {{ attrs.link.defaults(triggerDefaults) }}
             class="{{ classes.link }}"
         >
             <span class="{{ classes.label }}">{{ name }}</span>
@@ -46,7 +50,7 @@
         </button>
     {% else %}
         <a
-            {{ attributes.nested('link').defaults(triggerDefaults|merge({
+            {{ attrs.link.defaults(triggerDefaults|merge({
                 href: category_url(category),
             })|merge(category_linknewtab(category) ? { target: '_blank' } : {})) }}
             class="{{ classes.link }}"

@@ -5,21 +5,30 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    container: attributes.nested('container'),
+    serviceList: attributes.nested('serviceList'),
+    serviceItem: attributes.nested('serviceItem'),
+    serviceLink: attributes.nested('serviceLink'),
+    vat: attributes.nested('vat'),
+    copyright: attributes.nested('copyright'),
+} %}
+
 {% block component_footer_bottom %}
     <div {{ attributes }} class="{{ cx.root.apply() }}">
     
     {% block component_footer_bottom_container %}
-        <div {{ attributes.nested('container') }} class="{{ cx.container.apply() }}">
+        <div {{ attrs.container }} class="{{ cx.container.apply() }}">
 
             {% block component_footer_bottom_service_list %}
                 {% if page.header.serviceMenu %}
-                    <ul {{ attributes.nested('serviceList') }} class="{{ cx.serviceList.apply() }}">
+                    <ul {{ attrs.serviceList }} class="{{ cx.serviceList.apply() }}">
                         {% for serviceMenuItem in page.header.serviceMenu %}
                             {% block component_footer_bottom_service_item %}
-                                <li {{ attributes.nested('serviceItem') }} class="{{ cx.serviceItem.apply() }}">
+                                <li {{ attrs.serviceItem }} class="{{ cx.serviceItem.apply() }}">
                                     {% block component_footer_bottom_service_link %}
                                         <a
-                                            {{ attributes.nested('serviceLink').defaults({
+                                            {{ attrs.serviceLink.defaults({
                                                 href: category_url(serviceMenuItem),
                                                 title: serviceMenuItem.translated.name,
                                                 target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
@@ -38,7 +47,7 @@
 
             {% block component_footer_bottom_vat_notice %}
                 {% if showVatNotice is same as(true) %}
-                    <div {{ attributes.nested('vat') }} class="{{ cx.vat.apply() }}">
+                    <div {{ attrs.vat }} class="{{ cx.vat.apply() }}">
                         {% if context.taxState == 'gross' %}
                             {{ 'footer.includeVatText'|trans({
                                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
@@ -53,7 +62,7 @@
             {% endblock %}
 
             {% block component_footer_bottom_copyright %}
-                <div {{ attributes.nested('copyright') }} class="{{ cx.copyright.apply() }}">
+                <div {{ attrs.copyright }} class="{{ cx.copyright.apply() }}">
                     {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
                 </div>
             {% endblock %}

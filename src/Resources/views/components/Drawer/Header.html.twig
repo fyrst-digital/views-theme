@@ -5,6 +5,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    title: attributes.nested('title'),
+    close: attributes.nested('close'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -12,7 +17,7 @@
     {% block content %}
         {% block title %}
             <div
-                {{ attributes.nested('title') }}
+                {{ attrs.title }}
                 class="{{ cx.title.apply() }}"
             >
                 {% if title %}
@@ -23,7 +28,7 @@
 
         {% block close %}
             <twig:ViewsTheme:Drawer:Close
-                {{ ...attributes.nested('close').defaults({}).all() }}
+                {{ ...attrs.close.defaults({}).all() }}
             />
         {% endblock %}
     {% endblock %}

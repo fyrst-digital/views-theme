@@ -1,7 +1,6 @@
 {% props
     page,
     redirectTo = 'frontend.checkout.cart.page',
-    size = 'sm',
     cva = {},
 %}
 
@@ -12,7 +11,11 @@
     summary: cx.summary.apply(),
     selection: cx.selection.apply(),
 } %}
-{% set summaryLabel = 'checkout.shippingCosts'|trans|sw_sanitize %}
+{% set attrs = {
+    details: attributes.nested('details'),
+    summary: attributes.nested('summary'),
+    selection: attributes.nested('selection'),
+} %}
 
 <form
     {{ attributes.defaults({
@@ -29,15 +32,15 @@
     {% block panel %}
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
         {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
-            <details {{ attributes.nested('details') }} class="{{ classes.details }}">
+            <details {{ attrs.details }} class="{{ classes.details }}">
                 <twig:ViewsTheme:Button
                     class="{{ classes.summary }}"
-                    {{ ...attributes.nested('summary').defaults({
+                    {{ ...attrs.summary.defaults({
                         tag: 'summary',
-                        label: summaryLabel,
+                        label: 'checkout.shippingCosts'|trans|sw_sanitize,
                         icon: 'caret-down',
                         color: 'secondary',
-                        size: size,
+                        size: 'sm',
                         justify: 'center',
                     }).all() }}
                 />
@@ -45,10 +48,9 @@
                 {% block selection %}
                     <twig:ViewsTheme:Cart:ShippingCalculation:Selection
                         class="{{ classes.selection }}"
-                        {{ ...attributes.nested('selection').defaults({
+                        {{ ...attrs.selection.defaults({
                             page: page,
                             redirectTo: redirectTo,
-                            size: size,
                         }).all() }}
                     />
                 {% endblock %}

@@ -27,8 +27,8 @@ Navigation:Drawer footer (mobile)
 
 `Language:Action` is a [class UX component](../conventions/ux-components.md#class-components-php-backed):
 
-- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active language id, label, id), finds active entity, derives `visible`, `ariaName`, `languageCode`, `flagCode` / `flagCodeFallback`
-- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `asset()` for flags, `|trans` for aria)
+- `Action.php` — public prop defaults; `#[PostMount]` resolves context defaults (active language id, id), finds active entity, derives `visible`, `ariaName`, `languageCode`, `flagCode` / `flagCodeFallback`
+- `Action.html.twig` — composition only (CVA, Dropdown/Button/Menu, `asset()` for flags, `|trans` for aria); toggle chrome via nest `toggle:*`
 
 Must stay registered via the components `**/*.php` service prototype (autoconfigure).
 
@@ -41,11 +41,12 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 | `languages` | `[]` if omitted | Call sites pass `header.languages` / drawer `languages` |
 | `activeLanguageId` | sales-channel language id | |
 | `id` | `vi-language-action-{random}` | Base id for Dropdown + option buttons |
-| `toggleLabel` | languageInfo name / active name | Named to avoid Dropdown/Button `label` shadowing; `:toggleLabel="false"` hides text |
 | `showCode` | `false` | Short locale code (e.g. `EN`) in Button `prepend` |
 | `showFlag` | `true` | Flag in Button `prepend` |
 | `placement` | `'bottom-end'` | Forwarded to `Dropdown` |
 | `cva` | `{}` | Deep-merge CVA overrides |
+
+**Nest** `toggle:…` → owned `Button` (defaults: `label: ariaName`, `size: sm`, `color: none`, popover/ARIA). Override: `:toggle:label="false"`, `toggle:size`, …
 
 ### Derived (template-facing)
 
@@ -69,7 +70,7 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 ## Behavior
 
 - **Open/close:** `Dropdown` HTML Popover + CSS anchor
-- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button` (`size="sm"` `color="none"`, hard attrs for popover/ARIA). No multi-hop blocks into Dropdown’s default Button.
+- **Toggle:** Action replaces Dropdown’s default toggle with `ViewsTheme:Button`; chrome via pre-bound `attrs.toggle.defaults` (no parallel `toggleLabel` prop). No multi-hop blocks into Dropdown’s default Button.
 - **Switch:** `POST` `frontend.checkout.switch-language` with submit button `name="languageId"`
 - **Redirect:** `data-form-add-dynamic-redirect="true"` (core FormAddDynamicRedirect)
 - **Locale routes:** hidden `languageCode_{id}` when `_route_params._locale` is set
@@ -82,9 +83,9 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 
 Same patterns as [Account action](account-action.md):
 
-- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action (hardcoded `sm` / `none`)
-- Pre-bind parent CVA into a `classes` hash before Dropdown mount (nested `cx` shadowing). Action uses `toggleLabel` (not `label`) so the value is not shadowed inside Dropdown’s `toggle` block.
-- No `class` inside `attributes.defaults`
+- `class` → panel, `host:class` → host; toggle is a full `Button` owned by Action
+- Pre-bind parent CVA into a `classes` hash and `attrs.toggle` before Dropdown mount (nested `cx` / `attributes` shadowing)
+- No `class` inside `attributes.defaults`; no parallel chrome props
 - Do **not** nest `{% block %}` inside `<twig:block>` to fill Button slots through Dropdown — Action owns the Button
 
 ## Wire-up

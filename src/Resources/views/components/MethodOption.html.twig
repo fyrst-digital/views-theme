@@ -10,12 +10,21 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    input: attributes.nested('input'),
+    label: attributes.nested('label'),
+    image: attributes.nested('image'),
+    content: attributes.nested('content'),
+    name: attributes.nested('name'),
+    description: attributes.nested('description'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     <input
-        {{ attributes.nested('input').defaults({
+        {{ attrs.input.defaults({
             type: 'radio',
             id: methodType ~ 'Method' ~ methodId,
             name: methodType ~ 'MethodId',
@@ -27,13 +36,13 @@
     >
 
     <label
-        {{ attributes.nested('label').defaults({
+        {{ attrs.label.defaults({
             for: methodType ~ 'Method' ~ methodId,
         }) }}
         class="{{ cx.label.apply() }}"
     >
         {% if methodMedia %}
-            <div {{ attributes.nested('image') }} class="{{ cx.image.apply() }}">
+            <div {{ attrs.image }} class="{{ cx.image.apply() }}">
                 {% sw_thumbnails 'method-option-image-thumbnails' with {
                     media: methodMedia,
                     sizes: { default: '100px' },
@@ -46,12 +55,12 @@
             </div>
         {% endif %}
 
-        <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
-            <div {{ attributes.nested('name') }} class="{{ cx.name.apply() }}">
+        <div {{ attrs.content }} class="{{ cx.content.apply() }}">
+            <div {{ attrs.name }} class="{{ cx.name.apply() }}">
                 {{ methodMeta.name }}
             </div>
             {% if methodMeta.description %}
-                <div {{ attributes.nested('description') }} class="{{ cx.description.apply() }}">
+                <div {{ attrs.description }} class="{{ cx.description.apply() }}">
                     {{ methodMeta.description }}
                 </div>
             {% endif %}

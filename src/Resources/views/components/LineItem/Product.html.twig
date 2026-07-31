@@ -10,6 +10,14 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    cover: attributes.nested('cover'),
+    content: attributes.nested('content'),
+    header: attributes.nested('header'),
+    body: attributes.nested('body'),
+    footer: attributes.nested('footer'),
+} %}
+
 {% set label = lineItem.label|trans|sw_sanitize %}
 {% set productLink = lineItem.type is same as('product')
     ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId })
@@ -24,7 +32,7 @@
             class="{{ cx.image.apply() }}"
             image:class="w-100 h-100 object-fit-cover"
             placeholder:class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary text-body-secondary"
-            {{ ...attributes.nested('cover').defaults({
+            {{ ...attrs.cover.defaults({
                 id: lineItem.referencedId,
                 name: label,
                 cover: lineItem.cover ?? null,
@@ -38,10 +46,10 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...attributes.nested('content').all() }}
+            {{ ...attrs.content.all() }}
         >
             <twig:ViewsTheme:LineItem:Header
-                {{ ...attributes.nested('header').defaults({
+                {{ ...attrs.header.defaults({
                     lineItem: lineItem,
                     label: label,
                     productLink: productLink,
@@ -51,14 +59,14 @@
             />
 
             <twig:ViewsTheme:LineItem:Body
-                {{ ...attributes.nested('body').defaults({
+                {{ ...attrs.body.defaults({
                     lineItem: lineItem,
                     deliveries: deliveries,
                 }).all() }}
             />
 
             <twig:ViewsTheme:LineItem:Footer
-                {{ ...attributes.nested('footer').defaults({
+                {{ ...attrs.footer.defaults({
                     lineItem: lineItem,
                     showPrice: showPrice,
                     nestingLevel: nestingLevel,

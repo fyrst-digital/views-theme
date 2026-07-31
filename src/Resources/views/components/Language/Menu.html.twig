@@ -8,6 +8,13 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    list: attributes.nested('list'),
+    item: attributes.nested('item'),
+    option: attributes.nested('option'),
+    flagIcon: attributes.nested('flagIcon'),
+} %}
+
 <form
     {{ attributes.defaults({
         method: 'post',
@@ -17,7 +24,7 @@
     class="{{ cx.root.apply() }}"
 >
     <ul
-        {{ attributes.nested('list').defaults({
+        {{ attrs.list.defaults({
             'aria-label': 'header.languageList'|trans|striptags,
         }) }}
         class="{{ cx.list.apply() }}"
@@ -32,9 +39,9 @@
             {% set flagCode = translationCode ? translationCode.code : null %}
             {% set flagCodeFallback = flagCode ? flagCode|split('-')|first : null %}
 
-            <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
+            <li {{ attrs.item }} class="{{ cx.item.apply() }}">
                 <button
-                    {{ attributes.nested('option').defaults({
+                    {{ attrs.option.defaults({
                         type: 'submit',
                         name: 'languageId',
                         id: id ~ '-' ~ language.id,
@@ -50,7 +57,7 @@
                             : null %}
                         <twig:ViewsTheme:Language:Flag
                             class="{{ cx.flagIcon.apply() }}"
-                            {{ ...attributes.nested('flagIcon').defaults({
+                            {{ ...attrs.flagIcon.defaults({
                                 src: flagSrc,
                                 fallbackSrc: flagFallbackSrc,
                             }).all() }}

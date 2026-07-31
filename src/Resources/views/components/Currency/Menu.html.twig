@@ -7,6 +7,13 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    list: attributes.nested('list'),
+    item: attributes.nested('item'),
+    option: attributes.nested('option'),
+    symbol: attributes.nested('symbol'),
+} %}
+
 <form
     {{ attributes.defaults({
         method: 'post',
@@ -16,7 +23,7 @@
     class="{{ cx.root.apply() }}"
 >
     <ul
-        {{ attributes.nested('list').defaults({
+        {{ attrs.list.defaults({
             'aria-label': 'header.currencyList'|trans|striptags,
         }) }}
         class="{{ cx.list.apply() }}"
@@ -24,9 +31,9 @@
         {% for currency in currencies %}
             {% set isActive = currency.id is same as(activeCurrencyId) %}
 
-            <li {{ attributes.nested('item') }} class="{{ cx.item.apply() }}">
+            <li {{ attrs.item }} class="{{ cx.item.apply() }}">
                 <button
-                    {{ attributes.nested('option').defaults({
+                    {{ attrs.option.defaults({
                         type: 'submit',
                         name: 'currencyId',
                         id: id ~ '-' ~ currency.id,
@@ -35,7 +42,7 @@
                     }) }}
                     class="{{ cx.option.apply({ active: isActive }) }}"
                 >
-                    <span {{ attributes.nested('symbol') }} class="{{ cx.symbol.apply() }}" aria-hidden="true">
+                    <span {{ attrs.symbol }} class="{{ cx.symbol.apply() }}" aria-hidden="true">
                         {{ currency.symbol }}
                     </span>
                     {{ currency.translated.name }}

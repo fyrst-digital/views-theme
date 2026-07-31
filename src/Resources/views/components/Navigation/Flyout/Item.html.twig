@@ -16,6 +16,10 @@
     list: cx.list.apply(),
     child: cx.child.apply(),
 } %}
+{% set attrs = {
+    link: attributes.nested('link'),
+    list: attributes.nested('list'),
+} %}
 
 <li
     {{ attributes }}
@@ -23,7 +27,7 @@
 >
     {% if isFolder %}
         <span
-            {{ attributes.nested('link') }}
+            {{ attrs.link }}
             class="{{ classes.link }}"
             title="{{ name }}"
         >
@@ -31,7 +35,7 @@
         </span>
     {% else %}
         <a
-            {{ attributes.nested('link').defaults({
+            {{ attrs.link.defaults({
                 href: category_url(category),
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,
@@ -44,7 +48,7 @@
 
     {% if children|length > 0 and level < maxDepth %}
         <ul
-            {{ attributes.nested('list') }}
+            {{ attrs.list }}
             class="{{ classes.list }}"
         >
             {% for child in children %}

@@ -8,6 +8,11 @@
     content: { base: 'footer-column-content-container' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    headline: attributes.nested('headline'),
+    content: attributes.nested('content'),
+} %}
+
 {% block component_footer_column %}
     <div {{ attributes }} class="{{ cx.root.apply() }}">
 
@@ -15,7 +20,7 @@
 
             {% block component_footer_column_headline %}
                 <div
-                    {{ attributes.nested('headline').defaults({
+                    {{ attrs.headline.defaults({
                         role: 'listitem',
                     }) }}
                     class="{{ cx.headline.apply() }}"
@@ -27,7 +32,7 @@
             {% endblock %}
 
             {% block component_footer_column_content_container %}
-                <div {{ attributes.nested('content') }} class="{{ cx.content.apply() }}">
+                <div {{ attrs.content }} class="{{ cx.content.apply() }}">
 
                     {% block component_footer_column_content %}
                     {% endblock %}

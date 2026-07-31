@@ -11,6 +11,9 @@
     root: cx.root.apply(),
     list: cx.list.apply(),
 } %}
+{% set attrs = {
+    list: attributes.nested('list'),
+} %}
 
 <nav
     {{ attributes.defaults({
@@ -23,7 +26,7 @@
     class="{{ classes.root }}"
 >
     <ul
-        {{ attributes.nested('list') }}
+        {{ attrs.list }}
         class="{{ classes.list }}"
     >
         {% for treeItem in navigation.tree %}

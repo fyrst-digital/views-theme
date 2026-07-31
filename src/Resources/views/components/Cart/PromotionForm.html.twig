@@ -11,8 +11,12 @@
     field: cx.field.apply(),
     submit: cx.submit.apply(),
 } %}
+{% set attrs = {
+    field: attributes.nested('field'),
+    submit: attributes.nested('submit'),
+} %}
+
 {% set submitTitle = 'checkout.addPromotionLabel'|trans|striptags %}
-{% set parentAttributes = attributes %}
 
 <form
     {{ attributes.defaults({
@@ -33,7 +37,7 @@
         <twig:ViewsTheme:Form:Input:Group
             class="{{ classes.field }}"
             label:class="visually-hidden"
-            {{ ...attributes.nested('field').defaults({
+            {{ ...attrs.field.defaults({
                 id: inputId,
                 name: 'code',
                 label: 'checkout.addPromotionLabel'|trans|sw_sanitize,
@@ -44,7 +48,7 @@
             <twig:block name="append">
                 <twig:ViewsTheme:Button
                     class="{{ classes.submit }}"
-                    {{ ...parentAttributes.nested('submit').defaults({
+                    {{ ...attrs.submit.defaults({
                         type: 'submit',
                         id: submitId,
                         title: submitTitle,

@@ -25,8 +25,6 @@ class Action
 
     public ?string $id = null;
 
-    public string|false|null $toggleLabel = null;
-
     public bool $showCode = false;
 
     public bool $showFlag = true;
@@ -69,8 +67,6 @@ class Action
         $this->visible = $count > 1;
 
         if (!$this->visible) {
-            $this->toggleLabel = $this->toggleLabel === false ? false : ($this->toggleLabel ?? '');
-
             return;
         }
 
@@ -93,10 +89,6 @@ class Action
         }
 
         $this->ariaName = $languageInfoName !== '' ? $languageInfoName : $activeName;
-
-        if ($this->toggleLabel === null) {
-            $this->toggleLabel = $this->ariaName;
-        }
 
         $activeTranslationCode = null;
         if ($activeLanguage instanceof LanguageEntity) {

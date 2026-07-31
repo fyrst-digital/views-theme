@@ -9,7 +9,7 @@ Full guide: [UX Twig components](ux-components.md).
 1. PascalCase path → `<twig:ViewsTheme:…>`
 2. Inputs: anonymous → `{% props %}` + simple defaults; heavy view-model → [class component](ux-components.md#class-components-php-backed) (`Name.php` + `#[PostMount]`). No wasteful `resolved*` — [Props](ux-components.md#props)
 3. `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva({ … }|replace_recursive(cva))`; prop `cva = {}`; BEM `vi-*` roots
-4. Attrs: DOM → `attributes.defaults` / `nested` (**never** `class` in defaults); overridable child `<twig:…>` → `class="{{ cx… }}"` + **only** `{{ ...attributes.nested('slot').defaults({…}).all() }}` (nested props as quoted keys, e.g. `'button:label': false`; no hardcoded `:prop` beside the nest) — [ux-components.md § Attributes](ux-components.md#attributes)
+4. Attrs: after `vi_cva*`, pre-bind nests into **`attrs`** (`slot: attributes.nested('slot')`); own root → `attributes.defaults`; DOM nest → `attrs.slot` / `attrs.slot.defaults`; overridable child → `class="{{ classes.slot }}"` + `{{ ...attrs.slot.defaults({…}).all() }}` (**never** `class` in defaults; quoted nested keys e.g. `'button:label': false`; no bare `attributes.nested` / `parentAttributes`) — [ux-components.md § Attributes](ux-components.md#attributes)
 5. Short `{% block %}` names
 6. Interactive root: `data-component="ViewsTheme:…"` **only** with co-located `<Name>.js` (no `data-ref` / `data-vi`)
 7. Co-located `<Name>.js` (`ShopwareComponent`) for every `data-component`

@@ -6,6 +6,13 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    row: attributes.nested('row'),
+    cellQuantity: attributes.nested('cellQuantity'),
+    cellPrice: attributes.nested('cellPrice'),
+    cellReference: attributes.nested('cellReference'),
+} %}
+
 <table
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -26,12 +33,12 @@
             {% set isRegulationPrice = price.regulationPrice != null %}
 
             <tr
-                {{ attributes.nested('row') }}
+                {{ attrs.row }}
                 class="{{ cx.row.apply() }}"
             >
                 {% block quantity %}
                     <td
-                        {{ attributes.nested('cellQuantity') }}
+                        {{ attrs.cellQuantity }}
                         class="{{ cx.cellQuantity.apply() }}"
                     >
                         {% if loop.last %}
@@ -45,7 +52,7 @@
 
                 {% block price %}
                     <td
-                        {{ attributes.nested('cellPrice') }}
+                        {{ attrs.cellPrice }}
                         class="{{ cx.cellPrice.apply() }}"
                     >
                         <span>
@@ -66,7 +73,7 @@
                 {% block reference %}
                     {% if price.referencePrice is not null %}
                         <td
-                            {{ attributes.nested('cellReference') }}
+                            {{ attrs.cellReference }}
                             class="{{ cx.cellReference.apply() }}"
                         >
                             {{ price.referencePrice.price|currency }} /

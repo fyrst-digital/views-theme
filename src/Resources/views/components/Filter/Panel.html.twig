@@ -11,19 +11,26 @@
     container: { base: 'vi-filter-panel__container' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    header: attributes.nested('header'),
+    title: attributes.nested('title'),
+    close: attributes.nested('close'),
+    container: attributes.nested('container'),
+} %}
+
 {% block component_filter_panel_header %}
-    <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
-        <div {{ attributes.nested('title') }} class="{{ cx.title.apply() }}">
+    <div {{ attrs.header }} class="{{ cx.header.apply() }}">
+        <div {{ attrs.title }} class="{{ cx.title.apply() }}">
             {{ 'listing.filterTitleText'|trans }}
         </div>
-        <div {{ attributes.nested('close') }} class="{{ cx.close.apply() }}">
+        <div {{ attrs.close }} class="{{ cx.close.apply() }}">
             {{ vi_icon('x') }}
         </div>
     </div>
 {% endblock %}
 
 {% block component_filter_panel_items_container %}
-    <div {{ attributes.nested('container') }} class="{{ cx.container.apply() }}">
+    <div {{ attrs.container }} class="{{ cx.container.apply() }}">
         {% block component_filter_panel_items %}
             {{ parent() }}
         {% endblock %}

@@ -6,6 +6,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    action: attributes.nested('action'),
+} %}
+
 {% if total > 0 %}
     <div
         {{ attributes }}
@@ -14,7 +18,7 @@
         {% block action %}
             <twig:ViewsTheme:Button
                 class="{{ cx.action.apply() }}"
-                {{ ...attributes.nested('action').defaults({
+                {{ ...attrs.action.defaults({
                     type: 'link',
                     color: 'light',
                     href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,

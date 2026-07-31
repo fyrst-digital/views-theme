@@ -10,6 +10,12 @@
     summaryList: { base: 'order-item-summary-list cart-summary-list' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    body: attributes.nested('body'),
+    footer: attributes.nested('footer'),
+    summaryList: attributes.nested('summaryList'),
+} %}
+
 {% block page_account_order_documents_table %}
 {% endblock %}
 
@@ -20,7 +26,7 @@
 {% endblock %}
 
 {% block page_account_order_item_detail_table_body %}
-    <div {{ attributes.nested('body') }} class="{{ cx.body.apply() }}">
+    <div {{ attrs.body }} class="{{ cx.body.apply() }}">
         {% component 'ViewsTheme:Order:ItemDetailsList' %}{% endcomponent %}
     </div>
 {% endblock %}
@@ -28,10 +34,10 @@
 {% block page_account_order_item_detail_table_footer %}
 
     {% block page_account_order_item_detail_table_labels_summary %}
-        <div {{ attributes.nested('footer') }} class="{{ cx.footer.apply() }}">
+        <div {{ attrs.footer }} class="{{ cx.footer.apply() }}">
 
             {% block page_account_order_item_detail_summary %}
-                <div {{ attributes.nested('summaryList') }} class="{{ cx.summaryList.apply() }}">
+                <div {{ attrs.summaryList }} class="{{ cx.summaryList.apply() }}">
                     {% block page_account_order_item_detail_shipping_costs %}
                         {% if order.deliveries|length > 0 %}
                             <twig:ViewsTheme:Cart:Summary:Item

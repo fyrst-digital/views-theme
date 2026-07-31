@@ -12,6 +12,9 @@
     link: cx.link.apply(),
     image: cx.image.apply(),
 } %}
+{% set attrs = {
+    link: attributes.nested('link'),
+} %}
 
 <div
     {{ attributes }}
@@ -32,7 +35,7 @@
         </div>
     {% else %}
         <a
-            {{ attributes.nested('link').defaults({
+            {{ attrs.link.defaults({
                 href: category_url(category),
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,

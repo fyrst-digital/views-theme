@@ -83,7 +83,7 @@ Update the child-forward section to:
 
 4. Bullet list:
    - Quoted nested keys: `'button:label': false`
-   - Caller override: `:buy:button:label="true"` / `buy:buyLabel="…"`
+   - Caller override: `:buy:button:label="true"` / `buy:button:label="…"`
    - `class` never in defaults
    - Inline `nested` + inline defaults hash (existing rules)
 5. Replace soft “Skip spread only when fixed” with a tight **Exceptions** subsection (loops / sealed / root `attributes.defaults` / tag `slot:class`).

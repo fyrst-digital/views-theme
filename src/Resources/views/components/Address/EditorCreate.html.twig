@@ -10,6 +10,11 @@
     requiredHint: { base: 'address-required-info required-fields form-text mt-3' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    fieldset: attributes.nested('fieldset'),
+    requiredHint: attributes.nested('requiredHint'),
+} %}
+
 {% block component_address_address_editor_modal_create_address_form %}
     <form
             {{ attributes.defaults({
@@ -26,7 +31,7 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_form_fields_include %}
-            <div {{ attributes.nested('fieldset') }} class="{{ cx.fieldset.apply() }}">
+            <div {{ attrs.fieldset }} class="{{ cx.fieldset.apply() }}">
                 {% component 'ViewsTheme:Address:Personal' with {
                     data: postedData ?? address,
                     prefix: 'address',
@@ -49,7 +54,7 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_required_hint %}
-            <p {{ attributes.nested('requiredHint') }} class="{{ cx.requiredHint.apply() }}">
+            <p {{ attrs.requiredHint }} class="{{ cx.requiredHint.apply() }}">
                 {% block component_address_address_editor_modal_create_address_required_hint_text %}
                     {{ parent() }}
                 {% endblock %}

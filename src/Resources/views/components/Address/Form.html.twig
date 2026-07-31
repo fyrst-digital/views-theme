@@ -9,6 +9,11 @@
     countryState: { base: 'country-and-state-form-elements' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    company: attributes.nested('company'),
+    countryState: attributes.nested('countryState'),
+} %}
+
 {% block component_address_form_company %}
   {% if showFormCompany %}
     {% if config('core.loginRegistration.showAccountTypeSelection') %}
@@ -16,7 +21,7 @@
     {% endif %}
 
     {% if config('core.loginRegistration.showAccountTypeSelection') or prefix == 'address' or prefix == 'shippingAddress' or hasSelectedBusiness %}
-      <div {{ attributes.nested('company') }} class="{{ cx.company.apply() }}">
+      <div {{ attrs.company }} class="{{ cx.company.apply() }}">
         {% block component_address_form_company_fields %}
           {% block component_address_form_company_name %}
             {%
@@ -52,7 +57,7 @@
   {# @deprecated tag:v6.8.0 - Only condition will be removed #}
   {% if feature('v6.8.0.0') %}
     <div
-      {{ attributes.nested('countryState') }}
+      {{ attrs.countryState }}
       class="{{ cx.countryState.apply() }}"
       data-country-state-select="true"
       data-country-state-select-options="{{ options|json_encode }}">

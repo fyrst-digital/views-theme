@@ -255,7 +255,7 @@ JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component�
 
 ### Dropdown
 
-Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Default toggle is `ViewsTheme:Button` (`color`, `buttonSize` → Button `size`, optional `icon` / `label`). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
+Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` (placement is CSS-only: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`). Host wrapper (`vi-dropdown-host`, `display: contents`) holds toggle + panel. Default toggle is `ViewsTheme:Button`; chrome only via nest `toggle:*` (defaults: `color: none`, `size: md`, optional `icon` / `label` — no parallel Dropdown props). Co-located `Dropdown.css` + a11y-only `Dropdown.js`.
 
 | Hook | Attribute |
 |------|-----------|

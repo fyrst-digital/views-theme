@@ -13,11 +13,19 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    edit: attributes.nested('edit'),
+    deleteForm: attributes.nested('deleteForm'),
+    deleteButton: attributes.nested('deleteButton'),
+    setDefaultBilling: attributes.nested('setDefaultBilling'),
+    setDefaultShipping: attributes.nested('setDefaultShipping'),
+} %}
+
 {% block page_account_address_actions %}
     {% block page_account_address_actions_buttons %}
         {% block page_account_address_actions_update %}
             <a
-                {{ attributes.nested('edit').defaults({
+                {{ attrs.edit.defaults({
                     href: path('frontend.account.address.edit.page', { addressId: address.id }),
                     title: 'account.addressesContentItemActionEdit'|trans|striptags,
                 }) }}
@@ -31,14 +39,14 @@
         {% block page_account_address_actions_delete %}
             {% if defaultShippingAddress.id != address.id and defaultBillingAddress.id != address.id %}
                 <form
-                    {{ attributes.nested('deleteForm').defaults({
+                    {{ attrs.deleteForm.defaults({
                         action: path('frontend.account.address.delete', { addressId: address.id }),
                         method: 'post',
                     }) }}
                     class="{{ cx.deleteForm.apply() }}"
                 >
                     <button
-                        {{ attributes.nested('deleteButton').defaults({
+                        {{ attrs.deleteButton.defaults({
                             type: 'submit',
                             title: 'account.addressesContentItemActionDelete'|trans|striptags,
                         }) }}
@@ -60,7 +68,7 @@
                     method="post"
                 >
                     <button
-                        {{ attributes.nested('setDefaultBilling').defaults({
+                        {{ attrs.setDefaultBilling.defaults({
                             type: 'submit',
                             title: 'account.addressesSetAsDefaultBillingAction'|trans|striptags,
                         }) }}
@@ -79,7 +87,7 @@
                     method="post"
                 >
                     <button
-                        {{ attributes.nested('setDefaultShipping').defaults({
+                        {{ attrs.setDefaultShipping.defaults({
                             type: 'submit',
                             title: 'account.addressesSetAsDefaultShippingAction'|trans|striptags,
                             disabled: not address.country.shippingAvailable ? 'disabled' : null,

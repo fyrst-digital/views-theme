@@ -15,6 +15,12 @@
     level: cx.level.apply(),
     list: cx.list.apply(),
 } %}
+{% set attrs = {
+    scroll: attributes.nested('scroll'),
+    level: attributes.nested('level'),
+    header: attributes.nested('header'),
+    list: attributes.nested('list'),
+} %}
 
 {% set navigationImageIds = [] %}
 {% if children %}
@@ -38,17 +44,17 @@
 >
     <twig:ViewsTheme:Scroll:Area
         class="{{ classes.scroll }}"
-        {{ ...attributes.nested('scroll').all() }}
+        {{ ...attrs.scroll.all() }}
     >
         <div
-            {{ attributes.nested('level').defaults({
+            {{ attrs.level.defaults({
                 'data-level': '',
             }) }}
             class="{{ classes.level }}"
         >
             {% if not isRoot and active %}
                 <twig:ViewsTheme:Navigation:Drawer:Menu:Header
-                    {{ ...attributes.nested('header').defaults({
+                    {{ ...attrs.header.defaults({
                         category: active,
                         menuUrl: menuUrl,
                     }).all() }}
@@ -56,7 +62,7 @@
             {% endif %}
 
             <ul
-                {{ attributes.nested('list') }}
+                {{ attrs.list }}
                 class="{{ classes.list }}">
                 {% if children %}
                     {% for item in children.tree %}

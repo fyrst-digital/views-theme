@@ -5,6 +5,13 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    label: attributes.nested('label'),
+    inputGroup: attributes.nested('inputGroup'),
+    input: attributes.nested('input'),
+    submit: attributes.nested('submit'),
+} %}
+
 <form
     {{ attributes.defaults({
         action: path('frontend.checkout.product.add-by-number'),
@@ -18,7 +25,7 @@
 
     {% block label %}
         <label
-            {{ attributes.nested('label').defaults({
+            {{ attrs.label.defaults({
                 for: 'addProductInput',
             }) }}
             class="{{ cx.label.apply() }}"
@@ -28,10 +35,10 @@
     {% endblock %}
 
     {% block input_group %}
-        <div {{ attributes.nested('inputGroup') }} class="{{ cx.inputGroup.apply() }}">
+        <div {{ attrs.inputGroup }} class="{{ cx.inputGroup.apply() }}">
             {% block input %}
                 <input
-                    {{ attributes.nested('input').defaults({
+                    {{ attrs.input.defaults({
                         type: 'text',
                         name: 'number',
                         id: 'addProductInput',
@@ -46,7 +53,7 @@
 
             {% block submit %}
                 <button
-                    {{ attributes.nested('submit').defaults({
+                    {{ attrs.submit.defaults({
                         type: 'submit',
                         'aria-labelledby': 'addProductInput',
                         id: 'addProductButton',

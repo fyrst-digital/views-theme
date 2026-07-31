@@ -15,9 +15,14 @@
     empty: { base: 'vi-product-listing__empty' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    actions: attributes.nested('actions'),
+    empty: attributes.nested('empty'),
+} %}
+
 {% block element_product_listing_pagination_nav_actions %}
     <div
-        {{ attributes.nested('actions') }}
+        {{ attrs.actions }}
         class="{{ cx.actions.apply() }}"
     >
         {% block element_product_listing_pagination_nav_top %}
@@ -72,7 +77,7 @@
             {% endblock %}
         {% else %}
             {% block element_product_listing_col_empty %}
-                <div {{ attributes.nested('empty') }} class="{{ cx.empty.apply() }}">
+                <div {{ attrs.empty }} class="{{ cx.empty.apply() }}">
                     {% block element_product_listing_col_empty_alert %}
                         <twig:ViewsTheme:Alert
                             type="info"

@@ -7,6 +7,9 @@
         symbol: cx.symbol.apply(),
         caret: cx.caret.apply(),
     } %}
+    {% set attrs = {
+        toggle: attributes.nested('toggle'),
+    } %}
     {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': ariaName })|striptags %}
     {% set anchorName = '--' ~ id %}
 
@@ -21,17 +24,19 @@
             <twig:ViewsTheme:Button
                 class="{{ classes.toggle }}"
                 label:class="{{ classes.label }}"
-                type="button"
-                color="none"
-                size="sm"
-                :label="toggleLabel"
-                title="{{ toggleAriaLabel }}"
-                aria-label="{{ toggleAriaLabel }}"
-                aria-haspopup="listbox"
-                aria-expanded="false"
-                aria-controls="{{ id }}"
-                popovertarget="{{ id }}"
-                style="anchor-name: {{ anchorName }}"
+                {{ ...attrs.toggle.defaults({
+                    type: 'button',
+                    color: 'none',
+                    size: 'sm',
+                    label: ariaName,
+                    title: toggleAriaLabel,
+                    'aria-label': toggleAriaLabel,
+                    'aria-haspopup': 'listbox',
+                    'aria-expanded': 'false',
+                    'aria-controls': id,
+                    popovertarget: id,
+                    style: 'anchor-name: ' ~ anchorName,
+                }).all() }}
             >
                 <twig:block name="prepend">
                     {% if showSymbol and currencySymbol %}

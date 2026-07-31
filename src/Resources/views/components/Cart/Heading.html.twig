@@ -12,18 +12,24 @@
     countInline: { base: 'vi-cart-heading__count-inline' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    title: attributes.nested('title'),
+    countInline: attributes.nested('countInline'),
+    countBadge: attributes.nested('countBadge'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
 >
     {% block title %}
         <{{ titleTag|raw }}
-            {{ attributes.nested('title') }}
+            {{ attrs.title }}
             class="{{ cx.title.apply() }}"
         >
             {{ 'checkout.cartHeader'|trans|sw_sanitize }}
             {% if productsQuantity > 0 and countDisplay is same as('inline') %}
-                <span {{ attributes.nested('countInline') }} class="{{ cx.countInline.apply() }}">
+                <span {{ attrs.countInline }} class="{{ cx.countInline.apply() }}">
                     ({{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }})
                 </span>
             {% endif %}
@@ -32,7 +38,7 @@
 
     {% block products %}
         {% if productsQuantity > 0 and countDisplay is same as('badge') %}
-            <span {{ attributes.nested('countBadge') }} class="{{ cx.countBadge.apply() }}">
+            <span {{ attrs.countBadge }} class="{{ cx.countBadge.apply() }}">
                 {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
             </span>
         {% endif %}

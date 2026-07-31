@@ -16,6 +16,10 @@
     columns: cx.columns.apply(),
     teaser: cx.teaser.apply(),
 } %}
+{% set attrs = {
+    columns: attributes.nested('columns'),
+    teaser: attributes.nested('teaser'),
+} %}
 
 <div
     {{ attributes.defaults({
@@ -34,7 +38,7 @@
 
         {% block columns %}
             <div
-                {{ attributes.nested('columns') }}
+                {{ attrs.columns }}
                 class="{{ classes.columns }}"
             >
                 {% for treeItem in navigation.tree %}
@@ -57,7 +61,7 @@
             {% if hasTeaser and category %}
                 <twig:ViewsTheme:Navigation:Flyout:Teaser
                     class="{{ classes.teaser }}"
-                    {{ ...attributes.nested('teaser').defaults({
+                    {{ ...attrs.teaser.defaults({
                         category: category,
                         image: teaserImage,
                     }).all() }}

@@ -8,6 +8,10 @@
 {% set classes = {
     summaryNote: cx.summaryNote.apply()
 } %}
+{% set attrs = {
+    label: attributes.nested('label'),
+    summaryNote: attributes.nested('summaryNote'),
+} %}
 
 <div
     {{ attributes.defaults({
@@ -44,7 +48,7 @@
                                 value:class="fw-medium"
                             >
                                 <twig:block name="label">
-                                    <dt {{ attributes.nested('label') }} class="{{ cx.label.apply() }}">
+                                    <dt {{ attrs.label }} class="{{ cx.label.apply() }}">
                                         <twig:ViewsTheme:Cart:ShippingCalculation:Open
                                             label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
                                         />
@@ -57,7 +61,7 @@
             </twig:ViewsTheme:Cart:Summary>
 
             <div
-                {{ attributes.nested('summaryNote').defaults({}) }}
+                {{ attrs.summaryNote.defaults({}) }}
                 class="{{ classes.summaryNote }}">
                 {{ 'viewsTheme.cart.summaryNote'|trans|sw_sanitize }}
                 {% if summary.price.taxStatus == 'gross' %}

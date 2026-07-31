@@ -6,6 +6,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    body: attributes.nested('body'),
+    metaProperty: attributes.nested('metaProperty'),
+} %}
+
 <a
     {{ attributes.defaults({
         href: seoUrl('frontend.detail.page', { productId: product.id }),
@@ -32,13 +37,13 @@
 
         {% block body %}
             <span
-                {{ attributes.nested('body') }}
+                {{ attrs.body }}
                 class="{{ cx.body.apply() }}"
             >
                 {% block meta %}
                     {% if metaProperty %}
                         <span
-                            {{ attributes.nested('metaProperty') }}
+                            {{ attrs.metaProperty }}
                             class="{{ cx.metaProperty.apply() }}"
                         >
                             {{ metaProperty }}

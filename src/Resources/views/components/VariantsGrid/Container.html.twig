@@ -7,7 +7,6 @@
     cva = {},
 %}
 
-{% set formAction = path('frontend.checkout.variants-grid.add') %}
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
 {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
 
@@ -38,7 +37,7 @@
 
     {% block form %}
         <form
-            action="{{ formAction }}"
+            action="{{ path('frontend.checkout.variants-grid.add') }}"
             method="post"
             class="variants-grid-form"
             data-variants-grid-form="true"

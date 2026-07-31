@@ -6,6 +6,10 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    panel: attributes.nested('panel'),
+} %}
+
 {% set cart = page.cart %}
 {% set productsQuantity = cart.lineItems|length %}
 
@@ -19,7 +23,7 @@
 >
     <twig:block name="panel">
         <twig:ViewsTheme:Drawer:Panel
-            {{ ...attributes.nested('panel').defaults({
+            {{ ...attrs.panel.defaults({
                 side: 'end',
             }).all() }}
         >

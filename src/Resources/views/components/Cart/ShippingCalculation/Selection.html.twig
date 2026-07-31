@@ -1,11 +1,16 @@
 {% props
     page,
     redirectTo = 'frontend.checkout.cart.page',
-    size = 'sm',
     cva = {},
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+
+{% set attrs = {
+    country: attributes.nested('country'),
+    payment: attributes.nested('payment'),
+    shipping: attributes.nested('shipping'),
+} %}
 
 <div
     {{ attributes }}
@@ -14,9 +19,9 @@
     {% block country %}
         <twig:ViewsTheme:Cart:ShippingCalculation:Country
             class="{{ cx.country.apply() }}"
-            {{ ...attributes.nested('country').defaults({
+            {{ ...attrs.country.defaults({
                 countries: page.countries,
-                size: size,
+                size: 'sm',
             }).all() }}
         />
     {% endblock %}
@@ -24,9 +29,9 @@
     {% block payment_method %}
         <twig:ViewsTheme:Cart:ShippingCalculation:PaymentMethod
             class="{{ cx.payment.apply() }}"
-            {{ ...attributes.nested('payment').defaults({
+            {{ ...attrs.payment.defaults({
                 paymentMethods: page.paymentMethods,
-                size: size,
+                size: 'sm',
             }).all() }}
         />
     {% endblock %}
@@ -34,9 +39,9 @@
     {% block shipping_method %}
         <twig:ViewsTheme:Cart:ShippingCalculation:ShippingMethod
             class="{{ cx.shipping.apply() }}"
-            {{ ...attributes.nested('shipping').defaults({
+            {{ ...attrs.shipping.defaults({
                 shippingMethods: page.shippingMethods,
-                size: size,
+                size: 'sm',
             }).all() }}
         />
     {% endblock %}

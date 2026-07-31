@@ -6,6 +6,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    total: attributes.nested('total'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -13,7 +17,7 @@
     {{ title }}
     {% if total %}
         <span
-            {{ attributes.nested('total') }}
+            {{ attrs.total }}
             class="{{ cx.total.apply() }}"
         >
             ({{ total }})

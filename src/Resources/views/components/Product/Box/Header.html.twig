@@ -1,5 +1,10 @@
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    rating: attributes.nested('rating'),
+    name: attributes.nested('name'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -8,7 +13,7 @@
         {% if showRatingBlock %}
             <twig:ViewsTheme:Review:Rating
                 class="{{ cx.rating.apply() }}"
-                {{ ...attributes.nested('rating').defaults({
+                {{ ...attrs.rating.defaults({
                     points: product.ratingAverage,
                 }).all() }}
             />
@@ -18,7 +23,7 @@
     {% block name %}
         <twig:ViewsTheme:Product:Name
             class="{{ cx.name.apply() }}"
-            {{ ...attributes.nested('name').defaults({
+            {{ ...attrs.name.defaults({
                 product: product,
                 url: href,
             }).all() }}

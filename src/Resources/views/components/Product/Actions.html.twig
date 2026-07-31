@@ -14,6 +14,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    buy: attributes.nested('buy'),
+    detail: attributes.nested('detail'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -25,7 +30,7 @@
             {% block buy %}
                 <twig:ViewsTheme:Product:Action:Buy
                     class="{{ cx.buy.apply() }}"
-                    {{ ...attributes.nested('buy').defaults({
+                    {{ ...attrs.buy.defaults({
                         product: product,
                         showQuantity: showQuantity,
                     }).all() }}
@@ -35,7 +40,7 @@
             {% block detail %}
                 <twig:ViewsTheme:Product:Action:Detail
                     class="{{ cx.detail.apply() }}"
-                    {{ ...attributes.nested('detail').defaults({
+                    {{ ...attrs.detail.defaults({
                         href: detailHref,
                     }).all() }}
                 />

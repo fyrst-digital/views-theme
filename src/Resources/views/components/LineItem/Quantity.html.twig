@@ -4,7 +4,6 @@
     showQuantitySelect = true,
     redirectTo = 'frontend.checkout.cart.page',
     redirectParameters = null,
-    formAction = path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }),
     cva = {},
 %}
 
@@ -23,6 +22,10 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    quantityInput: attributes.nested('quantityInput'),
+} %}
+
 {% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
     ? quantityInformation.maxPurchase
     : config('core.cart.maxQuantity') %}
@@ -34,7 +37,7 @@
 %}
     <form
         {{ attributes.defaults({
-            action: formAction,
+            action: path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }),
             method: 'post',
             'data-component': 'ViewsTheme:LineItem:Quantity',
             'data-component-options': {
@@ -51,12 +54,14 @@
         {% endif %}
 
         <twig:ViewsTheme:QuantityInput
-            :quantity="lineItem.quantity"
-            :minQuantity="quantityInformation.minPurchase|default(1)"
-            :maxQuantity="maxQuantity"
-            :purchaseSteps="quantityInformation.purchaseSteps|default(1)"
-            size="sm"
-            :disabled="isDigital"
+            {{ ...attrs.quantityInput.defaults({
+                quantity: lineItem.quantity,
+                minQuantity: quantityInformation.minPurchase|default(1),
+                maxQuantity: maxQuantity,
+                purchaseSteps: quantityInformation.purchaseSteps|default(1),
+                size: 'sm',
+                disabled: isDigital,
+            }).all() }}
         />
     </form>
 {% else %}

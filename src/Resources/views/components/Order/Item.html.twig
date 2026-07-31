@@ -6,10 +6,21 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    header: attributes.nested('header'),
+    headerTitleContainer: attributes.nested('headerTitleContainer'),
+    headerTitle: attributes.nested('headerTitle'),
+    status: attributes.nested('status'),
+    orderNumber: attributes.nested('orderNumber'),
+    contextMenu: attributes.nested('contextMenu'),
+    summary: attributes.nested('summary'),
+    toggleBody: attributes.nested('toggleBody'),
+} %}
+
 {% block page_account_order_item_overview %}
     <div {{ attributes }} class="{{ cx.root.apply() }}">
 
-        <div {{ attributes.nested('header') }} class="{{ cx.header.apply() }}">
+        <div {{ attrs.header }} class="{{ cx.header.apply() }}">
             {% set states = [
                 ORDER_TRANSACTION_STATE_FAILED,
                 ORDER_TRANSACTION_STATE_REMINDED,
@@ -24,15 +35,15 @@
 
             {% block page_account_order_item_heading_title_container %}
 
-                <div {{ attributes.nested('headerTitleContainer') }} class="{{ cx.headerTitleContainer.apply() }}">
+                <div {{ attrs.headerTitleContainer }} class="{{ cx.headerTitleContainer.apply() }}">
                     {% block page_account_order_item_heading_title %}
-                        <div {{ attributes.nested('headerTitle') }} class="{{ cx.headerTitle.apply() }}">
+                        <div {{ attrs.headerTitle }} class="{{ cx.headerTitle.apply() }}">
                             {{ 'account.orderHeadline'|trans|sw_sanitize }} {{ order.orderDateTime|format_date('short', locale=app.request.locale) }}
                         </div>
                     {% endblock %}
 
                     {% block page_account_order_item_status %}
-                        <div {{ attributes.nested('status') }} class="{{ cx.status.apply() }}">
+                        <div {{ attrs.status }} class="{{ cx.status.apply() }}">
                             {% if isPaymentNeeded %}
                                 {% block page_account_order_item_status_badge_payment_process_needed %}
                                     {{ parent() }}
@@ -46,7 +57,7 @@
                     {% endblock %}
 
                     {% block page_account_order_item_order_number_col %}
-                        <div {{ attributes.nested('orderNumber') }} class="{{ cx.orderNumber.apply() }}">
+                        <div {{ attrs.orderNumber }} class="{{ cx.orderNumber.apply() }}">
                             {% block page_account_order_item_order_number %}
                                 {{ 'account.orderNumber'|trans|sw_sanitize }} {{ order.orderNumber|sw_sanitize }}
                             {% endblock %}
@@ -58,7 +69,7 @@
             {% endblock %}
 
             {% block page_account_order_item_context_menu_col %}
-                <div {{ attributes.nested('contextMenu') }} class="{{ cx.contextMenu.apply() }}">
+                <div {{ attrs.contextMenu }} class="{{ cx.contextMenu.apply() }}">
 
                     {% block page_account_order_item_context_menu %}
                         {% block page_account_order_item_context_menu_button %}
@@ -85,7 +96,7 @@
             {% endblock %}
         </div>
 
-        <div {{ attributes.nested('summary') }} class="{{ cx.summary.apply() }}">
+        <div {{ attrs.summary }} class="{{ cx.summary.apply() }}">
             {% block page_account_order_item_order_table_body_col %}
                 {% block page_account_order_item_order_table_body %}
 
@@ -135,7 +146,7 @@
             {% endblock %}
         </div>
 
-        <div {{ attributes.nested('toggleBody') }} class="{{ cx.toggleBody.apply() }}">
+        <div {{ attrs.toggleBody }} class="{{ cx.toggleBody.apply() }}">
             {% block page_account_order_item_order_table_body_cell_toggle_order_details_button %}
                 <button class="btn btn-light btn-sm order-hide-btn collapsed"
                     type="submit"

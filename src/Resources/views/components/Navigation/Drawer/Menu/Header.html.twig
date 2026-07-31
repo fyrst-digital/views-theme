@@ -6,6 +6,14 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    start: attributes.nested('start'),
+    back: attributes.nested('back'),
+    showAll: attributes.nested('showAll'),
+    end: attributes.nested('end'),
+    active: attributes.nested('active'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -13,13 +21,13 @@
     {% block content %}
         {% block start %}
             <div
-                {{ attributes.nested('start') }}
+                {{ attrs.start }}
                 class="{{ cx.start.apply() }}"
             >        
                 <twig:ViewsTheme:Navigation:Drawer:Back
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    {{ ...attributes.nested('back').defaults({
+                    {{ ...attrs.back.defaults({
                         showLabel: false,
                         category: category,
                         menuUrl: menuUrl,
@@ -28,7 +36,7 @@
                 <twig:ViewsTheme:Navigation:Drawer:ShowAll
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    {{ ...attributes.nested('showAll').defaults({
+                    {{ ...attrs.showAll.defaults({
                         showLabel: false,
                         menuUrl: menuUrl,
                     }).all() }}
@@ -37,12 +45,12 @@
         {% endblock %}
         {% block end %}
             <div
-                {{ attributes.nested('end') }}
+                {{ attrs.end }}
                 class="{{ cx.end.apply() }}"
             >       
                 <twig:ViewsTheme:Navigation:Drawer:Active
                     class="btn btn-sm"
-                    {{ ...attributes.nested('active').defaults({
+                    {{ ...attrs.active.defaults({
                         category: category,
                     }).all() }}
                 />

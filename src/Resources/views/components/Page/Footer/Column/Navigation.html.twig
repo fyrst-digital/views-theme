@@ -12,13 +12,19 @@
     linkItem: { base: 'footer-link-item' },
     link: { base: 'footer-link' },
 }|replace_recursive(cva)) %}
+{% set attrs = {
+    headlineLink: attributes.nested('headlineLink'),
+    linkList: attributes.nested('linkList'),
+    linkItem: attributes.nested('linkItem'),
+    link: attributes.nested('link'),
+} %}
 
 {% block component_footer_column_headline_title %}
   {% if navigation.category.type == 'folder' %}
     {{ navigation.category.translated.name }}
   {% else %}
     <a
-      {{ attributes.nested('headlineLink').defaults({
+      {{ attrs.headlineLink.defaults({
           href: category_url(navigation.category),
           title: navigation.category.translated.name,
           target: category_linknewtab(navigation.category) ? '_blank' : null,
@@ -31,17 +37,17 @@
 {% endblock %}
 
 {% block component_footer_column_content %}
-  <ul {{ attributes.nested('linkList') }} class="{{ nx.linkList.apply() }}">
+  <ul {{ attrs.linkList }} class="{{ nx.linkList.apply() }}">
     {% for treeItem in navigation.children %}
       {% set category = treeItem.category %}
       {% set categoryName = category.translated.name %}
 
-      <li {{ attributes.nested('linkItem') }} class="{{ nx.linkItem.apply() }}">
+      <li {{ attrs.linkItem }} class="{{ nx.linkItem.apply() }}">
         {% if category.type == 'folder' %}
           <div>{{ categoryName }}</div>
         {% else %}
           <a
-            {{ attributes.nested('link').defaults({
+            {{ attrs.link.defaults({
                 href: category_url(category),
                 title: categoryName,
                 target: category_linknewtab(category) ? '_blank' : null,

@@ -11,6 +11,10 @@
     entries: { base: 'vi-cookie-configuration-group__entries offcanvas-cookie-entries d-flex flex-column' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    entries: attributes.nested('entries'),
+} %}
+
 {% block cookie_configuration_group %}
     {% if cookieGroup.cookie is defined or cookieGroup.entries is defined %}
         <div {{ attributes }} class="{{ cx.root.apply() }}">
@@ -23,7 +27,7 @@
             {% endif %}
 
             {% if cookieGroup.entries is not empty or cookieGroup.snippet_description is defined %}
-                <div {{ attributes.nested('entries') }} class="{{ cx.entries.apply() }}">
+                <div {{ attrs.entries }} class="{{ cx.entries.apply() }}">
                     {% for entry in cookieGroup.entries %}
                         {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-child.html.twig' with {
                             child: entry,

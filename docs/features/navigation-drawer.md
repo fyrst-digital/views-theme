@@ -31,7 +31,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
 - Drawer footer hosts `Language:Action` + `Currency:Action` (`placement="top-start"`); languages/currencies loaded via `HeaderPageletLoader` in the drawer controller
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up"`; use the drawer actions instead
-- Header instances pass `:label="false"` (icon-only); drawer keeps default label snippets (`header.wishlist` / `account.myAccount`)
+- Header instances pass `:label="false"` on Wishlist and `:toggle:label="false"` on Account (icon-only); drawer keeps default label snippets
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
 - Item label opens the category; optional `vi_navigation_image` thumb before the label; caret drills deeper; no caret when the category has no children
 - Close via `Drawer:Close` / `Backdrop`, Escape, or toggling the action again
@@ -41,7 +41,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 `Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
-`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. `Wishlist:Action` / `Account:Action` `label` prop defaults to a translated snippet; `:label="false"` hides the text. Drawer uses defaults; header hides labels.
+`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. Wishlist is a root-host leaf (`:label="false"`); Account toggle chrome is nest `toggle:label` (`:toggle:label="false"`). Drawer uses defaults; header hides labels.
 
 Wishlist uses drawer-scoped **props** (`badgeId` / `liveId`) so it can coexist with the header instance:
 

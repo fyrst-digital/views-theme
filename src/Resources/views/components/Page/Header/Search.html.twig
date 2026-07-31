@@ -6,6 +6,16 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    search: attributes.nested('search'),
+    form: attributes.nested('form'),
+    container: attributes.nested('container'),
+    inputGroup: attributes.nested('inputGroup'),
+    input: attributes.nested('input'),
+    submit: attributes.nested('submit'),
+    close: attributes.nested('close'),
+} %}
+
 <div
     {{ attributes.defaults({
         id: 'searchCollapse',
@@ -13,12 +23,12 @@
     class="{{ cx.root.apply() }}"
 >
     <div
-        {{ attributes.nested('search') }}
+        {{ attrs.search }}
         class="{{ cx.search.apply() }}"
     >
         {% block form %}
             <form
-                {{ attributes.nested('form').defaults({
+                {{ attrs.form.defaults({
                     action: path('frontend.search.page'),
                     method: 'get',
                     'data-search-widget': 'true',
@@ -28,17 +38,17 @@
                 class="{{ cx.form.apply() }}"
             >
                 <div
-                    {{ attributes.nested('container') }}
+                    {{ attrs.container }}
                     class="{{ cx.container.apply() }}"
                 >
                     {% block input_group %}
                         <div
-                            {{ attributes.nested('inputGroup') }}
+                            {{ attrs.inputGroup }}
                             class="{{ cx.inputGroup.apply() }}"
                         >
                             {% block input %}
                                 <input
-                                    {{ attributes.nested('input').defaults({
+                                    {{ attrs.input.defaults({
                                         type: 'search',
                                         name: 'search',
                                         autocomplete: 'off',
@@ -53,7 +63,7 @@
 
                             {% block submit %}
                                 <button
-                                    {{ attributes.nested('submit').defaults({
+                                    {{ attrs.submit.defaults({
                                         type: 'submit',
                                         'aria-label': 'header.searchButton'|trans|striptags,
                                     }) }}
@@ -69,7 +79,7 @@
 
                     {% block close %}
                         <button
-                            {{ attributes.nested('close').defaults({
+                            {{ attrs.close.defaults({
                                 type: 'button',
                                 'data-header-search': 'close',
                             }) }}

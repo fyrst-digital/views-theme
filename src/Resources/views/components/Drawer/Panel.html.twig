@@ -6,6 +6,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    header: attributes.nested('header'),
+    body: attributes.nested('body'),
+} %}
+
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Drawer:Panel',
@@ -17,7 +22,7 @@
 >
     {% block header %}
         <twig:ViewsTheme:Drawer:Header
-            {{ ...attributes.nested('header').defaults({
+            {{ ...attrs.header.defaults({
                 title: title,
             }).all() }}
         />
@@ -25,7 +30,7 @@
 
     {% block body %}
         <div
-            {{ attributes.nested('body') }}
+            {{ attrs.body }}
             class="{{ cx.body.apply() }}"
         >
             {% block content %}{% endblock %}

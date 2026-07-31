@@ -103,7 +103,7 @@ Bootstrap **input-group** shell: optional label + group (prepend / control / app
 
 ### Props
 
-Same field props as `Form:Input`. `size` applies to the **group** slot (`input-group-*`), not the nested control.
+Same field props as `Form:Input` (intentional **facade**: flat control props forward into nest `input` so callers can use `placeholder` / `field:placeholder` without `input:placeholder`). `size` applies to the **group** slot (`input-group-*`) and is also forwarded to the nested control. See [no parallel chrome props](../conventions/ux-components.md#no-parallel-chrome-props-leaf-api) — Group is the documented exception.
 
 ### Classes / slots
 

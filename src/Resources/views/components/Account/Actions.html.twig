@@ -32,6 +32,11 @@
 
 {% set cx = vi_cva_from_file(cva) %}
 
+{% set attrs = {
+    nav: attributes.nested('nav'),
+    action: attributes.nested('action'),
+} %}
+
 <div
     {{ attributes }}
     class="{{ cx.root.apply() }}"
@@ -43,7 +48,7 @@
         {% if actions is not empty %}
             {% block nav %}
                 <nav
-                    {{ attributes.nested('nav') }}
+                    {{ attrs.nav }}
                     class="{{ cx.nav.apply() }}"
                 >
                     {% for key, action in actions %}
@@ -51,7 +56,7 @@
                         {% block action %}
                             <twig:ViewsTheme:Button
                                 class="{{ cx.action.apply() }}"
-                                {{ ...attributes.nested('action').defaults({
+                                {{ ...attrs.action.defaults({
                                     type: 'link',
                                     href: path(action.route),
                                     label: action.label,

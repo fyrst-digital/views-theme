@@ -4,6 +4,11 @@
 %}
 
 {% set cx = vi_cva_from_file(cva) %}
+{% set attrs = {
+    empty: attributes.nested('empty'),
+    list: attributes.nested('list'),
+} %}
+
 {% set isEmpty = cart.lineItems|length < 1 %}
 
 <div
@@ -15,12 +20,12 @@
     {% if isEmpty %}
         {% block empty %}
             <twig:ViewsTheme:Cart:Empty
-                {{ ...attributes.nested('empty').all() }}
+                {{ ...attrs.empty.all() }}
             />
         {% endblock %}
     {% else %}
         {% block list %}
-            <ul {{ attributes.nested('list') }} class="{{ cx.list.apply() }}">
+            <ul {{ attrs.list }} class="{{ cx.list.apply() }}">
                 {% for lineItem in cart.lineItems %}
                     <twig:ViewsTheme:LineItem
                         :lineItem="lineItem"

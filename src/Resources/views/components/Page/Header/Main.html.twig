@@ -10,6 +10,10 @@
     actions: { base: 'col-lg-auto' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    navigation: attributes.nested('navigation'),
+} %}
+
 <div
     {{ attributes.without('class').without('data-component-template') }}
     class="{{ cx.root.apply() }}"
@@ -24,7 +28,7 @@
             {% if navigation %}
                 <twig:ViewsTheme:Navigation:Bar
                     class="{{ cx.navigation.apply() }}"
-                    {{ ...attributes.nested('navigation').defaults({
+                    {{ ...attrs.navigation.defaults({
                         navigation: navigation,
                         navigationDepth: context.salesChannel.navigationCategoryDepth,
                         widthAnchor: widthAnchor,

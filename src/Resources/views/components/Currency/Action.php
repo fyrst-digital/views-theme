@@ -23,8 +23,6 @@ class Action
 
     public ?string $id = null;
 
-    public string|false|null $toggleLabel = null;
-
     public bool $showSymbol = true;
 
     public string $placement = 'bottom-end';
@@ -67,10 +65,6 @@ class Action
                 : (string) ($currency->getName() ?? '');
         }
         $this->ariaName = $currencyName;
-
-        if ($this->toggleLabel === null) {
-            $this->toggleLabel = $this->ariaName;
-        }
 
         $this->visible = $this->countItems($this->currencies) > 1;
     }

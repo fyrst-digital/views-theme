@@ -12,20 +12,27 @@
     description: { base: 'vi-wishlist-listing__description text-center wishlist-listing-description' },
 }|replace_recursive(cva)) %}
 
+{% set attrs = {
+    empty: attributes.nested('empty'),
+    emptyImage: attributes.nested('emptyImage'),
+    header: attributes.nested('header'),
+    description: attributes.nested('description'),
+} %}
+
 {% block element_product_listing_col_empty %}
-    <div {{ attributes.nested('empty') }} class="{{ wx.empty.apply() }}">
+    <div {{ attrs.empty }} class="{{ wx.empty.apply() }}">
         {% block element_product_listing_col_empty_wishlist %}
             <img
                 src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
                 alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
-                {{ attributes.nested('emptyImage') }}
+                {{ attrs.emptyImage }}
                 class="{{ wx.emptyImage.apply() }}"
             >
 
-            <h1 {{ attributes.nested('header') }} class="{{ wx.header.apply() }}">
+            <h1 {{ attrs.header }} class="{{ wx.header.apply() }}">
                 {{ 'wishlist.wishlistEmptyHeader'|trans }}
             </h1>
-            <p {{ attributes.nested('description') }} class="{{ wx.description.apply() }}">
+            <p {{ attrs.description }} class="{{ wx.description.apply() }}">
                 {{ 'wishlist.wishlistEmptyDescription'|trans }}
             </p>
         {% endblock %}
