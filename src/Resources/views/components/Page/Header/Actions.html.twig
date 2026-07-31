@@ -3,13 +3,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'col d-flex justify-content-end align-items-center' },
 }|replace_recursive(cva)) %}
 
 <div
     {{ attributes.without('class').without('data-component-template') }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
 

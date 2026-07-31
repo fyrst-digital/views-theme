@@ -11,30 +11,25 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    decrease: attributes.nested('decrease'),
-    input: attributes.nested('input'),
-    unit: attributes.nested('unit'),
-    increase: attributes.nested('increase'),
-} %}
+{% do vi_define_attrs(['decrease', 'input', 'unit', 'increase']) %}
 
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:QuantityInput',
         'data-quantity-selector': 'true',
     }) }}
-    class="{{ cx.root.apply({ size: size }) }}"
+    class="{{ vi_class('root', { size: size }) }}"
 >
     {% block decrease %}
         <button
-            {{ attrs.decrease.defaults({
+            {{ vi_attrs('decrease').defaults({
                 type: 'button',
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
             }) }}
-            class="{{ cx.decrease.apply() }}"
+            class="{{ vi_class('decrease') }}"
         >
             {{ vi_icon('minus') }}
         </button>
@@ -42,7 +37,7 @@
 
     {% block field %}
         <input
-            {{ attrs.input.defaults({
+            {{ vi_attrs('input').defaults({
                 type: 'number',
                 name: inputName,
                 min: minQuantity,
@@ -53,13 +48,13 @@
                 form: formName ?: false,
                 'aria-label': 'component.product.quantitySelect.label'|trans|striptags,
             }) }}
-            class="{{ cx.input.apply() }}"
+            class="{{ vi_class('input') }}"
         >
     {% endblock %}
 
     {% if unit %}
         {% block unit %}
-            <span {{ attrs.unit }} class="{{ cx.unit.apply() }}">
+            <span {{ vi_attrs('unit') }} class="{{ vi_class('unit') }}">
                 {{ unit }}
             </span>
         {% endblock %}
@@ -67,12 +62,12 @@
 
     {% block increase %}
         <button
-            {{ attrs.increase.defaults({
+            {{ vi_attrs('increase').defaults({
                 type: 'button',
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
             }) }}
-            class="{{ cx.increase.apply() }}"
+            class="{{ vi_class('increase') }}"
         >
             {{ vi_icon('plus') }}
         </button>

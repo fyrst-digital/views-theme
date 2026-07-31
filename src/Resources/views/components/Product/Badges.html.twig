@@ -1,21 +1,17 @@
 {% if visible %}
-    {% set cx = vi_cva_from_file(cva) %}
+    {% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    discount: attributes.nested('discount'),
-    topseller: attributes.nested('topseller'),
-    new: attributes.nested('new'),
-} %}
+    {% do vi_define_attrs(['discount', 'topseller', 'new']) %}
 
     <span
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% block discount %}
             {% if showDiscount %}
                 <twig:ViewsTheme:Product:Badge:Discount
-                    class="{{ cx.discount.apply() }}"
-                    {{ ...attrs.discount.defaults({
+                    class="{{ vi_class('discount') }}"
+                    {{ ...vi_attrs('discount').defaults({
                         percentage: discountPercent,
                     }).all() }}
                 />
@@ -25,8 +21,8 @@
         {% block topseller %}
             {% if showTopseller %}
                 <twig:ViewsTheme:Product:Badge:Topseller
-                    class="{{ cx.topseller.apply() }}"
-                    {{ ...attrs.topseller.all() }}
+                    class="{{ vi_class('topseller') }}"
+                    {{ ...vi_attrs('topseller').all() }}
                 />
             {% endif %}
         {% endblock %}
@@ -34,8 +30,8 @@
         {% block new %}
             {% if showNew %}
                 <twig:ViewsTheme:Product:Badge:New
-                    class="{{ cx.new.apply() }}"
-                    {{ ...attrs.new.all() }}
+                    class="{{ vi_class('new') }}"
+                    {{ ...vi_attrs('new').all() }}
                 />
             {% endif %}
         {% endblock %}

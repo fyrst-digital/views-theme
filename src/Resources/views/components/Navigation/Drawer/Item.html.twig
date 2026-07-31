@@ -12,32 +12,21 @@
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
 {% set drillUrl = path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.id }) %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    link: cx.link.apply({ active: isActive }),
-    image: cx.image.apply(),
-    label: cx.label.apply(),
-    drill: cx.drill.apply(),
-    icon: cx.icon.apply(),
-} %}
-{% set attrs = {
-    link: attributes.nested('link'),
-    drill: attributes.nested('drill'),
-} %}
+{% do vi_define_cva(cva, ['root', 'link', 'image', 'label', 'drill', 'icon']) %}
+{% do vi_define_attrs(['link', 'drill']) %}
 
 <li
     {{ attributes }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     <a
-        {{ attrs.link.defaults({
+        {{ vi_attrs('link').defaults({
             href: not isFolder ? category_url(category) : '#',
             title: name,
             'aria-current': isActive ? 'page' : null,
             target: not isFolder and category_linknewtab(category) ? '_blank' : null,
         }) }}
-        class="{{ classes.link }}"
+        class="{{ vi_class('link', { active: isActive }) }}"
     >
         {% block image %}
             {% if image %}
@@ -45,7 +34,7 @@
                     media: image,
                     sizes: { default: '64px' },
                     attributes: {
-                        class: classes.image,
+                        class: vi_class('image'),
                         alt: (image.translated.alt ?: name),
                         title: (image.translated.title ?: name),
                         loading: 'lazy',
@@ -55,15 +44,15 @@
         {% endblock %}
 
         {% block label %}
-            <span class="{{ classes.label }}">{{ name }}</span>
+            <span class="{{ vi_class('label') }}">{{ name }}</span>
         {% endblock %}
     </a>
 
     {% block drill %}
         {% if hasChildren %}
             <twig:ViewsTheme:Navigation:Drawer:Drill
-                class="{{ classes.drill }}"
-                {{ ...attrs.drill.defaults({
+                class="{{ vi_class('drill') }}"
+                {{ ...vi_attrs('drill').defaults({
                     href: drillUrl,
                     url: drillUrl,
                     title: name,
@@ -71,7 +60,7 @@
                 }).all() }}
             >
                 {{ vi_icon('caret-right', {
-                    class: classes.icon
+                    class: vi_class('icon')
                 }) }}
             </twig:ViewsTheme:Navigation:Drawer:Drill>
         {% endif %}

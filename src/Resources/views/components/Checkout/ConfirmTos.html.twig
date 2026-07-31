@@ -9,32 +9,24 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    title: attributes.nested('title'),
-    revocationNotice: attributes.nested('revocationNotice'),
-    control: attributes.nested('control'),
-    tosCheckbox: attributes.nested('tosCheckbox'),
-    tosLabel: attributes.nested('tosLabel'),
-    revocationCheckbox: attributes.nested('revocationCheckbox'),
-    revocationLabel: attributes.nested('revocationLabel'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'revocationNotice', 'control', 'tosCheckbox', 'tosLabel', 'revocationCheckbox', 'revocationLabel']) %}
 
 {% set tosInvalid = formViolations and formViolations.getViolations('/tos') is not empty %}
 {% set revocationInvalid = formViolations and formViolations.getViolations('/revocation') is not empty %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block header %}
-        <div {{ attrs.title }} class="{{ cx.title.apply() }}">
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
             {{ 'checkout.confirmTermsHeader'|trans|sw_sanitize }}
         </div>
     {% endblock %}
 
     {% block revocation_notice %}
-        <div {{ attrs.revocationNotice }} class="{{ cx.revocationNotice.apply() }}">
+        <div {{ vi_attrs('revocationNotice') }} class="{{ vi_class('revocationNotice') }}">
             {{ 'checkout.confirmRevocationNotice'|trans({
                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') }),
             })|raw }}
@@ -43,22 +35,22 @@
 
     {% block tos_control %}
         {% if showTosOptin is same as(true) %}
-            <div {{ attrs.control }} class="{{ cx.control.apply() }}">
+            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
                 <input
-                    {{ attrs.tosCheckbox.defaults({
+                    {{ vi_attrs('tosCheckbox').defaults({
                         type: 'checkbox',
                         required: 'required',
                         id: 'tos',
                         form: formId,
                         name: 'tos',
                     }) }}
-                    class="{{ cx.tosCheckbox.apply() }}{{ tosInvalid ? ' is-invalid' : '' }}"
+                    class="{{ vi_class('tosCheckbox') }}{{ tosInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
-                    {{ attrs.tosLabel.defaults({
+                    {{ vi_attrs('tosLabel').defaults({
                         for: 'tos',
                     }) }}
-                    class="{{ cx.tosLabel.apply() }}"
+                    class="{{ vi_class('tosLabel') }}"
                 >
                     {{ tosSnippet|raw }}
                 </label>
@@ -71,22 +63,22 @@
 
     {% block revocation_control %}
         {% if page and page.showRevocation() %}
-            <div {{ attrs.control }} class="{{ cx.control.apply() }}">
+            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
                 <input
-                    {{ attrs.revocationCheckbox.defaults({
+                    {{ vi_attrs('revocationCheckbox').defaults({
                         type: 'checkbox',
                         required: 'required',
                         id: 'revocation',
                         form: formId,
                         name: 'revocation',
                     }) }}
-                    class="{{ cx.revocationCheckbox.apply() }}{{ revocationInvalid ? ' is-invalid' : '' }}"
+                    class="{{ vi_class('revocationCheckbox') }}{{ revocationInvalid ? ' is-invalid' : '' }}"
                 >
                 <label
-                    {{ attrs.revocationLabel.defaults({
+                    {{ vi_attrs('revocationLabel').defaults({
                         for: 'revocation',
                     }) }}
-                    class="{{ cx.revocationLabel.apply() }}"
+                    class="{{ vi_class('revocationLabel') }}"
                 >
                     {{ 'checkout.confirmRevocationTerms'|trans() }}
                 </label>

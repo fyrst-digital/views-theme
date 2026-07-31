@@ -6,11 +6,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    panel: attributes.nested('panel'),
-} %}
+{% do vi_define_attrs(['panel']) %}
 
 <div
     {{ attributes.defaults({
@@ -27,7 +25,7 @@
             side: side,
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply({ side: side }) }}"
+    class="{{ vi_class('root', { side: side }) }}"
 >
     {% block backdrop %}
         <twig:ViewsTheme:Backdrop componentName="ViewsTheme:Drawer" />
@@ -35,7 +33,7 @@
 
     {% block panel %}
         <twig:ViewsTheme:Drawer:Panel
-            {{ ...attrs.panel.defaults({
+            {{ ...vi_attrs('panel').defaults({
                 side: side,
                 title: title,
             }).all() }}

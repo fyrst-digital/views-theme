@@ -1,28 +1,34 @@
-{% props
-    product,
-    showDescription = true,
-    cva = {},
-%}
+{% do vi_define_cva(cva) %}
 
-{% if showDescription is same as(true) %}
-    {% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_attrs(['variations', 'description']) %}
 
-{% set attrs = {
-    description: attributes.nested('description'),
-} %}
-
+{% if visible %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
+        {% block variations %}
+            {% if showVariationsBlock %}
+                <twig:ViewsTheme:Product:Variations
+                    class="{{ vi_class('variations') }}"
+                    {{ ...vi_attrs('variations').defaults({
+                        product: product,
+                        variations: variations,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
         {% block description %}
-            <twig:ViewsTheme:Product:Description
-                class="{{ cx.description.apply() }}"
-                {{ ...attrs.description.defaults({
-                    product: product,
-                    outputTags: false,
-                }).all() }}
-            />
+            {% if showDescription is same as(true) %}
+                <twig:ViewsTheme:Product:Description
+                    class="{{ vi_class('description') }}"
+                    {{ ...vi_attrs('description').defaults({
+                        product: product,
+                        outputTags: false,
+                    }).all() }}
+                />
+            {% endif %}
         {% endblock %}
     </div>
 {% endif %}

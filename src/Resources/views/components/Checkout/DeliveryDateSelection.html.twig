@@ -6,40 +6,34 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    title: attributes.nested('title'),
-    control: attributes.nested('control'),
-    label: attributes.nested('label'),
-    input: attributes.nested('input'),
-    help: attributes.nested('help'),
-} %}
+{% do vi_define_attrs(['title', 'control', 'label', 'input', 'help']) %}
 
 {% if deliveryDate.active|default(false) %}
     <div
         {{ attributes.defaults({
             'data-component': 'ViewsTheme:Checkout:DeliveryDateSelection',
         }) }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% block title %}
             {% if title is not same as(false) %}
-                <div {{ attrs.title }} class="{{ cx.title.apply() }}">
+                <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
                     {{ title }}
                 </div>
             {% endif %}
         {% endblock %}
 
         {% block control %}
-            <div {{ attrs.control }} class="{{ cx.control.apply() }}">
+            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
                 {% block label %}
                     {% if label is not same as(false) %}
                         <label
-                            {{ attrs.label.defaults({
+                            {{ vi_attrs('label').defaults({
                                 for: 'PreferredDeliveryDate',
                             }) }}
-                            class="{{ cx.label.apply() }}"
+                            class="{{ vi_class('label') }}"
                         >
                             {{ label }}
                         </label>
@@ -48,7 +42,7 @@
 
                 {% block input %}
                     <input
-                        {{ attrs.input.defaults({
+                        {{ vi_attrs('input').defaults({
                             type: 'date',
                             id: 'PreferredDeliveryDate',
                             form: 'confirmOrderForm',
@@ -57,13 +51,13 @@
                             max: deliveryDate.max|default(''),
                             value: '',
                         }) }}
-                        class="{{ cx.input.apply() }}"
+                        class="{{ vi_class('input') }}"
                     >
                 {% endblock %}
 
                 {% block help %}
                     {% if helpText is not same as(false) %}
-                        <div {{ attrs.help }} class="{{ cx.help.apply() }}">
+                        <div {{ vi_attrs('help') }} class="{{ vi_class('help') }}">
                             {{ helpText }}
                         </div>
                     {% endif %}

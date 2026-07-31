@@ -11,25 +11,19 @@
     {% set editButtonClass = editButtonClass ~ ' btn-light' %}
 {% endif %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    edit: attributes.nested('edit'),
-    deleteForm: attributes.nested('deleteForm'),
-    deleteButton: attributes.nested('deleteButton'),
-    setDefaultBilling: attributes.nested('setDefaultBilling'),
-    setDefaultShipping: attributes.nested('setDefaultShipping'),
-} %}
+{% do vi_define_attrs(['edit', 'deleteForm', 'deleteButton', 'setDefaultBilling', 'setDefaultShipping']) %}
 
 {% block page_account_address_actions %}
     {% block page_account_address_actions_buttons %}
         {% block page_account_address_actions_update %}
             <a
-                {{ attrs.edit.defaults({
+                {{ vi_attrs('edit').defaults({
                     href: path('frontend.account.address.edit.page', { addressId: address.id }),
                     title: 'account.addressesContentItemActionEdit'|trans|striptags,
                 }) }}
-                class="{{ cx.edit.apply() }}"
+                class="{{ vi_class('edit') }}"
             >
                 {{ vi_icon('pencil-simple-line') }}
                 {{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}
@@ -39,18 +33,18 @@
         {% block page_account_address_actions_delete %}
             {% if defaultShippingAddress.id != address.id and defaultBillingAddress.id != address.id %}
                 <form
-                    {{ attrs.deleteForm.defaults({
+                    {{ vi_attrs('deleteForm').defaults({
                         action: path('frontend.account.address.delete', { addressId: address.id }),
                         method: 'post',
                     }) }}
-                    class="{{ cx.deleteForm.apply() }}"
+                    class="{{ vi_class('deleteForm') }}"
                 >
                     <button
-                        {{ attrs.deleteButton.defaults({
+                        {{ vi_attrs('deleteButton').defaults({
                             type: 'submit',
                             title: 'account.addressesContentItemActionDelete'|trans|striptags,
                         }) }}
-                        class="{{ cx.deleteButton.apply() }}"
+                        class="{{ vi_class('deleteButton') }}"
                     >
                         {{ vi_icon('x') }}
                         {{ 'account.addressesContentItemActionDelete'|trans|sw_sanitize }}
@@ -68,11 +62,11 @@
                     method="post"
                 >
                     <button
-                        {{ attrs.setDefaultBilling.defaults({
+                        {{ vi_attrs('setDefaultBilling').defaults({
                             type: 'submit',
                             title: 'account.addressesSetAsDefaultBillingAction'|trans|striptags,
                         }) }}
-                        class="{{ cx.setDefaultBilling.apply() }}"
+                        class="{{ vi_class('setDefaultBilling') }}"
                     >
                         {{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}
                     </button>
@@ -87,12 +81,12 @@
                     method="post"
                 >
                     <button
-                        {{ attrs.setDefaultShipping.defaults({
+                        {{ vi_attrs('setDefaultShipping').defaults({
                             type: 'submit',
                             title: 'account.addressesSetAsDefaultShippingAction'|trans|striptags,
                             disabled: not address.country.shippingAvailable ? 'disabled' : null,
                         }) }}
-                        class="{{ cx.setDefaultShipping.apply() }}"
+                        class="{{ vi_class('setDefaultShipping') }}"
                     >
                         {{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}
                     </button>

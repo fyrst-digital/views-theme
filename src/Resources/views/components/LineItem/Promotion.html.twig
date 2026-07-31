@@ -4,27 +4,20 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    image: attributes.nested('image'),
-    content: attributes.nested('content'),
-    header: attributes.nested('header'),
-    name: attributes.nested('name'),
-    label: attributes.nested('label'),
-    price: attributes.nested('price'),
-} %}
+{% do vi_define_attrs(['image', 'content', 'header', 'name', 'label', 'price']) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
 
 <{{ tag|raw }}
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block image %}
         <div
-            {{ attrs.image }}
-            class="{{ cx.image.apply() }}"
+            {{ vi_attrs('image') }}
+            class="{{ vi_class('image') }}"
         >
             {{ vi_icon('tag') }}
         </div>
@@ -32,19 +25,19 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...attrs.content.all() }}
+            {{ ...vi_attrs('content').all() }}
         >
             <div
-                {{ attrs.header }}
-                class="{{ cx.header.apply() }}"
+                {{ vi_attrs('header') }}
+                class="{{ vi_class('header') }}"
             >
                 <div
-                    {{ attrs.name }}
-                    class="{{ cx.name.apply() }}"
+                    {{ vi_attrs('name') }}
+                    class="{{ vi_class('name') }}"
                 >
                     <span
-                        {{ attrs.label }}
-                        class="{{ cx.label.apply() }}"
+                        {{ vi_attrs('label') }}
+                        class="{{ vi_class('label') }}"
                     >
                         {{ label|raw }}
                     </span>
@@ -52,7 +45,7 @@
             </div>
 
             <twig:ViewsTheme:LineItem:Price
-                {{ ...attrs.price.defaults({
+                {{ ...vi_attrs('price').defaults({
                     lineItem: lineItem,
                 }).all() }}
             />

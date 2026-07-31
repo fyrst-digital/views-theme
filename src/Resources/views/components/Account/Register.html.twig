@@ -4,25 +4,15 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    header: attributes.nested('header'),
-    form: attributes.nested('form'),
-    personal: attributes.nested('personal'),
-    address: attributes.nested('address'),
-    billing: attributes.nested('billing'),
-    shippingToggle: attributes.nested('shippingToggle'),
-    shipping: attributes.nested('shipping'),
-    footerBody: attributes.nested('footerBody'),
-    submit: attributes.nested('submit'),
-} %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'address', 'billing', 'shippingToggle', 'shipping', 'footerBody', 'submit']) %}
 
 {% block component_account_register %}
-  <div {{ attributes }} class="{{ cx.root.apply() }}">
+  <div {{ attributes }} class="{{ vi_class('root') }}">
     {% block component_account_register_header %}
       {% if cardTitle %}
-        <h4 {{ attrs.header }} class="{{ cx.header.apply() }}">
+        <h4 {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
           {{ cardTitle }}
         </h4>
       {% endif %}
@@ -30,13 +20,13 @@
 
     {% block component_account_register_form %}
       <form
-        {{ attrs.form.defaults({
+        {{ vi_attrs('form').defaults({
             action: path('frontend.account.register.save'),
             method: 'post',
             'data-form-submit-loader': 'true',
             'data-form-validation': 'true',
         }) }}
-        class="{{ cx.form.apply() }}">
+        class="{{ vi_class('form') }}">
         {% block component_account_register_redirect %}
           {{ parent() }}
         {% endblock %}
@@ -50,7 +40,7 @@
         {% endblock %}
 
         {% block component_account_register_personal %}
-          <div {{ attrs.personal }} class="{{ cx.personal.apply() }}">
+          <div {{ vi_attrs('personal') }} class="{{ vi_class('personal') }}">
             {% block component_account_register_personal_fields %}
               {% block component_account_register_personal_address_fields %}
                 {% if feature('v6.7.0.0') %}
@@ -186,10 +176,10 @@
         {% endblock %}
 
         {% block component_account_register_address %}
-          <div {{ attrs.address }} class="{{ cx.address.apply() }}">
+          <div {{ vi_attrs('address') }} class="{{ vi_class('address') }}">
             {% block component_account_register_address_fields %}
               {% block component_account_register_address_billing %}
-                <div {{ attrs.billing }} class="{{ cx.billing.apply() }}">
+                <div {{ vi_attrs('billing') }} class="{{ vi_class('billing') }}">
                   {% block component_account_register_address_billing_header %}
                     <h5 class="card-title">
                       {{
@@ -213,7 +203,7 @@
               {% endblock %}
 
               {% block component_account_register_address_different_shipping %}
-                <div {{ attrs.shippingToggle }} class="{{ cx.shippingToggle.apply() }}">
+                <div {{ vi_attrs('shippingToggle') }} class="{{ vi_class('shippingToggle') }}">
                   {% block component_account_register_address_different_shipping_control %}
                     <div class="form-check register-different-shipping fw-semibold">
                       {% block component_account_register_address_different_shipping_input %}
@@ -227,7 +217,7 @@
                   {% endblock %}
 
                   {% block component_account_register_address_shipping %}
-                    <div {{ attrs.shipping }} class="{{ cx.shipping.apply() }}">
+                    <div {{ vi_attrs('shipping') }} class="{{ vi_class('shipping') }}">
                       {% block component_account_register_address_shipping_header %}
                         <h5 class="card-title">
                           {{
@@ -280,7 +270,7 @@
           {{ parent() }}
         {% endblock %}
 
-        <div {{ attrs.footerBody }} class="{{ cx.footerBody.apply() }}">
+        <div {{ vi_attrs('footerBody') }} class="{{ vi_class('footerBody') }}">
           {% block component_account_register_privacy %}
             {% sw_include '@Storefront/storefront/component/privacy-notice.html.twig' %}
           {% endblock %}
@@ -293,7 +283,7 @@
         </div>
 
         {% block component_account_register_footer %}
-          <div {{ attrs.submit }} class="{{ cx.submit.apply() }}">
+          <div {{ vi_attrs('submit') }} class="{{ vi_class('submit') }}">
             {% block component_account_register_submit %}
               <button
                 type="submit"

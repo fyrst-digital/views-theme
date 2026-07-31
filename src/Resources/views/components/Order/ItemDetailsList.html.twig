@@ -4,7 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-order-line-item' },
 }|replace_recursive(cva)) %}
 
@@ -12,6 +12,6 @@
     <twig:ViewsTheme:LineItem
         :lineItem="lineItem"
         :showRemoveButton="false"
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     />
 {% endblock %}

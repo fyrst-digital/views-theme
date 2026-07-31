@@ -3,13 +3,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-gallery-slider gallery-slider' },
 }|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block thumbnails %}
         <twig:ViewsTheme:GallerySlider:Thumbnails :medias="medias" />

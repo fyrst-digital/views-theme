@@ -15,7 +15,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Configuration](configuration.md) | Plugin config, `theme.json`, design tokens |
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
-| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_cva`, `vi_cva_from_file`, utilities |
+| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs` |
 | [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, wishlist, account action, language/currency switch, form input, product box |
 
 ## Conventions
@@ -30,7 +30,8 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 ## Twig
 
 - [Overview](twig/overview.md)
-- [`vi_cva` / `vi_cva_from_file`](twig/vi-cva.md)
+- [`vi_define_cva` / `vi_class`](twig/vi-cva.md)
+- [`vi_define_attrs` / `vi_attrs`](twig/vi-attrs.md)
 - [`vi_icon`](twig/vi-icon.md)
 - [`vi_define_classes`](twig/vi-define-classes.md) (removed)
 - [`vi_attr_classes`](twig/vi-attr-classes.md) (removed)

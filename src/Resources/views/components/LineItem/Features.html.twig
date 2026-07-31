@@ -4,19 +4,17 @@
 %}
 
 {% set features = lineItem.payload.features ?? [] %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    item: attributes.nested('item'),
-} %}
+{% do vi_define_attrs(['item']) %}
 
 {% if features is not empty %}
     <ul
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% for feature in features %}
-            <li {{ attrs.item }} class="{{ cx.item.apply() }}">
+            <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                 {% if feature.label is defined %}
                     {{ feature.label|trans|sw_sanitize }}
                 {% elseif feature.value is defined %}

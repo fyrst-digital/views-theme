@@ -1,13 +1,10 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    buy: attributes.nested('buy'),
-    detail: attributes.nested('detail'),
-} %}
+{% do vi_define_attrs(['buy', 'detail']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block prepend %}{% endblock %}
 
@@ -15,21 +12,28 @@
         {% if displayBuyButton %}
             {% block buy %}
                 <twig:ViewsTheme:Product:Action:Buy
-                    class="{{ cx.buy.apply() }}"
-                    {{ ...attrs.buy.defaults({
-                        product: product,
-                        showQuantity: showQuantity,
+                    class="{{ vi_class('buy') }}"
+                    {{ ...vi_attrs('buy').defaults({
+                        'product': product,
+                        'showQuantity': showQuantity,
+                        'button:size': 'sm',
                         'button:label': false,
+                        'button:square': true,
+                        'button:pill': true,
                     }).all() }}
                 />
             {% endblock %}
         {% else %}
             {% block detail %}
                 <twig:ViewsTheme:Product:Action:Detail
-                    class="{{ cx.detail.apply() }}"
-                    {{ ...attrs.detail.defaults({
-                        product: product,
-                        href: href,
+                    class="{{ vi_class('detail') }}"
+                    {{ ...vi_attrs('detail').defaults({
+                        'product': product,
+                        'href': href,
+                        'size': 'sm',
+                        'label': false,
+                        'square': true,
+                        'pill': true,
                     }).all() }}
                 />
             {% endblock %}

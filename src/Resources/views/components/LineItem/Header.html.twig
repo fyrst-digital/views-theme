@@ -6,20 +6,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    name: attributes.nested('name'),
-} %}
+{% do vi_define_attrs(['name']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block name %}
         <twig:ViewsTheme:Product:Name
-            class="{{ cx.name.apply() }}"
-            {{ ...attrs.name.defaults({
+            class="{{ vi_class('name') }}"
+            {{ ...vi_attrs('name').defaults({
                 name: label,
                 url: productLink,
                 showLink: productLink is not null,

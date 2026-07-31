@@ -8,30 +8,25 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-contact-channel contact-channel' },
     label: { base: 'vi-contact-channel__label contact-channel-label' },
     content: { base: 'vi-contact-channel__content contact-channel-content' },
     value: { base: 'vi-contact-channel__value contact-channel-value' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    label: attributes.nested('label'),
-    content: attributes.nested('content'),
-    value: attributes.nested('value'),
-} %}
+{% do vi_define_attrs(['content', 'label', 'value']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if label %}
-        <div {{ attrs.label }} class="{{ cx.label.apply() }}">
+        <div {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
             {{ label }}
         </div>
     {% endif %}
 
-    <div {{ attrs.content }} class="{{ cx.content.apply() }}">
+    <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
         {% if icon %}
             {{ vi_icon(icon) }}
         {% endif %}
@@ -39,17 +34,17 @@
         {% if url %}
             <a
                 {% if urlAttributes %}{{ urlAttributes|join(' ')|raw }}{% endif %}
-                {{ attrs.value.defaults({
+                {{ vi_attrs('value').defaults({
                     href: url,
                     title: value,
                     target: openExternal ? '_blank' : null,
                 }) }}
-                class="{{ cx.value.apply() }}"
+                class="{{ vi_class('value') }}"
             >
                 {% if value %}{{ value|raw }}{% endif %}
             </a>
         {% else %}
-            <span {{ attrs.value }} class="{{ cx.value.apply() }}">
+            <span {{ vi_attrs('value') }} class="{{ vi_class('value') }}">
                 {% if value %}{{ value|raw }}{% endif %}
             </span>
         {% endif %}

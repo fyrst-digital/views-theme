@@ -14,11 +14,11 @@
     {% set removeLabel = 'listing.removeFromWishlist'|trans|sw_sanitize %}
     {% set buttonLabel = showText is same as(true) ? addLabel : null %}
 
-    {% set cx = vi_cva_from_file(cva) %}
+    {% do vi_define_cva(cva) %}
 
     <twig:ViewsTheme:Button
-        class="{{ cx.root.apply({ appearance: appearance }) }}"
-        icon:class="{{ cx.icon.apply({ appearance: appearance }) }}"
+        class="{{ vi_class('root', { appearance: appearance }) }}"
+        icon:class="{{ vi_class('icon', { appearance: appearance }) }}"
         {{ ...attributes.defaults({
             type: 'button',
             icon: icon,

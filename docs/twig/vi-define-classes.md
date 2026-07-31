@@ -1,6 +1,6 @@
-# `vi_define_classes`
+# `vi_define_classes` (legacy map API)
 
-> **Removed.** This API no longer ships. Use [UX Twig components](../conventions/ux-components.md) (`cva` + `attributes`). Historical reference only.
+> **Removed** (pre-UX class-map API). Current CVA API: [`vi_define_cva` / `vi_class`](vi-cva.md). Historical reference below.
 
 Allows components to define default CSS classes while letting parent templates inject additional classes, fully set selected slots, or apply prop-driven variants.
 

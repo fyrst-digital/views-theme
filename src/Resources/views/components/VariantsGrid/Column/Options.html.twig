@@ -4,12 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid-column-option variants-grid-column-option' },
 }|replace_recursive(cva)) %}
 
 {% for group in groups %}
-    <td {{ attributes }} class="{{ cx.root.apply() }}">
+    <td {{ attributes }} class="{{ vi_class('root') }}">
         {% set option = variant.options.filterByProperty('groupId', group.id).first %}
         {% if option %}
             {% if option.media %}

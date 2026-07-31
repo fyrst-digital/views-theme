@@ -7,7 +7,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 {% set selectOptions = [] %}
 
 {% if selectedId not in paymentMethods.ids %}
@@ -26,7 +26,7 @@
 {% endfor %}
 
 <twig:ViewsTheme:Form:Select
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         id: id,
         name: 'paymentMethodId',

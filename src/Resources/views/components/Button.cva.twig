@@ -17,14 +17,30 @@
             size: {
                 sm: 'btn-sm gap-2',
                 md: 'btn-md gap-4',
-                lg: 'btn-lg',
+                lg: 'btn-lg gap-4',
             },
             justify: {
                 start: 'justify-content-start',
                 center: 'justify-content-center',
                 end: 'justify-content-end',
+            },
+            pill: {
+                true: 'rounded-pill'
             }
         },
+        compoundVariants: [{
+            square: [true],
+            size: ['sm'],
+            class: 'p-2',
+        }, {
+            square: [true],
+            size: ['md'],
+            class: 'p-3',
+        }, {
+            square: [true],
+            size: ['lg'],
+            class: 'p-4',
+        }],
     },
     icon: { 
         base: '',

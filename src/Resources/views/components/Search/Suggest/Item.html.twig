@@ -4,12 +4,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    body: attributes.nested('body'),
-    metaProperty: attributes.nested('metaProperty'),
-} %}
+{% do vi_define_attrs(['body', 'metaProperty']) %}
 
 <a
     {{ attributes.defaults({
@@ -17,7 +14,7 @@
         title: product.translated.name,
         role: 'option',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block image %}
@@ -37,14 +34,14 @@
 
         {% block body %}
             <span
-                {{ attrs.body }}
-                class="{{ cx.body.apply() }}"
+                {{ vi_attrs('body') }}
+                class="{{ vi_class('body') }}"
             >
                 {% block meta %}
                     {% if metaProperty %}
                         <span
-                            {{ attrs.metaProperty }}
-                            class="{{ cx.metaProperty.apply() }}"
+                            {{ vi_attrs('metaProperty') }}
+                            class="{{ vi_class('metaProperty') }}"
                         >
                             {{ metaProperty }}
                         </span>

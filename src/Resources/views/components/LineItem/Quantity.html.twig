@@ -20,11 +20,9 @@
         or (quantityInformation and quantityInformation.maxPurchase === 1) %}
 {% endif %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    quantityInput: attributes.nested('quantityInput'),
-} %}
+{% do vi_define_attrs(['quantityInput']) %}
 
 {% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
     ? quantityInformation.maxPurchase
@@ -46,7 +44,7 @@
                 delay: 800,
             }|json_encode,
         }) }}
-        class="{{ cx.root.apply({ digital: isDigital }) }}"
+        class="{{ vi_class('root', { digital: isDigital }) }}"
     >
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
         {% if redirectParameters is not null %}
@@ -54,7 +52,7 @@
         {% endif %}
 
         <twig:ViewsTheme:QuantityInput
-            {{ ...attrs.quantityInput.defaults({
+            {{ ...vi_attrs('quantityInput').defaults({
                 quantity: lineItem.quantity,
                 minQuantity: quantityInformation.minPurchase|default(1),
                 maxQuantity: maxQuantity,
@@ -67,7 +65,7 @@
 {% else %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply({ digital: isDigital }) }}"
+        class="{{ vi_class('root', { digital: isDigital }) }}"
     >
         {{ lineItem.quantity }}
     </div>

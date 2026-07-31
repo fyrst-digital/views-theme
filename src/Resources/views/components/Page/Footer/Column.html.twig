@@ -2,28 +2,24 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'footer-column' },
     headline: { base: 'footer-column-headline footer-headline' },
     content: { base: 'footer-column-content-container' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    headline: attributes.nested('headline'),
-    content: attributes.nested('content'),
-} %}
+{% do vi_define_attrs(['content', 'headline']) %}
 
 {% block component_footer_column %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
 
         {% block component_footer_column_inner %}
 
             {% block component_footer_column_headline %}
                 <div
-                    {{ attrs.headline.defaults({
+                    {{ vi_attrs('headline').defaults({
                         role: 'listitem',
                     }) }}
-                    class="{{ cx.headline.apply() }}"
+                    class="{{ vi_class('headline') }}"
                 >
 
                     {% block component_footer_column_headline_title %}
@@ -32,7 +28,7 @@
             {% endblock %}
 
             {% block component_footer_column_content_container %}
-                <div {{ attrs.content }} class="{{ cx.content.apply() }}">
+                <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
 
                     {% block component_footer_column_content %}
                     {% endblock %}

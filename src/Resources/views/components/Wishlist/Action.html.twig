@@ -8,17 +8,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply({ size: size }),
-    live: cx.live.apply(),
-    label: cx.label.apply(),
-} %}
+{% do vi_define_cva(cva, ['root', 'label', 'live']) %}
 {% set buttonLabel = label is same as(false) ? null : label %}
 
 <twig:ViewsTheme:Button
-    class="{{ classes.root }}"
-    label:class="{{ classes.label }}"
+    class="{{ vi_class('root', { size: size }) }}"
+    label:class="{{ vi_class('label') }}"
     {{ ...attributes.defaults({
         type: 'link',
         href: href,
@@ -40,7 +35,7 @@
     <twig:block name="append">
         <span
             id="{{ liveId }}"
-            class="{{ classes.live }}"
+            class="{{ vi_class('live') }}"
             aria-live="polite"
         ></span>
     </twig:block>

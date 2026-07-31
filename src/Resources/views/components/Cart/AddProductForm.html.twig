@@ -3,21 +3,16 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    label: attributes.nested('label'),
-    inputGroup: attributes.nested('inputGroup'),
-    input: attributes.nested('input'),
-    submit: attributes.nested('submit'),
-} %}
+{% do vi_define_attrs(['label', 'inputGroup', 'input', 'submit']) %}
 
 <form
     {{ attributes.defaults({
         action: path('frontend.checkout.product.add-by-number'),
         method: 'post',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -25,20 +20,20 @@
 
     {% block label %}
         <label
-            {{ attrs.label.defaults({
+            {{ vi_attrs('label').defaults({
                 for: 'addProductInput',
             }) }}
-            class="{{ cx.label.apply() }}"
+            class="{{ vi_class('label') }}"
         >
             {{ 'checkout.addProductLabel'|trans|sw_sanitize }}
         </label>
     {% endblock %}
 
     {% block input_group %}
-        <div {{ attrs.inputGroup }} class="{{ cx.inputGroup.apply() }}">
+        <div {{ vi_attrs('inputGroup') }} class="{{ vi_class('inputGroup') }}">
             {% block input %}
                 <input
-                    {{ attrs.input.defaults({
+                    {{ vi_attrs('input').defaults({
                         type: 'text',
                         name: 'number',
                         id: 'addProductInput',
@@ -47,18 +42,18 @@
                         'aria-describedby': 'addProductButton',
                         required: 'required',
                     }) }}
-                    class="{{ cx.input.apply() }}"
+                    class="{{ vi_class('input') }}"
                 >
             {% endblock %}
 
             {% block submit %}
                 <button
-                    {{ attrs.submit.defaults({
+                    {{ vi_attrs('submit').defaults({
                         type: 'submit',
                         'aria-labelledby': 'addProductInput',
                         id: 'addProductButton',
                     }) }}
-                    class="{{ cx.submit.apply() }}"
+                    class="{{ vi_class('submit') }}"
                 >
                     {{ vi_icon('plus') }}
                 </button>

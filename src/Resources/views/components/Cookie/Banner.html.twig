@@ -8,18 +8,13 @@
 {% set privacySnippetKey = 'cookie.messageTextPage' %}
 {% set cmsPath = 'frontend.cms.page.full' %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-cookie-banner fixed-bottom bg-white border-top py-6 shadow-lg' },
     container: { base: 'vi-cookie-banner__container container align-items-center gap-6 d-flex flex-wrap' },
     content: { base: 'vi-cookie-banner__content col cookie-permission-content' },
     actions: { base: 'vi-cookie-banner__actions col-auto d-flex flex-wrap gap-4' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    container: attributes.nested('container'),
-    content: attributes.nested('content'),
-    actions: attributes.nested('actions'),
-} %}
+{% do vi_define_attrs(['actions', 'container', 'content']) %}
 
 {% if useDefaultCookieConsent %}
     <div
@@ -30,16 +25,16 @@
             tabindex: '-1',
             'aria-label': 'cookie.headline'|trans|sw_sanitize,
         }) }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
-        <div {{ attrs.container }} class="{{ cx.container.apply() }}">
-            <div {{ attrs.content }} class="{{ cx.content.apply() }}">
+        <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
+            <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
                 {{ privacySnippetKey|trans({
                     '%url%': path(cmsPath, { id: config('core.basicInformation.privacyPage') }),
                 })|raw }}
             </div>
 
-            <div {{ attrs.actions }} class="{{ cx.actions.apply() }}">
+            <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
                 <span class="cookie-permission-button js-cookie-permission-button">
                     <button type="submit" class="btn btn-primary">
                         {{ 'cookie.deny'|trans|sw_sanitize }}

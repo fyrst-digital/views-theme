@@ -4,7 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <div
     {{ attributes.defaults({
@@ -12,7 +12,7 @@
         role: 'listbox',
         'aria-label': 'header.searchDropdownTitle'|trans|striptags,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% if searchResult.total > 0 %}

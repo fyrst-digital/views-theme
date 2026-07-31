@@ -4,16 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'js-close-address-editor' },
     fieldset: { base: 'address-editor-fieldset' },
     requiredHint: { base: 'address-required-info required-fields form-text mt-3' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    fieldset: attributes.nested('fieldset'),
-    requiredHint: attributes.nested('requiredHint'),
-} %}
+{% do vi_define_attrs(['fieldset', 'requiredHint']) %}
 
 {% block component_address_address_editor_modal_create_address_form %}
     <form
@@ -24,14 +20,14 @@
                 'data-form-validation': 'true',
                 'data-form-ajax-submit-options': formAjaxSubmitOptions|json_encode,
             }) }}
-            class="{{ cx.root.apply() }}">
+            class="{{ vi_class('root') }}">
 
         {% block component_address_address_editor_modal_create_address_form_hidden_inputs %}
             {{ parent() }}
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_form_fields_include %}
-            <div {{ attrs.fieldset }} class="{{ cx.fieldset.apply() }}">
+            <div {{ vi_attrs('fieldset') }} class="{{ vi_class('fieldset') }}">
                 {% component 'ViewsTheme:Address:Personal' with {
                     data: postedData ?? address,
                     prefix: 'address',
@@ -54,7 +50,7 @@
         {% endblock %}
 
         {% block component_address_address_editor_modal_create_address_required_hint %}
-            <p {{ attrs.requiredHint }} class="{{ cx.requiredHint.apply() }}">
+            <p {{ vi_attrs('requiredHint') }} class="{{ vi_class('requiredHint') }}">
                 {% block component_address_address_editor_modal_create_address_required_hint_text %}
                     {{ parent() }}
                 {% endblock %}

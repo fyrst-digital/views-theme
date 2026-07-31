@@ -4,21 +4,19 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    action: attributes.nested('action'),
-} %}
+{% do vi_define_attrs(['action']) %}
 
 {% if total > 0 %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% block action %}
             <twig:ViewsTheme:Button
-                class="{{ cx.action.apply() }}"
-                {{ ...attrs.action.defaults({
+                class="{{ vi_class('action') }}"
+                {{ ...vi_attrs('action').defaults({
                     type: 'link',
                     color: 'light',
                     href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,

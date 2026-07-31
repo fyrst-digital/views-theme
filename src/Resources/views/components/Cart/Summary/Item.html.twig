@@ -4,25 +4,22 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    label: attributes.nested('label'),
-    value: attributes.nested('value'),
-} %}
+{% do vi_define_attrs(['label', 'value']) %}
 
 <dl
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block label %}
-        <dt {{ attrs.label }} class="{{ cx.label.apply() }}">
+        <dt {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
             {{ label|raw }}
         </dt>
     {% endblock %}
 
     {% block value %}
-        <dd {{ attrs.value }} class="{{ cx.value.apply() }}">
+        <dd {{ vi_attrs('value') }} class="{{ vi_class('value') }}">
             {{ value }}
         </dd>
     {% endblock %}

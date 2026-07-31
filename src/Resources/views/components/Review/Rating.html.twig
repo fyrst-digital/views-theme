@@ -5,34 +5,32 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-review-rating product-review-rating d-flex flex-wrap flex-row' },
     star: { base: 'vi-review-rating__star review-star' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    star: attributes.nested('star'),
-} %}
+{% do vi_define_attrs(['star']) %}
 
 {% block component_review_rating_output %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
         {% if full > 0 %}
             {% for star in range(1, full) %}
-                <div {{ attrs.star }} class="{{ cx.star.apply() }} full">
+                <div {{ vi_attrs('star') }} class="{{ vi_class('star') }} full">
                     {{ vi_icon('star-fill') }}
                 </div>
             {% endfor %}
         {% endif %}
 
         {% if half %}
-            <div {{ attrs.star }} class="{{ cx.star.apply() }} half">
+            <div {{ vi_attrs('star') }} class="{{ vi_class('star') }} half">
                 {{ vi_icon('star-half-fill') }}
             </div>
         {% endif %}
 
         {% if blank > 0 %}
             {% for star in range(1, blank) %}
-                <div {{ attrs.star }} class="{{ cx.star.apply() }} blank">
+                <div {{ vi_attrs('star') }} class="{{ vi_class('star') }} blank">
                     {{ vi_icon('star') }}
                 </div>
             {% endfor %}

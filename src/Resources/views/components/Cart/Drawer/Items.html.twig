@@ -3,11 +3,8 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    empty: attributes.nested('empty'),
-    list: attributes.nested('list'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['empty', 'list']) %}
 
 {% set isEmpty = cart.lineItems|length < 1 %}
 
@@ -15,23 +12,23 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Cart:Drawer:Items',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if isEmpty %}
         {% block empty %}
             <twig:ViewsTheme:Cart:Empty
-                {{ ...attrs.empty.all() }}
+                {{ ...vi_attrs('empty').all() }}
             />
         {% endblock %}
     {% else %}
         {% block list %}
-            <ul {{ attrs.list }} class="{{ cx.list.apply() }}">
+            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}">
                 {% for lineItem in cart.lineItems %}
                     <twig:ViewsTheme:LineItem
                         :lineItem="lineItem"
                         :deliveries="cart.deliveries"
                         :showRemoveButton="true"
-                        class="{{ cx.item.apply() }}"
+                        class="{{ vi_class('item') }}"
                     />
                 {% endfor %}
             </ul>

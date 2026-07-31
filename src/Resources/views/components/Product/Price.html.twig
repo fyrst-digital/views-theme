@@ -1,24 +1,18 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    prefix: attributes.nested('prefix'),
-    unit: attributes.nested('unit'),
-    listPrice: attributes.nested('listPrice'),
-    reference: attributes.nested('reference'),
-    average: attributes.nested('average'),
-} %}
+{% do vi_define_attrs(['prefix', 'unit', 'listPrice', 'reference', 'average']) %}
 
 {% block price %}
     {% if showPrice and price %}
         <div
             {{ attributes }}
-            class="{{ cx.root.apply() }}"
+            class="{{ vi_class('root') }}"
         >
             {% block prefix %}
                 {% if showFromPrefix %}
                     <span
-                        {{ attrs.prefix }}
-                        class="{{ cx.prefix.apply() }}"
+                        {{ vi_attrs('prefix') }}
+                        class="{{ vi_class('prefix') }}"
                     >
                         {{ 'listing.listingTextFrom'|trans|sw_sanitize }}
                     </span>
@@ -27,8 +21,8 @@
 
             {% block unit %}
                 <span
-                    {{ attrs.unit }}
-                    class="{{ cx.unit.apply({ hasListPrice: hasListPrice }) }}"
+                    {{ vi_attrs('unit') }}
+                    class="{{ vi_class('unit', { hasListPrice: hasListPrice }) }}"
                 >
                     {{ price.unitPrice|currency }}
                 </span>
@@ -37,8 +31,8 @@
             {% block listPrice %}
                 {% if hasListPrice %}
                     <span
-                        {{ attrs.listPrice }}
-                        class="{{ cx.listPrice.apply() }}"
+                        {{ vi_attrs('listPrice') }}
+                        class="{{ vi_class('listPrice') }}"
                     >
                         {{ price.listPrice.price|currency }}
                     </span>
@@ -48,8 +42,8 @@
             {% block reference %}
                 {% if hasReferencePrice %}
                     <span
-                        {{ attrs.reference }}
-                        class="{{ cx.reference.apply() }}"
+                        {{ vi_attrs('reference') }}
+                        class="{{ vi_class('reference') }}"
                     >
                         {{ price.referencePrice.price|currency }} /
                         {{ price.referencePrice.referenceUnit }}&nbsp;
@@ -61,8 +55,8 @@
             {% block average %}
                 {% if hasRegulationPrice %}
                     <span
-                        {{ attrs.average }}
-                        class="{{ cx.average.apply() }}"
+                        {{ vi_attrs('average') }}
+                        class="{{ vi_class('average') }}"
                     >
                         {{ 'general.listPricePreviously'|trans({'%price%': price.regulationPrice.price|currency }) }}
                     </span>

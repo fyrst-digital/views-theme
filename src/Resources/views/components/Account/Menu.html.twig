@@ -3,19 +3,16 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    footer: attributes.nested('footer'),
-    register: attributes.nested('register'),
-} %}
+{% do vi_define_attrs(['footer', 'register']) %}
 
 <div
     {{ attributes.defaults(context.customer ? {} : {
         role: 'dialog',
         'aria-label': 'account.myAccount'|trans|striptags,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if context.customer %}
         {% block user_actions %}
@@ -34,12 +31,12 @@
 
         {% block footer %}
             <div
-                {{ attrs.footer }}
-                class="{{ cx.footer.apply() }}"
+                {{ vi_attrs('footer') }}
+                class="{{ vi_class('footer') }}"
             >
                 <twig:ViewsTheme:Button
-                    class="{{ cx.register.apply() }}"
-                    {{ ...attrs.register.defaults({
+                    class="{{ vi_class('register') }}"
+                    {{ ...vi_attrs('register').defaults({
                         type: 'link',
                         color: 'outline-primary',
                         href: path('frontend.account.login.page'),

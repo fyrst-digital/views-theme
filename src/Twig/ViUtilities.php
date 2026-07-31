@@ -22,6 +22,14 @@ class ViUtilities extends AbstractExtension
 
     private const HTML_TWIG_SUFFIX = '.html.twig';
 
+    private const META_ATTRS = 'vi_attrs';
+
+    private const META_CLASSES = 'vi_classes';
+
+    private const CTX_ATTRS = '__vi_attrs';
+
+    private const CTX_CLASSES = '__vi_classes';
+
     /**
      * Stack of configs captured while evaluating `.cva.twig` files.
      *
@@ -45,17 +53,157 @@ class ViUtilities extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('vi_cva', [$this, 'cvaMap'], [
+            new TwigFunction('vi_define_cva', [$this, 'defineCva'], [
                 'needs_context' => true,
                 'needs_environment' => true,
             ]),
-            new TwigFunction('vi_cva_from_file', [$this, 'cvaFromFile'], [
+            // Aliases — prefer vi_define_cva
+            new TwigFunction('vi_cva', [$this, 'defineCva'], [
                 'needs_context' => true,
                 'needs_environment' => true,
+            ]),
+            new TwigFunction('vi_cva_from_file', [$this, 'defineCva'], [
+                'needs_context' => true,
+                'needs_environment' => true,
+            ]),
+            new TwigFunction('vi_define_attrs', [$this, 'defineAttrs'], [
+                'needs_context' => true,
+                'needs_environment' => true,
+            ]),
+            new TwigFunction('vi_attrs', [$this, 'attrs'], [
+                'needs_context' => true,
+                'needs_environment' => true,
+            ]),
+            new TwigFunction('vi_class', [$this, 'class'], [
+                'needs_context' => true,
             ]),
             // Internal: used while evaluating sibling `.cva.twig` expression files.
             new TwigFunction('__vi_cva_export', [$this, 'exportCvaConfig']),
         ];
+    }
+
+    /**
+     * Bind CVA config and export slots for `vi_class`. Use with `{% do %}` — no `{% set cx %}`.
+     *
+     * Config (1st arg):
+     * - Sibling `Name.cva.twig` when present: load file, deep-merge 1st arg as overrides (`cva` prop).
+     * - Else treat 1st arg as a full inline slot config map.
+     *
+     * 2nd arg (optional):
+     * - `list<string>` — slot names to export for `vi_class` (omit = export all).
+     * - `string` — explicit `.cva.twig` path / short name.
+     * - `ComponentAttributes` — attributes bag.
+     *
+     * @param array<string, mixed>                                                     $context
+     * @param array<string, mixed>                                                     $config
+     * @param list<string>|array<string, mixed>|ComponentAttributes|string|null        $exportOrRef
+     */
+    public function defineCva(
+        Environment $env,
+        array &$context,
+        array $config = [],
+        array|ComponentAttributes|string|null $exportOrRef = null,
+        ?ComponentAttributes $attributes = null,
+    ): string {
+        $exportSlots = null;
+        $templateRef = null;
+
+        if (\is_string($exportOrRef)) {
+            $templateRef = $exportOrRef;
+        } elseif ($exportOrRef instanceof ComponentAttributes) {
+            $attributes = $exportOrRef;
+        } elseif (\is_array($exportOrRef)) {
+            if (array_is_list($exportOrRef)) {
+                $exportSlots = array_values(array_map(static fn (mixed $s): string => (string) $s, $exportOrRef));
+            } else {
+                // Options: { classes: [...], file: '…' }
+                if (isset($exportOrRef['classes']) && \is_array($exportOrRef['classes'])) {
+                    $exportSlots = array_values(array_map(
+                        static fn (mixed $s): string => (string) $s,
+                        $exportOrRef['classes'],
+                    ));
+                }
+                if (isset($exportOrRef['file']) && \is_string($exportOrRef['file'])) {
+                    $templateRef = $exportOrRef['file'];
+                }
+            }
+        }
+
+        $slotConfig = $this->resolveSlotConfig($env, $context, $config, $templateRef);
+        $map = $this->buildCvaMap($env, $context, $slotConfig, $attributes);
+        $this->exportClassSlots($context, $map, $exportSlots);
+
+        return '';
+    }
+
+    /**
+     * Bind nest bags from `attributes` onto the current component (stack + context).
+     * Resolve with `vi_attrs('slot')` — do not `{% set attrs %}`.
+     *
+     * @param array<string, mixed> $context
+     * @param list<string>         $slots
+     */
+    public function defineAttrs(Environment $env, array &$context, array $slots): string
+    {
+        $attributes = $context['attributes'] ?? null;
+        if (!$attributes instanceof ComponentAttributes) {
+            $attributes = new ComponentAttributes([], $env->getRuntime(EscaperRuntime::class));
+            $context['attributes'] = $attributes;
+        }
+
+        $map = [];
+        foreach ($slots as $slot) {
+            $name = (string) $slot;
+            if ($name === '') {
+                continue;
+            }
+            $map[$name] = $attributes->nested($name);
+        }
+
+        $context[self::CTX_ATTRS] = $map;
+        $this->storeOnCurrentComponent(self::META_ATTRS, $map);
+
+        return '';
+    }
+
+    /**
+     * Resolve a nest bag bound by `vi_define_attrs` (component stack, then context / outerScope).
+     *
+     * @param array<string, mixed> $context
+     */
+    public function attrs(Environment $env, array $context, string $slot): ComponentAttributes
+    {
+        $bag = $this->resolveFromStack(self::META_ATTRS, $slot);
+        if ($bag instanceof ComponentAttributes) {
+            return $bag;
+        }
+
+        $bag = $this->resolveFromContextMaps($context, [self::CTX_ATTRS], $slot);
+        if ($bag instanceof ComponentAttributes) {
+            return $bag;
+        }
+
+        return new ComponentAttributes([], $env->getRuntime(EscaperRuntime::class));
+    }
+
+    /**
+     * Apply an exported CVA slot (stack / context). Variants at the use site.
+     *
+     * @param array<string, mixed> $context
+     * @param array<string, mixed> $variants
+     */
+    public function class(array $context, string $slot, array $variants = []): string
+    {
+        $cvaSlot = $this->resolveFromStack(self::META_CLASSES, $slot);
+        if (!$cvaSlot instanceof ViCvaSlot) {
+            $cvaSlot = $this->resolveFromContextMaps($context, [self::CTX_CLASSES], $slot);
+        }
+
+        if (!$cvaSlot instanceof ViCvaSlot) {
+            return '';
+        }
+
+        return $cvaSlot->apply($variants);
     }
 
     public function mergeDeep(array $source, array $target): array
@@ -76,53 +224,57 @@ class ViUtilities extends AbstractExtension
     }
 
     /**
-     * Load sibling `Name.cva.twig` (or an explicit path), merge caller overrides, bind attributes.
-     *
-     * `.cva.twig` files are a single Twig hash expression (optional `{# comments #}` allowed),
-     * evaluated with the component context so dynamic bases (`~ layout`) work.
-     *
      * @param array<string, mixed>                $context
-     * @param array<string, array<string, mixed>> $cva
+     * @param array<string, mixed>                $config
      *
-     * @return array<string, ViCvaSlot>
+     * @return array<string, array<string, mixed>>
      */
-    public function cvaFromFile(
+    private function resolveSlotConfig(
         Environment $env,
-        array &$context,
-        array $cva = [],
-        ComponentAttributes|string|null $templateOrAttributes = null,
-        ?ComponentAttributes $attributes = null,
+        array $context,
+        array $config,
+        ?string $templateRef,
     ): array {
-        $templateRef = null;
+        $cvaTemplate = null;
 
-        if (\is_string($templateOrAttributes)) {
-            $templateRef = $templateOrAttributes;
-        } elseif ($templateOrAttributes instanceof ComponentAttributes) {
-            $attributes = $templateOrAttributes;
+        if ($templateRef !== null && $templateRef !== '') {
+            $cvaTemplate = $this->normalizeCvaTemplateRef($templateRef);
+            if (!$env->getLoader()->exists($cvaTemplate)) {
+                throw new RuntimeError(\sprintf('CVA file "%s" not found.', $cvaTemplate));
+            }
+        } else {
+            $htmlTemplate = $this->resolveCallerHtmlTemplate();
+            if ($htmlTemplate !== null) {
+                $sibling = $this->htmlTemplateToCvaTemplate($htmlTemplate);
+                if ($env->getLoader()->exists($sibling)) {
+                    $cvaTemplate = $sibling;
+                }
+            }
         }
 
-        $cvaTemplate = $this->resolveCvaTemplate($env, $templateRef);
-        $defaults = $this->evaluateCvaFile($env, $context, $cvaTemplate);
-        $classes = $cva === [] ? $defaults : array_replace_recursive($defaults, $cva);
+        if ($cvaTemplate !== null) {
+            $defaults = $this->evaluateCvaFile($env, $context, $cvaTemplate);
 
-        return $this->cvaMap($env, $context, $classes, $attributes);
+            return $config === [] ? $defaults : array_replace_recursive($defaults, $config);
+        }
+
+        if ($config === []) {
+            throw new RuntimeError(
+                'vi_define_cva() needs a sibling .cva.twig, an explicit file path, or an inline slot config map.'
+            );
+        }
+
+        // Inline full config (former vi_cva({…}))
+        return $config;
     }
 
     /**
-     * Build CVA slots from a classes map, binding attribute class extras.
-     *
-     * - root → attributes.render('class')
-     * - other keys → attributes.nested(key).render('class'), then strip "slot:class" from attributes
-     *
-     * When called outside a UX component (e.g. renderView / sw_include), an empty
-     * ComponentAttributes bag is created so class maps still resolve.
-     *
      * @param array<string, mixed>                $context
      * @param array<string, array<string, mixed>> $classes
      *
      * @return array<string, ViCvaSlot>
      */
-    public function cvaMap(
+    private function buildCvaMap(
         Environment $env,
         array &$context,
         array $classes,
@@ -180,31 +332,111 @@ class ViUtilities extends AbstractExtension
         return $map;
     }
 
-    private function resolveCvaTemplate(Environment $env, ?string $templateRef): string
+    /**
+     * @param array<string, mixed>         $context
+     * @param array<string, ViCvaSlot>     $map
+     * @param list<string>|null            $exportSlots
+     */
+    private function exportClassSlots(array &$context, array $map, ?array $exportSlots): void
     {
-        if ($templateRef !== null && $templateRef !== '') {
-            return $this->normalizeCvaTemplateRef($templateRef);
+        if ($exportSlots === null) {
+            $exported = $map;
+        } else {
+            $exported = [];
+            foreach ($exportSlots as $name) {
+                if ($name !== '' && isset($map[$name])) {
+                    $exported[$name] = $map[$name];
+                }
+            }
         }
 
-        $htmlTemplate = $this->resolveCallerHtmlTemplate();
-        if ($htmlTemplate === null) {
-            throw new RuntimeError(
-                'vi_cva_from_file() could not resolve the caller template. '
-                . 'Pass an explicit path, e.g. vi_cva_from_file(cva, \'@ViewsTheme/components/Alert.cva.twig\').'
-            );
+        // Merge so sw_extends children can add slots without wiping the parent template
+        $prev = $context[self::CTX_CLASSES] ?? [];
+        if (!\is_array($prev)) {
+            $prev = [];
+        }
+        $merged = array_merge($prev, $exported);
+        $context[self::CTX_CLASSES] = $merged;
+        $this->storeOnCurrentComponent(self::META_CLASSES, $merged, true);
+    }
+
+    /**
+     * @param array<string, mixed> $value
+     */
+    private function storeOnCurrentComponent(string $key, array $value, bool $merge = false): void
+    {
+        $mounted = $this->componentStack?->getCurrentComponent();
+        if ($mounted === null) {
+            return;
         }
 
-        $cvaTemplate = $this->htmlTemplateToCvaTemplate($htmlTemplate);
-
-        if (!$env->getLoader()->exists($cvaTemplate)) {
-            throw new RuntimeError(\sprintf(
-                'CVA file "%s" not found (sibling of "%s").',
-                $cvaTemplate,
-                $htmlTemplate,
-            ));
+        if ($merge && $mounted->hasExtraMetadata($key)) {
+            $prev = $mounted->getExtraMetadata($key);
+            if (\is_array($prev)) {
+                $value = array_merge($prev, $value);
+            }
         }
 
-        return $cvaTemplate;
+        $mounted->addExtraMetadata($key, $value);
+    }
+
+    private function resolveFromStack(string $metaKey, string $slot): mixed
+    {
+        if ($this->componentStack === null) {
+            return null;
+        }
+
+        foreach ($this->componentStack as $mounted) {
+            if (!$mounted->hasExtraMetadata($metaKey)) {
+                continue;
+            }
+
+            $map = $mounted->getExtraMetadata($metaKey);
+            if (!\is_array($map)) {
+                continue;
+            }
+
+            $value = $map[$slot] ?? null;
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     * @param list<string>         $mapKeys
+     */
+    private function resolveFromContextMaps(array $context, array $mapKeys, string $slot): mixed
+    {
+        $scope = $context;
+        $seen = 0;
+
+        while (\is_array($scope) && $seen < 32) {
+            ++$seen;
+
+            foreach ($mapKeys as $mapKey) {
+                $map = $scope[$mapKey] ?? null;
+                if (!\is_array($map)) {
+                    continue;
+                }
+
+                $value = $map[$slot] ?? null;
+                if ($value !== null) {
+                    return $value;
+                }
+            }
+
+            $outer = $scope['outerScope'] ?? null;
+            if (!\is_array($outer) || $outer === $scope) {
+                break;
+            }
+            $scope = $outer;
+        }
+
+        return null;
     }
 
     private function normalizeCvaTemplateRef(string $templateRef): string
@@ -217,7 +449,6 @@ class ViUtilities extends AbstractExtension
             return $this->htmlTemplateToCvaTemplate($templateRef);
         }
 
-        // Bare component path: "Alert" / "Product/Box" / "ViewsTheme:Alert"
         $path = ltrim(str_replace(':', '/', $templateRef), '/');
 
         if (!str_starts_with($path, '@') && !str_starts_with($path, 'components/')) {
@@ -256,14 +487,21 @@ class ViUtilities extends AbstractExtension
             }
         }
 
-        foreach (debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS) as $frame) {
+        foreach (debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT) as $frame) {
             $object = $frame['object'] ?? null;
-            if ($object instanceof Template) {
-                $name = $object->getTemplateName();
-                if (\is_string($name) && $name !== '' && !str_contains($name, 'string template')) {
-                    return $name;
-                }
+            if (!$object instanceof Template) {
+                continue;
             }
+            $name = $object->getTemplateName();
+            if (!\is_string($name) || $name === '' || str_contains($name, 'string template')) {
+                continue;
+            }
+            // Prefer component HTML templates over nested CVA eval wrappers
+            if (str_ends_with($name, self::CVA_FILE_SUFFIX)) {
+                continue;
+            }
+
+            return $name;
         }
 
         return null;

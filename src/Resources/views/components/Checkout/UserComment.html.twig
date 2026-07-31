@@ -3,46 +3,41 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    title: attributes.nested('title'),
-    control: attributes.nested('control'),
-    label: attributes.nested('label'),
-    textarea: attributes.nested('textarea'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'control', 'label', 'textarea']) %}
 
 {% set commentKey = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if title %}
         {% block title %}
-            <div {{ attrs.title }} class="{{ cx.title.apply() }}">
+            <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
                 {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
             </div>
         {% endblock %}
     {% endif %}
 
     {% block control %}
-        <div {{ attrs.control }} class="{{ cx.control.apply() }}">
+        <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
             <label
-                {{ attrs.label.defaults({
+                {{ vi_attrs('label').defaults({
                     for: commentKey,
                 }) }}
-                class="{{ cx.label.apply() }}"
+                class="{{ vi_class('label') }}"
             >
                 {{ 'checkout.customerCommentLabel'|trans|sw_sanitize }}
             </label>
             <textarea
-                {{ attrs.textarea.defaults({
+                {{ vi_attrs('textarea').defaults({
                     placeholder: 'checkout.customerCommentPlaceholder'|trans|sw_sanitize,
                     id: commentKey,
                     form: 'confirmOrderForm',
                     name: commentKey,
                 }) }}
-                class="{{ cx.textarea.apply() }}"
+                class="{{ vi_class('textarea') }}"
             ></textarea>
         </div>
     {% endblock %}

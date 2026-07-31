@@ -4,17 +4,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     body: { base: 'order-detail-content-body' },
     footer: { base: 'order-item-detail-footer' },
     summaryList: { base: 'order-item-summary-list cart-summary-list' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    body: attributes.nested('body'),
-    footer: attributes.nested('footer'),
-    summaryList: attributes.nested('summaryList'),
-} %}
+{% do vi_define_attrs(['body', 'footer', 'summaryList']) %}
 
 {% block page_account_order_documents_table %}
 {% endblock %}
@@ -26,7 +22,7 @@
 {% endblock %}
 
 {% block page_account_order_item_detail_table_body %}
-    <div {{ attrs.body }} class="{{ cx.body.apply() }}">
+    <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
         {% component 'ViewsTheme:Order:ItemDetailsList' %}{% endcomponent %}
     </div>
 {% endblock %}
@@ -34,10 +30,10 @@
 {% block page_account_order_item_detail_table_footer %}
 
     {% block page_account_order_item_detail_table_labels_summary %}
-        <div {{ attrs.footer }} class="{{ cx.footer.apply() }}">
+        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
 
             {% block page_account_order_item_detail_summary %}
-                <div {{ attrs.summaryList }} class="{{ cx.summaryList.apply() }}">
+                <div {{ vi_attrs('summaryList') }} class="{{ vi_class('summaryList') }}">
                     {% block page_account_order_item_detail_shipping_costs %}
                         {% if order.deliveries|length > 0 %}
                             <twig:ViewsTheme:Cart:Summary:Item

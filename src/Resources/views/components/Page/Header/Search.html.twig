@@ -4,51 +4,43 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    search: attributes.nested('search'),
-    form: attributes.nested('form'),
-    container: attributes.nested('container'),
-    inputGroup: attributes.nested('inputGroup'),
-    input: attributes.nested('input'),
-    submit: attributes.nested('submit'),
-    close: attributes.nested('close'),
-} %}
+{% do vi_define_attrs(['search', 'form', 'container', 'inputGroup', 'input', 'submit', 'close']) %}
 
 <div
     {{ attributes.defaults({
         id: 'searchCollapse',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <div
-        {{ attrs.search }}
-        class="{{ cx.search.apply() }}"
+        {{ vi_attrs('search') }}
+        class="{{ vi_class('search') }}"
     >
         {% block form %}
             <form
-                {{ attrs.form.defaults({
+                {{ vi_attrs('form').defaults({
                     action: path('frontend.search.page'),
                     method: 'get',
                     'data-search-widget': 'true',
                     'data-search-widget-options': searchWidgetOptions|json_encode,
                     'data-url': path('frontend.search.suggest') ~ '?search=',
                 }) }}
-                class="{{ cx.form.apply() }}"
+                class="{{ vi_class('form') }}"
             >
                 <div
-                    {{ attrs.container }}
-                    class="{{ cx.container.apply() }}"
+                    {{ vi_attrs('container') }}
+                    class="{{ vi_class('container') }}"
                 >
                     {% block input_group %}
                         <div
-                            {{ attrs.inputGroup }}
-                            class="{{ cx.inputGroup.apply() }}"
+                            {{ vi_attrs('inputGroup') }}
+                            class="{{ vi_class('inputGroup') }}"
                         >
                             {% block input %}
                                 <input
-                                    {{ attrs.input.defaults({
+                                    {{ vi_attrs('input').defaults({
                                         type: 'search',
                                         name: 'search',
                                         autocomplete: 'off',
@@ -57,17 +49,17 @@
                                         'aria-label': 'header.searchPlaceholder'|trans|striptags,
                                         value: searchTerm,
                                     }) }}
-                                    class="{{ cx.input.apply() }}"
+                                    class="{{ vi_class('input') }}"
                                 >
                             {% endblock %}
 
                             {% block submit %}
                                 <button
-                                    {{ attrs.submit.defaults({
+                                    {{ vi_attrs('submit').defaults({
                                         type: 'submit',
                                         'aria-label': 'header.searchButton'|trans|striptags,
                                     }) }}
-                                    class="{{ cx.submit.apply() }}"
+                                    class="{{ vi_class('submit') }}"
                                 >
                                     {% block submit_icon %}
                                         {{ vi_icon('magnifying-glass') }}
@@ -79,11 +71,11 @@
 
                     {% block close %}
                         <button
-                            {{ attrs.close.defaults({
+                            {{ vi_attrs('close').defaults({
                                 type: 'button',
                                 'data-header-search': 'close',
                             }) }}
-                            class="{{ cx.close.apply() }}"
+                            class="{{ vi_class('close') }}"
                         >
                             {% block close_icon %}
                                 {{ vi_icon('x') }}

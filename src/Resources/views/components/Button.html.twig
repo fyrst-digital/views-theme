@@ -8,14 +8,14 @@
     title = null,
     color = 'primary',
     size = 'md',
+    square = false,
+    pill = false,
     justify = 'center',
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    label: attributes.nested('label'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['label']) %}
 
 {% set element = tag is not empty ? tag : (type is same as('link') ? 'a' : 'button') %}
 
@@ -26,21 +26,21 @@
         target: element is same as('a') and target ? target : false,
         title: title ?? label,
     }) }}
-    class="{{ cx.root.apply({ color: color, size: size, justify: justify }) }}"
+    class="{{ vi_class('root', { color: color, size: size, justify: justify, pill: pill, square: square }) }}"
 >
     {% block prepend %}{% endblock %}
 
     {% block icon %}
         {% if icon %}
             {{ vi_icon(icon, {
-                class: cx.icon.apply({ size: size })
+                class: vi_class('icon', { size: size })
             }) }}
         {% endif %}
     {% endblock %}
 
     {% block label %}
         {% if label %}
-            <span {{ attrs.label }} class="{{ cx.label.apply({ size: size }) }}">
+            <span {{ vi_attrs('label') }} class="{{ vi_class('label', { size: size }) }}">
                 {{ label }}
             </span>
         {% endif %}

@@ -3,11 +3,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid-column-preview variants-grid-column-preview' },
 }|replace_recursive(cva)) %}
 
-<td {{ attributes }} class="{{ cx.root.apply() }}">
+<td {{ attributes }} class="{{ vi_class('root') }}">
     {% if variant.cover %}
         <img
             src="{{ variant.cover.media|sw_encode_media_url }}"

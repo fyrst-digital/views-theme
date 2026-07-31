@@ -4,12 +4,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    header: attributes.nested('header'),
-    body: attributes.nested('body'),
-} %}
+{% do vi_define_attrs(['header', 'body']) %}
 
 <div
     {{ attributes.defaults({
@@ -18,11 +15,11 @@
             side: side,
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply({ side: side }) }}"
+    class="{{ vi_class('root', { side: side }) }}"
 >
     {% block header %}
         <twig:ViewsTheme:Drawer:Header
-            {{ ...attrs.header.defaults({
+            {{ ...vi_attrs('header').defaults({
                 title: title,
             }).all() }}
         />
@@ -30,8 +27,8 @@
 
     {% block body %}
         <div
-            {{ attrs.body }}
-            class="{{ cx.body.apply() }}"
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
         >
             {% block content %}{% endblock %}
         </div>

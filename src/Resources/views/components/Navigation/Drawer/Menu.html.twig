@@ -8,19 +8,8 @@
 {% set isRoot = activeId == context.salesChannel.navigationCategoryId %}
 {% set children = navigation.getChildren(activeId) %}
 {% set active = navigation.active %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    scroll: cx.scroll.apply(),
-    level: cx.level.apply(),
-    list: cx.list.apply(),
-} %}
-{% set attrs = {
-    scroll: attributes.nested('scroll'),
-    level: attributes.nested('level'),
-    header: attributes.nested('header'),
-    list: attributes.nested('list'),
-} %}
+{% do vi_define_cva(cva, ['root', 'scroll', 'level', 'list']) %}
+{% do vi_define_attrs(['scroll', 'level', 'header', 'list']) %}
 
 {% set navigationImageIds = [] %}
 {% if children %}
@@ -40,21 +29,21 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Navigation:Drawer:Menu',
     }) }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     <twig:ViewsTheme:Scroll:Area
-        class="{{ classes.scroll }}"
-        {{ ...attrs.scroll.all() }}
+        class="{{ vi_class('scroll') }}"
+        {{ ...vi_attrs('scroll').all() }}
     >
         <div
-            {{ attrs.level.defaults({
+            {{ vi_attrs('level').defaults({
                 'data-level': '',
             }) }}
-            class="{{ classes.level }}"
+            class="{{ vi_class('level') }}"
         >
             {% if not isRoot and active %}
                 <twig:ViewsTheme:Navigation:Drawer:Menu:Header
-                    {{ ...attrs.header.defaults({
+                    {{ ...vi_attrs('header').defaults({
                         category: active,
                         menuUrl: menuUrl,
                     }).all() }}
@@ -62,8 +51,8 @@
             {% endif %}
 
             <ul
-                {{ attrs.list }}
-                class="{{ classes.list }}">
+                {{ vi_attrs('list') }}
+                class="{{ vi_class('list') }}">
                 {% if children %}
                     {% for item in children.tree %}
                         {% set hasChildren = item.category.visibleChildCount > 0 %}

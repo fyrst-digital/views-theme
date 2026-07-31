@@ -4,12 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-review-form__rating form-group col-md-4 product-detail-review-form-rating' },
 }|replace_recursive(cva)) %}
 
 {% block component_review_form_rating %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
         <label for="#review-form-rating" class="form-label">
             {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
         </label>

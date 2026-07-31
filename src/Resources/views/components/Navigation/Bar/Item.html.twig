@@ -8,16 +8,8 @@
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
 {% set flyoutId = 'vi-navigation-flyout-' ~ category.id %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    link: cx.link.apply(),
-    label: cx.label.apply(),
-    caret: cx.caret.apply(),
-} %}
-{% set attrs = {
-    link: attributes.nested('link'),
-} %}
+{% do vi_define_cva(cva, ['root', 'link', 'label', 'caret']) %}
+{% do vi_define_attrs(['link']) %}
 
 {# UX ComponentAttributes: null becomes true — use false to omit #}
 {% set triggerDefaults = {
@@ -35,29 +27,29 @@
     {{ attributes.defaults({
         'data-navigation-id': category.id,
     }) }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     {% if isFolder %}
         <button
             type="button"
-            {{ attrs.link.defaults(triggerDefaults) }}
-            class="{{ classes.link }}"
+            {{ vi_attrs('link').defaults(triggerDefaults) }}
+            class="{{ vi_class('link') }}"
         >
-            <span class="{{ classes.label }}">{{ name }}</span>
+            <span class="{{ vi_class('label') }}">{{ name }}</span>
             {% if hasChildren %}
-                {{ vi_icon('caret-down', { class: classes.caret }) }}
+                {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
             {% endif %}
         </button>
     {% else %}
         <a
-            {{ attrs.link.defaults(triggerDefaults|merge({
+            {{ vi_attrs('link').defaults(triggerDefaults|merge({
                 href: category_url(category),
             })|merge(category_linknewtab(category) ? { target: '_blank' } : {})) }}
-            class="{{ classes.link }}"
+            class="{{ vi_class('link') }}"
         >
-            <span class="{{ classes.label }}">{{ name }}</span>
+            <span class="{{ vi_class('label') }}">{{ name }}</span>
             {% if hasChildren %}
-                {{ vi_icon('caret-down', { class: classes.caret }) }}
+                {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
             {% endif %}
         </a>
     {% endif %}

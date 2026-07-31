@@ -4,21 +4,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     separator: { base: 'vi-breadcrumb__separator breadcrumb-placeholder' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    separator: attributes.nested('separator'),
-} %}
+{% do vi_define_attrs(['separator']) %}
 
 {% block layout_breadcrumb_placeholder %}
     {% if key != breadcrumbKeys|last %}
         <div
-            {{ attrs.separator.defaults({
+            {{ vi_attrs('separator').defaults({
                 'aria-hidden': 'true',
             }) }}
-            class="{{ cx.separator.apply() }}"
+            class="{{ vi_class('separator') }}"
         >
             {{ vi_icon('arrow-right') }}
         </div>

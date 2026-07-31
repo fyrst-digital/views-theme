@@ -4,12 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'row g-2 fields-company' },
 }|replace_recursive(cva)) %}
 
 {% block component_address_form_company_fields %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
         {% block component_address_form_company_name %}
             {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
                 additionalClass: 'col-12 field-company-name'

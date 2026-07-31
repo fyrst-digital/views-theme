@@ -21,15 +21,9 @@
 
 {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    reviews: attributes.nested('reviews'),
-    reviewLabel: attributes.nested('reviewLabel'),
-    reviewLink: attributes.nested('reviewLink'),
-    prices: attributes.nested('prices'),
-    actions: attributes.nested('actions'),
-} %}
+{% do vi_define_attrs(['reviews', 'reviewLabel', 'reviewLink', 'prices', 'actions']) %}
 
 {% block buy_widget_data %}
     {% block buy_widget_data_rich_snippet_url %}
@@ -62,12 +56,12 @@
                 {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
             {% endif %}
 
-            <div {{ attrs.reviews }} class="{{ cx.reviews.apply() }}">
+            <div {{ vi_attrs('reviews') }} class="{{ vi_class('reviews') }}">
                 <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
-                <div {{ attrs.reviewLabel }} class="{{ cx.reviewLabel.apply() }}">
+                <div {{ vi_attrs('reviewLabel') }} class="{{ vi_class('reviewLabel') }}">
                     {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
                     <a
-                        {{ attrs.reviewLink.defaults({
+                        {{ vi_attrs('reviewLink').defaults({
                             'data-bs-toggle': 'tab',
                             'data-off-canvas-tabs': 'true',
                             'data-remote-click': 'true',
@@ -75,7 +69,7 @@
                             href: reviewTabHref,
                             'aria-controls': 'review-tab-pane',
                         }) }}
-                        class="{{ cx.reviewLink.apply() }}"
+                        class="{{ vi_class('reviewLink') }}"
                     >
                         {{ totalReviews }}
                         {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
@@ -86,7 +80,7 @@
     {% endblock %}
 
     {% block component_product_buy_container_prices %}
-        <div {{ attrs.prices }} class="{{ cx.prices.apply() }}">
+        <div {{ vi_attrs('prices') }} class="{{ vi_class('prices') }}">
             {% block buy_widget_price %}
                 {% if options.prices.showTieredPrices|default(true) and product.calculatedPrices.count > 1 %}
                     <twig:ViewsTheme:Product:Price:Tiered
@@ -145,7 +139,7 @@
 
         {% block component_product_buy_container_actions_container %}
             {% if options.showActions is same as(true) %}
-                <div {{ attrs.actions }} class="{{ cx.actions.apply() }}">
+                <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
                     {% block component_product_buy_container_action_prepend %}{% endblock %}
 
                     {% block component_product_buy_container_wishlist %}

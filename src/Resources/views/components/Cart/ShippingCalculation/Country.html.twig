@@ -6,7 +6,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 {% set selectOptions = [] %}
 
 {% for country in countries %}
@@ -18,7 +18,7 @@
 
 {% if not context.customer %}
     <twig:ViewsTheme:Form:Select
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
         {{ ...attributes.defaults({
             id: id,
             name: 'countryId',

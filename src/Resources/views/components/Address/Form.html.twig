@@ -4,15 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     company: { base: '' },
     countryState: { base: 'country-and-state-form-elements' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    company: attributes.nested('company'),
-    countryState: attributes.nested('countryState'),
-} %}
+{% do vi_define_attrs(['company', 'countryState']) %}
 
 {% block component_address_form_company %}
   {% if showFormCompany %}
@@ -21,7 +18,7 @@
     {% endif %}
 
     {% if config('core.loginRegistration.showAccountTypeSelection') or prefix == 'address' or prefix == 'shippingAddress' or hasSelectedBusiness %}
-      <div {{ attrs.company }} class="{{ cx.company.apply() }}">
+      <div {{ vi_attrs('company') }} class="{{ vi_class('company') }}">
         {% block component_address_form_company_fields %}
           {% block component_address_form_company_name %}
             {%
@@ -57,8 +54,8 @@
   {# @deprecated tag:v6.8.0 - Only condition will be removed #}
   {% if feature('v6.8.0.0') %}
     <div
-      {{ attrs.countryState }}
-      class="{{ cx.countryState.apply() }}"
+      {{ vi_attrs('countryState') }}
+      class="{{ vi_class('countryState') }}"
       data-country-state-select="true"
       data-country-state-select-options="{{ options|json_encode }}">
       {% block component_address_form_country_field %}

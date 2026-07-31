@@ -4,7 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <span
     {{ attributes.defaults({
@@ -14,5 +14,5 @@
         }|json_encode,
         hidden: count < 1,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >{% if count > 0 %}{{ count }}{% endif %}</span>

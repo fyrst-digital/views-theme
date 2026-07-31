@@ -11,14 +11,8 @@
 %}
 
 {% set alertType = type is same as('error') ? 'danger' : type %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    icon: attributes.nested('icon'),
-    content: attributes.nested('content'),
-    heading: attributes.nested('heading'),
-    list: attributes.nested('list'),
-    dismiss: attributes.nested('dismiss'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['icon', 'content', 'heading', 'list', 'dismiss']) %}
 
 {% set alertAriaJsOptions = { ariaLive: ariaLive } %}
 {% set iconName = 'x' %}
@@ -39,11 +33,11 @@
         'data-alert-aria': announceOnLoad ? 'true' : false,
         'data-alert-aria-options': announceOnLoad ? alertAriaJsOptions|json_encode : false,
     }) }}
-    class="{{ cx.root.apply({ type: alertType, dismissible: dismissible }) }}"
+    class="{{ vi_class('root', { type: alertType, dismissible: dismissible }) }}"
 >
     {% block icon %}
         {% if icon is not same as(false) and icon is not same as('false') %}
-            <div {{ attrs.icon }} class="{{ cx.icon.apply() }}">
+            <div {{ vi_attrs('icon') }} class="{{ vi_class('icon') }}">
                 {% block icon_element %}
                     {{ vi_icon(iconName) }}
                 {% endblock %}
@@ -52,10 +46,10 @@
     {% endblock %}
 
     {% block content_container %}
-        <div {{ attrs.content }} class="{{ cx.content.apply() }}">
+        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
             {% block heading %}
                 {% if heading %}
-                    <div {{ attrs.heading }} class="{{ cx.heading.apply() }}">
+                    <div {{ vi_attrs('heading') }} class="{{ vi_class('heading') }}">
                         {{ heading }}
                     </div>
                 {% endif %}
@@ -63,7 +57,7 @@
 
             {% block content %}
                 {% if list|length > 1 %}
-                    <ul {{ attrs.list }} class="{{ cx.list.apply() }}">
+                    <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}">
                         {% for entry in list %}
                             <li>{{ entry|sw_sanitize }}</li>
                         {% endfor %}
@@ -82,12 +76,12 @@
     {% block dismiss %}
         {% if dismissible %}
             <button
-                {{ attrs.dismiss.defaults({
+                {{ vi_attrs('dismiss').defaults({
                     type: 'button',
                     'data-bs-dismiss': 'alert',
                     'aria-label': 'global.default.close'|trans|striptags,
                 }) }}
-                class="{{ cx.dismiss.apply() }}"
+                class="{{ vi_class('dismiss') }}"
             >
                 <span aria-hidden="true"></span>
             </button>

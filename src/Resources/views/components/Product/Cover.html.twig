@@ -1,15 +1,13 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    placeholder: attributes.nested('placeholder'),
-} %}
+{% do vi_define_attrs(['placeholder']) %}
 
 <{{ rootTag|raw }}
     {{ attributes.defaults({
         href: linked ? url : null,
         title: linked ? name : null,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block prepend %}{% endblock %}
 
@@ -24,7 +22,7 @@
                     {% set mediaAttrs = mediaAttrs|merge({
                         autoplay: true,
                         loop: true,
-                        class: cx.video.apply(),
+                        class: vi_class('video'),
                     }) %}
                 {% endif %}
 
@@ -38,7 +36,7 @@
                 {% set mediaAttrs = mediaAttrs|merge({
                     alt: (cover.translated.alt ?: name),
                     loading: 'lazy',
-                    class: cx.image.apply(),
+                    class: vi_class('image'),
                 }) %}
 
                 {% block image %}
@@ -52,8 +50,8 @@
         {% else %}
             {% block placeholder %}
                 <div
-                    {{ attrs.placeholder }}
-                    class="{{ cx.placeholder.apply() }}"
+                    {{ vi_attrs('placeholder') }}
+                    class="{{ vi_class('placeholder') }}"
                     aria-hidden="true"
                 >
                     {{ vi_icon('placeholder') }}

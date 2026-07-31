@@ -5,13 +5,17 @@ ViewsTheme registers Twig helpers under the `vi_` prefix.
 | Name | Type | Purpose |
 |------|------|---------|
 | [`vi_icon`](vi-icon.md) | function | Inline SVG or CSS icon markup |
-| [`vi_cva`](vi-cva.md) | function | Multi-slot CVA map + attribute class binding |
-| [`vi_cva_from_file`](vi-cva.md) | function | Load sibling / explicit `.cva.twig` defaults + merge `cva` + bind |
+| [`vi_define_cva` / `vi_class`](vi-cva.md) | function | Bind CVA + resolve class strings (no `{% set cx %}`) |
+| [`vi_define_attrs` / `vi_attrs`](vi-attrs.md) | function | Bind/resolve nest attribute bags (no `{% set attrs %}`) |
 | `vi_merge_deep` | filter | Deep array merge (utility; prefer `replace_recursive` for classes) |
+
+Aliases: `vi_cva` / `vi_cva_from_file` → `vi_define_cva`.
 
 ## Removed
 
-`vi_define_classes`, `vi_attr_classes`, and `vi_classes` were removed after the UX component migration. Use [UX components](../conventions/ux-components.md) (`cva` / [`vi_cva`](vi-cva.md) + `attributes`) instead.
+- `{% set cx %}` / `{% set classes %}` / `{% set attrs %}` as the primary API
+- Standalone `vi_define_classes` (folded into `vi_define_cva` export list)
+- Legacy pre-UX `vi_attr_classes` / map-style class APIs
 
 ## Implementation
 

@@ -6,11 +6,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 {% block content %}
     <twig:ViewsTheme:Button
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
         {{ ...attributes.defaults({
             type: 'link',
             href: href,

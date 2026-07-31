@@ -6,18 +6,15 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-cookie-configuration-group offcanvas-cookie-group border-bottom py-3' },
     entries: { base: 'vi-cookie-configuration-group__entries offcanvas-cookie-entries d-flex flex-column' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    entries: attributes.nested('entries'),
-} %}
+{% do vi_define_attrs(['entries']) %}
 
 {% block cookie_configuration_group %}
     {% if cookieGroup.cookie is defined or cookieGroup.entries is defined %}
-        <div {{ attributes }} class="{{ cx.root.apply() }}">
+        <div {{ attributes }} class="{{ vi_class('root') }}">
             {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-parent.html.twig' with {
                 parent: cookieGroup,
             } only %}
@@ -27,7 +24,7 @@
             {% endif %}
 
             {% if cookieGroup.entries is not empty or cookieGroup.snippet_description is defined %}
-                <div {{ attrs.entries }} class="{{ cx.entries.apply() }}">
+                <div {{ vi_attrs('entries') }} class="{{ vi_class('entries') }}">
                     {% for entry in cookieGroup.entries %}
                         {% sw_include '@Storefront/storefront/layout/cookie/cookie-configuration-child.html.twig' with {
                             child: entry,

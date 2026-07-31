@@ -3,11 +3,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <twig:ViewsTheme:Dropdown
-    class="{{ cx.root.apply() }}"
-    toggle:class="{{ cx.toggle.apply() }}"
+    class="{{ vi_class('root') }}"
+    toggle:class="{{ vi_class('toggle') }}"
     {{ ...attributes.defaults({
         placement: 'bottom-end',
         'toggle:icon': 'user',

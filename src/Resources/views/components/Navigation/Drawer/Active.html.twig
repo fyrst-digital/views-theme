@@ -4,7 +4,7 @@
 %}
 
 {% set name = category.translated.name %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <a
     {{ attributes.defaults({
@@ -12,7 +12,7 @@
         title: name,
         target: category_linknewtab(category) ? '_blank' : null,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {{ name }}
 </a>

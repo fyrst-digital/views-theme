@@ -1,20 +1,11 @@
 {% if visible %}
-    {% set cx = vi_cva_from_file(cva) %}
-    {% set classes = {
-        root: cx.root.apply(),
-        toggle: cx.toggle.apply(),
-        label: cx.label.apply(),
-        symbol: cx.symbol.apply(),
-        caret: cx.caret.apply(),
-    } %}
-    {% set attrs = {
-        toggle: attributes.nested('toggle'),
-    } %}
+    {% do vi_define_cva(cva, ['root', 'toggle', 'label', 'symbol', 'caret']) %}
+    {% do vi_define_attrs(['toggle']) %}
     {% set toggleAriaLabel = 'header.currencyTrigger'|trans({ '%currency%': ariaName })|striptags %}
     {% set anchorName = '--' ~ id %}
 
     <twig:ViewsTheme:Dropdown
-        class="{{ classes.root }}"
+        class="{{ vi_class('root') }}"
         :id="id"
         {{ ...attributes.defaults({
             placement: placement,
@@ -22,9 +13,9 @@
     >
         <twig:block name="toggle">
             <twig:ViewsTheme:Button
-                class="{{ classes.toggle }}"
-                label:class="{{ classes.label }}"
-                {{ ...attrs.toggle.defaults({
+                class="{{ vi_class('toggle') }}"
+                label:class="{{ vi_class('label') }}"
+                {{ ...vi_attrs('toggle').defaults({
                     type: 'button',
                     color: 'none',
                     size: 'sm',
@@ -40,12 +31,12 @@
             >
                 <twig:block name="prepend">
                     {% if showSymbol and currencySymbol %}
-                        <span class="{{ classes.symbol }}" aria-hidden="true">{{ currencySymbol }}</span>
+                        <span class="{{ vi_class('symbol') }}" aria-hidden="true">{{ currencySymbol }}</span>
                     {% endif %}
                 </twig:block>
 
                 <twig:block name="append">
-                    {{ vi_icon('caret-down', { class: classes.caret }) }}
+                    {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
                 </twig:block>
             </twig:ViewsTheme:Button>
         </twig:block>

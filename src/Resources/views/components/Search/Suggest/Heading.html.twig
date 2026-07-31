@@ -4,21 +4,19 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    total: attributes.nested('total'),
-} %}
+{% do vi_define_attrs(['total']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {{ title }}
     {% if total %}
         <span
-            {{ attrs.total }}
-            class="{{ cx.total.apply() }}"
+            {{ vi_attrs('total') }}
+            class="{{ vi_class('total') }}"
         >
             ({{ total }})
         </span>

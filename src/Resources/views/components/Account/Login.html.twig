@@ -9,12 +9,8 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    description: attributes.nested('description'),
-    username: attributes.nested('username'),
-    password: attributes.nested('password'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['description', 'username', 'password']) %}
 
 {% set loginId = 'vi-login-' ~ random() %}
 
@@ -24,7 +20,7 @@
         method: 'post',
         'data-form-handler': 'true',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -63,8 +59,8 @@
     {% block description %}
         {% if description is not empty %}
             <div
-                {{ attrs.description }}
-                class="{{ cx.description.apply() }}"
+                {{ vi_attrs('description') }}
+                class="{{ vi_class('description') }}"
             >
                 {{ description }}
             </div>
@@ -73,8 +69,8 @@
 
     {% block username %}
         <twig:ViewsTheme:Form:Input
-            class="{{ cx.username.apply() }}"
-            {{ ...attrs.username.defaults({
+            class="{{ vi_class('username') }}"
+            {{ ...vi_attrs('username').defaults({
                 type: 'email',
                 id: loginId ~ '-mail',
                 name: 'username',
@@ -89,8 +85,8 @@
 
     {% block password %}
         <twig:ViewsTheme:Form:Input
-            class="{{ cx.password.apply() }}"
-            {{ ...attrs.password.defaults({
+            class="{{ vi_class('password') }}"
+            {{ ...vi_attrs('password').defaults({
                 type: 'password',
                 id: loginId ~ '-password',
                 name: 'password',

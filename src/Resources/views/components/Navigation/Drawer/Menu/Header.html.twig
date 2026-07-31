@@ -4,30 +4,24 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    start: attributes.nested('start'),
-    back: attributes.nested('back'),
-    showAll: attributes.nested('showAll'),
-    end: attributes.nested('end'),
-    active: attributes.nested('active'),
-} %}
+{% do vi_define_attrs(['start', 'back', 'showAll', 'end', 'active']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block start %}
             <div
-                {{ attrs.start }}
-                class="{{ cx.start.apply() }}"
+                {{ vi_attrs('start') }}
+                class="{{ vi_class('start') }}"
             >        
                 <twig:ViewsTheme:Navigation:Drawer:Back
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    {{ ...attrs.back.defaults({
+                    {{ ...vi_attrs('back').defaults({
                         showLabel: false,
                         category: category,
                         menuUrl: menuUrl,
@@ -36,7 +30,7 @@
                 <twig:ViewsTheme:Navigation:Drawer:ShowAll
                     class="btn btn-sm"
                     icon:class="icon-size-2"
-                    {{ ...attrs.showAll.defaults({
+                    {{ ...vi_attrs('showAll').defaults({
                         showLabel: false,
                         menuUrl: menuUrl,
                     }).all() }}
@@ -45,12 +39,12 @@
         {% endblock %}
         {% block end %}
             <div
-                {{ attrs.end }}
-                class="{{ cx.end.apply() }}"
+                {{ vi_attrs('end') }}
+                class="{{ vi_class('end') }}"
             >       
                 <twig:ViewsTheme:Navigation:Drawer:Active
                     class="btn btn-sm"
-                    {{ ...attrs.active.defaults({
+                    {{ ...vi_attrs('active').defaults({
                         category: category,
                     }).all() }}
                 />

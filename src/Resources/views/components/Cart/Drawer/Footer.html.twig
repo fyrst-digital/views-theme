@@ -3,24 +3,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva, ['label', 'root', 'summary', 'summaryNote']) %}
 {% set cart = page.cart %}
-{% set classes = {
-    summaryNote: cx.summaryNote.apply()
-} %}
-{% set attrs = {
-    label: attributes.nested('label'),
-    summaryNote: attributes.nested('summaryNote'),
-} %}
+{% do vi_define_attrs(['label', 'summaryNote']) %}
 
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Cart:Drawer:Footer',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block summary %}
-        <div class="{{ cx.summary.apply() }}">
+        <div class="{{ vi_class('summary') }}">
             <twig:ViewsTheme:Cart:Summary 
                 :summary="cart"
                 :showGrandTotal="false"
@@ -48,7 +42,7 @@
                                 value:class="fw-medium"
                             >
                                 <twig:block name="label">
-                                    <dt {{ attrs.label }} class="{{ cx.label.apply() }}">
+                                    <dt {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
                                         <twig:ViewsTheme:Cart:ShippingCalculation:Open
                                             label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
                                         />
@@ -61,8 +55,8 @@
             </twig:ViewsTheme:Cart:Summary>
 
             <div
-                {{ attrs.summaryNote.defaults({}) }}
-                class="{{ classes.summaryNote }}">
+                {{ vi_attrs('summaryNote').defaults({}) }}
+                class="{{ vi_class('summaryNote') }}">
                 {{ 'viewsTheme.cart.summaryNote'|trans|sw_sanitize }}
                 {% if summary.price.taxStatus == 'gross' %}
                     {{ 'general.grossTaxInformation'|trans|sw_sanitize }}

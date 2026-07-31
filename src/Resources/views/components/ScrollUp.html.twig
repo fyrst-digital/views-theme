@@ -4,7 +4,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-scroll-up scroll-up-container position-fixed end-0 bottom-0' },
 }|replace_recursive(cva)) %}
 
@@ -13,7 +13,7 @@
         {{ attributes.defaults({
             'data-scroll-up': 'true',
         }) }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         <div class="scroll-up-button js-scroll-up-button">
             <button type="submit" class="btn btn-primary rounded-pill p-3" aria-hidden="true">

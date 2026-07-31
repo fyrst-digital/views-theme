@@ -8,19 +8,13 @@
     ? 'collapse multi-collapse show product-detail-review-form'
     : 'collapse multi-collapse' %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     listContent: { base: 'product-detail-review-list-content' },
     formContainer: { base: formCollapseClass },
     form: { base: 'product-detail-review-form' },
     login: { base: 'product-detail-review-login' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    listContent: attributes.nested('listContent'),
-    formContainer: attributes.nested('formContainer'),
-    form: attributes.nested('form'),
-    login: attributes.nested('login'),
-} %}
+{% do vi_define_attrs(['form', 'formContainer', 'listContent', 'login']) %}
 
 {% block component_review_alert %}
     {% if ratingSuccess == 1 %}
@@ -45,7 +39,7 @@
 
 {% block component_review_list_content %}
     {% for review in reviews %}
-        <div {{ attrs.listContent }} class="{{ cx.listContent.apply() }}">
+        <div {{ vi_attrs('listContent') }} class="{{ vi_class('listContent') }}">
             {% component 'ViewsTheme:Review:Item' with { review: review } %}{% endcomponent %}
         </div>
     {% endfor %}
@@ -53,17 +47,17 @@
 
 {% block component_review_form_container %}
     <div
-        {{ attrs.formContainer.defaults({
+        {{ vi_attrs('formContainer').defaults({
             id: 'review-form',
         }) }}
-        class="{{ cx.formContainer.apply() }}"
+        class="{{ vi_class('formContainer') }}"
     >
         {% if context.customer and not context.customer.guest %}
-            <div {{ attrs.form }} class="{{ cx.form.apply() }}">
+            <div {{ vi_attrs('form') }} class="{{ vi_class('form') }}">
                 {% component 'ViewsTheme:Review:Form' %}{% endcomponent %}
             </div>
         {% else %}
-            <div {{ attrs.login }} class="{{ cx.login.apply() }}">
+            <div {{ vi_attrs('login') }} class="{{ vi_class('login') }}">
                 {% sw_include '@Storefront/storefront/component/review/review-login.html.twig' %}
             </div>
         {% endif %}

@@ -8,13 +8,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-cart-summary d-grid align-items-baseline' },
 }|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block prepend %}{% endblock %}

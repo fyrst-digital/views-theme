@@ -1,170 +1,102 @@
-# `vi_cva` / `vi_cva_from_file`
+# `vi_define_cva` / `vi_class`
 
-Twig functions that map a multi-slot CVA config to bound slots and pull attribute class extras. Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`.
+Bind CVA config and resolve applied class strings. **No** `{% set cx %}` — use `{% do %}` + `vi_class`.
 
-Uses [`Twig\Extra\Html\Cva`](https://twig.symfony.com/html_cva) from `twig/html-extra` (not the deprecated Symfony UX `cva` / `Symfony\UX\TwigComponent\CVA`).
+Implemented in `src/Twig/ViUtilities.php` / `src/Twig/ViCvaSlot.php`. Uses [`Twig\Extra\Html\Cva`](https://twig.symfony.com/html_cva).
+
+Nest attribute bags stay separate: [`vi_define_attrs` / `vi_attrs`](vi-attrs.md).
 
 ## Signatures
 
 ```twig
-{% set cx = vi_cva(config) %}
-{% set cx = vi_cva(config, attributes) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_cva(cva, ['root', 'toggle', 'label']) %}
+{% do vi_define_cva({ root: { base: '…' } }) %}
+{% do vi_define_cva(cva, { file: 'Alert', classes: ['root'] }) %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set cx = vi_cva_from_file(cva, attributes) %}
-{% set cx = vi_cva_from_file(cva, '@ViewsTheme/components/Alert.cva.twig') %}
-{% set cx = vi_cva_from_file(cva, 'Alert') %}
+{{ vi_class('root') }}
+{{ vi_class('root', { size: size, color: color }) }}
 ```
 
-| Function | Description |
-|----------|-------------|
-| `vi_cva` | Inline config map + attribute binding |
-| `vi_cva_from_file` | Load co-located / explicit `.cva.twig`, merge `cva` overrides, then same binding as `vi_cva` |
+| Call | Role |
+|------|------|
+| `vi_define_cva(…)` | Load/bind CVA, strip `slot:class`, export slots for `vi_class` (returns `''`) |
+| `vi_class('slot')` | Exported slot → `apply()` |
+| `vi_class('slot', { … })` | → `apply(variants)` |
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `config` | `array` | Slot map: each key is a DOM slot (`root`, `label`, …) |
-| `cva` | `array` | Caller overrides (deep-merged via `array_replace_recursive`) |
-| `attributes` | `ComponentAttributes` | Optional; defaults to component `attributes` from context |
-| template ref (2nd arg) | `string` | Optional explicit `.cva.twig` path, `.html.twig` sibling, or short name (`Alert`, `Product/Box`) |
+Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name).
 
-Returns `array<string, ViCvaSlot>`. Updates context `attributes` so nested `slot:class` keys are stripped after binding.
+## Config source (1st arg)
 
-## Prefer file-based defaults
+1. Sibling `Name.cva.twig` when present → load, deep-merge 1st arg as **overrides** (`cva` prop).
+2. Else 1st arg is a **full inline** slot config map (small components).
+3. Optional explicit file via 2nd-arg options `{ file: 'Alert' }` or string path.
 
-For multi-slot or variant-heavy components, keep defaults in a **sibling** file:
+## Class export (2nd arg)
 
-```text
-Alert.html.twig
-Alert.cva.twig
-Product/Box.html.twig
-Product/Box.cva.twig
-```
+| 2nd arg | Behavior |
+|---------|----------|
+| omitted | Export **all** slots |
+| `['root', 'toggle']` | Export only those names (safer across nested hosts) |
+| `{ classes: […], file?: '…' }` | Options bag |
+
+Exported slots are stored on the UX **component stack** (and context fallback). `vi_class` walks **current → parents** (nearest wins).
+
+**Same-name rule:** if parent and child both export `toggle`, the nearer frame wins. Export only slots needed for nested `<twig:block>` use when names collide with a host (e.g. `Dropdown`).
+
+**Export list must cover every `vi_class('slot')` in the template.** A narrow list that omits `root` / layout slots yields empty class strings and broken layout. Prefer omit the list (export all) unless you need clash control.
+
+## Variants
+
+Always at the **use site**:
 
 ```twig
-{# Alert.html.twig #}
+{% do vi_define_cva(cva, ['root', 'link']) %}
+class="{{ vi_class('link', { level: level, active: isActive }) }}"
+```
+
+Do **not** bake variants into `vi_define_cva`.
+
+## Example
+
+```twig
 {% props cva = {} %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva, ['root', 'field', 'submit']) %}
+{% do vi_define_attrs(['field', 'submit']) %}
+
+<form {{ attributes.defaults({…}) }} class="{{ vi_class('root') }}">
+    <twig:ViewsTheme:Form:Input:Group
+        class="{{ vi_class('field') }}"
+        {{ ...vi_attrs('field').defaults({…}).all() }}
+    >
+        <twig:block name="append">
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('submit') }}"
+                {{ ...vi_attrs('submit').defaults({ type: 'submit' }).all() }}
+            />
+        </twig:block>
+    </twig:ViewsTheme:Form:Input:Group>
+</form>
 ```
 
-Auto-resolution: caller `Name.html.twig` → sibling `Name.cva.twig` (via UX component stack, else render backtrace). Tiny maps may stay inline with `vi_cva`.
+## `.cva.twig` format
 
-### `.cva.twig` format
-
-A single Twig **hash expression** (not a full template). Optional `{# comments #}` only.
+Single Twig **hash expression** (optional `{# comments #}`). Evaluated with component context:
 
 ```twig
-{# QuantityInput.cva.twig #}
 {
     root: {
-        base: 'vi-quantity-input input-group …',
+        base: 'vi-box layout-' ~ layout,
         variants: {
-            size: { sm: 'input-group-sm' },
+            size: { sm: '…' },
         },
     },
-    decrease: { base: 'vi-quantity-input__decrease …' },
-    input: { base: '…' },
+    content: { base: 'vi-box__content' },
 }
 ```
-
-Evaluated with the **component context**, so dynamic bases work:
-
-```twig
-{# Product/Box.cva.twig #}
-{
-    root: { base: 'vi-product-box layout-' ~ layout },
-    content: { base: 'vi-product-box__content' },
-}
-```
-
-## Slot config shape
-
-```twig
-{
-    root: {
-        base: 'vi-header …',
-        variants: {
-            size: { md: 'container-md' }
-        },
-        compoundVariants: [],   {# optional #}
-        defaultVariants: {},    {# optional #}
-    },
-    label: {
-        base: 'vi-header__label',
-        variants: { size: { md: 'label-md' } }
-    }
-}
-```
-
-Keys match CVA options: `base`, `variants`, `compoundVariants`, `defaultVariants`.
-
-## Attribute mapping
-
-| Slot | Extra classes from |
-|------|--------------------|
-| `root` | `class="…"` → `attributes.render('class')` |
-| other (`label`, …) | `label:class="…"` → nested class, then removed from attributes bag |
-
-Call `vi_cva` / `vi_cva_from_file` **before** rendering `{{ attributes }}` so root `class` is consumed.
-
-## Usage
-
-### Inline (small components)
-
-```twig
-{% props
-    size = 'md',
-    cva = {},
-%}
-
-{% set cx = vi_cva({
-    root: {
-        base: 'vi-page-header',
-        variants: { size: { md: 'container-md' } },
-    },
-    label: {
-        base: 'vi-page-header__label',
-        variants: { size: { md: 'label-md' } },
-    },
-}|replace_recursive(cva)) %}
-
-<div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
-    <label class="{{ cx.label.apply({ size: size }) }}">…</label>
-</div>
-```
-
-### File-based (default for larger maps)
-
-```twig
-{% props size = 'md', cva = {} %}
-{% set cx = vi_cva_from_file(cva) %}
-
-<div {{ attributes }} class="{{ cx.root.apply({ size: size }) }}">
-    …
-</div>
-```
-
-### Caller overrides
-
-```twig
-{# Deep-merge CVA config #}
-<twig:ViewsTheme:Page:Header :cva="{ root: { base: 'header' } }" />
-
-{# Extra HTML classes #}
-<twig:ViewsTheme:Page:Header class="mt-2" label:class="fw-bold" />
-```
-
-### `ViCvaSlot`
-
-| Method | Description |
-|--------|-------------|
-| `apply(recipes = {})` | Resolve variants + bound attribute classes → class string |
-| string cast | Same as `apply({})` |
-
-Variant **values** stay explicit in `.apply({ … })` (component props). Only config + attribute classes are auto-mapped.
 
 ## Related
 
-- [CSS class API](../conventions/css-classes.md)
+- [vi-attrs](vi-attrs.md) — nest bags
 - [UX components](../conventions/ux-components.md)
-- Shopware `replace_recursive` for deep prop merge (prefer over `vi_merge_deep`) when using inline `vi_cva`
+- [CSS class API](../conventions/css-classes.md)

@@ -2,7 +2,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-header-action-search' },
 }|replace_recursive(cva)) %}
 
@@ -15,7 +15,7 @@
         'aria-controls': 'searchCollapse',
         'aria-label': 'header.searchButton'|trans|striptags,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {{ vi_icon('magnifying-glass') }}
 </button>

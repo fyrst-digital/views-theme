@@ -4,10 +4,10 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <twig:ViewsTheme:Button
-    class="{{ cx.root.apply({ size: size }) }}"
+    class="{{ vi_class('root', { size: size }) }}"
     {{ ...attributes.defaults({
         type: 'button',
         icon: 'magnifying-glass',

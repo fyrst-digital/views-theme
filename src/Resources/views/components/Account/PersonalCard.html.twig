@@ -3,31 +3,26 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-account-personal-card card account-card-personal' },
     body: { base: 'vi-account-personal-card__body card-body' },
     title: { base: 'vi-account-personal-card__title card-title' },
     actions: { base: 'vi-account-personal-card__actions card-actions' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    body: attributes.nested('body'),
-    title: attributes.nested('title'),
-    actions: attributes.nested('actions'),
-} %}
+{% do vi_define_attrs(['actions', 'body', 'title']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <div
-        {{ attrs.body }}
-        class="{{ cx.body.apply() }}"
+        {{ vi_attrs('body') }}
+        class="{{ vi_class('body') }}"
     >
         {% block title %}
             <h4
-                {{ attrs.title }}
-                class="{{ cx.title.apply() }}"
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
             >
                 {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
             </h4>
@@ -56,8 +51,8 @@
 
         {% block actions %}
             <div
-                {{ attrs.actions }}
-                class="{{ cx.actions.apply() }}"
+                {{ vi_attrs('actions') }}
+                class="{{ vi_class('actions') }}"
             >
                 {% block actions_content %}{% endblock %}
             </div>

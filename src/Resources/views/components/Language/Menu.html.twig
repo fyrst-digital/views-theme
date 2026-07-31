@@ -6,14 +6,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    list: attributes.nested('list'),
-    item: attributes.nested('item'),
-    option: attributes.nested('option'),
-    flagIcon: attributes.nested('flagIcon'),
-} %}
+{% do vi_define_attrs(['list', 'item', 'option', 'flagIcon']) %}
 
 <form
     {{ attributes.defaults({
@@ -21,13 +16,13 @@
         action: path('frontend.checkout.switch-language'),
         'data-form-add-dynamic-redirect': 'true',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <ul
-        {{ attrs.list.defaults({
+        {{ vi_attrs('list').defaults({
             'aria-label': 'header.languageList'|trans|striptags,
         }) }}
-        class="{{ cx.list.apply() }}"
+        class="{{ vi_class('list') }}"
     >
         {% for language in languages %}
             {% set isActive = language.id is same as(activeLanguageId) %}
@@ -39,16 +34,16 @@
             {% set flagCode = translationCode ? translationCode.code : null %}
             {% set flagCodeFallback = flagCode ? flagCode|split('-')|first : null %}
 
-            <li {{ attrs.item }} class="{{ cx.item.apply() }}">
+            <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                 <button
-                    {{ attrs.option.defaults({
+                    {{ vi_attrs('option').defaults({
                         type: 'submit',
                         name: 'languageId',
                         id: id ~ '-' ~ language.id,
                         value: language.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}
-                    class="{{ cx.option.apply({ active: isActive }) }}"
+                    class="{{ vi_class('option', { active: isActive }) }}"
                 >
                     {% if showFlag and flagCode %}
                         {% set flagSrc = asset('bundles/viewstheme/flags/' ~ flagCode ~ '.svg', 'asset') %}
@@ -56,8 +51,8 @@
                             ? asset('bundles/viewstheme/flags/' ~ flagCodeFallback ~ '.svg', 'asset')
                             : null %}
                         <twig:ViewsTheme:Language:Flag
-                            class="{{ cx.flagIcon.apply() }}"
-                            {{ ...attrs.flagIcon.defaults({
+                            class="{{ vi_class('flagIcon') }}"
+                            {{ ...vi_attrs('flagIcon').defaults({
                                 src: flagSrc,
                                 fallbackSrc: flagFallbackSrc,
                             }).all() }}

@@ -4,23 +4,14 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    header: attributes.nested('header'),
-    headerTitleContainer: attributes.nested('headerTitleContainer'),
-    headerTitle: attributes.nested('headerTitle'),
-    status: attributes.nested('status'),
-    orderNumber: attributes.nested('orderNumber'),
-    contextMenu: attributes.nested('contextMenu'),
-    summary: attributes.nested('summary'),
-    toggleBody: attributes.nested('toggleBody'),
-} %}
+{% do vi_define_attrs(['header', 'headerTitleContainer', 'headerTitle', 'status', 'orderNumber', 'contextMenu', 'summary', 'toggleBody']) %}
 
 {% block page_account_order_item_overview %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
 
-        <div {{ attrs.header }} class="{{ cx.header.apply() }}">
+        <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
             {% set states = [
                 ORDER_TRANSACTION_STATE_FAILED,
                 ORDER_TRANSACTION_STATE_REMINDED,
@@ -35,15 +26,15 @@
 
             {% block page_account_order_item_heading_title_container %}
 
-                <div {{ attrs.headerTitleContainer }} class="{{ cx.headerTitleContainer.apply() }}">
+                <div {{ vi_attrs('headerTitleContainer') }} class="{{ vi_class('headerTitleContainer') }}">
                     {% block page_account_order_item_heading_title %}
-                        <div {{ attrs.headerTitle }} class="{{ cx.headerTitle.apply() }}">
+                        <div {{ vi_attrs('headerTitle') }} class="{{ vi_class('headerTitle') }}">
                             {{ 'account.orderHeadline'|trans|sw_sanitize }} {{ order.orderDateTime|format_date('short', locale=app.request.locale) }}
                         </div>
                     {% endblock %}
 
                     {% block page_account_order_item_status %}
-                        <div {{ attrs.status }} class="{{ cx.status.apply() }}">
+                        <div {{ vi_attrs('status') }} class="{{ vi_class('status') }}">
                             {% if isPaymentNeeded %}
                                 {% block page_account_order_item_status_badge_payment_process_needed %}
                                     {{ parent() }}
@@ -57,7 +48,7 @@
                     {% endblock %}
 
                     {% block page_account_order_item_order_number_col %}
-                        <div {{ attrs.orderNumber }} class="{{ cx.orderNumber.apply() }}">
+                        <div {{ vi_attrs('orderNumber') }} class="{{ vi_class('orderNumber') }}">
                             {% block page_account_order_item_order_number %}
                                 {{ 'account.orderNumber'|trans|sw_sanitize }} {{ order.orderNumber|sw_sanitize }}
                             {% endblock %}
@@ -69,7 +60,7 @@
             {% endblock %}
 
             {% block page_account_order_item_context_menu_col %}
-                <div {{ attrs.contextMenu }} class="{{ cx.contextMenu.apply() }}">
+                <div {{ vi_attrs('contextMenu') }} class="{{ vi_class('contextMenu') }}">
 
                     {% block page_account_order_item_context_menu %}
                         {% block page_account_order_item_context_menu_button %}
@@ -96,7 +87,7 @@
             {% endblock %}
         </div>
 
-        <div {{ attrs.summary }} class="{{ cx.summary.apply() }}">
+        <div {{ vi_attrs('summary') }} class="{{ vi_class('summary') }}">
             {% block page_account_order_item_order_table_body_col %}
                 {% block page_account_order_item_order_table_body %}
 
@@ -146,7 +137,7 @@
             {% endblock %}
         </div>
 
-        <div {{ attrs.toggleBody }} class="{{ cx.toggleBody.apply() }}">
+        <div {{ vi_attrs('toggleBody') }} class="{{ vi_class('toggleBody') }}">
             {% block page_account_order_item_order_table_body_cell_toggle_order_details_button %}
                 <button class="btn btn-light btn-sm order-hide-btn collapsed"
                     type="submit"

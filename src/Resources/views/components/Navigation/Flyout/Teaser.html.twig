@@ -6,27 +6,20 @@
 
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    link: cx.link.apply(),
-    image: cx.image.apply(),
-} %}
-{% set attrs = {
-    link: attributes.nested('link'),
-} %}
+{% do vi_define_cva(cva, ['root', 'link', 'image']) %}
+{% do vi_define_attrs(['link']) %}
 
 <div
     {{ attributes }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     {% if isFolder %}
-        <div class="{{ classes.link }}">
+        <div class="{{ vi_class('link') }}">
             {% sw_thumbnails 'navigation-flyout-teaser-image' with {
                 media: image,
                 sizes: { default: '320px' },
                 attributes: {
-                    class: classes.image,
+                    class: vi_class('image'),
                     alt: (image.translated.alt ?: name),
                     title: (image.translated.title ?: name),
                     loading: 'lazy',
@@ -35,18 +28,18 @@
         </div>
     {% else %}
         <a
-            {{ attrs.link.defaults({
+            {{ vi_attrs('link').defaults({
                 href: category_url(category),
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,
             }) }}
-            class="{{ classes.link }}"
+            class="{{ vi_class('link') }}"
         >
             {% sw_thumbnails 'navigation-flyout-teaser-image' with {
                 media: image,
                 sizes: { default: '320px' },
                 attributes: {
-                    class: classes.image,
+                    class: vi_class('image'),
                     alt: (image.translated.alt ?: name),
                     title: (image.translated.title ?: name),
                     loading: 'lazy',

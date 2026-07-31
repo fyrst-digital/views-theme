@@ -2,7 +2,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 {% set flashes = app.flashes %}
 
 <div
@@ -10,7 +10,7 @@
         'data-component': 'ViewsTheme:Cart:Drawer:Flashes',
         hidden: flashes is empty,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% for type, messages in flashes %}

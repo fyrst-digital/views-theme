@@ -9,38 +9,29 @@
 {% set name = category.translated.name %}
 {% set isFolder = category.type == 'folder' %}
 {% set children = item.children %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply({ level: level }),
-    link: cx.link.apply({ level: level }),
-    list: cx.list.apply(),
-    child: cx.child.apply(),
-} %}
-{% set attrs = {
-    link: attributes.nested('link'),
-    list: attributes.nested('list'),
-} %}
+{% do vi_define_cva(cva, ['root', 'link', 'list', 'child']) %}
+{% do vi_define_attrs(['link', 'list']) %}
 
 <li
     {{ attributes }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root', { level: level }) }}"
 >
     {% if isFolder %}
         <span
-            {{ attrs.link }}
-            class="{{ classes.link }}"
+            {{ vi_attrs('link') }}
+            class="{{ vi_class('link', { level: level }) }}"
             title="{{ name }}"
         >
             {{ name }}
         </span>
     {% else %}
         <a
-            {{ attrs.link.defaults({
+            {{ vi_attrs('link').defaults({
                 href: category_url(category),
                 title: name,
                 target: category_linknewtab(category) ? '_blank' : null,
             }) }}
-            class="{{ classes.link }}"
+            class="{{ vi_class('link', { level: level }) }}"
         >
             {{ name }}
         </a>
@@ -48,8 +39,8 @@
 
     {% if children|length > 0 and level < maxDepth %}
         <ul
-            {{ attrs.list }}
-            class="{{ classes.list }}"
+            {{ vi_attrs('list') }}
+            class="{{ vi_class('list') }}"
         >
             {% for child in children %}
                 {% set childCat = child.category %}
@@ -58,7 +49,7 @@
 
                 {% if not childSkipped %}
                     <twig:ViewsTheme:Navigation:Flyout:Item
-                        class="{{ classes.child }}"
+                        class="{{ vi_class('child') }}"
                         :item="child"
                         :level="level + 1"
                         :maxDepth="maxDepth"

@@ -10,15 +10,10 @@
 {% set href = (isAlternateRoot or category.parentId == context.salesChannel.navigationCategoryId)
     ? menuUrl
     : path('frontend.views-theme.navigation.drawer.menu', { navigationId: category.parentId }) %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    icon: cx.icon.apply(),
-    label: cx.label.apply(),
-} %}
+{% do vi_define_cva(cva, ['root', 'icon', 'label']) %}
 
 <twig:ViewsTheme:Navigation:Drawer:Drill
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         href: href,
         title: 'general.back'|trans|striptags,
@@ -26,10 +21,10 @@
     }).all() }}
 >
     {{ vi_icon('caret-left', {
-        class: classes.icon
+        class: vi_class('icon')
     }) }}
     {% if showLabel is same as(true) %}
-        <span class="{{ classes.label }}">
+        <span class="{{ vi_class('label') }}">
             {{ 'general.back'|trans|sw_sanitize }}
         </span>
     {% endif %}

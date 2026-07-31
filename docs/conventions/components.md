@@ -8,8 +8,8 @@ Full guide: [UX Twig components](ux-components.md).
 
 1. PascalCase path → `<twig:ViewsTheme:…>`
 2. Inputs: anonymous → `{% props %}` + simple defaults; heavy view-model → [class component](ux-components.md#class-components-php-backed) (`Name.php` + `#[PostMount]`). No wasteful `resolved*` — [Props](ux-components.md#props)
-3. `vi_cva_from_file(cva)` (sibling `Name.cva.twig`) or inline `vi_cva({ … }|replace_recursive(cva))`; prop `cva = {}`; BEM `vi-*` roots
-4. Attrs: after `vi_cva*`, pre-bind nests into **`attrs`** (`slot: attributes.nested('slot')`); own root → `attributes.defaults`; DOM nest → `attrs.slot` / `attrs.slot.defaults`; overridable child → `class="{{ classes.slot }}"` + `{{ ...attrs.slot.defaults({…}).all() }}` (**never** `class` in defaults; quoted nested keys e.g. `'button:label': false`; no bare `attributes.nested` / `parentAttributes`) — [ux-components.md § Attributes](ux-components.md#attributes)
+3. `{% do vi_define_cva(cva) %}` or `{% do vi_define_cva(cva, ['root', …]) %}` (sibling `.cva.twig` + prop merge, or inline map); prop `cva = {}`; BEM `vi-*` roots — [vi-cva.md](../twig/vi-cva.md)
+4. `{% do vi_define_attrs(['slot', …]) %}` when using nests. Own root → `attributes.defaults`; DOM/child → `vi_class('slot')` + `vi_attrs('slot').defaults({…})` (**never** `class` in defaults; no `{% set cx/attrs %}`) — [vi-attrs.md](../twig/vi-attrs.md) · [ux-components.md](ux-components.md#attributes)
 5. Short `{% block %}` names
 6. Interactive root: `data-component="ViewsTheme:…"` **only** with co-located `<Name>.js` (no `data-ref` / `data-vi`)
 7. Co-located `<Name>.js` (`ShopwareComponent`) for every `data-component`

@@ -2,7 +2,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid-alert alert alert-danger d-none' },
 }|replace_recursive(cva)) %}
 
@@ -10,5 +10,5 @@
     {{ attributes.defaults({
         role: 'alert',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 ></div>

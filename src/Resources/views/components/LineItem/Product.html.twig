@@ -8,15 +8,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    cover: attributes.nested('cover'),
-    content: attributes.nested('content'),
-    header: attributes.nested('header'),
-    body: attributes.nested('body'),
-    footer: attributes.nested('footer'),
-} %}
+{% do vi_define_attrs(['cover', 'content', 'header', 'body', 'footer']) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
 {% set productLink = lineItem.type is same as('product')
@@ -25,14 +19,14 @@
 
 <{{ tag|raw }}
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block image %}
         <twig:ViewsTheme:Product:Cover
-            class="{{ cx.image.apply() }}"
+            class="{{ vi_class('image') }}"
             image:class="w-100 h-100 object-fit-cover"
             placeholder:class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary text-body-secondary"
-            {{ ...attrs.cover.defaults({
+            {{ ...vi_attrs('cover').defaults({
                 id: lineItem.referencedId,
                 name: label,
                 cover: lineItem.cover ?? null,
@@ -46,10 +40,10 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...attrs.content.all() }}
+            {{ ...vi_attrs('content').all() }}
         >
             <twig:ViewsTheme:LineItem:Header
-                {{ ...attrs.header.defaults({
+                {{ ...vi_attrs('header').defaults({
                     lineItem: lineItem,
                     label: label,
                     productLink: productLink,
@@ -59,14 +53,14 @@
             />
 
             <twig:ViewsTheme:LineItem:Body
-                {{ ...attrs.body.defaults({
+                {{ ...vi_attrs('body').defaults({
                     lineItem: lineItem,
                     deliveries: deliveries,
                 }).all() }}
             />
 
             <twig:ViewsTheme:LineItem:Footer
-                {{ ...attrs.footer.defaults({
+                {{ ...vi_attrs('footer').defaults({
                     lineItem: lineItem,
                     showPrice: showPrice,
                     nestingLevel: nestingLevel,

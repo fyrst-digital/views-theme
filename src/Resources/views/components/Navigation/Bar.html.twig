@@ -6,14 +6,8 @@
 %}
 
 {% set flyoutEnabled = navigationDepth > 1 %}
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    list: cx.list.apply(),
-} %}
-{% set attrs = {
-    list: attributes.nested('list'),
-} %}
+{% do vi_define_cva(cva, ['root', 'list']) %}
+{% do vi_define_attrs(['list']) %}
 
 <nav
     {{ attributes.defaults({
@@ -23,11 +17,11 @@
             widthAnchor: widthAnchor,
         }|json_encode,
     }) }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     <ul
-        {{ attrs.list }}
-        class="{{ classes.list }}"
+        {{ vi_attrs('list') }}
+        class="{{ vi_class('list') }}"
     >
         {% for treeItem in navigation.tree %}
             {% set category = treeItem.category %}

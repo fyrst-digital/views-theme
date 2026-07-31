@@ -6,11 +6,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <span
     {{ attributes }}
-    class="{{ cx.root.apply({ color: color, size: size, pill: pill }) }}"
+    class="{{ vi_class('root', { color: color, size: size, pill: pill }) }}"
 >
     {% block content %}
         {% if label is not null %}

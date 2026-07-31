@@ -4,18 +4,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    row: attributes.nested('row'),
-    cellQuantity: attributes.nested('cellQuantity'),
-    cellPrice: attributes.nested('cellPrice'),
-    cellReference: attributes.nested('cellReference'),
-} %}
+{% do vi_define_attrs(['row', 'cellQuantity', 'cellPrice', 'cellReference']) %}
 
 <table
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block head %}
         <tr>
@@ -33,13 +28,13 @@
             {% set isRegulationPrice = price.regulationPrice != null %}
 
             <tr
-                {{ attrs.row }}
-                class="{{ cx.row.apply() }}"
+                {{ vi_attrs('row') }}
+                class="{{ vi_class('row') }}"
             >
                 {% block quantity %}
                     <td
-                        {{ attrs.cellQuantity }}
-                        class="{{ cx.cellQuantity.apply() }}"
+                        {{ vi_attrs('cellQuantity') }}
+                        class="{{ vi_class('cellQuantity') }}"
                     >
                         {% if loop.last %}
                             {{ 'detail.priceDataInfoFrom'|trans|sw_sanitize }}
@@ -52,8 +47,8 @@
 
                 {% block price %}
                     <td
-                        {{ attrs.cellPrice }}
-                        class="{{ cx.cellPrice.apply() }}"
+                        {{ vi_attrs('cellPrice') }}
+                        class="{{ vi_class('cellPrice') }}"
                     >
                         <span>
                             {% if price.listprice and isListPrice %}
@@ -73,8 +68,8 @@
                 {% block reference %}
                     {% if price.referencePrice is not null %}
                         <td
-                            {{ attrs.cellReference }}
-                            class="{{ cx.cellReference.apply() }}"
+                            {{ vi_attrs('cellReference') }}
+                            class="{{ vi_class('cellReference') }}"
                         >
                             {{ price.referencePrice.price|currency }} /
                             {{ price.referencePrice.referenceUnit }}

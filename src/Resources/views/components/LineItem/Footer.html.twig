@@ -6,23 +6,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    price: attributes.nested('price'),
-    quantity: attributes.nested('quantity'),
-    quantityInput: attributes.nested('quantityInput'),
-    remove: attributes.nested('remove'),
-} %}
+{% do vi_define_attrs(['price', 'quantity', 'quantityInput', 'remove']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block price %}
         <twig:ViewsTheme:LineItem:Price
-            class="{{ cx.price.apply() }}"
-            {{ ...attrs.price.defaults({
+            class="{{ vi_class('price') }}"
+            {{ ...vi_attrs('price').defaults({
                 lineItem: lineItem,
                 showPrice: showPrice,
             }).all() }}
@@ -31,11 +26,11 @@
 
     {% block quantity %}
         <div
-            {{ attrs.quantity }}
-            class="{{ cx.quantity.apply() }}"
+            {{ vi_attrs('quantity') }}
+            class="{{ vi_class('quantity') }}"
         >
             <twig:ViewsTheme:LineItem:Quantity
-                {{ ...attrs.quantityInput.defaults({
+                {{ ...vi_attrs('quantityInput').defaults({
                     lineItem: lineItem,
                     nestingLevel: nestingLevel,
                 }).all() }}
@@ -44,8 +39,8 @@
             {% block remove %}
                 {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
                     <twig:ViewsTheme:LineItem:Remove
-                        class="{{ cx.remove.apply() }}"
-                        {{ ...attrs.remove.defaults({
+                        class="{{ vi_class('remove') }}"
+                        {{ ...vi_attrs('remove').defaults({
                             lineItem: lineItem,
                         }).all() }}
                     />

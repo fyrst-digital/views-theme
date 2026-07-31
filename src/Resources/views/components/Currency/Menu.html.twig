@@ -5,14 +5,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    list: attributes.nested('list'),
-    item: attributes.nested('item'),
-    option: attributes.nested('option'),
-    symbol: attributes.nested('symbol'),
-} %}
+{% do vi_define_attrs(['list', 'item', 'option', 'symbol']) %}
 
 <form
     {{ attributes.defaults({
@@ -20,29 +15,29 @@
         action: path('frontend.checkout.configure'),
         'data-form-add-dynamic-redirect': 'true',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <ul
-        {{ attrs.list.defaults({
+        {{ vi_attrs('list').defaults({
             'aria-label': 'header.currencyList'|trans|striptags,
         }) }}
-        class="{{ cx.list.apply() }}"
+        class="{{ vi_class('list') }}"
     >
         {% for currency in currencies %}
             {% set isActive = currency.id is same as(activeCurrencyId) %}
 
-            <li {{ attrs.item }} class="{{ cx.item.apply() }}">
+            <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                 <button
-                    {{ attrs.option.defaults({
+                    {{ vi_attrs('option').defaults({
                         type: 'submit',
                         name: 'currencyId',
                         id: id ~ '-' ~ currency.id,
                         value: currency.id,
                         'aria-current': isActive ? 'true' : null,
                     }) }}
-                    class="{{ cx.option.apply({ active: isActive }) }}"
+                    class="{{ vi_class('option', { active: isActive }) }}"
                 >
-                    <span {{ attrs.symbol }} class="{{ cx.symbol.apply() }}" aria-hidden="true">
+                    <span {{ vi_attrs('symbol') }} class="{{ vi_class('symbol') }}" aria-hidden="true">
                         {{ currency.symbol }}
                     </span>
                     {{ currency.translated.name }}

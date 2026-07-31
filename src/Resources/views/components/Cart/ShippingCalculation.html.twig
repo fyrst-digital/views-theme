@@ -4,18 +4,8 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    details: cx.details.apply(),
-    summary: cx.summary.apply(),
-    selection: cx.selection.apply(),
-} %}
-{% set attrs = {
-    details: attributes.nested('details'),
-    summary: attributes.nested('summary'),
-    selection: attributes.nested('selection'),
-} %}
+{% do vi_define_cva(cva, ['root', 'details', 'summary', 'selection']) %}
+{% do vi_define_attrs(['details', 'summary', 'selection']) %}
 
 <form
     {{ attributes.defaults({
@@ -27,15 +17,15 @@
             configureEvent: 'ViewsTheme:Cart:Configure',
         }|json_encode,
     }) }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     {% block panel %}
         {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
         {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
-            <details {{ attrs.details }} class="{{ classes.details }}">
+            <details {{ vi_attrs('details') }} class="{{ vi_class('details') }}">
                 <twig:ViewsTheme:Button
-                    class="{{ classes.summary }}"
-                    {{ ...attrs.summary.defaults({
+                    class="{{ vi_class('summary') }}"
+                    {{ ...vi_attrs('summary').defaults({
                         tag: 'summary',
                         label: 'checkout.shippingCosts'|trans|sw_sanitize,
                         icon: 'caret-down',
@@ -47,8 +37,8 @@
 
                 {% block selection %}
                     <twig:ViewsTheme:Cart:ShippingCalculation:Selection
-                        class="{{ classes.selection }}"
-                        {{ ...attrs.selection.defaults({
+                        class="{{ vi_class('selection') }}"
+                        {{ ...vi_attrs('selection').defaults({
                             page: page,
                             redirectTo: redirectTo,
                         }).all() }}

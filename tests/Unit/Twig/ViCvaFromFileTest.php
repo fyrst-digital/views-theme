@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Tests\Unit\Twig;
 
-use Fyrst\ViewsTheme\Twig\ViCvaSlot;
 use Fyrst\ViewsTheme\Twig\ViUtilities;
 use PHPUnit\Framework\TestCase;
 use Symfony\UX\TwigComponent\ComponentAttributes;
@@ -15,10 +14,10 @@ use Twig\Runtime\EscaperRuntime;
 
 final class ViCvaFromFileTest extends TestCase
 {
-    public function testLoadsSiblingCvaFileViaExplicitHtmlTemplate(): void
+    public function testLoadsSiblingCvaFile(): void
     {
         $twig = $this->createTwig([
-            '@ViewsTheme/components/Alert.html.twig' => '{% set cx = vi_cva_from_file(cva, _self) %}{{ cx.root.apply({ type: type }) }}',
+            '@ViewsTheme/components/Alert.html.twig' => '{% do vi_define_cva(cva) %}{{ vi_class("root", { type: type }) }}',
             '@ViewsTheme/components/Alert.cva.twig' => <<<'TWIG'
 {
     root: {
@@ -44,7 +43,7 @@ TWIG,
     public function testMergesCallerOverrides(): void
     {
         $twig = $this->createTwig([
-            'comp.html.twig' => '{% set cx = vi_cva_from_file(cva, "comp.html.twig") %}{{ cx.root.apply() }}',
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root") }}',
             'comp.cva.twig' => "{ root: { base: 'base-a' }, label: { base: 'label-a' } }",
         ]);
 
@@ -61,7 +60,7 @@ TWIG,
     public function testDynamicExpressionsUseComponentContext(): void
     {
         $twig = $this->createTwig([
-            'box.html.twig' => '{% set cx = vi_cva_from_file(cva, "box.html.twig") %}{{ cx.root.apply() }}',
+            'box.html.twig' => '{% do vi_define_cva(cva, "box.html.twig") %}{{ vi_class("root") }}',
             'box.cva.twig' => "{ root: { base: 'vi-box layout-' ~ layout } }",
         ]);
 
@@ -77,7 +76,7 @@ TWIG,
     public function testShortNameResolvesUnderViewsThemeComponents(): void
     {
         $twig = $this->createTwig([
-            'caller.html.twig' => '{% set cx = vi_cva_from_file(cva, "Alert") %}{{ cx.root.apply() }}',
+            'caller.html.twig' => '{% do vi_define_cva(cva, "Alert") %}{{ vi_class("root") }}',
             '@ViewsTheme/components/Alert.cva.twig' => "{ root: { base: 'from-short-name' } }",
         ]);
 
@@ -92,48 +91,25 @@ TWIG,
     public function testBindsRootAndNestedAttributeClasses(): void
     {
         $twig = $this->createTwig([
-            'comp.html.twig' => '{% set cx = vi_cva_from_file(cva, "comp.cva.twig") %}{{ cx.root.apply() }}|{{ cx.icon.apply() }}',
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.cva.twig") %}{{ vi_class("root") }}|{{ vi_class("icon") }}',
             'comp.cva.twig' => "{ root: { base: 'root-base' }, icon: { base: 'icon-base' } }",
         ]);
 
-        $attributes = new ComponentAttributes([
-            'class' => 'root-extra',
-            'icon:class' => 'icon-extra',
-        ], $twig->getRuntime(EscaperRuntime::class));
-
         $html = $twig->render('comp.html.twig', [
             'cva' => [],
-            'attributes' => $attributes,
+            'attributes' => new ComponentAttributes([
+                'class' => 'root-extra',
+                'icon:class' => 'icon-extra',
+            ], $twig->getRuntime(EscaperRuntime::class)),
         ]);
 
         self::assertSame('root-base root-extra|icon-base icon-extra', $html);
     }
 
-    public function testReturnsViCvaSlotMap(): void
-    {
-        $utils = new ViUtilities();
-        $twig = new Environment(new ArrayLoader([
-            'x.cva.twig' => "{ root: { base: 'r' }, label: { base: 'l' } }",
-        ]));
-        $twig->addExtension($utils);
-
-        $context = [
-            'attributes' => new ComponentAttributes([], $twig->getRuntime(EscaperRuntime::class)),
-        ];
-
-        $map = $utils->cvaFromFile($twig, $context, [], 'x.cva.twig');
-
-        self::assertArrayHasKey('root', $map);
-        self::assertArrayHasKey('label', $map);
-        self::assertInstanceOf(ViCvaSlot::class, $map['root']);
-        self::assertSame('r', $map['root']->apply());
-        self::assertSame('l', $map['label']->apply());
-    }
-
-    public function testMissingFileThrows(): void
+    public function testMissingCvaFileThrows(): void
     {
         $twig = $this->createTwig([
-            'comp.html.twig' => '{% set cx = vi_cva_from_file(cva, "missing.cva.twig") %}{{ cx.root.apply() }}',
+            'comp.html.twig' => '{% do vi_define_cva(cva, "missing.cva.twig") %}{{ vi_class("root") }}',
         ]);
 
         $this->expectException(RuntimeError::class);
@@ -148,7 +124,7 @@ TWIG,
     public function testAllowsLeadingCommentsInCvaFile(): void
     {
         $twig = $this->createTwig([
-            'comp.html.twig' => '{% set cx = vi_cva_from_file(cva, "comp.cva.twig") %}{{ cx.root.apply() }}',
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.cva.twig") %}{{ vi_class("root") }}',
             'comp.cva.twig' => "{# defaults #}\n{ root: { base: 'commented' } }\n",
         ]);
 

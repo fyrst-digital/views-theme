@@ -2,7 +2,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <button
     {{ attributes.defaults({
@@ -11,7 +11,7 @@
         'aria-label': 'general.offcanvasCloseMenu'|trans|striptags,
         title: 'general.offcanvasCloseMenu'|trans|striptags,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block icon %}
         {{ vi_icon('x') }}

@@ -4,12 +4,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 {% if showPrice is same as(true) and lineItem.payload.discountScope != 'delivery' %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {{ lineItem.price.totalPrice|currency }}
     </div>

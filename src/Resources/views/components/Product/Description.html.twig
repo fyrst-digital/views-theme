@@ -5,7 +5,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-product-description' },
 }|replace_recursive(cva)) %}
 
@@ -13,7 +13,7 @@
     {{ attributes.defaults({
         itemprop: 'description',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if outputTags is same as(true) %}
         {{ description|raw }}

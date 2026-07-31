@@ -3,10 +3,10 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid-column-number variants-grid-column-number' },
 }|replace_recursive(cva)) %}
 
-<td {{ attributes }} class="{{ cx.root.apply() }}">
+<td {{ attributes }} class="{{ vi_class('root') }}">
     {{ variant.productNumber }}
 </td>

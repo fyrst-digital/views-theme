@@ -5,11 +5,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    button: attributes.nested('button'),
-} %}
+{% do vi_define_attrs(['button']) %}
 
 <form
     {{ attributes.defaults({
@@ -21,7 +19,7 @@
             removeEvent: 'ViewsTheme:Cart:Remove',
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
     {% if redirectParameters is not null %}
@@ -30,8 +28,8 @@
 
     {% block button %}
         <twig:ViewsTheme:Button
-            class="{{ cx.button.apply() }}"
-            {{ ...attrs.button.defaults({
+            class="{{ vi_class('button') }}"
+            {{ ...vi_attrs('button').defaults({
                 type: 'submit',
                 icon: 'trash',
                 color: 'link',

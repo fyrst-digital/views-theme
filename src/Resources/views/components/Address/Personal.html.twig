@@ -4,13 +4,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     companyToggle: { base: 'js-field-toggle-contact-type-company' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    companyToggle: attributes.nested('companyToggle'),
-} %}
+{% do vi_define_attrs(['companyToggle']) %}
 
 {% block component_address_personal_fields_salutation_title %}
   {% if config('core.loginRegistration.showSalutation') or config('core.loginRegistration.showTitleField') %}
@@ -35,7 +33,7 @@
 
   {% block component_address_personal_company_section -%}
     {% if (config('core.loginRegistration.showAccountTypeSelection') or onlyCompanyRegistration) and showCompanyFields %}
-      <div {{ attrs.companyToggle }} class="{{ cx.companyToggle.apply() }}">
+      <div {{ vi_attrs('companyToggle') }} class="{{ vi_class('companyToggle') }}">
         {% block component_address_personal_company_name %}
           {% if formViolations.getViolations('/company') is not empty %}
             {% set violationPath = '/company' %}

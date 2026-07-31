@@ -1,49 +1,32 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    container: attributes.nested('container'),
-    price: attributes.nested('price'),
-    tax: attributes.nested('tax'),
-    variations: attributes.nested('variations'),
-    actions: attributes.nested('actions'),
-} %}
+{% do vi_define_attrs(['container', 'price', 'tax', 'actions']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         
         <div
-            {{ attrs.container }}
-            class="{{ cx.container.apply() }}"
+            {{ vi_attrs('container') }}
+            class="{{ vi_class('container') }}"
             >
             {% block price %}
                 {% if showPrice is same as(true) %}
                     <twig:ViewsTheme:Product:Price
-                        class="{{ cx.price.apply() }}"
-                        {{ ...attrs.price.defaults({
+                        class="{{ vi_class('price') }}"
+                        {{ ...vi_attrs('price').defaults({
                             product: product,
                             showPrice: priceShowPrice,
+                            'unit:class': 'fs-4',
                         }).all() }}
                     />
                     {% if priceShowTaxNote %}
                         <twig:ViewsTheme:Product:Price:Tax
-                            {{ ...attrs.tax.all() }}
+                            {{ ...vi_attrs('tax').all() }}
                         />
                     {% endif %}
-                {% endif %}
-            {% endblock %}
-
-            {% block variations %}
-                {% if showVariationsBlock %}
-                    <twig:ViewsTheme:Product:Variations
-                        class="{{ cx.variations.apply() }}"
-                        {{ ...attrs.variations.defaults({
-                            product: product,
-                            variations: variations,
-                        }).all() }}
-                    />
                 {% endif %}
             {% endblock %}
         </div>
@@ -51,8 +34,8 @@
         {% block actions %}
             {% if showActions is same as(true) %}
                 <twig:ViewsTheme:Product:Box:Actions
-                    class="{{ cx.actions.apply() }}"
-                    {{ ...attrs.actions.defaults({
+                    class="{{ vi_class('actions') }}"
+                    {{ ...vi_attrs('actions').defaults({
                         product: product,
                         href: href,
                         showQuantity: showQuantity,

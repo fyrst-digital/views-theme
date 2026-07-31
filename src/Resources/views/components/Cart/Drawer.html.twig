@@ -5,16 +5,14 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    panel: attributes.nested('panel'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel']) %}
 
 {% set cart = page.cart %}
 {% set productsQuantity = cart.lineItems|length %}
 
 <twig:ViewsTheme:Drawer
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         id: 'vi-cart-drawer',
         side: 'end',
@@ -23,7 +21,7 @@
 >
     <twig:block name="panel">
         <twig:ViewsTheme:Drawer:Panel
-            {{ ...attrs.panel.defaults({
+            {{ ...vi_attrs('panel').defaults({
                 side: 'end',
             }).all() }}
         >

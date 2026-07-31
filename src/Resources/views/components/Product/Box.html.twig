@@ -1,17 +1,12 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    content: attributes.nested('content'),
-    header: attributes.nested('header'),
-    body: attributes.nested('body'),
-    footer: attributes.nested('footer'),
-} %}
+{% do vi_define_attrs(['content', 'header', 'body', 'footer']) %}
 
 <div
     {{ attributes.defaults({
         'data-product-information': { id: id, name: name, brand: brand, price: price }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block image %}
         <twig:ViewsTheme:Product:Cover
@@ -46,13 +41,13 @@
 
     {% block content %}
         <div
-            {{ attrs.content }}
-            class="{{ cx.content.apply() }}"
+            {{ vi_attrs('content') }}
+            class="{{ vi_class('content') }}"
         >
             {% block header %}
                 <twig:ViewsTheme:Product:Box:Header
-                    class="{{ cx.header.apply() }}"
-                    {{ ...attrs.header.defaults({
+                    class="{{ vi_class('header') }}"
+                    {{ ...vi_attrs('header').defaults({
                         product: product,
                         referrerCategoryId: referrerCategoryId,
                     }).all() }}
@@ -61,22 +56,22 @@
 
             {% block body %}
                 <twig:ViewsTheme:Product:Box:Body
-                    class="{{ cx.body.apply() }}"
-                    {{ ...attrs.body.defaults({
+                    class="{{ vi_class('body') }}"
+                    {{ ...vi_attrs('body').defaults({
                         product: product,
                         showDescription: showDescription,
+                        showVariations: showVariations,
                     }).all() }}
                 />
             {% endblock %}
 
             {% block footer %}
                 <twig:ViewsTheme:Product:Box:Footer
-                    class="{{ cx.footer.apply() }}"
-                    {{ ...attrs.footer.defaults({
+                    class="{{ vi_class('footer') }}"
+                    {{ ...vi_attrs('footer').defaults({
                         product: product,
                         showPrice: showPrice,
                         showActions: showActions,
-                        showVariations: showVariations,
                         priceShowPrice: priceShowPrice,
                         priceShowTaxNote: priceShowTaxNote,
                         showQuantity: false,

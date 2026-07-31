@@ -4,10 +4,8 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set attrs = {
-    alert: attributes.nested('alert'),
-} %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['alert']) %}
 
 {% set cart = page.cart %}
 
@@ -24,7 +22,7 @@
             drawerSelector: '#vi-cart-drawer',
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block flashes %}
         <twig:ViewsTheme:Cart:Drawer:Flashes />
@@ -32,12 +30,12 @@
 
     {% block alert %}
         <div
-            {{ attrs.alert.defaults({
+            {{ vi_attrs('alert').defaults({
                 role: 'alert',
                 hidden: true,
                 'data-fallback': 'error.message-default'|trans|striptags,
             }) }}
-            class="{{ cx.alert.apply() }}"
+            class="{{ vi_class('alert') }}"
         ></div>
     {% endblock %}
 

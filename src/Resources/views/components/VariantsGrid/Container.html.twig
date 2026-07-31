@@ -10,7 +10,7 @@
 {% set showPreviewColumn = config('ViewsTheme.config.variantsGridShowPreviewColumn') %}
 {% set showProductNumberColumn = config('ViewsTheme.config.variantsGridShowProductNumberColumn') %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid variants-grid-container' },
 }|replace_recursive(cva)) %}
 
@@ -20,7 +20,7 @@
         'data-load-url': path('frontend.checkout.variants-grid.load'),
         'data-parent-id': parentId,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block error %}
         <twig:ViewsTheme:VariantsGrid:Alert />

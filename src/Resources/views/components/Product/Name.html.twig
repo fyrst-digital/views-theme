@@ -8,23 +8,21 @@
 %}
 
 {% set linked = showLink is same as(true) and url is not null %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    link: attributes.nested('link'),
-} %}
+{% do vi_define_attrs(['link']) %}
 
 <{{ tag|raw }}
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if linked %}
         <a
-            {{ attrs.link.defaults({
+            {{ vi_attrs('link').defaults({
                 href: url,
                 title: name,
             }) }}
-            class="{{ cx.link.apply() }}"
+            class="{{ vi_class('link') }}"
         >
             {{ name|raw }}
         </a>

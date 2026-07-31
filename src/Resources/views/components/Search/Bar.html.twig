@@ -6,12 +6,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    input: attributes.nested('input'),
-    submit: attributes.nested('submit'),
-} %}
+{% do vi_define_attrs(['input', 'submit']) %}
 
 <form
     {{ attributes.defaults({
@@ -24,12 +21,12 @@
             delay: delay,
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block input %}
             <input
-                {{ attrs.input.defaults({
+                {{ vi_attrs('input').defaults({
                     type: 'search',
                     id: 'SearchOverlayInput',
                     name: 'search',
@@ -42,17 +39,17 @@
                     'aria-expanded': 'false',
                     value: searchTerm,
                 }) }}
-                class="{{ cx.input.apply() }}"
+                class="{{ vi_class('input') }}"
             >
         {% endblock %}
 
         {% block submit %}
             <button
-                {{ attrs.submit.defaults({
+                {{ vi_attrs('submit').defaults({
                     type: 'submit',
                     'aria-label': 'header.searchButton'|trans|striptags,
                 }) }}
-                class="{{ cx.submit.apply() }}"
+                class="{{ vi_class('submit') }}"
             >
                 {{ vi_icon('magnifying-glass') }}
             </button>

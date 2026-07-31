@@ -3,13 +3,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-gallery-slider-thumbnails-container gallery-slider-thumbnails-container' },
 }|replace_recursive(cva)) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <div class="vi-gallery-slider-thumbnails gallery-slider-thumbnails splide">
         <div class="splide__track">

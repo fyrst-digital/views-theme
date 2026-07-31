@@ -130,7 +130,7 @@ Same field props as `Form:Input` (intentional **facade**: flat control props for
 
 Nested attrs: `label:*`, `group:*`, `input:*`, `description:*`, `feedback:*`.
 
-Inside a parent `<twig:block name="append">`, parent `cx` / `attributes` are shadowed by the Group — precompute classes and alias `attributes` before the Group mount when forwarding a nested child (e.g. `submit`).
+Inside a parent `<twig:block name="append">`, Group shadows parent locals. Use **`vi_define_cva` / `vi_class`** and **`vi_define_attrs` / `vi_attrs`** (stack). See [vi-cva](../twig/vi-cva.md) · [vi-attrs](../twig/vi-attrs.md).
 
 ---
 

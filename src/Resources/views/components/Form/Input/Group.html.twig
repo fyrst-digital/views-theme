@@ -21,37 +21,30 @@
 {% set feedbackId = id ~ '-feedback' %}
 {% set descriptionId = id ~ '-description' %}
 {% set isRequired = validationRules is not empty and 'required' in validationRules %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    label: attributes.nested('label'),
-    required: attributes.nested('required'),
-    group: attributes.nested('group'),
-    input: attributes.nested('input'),
-    description: attributes.nested('description'),
-    feedback: attributes.nested('feedback'),
-} %}
+{% do vi_define_attrs(['label', 'required', 'group', 'input', 'description', 'feedback']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block label %}
         {% if label %}
             <label
-                {{ attrs.label.defaults({
+                {{ vi_attrs('label').defaults({
                     for: id,
                 }) }}
-                class="{{ cx.label.apply() }}"
+                class="{{ vi_class('label') }}"
             >
                 {{ label|raw }}
 
                 {% if isRequired %}
                     <span
-                        {{ attrs.required.defaults({
+                        {{ vi_attrs('required').defaults({
                             'aria-hidden': 'true',
                         }) }}
-                        class="{{ cx.required.apply() }}"
+                        class="{{ vi_class('required') }}"
                     >
                         {{ 'general.required'|trans|sw_sanitize }}
                     </span>
@@ -62,15 +55,15 @@
 
     {% block group %}
         <div
-            {{ attrs.group }}
-            class="{{ cx.group.apply({ size: size }) }}"
+            {{ vi_attrs('group') }}
+            class="{{ vi_class('group', { size: size }) }}"
         >
             {% block prepend %}{% endblock %}
 
             {% block input %}
                 <twig:ViewsTheme:Form:Input
-                    class="{{ cx.input.apply() }}"
-                    {{ ...attrs.input.defaults({
+                    class="{{ vi_class('input') }}"
+                    {{ ...vi_attrs('input').defaults({
                         type: type,
                         id: id,
                         name: name,
@@ -100,10 +93,10 @@
     {% block description %}
         {% if description is not empty %}
             <small
-                {{ attrs.description.defaults({
+                {{ vi_attrs('description').defaults({
                     id: descriptionId,
                 }) }}
-                class="{{ cx.description.apply() }}"
+                class="{{ vi_class('description') }}"
             >
                 {{ description }}
             </small>
@@ -112,10 +105,10 @@
 
     {% block feedback %}
         <div
-            {{ attrs.feedback.defaults({
+            {{ vi_attrs('feedback').defaults({
                 id: feedbackId,
             }) }}
-            class="{{ cx.feedback.apply() }}"
+            class="{{ vi_class('feedback') }}"
         >
             {% block feedback_violations %}
                 {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}

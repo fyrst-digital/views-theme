@@ -2,22 +2,19 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    cart: attributes.nested('cart'),
-    checkout: attributes.nested('checkout'),
-} %}
+{% do vi_define_attrs(['cart', 'checkout']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block cart %}
             <twig:ViewsTheme:Cart:Action:Cart
-                class="{{ cx.cart.apply() }}"
-                {{ ...attrs.cart.defaults({
+                class="{{ vi_class('cart') }}"
+                {{ ...vi_attrs('cart').defaults({
                     color: 'white',
                 }).all() }}
             />
@@ -25,8 +22,8 @@
 
         {% block checkout %}
             <twig:ViewsTheme:Cart:Action:Checkout
-                class="{{ cx.checkout.apply() }}"
-                {{ ...attrs.checkout.defaults({}).all() }}
+                class="{{ vi_class('checkout') }}"
+                {{ ...vi_attrs('checkout').defaults({}).all() }}
             />
         {% endblock %}
     {% endblock %}

@@ -4,19 +4,16 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-header-main d-flex flex-wrap flex-row align-items-center py-4 gap-3' },
     navigation: { base: 'order-lg-0 col' },
     actions: { base: 'col-lg-auto' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    navigation: attributes.nested('navigation'),
-} %}
+{% do vi_define_attrs(['navigation']) %}
 
 <div
     {{ attributes.without('class').without('data-component-template') }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
 
@@ -27,8 +24,8 @@
         {% block navigation %}
             {% if navigation %}
                 <twig:ViewsTheme:Navigation:Bar
-                    class="{{ cx.navigation.apply() }}"
-                    {{ ...attrs.navigation.defaults({
+                    class="{{ vi_class('navigation') }}"
+                    {{ ...vi_attrs('navigation').defaults({
                         navigation: navigation,
                         navigationDepth: context.salesChannel.navigationCategoryDepth,
                         widthAnchor: widthAnchor,
@@ -39,7 +36,7 @@
 
         {% block actions %}
             <twig:ViewsTheme:Page:Header:Actions 
-                class="{{ cx.actions.apply() }}" />
+                class="{{ vi_class('actions') }}" />
         {% endblock %}
     {% endblock %}
 </div>

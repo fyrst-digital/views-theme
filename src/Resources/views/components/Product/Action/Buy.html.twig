@@ -1,12 +1,8 @@
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-product-action-buy' },
     button: { base: 'vi-product-action-buy__button' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    button: attributes.nested('button'),
-    quantityInput: attributes.nested('quantityInput'),
-} %}
+{% do vi_define_attrs(['button', 'quantityInput']) %}
 
 <form
     {{ attributes.defaults({
@@ -18,7 +14,7 @@
             addEvent: 'ViewsTheme:Cart:Add',
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block parameter %}
         <twig:ViewsTheme:Product:Action:BuyParameter
@@ -30,7 +26,7 @@
     {% block quantity %}
         {% if showQuantityField %}
             <twig:ViewsTheme:QuantityInput
-                {{ ...attrs.quantityInput.defaults({
+                {{ ...vi_attrs('quantityInput').defaults({
                     inputName: 'lineItems[' ~ product.id ~ '][quantity]',
                     quantity: product.minPurchase,
                     minQuantity: product.minPurchase,
@@ -44,8 +40,8 @@
 
     {% block button %}
         <twig:ViewsTheme:Button
-            class="{{ cx.button.apply() }}"
-            {{ ...attrs.button.defaults({
+            class="{{ vi_class('button') }}"
+            {{ ...vi_attrs('button').defaults({
                 type: 'submit',
                 icon: 'handbag',
                 label: 'listing.boxAddProduct'|trans|sw_sanitize,

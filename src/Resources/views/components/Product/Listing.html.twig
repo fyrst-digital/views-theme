@@ -9,21 +9,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-product-listing js-listing-wrapper' },
     actions: { base: 'vi-product-listing__actions' },
     empty: { base: 'vi-product-listing__empty' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    actions: attributes.nested('actions'),
-    empty: attributes.nested('empty'),
-} %}
+{% do vi_define_attrs(['actions', 'empty']) %}
 
 {% block element_product_listing_pagination_nav_actions %}
     <div
-        {{ attrs.actions }}
-        class="{{ cx.actions.apply() }}"
+        {{ vi_attrs('actions') }}
+        class="{{ vi_class('actions') }}"
     >
         {% block element_product_listing_pagination_nav_top %}
             {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
@@ -57,7 +54,7 @@
             'data-aria-live-text': ariaLiveText,
             role: searchResult.total > 0 ? 'list' : null,
         }) }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% if searchResult.total > 0 %}
             {% block element_product_listing_col %}
@@ -77,7 +74,7 @@
             {% endblock %}
         {% else %}
             {% block element_product_listing_col_empty %}
-                <div {{ attrs.empty }} class="{{ cx.empty.apply() }}">
+                <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
                     {% block element_product_listing_col_empty_alert %}
                         <twig:ViewsTheme:Alert
                             type="info"

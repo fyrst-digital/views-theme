@@ -16,12 +16,13 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | **No build steps (critical):** never run asset/theme/JS compile or watch | [agent-workflow.md — No build](agent-workflow.md#never-run-a-build-step-critical) |
 | UX tags, **prop defaults** (no wasteful `resolved*`), **class components** for heavy view-model, CVA, attributes, BEM `vi-*`, scope (`components/` only) | [ux-components.md § Props](ux-components.md#props) · [class components](ux-components.md#class-components-php-backed) |
 | Component template checklist | [components.md](components.md) |
-| `vi_cva` / `vi_cva_from_file` | [vi-cva.md](../twig/vi-cva.md) |
+| CVA: `vi_define_cva` + `vi_class` (no `{% set cx %}`) | [vi-cva.md](../twig/vi-cva.md) |
+| Nest attrs: `vi_define_attrs` + `vi_attrs` (no `{% set attrs %}`) | [vi-attrs.md](../twig/vi-attrs.md) · [nested blocks](ux-components.md#nested-blocks-parent-locals-are-shadowed) |
 | Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
 | JS: `data-component`, no CSS selectors, no `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
 | JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
 | **Lazy shells (critical):** never cache HTML/DOM; unmount on close; always (re)fetch on open (Search term via Open/Close payload only) | [javascript.md — Lazy-loaded shells](javascript.md#lazy-loaded-shells-critical) |
-| Removed class-map APIs (`vi_define_classes`, `vi_attr_classes`, `vi_classes`) | [css-classes.md](css-classes.md) |
+| Removed legacy class-map APIs (`vi_attr_classes`, `vi_classes`, old map-style define) | [css-classes.md](css-classes.md) |
 | **CSS vars (critical):** component CSS only `var(--token, fallback)` — never assign `--token` there; theme assigns overrides | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
 | **XHR UX HTML (critical):** always `AbstractComponentController::renderComponent()` — never raw `createAndRender` Response | [architecture.md — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |

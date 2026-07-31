@@ -4,28 +4,22 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    header: attributes.nested('header'),
-    title: attributes.nested('title'),
-    close: attributes.nested('close'),
-    description: attributes.nested('description'),
-    list: attributes.nested('list'),
-} %}
+{% do vi_define_attrs(['header', 'title', 'close', 'description', 'list']) %}
 
 {% block utilities_offcanvas_header %}
-    <div {{ attrs.header }} class="{{ cx.header.apply() }}">
-        <div {{ attrs.title }} class="{{ cx.title.apply() }}">
+    <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
             {{ 'cookie.headline'|trans|sw_sanitize }}
         </div>
         <button
-            {{ attrs.close.defaults({
+            {{ vi_attrs('close').defaults({
                 type: 'button',
                 title: 'general.offcanvasCloseMenu'|trans|sw_sanitize,
                 'aria-label': 'general.offcanvasCloseMenu'|trans|sw_sanitize,
             }) }}
-            class="{{ cx.close.apply() }}"
+            class="{{ vi_class('close') }}"
         >
             {{ vi_icon('x') }}
         </button>
@@ -33,8 +27,8 @@
 {% endblock %}
 
 {% block utilities_offcanvas_content %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
-        <div {{ attrs.description }} class="{{ cx.description.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
+        <div {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
             <p>
                 {{ 'cookie.messageText'|trans({
                     '%url%': path('frontend.cms.page', { id: config('core.basicInformation.privacyPage') }),
@@ -45,7 +39,7 @@
             </div>
         </div>
 
-        <div {{ attrs.list }} class="{{ cx.list.apply() }}">
+        <div {{ vi_attrs('list') }} class="{{ vi_class('list') }}">
             {% for cookieGroup in cookieGroups %}
                 {% component 'ViewsTheme:Cookie:ConfigurationGroup' with {
                     themeIconConfig: themeIconConfig,

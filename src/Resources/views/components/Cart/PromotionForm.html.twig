@@ -5,16 +5,8 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    field: cx.field.apply(),
-    submit: cx.submit.apply(),
-} %}
-{% set attrs = {
-    field: attributes.nested('field'),
-    submit: attributes.nested('submit'),
-} %}
+{% do vi_define_cva(cva, ['root', 'field', 'submit']) %}
+{% do vi_define_attrs(['field', 'submit']) %}
 
 {% set submitTitle = 'checkout.addPromotionLabel'|trans|striptags %}
 
@@ -27,7 +19,7 @@
             promoteEvent: 'ViewsTheme:Cart:Promote',
         }|json_encode,
     }) }}
-    class="{{ classes.root }}"
+    class="{{ vi_class('root') }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
@@ -35,9 +27,9 @@
 
     {% block field %}
         <twig:ViewsTheme:Form:Input:Group
-            class="{{ classes.field }}"
+            class="{{ vi_class('field') }}"
             label:class="visually-hidden"
-            {{ ...attrs.field.defaults({
+            {{ ...vi_attrs('field').defaults({
                 id: inputId,
                 name: 'code',
                 label: 'checkout.addPromotionLabel'|trans|sw_sanitize,
@@ -47,8 +39,8 @@
         >
             <twig:block name="append">
                 <twig:ViewsTheme:Button
-                    class="{{ classes.submit }}"
-                    {{ ...attrs.submit.defaults({
+                    class="{{ vi_class('submit') }}"
+                    {{ ...vi_attrs('submit').defaults({
                         type: 'submit',
                         id: submitId,
                         title: submitTitle,

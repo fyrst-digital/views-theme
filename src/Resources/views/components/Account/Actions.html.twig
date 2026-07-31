@@ -30,16 +30,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    nav: attributes.nested('nav'),
-    action: attributes.nested('action'),
-} %}
+{% do vi_define_attrs(['nav', 'action']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block header %}
@@ -48,15 +45,15 @@
         {% if actions is not empty %}
             {% block nav %}
                 <nav
-                    {{ attrs.nav }}
-                    class="{{ cx.nav.apply() }}"
+                    {{ vi_attrs('nav') }}
+                    class="{{ vi_class('nav') }}"
                 >
                     {% for key, action in actions %}
                         {% set isActive = activeRoute is not empty and activeRoute is same as(action.route) %}
                         {% block action %}
                             <twig:ViewsTheme:Button
-                                class="{{ cx.action.apply() }}"
-                                {{ ...attrs.action.defaults({
+                                class="{{ vi_class('action') }}"
+                                {{ ...vi_attrs('action').defaults({
                                     type: 'link',
                                     href: path(action.route),
                                     label: action.label,

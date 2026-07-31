@@ -4,22 +4,18 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    country: attributes.nested('country'),
-    payment: attributes.nested('payment'),
-    shipping: attributes.nested('shipping'),
-} %}
+{% do vi_define_attrs(['country', 'payment', 'shipping']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block country %}
         <twig:ViewsTheme:Cart:ShippingCalculation:Country
-            class="{{ cx.country.apply() }}"
-            {{ ...attrs.country.defaults({
+            class="{{ vi_class('country') }}"
+            {{ ...vi_attrs('country').defaults({
                 countries: page.countries,
                 size: 'sm',
             }).all() }}
@@ -28,8 +24,8 @@
 
     {% block payment_method %}
         <twig:ViewsTheme:Cart:ShippingCalculation:PaymentMethod
-            class="{{ cx.payment.apply() }}"
-            {{ ...attrs.payment.defaults({
+            class="{{ vi_class('payment') }}"
+            {{ ...vi_attrs('payment').defaults({
                 paymentMethods: page.paymentMethods,
                 size: 'sm',
             }).all() }}
@@ -38,8 +34,8 @@
 
     {% block shipping_method %}
         <twig:ViewsTheme:Cart:ShippingCalculation:ShippingMethod
-            class="{{ cx.shipping.apply() }}"
-            {{ ...attrs.shipping.defaults({
+            class="{{ vi_class('shipping') }}"
+            {{ ...vi_attrs('shipping').defaults({
                 shippingMethods: page.shippingMethods,
                 size: 'sm',
             }).all() }}

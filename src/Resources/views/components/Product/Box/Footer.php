@@ -14,7 +14,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Box:Footer — detail href + tax-note default + variation gate; Twig only composes.
+ * View-model for Product:Box:Footer — detail href + tax-note default; Twig only composes.
  */
 #[AsTwigComponent]
 class Footer
@@ -26,8 +26,6 @@ class Footer
     public bool $showPrice = true;
 
     public bool $showActions = true;
-
-    public bool $showVariations = true;
 
     public bool $priceShowPrice = true;
 
@@ -43,13 +41,6 @@ class Footer
      * @var array<string, mixed>
      */
     public array $cva = [];
-
-    public bool $showVariationsBlock = false;
-
-    /**
-     * @var list<array<string, mixed>>
-     */
-    public array $variations = [];
 
     public function __construct(
         private readonly ProductDetailUrlBuilder $productDetailUrlBuilder,
@@ -79,16 +70,6 @@ class Footer
             $this->referrerCategoryId,
             $this->searchTerm,
         );
-
-        $variantConfig = $this->product->getVariantListingConfig();
-        $displayParent = $variantConfig !== null
-            && $variantConfig->getDisplayParent()
-            && $this->product->getParentId() === null;
-
-        $this->variations = $this->product->getVariation();
-        $this->showVariationsBlock = !$displayParent
-            && $this->variations !== []
-            && $this->showVariations;
     }
 
     private function salesChannelContext(): ?SalesChannelContext

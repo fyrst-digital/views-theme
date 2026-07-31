@@ -9,8 +9,8 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 | Storefront bridge | `storefront/component/product/card/box.html.twig` — thin `sw_extends`; maps core `standard`/empty → `default`, mounts `Product:Box` |
 | `Product:Box` | Class-backed card shell: data-attr fields + flags; threads `product` / `referrerCategoryId` — **no** detail URL |
 | `Product:Box:Header` | Class-backed: detail `href` + rating gate; Rating + Name. **Not** PDP `Product:Header` |
-| `Product:Box:Body` | Description only (omits root when off) |
-| `Product:Box:Footer` | Class-backed: detail `href` + tax-note default + variation gate; Price + Variations + Box:Actions |
+| `Product:Box:Body` | Class-backed: variation gate + description; omits root when both off |
+| `Product:Box:Footer` | Class-backed: detail `href` + tax-note default; Price + Box:Actions |
 | `Product:Box:Actions` | Class-backed listing shell: Buy **or** Detail (listing rules) |
 | `Product:Actions` | Shared Buy **or** Detail shell (not mounted by Box) |
 | `Product:Cover` | Class-backed: media + detail URL from `product` (scalar overrides for cart/search) |
@@ -23,7 +23,7 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 | `Badge` | Generic label leaf (`type` CVA variants) |
 | `Product:Price:Tiered` | Tier table — parent-mounted (e.g. BuyContainer), not nested in Price |
 | `Product:Price:Tax` | Tax note — parent-mounted (BuyContainer, Box:Footer), not nested in Price |
-| `Product:Action:Buy` (class-backed) / `Detail` / `Wishlist` | Buy form (quantity gate + pack unit VM), details Button, wishlist toggle |
+| `Product:Action:Buy` / `Detail` (class-backed) / `Wishlist` | Buy form (quantity gate + pack unit VM), details link (href VM + root-host Button), wishlist toggle |
 | `Review:Rating` | Stars when reviews enabled |
 
 ## Wire-up
@@ -78,11 +78,11 @@ Product:Box (class VM — no productUrl)
         │    ├─ Review:Rating
         │    └─ Product:Name
         ├─ Product:Box:Body
+        │    ├─ Product:Variations
         │    └─ Product:Description
         └─ Product:Box:Footer (href via builder → Actions)
              ├─ Product:Price              (price row only)
              ├─ Product:Price:Tax          (when priceShowTaxNote)
-             ├─ Product:Variations
              └─ Product:Box:Actions
                   ├─ Product:Action:Buy   (when buyable in listing)
                   └─ Product:Action:Detail (otherwise)
@@ -98,7 +98,7 @@ Product:Box (class VM — no productUrl)
 | `layout` | `default` | Theme values: `default`, `image`, … (CVA `layout-*`). Core `standard`/empty mapped at bridge/listing only |
 | `sizes` | fixed map (`xs`…`xxl`) | Forwarded to Cover |
 | `showDescription` | `true` | Forwarded to Body |
-| `showVariations` | `true` | Forwarded to Footer |
+| `showVariations` | `true` | Forwarded to Body |
 | `showPrice` / `showActions` | `true` | Forwarded to Footer |
 | `priceShowPrice` | `true` | Forwarded to Footer → Price |
 | `priceShowTaxNote` | `null` | Forwarded; Footer mounts `Product:Price:Tax` when true; defaults from `core.listing.allowBuyInListing` when null |
@@ -128,15 +128,17 @@ Does **not** compute or pass `productUrl` / `href`. Nested overrides: `header:�
 | `showRating` | `true` | Gate also needs config + `ratingAverage` → `showRatingBlock` |
 | `cva` | `{}` | `Header.cva.twig`: `root`, `rating`, `name` |
 
-### `Product:Box:Body`
+### `Product:Box:Body` (class-backed)
 
-| Prop | Default | Notes |
-|------|---------|--------|
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
 | `product` | required | |
 | `showDescription` | `true` | |
-| `cva` | `{}` | `Body.cva.twig`: `root`, `description` |
+| `showVariations` | `true` | → `showVariationsBlock` (skipped for display-parent) |
+| `cva` | `{}` | `Body.cva.twig`: `root`, `variations`, `description` |
+| `visible` | derived | Root omitted when neither variations nor description |
 
-No root markup when description is off.
+Variations render above description when shown.
 
 ### `Product:Box:Footer` (class-backed)
 
@@ -146,11 +148,10 @@ No root markup when description is off.
 | `href` | derived | `ProductDetailUrlBuilder` when null → Actions |
 | `referrerCategoryId` / `searchTerm` | `null` | URL args |
 | `showPrice` / `showActions` | `true` | |
-| `showVariations` | `true` | → `showVariationsBlock` (skipped for display-parent) |
 | `priceShowPrice` | see Box | Forwarded to Price |
 | `priceShowTaxNote` | `core.listing.allowBuyInListing` when null | When true, mounts sibling `Product:Price:Tax` |
 | `showQuantity` | `false` | Forwarded to Actions → Buy |
-| `cva` | `{}` | `Footer.cva.twig`: `root`, `price`, `variations`, `actions` |
+| `cva` | `{}` | `Footer.cva.twig`: `root`, `container`, `price`, `actions` |
 
 ### `Product:Box:Actions` (class-backed)
 
@@ -186,9 +187,30 @@ Buy when `displayBuyButton`; otherwise Detail (`product` + `href`).
 
 Co-located `Buy.js` → `ViewsTheme:Cart:Add`. Overrides: `button:label`, `quantityInput:size`, root `action`, …
 
+### `Product:Action:Detail` (class-backed)
+
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
+| `product` | `null` | When set and `href` null → listing URL via builder |
+| `href` | derived | Explicit URL wins; else `ProductDetailUrlBuilder` from `product` |
+| `referrerCategoryId` / `searchTerm` | `null` | Builder args (same as Cover / Header / Footer) |
+| `cva` | `{}` | `Detail.cva.twig`: `root` → `vi-product-action-detail btn-detail` |
+| `visible` | derived | Root omitted when no `href` |
+
+**Root-host** `Button` (child *is* the component root via `attributes.defaults` — no nest). Chrome defaults live only in that bag (not parallel props on Detail):
+
+| Default | Value |
+|---------|--------|
+| `type` | `link` |
+| `href` | VM `href` |
+| `label` | `listing.boxProductDetails` |
+| `color` | `light` |
+
+Caller overrides: `detail:label`, `detail:color`, `detail:title`, … (not `detail:button:*`). Root class keeps core **`btn-detail`** so SpeculationRules can prefetch (`.btn-detail` in core `selectorProducts`).
+
 ### `Product:Actions`
 
-Shared anonymous shell (same Buy/Detail leaves). Not used by Box — prefer `Product:Box:Actions` on the card.
+Shared anonymous shell (same Buy/Detail leaves). Not used by Box — prefer `Product:Box:Actions` on the card. Passes `product` + optional `href` into Detail (Detail builds URL when `href` null).
 
 ### `Product:Badges` (class-backed)
 
@@ -222,8 +244,8 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 ## Behaviour notes
 
 - Listing buy mounts `Product:Action:Buy` via nest+defaults (`showQuantity: false`, `'button:label': false`; hidden min purchase only). Caller overrides: `buy:button:label` / `buy:quantityInput:*` (not parallel props like `buyLabel`)
-- `Product:Action:Detail` → `Button` (`type="link"`, `color="light"`, label `listing.boxProductDetails`)
-- Detail URLs: `ProductDetailUrlBuilder` (`productId`, optional `search` when child + term, optional `referrerCategoryId`). Owned by **Cover**, **Box:Header**, **Box:Footer** — not Box. Optional `href`/`url` override still wins
+- `Product:Action:Detail` (class-backed) → root-host `Button` (`type="link"`, `color="light"`, label `listing.boxProductDetails`); empty when no `href`. Overrides: `detail:label` / `detail:color` (not `detail:button:*`). Keeps `btn-detail` for core SpeculationRules
+- Detail URLs: `ProductDetailUrlBuilder` (`productId`, optional `search` when child + term, optional `referrerCategoryId`). Primary owners: **Cover**, **Box:Header**, **Box:Footer** (pass `href` down). **Detail** also builds when only `product` is passed (standalone / `Product:Actions`). Optional `href`/`url` override still wins
 - Price math lives in `ProductPriceResolver` → `ProductPriceData` (used by `Product:Price` + `Product:Badges`). Display: cheapest when parent listing, else `calculatedPrices.last` when tiered; “From” prefix when range or variant spread. Discount badge only when list price on last/base, not range, not from-variants. Tier table + tax are parent-mounted siblings (`Product:Price:Tiered` / `Product:Price:Tax`) — not nested in Price. Unit danger color: CVA `unit` variant `hasListPrice`
 - Wishlist: Cover `append` when `wishlistEnabled`; `appearance="circle"`; `Product:Action:Wishlist` → `ViewsTheme:Wishlist:Toggle` (theme owner); Button + `aria-pressed` (see [wishlist.md](wishlist.md))
 - Badges: Cover `prepend` (no Box image wrapper). Class `Badges.php` owns discount price math + topseller/new flags; empty root omitted when none visible
@@ -243,12 +265,12 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 |------|------|
 | Bridge | `storefront/component/product/card/box.html.twig` |
 | Box | `components/Product/Box.{php,html.twig,cva.twig}` |
-| Parts | `components/Product/Box/{Header,Footer,Actions}.{php,html.twig,cva.twig}`, `Body.html.twig` (+ `.cva.twig`) |
+| Parts | `components/Product/Box/{Header,Body,Footer,Actions}.{php,html.twig,cva.twig}` |
 | Cover | `components/Product/Cover.{php,html.twig,cva.twig,css}` |
 | Detail URL | `src/Service/ProductDetailUrlBuilder.php` |
 | Price resolve | `src/Service/ProductPriceResolver.php`, `ProductPriceData.php` |
 | Actions (shared) | `components/Product/Actions.html.twig` + `Actions.cva.twig` |
 | Price | `components/Product/Price.{php,html.twig,cva.twig}`, `Price/{Tiered,Tax}.{html.twig,cva.twig}` |
-| Children | `components/Product/{Name,Variations,Description}.html.twig`, `Action/Buy.{php,html.twig,js}`, `Action/{Detail,Wishlist,BuyParameter}.html.twig` |
+| Children | `components/Product/{Name,Variations,Description}.html.twig`, `Action/Buy.{php,html.twig,js}`, `Action/Detail.{php,html.twig,cva.twig}`, `Action/{Wishlist,BuyParameter}.html.twig` (+ Wishlist CVA/JS) |
 | Badges | `components/Product/Badges.{php,html.twig,cva.twig}`, `Product/Badge/{Discount,Topseller,New}.{html.twig,cva.twig}` |
 | Badge (generic) | `components/Badge.{html.twig,cva.twig}` |

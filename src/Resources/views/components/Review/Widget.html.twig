@@ -4,14 +4,14 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-review-widget product-detail-review-rating' },
 }|replace_recursive(cva)) %}
 
 {% block component_review_overview %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
         {% if productReviewCount > 0 %}
             itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating"
         {% endif %}

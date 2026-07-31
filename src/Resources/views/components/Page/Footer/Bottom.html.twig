@@ -3,37 +3,30 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    container: attributes.nested('container'),
-    serviceList: attributes.nested('serviceList'),
-    serviceItem: attributes.nested('serviceItem'),
-    serviceLink: attributes.nested('serviceLink'),
-    vat: attributes.nested('vat'),
-    copyright: attributes.nested('copyright'),
-} %}
+{% do vi_define_attrs(['container', 'serviceList', 'serviceItem', 'serviceLink', 'vat', 'copyright']) %}
 
 {% block component_footer_bottom %}
-    <div {{ attributes }} class="{{ cx.root.apply() }}">
+    <div {{ attributes }} class="{{ vi_class('root') }}">
     
     {% block component_footer_bottom_container %}
-        <div {{ attrs.container }} class="{{ cx.container.apply() }}">
+        <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
 
             {% block component_footer_bottom_service_list %}
                 {% if page.header.serviceMenu %}
-                    <ul {{ attrs.serviceList }} class="{{ cx.serviceList.apply() }}">
+                    <ul {{ vi_attrs('serviceList') }} class="{{ vi_class('serviceList') }}">
                         {% for serviceMenuItem in page.header.serviceMenu %}
                             {% block component_footer_bottom_service_item %}
-                                <li {{ attrs.serviceItem }} class="{{ cx.serviceItem.apply() }}">
+                                <li {{ vi_attrs('serviceItem') }} class="{{ vi_class('serviceItem') }}">
                                     {% block component_footer_bottom_service_link %}
                                         <a
-                                            {{ attrs.serviceLink.defaults({
+                                            {{ vi_attrs('serviceLink').defaults({
                                                 href: category_url(serviceMenuItem),
                                                 title: serviceMenuItem.translated.name,
                                                 target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
                                             }) }}
-                                            class="{{ cx.serviceLink.apply() }}"
+                                            class="{{ vi_class('serviceLink') }}"
                                         >
                                             {{ serviceMenuItem.translated.name }}
                                         </a>
@@ -47,7 +40,7 @@
 
             {% block component_footer_bottom_vat_notice %}
                 {% if showVatNotice is same as(true) %}
-                    <div {{ attrs.vat }} class="{{ cx.vat.apply() }}">
+                    <div {{ vi_attrs('vat') }} class="{{ vi_class('vat') }}">
                         {% if context.taxState == 'gross' %}
                             {{ 'footer.includeVatText'|trans({
                                 '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
@@ -62,7 +55,7 @@
             {% endblock %}
 
             {% block component_footer_bottom_copyright %}
-                <div {{ attrs.copyright }} class="{{ cx.copyright.apply() }}">
+                <div {{ vi_attrs('copyright') }} class="{{ vi_class('copyright') }}">
                     {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
                 </div>
             {% endblock %}

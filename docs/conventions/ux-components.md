@@ -29,7 +29,7 @@ VariantsGrid/Container.js
 
 - PascalCase directories / leaf file names.
 - Prefer **named files** (`Cart.html.twig` + `Cart.js`), not `index.*` (avoids import-map `:index` suffix).
-- Co-located JS/SCSS/CVA/PHP share the leaf name when needed (`Name.cva.twig` for `vi_cva_from_file`; `Name.php` for class components).
+- Co-located JS/SCSS/CVA/PHP share the leaf name when needed (`Name.cva.twig` for `vi_define_cva`; `Name.php` for class components).
 - **`Page`** = global storefront layout chrome (header, footer, …).
 
 ### Class components (PHP-backed)
@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Footer`, `Product:Action:Buy`.
+Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`.
 
 ## Props / CVA / attributes
 
@@ -105,7 +105,7 @@ Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `
 - Defaults live **only** in `{% props %}` (including `|trans`, `path(…)`, `config(…)`, `random()`, other props, `page` / `context` / `header`, ambient `__context.*`).
 - Symfony applies a default only when the prop is **missing or `null`** (`!isset`). Defaults evaluate **in declaration order** — declare dependencies before dependents.
 - Do **not** reassign prop names with `{% set prop = … %}` after the props block.
-- Non-prop locals (e.g. `cx` from `vi_cva_from_file`) are fine.
+- Non-prop locals are fine; prefer `vi_define_cva` / `vi_class` over `{% set cx %}`.
 
 #### Preferred: fallbacks in `{% props %}` (not `resolved*`)
 
@@ -161,16 +161,16 @@ Ambient outer-scope values (e.g. page `formViolations`) belong in the prop defau
 Multi-slot class API:
 
 1. Default map: sibling **`Name.cva.twig`** (preferred for larger maps) or inline hash
-2. Compose: `{% set cx = vi_cva_from_file(cva) %}` or `vi_cva({ … }|replace_recursive(cva))`
+2. Compose: `{% do vi_define_cva(cva) %}`
 3. Caller override: `:cva="{ … }"` deep-merged into defaults
 4. Render: `class="{{ cx.root.apply({ size: size }) }}"` / `cx.label.apply(…)`
 5. Extras: `class="…"` (root) and `label:class="…"` (nested)
 
-Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
+Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defaults()`.
 
 Co-locate like JS: `Alert.html.twig` + `Alert.cva.twig` (+ `Alert.js` when interactive).
 
-See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
+See [vi_define_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 
 ### Attributes
 
@@ -179,65 +179,61 @@ See [vi_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 | Target | Preferred pattern |
 |--------|-------------------|
 | Own root | `{{ attributes }}` / `{{ attributes.defaults({ … }) }}` |
-| DOM nest (`<div>`, `<input>`, …) | Pre-bind `attrs` → `{{ attrs.slot }}` / `{{ attrs.slot.defaults({ … }) }}` |
-| Child `<twig:…>` (overridable) | `class="{{ classes.slot }}"` (or `cx…`) + `{{ ...attrs.slot.defaults({ … }).all() }}` (spread; Twig ≥ 3.7; **no** `class` in defaults) |
+| DOM nest (`<div>`, `<input>`, …) | `{{ vi_attrs('slot') }}` / `{{ vi_attrs('slot').defaults({ … }) }}` |
+| Child `<twig:…>` (overridable) | `class="{{ vi_class('slot') }}"` (or `cx…apply()`) + `{{ ...vi_attrs('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7; **no** `class` in defaults) |
 
-#### `attrs` map (required for nests)
+#### Nest bind / resolve (`vi_define_*`)
 
-After `vi_cva` / `vi_cva_from_file`, pre-bind every nest used in the template into an **`attrs`** hash (bags only — not `.all()`, not pre-applied defaults):
+After `vi_define_cva`, bind nests and (when needed) exported class strings — **no** `{% set attrs %}` / `{% set classes %}`:
 
 ```twig
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    buy: cx.buy.apply(),
-} %}
-{% set attrs = {
-    buy: attributes.nested('buy'),
-    detail: attributes.nested('detail'),
-} %}
+{% do vi_define_cva(cva, ['root', 'buy', 'detail']) %}
+{% do vi_define_attrs(['buy', 'detail']) %}
 ```
 
-- Name it **`attrs`** — never shadow UX `attributes`.
+| | Bind | Resolve |
+|--|------|---------|
+| Nest bags | `vi_define_attrs(['buy', …])` | `vi_attrs('buy')` |
+| Class strings | `vi_define_cva(cva, ['root', …])` | `vi_class('root')` / `vi_class('root', { size })` |
+
 - Build **after** `vi_cva*` so slot `class` stripping has run.
-- Keys = nest names (parent public API). Include every nest used (DOM or child).
-- At the use site: `attrs.slot.defaults({ … })` — defaults hash stays **inline**.
-- Own root stays on `attributes` / `attributes.defaults` — not via `attrs`.
-- Flat sibling mounts do not shadow `attributes`, but **still use `attrs`** for one consistent nest API and safety if a host is added later.
-- Do **not** use one-off aliases (`parentAttributes`); pre-bind `attrs` instead.
+- Defaults stay **inline** at the use site: `vi_attrs('slot').defaults({ … })`.
+- Own root stays on `attributes` / `attributes.defaults` — not via define.
+- Do **not** use one-off aliases (`parentAttributes`) or materialised props locals.
+
+See [vi-attrs.md](../twig/vi-attrs.md).
 
 ```twig
-{# ❌ bare nest at use site #}
+{# ❌ bare nest / set maps #}
 {{ ...attributes.nested('buy').defaults({…}).all() }}
-
-{# ❌ defaults baked into the map #}
-{% set attrs = { buy: attributes.nested('buy').defaults({…}).all() } %}
+{% set attrs = { buy: attributes.nested('buy') } %}
+{% set classes = { root: cx.root.apply() } %}
 ```
 
 #### DOM nodes
 
-Stringifies the bag to HTML. Non-class attrs go through `attrs.slot` / `attrs.slot.defaults`.
+Stringifies the bag to HTML. Non-class attrs go through `vi_attrs('slot')` / `.defaults`.
 
 #### `class` — never in `.defaults({…})`
 
-**Never** put `class` (or nested `slot:class`) inside `attributes.defaults({…})` / `attrs.slot.defaults({…})` — DOM or child spread.
+**Never** put `class` (or nested `slot:class`) inside `attributes.defaults({…})` / `vi_attrs(…).defaults({…})` — DOM or child spread.
 
 | Need | Pattern |
 |------|---------|
-| Own root / slot classes | `class="{{ cx.root.apply() }}"` / `class="{{ classes.label }}"` on the element |
-| Child root classes | `class="{{ classes.… }}"` / `class="{{ cx.…apply() }}"` on the `<twig:…>` tag |
-| Child nested classes | `toggle:class="{{ classes.toggle }}"` (etc.) on the child tag |
-| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_cva*` → included in `cx.…apply()` / `classes.*` |
+| Own root / slot classes | `class="{{ vi_class('root') }}"` / `class="{{ cx.root.apply() }}"` |
+| Child root classes | `class="{{ vi_class('…') }}"` on the `<twig:…>` tag |
+| Child nested classes | `toggle:class="{{ vi_class('toggle') }}"` (etc.) |
+| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_cva*` → included in `cx.…apply()` / `vi_class` |
 
-After `vi_cva` / `vi_cva_from_file`, root `class` is marked rendered; putting it in `.defaults({…})` on the same bag **drops** it (Symfony unsets rendered keys). Nested `slot:class` is stripped into the CVA slot — re-emit with `class="{{ classes.slot }}"` / `slot:class="…"`, not via defaults.
+After `vi_define_cva`, root `class` is marked rendered; putting it in `.defaults({…})` on the same bag **drops** it (Symfony unsets rendered keys). Nested `slot:class` is stripped into the CVA slot — re-emit with `class="{{ vi_class('slot') }}"` / `slot:class="…"`, not via defaults.
 
 #### Child components (defaults forward)
 
-When a parent composes an **overridable** child `<twig:…>`, use **only** `attrs` + spread + defaults. Do **not** hardcode `:prop` / `:nested:prop` on the tag next to the same nest (no parallel props like `usernameLabel`, …).
+When a parent composes an **overridable** child `<twig:…>`, use **only** `vi_attrs` + spread + defaults. Do **not** hardcode `:prop` / `:nested:prop` on the tag next to the same nest (no parallel props like `usernameLabel`, …).
 
 ```twig
-class="{{ classes.slot }}"
-{{ ...attrs.slot.defaults({ … }).all() }}
+class="{{ vi_class('slot') }}"
+{{ ...vi_attrs('slot').defaults({ … }).all() }}
 ```
 
 Spread injects a **map** into the child mount: keys in the child’s `{% props %}` / public props become props; the rest become the child’s `attributes` (including deeper nests like `button:label`, `input:class`).
@@ -248,14 +244,14 @@ A component that exposes nest `X` for an overridable child must **not** re-decla
 
 | Own props / public fields | Child chrome |
 |---------------------------|--------------|
-| Domain inputs + gates only (`product`, `showQuantity`, …) | Defaults **only** inside `attrs.X.defaults({…})` |
+| Domain inputs + gates only (`product`, `showQuantity`, …) | Defaults **only** inside `vi_attrs('X').defaults({…})` |
 | Derived VM for composition | External override API = `X:prop` / `:X:prop` / deeper `X:nested:prop` |
 
 Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })` over a pass-through `formAction` prop when the only use is the root attribute.
 
 ```twig
 {# ✅ leaf — button chrome in nest defaults; no buyLabel / buyIcon props #}
-{{ ...attrs.button.defaults({
+{{ ...vi_attrs('button').defaults({
     type: 'submit',
     icon: 'handbag',
     label: 'listing.boxAddProduct'|trans|sw_sanitize,
@@ -266,24 +262,17 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
 
 {# ❌ parallel chrome prop when nest `button` exists #}
 {% props buyLabel = 'listing.boxAddProduct'|trans|sw_sanitize %}
-{{ ...attrs.button.defaults({ label: buyLabel }).all() }}
+{{ ...vi_attrs('button').defaults({ label: buyLabel }).all() }}
 ```
 
 ```twig
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    username: cx.username.apply(),
-    buy: cx.buy.apply(),
-} %}
-{% set attrs = {
-    username: attributes.nested('username'),
-    buy: attributes.nested('buy'),
-} %}
+{% do vi_define_cva(cva, ['username', 'buy']) %}
+{% do vi_define_attrs(['username', 'buy']) %}
 
 {# ✅ class on the tag; all non-class inputs in defaults #}
 <twig:ViewsTheme:Form:Input
-    class="{{ classes.username }}"
-    {{ ...attrs.username.defaults({
+    class="{{ vi_class('username') }}"
+    {{ ...vi_attrs('username').defaults({
         type: 'email',
         id: 'loginMail',
         name: 'username',
@@ -293,8 +282,8 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
 
 {# ✅ nested child props — quote colon keys; real booleans #}
 <twig:ViewsTheme:Product:Action:Buy
-    class="{{ classes.buy }}"
-    {{ ...attrs.buy.defaults({
+    class="{{ vi_class('buy') }}"
+    {{ ...vi_attrs('buy').defaults({
         product: product,
         showQuantity: showQuantity,
         'button:label': false,
@@ -337,7 +326,7 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
 | Loop / per-item data | Hardcoded `:item="child"`, `:variant="variant"`, … (not from parent `attributes`) |
 | Sealed leaf | Fixed child with **no** public nest API — hardcoded props only, no nest / no `attrs` entry |
 | Root host wrapper | Child *is* the component root — `{{ ...attributes.defaults({ … }).all() }}` (no nest) |
-| Nested CVA classes | `label:class="{{ classes.label }}"` / `icon:class="…"` stay on the tag |
+| Nested CVA classes | `label:class="{{ vi_class('label') }}"` / `icon:class="…"` stay on the tag |
 | **Form:Input:Group facade** | Flat control props (`type`, `placeholder`, `size`, …) **and** nest `input` — intentional dual API so callers use `field:placeholder` not only `field:input:placeholder` ([form-input](../features/form-input.md#forminputgroup)) |
 
 ## Nested components (Symfony UX)
@@ -367,51 +356,37 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
 
 `class="{{ … }}"`, `:prop="expr"`, and `{% for %}` inside HTML tags are fine.
 
-### Nested blocks: parent `cx` / `attributes` are shadowed
+### Nested blocks: parent locals are shadowed
 
-Child mount merges parent context, then **child props win**. If the child also defines `cx` or `attributes` (e.g. `Dropdown` inside `Account:Action`), those names inside `<twig:block>` refer to the **child**, not the parent.
+Child mount merges parent context, then **child props win**. Host templates that set `cx` / `attributes` (and used to set `attrs` / `classes`) shadow those names inside `<twig:block>`.
 
-**Preferred:** pre-bind before the host mount:
-
-| Concern | Map | Not |
-|---------|-----|-----|
-| Applied class strings | **`classes`** | `cx` |
-| Nested attribute bags | **`attrs`** | bare `attributes.nested` / `parentAttributes` |
+**Required:** bind with `vi_define_*` on the parent; resolve with `vi_attrs` / `vi_class` (stack walk — works in own template and nested host blocks):
 
 ```twig
-{% set cx = vi_cva_from_file(cva) %}
-{% set classes = {
-    root: cx.root.apply(),
-    toggle: cx.toggle.apply(),
-    label: cx.label.apply(),
-    submit: cx.submit.apply(),
-} %}
-{% set attrs = {
-    submit: attributes.nested('submit'),
-} %}
+{% do vi_define_cva(cva, ['root', 'field', 'submit']) %}
+{% do vi_define_attrs(['field', 'submit']) %}
 
-<twig:ViewsTheme:Dropdown class="{{ classes.root }}" …>
-    <twig:block name="toggle">
-        {# ❌ cx / attributes are the child’s here #}
-        {# ✅ classes.* and attrs.* were bound in the parent #}
-        <span class="{{ classes.label }}">…</span>
+<twig:ViewsTheme:Form:Input:Group class="{{ vi_class('field') }}" …>
+    <twig:block name="append">
         <twig:ViewsTheme:Button
-            class="{{ classes.submit }}"
-            {{ ...attrs.submit.defaults({ type: 'submit' }).all() }}
+            class="{{ vi_class('submit') }}"
+            {{ ...vi_attrs('submit').defaults({
+                type: 'submit',
+                icon: 'ticket',
+            }).all() }}
         />
     </twig:block>
-</twig:ViewsTheme:Dropdown>
+</twig:ViewsTheme:Form:Input:Group>
 ```
 
-- Use `classes.slot` in `class="…"`, `slot:class="…"`, and `{ class: classes.slot }`.
-- Use `attrs.slot` for parent nests inside nested blocks (and everywhere else for consistency).
-- Variants: `root: cx.root.apply({ size: size })` inside the `classes` hash.
-- Single-slot on own DOM with no nested host may still use inline `cx.root.apply()` for classes; nests still go through `attrs`.
-- Do **not** use N locals (`toggleClass`, `labelClass`, `parentAttributes`, …).
+- Defaults stay **inline** at the use site — do not invent materialised locals (`submitProps`, …).
+- Class variants: pass at **define** time (`vi_class('root', { size: size })`), not on `vi_class`.
+- Own-DOM-only hosts may still use `cx.slot.apply()` without define/export.
+- Do **not** use N locals (`toggleClass`, `parentAttributes`, …) or `{% set attrs/classes %}`.
 
-Parent props the child does **not** declare still resolve from the parent context.
+Parent props the child does **not** declare still resolve from the parent context. Prefer nest keys (`toggle:label`) over parallel parent props when composing hosts that share names (`label`, `color`, `id`, …).
 
-When composing hosts that declare common names (`label`, `color`, `id`, …), **pre-bind** parent values into `classes` / `attrs` before the child mount — otherwise names inside `<twig:block>` are the child’s defaults (`null`). Prefer nest keys (`toggle:label`) over parallel parent props.
+See [vi-attrs.md](../twig/vi-attrs.md).
 
 ### Nested slots: props and single content owner
 
@@ -419,19 +394,17 @@ Do **not** multi-hop blocks through nested `<twig:…>` hosts (no `{% set x %}{%
 
 | Need | Pattern |
 |------|---------|
-| Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `attrs.slot.defaults({…})` |
+| Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `vi_attrs('slot').defaults({…})` |
 | Markup body | **One** component owns `{% block content %}` (the shell that wraps that DOM) |
 | Rich chrome override | Caller overrides a **whole** `{% block %}` on that shell (e.g. `header`) |
 
 ```twig
 {# Panel owns body content; title is a prop #}
 {% props title = null %}
-{% set attrs = {
-    header: attributes.nested('header'),
-} %}
+{% do vi_define_attrs(['header']) %}
 …
 <twig:ViewsTheme:Drawer:Header
-    {{ ...attrs.header.defaults({
+    {{ ...vi_attrs('header').defaults({
         title: title,
     }).all() }}
 />
@@ -477,15 +450,15 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
-| Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_cva_from_file` (P4) |
+| Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
-| Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge; Action:Buy class-backed |
+| Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
-| Product:Box / Cover / Box:Header / Box:Footer (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer |
+| Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
@@ -500,4 +473,5 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 - [Component templates](components.md)
 - [JavaScript](javascript.md)
 - [`vi_cva`](../twig/vi-cva.md)
+- [vi_define_cva / vi_class](../twig/vi-cva.md) · [vi_define_attrs / vi_attrs](../twig/vi-attrs.md)
 - Shopware core README: `vendor/shopware/storefront/Resources/views/components/README.md`

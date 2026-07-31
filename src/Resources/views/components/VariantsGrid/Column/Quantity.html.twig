@@ -5,11 +5,11 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-variants-grid-column-quantity variants-grid-column-quantity' },
 }|replace_recursive(cva)) %}
 
-<td {{ attributes }} class="{{ cx.root.apply() }}">
+<td {{ attributes }} class="{{ vi_class('root') }}">
     {% if isAvailable and showQuantitySelect %}
         <twig:ViewsTheme:QuantityInput
             inputName="lineItems[{{ variant.id }}][quantity]"

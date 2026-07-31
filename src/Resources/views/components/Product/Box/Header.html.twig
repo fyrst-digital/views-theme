@@ -1,19 +1,16 @@
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    rating: attributes.nested('rating'),
-    name: attributes.nested('name'),
-} %}
+{% do vi_define_attrs(['rating', 'name']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block rating %}
         {% if showRatingBlock %}
             <twig:ViewsTheme:Review:Rating
-                class="{{ cx.rating.apply() }}"
-                {{ ...attrs.rating.defaults({
+                class="{{ vi_class('rating') }}"
+                {{ ...vi_attrs('rating').defaults({
                     points: product.ratingAverage,
                 }).all() }}
             />
@@ -22,8 +19,8 @@
 
     {% block name %}
         <twig:ViewsTheme:Product:Name
-            class="{{ cx.name.apply() }}"
-            {{ ...attrs.name.defaults({
+            class="{{ vi_class('name') }}"
+            {{ ...vi_attrs('name').defaults({
                 product: product,
                 url: href,
             }).all() }}

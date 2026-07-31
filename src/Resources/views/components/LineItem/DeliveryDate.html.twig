@@ -10,12 +10,12 @@
     {% set deliveryPosition = delivery.positions.get(lineItem.id) %}
 {% endif %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 {% if deliveryPosition and deliveryPosition.deliveryDate %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {{ 'checkout.lineItemDeliveryDate'|trans({
             '%earliest%': deliveryPosition.deliveryDate.earliest|format_date('short', locale=app.request.locale),

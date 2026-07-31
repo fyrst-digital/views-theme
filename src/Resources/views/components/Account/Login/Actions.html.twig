@@ -3,22 +3,19 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    login: attributes.nested('login'),
-    recovery: attributes.nested('recovery'),
-} %}
+{% do vi_define_attrs(['login', 'recovery']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block content %}
         {% block login %}
             <twig:ViewsTheme:Button
-                class="{{ cx.login.apply() }}"
-                {{ ...attrs.login.defaults({
+                class="{{ vi_class('login') }}"
+                {{ ...vi_attrs('login').defaults({
                     type: 'submit',
                     color: 'primary',
                     label: 'account.loginSubmit'|trans|sw_sanitize,
@@ -28,8 +25,8 @@
 
         {% block recovery %}
             <twig:ViewsTheme:Button
-                class="{{ cx.recovery.apply() }}"
-                {{ ...attrs.recovery.defaults({
+                class="{{ vi_class('recovery') }}"
+                {{ ...vi_attrs('recovery').defaults({
                     type: 'link',
                     color: 'link',
                     size: 'sm',

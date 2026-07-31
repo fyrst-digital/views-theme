@@ -4,11 +4,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    panel: attributes.nested('panel'),
-} %}
+{% do vi_define_attrs(['panel']) %}
 
 <div
     {{ attributes.defaults({
@@ -20,7 +18,7 @@
         inert: true,
         'data-component': 'ViewsTheme:Search:Overlay',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block backdrop %}
         <twig:ViewsTheme:Backdrop componentName="ViewsTheme:Search:Overlay" />
@@ -32,8 +30,8 @@
 
     {% block panel %}
         <div
-            {{ attrs.panel }}
-            class="{{ cx.panel.apply() }}"
+            {{ vi_attrs('panel') }}
+            class="{{ vi_class('panel') }}"
         >
             {% block bar %}
                 <twig:ViewsTheme:Search:Bar

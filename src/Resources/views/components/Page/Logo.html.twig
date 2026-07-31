@@ -7,24 +7,12 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'd-inline-flex' },
     text: { base: '' },
     image: { base: 'img-fluid' },
 }|replace_recursive(cva)) %}
-
-{% set attrs = {
-    text: attributes.nested('text'),
-    image: attributes.nested('image'),
-} %}
-
-{% set resolvedLogoPath = logoPath %}
-{% if theme_config('sw-logo-mobile') %}
-    {% set resolvedLogoPath = theme_config('sw-logo-mobile') %}
-{% endif %}
-
-{% set tabletLogoPath = theme_config('sw-logo-tablet') %}
-{% set desktopLogoPath = theme_config('sw-logo-desktop') %}
+{% do vi_define_attrs(['image', 'text']) %}
 {% set imgLogoPath = desktopLogoPath ?: tabletLogoPath ?: resolvedLogoPath %}
 
 <{{ element|raw }}
@@ -32,13 +20,13 @@
         href: element is same as('a') ? href : null,
         title: title,
     }).without('data-component-template').without('class') }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% if textLogo is not empty %}
         {% block text %}
             <span
-                {{ attrs.text.without('class') }}
-                class="{{ cx.text.apply() }}"
+                {{ vi_attrs('text').without('class') }}
+                class="{{ vi_class('text') }}"
             >
                 {{ textLogo|raw }}
             </span>
@@ -67,12 +55,12 @@
                 {% block image %}
                     {% if imgLogoPath %}
                         <img
-                            {{ attrs.image.defaults({
+                            {{ vi_attrs('image').defaults({
                                 src: imgLogoPath|sw_encode_url,
                                 alt: 'header.logoLink'|trans|striptags,
                                 style: 'width: var(--vi-logo-w, auto)',
                             }) }}
-                            class="{{ cx.image.apply() }}"
+                            class="{{ vi_class('image') }}"
                         >
                     {% endif %}
                 {% endblock %}

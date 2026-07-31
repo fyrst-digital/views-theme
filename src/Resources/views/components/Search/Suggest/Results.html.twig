@@ -3,9 +3,9 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-<twig:ViewsTheme:Scroll:Area class="{{ cx.root.apply() }}">
+<twig:ViewsTheme:Scroll:Area class="{{ vi_class('root') }}">
     {% for product in searchResult %}
         <twig:ViewsTheme:Search:Suggest:Item
             :product="product"

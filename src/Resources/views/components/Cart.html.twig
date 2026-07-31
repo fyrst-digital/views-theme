@@ -8,7 +8,7 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-cart' },
 }|replace_recursive(cva)) %}
 
@@ -33,5 +33,5 @@
             cartPageSelector: '.is-active-route-frontend-checkout-cart-page, .is-ctl-checkout.is-act-cartpage',
         }|json_encode,
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 ></div>

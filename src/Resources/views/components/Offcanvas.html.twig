@@ -2,38 +2,33 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    header: attributes.nested('header'),
-    title: attributes.nested('title'),
-    close: attributes.nested('close'),
-    body: attributes.nested('body'),
-} %}
+{% do vi_define_attrs(['header', 'title', 'close', 'body']) %}
 
 {% block meta %}{% endblock %}
 
 {% block root %}
     <div
         {{ attributes }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
     >
         {% block header %}
-            <div {{ attrs.header }} class="{{ cx.header.apply() }}">
+            <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
                 {% block title %}
-                    <div {{ attrs.title }} class="{{ cx.title.apply() }}">
+                    <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
                         {% block title_content %}{% endblock %}
                     </div>
                 {% endblock %}
 
                 {% block close %}
                     <button
-                        {{ attrs.close.defaults({
+                        {{ vi_attrs('close').defaults({
                             type: 'button',
                             title: 'general.offcanvasCloseMenu'|trans|sw_sanitize,
                             'aria-label': 'general.offcanvasCloseMenu'|trans|sw_sanitize,
                         }) }}
-                        class="{{ cx.close.apply() }}"
+                        class="{{ vi_class('close') }}"
                     >
                         {% block close_icon %}
                             {{ vi_icon('x') }}
@@ -44,7 +39,7 @@
         {% endblock %}
 
         {% block body %}
-            <div {{ attrs.body }} class="{{ cx.body.apply() }}">
+            <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
                 {% block content %}{% endblock %}
             </div>
         {% endblock %}

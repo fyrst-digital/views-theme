@@ -5,31 +5,27 @@
     cva = {},
 %}
 
-{% set cx = vi_cva({
+{% do vi_define_cva({
     root: { base: 'vi-cart-heading cart-heading d-flex flex-row flex-wrap' },
     title: { base: 'vi-cart-heading__title cart-heading-title' },
     countBadge: { base: 'vi-cart-heading__count-badge cart-heading-products badge rounded-pill text-bg-light' },
     countInline: { base: 'vi-cart-heading__count-inline' },
 }|replace_recursive(cva)) %}
 
-{% set attrs = {
-    title: attributes.nested('title'),
-    countInline: attributes.nested('countInline'),
-    countBadge: attributes.nested('countBadge'),
-} %}
+{% do vi_define_attrs(['title', 'countInline', 'countBadge']) %}
 
 <div
     {{ attributes }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     {% block title %}
         <{{ titleTag|raw }}
-            {{ attrs.title }}
-            class="{{ cx.title.apply() }}"
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
         >
             {{ 'checkout.cartHeader'|trans|sw_sanitize }}
             {% if productsQuantity > 0 and countDisplay is same as('inline') %}
-                <span {{ attrs.countInline }} class="{{ cx.countInline.apply() }}">
+                <span {{ vi_attrs('countInline') }} class="{{ vi_class('countInline') }}">
                     ({{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }})
                 </span>
             {% endif %}
@@ -38,7 +34,7 @@
 
     {% block products %}
         {% if productsQuantity > 0 and countDisplay is same as('badge') %}
-            <span {{ attrs.countBadge }} class="{{ cx.countBadge.apply() }}">
+            <span {{ vi_attrs('countBadge') }} class="{{ vi_class('countBadge') }}">
                 {{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}
             </span>
         {% endif %}

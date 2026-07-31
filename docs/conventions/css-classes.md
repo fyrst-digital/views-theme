@@ -2,15 +2,15 @@
 
 ## Current standard (UX)
 
-Components use **[`vi_cva`](../twig/vi-cva.md)** / **`vi_cva_from_file`** + attributes.
+Components use **[`vi_define_cva` / `vi_class`](../twig/vi-cva.md)** + attributes.
 
 | Concern | Mechanism |
 |---------|-----------|
-| Default CVA config | Sibling `Name.cva.twig` via `vi_cva_from_file(cva)`, or inline map for small components |
+| Default CVA config | Sibling `Name.cva.twig` via `vi_define_cva(cva)`, or inline map for small components |
 | Caller CVA override | `:cva="{ … }"` deep-merged into defaults |
 | Root extra classes | `class="…"` on the component tag |
 | Nested slot extras | `slot:class="…"` |
-| Composition | `{% set cx = vi_cva_from_file(cva) %}` or `vi_cva({ … }\|replace_recursive(cva))` then `cx.root.apply({ … })` |
+| Composition | `{% do vi_define_cva(cva) %}` then `vi_class('root', { … })` ([vi-cva](../twig/vi-cva.md)) |
 
 Root BEM: `vi-*` prefix + utilities in slot `base`.
 
@@ -19,7 +19,7 @@ Root BEM: `vi-*` prefix + utilities in slot `base`.
 
 Prefer one system per property on a node (do not mix e.g. `gap-2` and `tw:gap-4` on the same element). Global component overrides/tokens: Tailwind-built `assets/css/theme.css` (source: `app/storefront/src/css/`). See [Configuration — Tailwind CSS](../configuration.md#tailwind-css-themecss).
 
-Always call `vi_cva` / `vi_cva_from_file` **before** rendering `attributes` / `attributes.defaults()`.
+Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defaults()`.
 
 **Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ cx.…apply() }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
 
@@ -108,7 +108,7 @@ Alert.cva.twig      # hash expression only
 
 ## Removed legacy API
 
-`vi_define_classes`, `vi_attr_classes`, `vi_classes`, and root props `defaultBaseClasses` / `defaultVariants` have been **removed**. Do not reintroduce them.
+Legacy pre-UX class-map APIs are **removed**. Current API: [`vi_define_cva` / `vi_class`](../twig/vi-cva.md).
 
 Historical docs (for reference only):
 
@@ -118,6 +118,6 @@ Historical docs (for reference only):
 
 ## Related
 
-- [`vi_cva`](../twig/vi-cva.md)
+- [`vi_define_cva` / `vi_class`](../twig/vi-cva.md)
 - [UX components](ux-components.md)
 - [Component templates](components.md)

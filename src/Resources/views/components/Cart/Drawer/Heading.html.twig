@@ -3,13 +3,13 @@
     cva = {},
 %}
 
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Cart:Drawer:Heading',
     }) }}
-    class="{{ cx.root.apply() }}"
+    class="{{ vi_class('root') }}"
 >
     <twig:ViewsTheme:Cart:Heading
         :productsQuantity="productsQuantity"

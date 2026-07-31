@@ -5,23 +5,20 @@
 %}
 
 {% set anchorName = '--' ~ id %}
-{% set cx = vi_cva_from_file(cva) %}
+{% do vi_define_cva(cva) %}
 
-{% set attrs = {
-    host: attributes.nested('host'),
-    toggle: attributes.nested('toggle'),
-} %}
+{% do vi_define_attrs(['host', 'toggle']) %}
 
 <div
-    {{ attrs.host.defaults({
+    {{ vi_attrs('host').defaults({
         'data-component': 'ViewsTheme:Dropdown',
     }) }}
-    class="{{ cx.host.apply() }}"
+    class="{{ vi_class('host') }}"
 >
     {% block toggle %}
         <twig:ViewsTheme:Button
-            class="{{ cx.toggle.apply() }}"
-            {{ ...attrs.toggle.defaults({
+            class="{{ vi_class('toggle') }}"
+            {{ ...vi_attrs('toggle').defaults({
                 type: 'button',
                 color: 'none',
                 size: 'md',
@@ -43,7 +40,7 @@
             tabindex: '-1',
             'data-placement': placement,
         }) }}
-        class="{{ cx.root.apply() }}"
+        class="{{ vi_class('root') }}"
         style="position-anchor: {{ anchorName }}"
     >
         {% block content %}{% endblock %}
