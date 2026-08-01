@@ -52,6 +52,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Form input](features/form-input.md)
 - [Product box](features/product-box.md)
 - [Product listing](features/product-listing.md)
+- [Grid](features/grid.md)
 - [Pagination](features/pagination.md)
 - [Sorting](features/sorting.md)
 - [Filters](features/filters.md)

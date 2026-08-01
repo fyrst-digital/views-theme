@@ -65,7 +65,7 @@ No `data-wishlist-storage` / `data-wishlist-widget`. Listens to `Wishlist:Change
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/component/wishlist/listing.html.twig` — mounts `Wishlist:Listing` |
-| `Wishlist:Listing` | Forwards props into `Product:Listing`; clears `actions`; replaces `empty` (illustration + copy) |
+| `Wishlist:Listing` | Forwards props into `Product:Listing`; clears `actions`; overrides `Listing:Empty` `content` (illustration + copy) |
 
 See [product-listing.md](product-listing.md) for the shared grid shell and Box wiring (`boxLayout` default `wishlist`).
 

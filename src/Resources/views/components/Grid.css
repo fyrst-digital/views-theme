@@ -1,0 +1,4 @@
+.vi-grid {
+    gap: var(--vi-grid-gap, var(--spacing-4, 0));
+    grid-template-columns: repeat(var(--vi-grid-cols, 12), minmax(0, 1fr));
+}

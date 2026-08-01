@@ -133,18 +133,17 @@ class ListingController extends AbstractComponentController
     private function resultsProps(Request $request, mixed $searchResult): array
     {
         $boxLayout = $request->get('boxLayout');
-        $listingColumns = $request->get('listingColumns');
         $referrerCategoryId = $request->get('referrerCategoryId');
 
         return [
             'searchResult' => $searchResult,
             'boxLayout' => \is_string($boxLayout) && $boxLayout !== '' ? $boxLayout : 'default',
-            'listingColumns' => \is_string($listingColumns) && $listingColumns !== ''
-                ? $listingColumns
-                : 'col-sm-6 col-lg-4 col-xl-3',
             'referrerCategoryId' => \is_string($referrerCategoryId) && $referrerCategoryId !== ''
                 ? $referrerCategoryId
                 : null,
         ];
     }
 }
+
+
+

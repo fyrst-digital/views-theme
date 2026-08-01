@@ -19,8 +19,6 @@ class Results
 
     public string $boxLayout = 'default';
 
-    public string $listingColumns = 'col-sm-6 col-lg-4 col-xl-3';
-
     public ?string $referrerCategoryId = null;
 
     /**

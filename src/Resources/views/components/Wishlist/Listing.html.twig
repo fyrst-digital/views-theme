@@ -5,7 +5,6 @@
     params = {},
     sidebar = false,
     boxLayout = 'wishlist',
-    listingColumns = 'col-sm-6 col-lg-4 col-xl-3',
     ariaLiveUpdates = true,
     disableEmptyFilter = false,
     referrerCategoryId = null,
@@ -13,7 +12,7 @@
 %}
 
 {% do vi_define_cva({
-    empty: { base: 'vi-wishlist-listing__empty col-12 wishlist-listing-empty-container' },
+    empty: { base: 'vi-wishlist-listing__empty wishlist-listing-empty-container' },
     emptyImage: { base: 'vi-wishlist-listing__empty-image wishlist-listing-empty' },
     header: { base: 'vi-wishlist-listing__header text-center wishlist-listing-header' },
     description: { base: 'vi-wishlist-listing__description text-center wishlist-listing-description' },
@@ -27,7 +26,6 @@
     :params="params"
     :sidebar="sidebar"
     :boxLayout="boxLayout"
-    :listingColumns="listingColumns"
     :ariaLiveUpdates="ariaLiveUpdates"
     :disableEmptyFilter="disableEmptyFilter"
     :referrerCategoryId="referrerCategoryId"
@@ -36,27 +34,31 @@
         <twig:ViewsTheme:Product:Listing:Results
             :searchResult="searchResult"
             :boxLayout="boxLayout"
-            :listingColumns="listingColumns"
             :referrerCategoryId="referrerCategoryId"
         >
             <twig:block name="actions"></twig:block>
 
             <twig:block name="empty">
-                <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
-                    <img
-                        src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
-                        alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
-                        {{ vi_attrs('emptyImage') }}
-                        class="{{ vi_class('emptyImage') }}"
-                    >
+                <twig:ViewsTheme:Product:Listing:Empty
+                    class="{{ vi_class('empty') }}"
+                    {{ ...vi_attrs('empty').all() }}
+                >
+                    <twig:block name="content">
+                        <img
+                            src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
+                            alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
+                            {{ vi_attrs('emptyImage') }}
+                            class="{{ vi_class('emptyImage') }}"
+                        >
 
-                    <h1 {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
-                        {{ 'wishlist.wishlistEmptyHeader'|trans }}
-                    </h1>
-                    <p {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
-                        {{ 'wishlist.wishlistEmptyDescription'|trans }}
-                    </p>
-                </div>
+                        <h1 {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
+                            {{ 'wishlist.wishlistEmptyHeader'|trans }}
+                        </h1>
+                        <p {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
+                            {{ 'wishlist.wishlistEmptyDescription'|trans }}
+                        </p>
+                    </twig:block>
+                </twig:ViewsTheme:Product:Listing:Empty>
             </twig:block>
         </twig:ViewsTheme:Product:Listing:Results>
     </twig:block>

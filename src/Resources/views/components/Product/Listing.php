@@ -33,8 +33,6 @@ class Listing
 
     public string $boxLayout = 'default';
 
-    public string $listingColumns = 'col-sm-6 col-lg-4 col-xl-3';
-
     public bool $ariaLiveUpdates = true;
 
     public mixed $disableEmptyFilter = null;
@@ -95,7 +93,6 @@ class Listing
             $this->aggregationsUrl = $this->resolveAggregationsUrl();
         }
 
-        // json_encode([]) becomes JS []; empty object must stay {}.
         $baseParams = $this->params === [] ? new \stdClass() : $this->params;
 
         $this->componentOptions = [
@@ -104,7 +101,6 @@ class Listing
             'baseParams' => $baseParams,
             'display' => [
                 'boxLayout' => $this->boxLayout,
-                'listingColumns' => $this->listingColumns,
                 'referrerCategoryId' => $this->referrerCategoryId,
             ],
             'disableEmptyFilter' => (bool) $this->disableEmptyFilter,
@@ -119,7 +115,6 @@ class Listing
 
     private function resolveResultsUrl(): ?string
     {
-        // URLs are preferred from the bridge; leave null when unknown.
         return $this->resultsUrl;
     }
 

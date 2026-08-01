@@ -22,7 +22,6 @@ export default class ProductListing extends ShopwareComponent {
         ],
         displayParamKeys: [
             'boxLayout',
-            'listingColumns',
             'referrerCategoryId',
             'no-aggregations',
             'only-aggregations',

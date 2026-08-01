@@ -9,6 +9,9 @@ Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters
 | Storefront bridge | `storefront/component/product/listing.html.twig` → `Product:Listing` + theme `/vi/listing/…` URLs |
 | `Product:Listing` | Class VM + **owner JS**: fetch, history, control registry, island swap |
 | `Product:Listing:Results` | XHR-swappable island (actions, items, empty, pagination) |
+| `Product:Listing:Actions` | Top bar: Pagination + Sorting |
+| `Product:Listing:Empty` | Empty results shell (default Alert; overridable `content`) |
+| `Grid` | Items container (CSS grid shell) — [grid.md](grid.md) |
 | `Pagination` / `Sorting` | Theme chrome + controls registered with Listing |
 | Filters | [filters.md](filters.md) |
 | Controllers | `ListingController` — results HTML + aggregations JSON |
@@ -18,10 +21,14 @@ Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters
 ```
 Product:Listing (data-component owner)
   └─ Product:Listing:Results (island)
-       ├─ actions → Pagination + Sorting
-       ├─ items → Product:Box × N | empty
+       ├─ Product:Listing:Actions → Pagination + Sorting
+       ├─ Grid
+       │    ├─ Product:Box × N
+       │    └─ or Product:Listing:Empty (data-grid-span=full)
        └─ Pagination bottom
 ```
+
+Item density: CSS only (e.g. `--vi-grid-cols` / `g-col-*` on host or Box via theme CSS) — no listing prop.
 
 Sidebar (sibling): `Filter:Panel` → registers controls on Listing via `callMethod`.
 
@@ -48,7 +55,7 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:Loading`.
 
-Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `listingColumns`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
+Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
 
 ## Props (`Product:Listing`)
 
@@ -57,7 +64,7 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 | `searchResult` | Initial SSR result |
 | `resultsUrl` / `aggregationsUrl` | Theme routes (bridge resolves category/search) |
 | `params` | Always-merged query (e.g. `{ search }`) |
-| `boxLayout` / `listingColumns` / `referrerCategoryId` | Forwarded to Results / Box |
+| `boxLayout` / `referrerCategoryId` | Forwarded to Results / Box |
 | `disableEmptyFilter` | Config default; enables aggregations refresh |
 
 ## Blocks
@@ -65,13 +72,15 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 | On | Blocks |
 |----|--------|
 | Listing | `results` |
-| Results | `actions`, `paginationTop`, `sorting`, `items`, `item`, `box`, `empty`, `emptyAlert`, `paginationBottom` |
+| Results | `actions`, `grid` (→ Grid), `items`, `item` (Box), `empty` (→ Listing:Empty), `paginationBottom` |
+| Actions | `pagination`, `sorting` |
+| Empty | `content` (default Alert) |
 
 ## Known gaps
 
 - Wishlist listing XHR route not added yet
-- Bootstrap `listingColumns` still drive the grid
 - Human must rebuild storefront JS after pull
+- Item density via CSS only (`--vi-grid-cols` / theme) — [grid.md](grid.md)
 
 ## Files
 
@@ -80,6 +89,9 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 | Bridge | `storefront/component/product/listing.html.twig` |
 | Listing | `components/Product/Listing.{php,html.twig,cva.twig,js}` |
 | Results | `components/Product/Listing/Results.{php,html.twig,cva.twig,js}` |
+| Actions | `components/Product/Listing/Actions.{html.twig,cva.twig}` |
+| Empty | `components/Product/Listing/Empty.{html.twig,cva.twig}` |
+| Grid | `components/Grid.*` — [grid.md](grid.md) |
 | Controller | `src/Controller/ListingController.php` |
 | Pagination / Sorting | `components/Pagination.*`, `components/Sorting.*` |
 | Filters | [filters.md](filters.md) |
