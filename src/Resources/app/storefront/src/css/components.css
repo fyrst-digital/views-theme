@@ -93,3 +93,11 @@
 .vi-cart-drawer {
   --vi-drawer-width: min(420px, 100vw);
 }
+
+.vi-product-listing-results__grid {
+  --vi-grid-columns: repeat(auto-fill, minmax(min(100%, var(--vi-product-basis, 220px)), 1fr));
+
+  @variant xxl {
+    --vi-product-basis: 320px;
+  }
+}

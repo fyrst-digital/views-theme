@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['actions', 'items', 'item', 'empty', 'paginationBottom']) %}
+{% do vi_define_attrs(['actions', 'grid', 'item', 'empty', 'paginationBottom']) %}
 
 {% if showBottomPagination %}
     {% set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
@@ -31,8 +31,8 @@
 
     {% block grid %}
         <twig:ViewsTheme:Grid
-            class="{{ vi_class('items') }}"
-            {{ ...vi_attrs('items').defaults({
+            class="{{ vi_class('grid', {size: size}) }}"
+            {{ ...vi_attrs('grid').defaults({
                 role: hasResults ? 'list' : null,
             }).all() }}
         >
@@ -42,7 +42,7 @@
                         {% for product in searchResult %}
                             {% block item %}
                                 <twig:ViewsTheme:Product:Box
-                                    class="{{ vi_class('item') }}"
+                                    class="{{ vi_class('item', { size: size }) }}"
                                     {{ ...vi_attrs('item').defaults({
                                         product: product,
                                         layout: boxLayout,

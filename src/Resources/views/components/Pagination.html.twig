@@ -1,6 +1,6 @@
 {% if visible %}
     {% do vi_define_cva(cva) %}
-    {% do vi_define_attrs(['list', 'item', 'first', 'prev', 'next', 'last']) %}
+    {% do vi_define_attrs(['first', 'prev', 'page', 'next', 'last']) %}
 
     {% set locationClass = location ? ' listing-pagination-' ~ location : '' %}
 
@@ -13,106 +13,71 @@
             }) }}
             class="{{ vi_class('root') }} listing-pagination{{ locationClass }}"
         >
-            {% block list %}
-                <ul
-                    {{ vi_attrs('list') }}
-                    class="{{ vi_class('list') }}"
-                >
-                    {% block first %}
-                        <li
-                            {{ vi_attrs('first') }}
-                            class="{{ vi_class('first') }}{{ isFirst ? ' disabled' : '' }}"
-                        >
-                            <a
-                                href="{{ this.pageHref(1) }}"
-                                class="{{ vi_class('link') }}"
-                                data-page="1"
-                                data-focus-id="first"
-                                aria-label="{{ 'general.pagination.first'|trans|striptags }}"
-                                {% if isFirst %}tabindex="-1" aria-disabled="true"{% endif %}
-                            >
-                                {{ vi_icon('arrow-left') }}
-                            </a>
-                        </li>
-                    {% endblock %}
+            {% block first %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('first') }}"
+                    {{ ...vi_attrs('first').defaults({
+                        page: 1,
+                        href: this.pageHref(1),
+                        disabled: isFirst,
+                        icon: 'caret-line-left',
+                        label: 'general.pagination.first'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
 
-                    {% block prev %}
-                        <li
-                            {{ vi_attrs('prev') }}
-                            class="{{ vi_class('prev') }}{{ isFirst ? ' disabled' : '' }}"
-                        >
-                            <a
-                                href="{{ this.pageHref(prevPage) }}"
-                                class="{{ vi_class('link') }}"
-                                data-page="{{ prevPage }}"
-                                data-focus-id="prev"
-                                aria-label="{{ 'general.pagination.prev'|trans|striptags }}"
-                                {% if isFirst %}tabindex="-1" aria-disabled="true"{% endif %}
-                            >
-                                {{ vi_icon('caret-left') }}
-                            </a>
-                        </li>
-                    {% endblock %}
+            {% block prev %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('prev') }}"
+                    {{ ...vi_attrs('prev').defaults({
+                        page: prevPage,
+                        href: this.pageHref(prevPage),
+                        disabled: isFirst,
+                        icon: 'caret-left',
+                        label: 'general.pagination.prev'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
 
-                    {% block pages %}
-                        {% for page in start..end %}
-                            {% set isActive = currentPage == page %}
-                            {% block item %}
-                                <li
-                                    {{ vi_attrs('item') }}
-                                    class="{{ vi_class('item') }}{{ isActive ? ' active' : '' }}"
-                                    {% if isActive %}aria-current="page"{% endif %}
-                                >
-                                    <a
-                                        href="{{ this.pageHref(page) }}"
-                                        class="{{ vi_class('link') }}"
-                                        data-page="{{ page }}"
-                                        data-focus-id="{{ page }}"
-                                    >
-                                        <span class="visually-hidden">{{ 'general.pagination.page'|trans|sw_sanitize }}</span>
-                                        {{ page }}
-                                    </a>
-                                </li>
-                            {% endblock %}
-                        {% endfor %}
+            {% block pages %}
+                {% for pageNumber in start..end %}
+                    {% block page %}
+                        <twig:ViewsTheme:Pagination:Item
+                            class="{{ vi_class('page') }}"
+                            {{ ...vi_attrs('page').defaults({
+                                page: pageNumber,
+                                href: this.pageHref(pageNumber),
+                                active: currentPage == pageNumber,
+                            }).all() }}
+                        />
                     {% endblock %}
+                {% endfor %}
+            {% endblock %}
 
-                    {% block next %}
-                        <li
-                            {{ vi_attrs('next') }}
-                            class="{{ vi_class('next') }}{{ isLast ? ' disabled' : '' }}"
-                        >
-                            <a
-                                href="{{ this.pageHref(nextPage) }}"
-                                class="{{ vi_class('link') }}"
-                                data-page="{{ nextPage }}"
-                                data-focus-id="next"
-                                aria-label="{{ 'general.pagination.next'|trans|striptags }}"
-                                {% if isLast %}tabindex="-1" aria-disabled="true"{% endif %}
-                            >
-                                {{ vi_icon('caret-right') }}
-                            </a>
-                        </li>
-                    {% endblock %}
+            {% block next %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('next') }}"
+                    {{ ...vi_attrs('next').defaults({
+                        page: nextPage,
+                        href: this.pageHref(nextPage),
+                        disabled: isLast,
+                        icon: 'caret-right',
+                        label: 'general.pagination.next'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
 
-                    {% block last %}
-                        <li
-                            {{ vi_attrs('last') }}
-                            class="{{ vi_class('last') }}{{ isLast ? ' disabled' : '' }}"
-                        >
-                            <a
-                                href="{{ this.pageHref(totalPages) }}"
-                                class="{{ vi_class('link') }}"
-                                data-page="{{ totalPages }}"
-                                data-focus-id="last"
-                                aria-label="{{ 'general.pagination.last'|trans|striptags }}"
-                                {% if isLast %}tabindex="-1" aria-disabled="true"{% endif %}
-                            >
-                                {{ vi_icon('arrow-right') }}
-                            </a>
-                        </li>
-                    {% endblock %}
-                </ul>
+            {% block last %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('last') }}"
+                    {{ ...vi_attrs('last').defaults({
+                        page: totalPages,
+                        href: this.pageHref(totalPages),
+                        disabled: isLast,
+                        icon: 'caret-line-right',
+                        label: 'general.pagination.last'|trans|striptags,
+                    }).all() }}
+                />
             {% endblock %}
         </nav>
     {% endblock %}

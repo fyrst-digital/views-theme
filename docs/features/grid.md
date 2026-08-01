@@ -64,7 +64,7 @@ Theme may assign `--vi-grid-cols` / `--vi-grid-gap` on a host without props. **N
 
 | Caller | Notes |
 |--------|--------|
-| `Product:Listing:Results` | Items grid; density via CSS tokens / caller classes (no listing prop) |
+| `Product:Listing:Results` | Items grid; density via Results `size` → item CVA `g-col-*` |
 
 ## Files
 

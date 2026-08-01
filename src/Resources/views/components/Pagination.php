@@ -9,7 +9,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Pagination — page window + gates; Twig composes nav markup.
+ * View-model for Pagination — page window + gates; Twig composes leaf controls.
  */
 #[AsTwigComponent]
 class Pagination

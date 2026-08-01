@@ -109,6 +109,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Language flag (load error / fallback) | `ViewsTheme:Language:Flag` | `Language/Flag.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
+| Pagination (Listing control API) | `ViewsTheme:Pagination` | `Pagination.js` |
+| Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 
 Build (project root):
 

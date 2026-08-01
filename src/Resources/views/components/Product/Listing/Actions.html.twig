@@ -28,6 +28,7 @@
             {{ ...vi_attrs('sorting').defaults({
                 current: searchResult.sorting,
                 sortings: searchResult.availableSortings,
+                'select:size': 'sm'
             }).all() }}
         />
     {% endblock %}

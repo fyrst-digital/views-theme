@@ -28,7 +28,7 @@ Product:Listing (data-component owner)
        └─ Pagination bottom
 ```
 
-Item density: CSS only (e.g. `--vi-grid-cols` / `g-col-*` on host or Box via theme CSS) — no listing prop.
+Item density: Results prop `size` (`sm` | `md` | `lg`, default `md`) → CVA `g-col-*` on each Box. Results-only (not on Listing / XHR display).
 
 Sidebar (sibling): `Filter:Panel` → registers controls on Listing via `callMethod`.
 
@@ -67,12 +67,26 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 | `boxLayout` / `referrerCategoryId` | Forwarded to Results / Box |
 | `disableEmptyFilter` | Config default; enables aggregations refresh |
 
+## Props (`Product:Listing:Results`)
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `searchResult` | — | Listing result |
+| `boxLayout` / `referrerCategoryId` | `default` / `null` | Box |
+| `size` | `md` | Item CVA columns: `sm` denser · `md` default · `lg` sparser |
+
+| size | Item classes |
+|------|----------------|
+| `sm` | `g-col-6 g-col-md-4 g-col-lg-3 g-col-xl-2` |
+| `md` | `g-col-6 g-col-lg-4 g-col-xl-3` |
+| `lg` | `g-col-12 g-col-md-6 g-col-lg-4` |
+
 ## Blocks
 
 | On | Blocks |
 |----|--------|
 | Listing | `results` |
-| Results | `actions`, `grid` (→ Grid), `items`, `item` (Box), `empty` (→ Listing:Empty), `paginationBottom` |
+| Results | `actions`, `grid` (attrs + block → Grid), `items` (loop block), `item` (Box), `empty` (→ Listing:Empty), `paginationBottom` |
 | Actions | `pagination`, `sorting` |
 | Empty | `content` (default Alert) |
 
@@ -80,7 +94,7 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 
 - Wishlist listing XHR route not added yet
 - Human must rebuild storefront JS after pull
-- Item density via CSS only (`--vi-grid-cols` / theme) — [grid.md](grid.md)
+- Results `size` not forwarded from Listing / XHR yet
 
 ## Files
 

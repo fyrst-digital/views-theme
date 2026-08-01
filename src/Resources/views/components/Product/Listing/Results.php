@@ -19,6 +19,11 @@ class Results
 
     public string $boxLayout = 'default';
 
+    /**
+     * Item column density: sm | md | lg (CVA on item slot).
+     */
+    public string $size = 'md';
+
     public ?string $referrerCategoryId = null;
 
     /**
@@ -40,6 +45,10 @@ class Results
     {
         if ($this->boxLayout === '' || $this->boxLayout === 'standard') {
             $this->boxLayout = 'default';
+        }
+
+        if (!\in_array($this->size, ['sm', 'md', 'lg'], true)) {
+            $this->size = 'md';
         }
 
         if (!$this->searchResult instanceof EntitySearchResult) {
