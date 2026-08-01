@@ -1,127 +1,22 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['actions', 'items', 'item', 'empty', 'paginationTop', 'sorting', 'paginationBottom']) %}
-
-{% set listingPagination = {
-    sidebar: sidebar,
-    params: params,
-    dataUrl: dataUrl,
-    filterUrl: filterUrl,
-    disableEmptyFilter: disableEmptyFilter,
-    ariaLiveUpdates: ariaLiveUpdates,
-    snippets: {
-        resetAllButtonText: 'listing.filterPanelResetAll'|trans|sw_sanitize,
-        resetAllFiltersAriaLabel: 'listing.filterResetAllAriaLabel'|trans|sw_sanitize,
-        removeFilterAriaLabel: 'listing.filterRemoveAriaLabel'|trans|sw_sanitize,
-    },
-} %}
-
-{% set paginationConfig = { page: paginationPage } %}
-
-{% if showBottomPagination %}
-    {% set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
-        '%count%': searchResult.elements|length,
-        '%total%': searchResult.total,
-    })|sw_sanitize %}
-{% else %}
-    {% set ariaLiveText = 'listing.filterPanelAriaLive'|trans({'%count%': searchResult.total})|sw_sanitize %}
-{% endif %}
+{% do vi_define_attrs(['results']) %}
 
 <div
     {{ attributes.defaults({
-        'data-listing-pagination': 'true',
-        'data-listing-pagination-options': paginationConfig|json_encode,
-        'data-listing': 'true',
-        'data-listing-options': listingPagination|json_encode,
+        'data-component': 'ViewsTheme:Product:Listing',
+        'data-component-options': componentOptions|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    <div class="{{ vi_class('content') }}">
-        {% if hasResults %}
-            {% block actions %}
-                <div
-                    {{ vi_attrs('actions') }}
-                    class="{{ vi_class('actions') }}"
-                >
-                    {% block paginationTop %}
-                        <twig:ViewsTheme:Pagination
-                            class="{{ vi_class('paginationTop') }}"
-                            {{ ...vi_attrs('paginationTop').defaults({
-                                entities: searchResult,
-                                location: 'top',
-                                searchQuery: paginationSearchQuery,
-                            }).all() }}
-                        />
-                    {% endblock %}
-
-                    {% block sorting %}
-                        <twig:ViewsTheme:Sorting
-                            class="{{ vi_class('sorting') }}"
-                            {{ ...vi_attrs('sorting').defaults({
-                                current: searchResult.sorting,
-                                sortings: searchResult.availableSortings,
-                            }).all() }}
-                        />
-                    {% endblock %}
-                </div>
-            {% endblock %}
-        {% endif %}
-
-        <div
-            {{ vi_attrs('items').defaults({
-                'data-aria-live-text': ariaLiveText,
-                role: hasResults ? 'list' : null,
-            }) }}
-            class="{{ vi_class('items') }}"
-        >
-            {% if hasResults %}
-                {% block items %}
-                    {% for product in searchResult %}
-                        {% block item %}
-                            <div
-                                {{ vi_attrs('item') }}
-                                class="{{ vi_class('item') }} {{ listingColumns }}"
-                                role="listitem"
-                            >
-                                {% block box %}
-                                    <twig:ViewsTheme:Product:Box
-                                        :product="product"
-                                        :layout="boxLayout"
-                                        :referrerCategoryId="referrerCategoryId"
-                                    />
-                                {% endblock %}
-                            </div>
-                        {% endblock %}
-                    {% endfor %}
-                {% endblock %}
-            {% else %}
-                {% block empty %}
-                    <div
-                        {{ vi_attrs('empty') }}
-                        class="{{ vi_class('empty') }}"
-                    >
-                        {% block emptyAlert %}
-                            <twig:ViewsTheme:Alert
-                                type="info"
-                                content="{{ 'listing.emptyResultMessage'|trans|sw_sanitize }}"
-                                announceOnLoad
-                            />
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-            {% endif %}
-        </div>
-
-        {% if showBottomPagination %}
-            {% block paginationBottom %}
-                <twig:ViewsTheme:Pagination
-                    class="{{ vi_class('paginationBottom') }}"
-                    {{ ...vi_attrs('paginationBottom').defaults({
-                        entities: searchResult,
-                        location: 'bottom',
-                        searchQuery: paginationSearchQuery,
-                    }).all() }}
-                />
-            {% endblock %}
-        {% endif %}
-    </div>
+    {% block results %}
+        <twig:ViewsTheme:Product:Listing:Results
+            class="{{ vi_class('results') }}"
+            {{ ...vi_attrs('results').defaults({
+                searchResult: searchResult,
+                boxLayout: boxLayout,
+                listingColumns: listingColumns,
+                referrerCategoryId: referrerCategoryId,
+            }).all() }}
+        />
+    {% endblock %}
 </div>

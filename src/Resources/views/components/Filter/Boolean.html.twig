@@ -1,0 +1,28 @@
+{% props
+    name,
+    displayName = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['label']) %}
+
+{% set options = {
+    name: name,
+    displayName: displayName,
+    listingComponent: 'ViewsTheme:Product:Listing',
+} %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Boolean',
+        'data-component-options': options|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+    role="listitem"
+>
+    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+        <input type="checkbox" value="1">
+        {{ displayName }}
+    </label>
+</div>

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
 use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -14,16 +13,16 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Listing — listing plugin config gates + layout normalize; Twig composes.
+ * View-model for Product:Listing — owner options + layout/referrer defaults; Twig composes Results.
  */
 #[AsTwigComponent]
 class Listing
 {
     public mixed $searchResult = null;
 
-    public ?string $dataUrl = null;
+    public ?string $resultsUrl = null;
 
-    public ?string $filterUrl = null;
+    public ?string $aggregationsUrl = null;
 
     /**
      * @var array<string, mixed>
@@ -47,13 +46,10 @@ class Listing
      */
     public array $cva = [];
 
-    public bool $hasResults = false;
-
-    public bool $showBottomPagination = false;
-
-    public int $paginationPage = 1;
-
-    public string $paginationSearchQuery = '';
+    /**
+     * @var array<string, mixed>
+     */
+    public array $componentOptions = [];
 
     public function __construct(
         private readonly RequestStack $requestStack,
@@ -94,23 +90,42 @@ class Listing
             }
         }
 
-        if (!$this->searchResult instanceof EntitySearchResult) {
-            return;
+        if ($this->resultsUrl === null && $this->searchResult instanceof ProductListingResult) {
+            $this->resultsUrl = $this->resolveResultsUrl();
+            $this->aggregationsUrl = $this->resolveAggregationsUrl();
         }
 
-        $total = $this->searchResult->getTotal();
-        $limit = $this->searchResult->getLimit() ?? 0;
+        // json_encode([]) becomes JS []; empty object must stay {}.
+        $baseParams = $this->params === [] ? new \stdClass() : $this->params;
 
-        $this->hasResults = $total > 0;
-        $this->showBottomPagination = $limit > 0 && $total > $limit;
-        $this->paginationPage = $this->searchResult->getPage();
+        $this->componentOptions = [
+            'resultsUrl' => $this->resultsUrl,
+            'aggregationsUrl' => $this->aggregationsUrl,
+            'baseParams' => $baseParams,
+            'display' => [
+                'boxLayout' => $this->boxLayout,
+                'listingColumns' => $this->listingColumns,
+                'referrerCategoryId' => $this->referrerCategoryId,
+            ],
+            'disableEmptyFilter' => (bool) $this->disableEmptyFilter,
+            'ariaLiveUpdates' => $this->ariaLiveUpdates,
+            'history' => true,
+            'resultsComponent' => 'ViewsTheme:Product:Listing:Results',
+            'changedEvent' => 'ViewsTheme:Listing:Changed',
+            'loadingEvent' => 'ViewsTheme:Listing:Loading',
+            'scrollOffset' => 15,
+        ];
+    }
 
-        if ($this->searchResult instanceof ProductListingResult) {
-            $search = $this->searchResult->getCurrentFilter('search');
-            if (\is_string($search) && $search !== '') {
-                $this->paginationSearchQuery = '&search=' . rawurlencode($search);
-            }
-        }
+    private function resolveResultsUrl(): ?string
+    {
+        // URLs are preferred from the bridge; leave null when unknown.
+        return $this->resultsUrl;
+    }
+
+    private function resolveAggregationsUrl(): ?string
+    {
+        return $this->aggregationsUrl;
     }
 
     private function salesChannelContext(): ?SalesChannelContext

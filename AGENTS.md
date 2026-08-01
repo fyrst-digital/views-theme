@@ -48,6 +48,7 @@ Full index: [docs/README.md](docs/README.md).
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
+| Filters | [docs/features/filters.md](docs/features/filters.md) |
 | Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
 | Sorting | [docs/features/sorting.md](docs/features/sorting.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |

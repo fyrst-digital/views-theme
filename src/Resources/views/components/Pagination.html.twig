@@ -7,6 +7,7 @@
     {% block root %}
         <nav
             {{ attributes.defaults({
+                'data-component': 'ViewsTheme:Pagination',
                 'aria-label': 'general.pagination.title'|trans|striptags,
                 'data-pagination-location': location ? location : false,
             }) }}

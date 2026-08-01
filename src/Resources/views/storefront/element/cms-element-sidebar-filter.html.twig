@@ -1,0 +1,50 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-sidebar-filter.html.twig' %}
+
+{% block element_sidebar_filter %}
+    {% if cmsPage is defined %}
+        {% set slot = cmsPage.getFirstElementOfType('product-listing') %}
+        {% set listing = slot.data.listing %}
+    {% endif %}
+
+    {% if listing and listing.aggregations.elements|length > 0 %}
+        {% set filterDrawerId = 'vi-filter-drawer' %}
+        {% set filterLabel = 'listing.filterTitleText'|trans|sw_sanitize %}
+
+        <twig:ViewsTheme:Filter:Shell>
+            <twig:block name="content">
+                <twig:ViewsTheme:Filter:Action
+                    drawerId="{{ filterDrawerId }}"
+                    label="{{ filterLabel }}"
+                />
+
+                <twig:ViewsTheme:Filter:Host>
+                    <twig:block name="content">
+                        <twig:ViewsTheme:Filter:Panel
+                            :listing="listing"
+                            :ariaLiveUpdates="true"
+                            :showHeader="false"
+                        />
+                    </twig:block>
+                </twig:ViewsTheme:Filter:Host>
+
+                <twig:ViewsTheme:Drawer
+                    id="{{ filterDrawerId }}"
+                    side="end"
+                    label="{{ filterLabel }}"
+                    title="{{ filterLabel }}"
+                >
+                    <twig:block name="panel">
+                        <twig:ViewsTheme:Drawer:Panel
+                            side="end"
+                            title="{{ filterLabel }}"
+                        >
+                            <twig:block name="content">
+                                <twig:ViewsTheme:Filter:DrawerSlot />
+                            </twig:block>
+                        </twig:ViewsTheme:Drawer:Panel>
+                    </twig:block>
+                </twig:ViewsTheme:Drawer>
+            </twig:block>
+        </twig:ViewsTheme:Filter:Shell>
+    {% endif %}
+{% endblock %}

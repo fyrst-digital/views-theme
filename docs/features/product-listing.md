@@ -1,141 +1,85 @@
 # Product listing
 
-Theme-owned product grid shell: pagination/sorting chrome, result rows, empty state. Mounts `Product:Box` per product. Core includes `component/product/listing.html.twig`; the theme bridge mounts UX `Product:Listing`.
+Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters. Core `ListingPlugin` / filter plugins are **not** used.
 
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
-| Storefront bridge | `storefront/component/product/listing.html.twig` — thin `sw_extends`; mounts `Product:Listing` |
-| `Product:Listing` | Class-backed shell: listing-plugin options, layout normalize, referrer default, gates; composes Pagination, Sorting, Box |
-| `Pagination` | Theme page nav — [pagination.md](pagination.md) |
-| `Sorting` | Theme sort select — [sorting.md](sorting.md) |
-| `Product:Box` | Card per product (see [product-box.md](product-box.md)) |
-| Wishlist empty | `Wishlist:Listing` composes Listing + block overrides (see [wishlist.md](wishlist.md)) |
-
-## Wire-up
-
-Every core call site that includes `listing.html.twig` picks up the theme shell:
-
-- Category CMS product listing (`cms-element-product-listing`)
-- Search results pagelet
-- Wishlist listing (via wishlist bridge → `Wishlist:Listing` → `Product:Listing`)
-
-```twig
-{# storefront/component/product/listing.html.twig #}
-{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
-
-{% block product_listing %}
-    <twig:ViewsTheme:Product:Listing
-        :searchResult="searchResult"
-        :dataUrl="dataUrl|default(null)"
-        :filterUrl="filterUrl|default(null)"
-        :params="params|default({})"
-        :sidebar="sidebar|default(false)"
-        :boxLayout="boxLayout|default('default')"
-        :listingColumns="listingColumns|default('col-sm-6 col-lg-4 col-xl-3')"
-        :ariaLiveUpdates="ariaLiveUpdates|default(true)"
-        :disableEmptyFilter="disableEmptyFilter|default(null)"
-    />
-{% endblock %}
-```
-
-Do not add further storefront listing files beyond the product + wishlist bridges. Extend UX under `components/Product/Listing*`.
+| Storefront bridge | `storefront/component/product/listing.html.twig` → `Product:Listing` + theme `/vi/listing/…` URLs |
+| `Product:Listing` | Class VM + **owner JS**: fetch, history, control registry, island swap |
+| `Product:Listing:Results` | XHR-swappable island (actions, items, empty, pagination) |
+| `Pagination` / `Sorting` | Theme chrome + controls registered with Listing |
+| Filters | [filters.md](filters.md) |
+| Controllers | `ListingController` — results HTML + aggregations JSON |
 
 ## Composition
 
 ```
-Product:Listing (class VM)
-  ├─ root (.cms-element-product-listing-wrapper + data-listing* + data-listing-pagination*)
-  └─ content (.cms-element-product-listing)     ← ListingPlugin XHR replace target
-       ├─ actions (if hasResults)
-       │    ├─ paginationTop → Pagination
-       │    └─ sorting → Sorting
-       ├─ items (.js-listing-wrapper)
-       │    ├─ item × N → Product:Box
-       │    └─ or empty → Alert (or Wishlist override)
-       └─ paginationBottom → Pagination (if showBottomPagination)
+Product:Listing (data-component owner)
+  └─ Product:Listing:Results (island)
+       ├─ actions → Pagination + Sorting
+       ├─ items → Product:Box × N | empty
+       └─ Pagination bottom
 ```
 
-## Core JS contract (critical)
+Sidebar (sibling): `Filter:Panel` → registers controls on Listing via `callMethod`.
 
-Keep these selectors/attrs so core `Listing` / `ListingPagination` / `ListingSorting` keep working:
+## Controllers
 
-| Selector / attr | Role |
-|-----------------|------|
-| `.cms-element-product-listing-wrapper` | Outer host; filter plugins resolve Listing from here |
-| `data-listing` + `data-listing-options` | Listing plugin options (URLs, params, snippets, …) |
-| `data-listing-pagination` + options | Pagination plugin host (listing root) |
-| `.cms-element-product-listing` | Inner shell; **XHR `renderResponse` replaces this node** |
-| `.js-listing-wrapper` | Results region; aria-live text source |
-| Pagination / Sorting DOM | See [pagination.md](pagination.md) / [sorting.md](sorting.md) |
+| Route | Path | Response |
+|-------|------|----------|
+| `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` | HTML `Product:Listing:Results` |
+| `frontend.views-theme.listing.category.aggregations` | `…/aggregations` | JSON aggregations |
+| `frontend.views-theme.listing.search` | `/vi/listing/search` | HTML Results |
+| `frontend.views-theme.listing.search.aggregations` | `…/aggregations` | JSON |
 
-Theme `vi-product-listing*` classes sit **alongside** the core classes (CVA bases include both).
+Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`.
 
-## Props
+## Owner JS (`Listing.js`)
 
-### `Product:Listing` (class-backed)
+| API | Role |
+|-----|------|
+| `refreshControls()` | Discover controls in listing el + every `Filter:Panel` |
+| `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → optional aggs |
+| `reset` / `resetAll` | Delegate to controls then apply |
+| `getActiveLabels()` | For `Filter:Active` chips |
+| History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 
-| Prop / field | Default | Notes |
-|--------------|---------|--------|
-| `searchResult` | required | `EntitySearchResult` / product listing result |
-| `dataUrl` / `filterUrl` | `null` | Listing plugin fetch URLs |
-| `params` | `{}` | Extra request params |
-| `sidebar` | `false` | Passed into listing options (bool or `0`/`1`) |
-| `boxLayout` | `default` | Empty / `standard` → `default`; forwarded to Box |
-| `listingColumns` | `col-sm-6 col-lg-4 col-xl-3` | Appended on each item column |
-| `ariaLiveUpdates` | `true` | Listing options flag |
-| `disableEmptyFilter` | config `core.listing.disableEmptyFilterOptions` when null | |
-| `referrerCategoryId` | config breadcrumb-by-referrer ? request `navigationId` : null | Threaded to Box |
-| `cva` | `{}` | Multi-slot via `Listing.cva.twig` |
-| `hasResults` / `showBottomPagination` / `paginationPage` | derived | Composition gates |
-| `paginationSearchQuery` | derived | `&search=…` when listing has search filter |
+Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:Loading`.
 
-`displayMode` is **not** part of the theme Listing/Box API.
+Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `listingColumns`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
 
-### CVA slots (`Listing.cva.twig`)
+## Props (`Product:Listing`)
 
-`root`, `content`, `actions`, `paginationTop`, `sorting`, `items`, `item`, `empty`, `paginationBottom`
+| Prop | Notes |
+|------|--------|
+| `searchResult` | Initial SSR result |
+| `resultsUrl` / `aggregationsUrl` | Theme routes (bridge resolves category/search) |
+| `params` | Always-merged query (e.g. `{ search }`) |
+| `boxLayout` / `listingColumns` / `referrerCategoryId` | Forwarded to Results / Box |
+| `disableEmptyFilter` | Config default; enables aggregations refresh |
 
-### Blocks
+## Blocks
 
-| Block | Content |
-|-------|---------|
-| `actions` | Top actions shell (pagination + sorting) |
-| `paginationTop` | `Pagination` location=`top` |
-| `sorting` | `Sorting` |
-| `items` | Product loop |
-| `item` | Column wrapper |
-| `box` | `Product:Box` |
-| `empty` | Empty shell |
-| `emptyAlert` | `ViewsTheme:Alert` |
-| `paginationBottom` | `Pagination` location=`bottom` |
-
-Callers override via `<twig:block name="…">` (e.g. `Wishlist:Listing` clears `actions`, replaces `empty`).
-
-Nested overrides: `paginationTop:…`, `sorting:…`, `paginationBottom:…`.
-
-## Behaviour notes
-
-- Box mount is loop data only (`:product`, `:layout`, `:referrerCategoryId`) — sealed leaf pattern for the card
-- Layout normalize, referrer default, and pagination search query live in `Listing.php` `#[PostMount]`
-- Listing plugin snippet strings stay in Twig (`|trans`) inside `data-listing-options`
-- Pagination / Sorting are theme UX; core plugins still drive filter/page XHR
+| On | Blocks |
+|----|--------|
+| Listing | `results` |
+| Results | `actions`, `paginationTop`, `sorting`, `items`, `item`, `box`, `empty`, `emptyAlert`, `paginationBottom` |
 
 ## Known gaps
 
-- No theme UX for filter panel
-- Bootstrap `listingColumns` still drive the grid (no tokenized CSS grid yet)
-- No co-located Listing CSS/JS (core plugins only)
-- Search results pagelet chrome still core; listing body via product listing bridge
+- Wishlist listing XHR route not added yet
+- Bootstrap `listingColumns` still drive the grid
+- Human must rebuild storefront JS after pull
 
 ## Files
 
 | Role | Path |
 |------|------|
 | Bridge | `storefront/component/product/listing.html.twig` |
-| Listing | `components/Product/Listing.{php,html.twig,cva.twig}` |
-| Pagination | `components/Pagination.*` — [pagination.md](pagination.md) |
-| Sorting | `components/Sorting.*` — [sorting.md](sorting.md) |
-| Box | `components/Product/Box.*` — [product-box.md](product-box.md) |
-| Wishlist shell | `components/Wishlist/Listing.html.twig` + wishlist bridge |
+| Listing | `components/Product/Listing.{php,html.twig,cva.twig,js}` |
+| Results | `components/Product/Listing/Results.{php,html.twig,cva.twig,js}` |
+| Controller | `src/Controller/ListingController.php` |
+| Pagination / Sorting | `components/Pagination.*`, `components/Sorting.*` |
+| Filters | [filters.md](filters.md) |

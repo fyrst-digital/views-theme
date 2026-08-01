@@ -1,0 +1,54 @@
+{% props
+    label = null,
+    count = null,
+    open = false,
+    id = 'vi-filter-group-' ~ random(),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['toggle', 'count', 'body']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Group',
+        'data-component-options': { open: open }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+    role="listitem"
+>
+    {% block toggle %}
+        <button
+            type="button"
+            {{ vi_attrs('toggle').defaults({
+                'aria-expanded': open ? 'true' : 'false',
+                'aria-controls': id,
+            }) }}
+            class="{{ vi_class('toggle') }}"
+        >
+            {{ label }}
+            <span
+                {{ vi_attrs('count').defaults({
+                    'data-filter-count': true,
+                }) }}
+                class="{{ vi_class('count') }}"
+                {% if not count %}hidden{% endif %}
+            >
+                {% if count %}({{ count }}){% endif %}
+            </span>
+            {{ vi_icon('caret-down') }}
+        </button>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body').defaults({
+                id: id,
+                hidden: open ? false : true,
+            }) }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

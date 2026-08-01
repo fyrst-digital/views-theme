@@ -1,0 +1,45 @@
+{% props
+    displayName = null,
+    name = 'rating',
+    maxPoints = 5,
+    id = 'vi-filter-rating-' ~ random(),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['list', 'item', 'label']) %}
+
+{% set options = {
+    name: name,
+    listingComponent: 'ViewsTheme:Product:Listing',
+} %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Rating',
+        'data-component-options': options|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <twig:ViewsTheme:Filter:Group
+        :label="displayName"
+    >
+        <twig:block name="content">
+            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
+                {% for points in maxPoints..1 %}
+                    <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                        <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                            <input
+                                type="radio"
+                                name="{{ id }}"
+                                value="{{ points }}"
+                                data-label="{{ points }}"
+                            >
+                            {{ points }}+
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </twig:block>
+    </twig:ViewsTheme:Filter:Group>
+</div>

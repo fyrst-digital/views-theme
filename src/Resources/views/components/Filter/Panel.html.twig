@@ -1,32 +1,109 @@
-{% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
-
 {% props
+    listing = null,
+    ariaLiveUpdates = true,
+    showHeader = false,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    header: { base: 'vi-filter-panel__header' },
-    title: { base: 'vi-filter-panel__title' },
-    close: { base: 'vi-filter-panel__close btn js-offcanvas-close' },
-    container: { base: 'vi-filter-panel__container' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['close', 'container', 'header', 'title']) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'title', 'close', 'items', 'active', 'live']) %}
 
-{% block component_filter_panel_header %}
-    <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
-        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-            {{ 'listing.filterTitleText'|trans }}
-        </div>
-        <div {{ vi_attrs('close') }} class="{{ vi_class('close') }}">
-            {{ vi_icon('x') }}
-        </div>
-    </div>
-{% endblock %}
+{% set manufacturers = listing ? listing.aggregations.get('manufacturer') : null %}
+{% set properties = listing ? listing.aggregations.get('properties') : null %}
+{% set price = listing ? listing.aggregations.get('price') : null %}
+{% set rating = listing ? listing.aggregations.get('rating') : null %}
+{% set shippingFree = listing ? listing.aggregations.get('shipping-free') : null %}
 
-{% block component_filter_panel_items_container %}
-    <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
-        {% block component_filter_panel_items %}
-            {{ parent() }}
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Panel',
+        role: 'region',
+        'aria-label': 'listing.filterTitleText'|trans|sw_sanitize,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if showHeader %}
+        {% block header %}
+            <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
+                <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                    {{ 'listing.filterTitleText'|trans }}
+                </div>
+                <button
+                    type="button"
+                    {{ vi_attrs('close').defaults({
+                        'aria-label': 'listing.filterClose'|trans|striptags,
+                    }) }}
+                    class="{{ vi_class('close') }}"
+                    data-filter-close
+                >
+                    {{ vi_icon('x') }}
+                </button>
+            </div>
         {% endblock %}
-    </div>
-{% endblock %}
+    {% endif %}
+
+    {% block items %}
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}" role="list">
+            {% if manufacturers and manufacturers.entities is not empty %}
+                {% set manufacturersSorted = manufacturers.entities|sort((a, b) => a.translated.name|lower <=> b.translated.name|lower) %}
+                <twig:ViewsTheme:Filter:MultiSelect
+                    name="manufacturer"
+                    displayName="{{ 'listing.filterManufacturerDisplayName'|trans|sw_sanitize }}"
+                    :elements="manufacturersSorted"
+                />
+            {% endif %}
+
+            {% if properties and properties.entities is not empty %}
+                {% for property in properties.entities %}
+                    <twig:ViewsTheme:Filter:MultiSelect
+                        name="properties"
+                        displayName="{{ property.translated.name }}"
+                        :elements="property.options"
+                        propertyName="{{ property.translated.name }}"
+                    />
+                {% endfor %}
+            {% endif %}
+
+            {% if price and price.min is not null and price.max is not null %}
+                <twig:ViewsTheme:Filter:Range
+                    displayName="{{ 'listing.filterPriceDisplayName'|trans|sw_sanitize }}"
+                    minKey="min-price"
+                    maxKey="max-price"
+                    :min="0"
+                    :max="price.max"
+                />
+            {% endif %}
+
+            {% if rating and rating.max > 0 %}
+                <twig:ViewsTheme:Filter:Rating
+                    displayName="{{ 'listing.filterRatingDisplayName'|trans|sw_sanitize }}"
+                    name="rating"
+                />
+            {% endif %}
+
+            {% if shippingFree and shippingFree.max > 0 %}
+                <twig:ViewsTheme:Filter:Boolean
+                    name="shipping-free"
+                    displayName="{{ 'listing.filterFreeShippingDisplayName'|trans|sw_sanitize }}"
+                />
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block active %}
+        <twig:ViewsTheme:Filter:Active class="{{ vi_class('active') }}" />
+    {% endblock %}
+
+    {% if ariaLiveUpdates %}
+        {% block live %}
+            <div
+                {{ vi_attrs('live').defaults({
+                    'data-aria-live': true,
+                    'aria-live': 'polite',
+                    'aria-atomic': 'true',
+                }) }}
+                class="{{ vi_class('live') }}"
+            ></div>
+        {% endblock %}
+    {% endif %}
+</div>

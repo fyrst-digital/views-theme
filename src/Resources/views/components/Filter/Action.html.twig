@@ -1,0 +1,37 @@
+{% props
+    label = 'listing.filterTitleText'|trans|sw_sanitize,
+    drawerId = 'vi-filter-drawer',
+    color = 'outline-primary',
+    size = 'md',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% set options = {
+    drawerComponent: 'ViewsTheme:Drawer',
+    drawerId: drawerId,
+    shellComponent: 'ViewsTheme:Filter:Shell',
+    panelComponent: 'ViewsTheme:Filter:Panel',
+    hostComponent: 'ViewsTheme:Filter:Host',
+    slotComponent: 'ViewsTheme:Filter:DrawerSlot',
+    listingComponent: 'ViewsTheme:Product:Listing',
+    openEvent: 'ViewsTheme:Drawer:Open',
+    closeEvent: 'ViewsTheme:Drawer:Close',
+} %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        icon: 'funnel',
+        label: label,
+        color: color,
+        size: size,
+        'aria-haspopup': 'dialog',
+        'aria-controls': drawerId,
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Filter:Action',
+        'data-component-options': options|json_encode,
+    }).all() }}
+/>

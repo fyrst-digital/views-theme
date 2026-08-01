@@ -78,6 +78,10 @@ Examples:
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
 | `frontend.views-theme.navigation.flyout` | `/vi/navigation/flyout/{navigationId}` |
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
+| `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` |
+| `frontend.views-theme.listing.category.aggregations` | `/vi/listing/category/{navigationId}/aggregations` |
+| `frontend.views-theme.listing.search` | `/vi/listing/search` |
+| `frontend.views-theme.listing.search.aggregations` | `/vi/listing/search/aggregations` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -111,6 +115,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Theme route / controller | Loader | App hook | Notes |
 |--------------------------|--------|----------|--------|
 | Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
+| Listing results/aggs (`ListingController`) | `AbstractProductListingRoute` / `AbstractProductSearchRoute` | *(none on raw listing DTO)* | HTML `Product:Listing:Results` + JSON aggregations; query param parity with core storefront |
 | Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
 | Nav drawer langs/currencies (same action) | `HeaderPageletLoader` | `header-pagelet-loaded` | Header chrome only on full drawer open |
 | Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |

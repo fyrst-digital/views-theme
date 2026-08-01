@@ -3,8 +3,6 @@
 {% block product_listing %}
     <twig:ViewsTheme:Wishlist:Listing
         :searchResult="searchResult"
-        :dataUrl="dataUrl|default(null)"
-        :filterUrl="filterUrl|default(null)"
         :params="params|default({})"
         :sidebar="sidebar|default(false)"
         :boxLayout="boxLayout|default('wishlist')"
