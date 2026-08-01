@@ -1,21 +1,41 @@
-{% sw_extends '@ViewsTheme/components/Product/Listing.html.twig' %}
-
 {% props
+    searchResult = null,
+    dataUrl = null,
+    filterUrl = null,
+    params = {},
+    sidebar = false,
+    boxLayout = 'wishlist',
+    listingColumns = 'col-sm-6 col-lg-4 col-xl-3',
+    ariaLiveUpdates = true,
+    disableEmptyFilter = false,
+    referrerCategoryId = null,
     cva = {},
 %}
 
-{# Separate map so parent Listing `cx` is not overwritten #}
 {% do vi_define_cva({
-    empty: { base: 'vi-wishlist-listing__empty wishlist-listing-empty-container' },
+    empty: { base: 'vi-wishlist-listing__empty cms-listing-col col-12 wishlist-listing-empty-container' },
     emptyImage: { base: 'vi-wishlist-listing__empty-image wishlist-listing-empty' },
     header: { base: 'vi-wishlist-listing__header text-center wishlist-listing-header' },
     description: { base: 'vi-wishlist-listing__description text-center wishlist-listing-description' },
 }|replace_recursive(cva)) %}
 {% do vi_define_attrs(['description', 'empty', 'emptyImage', 'header']) %}
 
-{% block element_product_listing_col_empty %}
-    <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
-        {% block element_product_listing_col_empty_wishlist %}
+<twig:ViewsTheme:Product:Listing
+    :searchResult="searchResult"
+    :dataUrl="dataUrl"
+    :filterUrl="filterUrl"
+    :params="params"
+    :sidebar="sidebar"
+    :boxLayout="boxLayout"
+    :listingColumns="listingColumns"
+    :ariaLiveUpdates="ariaLiveUpdates"
+    :disableEmptyFilter="disableEmptyFilter"
+    :referrerCategoryId="referrerCategoryId"
+>
+    <twig:block name="actions"></twig:block>
+
+    <twig:block name="empty">
+        <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
             <img
                 src="{{ asset('bundles/viewstheme/illustrations/wishlist-empty.svg', 'asset') }}"
                 alt="{{ 'wishlist.wishlistEmptyDescription'|trans|striptags }}"
@@ -29,10 +49,6 @@
             <p {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
                 {{ 'wishlist.wishlistEmptyDescription'|trans }}
             </p>
-        {% endblock %}
-    </div>
-{% endblock %}
-
-{% block element_product_listing_pagination_nav_actions %}{% endblock %}
-
-{% block element_product_listing_sorting %}{% endblock %}
+        </div>
+    </twig:block>
+</twig:ViewsTheme:Product:Listing>

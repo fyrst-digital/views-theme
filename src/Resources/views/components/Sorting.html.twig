@@ -1,0 +1,25 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['select']) %}
+
+    {% set sortingConfig = { sorting: current } %}
+
+    <div
+        {{ attributes.defaults({
+            'data-listing-sorting': 'true',
+            'data-listing-sorting-options': sortingConfig|json_encode,
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block select %}
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('select') }}"
+                {{ ...vi_attrs('select').defaults({
+                    options: options,
+                    value: current,
+                    'select:aria-label': 'general.sortingLabel'|trans|striptags,
+                }).all() }}
+            />
+        {% endblock %}
+    </div>
+{% endif %}

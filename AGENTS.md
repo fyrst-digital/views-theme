@@ -47,5 +47,8 @@ Full index: [docs/README.md](docs/README.md).
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
+| Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
+| Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
+| Sorting | [docs/features/sorting.md](docs/features/sorting.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |

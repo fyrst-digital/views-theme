@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`.
+Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`.
 
 ## Props / CVA / attributes
 
@@ -456,7 +456,9 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
-| Product:* | UX + Listing/BuyContainer shells; Box via storefront `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
+| Product:* | UX + BuyContainer shell; Listing class-backed + storefront listing bridge; Box via `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
+| Product:Listing (class-backed) | Owned grid shell + Box loop; mounts Pagination + Sorting; [product-listing.md](../features/product-listing.md) |
+| Pagination / Sorting (class-backed) | Theme chrome + storefront bridges; core Listing plugins via DOM contract; [pagination.md](../features/pagination.md) · [sorting.md](../features/sorting.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |

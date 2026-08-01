@@ -1,0 +1,118 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['list', 'item', 'first', 'prev', 'next', 'last']) %}
+
+    {% set locationClass = location ? ' listing-pagination-' ~ location : '' %}
+
+    {% block root %}
+        <nav
+            {{ attributes.defaults({
+                'aria-label': 'general.pagination.title'|trans|striptags,
+                'data-pagination-location': location ? location : false,
+            }) }}
+            class="{{ vi_class('root') }} listing-pagination{{ locationClass }}"
+        >
+            {% block list %}
+                <ul
+                    {{ vi_attrs('list') }}
+                    class="{{ vi_class('list') }}"
+                >
+                    {% block first %}
+                        <li
+                            {{ vi_attrs('first') }}
+                            class="{{ vi_class('first') }}{{ isFirst ? ' disabled' : '' }}"
+                        >
+                            <a
+                                href="{{ this.pageHref(1) }}"
+                                class="{{ vi_class('link') }}"
+                                data-page="1"
+                                data-focus-id="first"
+                                aria-label="{{ 'general.pagination.first'|trans|striptags }}"
+                                {% if isFirst %}tabindex="-1" aria-disabled="true"{% endif %}
+                            >
+                                {{ vi_icon('arrow-left') }}
+                            </a>
+                        </li>
+                    {% endblock %}
+
+                    {% block prev %}
+                        <li
+                            {{ vi_attrs('prev') }}
+                            class="{{ vi_class('prev') }}{{ isFirst ? ' disabled' : '' }}"
+                        >
+                            <a
+                                href="{{ this.pageHref(prevPage) }}"
+                                class="{{ vi_class('link') }}"
+                                data-page="{{ prevPage }}"
+                                data-focus-id="prev"
+                                aria-label="{{ 'general.pagination.prev'|trans|striptags }}"
+                                {% if isFirst %}tabindex="-1" aria-disabled="true"{% endif %}
+                            >
+                                {{ vi_icon('caret-left') }}
+                            </a>
+                        </li>
+                    {% endblock %}
+
+                    {% block pages %}
+                        {% for page in start..end %}
+                            {% set isActive = currentPage == page %}
+                            {% block item %}
+                                <li
+                                    {{ vi_attrs('item') }}
+                                    class="{{ vi_class('item') }}{{ isActive ? ' active' : '' }}"
+                                    {% if isActive %}aria-current="page"{% endif %}
+                                >
+                                    <a
+                                        href="{{ this.pageHref(page) }}"
+                                        class="{{ vi_class('link') }}"
+                                        data-page="{{ page }}"
+                                        data-focus-id="{{ page }}"
+                                    >
+                                        <span class="visually-hidden">{{ 'general.pagination.page'|trans|sw_sanitize }}</span>
+                                        {{ page }}
+                                    </a>
+                                </li>
+                            {% endblock %}
+                        {% endfor %}
+                    {% endblock %}
+
+                    {% block next %}
+                        <li
+                            {{ vi_attrs('next') }}
+                            class="{{ vi_class('next') }}{{ isLast ? ' disabled' : '' }}"
+                        >
+                            <a
+                                href="{{ this.pageHref(nextPage) }}"
+                                class="{{ vi_class('link') }}"
+                                data-page="{{ nextPage }}"
+                                data-focus-id="next"
+                                aria-label="{{ 'general.pagination.next'|trans|striptags }}"
+                                {% if isLast %}tabindex="-1" aria-disabled="true"{% endif %}
+                            >
+                                {{ vi_icon('caret-right') }}
+                            </a>
+                        </li>
+                    {% endblock %}
+
+                    {% block last %}
+                        <li
+                            {{ vi_attrs('last') }}
+                            class="{{ vi_class('last') }}{{ isLast ? ' disabled' : '' }}"
+                        >
+                            <a
+                                href="{{ this.pageHref(totalPages) }}"
+                                class="{{ vi_class('link') }}"
+                                data-page="{{ totalPages }}"
+                                data-focus-id="last"
+                                aria-label="{{ 'general.pagination.last'|trans|striptags }}"
+                                {% if isLast %}tabindex="-1" aria-disabled="true"{% endif %}
+                            >
+                                {{ vi_icon('arrow-right') }}
+                            </a>
+                        </li>
+                    {% endblock %}
+                </ul>
+            {% endblock %}
+        </nav>
+    {% endblock %}
+{% endif %}

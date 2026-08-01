@@ -60,7 +60,7 @@ Core CMS may still send `layout=standard` and a `displayMode` config. The bridge
 
 This is an intentional **new** `views/storefront/` bridge (same role as header → `Page:Header:Main`). Do not add further storefront product-card files; extend UX under `components/Product/Box*`.
 
-`Product:Listing` (components shell that also mounts Box) is **not** theme-inherited yet — grid column wrappers stay on core listing.
+`Product:Listing` owns the grid shell and mounts Box per product — see [product-listing.md](product-listing.md).
 
 ## Composition
 
@@ -254,10 +254,9 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 
 ## Known gaps
 
-- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell; style via `layout-*` + tokens
+- Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell; style via `layout-*` + tokens (Listing passes `boxLayout`)
 - No dedicated Box co-located CSS yet (Cover has CSS)
 - Cover children not nest+spread from Box (fixed badges/wishlist mounts)
-- `Product:Listing` / `Search:Pagelet` / `Wishlist:Listing` shells not storefront-bridged
 
 ## Files
 

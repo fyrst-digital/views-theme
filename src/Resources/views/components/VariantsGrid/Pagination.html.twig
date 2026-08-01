@@ -4,10 +4,10 @@
 %}
 
 {% if pagination.total > pagination.limit %}
-    {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
-        currentPage: pagination.page,
-        totalPages: (pagination.total / (pagination.limit ?: 1))|round(0, 'ceil'),
-        pageParameter: pageParameter,
-        paginationLocation: 'variants-grid',
-    } %}
+    <twig:ViewsTheme:Pagination
+        :currentPage="pagination.page"
+        :totalPages="(pagination.total / (pagination.limit ?: 1))|round(0, 'ceil')"
+        :pageParameter="pageParameter"
+        location="variants-grid"
+    />
 {% endif %}
