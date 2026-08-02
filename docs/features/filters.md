@@ -9,13 +9,30 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel |
 | `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle) |
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` |
-| `Filter:Panel` | Facet shell from `listing.aggregations` + Active + aria-live (desktop SSR + drawer XHR) |
+| `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver |
+| `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
 | `Filter:Group` | Single layout: toggle + collapsible body (default closed) |
 | `Filter:MultiSelect` | Manufacturer + property options |
 | `Filter:Boolean` / `Range` / `Rating` | Facet controls |
-| `Filter:Active` | Chips via Twig CVA `<template>` clones; reads labels via Listing instance (`getActiveLabels` — not `callMethod`, which drops returns); `hidden` when no active filters (stays mounted) |
-| `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount (+ `ControlsSynced`) |
+| `Filter:Active` | Chips via Twig CVA `<template>` clones (no class strings in JS) |
+| `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
+
+## Facet resolution (server)
+
+`Filter:Panel.php` `#[PostMount]` calls `FilterFacetResolver::resolve($listing)` → `list<FilterFacet>`.
+
+Each facet is `{ component, props }` rendered with `{{ component(facet.component, facet.props) }}` — no aggregation `if`s in Twig.
+
+| Aggregation key | Gate | Component |
+|-----------------|------|-----------|
+| `manufacturer` | entities not empty | `ViewsTheme:Filter:MultiSelect` (`name=manufacturer`, sorted by name) |
+| `properties` | entities not empty | `MultiSelect` × group (`name=properties`) |
+| `price` | min/max not null | `ViewsTheme:Filter:Range` |
+| `rating` | max > 0 | `ViewsTheme:Filter:Rating` |
+| `shipping-free` | max > 0 | `ViewsTheme:Filter:Boolean` |
+
+**Add a built-in facet:** extend `FilterFacetResolver` (visibility + props). New control **type** also needs a UX component and a name on `Product:Listing` JS `controlComponents`.
 
 ## Shared state
 
@@ -76,10 +93,7 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute` with `only
 | Event | Payload |
 |-------|---------|
 | `ViewsTheme:Listing:Changed` | `{ ok, params?, error?, source? }` |
-| `ViewsTheme:Listing:ControlsSynced` | `{ source? }` — after `syncControls()` (init / drawer / popstate hydrate) |
 | `ViewsTheme:Listing:Loading` | `{ busy, source? }` |
-
-`Filter:Active` listens to `Changed` + `ControlsSynced` and re-renders chips.
 
 ## Query params
 
@@ -90,7 +104,9 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Role | Path |
 |------|------|
 | Drawer compose / Action | `components/Filter/Drawer.*`, `components/Filter/Drawer/Action.*` |
-| Panel / Group / facets / Active | `components/Filter/{Panel,Group,MultiSelect,Boolean,Range,Rating,Active}.*` |
+| Panel (class + Twig) | `components/Filter/Panel.{php,html.twig,js,cva.twig}` |
+| Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
+| Group / facets / Active | `components/Filter/{Group,MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Controller | `src/Controller/FilterDrawerController.php` |
 | Bridge | `storefront/element/cms-element-sidebar-filter.html.twig` |
 | Listing owner | [product-listing.md](product-listing.md) |

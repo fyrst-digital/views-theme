@@ -108,6 +108,10 @@
 
         <service id="Fyrst\ViewsTheme\Service\ProductPriceResolver"/>
 
+        <service id="Fyrst\ViewsTheme\Service\FilterFacetResolver">
+            <argument type="service" id="translator"/>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
