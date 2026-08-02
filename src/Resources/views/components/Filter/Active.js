@@ -2,23 +2,29 @@ export default class FilterActive extends ShopwareComponent {
     static options = {
         listingComponent: 'ViewsTheme:Product:Listing',
         changedEvent: 'ViewsTheme:Listing:Changed',
+        syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
         resetAllLabel: 'Reset all',
         removeLabel: 'Remove filter',
     }
 
     init() {
-        this._list = this.el.querySelector('[data-active-list]')
         this._chipTemplate = this.el.querySelector('[data-active-chip-template]')
         this._resetTemplate = this.el.querySelector('[data-active-reset-template]')
         this._onChanged = this._onChanged.bind(this)
         this._onClick = this._onClick.bind(this)
         window.Shopware.on(this.options.changedEvent, this._onChanged)
+        window.Shopware.on(this.options.syncedEvent, this._onChanged)
         this.el.addEventListener('click', this._onClick)
         this._render()
+        // Listing may hydrate after Active mounts (DOM order / drawer mount).
+        requestAnimationFrame(() => {
+            this._render()
+        })
     }
 
     destroy() {
         window.Shopware.off(this.options.changedEvent, this._onChanged)
+        window.Shopware.off(this.options.syncedEvent, this._onChanged)
         this.el.removeEventListener('click', this._onClick)
     }
 
@@ -50,17 +56,50 @@ export default class FilterActive extends ShopwareComponent {
         }
     }
 
+    /**
+     * callMethod discards return values — resolve Listing and call getActiveLabels directly.
+     */
+    _listing() {
+        if (!window.Shopware?.getComponentInstanceByElement) {
+            return null
+        }
+
+        const el = document.querySelector(
+            `[data-component="${this.options.listingComponent}"]`,
+        )
+        if (!el) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(
+            this.options.listingComponent,
+            el,
+        )
+    }
+
+    _clearLive() {
+        this.el.querySelectorAll(':scope > :not(template)').forEach((node) => {
+            node.remove()
+        })
+    }
+
     _render() {
-        if (!this._list || !this._chipTemplate) {
+        if (!this._chipTemplate) {
             return
         }
 
-        this._list.replaceChildren()
+        this._clearLive()
 
-        const labels = window.Shopware.callMethod(this.options.listingComponent, 'getActiveLabels') || []
+        const listing = this._listing()
+        const labels = typeof listing?.getActiveLabels === 'function'
+            ? (listing.getActiveLabels() || [])
+            : []
         if (!labels.length) {
+            this.el.hidden = true
             return
         }
+
+        this.el.hidden = false
 
         labels.forEach((item) => {
             const node = this._chipTemplate.content.cloneNode(true)
@@ -76,11 +115,11 @@ export default class FilterActive extends ShopwareComponent {
             if (labelEl) {
                 labelEl.textContent = item.label
             }
-            this._list.appendChild(node)
+            this.el.appendChild(node)
         })
 
         if (this._resetTemplate) {
-            this._list.appendChild(this._resetTemplate.content.cloneNode(true))
+            this.el.appendChild(this._resetTemplate.content.cloneNode(true))
         }
     }
 }

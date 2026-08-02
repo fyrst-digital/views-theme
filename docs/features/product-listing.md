@@ -51,13 +51,13 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 |-----|------|
 | `refreshControls()` | Discover controls in listing el + every `Filter:Panel` |
 | `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
-| `syncControls()` | `refreshControls` + `hydrateFromUrl` (init, popstate, filter drawer open/close) |
+| `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ViewsTheme:Listing:ControlsSynced` (init, popstate, filter drawer open/close) |
 | `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → optional aggs |
 | `reset` / `resetAll` | Delegate to controls then apply |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 
-Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:Loading`.
+Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:Loading`.
 
 Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
 

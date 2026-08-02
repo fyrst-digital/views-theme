@@ -13,8 +13,8 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Group` | Single layout: toggle + collapsible body (default closed) |
 | `Filter:MultiSelect` | Manufacturer + property options |
 | `Filter:Boolean` / `Range` / `Rating` | Facet controls |
-| `Filter:Active` | Chips via Twig CVA `<template>` clones (no class strings in JS) |
-| `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
+| `Filter:Active` | Chips via Twig CVA `<template>` clones; reads labels via Listing instance (`getActiveLabels` — not `callMethod`, which drops returns); `hidden` when no active filters (stays mounted) |
+| `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount (+ `ControlsSynced`) |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
 ## Shared state
@@ -76,7 +76,10 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute` with `only
 | Event | Payload |
 |-------|---------|
 | `ViewsTheme:Listing:Changed` | `{ ok, params?, error?, source? }` |
+| `ViewsTheme:Listing:ControlsSynced` | `{ source? }` — after `syncControls()` (init / drawer / popstate hydrate) |
 | `ViewsTheme:Listing:Loading` | `{ busy, source? }` |
+
+`Filter:Active` listens to `Changed` + `ControlsSynced` and re-renders chips.
 
 ## Query params
 

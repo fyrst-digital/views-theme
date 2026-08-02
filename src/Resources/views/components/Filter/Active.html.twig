@@ -3,11 +3,12 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'chip', 'reset']) %}
+{% do vi_define_attrs(['chip', 'reset']) %}
 
 {% set options = {
     listingComponent: 'ViewsTheme:Product:Listing',
     changedEvent: 'ViewsTheme:Listing:Changed',
+    syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
     resetAllLabel: 'listing.filterPanelResetAll'|trans|sw_sanitize,
     removeLabel: 'listing.filterRemoveAriaLabel'|trans|sw_sanitize,
 } %}
@@ -16,11 +17,10 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Active',
         'data-component-options': options|json_encode,
+        hidden: true,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    <div data-active-list class="{{ vi_class('list') }}"></div>
-
     <template data-active-chip-template>
         <button
             type="button"

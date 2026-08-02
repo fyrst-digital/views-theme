@@ -10,6 +10,7 @@ export default class ProductListing extends ShopwareComponent {
         resultsComponent: 'ViewsTheme:Product:Listing:Results',
         panelComponent: 'ViewsTheme:Filter:Panel',
         changedEvent: 'ViewsTheme:Listing:Changed',
+        syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
         loadingEvent: 'ViewsTheme:Listing:Loading',
         scrollOffset: 15,
         controlComponents: [
@@ -72,10 +73,12 @@ export default class ProductListing extends ShopwareComponent {
 
     /**
      * Discover controls then hydrate from URL (lazy Filter:Drawer open, init, popstate).
+     * Emits ControlsSynced so Filter:Active can refresh chips (callMethod has no return value).
      */
     syncControls() {
         this.refreshControls()
         this.hydrateFromUrl()
+        window.Shopware.emitQueued(this.options.syncedEvent, { source: this.el })
     }
 
     registerControl(control) {
