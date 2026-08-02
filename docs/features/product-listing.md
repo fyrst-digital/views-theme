@@ -30,7 +30,7 @@ Product:Listing (data-component owner)
 
 Item density: Results prop `size` (`sm` | `md` | `lg`, default `md`) → CVA `g-col-*` on each Box. Results-only (not on Listing / XHR display).
 
-Sidebar (sibling): `Filter:Panel` → registers controls on Listing via `callMethod`.
+Sidebar (sibling): desktop `Filter:Panel` + mobile `Filter:Drawer:Action` — see [filters.md](filters.md). Listing discovers controls under every live Panel (URL is filter SoT).
 
 ## Controllers
 
@@ -40,17 +40,21 @@ Sidebar (sibling): `Filter:Panel` → registers controls on Listing via `callMet
 | `frontend.views-theme.listing.category.aggregations` | `…/aggregations` | JSON aggregations |
 | `frontend.views-theme.listing.search` | `/vi/listing/search` | HTML Results |
 | `frontend.views-theme.listing.search.aggregations` | `…/aggregations` | JSON |
+| `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` | HTML `Filter:Drawer` |
+| `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` | HTML `Filter:Drawer` |
 
-Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`.
+Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`. Filter drawer: [filters.md](filters.md).
 
 ## Owner JS (`Listing.js`)
 
 | API | Role |
 |-----|------|
 | `refreshControls()` | Discover controls in listing el + every `Filter:Panel` |
+| `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
+| `syncControls()` | `refreshControls` + `hydrateFromUrl` (init, popstate, filter drawer open/close) |
 | `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → optional aggs |
 | `reset` / `resetAll` | Delegate to controls then apply |
-| `getActiveLabels()` | For `Filter:Active` chips |
+| `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:Loading`.

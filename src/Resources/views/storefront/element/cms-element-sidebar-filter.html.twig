@@ -1,50 +1,42 @@
 {% sw_extends '@Storefront/storefront/element/cms-element-sidebar-filter.html.twig' %}
 
 {% block element_sidebar_filter %}
-    {% if cmsPage is defined %}
-        {% set slot = cmsPage.getFirstElementOfType('product-listing') %}
-        {% set listing = slot.data.listing %}
+    {% if listing is not defined or listing is null %}
+        {% if cmsPage is defined %}
+            {% set slot = cmsPage.getFirstElementOfType('product-listing') %}
+            {% set listing = slot.data.listing %}
+        {% endif %}
     {% endif %}
 
     {% if listing and listing.aggregations.elements|length > 0 %}
-        {% set filterDrawerId = 'vi-filter-drawer' %}
         {% set filterLabel = 'listing.filterTitleText'|trans|sw_sanitize %}
+        {% set filterDrawerUrl = null %}
+        {% set listingNavigationId = null %}
 
-        <twig:ViewsTheme:Filter:Shell>
-            <twig:block name="content">
-                <twig:ViewsTheme:Filter:Action
-                    drawerId="{{ filterDrawerId }}"
-                    label="{{ filterLabel }}"
-                />
+        {% if listing.currentFilters.navigationId is defined and listing.currentFilters.navigationId %}
+            {% set listingNavigationId = listing.currentFilters.navigationId %}
+        {% elseif app.request.attributes.get('navigationId') %}
+            {% set listingNavigationId = app.request.attributes.get('navigationId') %}
+        {% endif %}
 
-                <twig:ViewsTheme:Filter:Host>
-                    <twig:block name="content">
-                        <twig:ViewsTheme:Filter:Panel
-                            :listing="listing"
-                            :ariaLiveUpdates="true"
-                            :showHeader="false"
-                        />
-                    </twig:block>
-                </twig:ViewsTheme:Filter:Host>
+        {% if listingNavigationId %}
+            {% set filterDrawerUrl = path('frontend.views-theme.filter.drawer.category', { navigationId: listingNavigationId }) %}
+        {% elseif app.request.get('search') %}
+            {% set filterDrawerUrl = path('frontend.views-theme.filter.drawer.search') %}
+        {% endif %}
 
-                <twig:ViewsTheme:Drawer
-                    id="{{ filterDrawerId }}"
-                    side="end"
-                    label="{{ filterLabel }}"
-                    title="{{ filterLabel }}"
-                >
-                    <twig:block name="panel">
-                        <twig:ViewsTheme:Drawer:Panel
-                            side="end"
-                            title="{{ filterLabel }}"
-                        >
-                            <twig:block name="content">
-                                <twig:ViewsTheme:Filter:DrawerSlot />
-                            </twig:block>
-                        </twig:ViewsTheme:Drawer:Panel>
-                    </twig:block>
-                </twig:ViewsTheme:Drawer>
-            </twig:block>
-        </twig:ViewsTheme:Filter:Shell>
+        {% if filterDrawerUrl %}
+            <twig:ViewsTheme:Filter:Drawer:Action
+                drawerUrl="{{ filterDrawerUrl }}"
+                label="{{ filterLabel }}"
+            />
+        {% endif %}
+
+        <twig:ViewsTheme:Filter:Panel
+            class="d-none d-lg-block"
+            :listing="listing"
+            :ariaLiveUpdates="true"
+            :showHeader="false"
+        />
     {% endif %}
 {% endblock %}

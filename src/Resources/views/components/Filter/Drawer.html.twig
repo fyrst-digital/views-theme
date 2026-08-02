@@ -1,0 +1,32 @@
+{% props
+    listing = null,
+    label = 'listing.filterTitleText'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel']) %}
+
+<twig:ViewsTheme:Drawer
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        id: 'vi-filter-drawer',
+        side: 'end',
+        label: label,
+    }).all() }}
+>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...vi_attrs('panel').defaults({
+                side: 'end',
+                title: label,
+            }).all() }}
+        >
+            <twig:ViewsTheme:Filter:Panel
+                :listing="listing"
+                :ariaLiveUpdates="true"
+                :showHeader="false"
+            />
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>

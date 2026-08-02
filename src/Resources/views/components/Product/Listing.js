@@ -42,11 +42,9 @@ export default class ProductListing extends ShopwareComponent {
             window.addEventListener('popstate', this._onPopstate)
         }
 
-        this.refreshControls()
-        this._hydrateControlsFromUrl()
+        this.syncControls()
         requestAnimationFrame(() => {
-            this.refreshControls()
-            this._hydrateControlsFromUrl()
+            this.syncControls()
         })
     }
 
@@ -58,11 +56,26 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     /**
-     * Re-scan control components (e.g. after Filter:Panel moves into/out of Drawer).
+     * Re-scan control components (e.g. after Filter:Drawer mount/unmount).
      */
     refreshControls() {
         this._pruneControls()
         this._discoverControls()
+    }
+
+    /**
+     * Hydrate every registered control from the current URL query.
+     */
+    hydrateFromUrl() {
+        this._hydrateControlsFromUrl()
+    }
+
+    /**
+     * Discover controls then hydrate from URL (lazy Filter:Drawer open, init, popstate).
+     */
+    syncControls() {
+        this.refreshControls()
+        this.hydrateFromUrl()
     }
 
     registerControl(control) {
@@ -106,9 +119,39 @@ export default class ProductListing extends ShopwareComponent {
         this._discoverIn(this.el)
 
         const panelName = this.options.panelComponent || 'ViewsTheme:Filter:Panel'
-        document.querySelectorAll(`[data-component="${panelName}"]`).forEach((panel) => {
+        // Drop facet controls under any panel, then re-add only the active surface
+        // (open filter drawer wins over hidden desktop sidebar panel).
+        this._controls.forEach((control) => {
+            if (control.el?.closest(`[data-component="${panelName}"]`)) {
+                this._controls.delete(control)
+            }
+        })
+
+        this._activeFilterPanels().forEach((panel) => {
             this._discoverIn(panel)
         })
+    }
+
+    /**
+     * When Filter:Drawer is open, only its Panel controls count.
+     * Otherwise use page panels (exclude any leftover drawer mount).
+     * Prefer aria-hidden/d-flex over data-open (open attr flips one frame later).
+     */
+    _activeFilterPanels() {
+        const panelName = this.options.panelComponent || 'ViewsTheme:Filter:Panel'
+        const panels = [...document.querySelectorAll(`[data-component="${panelName}"]`)]
+        const drawer = document.querySelector('#vi-filter-drawer')
+        const drawerActive = Boolean(
+            drawer
+            && drawer.classList.contains('d-flex')
+            && drawer.getAttribute('aria-hidden') !== 'true',
+        )
+
+        if (drawerActive) {
+            return panels.filter((panel) => drawer.contains(panel))
+        }
+
+        return panels.filter((panel) => !panel.closest('#vi-filter-drawer'))
     }
 
     _hydrateControlsFromUrl() {
@@ -160,10 +203,22 @@ export default class ProductListing extends ShopwareComponent {
         this.refreshControls()
 
         const labels = []
+        const seen = new Set()
         this._controls.forEach((control) => {
-            if (typeof control.getLabels === 'function') {
-                labels.push(...control.getLabels())
+            if (typeof control.getLabels !== 'function') {
+                return
             }
+
+            control.getLabels().forEach((item) => {
+                const id = item?.id
+                if (id !== undefined && id !== null && seen.has(String(id))) {
+                    return
+                }
+                if (id !== undefined && id !== null) {
+                    seen.add(String(id))
+                }
+                labels.push(item)
+            })
         })
         return labels
     }
@@ -279,7 +334,8 @@ export default class ProductListing extends ShopwareComponent {
             const part = control.getValues() || {}
             Object.entries(part).forEach(([key, value]) => {
                 if (Array.isArray(value)) {
-                    values[key] = [...(values[key] || []), ...value]
+                    const merged = [...(values[key] || []), ...value]
+                    values[key] = [...new Set(merged)]
                     return
                 }
                 if (value !== null && value !== undefined && value !== '') {
@@ -411,8 +467,7 @@ export default class ProductListing extends ShopwareComponent {
             return
         }
 
-        this.refreshControls()
-        this._hydrateControlsFromUrl()
+        this.syncControls()
         this._enqueue(this._collectValues(), false)
     }
 

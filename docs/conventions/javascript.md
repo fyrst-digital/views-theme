@@ -39,7 +39,7 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 Applies to **lazy-mounted shells** fetched by an Action:
 
-- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer)
+- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer, Filter drawer)
 - `ViewsTheme:Search:Overlay`
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
@@ -244,6 +244,23 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
+
+### Filter drawer
+
+Lazy-loaded end-side filter drawer. **Product:Listing** owns filter state (URL + control registry); Action owns shell lifecycle.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Filter:Drawer:Action"` |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-filter-drawer` |
+| Panel (desktop SSR + drawer body) | `data-component="ViewsTheme:Filter:Panel"` |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open** with current `location.search`; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- After mount/unmount: `Shopware.callMethod('ViewsTheme:Product:Listing', 'syncControls')` (discover + hydrate from URL)
+- Desktop keeps always-mounted SSR Panel (`class="d-none d-lg-block"` on Panel); mobile uses Action only (`d-lg-none`)
+- Public `open()` / `close()` via `callMethod`
+
+See [Filters](../features/filters.md).
 
 ### Scroll area
 
