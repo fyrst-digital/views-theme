@@ -8,7 +8,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'label', 'collapse']) %}
+{% do vi_define_attrs(['list', 'item', 'chip', 'collapse']) %}
 
 {% set groupId = 'vi-filter-group-' ~ random() %}
 {% set options = {
@@ -37,17 +37,15 @@
     >
         <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
             {% for points in maxPoints..1 %}
+                {% set pointsLabel = points ~ '+' %}
                 <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                        <input
-                            type="radio"
-                            name="{{ id }}"
-                            value="{{ points }}"
-                            class="visually-hidden"
-                            data-label="{{ points }}+"
-                        >
-                        <span>{{ points }}+</span>
-                    </label>
+                    <twig:ViewsTheme:Filter:Chip
+                        type="radio"
+                        :name="id"
+                        :value="points"
+                        :label="pointsLabel"
+                        {{ ...vi_attrs('chip').all() }}
+                    />
                 </li>
             {% endfor %}
         </ul>

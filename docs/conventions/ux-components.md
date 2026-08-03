@@ -459,7 +459,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Product:* | UX + BuyContainer shell; Listing class-backed + storefront listing bridge; Box via `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
 | Product:Listing (class-backed + JS owner) | Results island + `/vi/listing/*` controllers; [product-listing.md](../features/product-listing.md) |
 | Pagination / Sorting (class-backed + JS) | Theme controls → Listing owner; [pagination.md](../features/pagination.md) · [sorting.md](../features/sorting.md) |
-| Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
+| Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |

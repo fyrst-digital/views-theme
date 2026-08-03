@@ -16,9 +16,10 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
 | `Filter:Group:Collapse` | Collapsible body shell (`vi-filter-group-body`); sibling of Group; content slot + default Footer |
 | `Filter:Group:Footer` | Body footer chrome; default **Reset** (`data-filter-reset`) |
-| `Filter:MultiSelect` / `Range` / `Rating` | Facet controls only; compose Group + Collapse |
+| `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch; `size` CVA (`sm` default, `md`) |
+| `Filter:MultiSelect` / `Range` / `Rating` | Facet controls only; compose Group + Collapse; MultiSelect/Rating use Chip |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
-| `Filter:Active` | Chips via Twig CVA `<template>` clones (no class strings in JS) |
+| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS) |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
@@ -84,7 +85,7 @@ Cascade: `Filter:Drawer` → `Filter:Panel layout="stacked"` → merge into each
 | Facet hosts | CVA `d-contents` so toggles sit in the bar |
 | Group toggle | Compact outline chip + caret; count badge when selected |
 | Body | `Filter:Group:Collapse` — HTML Popover API + CSS `position-anchor` / `anchor()` (`bottom-start`); Twig emits `popover` / anchor only for `bar` |
-| MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); checkbox/radio visually hidden |
+| MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Boolean | Bar chip + [`Form:Switch`](form-input.md#formswitch) (`class="d-inline-flex …"` + `:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** (`viewsTheme.filter.reset`) → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
 | Active chips | Below bar (`Filter:Active`) |
@@ -116,7 +117,7 @@ Cascade: `Filter:Drawer` → `Filter:Panel layout="stacked"` → merge into each
 | `--vi-chip-active-border` / `--vi-chip-active-bg` / `--vi-chip-disabled-opacity` | Option chips |
 | `--vi-swatch` / `--vi-swatch-radius` / `--vi-swatch-border` | Color preview swatch |
 
-Co-located: `Group.css` (popover/anchor + content max-height under `[popover]`), `MultiSelect.css`, `Rating.css`, `Boolean.css` (checked border token).
+Co-located: `Group.css` (popover/anchor + content max-height under `[popover]`), `Chip.css` (option chips), `Boolean.css` (checked border token).
 
 ## Layout placement
 
@@ -168,7 +169,7 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Form SCSS | `app/storefront/src/scss/_form.scss` |
 | Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
 | Group + Toggle / Count / Collapse / Footer | `components/Filter/Group/{Toggle,Count,Collapse,Footer}.*` |
-| Facets / Active | `components/Filter/{MultiSelect,Boolean,Range,Rating,Active}.*` |
+| Chip / Facets / Active | `components/Filter/{Chip,MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Controller | `src/Controller/FilterDrawerController.php` |
 | Bridge | `storefront/element/cms-element-sidebar-filter.html.twig` |
 | Listing owner | [product-listing.md](product-listing.md) |

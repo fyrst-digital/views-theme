@@ -8,7 +8,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'label', 'swatch', 'collapse']) %}
+{% do vi_define_attrs(['list', 'item', 'chip', 'collapse']) %}
 
 {% set groupId = 'vi-filter-group-' ~ random() %}
 {% set options = {
@@ -43,25 +43,14 @@
                 {% set previewHex = element.colorHexCode|default(null) %}
                 {% set previewImage = element.media.url|default(null) %}
                 <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                        <input
-                            type="checkbox"
-                            value="{{ elementId }}"
-                            class="visually-hidden"
-                            data-label="{{ elementLabel|striptags }}"
-                            {% if previewHex %}data-preview-hex="{{ previewHex }}"{% endif %}
-                            {% if previewImage %}data-preview-image-url="{{ previewImage }}"{% endif %}
-                        >
-                        {% if previewHex %}
-                            <span
-                                {{ vi_attrs('swatch') }}
-                                class="{{ vi_class('swatch') }}"
-                                style="background:{{ previewHex }}"
-                                aria-hidden="true"
-                            ></span>
-                        {% endif %}
-                        <span>{{ elementLabel }}</span>
-                    </label>
+                    <twig:ViewsTheme:Filter:Chip
+                        type="checkbox"
+                        :value="elementId"
+                        :label="elementLabel"
+                        :previewHex="previewHex"
+                        :previewImageUrl="previewImage"
+                        {{ ...vi_attrs('chip').all() }}
+                    />
                 </li>
             {% endfor %}
         </ul>

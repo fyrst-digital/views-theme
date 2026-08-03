@@ -1,0 +1,45 @@
+{% props
+    type = 'checkbox',
+    value,
+    label,
+    name = null,
+    previewHex = null,
+    previewImageUrl = null,
+    checked = false,
+    disabled = false,
+    size = 'sm',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input', 'swatch', 'label']) %}
+
+<label
+    {{ attributes }}
+    class="{{ vi_class('root', { size: size }) }}"
+>
+    <input
+        {{ vi_attrs('input').defaults({
+            type: type,
+            value: value,
+            name: name ?: false,
+            checked: checked is same as(true) ? 'checked' : false,
+            disabled: disabled is same as(true) ? 'disabled' : false,
+            'data-label': label|striptags,
+            'data-preview-hex': previewHex ?: false,
+            'data-preview-image-url': previewImageUrl ?: false,
+        }) }}
+        class="{{ vi_class('input') }}"
+    >
+
+    {% if previewHex %}
+        <span
+            {{ vi_attrs('swatch') }}
+            class="{{ vi_class('swatch') }}"
+            style="background:{{ previewHex }}"
+            aria-hidden="true"
+        ></span>
+    {% endif %}
+
+    <span {{ vi_attrs('label') }} class="{{ vi_class('label') }}">{{ label }}</span>
+</label>

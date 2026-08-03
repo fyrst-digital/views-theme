@@ -1,4 +1,4 @@
-.vi-filter-rating__label {
+.vi-filter-chip {
   max-width: var(--vi-chip-max-w, 100%);
   transition:
     border-color var(--vi-duration, 150ms) ease,
@@ -15,3 +15,9 @@
   }
 }
 
+.vi-filter-chip__swatch {
+  width: var(--vi-swatch, 1rem);
+  height: var(--vi-swatch, 1rem);
+  border-radius: var(--vi-swatch-radius, 0.125rem);
+  border: 1px solid var(--vi-swatch-border, rgba(0, 0, 0, 0.12));
+}
