@@ -193,14 +193,6 @@ export default class FilterGroup extends ShopwareComponent {
             preferBottom ? 'bottom-start' : 'top-start',
         )
         this._body.style.maxHeight = `${bodyMax}px`
-
-        const content = this._body.firstElementChild
-        const footer = content?.nextElementSibling
-        const footerH = footer?.getBoundingClientRect?.().height || 40
-        const contentMax = Math.max(80, bodyMax - footerH)
-        if (content instanceof HTMLElement) {
-            content.style.maxHeight = `${contentMax}px`
-        }
     }
 
     _clearFit() {
@@ -209,10 +201,6 @@ export default class FilterGroup extends ShopwareComponent {
         }
 
         this._body.style.removeProperty('max-height')
-        const content = this._body.firstElementChild
-        if (content instanceof HTMLElement) {
-            content.style.removeProperty('max-height')
-        }
         this._body.setAttribute(
             'data-placement',
             this.options.defaultPlacement || 'bottom-start',

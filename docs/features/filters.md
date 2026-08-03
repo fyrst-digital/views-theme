@@ -11,13 +11,13 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"`) |
 | `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver; `layout` cascades into facet props |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
-| `Filter:Group` | **Disclosure unit** (Dropdown-shaped): Toggle + body + default Footer; `layout=bar` popover/anchor; `layout=stacked` accordion; `setCount` / `close()`; dismiss on `Listing:Loading` |
+| `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
-| `Filter:Group:Collapse` | Optional body-only shell (same BEM as Group body). Prefer Group; do not pair as sibling of Group |
-| `Filter:Group:Footer` | Body footer chrome; default **Reset** (`data-filter-reset`) |
-| `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch; `size` CVA (`sm` default, `md`) |
-| `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose **one** Group (controls in Group content slot) |
+| `Filter:Group:Collapse` | **Body shell** (popover/accordion root + content). Facets compose controls + Footer inside; shared `id` with Group |
+| `Filter:Group:Footer` | Reset chrome (`data-filter-reset`); composed by facets inside Collapse |
+| `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`) |
+| `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
 | `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS) |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
@@ -102,7 +102,7 @@ Shared CVA variant prop on Panel, facets, Group, and Toggle:
 | `bar` | yes | Horizontal chip bar; **real box** facet hosts; popover + `position-anchor` bodies |
 | `stacked` | — | Column stack; `d-block w-100` hosts; full-width toggles; accordion (no popover attrs) |
 
-Cascade: `Filter:Drawer` → `Filter:Panel layout="stacked"` → merge into each facet → `Filter:Group` (toggle + body). Group JS uses `options.layout === 'stacked'` (no `#vi-filter-drawer` sniff).
+Cascade: `Filter:Drawer` → `Filter:Panel layout="stacked"` → merge into each facet → Group → Collapse. Group JS uses `options.layout === 'stacked'` (no `#vi-filter-drawer` sniff).
 
 ### Box tree (critical)
 
@@ -112,7 +112,8 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 |------|--------|
 | Facet host (bar) | Real box: `d-inline-flex` (MultiSelect / Range / Rating / Boolean) |
 | Facet host (stacked) | `d-block w-100` |
-| `Filter:Group` | Real box filling the facet; owns toggle **and** body |
+| `Filter:Group` | Real box filling the facet; owns toggle; body is Collapse in content |
+| `Filter:Group:Collapse` | Popover/accordion body shell (`vi-filter-group-body`); facets put controls + Footer in content |
 | Empty facets | Stay in the bar; Group toggle + options `disabled` (not `hidden`) |
 | No `d-contents` | Do not use contents on filter bar hosts or Group |
 
@@ -124,9 +125,9 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 |-------|-----------|
 | Panel `items` | CVA `flex-wrap align-items-center` horizontal chip bar |
 | Facet hosts | One flex item each (`d-inline-flex`) |
-| Group | Disclosure unit inside facet; toggle chip + popover body |
-| Body | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
-| Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp body/content `max-height` to fit |
+| Group | Disclosure host inside facet; toggle chip; content = Collapse |
+| Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
+| Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Boolean | Bar chip + [`Form:Switch`](form-input.md#formswitch) (`class="d-inline-flex …"` + `:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
@@ -156,11 +157,10 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 |-------|----------------|
 | `--vi-offset` | Gap under toggle before body |
 | `--vi-min-w` / `--vi-max-w` / `--vi-max-h` | Popover shell size |
-| `--vi-content-max-h` | Scrollport inside popover body |
 | `--vi-chip-active-border` / `--vi-chip-active-bg` / `--vi-chip-disabled-opacity` | Option chips |
 | `--vi-swatch` / `--vi-swatch-radius` / `--vi-swatch-border` | Color preview swatch |
 
-Co-located: `Group.css` (popover/anchor + content max-height under `[popover]`), `Panel.css` (availability pending), `Chip.css` (option chips), `Boolean.css` (checked border token).
+Co-located: `Group.css` (popover/anchor + body max-height under `[popover]`), `Panel.css` (availability pending), `Chip.css` (option chips), `Boolean.css` (checked border token).
 
 ## Layout placement
 
@@ -215,7 +215,7 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 |------|------|
 | Drawer compose / Action | `components/Filter/Drawer.*`, `components/Filter/Drawer/Action.*` |
 | Panel (class + Twig + busy CSS) | `components/Filter/Panel.{php,html.twig,js,cva.twig,css}` |
-| Group disclosure + body CSS | `components/Filter/Group.{js,html.twig,cva.twig,css}` |
+| Group disclosure host + popover CSS | `components/Filter/Group.{js,html.twig,cva.twig,css}` (CSS targets Collapse root `.vi-filter-group-body`) |
 | Form SCSS | `app/storefront/src/scss/_form.scss` |
 | Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
 | Reduced aggs loader | `src/Service/FilterAggregationLoader.php` |

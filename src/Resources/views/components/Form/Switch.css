@@ -1,0 +1,8 @@
+/* Label opacity tracks input:disabled (SSR + JS toggle) — no baked CVA class. */
+.form-switch:has(.form-check-input:disabled) .form-check-label {
+  opacity: var(--vi-disabled-opacity, 0.5);
+}
+
+.form-switch:has(.form-check-input:disabled) {
+  cursor: not-allowed;
+}

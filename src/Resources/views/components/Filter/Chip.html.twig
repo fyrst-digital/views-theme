@@ -32,11 +32,15 @@
         class="{{ vi_class('input') }}"
     >
 
-    {% if previewHex %}
+    {% if previewImageUrl or previewHex %}
         <span
             {{ vi_attrs('swatch') }}
             class="{{ vi_class('swatch') }}"
-            style="background:{{ previewHex }}"
+            {% if previewImageUrl %}
+                style="background-image:url('{{ previewImageUrl|e('html_attr') }}')"
+            {% else %}
+                style="background:{{ previewHex }}"
+            {% endif %}
             aria-hidden="true"
         ></span>
     {% endif %}

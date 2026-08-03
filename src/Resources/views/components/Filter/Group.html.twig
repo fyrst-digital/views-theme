@@ -9,7 +9,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['toggle', 'body', 'content', 'footer']) %}
+{% do vi_define_attrs(['toggle']) %}
 
 {% set anchorName = '--' ~ id %}
 
@@ -35,25 +35,5 @@
         />
     {% endblock %}
 
-    <div
-        id="{{ id }}"
-        class="{{ vi_class('body', { layout: layout }) }}"
-        {% if layout == 'bar' %}
-            popover="auto"
-            data-placement="bottom-start"
-            style="position-anchor: {{ anchorName }}"
-        {% else %}
-            hidden
-        {% endif %}
-        {{ vi_attrs('body') }}
-    >
-        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
-            {% block content %}{% endblock %}
-        </div>
-        {% block footer %}
-            <twig:ViewsTheme:Filter:Group:Footer
-                {{ ...vi_attrs('footer').all() }}
-            />
-        {% endblock %}
-    </div>
+    {% block content %}{% endblock %}
 </div>

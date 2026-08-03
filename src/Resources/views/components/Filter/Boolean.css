@@ -1,0 +1,5 @@
+/* Chip face follows switch disabled state when availability updates via JS. */
+.vi-filter-boolean__chip:has(.form-check-input:disabled) {
+  opacity: var(--vi-chip-disabled-opacity, 0.4);
+  pointer-events: none;
+}

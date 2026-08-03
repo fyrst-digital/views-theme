@@ -5,14 +5,11 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['content', 'footer']) %}
+{% do vi_define_attrs(['content']) %}
 
 {% set anchorName = '--' ~ id %}
 
-{#
-  Optional body shell. Prefer Filter:Group (owns toggle + body).
-  Kept for direct composition / overrides; same BEM as Group body CVA.
-#}
+{# Body shell for Filter:Group. Facets compose controls + Footer inside content. #}
 <div
     {{ attributes.defaults({
         id: id,
@@ -28,9 +25,4 @@
     <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
         {% block content %}{% endblock %}
     </div>
-    {% block footer %}
-        <twig:ViewsTheme:Filter:Group:Footer
-            {{ ...vi_attrs('footer').all() }}
-        />
-    {% endblock %}
 </div>

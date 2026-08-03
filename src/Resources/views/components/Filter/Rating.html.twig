@@ -3,6 +3,7 @@
     name = 'rating',
     maxPoints = 5,
     id = 'vi-filter-rating-' ~ random(),
+    inputName = id ~ '-input',
     layout = 'bar',
     disabled = false,
     allowedMax = null,
@@ -11,7 +12,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'chip', 'group']) %}
+{% do vi_define_attrs(['list', 'item', 'chip', 'group', 'collapse', 'footer']) %}
 
 {% set options = {
     name: name,
@@ -30,29 +31,40 @@
 >
     <twig:ViewsTheme:Filter:Group
         {{ ...vi_attrs('group').defaults({
+            id: id,
             label: displayName,
             layout: layout,
             count: selectedValue ? 1 : null,
             disabled: facetDisabled,
         }).all() }}
     >
-        <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
-            {% for points in maxPoints..1 %}
-                {% set pointsLabel = points ~ '+' %}
-                {% set isSelected = selectedValue is not null and (points ~ '') == (selectedValue ~ '') %}
-                {% set isDisabled = facetDisabled or (allowedMax is not null and allowedMax > 0 and points > allowedMax and not isSelected) %}
-                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                    <twig:ViewsTheme:Filter:Chip
-                        type="radio"
-                        :name="id"
-                        :value="points"
-                        :label="pointsLabel"
-                        :checked="isSelected"
-                        :disabled="isDisabled"
-                        {{ ...vi_attrs('chip').all() }}
-                    />
-                </li>
-            {% endfor %}
-        </ul>
+        <twig:ViewsTheme:Filter:Group:Collapse
+            {{ ...vi_attrs('collapse').defaults({
+                id: id,
+                layout: layout,
+            }).all() }}
+        >
+            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
+                {% for points in maxPoints..1 %}
+                    {% set pointsLabel = points ~ '+' %}
+                    {% set isSelected = selectedValue is not null and (points ~ '') == (selectedValue ~ '') %}
+                    {% set isDisabled = facetDisabled or (allowedMax is not null and allowedMax > 0 and points > allowedMax and not isSelected) %}
+                    <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                        <twig:ViewsTheme:Filter:Chip
+                            type="radio"
+                            :name="inputName"
+                            :value="points"
+                            :label="pointsLabel"
+                            :checked="isSelected"
+                            :disabled="isDisabled"
+                            {{ ...vi_attrs('chip').all() }}
+                        />
+                    </li>
+                {% endfor %}
+            </ul>
+            <twig:ViewsTheme:Filter:Group:Footer
+                {{ ...vi_attrs('footer').all() }}
+            />
+        </twig:ViewsTheme:Filter:Group:Collapse>
     </twig:ViewsTheme:Filter:Group>
 </div>

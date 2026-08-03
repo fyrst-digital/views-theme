@@ -7,11 +7,12 @@
     disabled = false,
     allowedIds = null,
     selectedIds = [],
+    id = 'vi-filter-multi-select-' ~ random(),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['group', 'options']) %}
+{% do vi_define_attrs(['group', 'collapse', 'options', 'footer']) %}
 
 {% set filterKey = name == 'properties' and propertyName ? 'properties:' ~ propertyName : name %}
 {% set options = {
@@ -33,20 +34,31 @@
 >
     <twig:ViewsTheme:Filter:Group
         {{ ...vi_attrs('group').defaults({
+            id: id,
             label: displayName,
             layout: layout,
             count: selectedIds|length > 0 ? selectedIds|length : null,
             disabled: facetDisabled,
         }).all() }}
     >
-        <twig:ViewsTheme:Filter:MultiSelect:Options
-            {{ ...vi_attrs('options').defaults({
-                displayName: displayName,
-                elements: elements,
-                allowedIds: allowedIds,
-                selectedIds: selectedIds,
-                filterKey: filterKey,
+        <twig:ViewsTheme:Filter:Group:Collapse
+            {{ ...vi_attrs('collapse').defaults({
+                id: id,
+                layout: layout,
             }).all() }}
-        />
+        >
+            <twig:ViewsTheme:Filter:MultiSelect:Options
+                {{ ...vi_attrs('options').defaults({
+                    displayName: displayName,
+                    elements: elements,
+                    allowedIds: allowedIds,
+                    selectedIds: selectedIds,
+                    filterKey: filterKey,
+                }).all() }}
+            />
+            <twig:ViewsTheme:Filter:Group:Footer
+                {{ ...vi_attrs('footer').all() }}
+            />
+        </twig:ViewsTheme:Filter:Group:Collapse>
     </twig:ViewsTheme:Filter:Group>
 </div>
