@@ -56,6 +56,11 @@ final class FilterAvailabilityApplier
                 }
 
                 $unavailable = $allowed === [] && $selected === [];
+                $props['elements'] = $this->sortElementsAvailableFirst(
+                    $props['elements'] ?? [],
+                    $allowed,
+                    $selected,
+                );
                 $props['allowedIds'] = $allowed;
                 $props['selectedIds'] = $selected;
                 $props['disabled'] = $unavailable;
@@ -222,6 +227,61 @@ final class FilterAvailabilityApplier
         }
 
         return $ids;
+    }
+
+    /**
+     * Available (allowed or selected) first; preserve relative order within each bucket.
+     *
+     * @param mixed $elements
+     * @param list<string> $allowedIds
+     * @param list<string> $selectedIds
+     *
+     * @return list<mixed>
+     */
+    private function sortElementsAvailableFirst(mixed $elements, array $allowedIds, array $selectedIds): array
+    {
+        if (!\is_iterable($elements)) {
+            return [];
+        }
+
+        $list = [];
+        foreach ($elements as $element) {
+            $list[] = $element;
+        }
+
+        if ($list === []) {
+            return [];
+        }
+
+        $available = array_fill_keys([...$allowedIds, ...$selectedIds], true);
+        $availableBucket = [];
+        $disabledBucket = [];
+
+        foreach ($list as $element) {
+            $id = $this->elementId($element);
+            if ($id !== null && isset($available[$id])) {
+                $availableBucket[] = $element;
+            } else {
+                $disabledBucket[] = $element;
+            }
+        }
+
+        return [...$availableBucket, ...$disabledBucket];
+    }
+
+    private function elementId(mixed $element): ?string
+    {
+        if ($element instanceof Entity) {
+            $id = $element->getUniqueIdentifier();
+
+            return \is_string($id) && $id !== '' ? $id : null;
+        }
+
+        if (\is_array($element) && isset($element['id']) && \is_string($element['id']) && $element['id'] !== '') {
+            return $element['id'];
+        }
+
+        return null;
     }
 
     /**

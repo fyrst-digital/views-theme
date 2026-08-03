@@ -2,6 +2,7 @@ export default class ProductListing extends ShopwareComponent {
     static options = {
         resultsUrl: null,
         aggregationsUrl: null,
+        filterOptionsUrl: null,
         baseParams: {},
         display: {},
         disableEmptyFilter: false,
@@ -47,7 +48,7 @@ export default class ProductListing extends ShopwareComponent {
         this.syncControls()
         requestAnimationFrame(() => {
             this.syncControls()
-            void this.syncAvailability()
+            void this.syncFilterOptions()
         })
     }
 
@@ -85,9 +86,27 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     /**
-     * Catalog stays full in the DOM; availability comes from reduced aggregations JSON.
-     * Call after hydrate (init, drawer) and after apply. Params may be control values or
-     * pre-built request params when options.built is true.
+     * Batch-refetch filter option lists (server order + disabled) and meta.
+     * Prefer filterOptionsUrl; falls back to reduced aggregations JSON.
+     *
+     * @param {Record<string, unknown>|null} [params]
+     * @param {{ built?: boolean }} [options]
+     */
+    async syncFilterOptions(params = null, options = {}) {
+        if (!this.options.disableEmptyFilter) {
+            return
+        }
+
+        if (this.options.filterOptionsUrl) {
+            await this._syncFilterOptionsBatch(params, options)
+            return
+        }
+
+        await this.syncAvailability(params, options)
+    }
+
+    /**
+     * Fallback: reduced aggregations JSON → applyAvailability on controls.
      *
      * @param {Record<string, unknown>|null} [params]
      * @param {{ built?: boolean }} [options]
@@ -127,6 +146,59 @@ export default class ProductListing extends ShopwareComponent {
             window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
                 ok: false,
                 error: error?.message || 'availability-failed',
+                source: this.el,
+            })
+        } finally {
+            if (standalone) {
+                window.Shopware.emitQueued(this.options.loadingEvent, {
+                    busy: false,
+                    source: this.el,
+                    availability: true,
+                })
+            }
+        }
+    }
+
+    /**
+     * @param {Record<string, unknown>|null} [params]
+     * @param {{ built?: boolean }} [options]
+     */
+    async _syncFilterOptionsBatch(params = null, options = {}) {
+        if (!this.options.filterOptionsUrl) {
+            return
+        }
+
+        this.refreshControls()
+
+        const requestParams = options.built
+            ? (params || {})
+            : this._buildRequestParams(params ?? this._collectValues())
+
+        const standalone = !this._busy
+        if (standalone) {
+            window.Shopware.emitQueued(this.options.loadingEvent, {
+                busy: true,
+                source: this.el,
+                availability: true,
+            })
+        }
+
+        try {
+            const payload = await this._fetchFilterOptions(requestParams)
+            this._applyFilterOptionsPayload(payload)
+            window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
+                ok: true,
+                params: requestParams,
+                source: this.el,
+            })
+        } catch (error) {
+            if (error?.name === 'AbortError') {
+                return
+            }
+            console.error('ProductListing: Failed to sync filter options', error)
+            window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
+                ok: false,
+                error: error?.message || 'filter-options-failed',
                 source: this.el,
             })
         } finally {
@@ -324,7 +396,13 @@ export default class ProductListing extends ShopwareComponent {
         const requestParams = this._buildRequestParams(params)
 
         try {
-            const html = await this._fetchHtml(this.options.resultsUrl, requestParams)
+            const resultsPromise = this._fetchHtml(this.options.resultsUrl, requestParams)
+            const optionsPromise = this.options.disableEmptyFilter && this.options.filterOptionsUrl
+                ? this._fetchFilterOptions(requestParams)
+                : Promise.resolve(null)
+
+            const [html, optionsPayload] = await Promise.all([resultsPromise, optionsPromise])
+
             this._replaceResults(html)
             this._scrollToListing()
 
@@ -332,7 +410,17 @@ export default class ProductListing extends ShopwareComponent {
                 this._pushHistory(requestParams)
             }
 
-            await this.syncAvailability(requestParams, { built: true })
+            if (optionsPayload) {
+                this.refreshControls()
+                this._applyFilterOptionsPayload(optionsPayload)
+                window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
+                    ok: true,
+                    params: requestParams,
+                    source: this.el,
+                })
+            } else {
+                await this.syncFilterOptions(requestParams, { built: true })
+            }
 
             this._updateAriaLive()
 
@@ -469,6 +557,84 @@ export default class ProductListing extends ShopwareComponent {
 
         const aggregations = await response.json()
         this._applyAvailability(aggregations)
+    }
+
+    async _fetchFilterOptions(params) {
+        const target = new URL(this.options.filterOptionsUrl, window.location.origin)
+        const skip = new Set(this.options.displayParamKeys || [])
+        skip.add('p')
+        skip.add('order')
+
+        Object.entries(params).forEach(([key, value]) => {
+            if (skip.has(key)) {
+                return
+            }
+            target.searchParams.set(key, value)
+        })
+
+        const response = await fetch(target.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+
+        if (!response.ok) {
+            throw new Error(`Filter options fetch failed: ${response.status}`)
+        }
+
+        return response.json()
+    }
+
+    /**
+     * @param {{ options?: Record<string, string>, meta?: Record<string, Record<string, unknown>> }} payload
+     */
+    _applyFilterOptionsPayload(payload) {
+        if (!payload || typeof payload !== 'object') {
+            return
+        }
+
+        this.refreshControls()
+        const options = payload.options || {}
+        const meta = payload.meta || {}
+
+        this._controls.forEach((control) => {
+            const key = control.options?.filterKey
+                || control.el?.getAttribute?.('data-filter-key')
+                || control.options?.name
+            if (!key) {
+                return
+            }
+
+            if (typeof options[key] === 'string' && typeof control.replaceOptions === 'function') {
+                control.replaceOptions(options[key])
+            }
+
+            if (meta[key] && typeof control.applyOptionsMeta === 'function') {
+                control.applyOptionsMeta(meta[key])
+            } else if (meta[key] && typeof control.applyAvailability !== 'function') {
+                // no-op
+            }
+        })
+
+        // Controls discovered only by data-filter-key (e.g. not yet in set)
+        document.querySelectorAll('[data-filter-key]').forEach((el) => {
+            const key = el.getAttribute('data-filter-key')
+            if (!key) {
+                return
+            }
+            const name = el.getAttribute('data-component')
+            if (!name || !window.Shopware?.getComponentInstanceByElement) {
+                return
+            }
+            const instance = window.Shopware.getComponentInstanceByElement(name, el)
+            if (!instance) {
+                return
+            }
+            if (typeof options[key] === 'string' && typeof instance.replaceOptions === 'function') {
+                instance.replaceOptions(options[key])
+            }
+            if (meta[key] && typeof instance.applyOptionsMeta === 'function') {
+                instance.applyOptionsMeta(meta[key])
+            }
+        })
     }
 
     _applyAvailability(aggregations) {

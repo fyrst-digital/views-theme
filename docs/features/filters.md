@@ -58,22 +58,24 @@ No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, no
 | Layer | Source | Mutates |
 |-------|--------|---------|
 | Catalog | Page listing aggs / drawer `only-aggregations` (**no** reduce) | Full option nodes always in DOM |
-| Availability | Reduced aggs (`only-aggregations` + `reduce-aggregations` + current filters) | Empty facets **visible + disabled** (toggle + options); invalid options `disabled` |
+| Availability | Reduced aggs (`only-aggregations` + `reduce-aggregations` + current filters) | Empty facets **visible + disabled** (toggle + options); invalid options `disabled`; **available options sorted first** (SSR + client) |
 | Selection | URL / request | Checked state |
 
 **SSR (first paint):** when `disableEmptyFilter` and the request has filter params, `Filter:Panel` loads reduced aggs via `FilterAggregationLoader`, then `FilterAvailabilityApplier` sets `disabled` / `allowedIds` / `selectedIds` on facet props before Twig. No flash of invalid filters.
 
-**Client (live updates):** Listing **`syncAvailability()`** fetches the same reduced JSON and calls `applyAvailability` after:
+**Client (live updates):** Listing **`syncFilterOptions()`** batch-fetches option list HTML + meta (server owns available-first order and disabled flags):
 
 | When | Notes |
 |------|--------|
-| `init` | Revalidate after hydrate |
-| `apply` success | After Results XHR |
+| `init` | After hydrate (revalidate) |
+| `apply` success | In parallel with Results XHR |
 | Drawer open/close | After `syncControls` (awaited) |
 
-Panel listens to `ViewsTheme:Listing:Loading` (`aria-busy`) during standalone availability fetch.
+Closed groups update in the background (no open required). Falls back to reduced-aggs JSON (`syncAvailability`) if `filterOptionsUrl` is missing.
 
-Drawer catalog must **not** use `reduce-aggregations` (omit options would break clear). Reduce is availability-only (SSR applier + client JSON).
+Panel listens to `ViewsTheme:Listing:Loading` (`aria-busy`) during standalone options/availability fetch.
+
+Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. Option order/disabled come from SSR Panel applier + batch `filter-options`.
 
 ## Control contract
 
@@ -84,7 +86,9 @@ Drawer catalog must **not** use `reduce-aggregations` (omit options would break 
 | `getLabels()` | `[{ id, label, previewHex?, previewImageUrl? }]` |
 | `setFromUrl(params)` | Hydrate from query (init / popstate / drawer open) |
 | `reset(id)` / `resetAll()` | Clear |
-| `applyAvailability(aggregations)` | Reduced-aggs UX: disable toggle + invalid options (facets stay visible) |
+| `replaceOptions(html)` | MultiSelect: swap `[data-filter-options]` list from batch |
+| `applyOptionsMeta(meta)` | Toggle disabled/count (and Boolean/Rating state) from batch meta |
+| `applyAvailability(aggregations)` | Fallback when batch URL missing |
 | `refreshDisabled?(aggregations)` | Deprecated alias → `applyAvailability` |
 
 Listing **discovers** controls under its root and under the **active** `Filter:Panel` (open drawer Panel when mounted/open; otherwise page sidebar Panel). No per-control `registerControl` required. Chip labels are de-duplicated by id.
@@ -184,8 +188,13 @@ See [JS lazy-loaded shells](../conventions/javascript.md#lazy-loaded-shells-crit
 |-------|------|----------|
 | `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` | HTML `Filter:Drawer` |
 | `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` | HTML `Filter:Drawer` (`search` required) |
+| `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{id}/filter-options` | JSON `{ options, meta }` |
+| `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` | JSON `{ options, meta }` |
 
-Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute` with **`only-aggregations`** (full catalog). Availability reduce is client-only via listing aggregations routes. Render via `AbstractComponentController::renderComponent()`.
+`options` keys: `manufacturer`, `properties:{name}`, … → MultiSelect `<ul data-filter-options>` HTML.  
+`meta` keys: same + `shipping-free` / `rating` → `{ disabled, count?, checked?, allowedMax?, selectedValue? }`.
+
+Drawer loaders: `only-aggregations` (full catalog). Filter-options builder: catalog + reduced + applier + `MultiSelect:Options` render.
 
 ## Events
 
@@ -211,6 +220,8 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
 | Reduced aggs loader | `src/Service/FilterAggregationLoader.php` |
 | SSR/client availability mark | `src/Service/FilterAvailabilityApplier.php` |
+| Batch options payload | `src/Service/FilterOptionsPayloadBuilder.php` |
+| MultiSelect options fragment | `components/Filter/MultiSelect/Options.*` |
 | Toggle / Count / Collapse / Footer | `components/Filter/Group/{Toggle,Count,Collapse,Footer}.*` |
 | Chip / Facets / Active | `components/Filter/{Chip,MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Controller | `src/Controller/FilterDrawerController.php` |

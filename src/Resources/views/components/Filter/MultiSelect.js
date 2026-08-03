@@ -2,6 +2,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
     static options = {
         name: null,
         propertyName: null,
+        filterKey: null,
         listingComponent: 'ViewsTheme:Product:Listing',
         groupComponent: 'ViewsTheme:Filter:Group',
     }
@@ -55,6 +56,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
             input.checked = false
             input.disabled = false
         })
+        this._group()?.setDisabled?.(false)
         this._syncCount()
     }
 
@@ -72,8 +74,52 @@ export default class FilterMultiSelect extends ShopwareComponent {
     }
 
     /**
-     * Apply reduced-aggregation availability (catalog stays full in DOM).
-     * Empty facets stay visible with disabled toggle + options (not hidden).
+     * Replace option list HTML from server batch (order + disabled baked in).
+     */
+    replaceOptions(html) {
+        if (typeof html !== 'string' || html === '') {
+            return
+        }
+
+        const existing = this.el.querySelector('[data-filter-options]')
+        const template = document.createElement('template')
+        template.innerHTML = html.trim()
+        const next = template.content.firstElementChild
+        if (!next) {
+            return
+        }
+
+        if (existing) {
+            existing.replaceWith(next)
+        } else {
+            const group = this.el.querySelector(
+                `[data-component="${this.options.groupComponent || 'ViewsTheme:Filter:Group'}"]`,
+            )
+            const bodyContent = group?.querySelector('.vi-filter-group-body__content')
+            bodyContent?.replaceChildren(next)
+        }
+
+        this._syncCount()
+    }
+
+    /**
+     * @param {{ disabled?: boolean, count?: number }} meta
+     */
+    applyOptionsMeta(meta) {
+        if (!meta || typeof meta !== 'object') {
+            return
+        }
+
+        this._group()?.setDisabled?.(!!meta.disabled)
+        if (meta.count !== undefined && meta.count !== null) {
+            this._group()?.setCount?.(meta.count || null)
+        } else {
+            this._syncCount()
+        }
+    }
+
+    /**
+     * Fallback when filter-options batch is unavailable.
      */
     applyAvailability(aggregations) {
         if (!aggregations || !this.options.name) {
@@ -106,6 +152,8 @@ export default class FilterMultiSelect extends ShopwareComponent {
             input.disabled = !allowedIds.includes(input.value)
         })
 
+        this._sortOptionsAvailableFirst()
+
         if (unavailable) {
             this._closeGroup()
         }
@@ -115,6 +163,33 @@ export default class FilterMultiSelect extends ShopwareComponent {
     /** @deprecated use applyAvailability */
     refreshDisabled(aggregations) {
         this.applyAvailability(aggregations)
+    }
+
+    _sortOptionsAvailableFirst() {
+        const list = this.el.querySelector('[data-filter-options]')
+        if (!list) {
+            return
+        }
+
+        const items = Array.from(list.children).filter((node) => node instanceof HTMLElement)
+        if (items.length < 2) {
+            return
+        }
+
+        const available = []
+        const disabled = []
+        items.forEach((item) => {
+            const input = item.querySelector('input[type="checkbox"]')
+            if (input && !input.disabled) {
+                available.push(item)
+            } else {
+                disabled.push(item)
+            }
+        })
+
+        ;[...available, ...disabled].forEach((item) => {
+            list.appendChild(item)
+        })
     }
 
     _onClick(event) {

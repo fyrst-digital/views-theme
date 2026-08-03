@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Controller;
 
 use Fyrst\ViewsTheme\Service\FilterAggregationLoader;
+use Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder;
 use Shopware\Core\Content\Product\SalesChannel\Listing\AbstractProductListingRoute;
 use Shopware\Core\Content\Product\SalesChannel\Search\AbstractProductSearchRoute;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -26,6 +27,7 @@ class ListingController extends AbstractComponentController
         private readonly AbstractProductListingRoute $listingRoute,
         private readonly AbstractProductSearchRoute $searchRoute,
         private readonly FilterAggregationLoader $aggregationLoader,
+        private readonly FilterOptionsPayloadBuilder $optionsPayloadBuilder,
     ) {
         parent::__construct($components);
     }
@@ -60,6 +62,19 @@ class ListingController extends AbstractComponentController
             ->getResult();
 
         return $this->aggregationsResponse($result->getAggregations());
+    }
+
+    #[Route(
+        path: '/vi/listing/category/{navigationId}/filter-options',
+        name: 'frontend.views-theme.listing.category.filter-options',
+        defaults: ['XmlHttpRequest' => true],
+        methods: ['GET'],
+    )]
+    public function categoryFilterOptions(string $navigationId, Request $request, SalesChannelContext $context): JsonResponse
+    {
+        $request->attributes->set('navigationId', $navigationId);
+
+        return $this->filterOptionsResponse($request, $context);
     }
 
     #[Route(
@@ -105,6 +120,37 @@ class ListingController extends AbstractComponentController
         return $this->aggregationsResponse($result->getAggregations());
     }
 
+    #[Route(
+        path: '/vi/listing/search/filter-options',
+        name: 'frontend.views-theme.listing.search.filter-options',
+        defaults: ['XmlHttpRequest' => true],
+        methods: ['GET'],
+    )]
+    public function searchFilterOptions(Request $request, SalesChannelContext $context): JsonResponse
+    {
+        if (!$request->get('search')) {
+            throw RoutingException::missingRequestParameter('search');
+        }
+
+        return $this->filterOptionsResponse($request, $context);
+    }
+
+    private function filterOptionsResponse(Request $request, SalesChannelContext $context): JsonResponse
+    {
+        $payload = $this->optionsPayloadBuilder->build($request, $context);
+
+        foreach ($payload['options'] as $key => $html) {
+            if (\is_string($html)) {
+                $payload['options'][$key] = $this->replaceStorefrontPlaceholders($html);
+            }
+        }
+
+        $response = new JsonResponse($payload);
+        $response->headers->set('x-robots-tag', 'noindex');
+
+        return $response;
+    }
+
     /**
      * @param array<string, mixed>|object $aggregations
      */
@@ -138,6 +184,3 @@ class ListingController extends AbstractComponentController
         ];
     }
 }
-
-
-

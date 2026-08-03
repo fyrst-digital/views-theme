@@ -24,6 +24,8 @@ class Listing
 
     public ?string $aggregationsUrl = null;
 
+    public ?string $filterOptionsUrl = null;
+
     /**
      * @var array<string, mixed>
      */
@@ -98,6 +100,7 @@ class Listing
         $this->componentOptions = [
             'resultsUrl' => $this->resultsUrl,
             'aggregationsUrl' => $this->aggregationsUrl,
+            'filterOptionsUrl' => $this->filterOptionsUrl,
             'baseParams' => $baseParams,
             'display' => [
                 'boxLayout' => $this->boxLayout,

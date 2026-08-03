@@ -21,6 +21,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Boolean',
         'data-component-options': options|json_encode,
+        'data-filter-key': name,
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >

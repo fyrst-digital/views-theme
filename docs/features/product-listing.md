@@ -52,17 +52,18 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 | `refreshControls()` | Discover controls in listing el + active `Filter:Panel` |
 | `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
 | `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ControlsSynced` (selection only) |
-| `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` on controls (init, apply, drawer) |
-| `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → `syncAvailability` |
+| `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability` |
+| `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback) |
+| `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → swap lists on all MultiSelects |
 | `reset` / `resetAll` | Delegate to controls then apply |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
 
-**Catalog vs availability:** Panel SSR = full option catalog. Empty-filter UX = `syncAvailability` + `/aggregations` (`reduce-aggregations`). See [filters.md](filters.md#catalog-vs-availability-critical).
+**Catalog vs availability:** Panel SSR = full catalog + SSR availability mark. Live updates = batch `/filter-options` (server-sorted available-first HTML). See [filters.md](filters.md#catalog-vs-availability-critical).
 
-Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
+Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `filterOptionsUrl`, `baseParams`, `display`, `disableEmptyFilter`, `history`.
 
 ## Props (`Product:Listing`)
 

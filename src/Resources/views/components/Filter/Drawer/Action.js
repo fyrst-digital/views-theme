@@ -220,7 +220,9 @@ export default class FilterDrawerAction extends ShopwareComponent {
             listing.refreshControls()
         }
 
-        if (typeof listing.syncAvailability === 'function') {
+        if (typeof listing.syncFilterOptions === 'function') {
+            await listing.syncFilterOptions()
+        } else if (typeof listing.syncAvailability === 'function') {
             await listing.syncAvailability()
         }
     }

@@ -11,11 +11,13 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'chip', 'group']) %}
+{% do vi_define_attrs(['group', 'options']) %}
 
+{% set filterKey = name == 'properties' and propertyName ? 'properties:' ~ propertyName : name %}
 {% set options = {
     name: name,
     propertyName: propertyName,
+    filterKey: filterKey,
     listingComponent: 'ViewsTheme:Product:Listing',
 } %}
 
@@ -25,6 +27,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:MultiSelect',
         'data-component-options': options|json_encode,
+        'data-filter-key': filterKey,
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
@@ -36,27 +39,14 @@
             disabled: facetDisabled,
         }).all() }}
     >
-        <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
-            {% for element in elements %}
-                {% set elementId = element.id %}
-                {% set elementLabel = element.translated.name|default(element.name)|default(elementId) %}
-                {% set previewHex = element.colorHexCode|default(null) %}
-                {% set previewImage = element.media.url|default(null) %}
-                {% set isSelected = elementId in selectedIds %}
-                {% set isDisabled = allowedIds is not null and not isSelected and elementId not in allowedIds %}
-                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                    <twig:ViewsTheme:Filter:Chip
-                        type="checkbox"
-                        :value="elementId"
-                        :label="elementLabel"
-                        :previewHex="previewHex"
-                        :previewImageUrl="previewImage"
-                        :checked="isSelected"
-                        :disabled="isDisabled"
-                        {{ ...vi_attrs('chip').all() }}
-                    />
-                </li>
-            {% endfor %}
-        </ul>
+        <twig:ViewsTheme:Filter:MultiSelect:Options
+            {{ ...vi_attrs('options').defaults({
+                displayName: displayName,
+                elements: elements,
+                allowedIds: allowedIds,
+                selectedIds: selectedIds,
+                filterKey: filterKey,
+            }).all() }}
+        />
     </twig:ViewsTheme:Filter:Group>
 </div>

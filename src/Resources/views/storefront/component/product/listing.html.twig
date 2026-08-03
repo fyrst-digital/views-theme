@@ -10,19 +10,23 @@
     {% set listingAggregationsUrl = filterUrl|default(null) %}
     {% set listingParams = params|default({}) %}
 
+    {% set listingFilterOptionsUrl = null %}
     {% if listingNavigationId %}
         {% set listingResultsUrl = path('frontend.views-theme.listing.category', { navigationId: listingNavigationId }) %}
         {% set listingAggregationsUrl = path('frontend.views-theme.listing.category.aggregations', { navigationId: listingNavigationId }) %}
+        {% set listingFilterOptionsUrl = path('frontend.views-theme.listing.category.filter-options', { navigationId: listingNavigationId }) %}
         {% set listingParams = {} %}
     {% elseif listingParams.search is defined and listingParams.search %}
         {% set listingResultsUrl = path('frontend.views-theme.listing.search') %}
         {% set listingAggregationsUrl = path('frontend.views-theme.listing.search.aggregations') %}
+        {% set listingFilterOptionsUrl = path('frontend.views-theme.listing.search.filter-options') %}
     {% endif %}
 
     <twig:ViewsTheme:Product:Listing
         :searchResult="searchResult"
         :resultsUrl="listingResultsUrl"
         :aggregationsUrl="listingAggregationsUrl"
+        :filterOptionsUrl="listingFilterOptionsUrl"
         :params="listingParams"
         :sidebar="sidebar|default(false)"
         :boxLayout="boxLayout|default('default')"

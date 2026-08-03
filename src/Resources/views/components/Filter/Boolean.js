@@ -9,6 +9,9 @@ export default class FilterBoolean extends ShopwareComponent {
         this._input = this.el.querySelector('input[type="checkbox"]')
         this._onChange = this._onChange.bind(this)
         this._input?.addEventListener('change', this._onChange)
+        if (this.options.name) {
+            this.el.setAttribute('data-filter-key', this.options.name)
+        }
     }
 
     destroy() {
@@ -55,6 +58,23 @@ export default class FilterBoolean extends ShopwareComponent {
         }
 
         this._input.checked = !!params?.[this.options.name]
+    }
+
+    /**
+     * @param {{ disabled?: boolean, checked?: boolean }} meta
+     */
+    applyOptionsMeta(meta) {
+        if (!meta || typeof meta !== 'object') {
+            return
+        }
+
+        this.el.hidden = false
+        if (this._input) {
+            if (meta.checked !== undefined) {
+                this._input.checked = !!meta.checked
+            }
+            this._input.disabled = !!meta.disabled
+        }
     }
 
     applyAvailability(aggregations) {

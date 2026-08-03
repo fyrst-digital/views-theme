@@ -1,0 +1,40 @@
+{% props
+    displayName = null,
+    elements = [],
+    allowedIds = null,
+    selectedIds = [],
+    filterKey,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['item', 'chip']) %}
+
+<ul
+    {{ attributes.defaults({
+        'data-filter-options': filterKey,
+        'aria-label': displayName,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% for element in elements %}
+        {% set elementId = element.id %}
+        {% set elementLabel = element.translated.name|default(element.name)|default(elementId) %}
+        {% set previewHex = element.colorHexCode|default(null) %}
+        {% set previewImage = element.media.url|default(null) %}
+        {% set isSelected = elementId in selectedIds %}
+        {% set isDisabled = allowedIds is not null and not isSelected and elementId not in allowedIds %}
+        <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+            <twig:ViewsTheme:Filter:Chip
+                type="checkbox"
+                :value="elementId"
+                :label="elementLabel"
+                :previewHex="previewHex"
+                :previewImageUrl="previewImage"
+                :checked="isSelected"
+                :disabled="isDisabled"
+                {{ ...vi_attrs('chip').all() }}
+            />
+        </li>
+    {% endfor %}
+</ul>

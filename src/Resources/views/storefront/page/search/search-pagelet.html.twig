@@ -9,6 +9,7 @@
         :searchResult="page.listing"
         :resultsUrl="path('frontend.views-theme.listing.search')"
         :aggregationsUrl="path('frontend.views-theme.listing.search.aggregations')"
+        :filterOptionsUrl="path('frontend.views-theme.listing.search.filter-options')"
         :params="{ search: page.searchTerm }"
         :sidebar="false"
         boxLayout="minimal"

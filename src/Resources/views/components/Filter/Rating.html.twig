@@ -24,6 +24,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Rating',
         'data-component-options': options|json_encode,
+        'data-filter-key': name,
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >

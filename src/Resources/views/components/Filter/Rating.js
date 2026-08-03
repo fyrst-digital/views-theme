@@ -10,6 +10,9 @@ export default class FilterRating extends ShopwareComponent {
         this._onClick = this._onClick.bind(this)
         this.el.addEventListener('change', this._onChange)
         this.el.addEventListener('click', this._onClick)
+        if (this.options.name) {
+            this.el.setAttribute('data-filter-key', this.options.name)
+        }
     }
 
     destroy() {
@@ -62,6 +65,44 @@ export default class FilterRating extends ShopwareComponent {
         this._inputs().forEach((input) => {
             input.checked = String(input.value) === String(value || '')
         })
+    }
+
+    /**
+     * @param {{ disabled?: boolean, allowedMax?: number|null, selectedValue?: string|null, count?: number }} meta
+     */
+    applyOptionsMeta(meta) {
+        if (!meta || typeof meta !== 'object') {
+            return
+        }
+
+        this.el.hidden = false
+        const max = meta.allowedMax != null ? Number(meta.allowedMax) : null
+        const selectedValue = meta.selectedValue != null ? String(meta.selectedValue) : null
+        const unavailable = !!meta.disabled
+
+        this._inputs().forEach((input) => {
+            const isSelected = selectedValue !== null && String(input.value) === selectedValue
+            if (isSelected) {
+                input.checked = true
+                input.disabled = false
+                return
+            }
+            input.checked = false
+            if (unavailable) {
+                input.disabled = true
+                return
+            }
+            const points = Number(input.value)
+            input.disabled = max != null && max > 0 && points > max
+        })
+
+        if (unavailable) {
+            this._closeGroup()
+        }
+        this._group()?.setDisabled?.(unavailable)
+        if (meta.count !== undefined) {
+            this._group()?.setCount?.(meta.count || null)
+        }
     }
 
     applyAvailability(aggregations) {
