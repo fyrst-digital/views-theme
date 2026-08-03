@@ -6,11 +6,14 @@ export default class FilterRating extends ShopwareComponent {
 
     init() {
         this._onChange = this._onChange.bind(this)
+        this._onClick = this._onClick.bind(this)
         this.el.addEventListener('change', this._onChange)
+        this.el.addEventListener('click', this._onClick)
     }
 
     destroy() {
         this.el.removeEventListener('change', this._onChange)
+        this.el.removeEventListener('click', this._onClick)
     }
 
     getValues() {
@@ -71,6 +74,19 @@ export default class FilterRating extends ShopwareComponent {
             const points = Number(input.value)
             input.disabled = max > 0 && points > max && !input.checked
         })
+    }
+
+    _onClick(event) {
+        const reset = event.target instanceof Element
+            ? event.target.closest('[data-filter-reset]')
+            : null
+        if (!reset || !this.el.contains(reset)) {
+            return
+        }
+
+        event.preventDefault()
+        this.resetAll()
+        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
     _selected() {

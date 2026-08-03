@@ -11,13 +11,16 @@ export default class FilterRange extends ShopwareComponent {
         this._max = this.el.querySelector('input[data-range="max"]')
         this._timer = null
         this._onInput = this._onInput.bind(this)
+        this._onClick = this._onClick.bind(this)
         this._min?.addEventListener('input', this._onInput)
         this._max?.addEventListener('input', this._onInput)
+        this.el.addEventListener('click', this._onClick)
     }
 
     destroy() {
         this._min?.removeEventListener('input', this._onInput)
         this._max?.removeEventListener('input', this._onInput)
+        this.el.removeEventListener('click', this._onClick)
         if (this._timer) {
             window.clearTimeout(this._timer)
         }
@@ -74,6 +77,19 @@ export default class FilterRange extends ShopwareComponent {
         if (this._max) {
             this._max.value = params?.[this.options.maxKey] || ''
         }
+    }
+
+    _onClick(event) {
+        const reset = event.target instanceof Element
+            ? event.target.closest('[data-filter-reset]')
+            : null
+        if (!reset || !this.el.contains(reset)) {
+            return
+        }
+
+        event.preventDefault()
+        this.resetAll()
+        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
     _onInput() {

@@ -1,7 +1,11 @@
 {
-    root: { base: 'vi-filter-multi-select' },
-    body: { base: 'vi-filter-group-body' },
-    list: { base: 'vi-filter-multi-select__list list-unstyled' },
+    root: { base: 'vi-filter-multi-select d-contents' },
+    body: { base: 'vi-filter-group-body bg-body border rounded shadow' },
+    content: { base: 'vi-filter-group-body__content overflow-auto p-3' },
+    list: { base: 'vi-filter-multi-select__list list-unstyled d-flex flex-wrap gap-2 mb-0' },
     item: { base: 'vi-filter-multi-select__item' },
-    label: { base: 'vi-filter-multi-select__label' },
+    label: { base: 'vi-filter-multi-select__label btn btn-sm d-inline-flex align-items-center gap-2 border border-2 border-transparent bg-light rounded-1 px-3 py-2 mb-0 text-start cursor-pointer user-select-none' },
+    swatch: { base: 'vi-filter-multi-select__swatch flex-shrink-0' },
+    footer: { base: 'vi-filter-group-body__footer border-top d-flex justify-content-center' },
+    reset: { base: 'vi-filter-group-body__reset btn btn-link btn-sm text-body text-decoration-none' },
 }

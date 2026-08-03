@@ -6,6 +6,9 @@
         "navigationDrawer": {
             "showAll": "Alle anzeigen"
         },
+        "filter": {
+            "reset": "Zurücksetzen"
+        },
         "cart": {
             "checkout": "Zur Kasse",
             "cart": "Warenkorb",

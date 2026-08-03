@@ -3,10 +3,10 @@ export default class FilterGroup extends ShopwareComponent {
         open: false,
         toggleComponent: 'ViewsTheme:Filter:Group:Toggle',
         countComponent: 'ViewsTheme:Filter:Group:Count',
+        drawerSelector: '#vi-filter-drawer',
     }
 
     init() {
-        this._open = !!this.options.open
         this._toggle = this.el.querySelector(
             `[data-component="${this.options.toggleComponent}"]`,
         )
@@ -14,19 +14,24 @@ export default class FilterGroup extends ShopwareComponent {
             `[data-component="${this.options.countComponent}"]`,
         )
         this._body = this._resolveBody()
-        this._onToggle = this._onToggle.bind(this)
+        this._accordion = !!this.el.closest(this.options.drawerSelector)
+        this._onPopoverToggle = this._onPopoverToggle.bind(this)
+        this._onAccordionClick = this._onAccordionClick.bind(this)
 
-        if (this._toggle) {
-            this._toggle.addEventListener('click', this._onToggle)
+        if (this._accordion) {
+            this._setupAccordion()
+            return
         }
 
-        this._sync()
+        this._setupPopover()
     }
 
     destroy() {
-        if (this._toggle) {
-            this._toggle.removeEventListener('click', this._onToggle)
-        }
+        this._body?.removeEventListener('toggle', this._onPopoverToggle)
+        this._toggle?.removeEventListener('click', this._onAccordionClick)
+        this._toggle = null
+        this._count = null
+        this._body = null
     }
 
     setCount(count) {
@@ -46,6 +51,7 @@ export default class FilterGroup extends ShopwareComponent {
 
     _resolveBody() {
         const controls = this._toggle?.getAttribute('aria-controls')
+            || this._toggle?.getAttribute('popovertarget')
         if (!controls) {
             return null
         }
@@ -53,21 +59,71 @@ export default class FilterGroup extends ShopwareComponent {
         return document.getElementById(controls)
     }
 
-    _onToggle(event) {
-        event.preventDefault()
-        this._open = !this._open
-        this._sync()
+    _setupPopover() {
+        if (!this._body || !document.body.contains(this._body)) {
+            this._body = this._resolveBody()
+        }
+
+        if (this._body) {
+            if (!this._body.hasAttribute('popover')) {
+                this._body.setAttribute('popover', 'auto')
+            }
+            this._body.removeAttribute('hidden')
+            this._body.addEventListener('toggle', this._onPopoverToggle)
+        }
+
+        if (this._toggle && this._body?.id) {
+            this._toggle.setAttribute('popovertarget', this._body.id)
+            this._toggle.setAttribute('aria-haspopup', 'dialog')
+        }
+
+        if (this.options.open && this._body && typeof this._body.showPopover === 'function') {
+            this._body.showPopover()
+        }
+
+        this._syncAria(!!this._body?.matches?.(':popover-open'))
     }
 
-    _sync() {
-        if (this._toggle) {
-            this._toggle.setAttribute('aria-expanded', this._open ? 'true' : 'false')
+    _setupAccordion() {
+        if (!this._body || !document.body.contains(this._body)) {
+            this._body = this._resolveBody()
         }
+
+        if (this._body) {
+            this._body.removeAttribute('popover')
+            this._body.style.removeProperty('position-anchor')
+        }
+
+        if (this._toggle) {
+            this._toggle.removeAttribute('popovertarget')
+            this._toggle.addEventListener('click', this._onAccordionClick)
+        }
+
+        this._open = !!this.options.open
+        this._syncAccordion()
+    }
+
+    _onPopoverToggle(event) {
+        this._syncAria(event.newState === 'open')
+    }
+
+    _onAccordionClick(event) {
+        event.preventDefault()
+        this._open = !this._open
+        this._syncAccordion()
+    }
+
+    _syncAccordion() {
+        this._syncAria(this._open)
         if (!this._body || !document.body.contains(this._body)) {
             this._body = this._resolveBody()
         }
         if (this._body) {
             this._body.hidden = !this._open
         }
+    }
+
+    _syncAria(open) {
+        this._toggle?.setAttribute('aria-expanded', open ? 'true' : 'false')
     }
 }

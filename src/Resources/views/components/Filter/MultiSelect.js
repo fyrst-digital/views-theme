@@ -7,12 +7,15 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
     init() {
         this._onChange = this._onChange.bind(this)
+        this._onClick = this._onClick.bind(this)
         this.el.addEventListener('change', this._onChange)
+        this.el.addEventListener('click', this._onClick)
         this._syncCount()
     }
 
     destroy() {
         this.el.removeEventListener('change', this._onChange)
+        this.el.removeEventListener('click', this._onClick)
     }
 
     getValues() {
@@ -99,6 +102,19 @@ export default class FilterMultiSelect extends ShopwareComponent {
             }
             input.disabled = allowedIds.length > 0 && !allowedIds.includes(input.value)
         })
+    }
+
+    _onClick(event) {
+        const reset = event.target instanceof Element
+            ? event.target.closest('[data-filter-reset]')
+            : null
+        if (!reset || !this.el.contains(reset)) {
+            return
+        }
+
+        event.preventDefault()
+        this.resetAll()
+        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
     _onChange() {

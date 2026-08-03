@@ -7,7 +7,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['count']) %}
+{% do vi_define_attrs(['count', 'caret']) %}
 
 <button
     {{ attributes.defaults({
@@ -15,13 +15,15 @@
         'data-component': 'ViewsTheme:Filter:Group:Toggle',
         'aria-expanded': expanded ? 'true' : 'false',
         'aria-controls': controls,
+        'aria-haspopup': 'dialog',
+        popovertarget: controls,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {{ label }}
+    <span class="{{ vi_class('label') }}">{{ label }}</span>
     <twig:ViewsTheme:Filter:Group:Count
         :count="count"
         {{ ...vi_attrs('count').all() }}
     />
-    {{ vi_icon('caret-down') }}
+    {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
 </button>

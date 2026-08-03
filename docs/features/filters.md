@@ -9,13 +9,13 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel |
 | `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle) |
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` |
-| `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver |
+| `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver; horizontal bar (desktop) |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
-| `Filter:Group` | Disclosure chrome only: Toggle + Count; open state via `aria-controls` → sibling body `id` |
-| `Filter:Group:Toggle` | Disclosure button (label + Count + caret); click owned by Group |
+| `Filter:Group` | Disclosure chrome: Toggle + Count; **desktop** popover + `position-anchor`; **drawer** accordion |
+| `Filter:Group:Toggle` | Compact chip button (label + Count + caret); `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
-| `Filter:MultiSelect` / `Range` / `Rating` | Facet controls; each owns collapsible body (`vi-filter-group-body` sibling of Group) |
-| `Filter:Boolean` | Single checkbox facet (no Group) |
+| `Filter:MultiSelect` / `Range` / `Rating` | Facet controls; collapsible body (`vi-filter-group-body`) sibling of Group |
+| `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
 | `Filter:Active` | Chips via Twig CVA `<template>` clones (no class strings in JS) |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
@@ -43,7 +43,7 @@ Each facet is `{ component, props }` rendered with `{{ component(facet.component
 | URL query | Source of truth (shareable, history) |
 | `Product:Listing` | Discover controls, `apply` / `reset`, history, Results XHR, aggs JSON |
 | Facet controls | Working DOM; `getValues` / `setFromUrl` |
-| Desktop `Filter:Panel` | Always-mounted view (bridge: `class="d-none d-lg-block"`) |
+| Desktop `Filter:Panel` | Always-mounted bar (bridge: `class="d-none d-lg-block"`) |
 | `Filter:Drawer` | Disposable mobile view (refetch each open) |
 
 No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, not session POSTs like cart).
@@ -61,13 +61,57 @@ No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, no
 
 Listing **discovers** controls under its root and under the **active** `Filter:Panel` (open drawer Panel when mounted/open; otherwise page sidebar Panel). No per-control `registerControl` required. Chip labels are de-duplicated by id.
 
-## Layout
+## Layout & chrome
+
+Desktop bar (About You–style, not pixel-perfect):
+
+| Piece | Behaviour |
+|-------|-----------|
+| Panel `items` | `d-flex flex-wrap gap-2` horizontal chip bar |
+| Facet hosts | CVA `d-contents` so toggles sit in the bar |
+| Group toggle | Compact outline chip + caret; count badge when selected |
+| Body (desktop) | HTML Popover API + CSS `position-anchor` / `anchor()` (`bottom-start`) |
+| MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); checkbox/radio visually hidden |
+| Boolean | Bar chip + [`Form:Switch`](form-input.md#formswitch) (`class="d-inline-flex …"` + `:reverse`; BS form fix in `scss/_form.scss`) |
+| Body footer | Per-facet **Reset** (`viewsTheme.filter.reset`) → control `resetAll` + Listing `apply` |
+| Active chips | Below bar (`Filter:Active`) |
+
+Mobile drawer (`#vi-filter-drawer`):
+
+| Piece | Behaviour |
+|-------|-----------|
+| Panel items | Column stack |
+| Facet hosts | `display: block` |
+| Body | Accordion (Group JS strips `popover`); full-width toggle |
+
+### CSS architecture
+
+| Layer | Path | Role |
+|-------|------|------|
+| **SCSS (BS / theme layout)** | `app/storefront/src/scss/_form.scss` | form-check/switch float & negative-margin neutralize |
+| | `app/storefront/src/scss/component/filter.scss` | `#vi-filter-drawer` bar → accordion layout |
+| **CVA + utilities** | `*.cva.twig` | Bar chrome, `d-contents` hosts, chip grids |
+| **Component CSS** | `components/Filter/*.css` | Popover/anchor + token consume only (`var(--vi-*, fallback)`) |
+
+### CSS tokens (component consume + fallback only)
+
+| Token | Default role |
+|-------|----------------|
+| `--vi-offset` | Gap under toggle before body |
+| `--vi-min-w` / `--vi-max-w` / `--vi-max-h` | Popover shell size |
+| `--vi-content-max-h` | Scrollport inside body |
+| `--vi-chip-active-border` / `--vi-chip-active-bg` / `--vi-chip-disabled-opacity` | Option chips |
+| `--vi-swatch` / `--vi-swatch-radius` / `--vi-swatch-border` | Color preview swatch |
+
+Co-located: `Group.css` (popover/anchor), `MultiSelect.css`, `Rating.css`, `Boolean.css` (checked border token).
+
+## Layout placement
 
 One facet **Panel** layout (same Twig). Placement:
 
 | Viewport | Behaviour |
 |----------|-----------|
-| `lg+` | SSR `Filter:Panel` in sidebar (`class="d-none d-lg-block"` on the Panel) |
+| `lg+` | SSR `Filter:Panel` in listing chrome (`class="d-none d-lg-block"` on the Panel) |
 | `< lg` | `Filter:Drawer:Action` fetches `Filter:Drawer` (Panel inside); unmount on close |
 
 Identity hooks: only `data-component="ViewsTheme:…"`. Drawer `id` (`#vi-filter-drawer`) for a11y / multi-drawer disambiguation.
@@ -107,8 +151,10 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 |------|------|
 | Drawer compose / Action | `components/Filter/Drawer.*`, `components/Filter/Drawer/Action.*` |
 | Panel (class + Twig) | `components/Filter/Panel.{php,html.twig,js,cva.twig}` |
+| Group + body CSS | `components/Filter/Group.{js,html.twig,cva.twig,css}` (popover/anchor only) |
+| Filter SCSS | `app/storefront/src/scss/component/filter.scss` + `_form.scss` |
 | Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
-| Group + Toggle / Count | `components/Filter/Group.*`, `components/Filter/Group/{Toggle,Count}.*` |
+| Group + Toggle / Count | `components/Filter/Group/{Toggle,Count}.*` |
 | Facets / Active | `components/Filter/{MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Controller | `src/Controller/FilterDrawerController.php` |
 | Bridge | `storefront/element/cms-element-sidebar-filter.html.twig` |

@@ -1,0 +1,3 @@
+.vi-filter-boolean__chip:has(input:checked) {
+  border-color: var(--vi-chip-active-border, currentColor);
+}

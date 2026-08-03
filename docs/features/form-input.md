@@ -7,6 +7,7 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Input` | Stacked text field (`form-group` + control) |
 | `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
 | `ViewsTheme:Form:Select` | Stacked select field (`form-group` + `<select>`) |
+| `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
 
 `Form:Input` replaces Storefront `component/form/form-input.html.twig` for theme-owned forms. `Form:Select` replaces `component/form/form-select.html.twig`.
 
@@ -76,6 +77,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Account:Login` | Uses `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
 | `Cart:PromotionForm` | Uses `Form:Input:Group` + `Button` in `append` ([cart-drawer](cart-drawer.md#promotion-form)) |
 | `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
+| `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
 | `Account:Register`, `Address:*` | Still core `form-input` / `form-select` includes |
 
 ---
@@ -234,8 +236,67 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 | `options` (HTML string) | `:options` prop **or** `{% block options %}` override |
 | `attributes` hash | nested `select:…` |
 
+---
+
+## Form:Switch
+
+Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
+
+### Usage
+
+```twig
+{# Dense bar chip — caller owns flex utilities; BS float/margin fix in scss/_form.scss #}
+<twig:ViewsTheme:Form:Switch
+    id="shippingFree"
+    name="shipping-free"
+    label="{{ 'listing.filterFreeShippingDisplayName'|trans|sw_sanitize }}"
+    value="1"
+    :reverse="true"
+    class="d-inline-flex align-items-center gap-2 m-0 p-0"
+    input:class="flex-shrink-0"
+    label:class="m-0"
+/>
+```
+
+### Props
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `id` | `vi-form-switch-{random}` | Label `for` target |
+| `name` | `null` | Omitted when empty |
+| `label` | `null` | Beside the track |
+| `value` | `'1'` | Checkbox value when on |
+| `checked` | `false` | |
+| `disabled` | `false` | Use `false` not `null` in defaults |
+| `reverse` | `false` | DOM order: label then input (no `form-check-reverse`) |
+| `description` | `null` | Help text |
+| `validationRules` | `null` | → `data-validation` |
+| `violationPath` / `error` / `formViolations` | same as Input | Optional invalid chrome |
+| `cva` | `{}` | |
+
+### Classes / slots
+
+| Slot | Default base | Caller override |
+|------|--------------|-----------------|
+| root | `form-check form-switch` | `class="…"` (e.g. `d-inline-flex gap-2 m-0 p-0`) |
+| input | `form-check-input cursor-pointer` (+ `is-invalid`) | `input:class` |
+| label | `form-check-label` | `label:class` |
+| description | `form-text` | `description:class` |
+| feedback | `form-field-feedback` | `feedback:class` |
+
+Nested attrs: `input:*`, `label:*`, `description:*`, `feedback:*`.
+
+No co-located `Switch.css`. Dense bar layout is caller utilities. Theme BS form-check/switch float & negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
+
+### Call sites
+
+| Consumer | Status |
+|----------|--------|
+| `Filter:Boolean` | Bar chip + `Form:Switch` (`class` utilities + `:reverse`) — [filters.md](filters.md) |
+
 ## Related
 
 - [UX components](../conventions/ux-components.md)
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
+- [Filters](filters.md) (`Filter:Boolean`)

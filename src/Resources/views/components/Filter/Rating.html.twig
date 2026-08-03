@@ -7,9 +7,10 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'label']) %}
+{% do vi_define_attrs(['list', 'item', 'label', 'content', 'footer', 'reset']) %}
 
 {% set groupId = 'vi-filter-group-' ~ random() %}
+{% set anchorName = '--' ~ groupId %}
 {% set options = {
     name: name,
     listingComponent: 'ViewsTheme:Product:Listing',
@@ -30,22 +31,37 @@
     <div
         id="{{ groupId }}"
         class="{{ vi_class('body') }}"
-        hidden
+        popover="auto"
+        data-placement="bottom-start"
+        style="position-anchor: {{ anchorName }}"
     >
-        <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
-            {% for points in maxPoints..1 %}
-                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                        <input
-                            type="radio"
-                            name="{{ id }}"
-                            value="{{ points }}"
-                            data-label="{{ points }}"
-                        >
-                        {{ points }}+
-                    </label>
-                </li>
-            {% endfor %}
-        </ul>
+        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
+            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
+                {% for points in maxPoints..1 %}
+                    <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                        <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                            <input
+                                type="radio"
+                                name="{{ id }}"
+                                value="{{ points }}"
+                                class="visually-hidden"
+                                data-label="{{ points }}+"
+                            >
+                            <span>{{ points }}+</span>
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+            <button
+                type="button"
+                data-filter-reset
+                {{ vi_attrs('reset') }}
+                class="{{ vi_class('reset') }}"
+            >
+                {{ 'viewsTheme.filter.reset'|trans|sw_sanitize }}
+            </button>
+        </div>
     </div>
 </div>

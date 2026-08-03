@@ -4,8 +4,10 @@
 @import 'form';
 @import 'icon';
 @import 'component/cookie';
+@import 'component/filter';
 @import 'component/product';
 @import 'component/variants-grid';
+
 
 :focus-visible {
   outline: var(--focus-outline-width, 2px) solid

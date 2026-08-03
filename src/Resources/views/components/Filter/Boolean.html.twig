@@ -5,8 +5,9 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['label']) %}
+{% do vi_define_attrs(['chip', 'switch']) %}
 
+{% set switchId = 'vi-filter-boolean-' ~ random() %}
 {% set options = {
     name: name,
     displayName: displayName,
@@ -19,10 +20,17 @@
         'data-component-options': options|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
-    role="listitem"
 >
-    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-        <input type="checkbox" value="1">
-        {{ displayName }}
-    </label>
+    <div {{ vi_attrs('chip') }} class="{{ vi_class('chip') }}">
+        <twig:ViewsTheme:Form:Switch
+            id="{{ switchId }}"
+            :label="displayName"
+            value="1"
+            :reverse="true"
+            class="d-inline-flex align-items-center gap-2 m-0 p-0"
+            input:class="flex-shrink-0"
+            label:class="m-0"
+            {{ ...vi_attrs('switch').all() }}
+        />
+    </div>
 </div>

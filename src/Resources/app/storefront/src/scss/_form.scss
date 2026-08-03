@@ -27,3 +27,19 @@
 .form-control.is-invalid {
   --input-focus-outline-color: var(--danger);
 }
+
+// Theme form controls: flex-friendly (no BS float / negative margin layout)
+.form-check {
+  .form-check-input {
+    float: none;
+    margin: 0;
+  }
+}
+
+.form-switch {
+  padding-left: 0;
+
+  .form-check-input {
+    margin-left: 0;
+  }
+}

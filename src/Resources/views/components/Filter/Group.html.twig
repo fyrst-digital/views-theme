@@ -9,6 +9,8 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['toggle']) %}
 
+{% set anchorName = '--' ~ id %}
+
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Group',
@@ -23,6 +25,7 @@
                 expanded: open,
                 controls: id,
                 count: count,
+                style: 'anchor-name: ' ~ anchorName,
             }).all() }}
         />
     {% endblock %}
