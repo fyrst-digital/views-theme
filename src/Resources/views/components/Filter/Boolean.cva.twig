@@ -1,4 +1,20 @@
 {
-    root: { base: 'vi-filter-boolean d-contents' },
-    chip: { base: 'vi-filter-boolean__chip btn btn-sm d-inline-flex align-items-center gap-2 border bg-body px-2 py-1 rounded' },
+    root: {
+        base: 'vi-filter-boolean',
+        variants: {
+            layout: {
+                bar: 'd-contents',
+                stacked: 'd-block',
+            },
+        },
+    },
+    chip: {
+        base: 'vi-filter-boolean__chip btn btn-sm d-inline-flex align-items-center gap-2 bg-body px-2 py-1 rounded',
+        variants: {
+            layout: {
+                bar: '',
+                stacked: 'w-100 justify-content-between',
+            },
+        },
+    },
 }

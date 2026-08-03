@@ -30,6 +30,7 @@
 
 // Theme form controls: flex-friendly (no BS float / negative margin layout)
 .form-check {
+  min-height: auto;
   .form-check-input {
     float: none;
     margin: 0;

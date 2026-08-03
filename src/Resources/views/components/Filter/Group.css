@@ -31,6 +31,10 @@
     bottom: auto;
   }
 
+  .vi-filter-group-body__content {
+    max-height: var(--vi-content-max-h, min(50vh, 20rem));
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     transition:
       opacity var(--vi-duration, 200ms) ease,
@@ -51,8 +55,4 @@
       }
     }
   }
-}
-
-.vi-filter-group-body__content {
-  max-height: var(--vi-content-max-h, min(50vh, 20rem));
 }

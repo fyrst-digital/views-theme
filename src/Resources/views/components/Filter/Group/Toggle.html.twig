@@ -3,6 +3,7 @@
     expanded = false,
     controls = null,
     count = null,
+    layout = 'bar',
     cva = {},
 %}
 
@@ -15,10 +16,11 @@
         'data-component': 'ViewsTheme:Filter:Group:Toggle',
         'aria-expanded': expanded ? 'true' : 'false',
         'aria-controls': controls,
+    }|merge(layout == 'bar' ? {
         'aria-haspopup': 'dialog',
         popovertarget: controls,
-    }) }}
-    class="{{ vi_class('root') }}"
+    } : {})) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     <span class="{{ vi_class('label') }}">{{ label }}</span>
     <twig:ViewsTheme:Filter:Group:Count

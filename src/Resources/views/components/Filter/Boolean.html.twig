@@ -1,6 +1,7 @@
 {% props
     name,
     displayName = null,
+    layout = 'bar',
     cva = {},
 %}
 
@@ -19,9 +20,9 @@
         'data-component': 'ViewsTheme:Filter:Boolean',
         'data-component-options': options|json_encode,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
-    <div {{ vi_attrs('chip') }} class="{{ vi_class('chip') }}">
+    <div {{ vi_attrs('chip') }} class="{{ vi_class('chip', { layout: layout }) }}">
         <twig:ViewsTheme:Form:Switch
             id="{{ switchId }}"
             :label="displayName"

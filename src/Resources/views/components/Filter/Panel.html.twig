@@ -30,9 +30,9 @@
     {% endif %}
 
     {% block items %}
-        <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}" role="list">
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items', { layout: layout }) }}" role="list">
             {% for facet in facets %}
-                {{ component(facet.component, facet.props) }}
+                {{ component(facet.component, facet.props|merge({ layout: layout })) }}
             {% endfor %}
         </div>
     {% endblock %}

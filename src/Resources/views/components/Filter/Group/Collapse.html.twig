@@ -1,0 +1,32 @@
+{% props
+    id,
+    layout = 'bar',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['content', 'footer']) %}
+
+{% set anchorName = '--' ~ id %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+    }|merge(layout == 'bar' ? {
+        popover: 'auto',
+        'data-placement': 'bottom-start',
+        style: 'position-anchor: ' ~ anchorName,
+    } : {
+        hidden: true,
+    })) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
+>
+    <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
+        {% block content %}{% endblock %}
+    </div>
+    {% block footer %}
+        <twig:ViewsTheme:Filter:Group:Footer
+            {{ ...vi_attrs('footer').all() }}
+        />
+    {% endblock %}
+</div>

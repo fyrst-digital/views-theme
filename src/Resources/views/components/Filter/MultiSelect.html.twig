@@ -3,14 +3,14 @@
     displayName = null,
     elements = [],
     propertyName = null,
+    layout = 'bar',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'label', 'swatch', 'content', 'footer', 'reset']) %}
+{% do vi_define_attrs(['list', 'item', 'label', 'swatch', 'collapse']) %}
 
 {% set groupId = 'vi-filter-group-' ~ random() %}
-{% set anchorName = '--' ~ groupId %}
 {% set options = {
     name: name,
     propertyName: propertyName,
@@ -22,60 +22,48 @@
         'data-component': 'ViewsTheme:Filter:MultiSelect',
         'data-component-options': options|json_encode,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
         :label="displayName"
         :id="groupId"
+        :layout="layout"
     />
 
-    <div
-        id="{{ groupId }}"
-        class="{{ vi_class('body') }}"
-        popover="auto"
-        data-placement="bottom-start"
-        style="position-anchor: {{ anchorName }}"
+    <twig:ViewsTheme:Filter:Group:Collapse
+        {{ ...vi_attrs('collapse').defaults({
+            id: groupId,
+            layout: layout,
+        }).all() }}
     >
-        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
-            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
-                {% for element in elements %}
-                    {% set elementId = element.id %}
-                    {% set elementLabel = element.translated.name|default(element.name)|default(elementId) %}
-                    {% set previewHex = element.colorHexCode|default(null) %}
-                    {% set previewImage = element.media.url|default(null) %}
-                    <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                        <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                            <input
-                                type="checkbox"
-                                value="{{ elementId }}"
-                                class="visually-hidden"
-                                data-label="{{ elementLabel|striptags }}"
-                                {% if previewHex %}data-preview-hex="{{ previewHex }}"{% endif %}
-                                {% if previewImage %}data-preview-image-url="{{ previewImage }}"{% endif %}
-                            >
-                            {% if previewHex %}
-                                <span
-                                    {{ vi_attrs('swatch') }}
-                                    class="{{ vi_class('swatch') }}"
-                                    style="background:{{ previewHex }}"
-                                    aria-hidden="true"
-                                ></span>
-                            {% endif %}
-                            <span>{{ elementLabel }}</span>
-                        </label>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
-            <button
-                type="button"
-                data-filter-reset
-                {{ vi_attrs('reset') }}
-                class="{{ vi_class('reset') }}"
-            >
-                {{ 'viewsTheme.filter.reset'|trans|sw_sanitize }}
-            </button>
-        </div>
-    </div>
+        <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
+            {% for element in elements %}
+                {% set elementId = element.id %}
+                {% set elementLabel = element.translated.name|default(element.name)|default(elementId) %}
+                {% set previewHex = element.colorHexCode|default(null) %}
+                {% set previewImage = element.media.url|default(null) %}
+                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                        <input
+                            type="checkbox"
+                            value="{{ elementId }}"
+                            class="visually-hidden"
+                            data-label="{{ elementLabel|striptags }}"
+                            {% if previewHex %}data-preview-hex="{{ previewHex }}"{% endif %}
+                            {% if previewImage %}data-preview-image-url="{{ previewImage }}"{% endif %}
+                        >
+                        {% if previewHex %}
+                            <span
+                                {{ vi_attrs('swatch') }}
+                                class="{{ vi_class('swatch') }}"
+                                style="background:{{ previewHex }}"
+                                aria-hidden="true"
+                            ></span>
+                        {% endif %}
+                        <span>{{ elementLabel }}</span>
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+    </twig:ViewsTheme:Filter:Group:Collapse>
 </div>

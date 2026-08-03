@@ -3,6 +3,7 @@
     count = null,
     open = false,
     id = 'vi-filter-group-' ~ random(),
+    layout = 'bar',
     cva = {},
 %}
 
@@ -14,7 +15,7 @@
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Group',
-        'data-component-options': { open: open }|json_encode,
+        'data-component-options': { open: open, layout: layout }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -25,8 +26,10 @@
                 expanded: open,
                 controls: id,
                 count: count,
+                layout: layout,
+            }|merge(layout == 'bar' ? {
                 style: 'anchor-name: ' ~ anchorName,
-            }).all() }}
+            } : {})).all() }}
         />
     {% endblock %}
 </div>

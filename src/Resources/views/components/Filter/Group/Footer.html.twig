@@ -1,0 +1,22 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['reset']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <button
+            type="button"
+            data-filter-reset
+            {{ vi_attrs('reset') }}
+            class="{{ vi_class('reset') }}"
+        >
+            {{ 'viewsTheme.filter.reset'|trans|sw_sanitize }}
+        </button>
+    {% endblock %}
+</div>

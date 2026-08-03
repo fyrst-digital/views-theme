@@ -4,14 +4,14 @@
     maxKey = 'max-price',
     min = 0,
     max = null,
+    layout = 'bar',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['fields', 'input', 'content', 'footer', 'reset']) %}
+{% do vi_define_attrs(['fields', 'input', 'collapse']) %}
 
 {% set groupId = 'vi-filter-group-' ~ random() %}
-{% set anchorName = '--' ~ groupId %}
 {% set options = {
     minKey: minKey,
     maxKey: maxKey,
@@ -24,53 +24,41 @@
         'data-component': 'ViewsTheme:Filter:Range',
         'data-component-options': options|json_encode,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
         :label="displayName"
         :id="groupId"
+        :layout="layout"
     />
 
-    <div
-        id="{{ groupId }}"
-        class="{{ vi_class('body') }}"
-        popover="auto"
-        data-placement="bottom-start"
-        style="position-anchor: {{ anchorName }}"
+    <twig:ViewsTheme:Filter:Group:Collapse
+        {{ ...vi_attrs('collapse').defaults({
+            id: groupId,
+            layout: layout,
+        }).all() }}
     >
-        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
-            <div {{ vi_attrs('fields') }} class="{{ vi_class('fields') }}">
-                <input
-                    type="number"
-                    inputmode="decimal"
-                    min="{{ min }}"
-                    {% if max is not null %}max="{{ max }}"{% endif %}
-                    placeholder="{{ min }}"
-                    data-range="min"
-                    class="{{ vi_class('input') }}"
-                    aria-label="{{ displayName }} min"
-                >
-                <input
-                    type="number"
-                    inputmode="decimal"
-                    min="{{ min }}"
-                    {% if max is not null %}max="{{ max }}"{% endif %}
-                    placeholder="{{ max }}"
-                    data-range="max"
-                    class="{{ vi_class('input') }}"
-                    aria-label="{{ displayName }} max"
-                >
-            </div>
-        </div>
-        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
-            <button
-                type="button"
-                data-filter-reset
-                {{ vi_attrs('reset') }}
-                class="{{ vi_class('reset') }}"
+        <div {{ vi_attrs('fields') }} class="{{ vi_class('fields') }}">
+            <input
+                type="number"
+                inputmode="decimal"
+                min="{{ min }}"
+                {% if max is not null %}max="{{ max }}"{% endif %}
+                placeholder="{{ min }}"
+                data-range="min"
+                class="{{ vi_class('input') }}"
+                aria-label="{{ displayName }} min"
             >
-                {{ 'viewsTheme.filter.reset'|trans|sw_sanitize }}
-            </button>
+            <input
+                type="number"
+                inputmode="decimal"
+                min="{{ min }}"
+                {% if max is not null %}max="{{ max }}"{% endif %}
+                placeholder="{{ max }}"
+                data-range="max"
+                class="{{ vi_class('input') }}"
+                aria-label="{{ displayName }} max"
+            >
         </div>
-    </div>
+    </twig:ViewsTheme:Filter:Group:Collapse>
 </div>

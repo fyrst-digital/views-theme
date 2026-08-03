@@ -1,9 +1,9 @@
 export default class FilterGroup extends ShopwareComponent {
     static options = {
         open: false,
+        layout: 'bar',
         toggleComponent: 'ViewsTheme:Filter:Group:Toggle',
         countComponent: 'ViewsTheme:Filter:Group:Count',
-        drawerSelector: '#vi-filter-drawer',
     }
 
     init() {
@@ -14,7 +14,7 @@ export default class FilterGroup extends ShopwareComponent {
             `[data-component="${this.options.countComponent}"]`,
         )
         this._body = this._resolveBody()
-        this._accordion = !!this.el.closest(this.options.drawerSelector)
+        this._accordion = this.options.layout === 'stacked'
         this._onPopoverToggle = this._onPopoverToggle.bind(this)
         this._onAccordionClick = this._onAccordionClick.bind(this)
 

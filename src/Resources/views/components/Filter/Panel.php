@@ -23,6 +23,11 @@ class Panel
     public bool $showHeader = false;
 
     /**
+     * Layout chrome: horizontal chip bar (`bar`) or vertical accordion stack (`stacked`).
+     */
+    public string $layout = 'bar';
+
+    /**
      * @var array<string, mixed>
      */
     public array $cva = [];

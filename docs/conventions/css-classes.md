@@ -30,7 +30,7 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 | Layer | Role |
 |-------|------|
 | **Component CSS** | Structure + **consume** tokens with a **fallback default** only (`prop: var(--vi-*, fallback)`). No Bootstrap/Shopware override dumps |
-| **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`, `component/filter.scss`) |
+| **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
 | **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults |
 
 ### Component CSS — never assign tokens
