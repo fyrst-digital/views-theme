@@ -9,6 +9,7 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['list', 'item', 'label']) %}
 
+{% set groupId = 'vi-filter-group-' ~ random() %}
 {% set options = {
     name: name,
     listingComponent: 'ViewsTheme:Product:Listing',
@@ -23,23 +24,28 @@
 >
     <twig:ViewsTheme:Filter:Group
         :label="displayName"
+        :id="groupId"
+    />
+
+    <div
+        id="{{ groupId }}"
+        class="{{ vi_class('body') }}"
+        hidden
     >
-        <twig:block name="content">
-            <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
-                {% for points in maxPoints..1 %}
-                    <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                        <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                            <input
-                                type="radio"
-                                name="{{ id }}"
-                                value="{{ points }}"
-                                data-label="{{ points }}"
-                            >
-                            {{ points }}+
-                        </label>
-                    </li>
-                {% endfor %}
-            </ul>
-        </twig:block>
-    </twig:ViewsTheme:Filter:Group>
+        <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
+            {% for points in maxPoints..1 %}
+                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                    <label {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                        <input
+                            type="radio"
+                            name="{{ id }}"
+                            value="{{ points }}"
+                            data-label="{{ points }}"
+                        >
+                        {{ points }}+
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>

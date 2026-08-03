@@ -11,9 +11,11 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` |
 | `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
-| `Filter:Group` | Single layout: toggle + collapsible body (default closed) |
-| `Filter:MultiSelect` | Manufacturer + property options |
-| `Filter:Boolean` / `Range` / `Rating` | Facet controls |
+| `Filter:Group` | Disclosure chrome only: Toggle + Count; open state via `aria-controls` → sibling body `id` |
+| `Filter:Group:Toggle` | Disclosure button (label + Count + caret); click owned by Group |
+| `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
+| `Filter:MultiSelect` / `Range` / `Rating` | Facet controls; each owns collapsible body (`vi-filter-group-body` sibling of Group) |
+| `Filter:Boolean` | Single checkbox facet (no Group) |
 | `Filter:Active` | Chips via Twig CVA `<template>` clones (no class strings in JS) |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
@@ -106,7 +108,8 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Drawer compose / Action | `components/Filter/Drawer.*`, `components/Filter/Drawer/Action.*` |
 | Panel (class + Twig) | `components/Filter/Panel.{php,html.twig,js,cva.twig}` |
 | Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
-| Group / facets / Active | `components/Filter/{Group,MultiSelect,Boolean,Range,Rating,Active}.*` |
+| Group + Toggle / Count | `components/Filter/Group.*`, `components/Filter/Group/{Toggle,Count}.*` |
+| Facets / Active | `components/Filter/{MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Controller | `src/Controller/FilterDrawerController.php` |
 | Bridge | `storefront/element/cms-element-sidebar-filter.html.twig` |
 | Listing owner | [product-listing.md](product-listing.md) |

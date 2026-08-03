@@ -1,0 +1,27 @@
+{% props
+    label = null,
+    expanded = false,
+    controls = null,
+    count = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['count']) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Filter:Group:Toggle',
+        'aria-expanded': expanded ? 'true' : 'false',
+        'aria-controls': controls,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {{ label }}
+    <twig:ViewsTheme:Filter:Group:Count
+        :count="count"
+        {{ ...vi_attrs('count').all() }}
+    />
+    {{ vi_icon('caret-down') }}
+</button>
