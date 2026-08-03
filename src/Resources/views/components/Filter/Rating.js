@@ -2,6 +2,7 @@ export default class FilterRating extends ShopwareComponent {
     static options = {
         name: 'rating',
         listingComponent: 'ViewsTheme:Product:Listing',
+        groupComponent: 'ViewsTheme:Filter:Group',
     }
 
     init() {
@@ -53,6 +54,7 @@ export default class FilterRating extends ShopwareComponent {
             input.disabled = false
         })
         this.el.hidden = false
+        this._group()?.setDisabled?.(false)
     }
 
     setFromUrl(params) {
@@ -62,18 +64,34 @@ export default class FilterRating extends ShopwareComponent {
         })
     }
 
-    refreshDisabled(aggregations) {
+    applyAvailability(aggregations) {
         const max = Number(aggregations?.[this.options.name]?.max || 0)
-        if (max <= 0 && !this._selected()) {
-            this.el.hidden = true
-            return
-        }
+        const selected = this._selected()
+        const unavailable = max <= 0 && !selected
 
         this.el.hidden = false
         this._inputs().forEach((input) => {
+            if (input.checked) {
+                input.disabled = false
+                return
+            }
+            if (unavailable) {
+                input.disabled = true
+                return
+            }
             const points = Number(input.value)
-            input.disabled = max > 0 && points > max && !input.checked
+            input.disabled = max > 0 && points > max
         })
+
+        if (unavailable) {
+            this._closeGroup()
+        }
+        this._group()?.setDisabled?.(unavailable)
+    }
+
+    /** @deprecated use applyAvailability */
+    refreshDisabled(aggregations) {
+        this.applyAvailability(aggregations)
     }
 
     _onClick(event) {
@@ -86,6 +104,7 @@ export default class FilterRating extends ShopwareComponent {
 
         event.preventDefault()
         this.resetAll()
+        this._closeGroup()
         window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
@@ -98,6 +117,21 @@ export default class FilterRating extends ShopwareComponent {
     }
 
     _onChange() {
+        this._closeGroup()
         window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+    }
+
+    _group() {
+        const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
+        const el = this.el.querySelector(`[data-component="${name}"]`)
+        if (!el || !window.Shopware?.getComponentInstanceByElement) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(name, el)
+    }
+
+    _closeGroup() {
+        this._group()?.close?.()
     }
 }

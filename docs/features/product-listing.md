@@ -49,15 +49,18 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 
 | API | Role |
 |-----|------|
-| `refreshControls()` | Discover controls in listing el + every `Filter:Panel` |
+| `refreshControls()` | Discover controls in listing el + active `Filter:Panel` |
 | `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
-| `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ViewsTheme:Listing:ControlsSynced` (init, popstate, filter drawer open/close) |
-| `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → optional aggs |
+| `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ControlsSynced` (selection only) |
+| `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` on controls (init, apply, drawer) |
+| `apply(patch, { pushHistory, resetPage })` | Merge values → fetch Results → `syncAvailability` |
 | `reset` / `resetAll` | Delegate to controls then apply |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 
-Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:Loading`.
+Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
+
+**Catalog vs availability:** Panel SSR = full option catalog. Empty-filter UX = `syncAvailability` + `/aggregations` (`reduce-aggregations`). See [filters.md](filters.md#catalog-vs-availability-critical).
 
 Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseParams`, `display` (`boxLayout`, `referrerCategoryId`), `disableEmptyFilter`, `history`.
 
@@ -69,7 +72,7 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `baseP
 | `resultsUrl` / `aggregationsUrl` | Theme routes (bridge resolves category/search) |
 | `params` | Always-merged query (e.g. `{ search }`) |
 | `boxLayout` / `referrerCategoryId` | Forwarded to Results / Box |
-| `disableEmptyFilter` | Config default; enables aggregations refresh |
+| `disableEmptyFilter` | Config default; enables `syncAvailability` (reduced aggs) |
 
 ## Props (`Product:Listing:Results`)
 

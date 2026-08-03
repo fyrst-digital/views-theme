@@ -9,9 +9,8 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['fields', 'input', 'collapse']) %}
+{% do vi_define_attrs(['fields', 'input', 'group']) %}
 
-{% set groupId = 'vi-filter-group-' ~ random() %}
 {% set options = {
     minKey: minKey,
     maxKey: maxKey,
@@ -27,14 +26,8 @@
     class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
-        :label="displayName"
-        :id="groupId"
-        :layout="layout"
-    />
-
-    <twig:ViewsTheme:Filter:Group:Collapse
-        {{ ...vi_attrs('collapse').defaults({
-            id: groupId,
+        {{ ...vi_attrs('group').defaults({
+            label: displayName,
             layout: layout,
         }).all() }}
     >
@@ -60,5 +53,5 @@
                 aria-label="{{ displayName }} max"
             >
         </div>
-    </twig:ViewsTheme:Filter:Group:Collapse>
+    </twig:ViewsTheme:Filter:Group>
 </div>

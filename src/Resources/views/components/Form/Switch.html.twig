@@ -38,7 +38,7 @@
                     {{ vi_attrs('label').defaults({
                         for: id,
                     }) }}
-                    class="{{ vi_class('label') }}"
+                    class="{{ vi_class('label', { disabled: disabled }) }}"
                 >
                     {{ label|raw }}
                 </label>

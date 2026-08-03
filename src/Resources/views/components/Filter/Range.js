@@ -3,6 +3,7 @@ export default class FilterRange extends ShopwareComponent {
         minKey: 'min-price',
         maxKey: 'max-price',
         listingComponent: 'ViewsTheme:Product:Listing',
+        groupComponent: 'ViewsTheme:Filter:Group',
         debounce: 500,
     }
 
@@ -89,6 +90,7 @@ export default class FilterRange extends ShopwareComponent {
 
         event.preventDefault()
         this.resetAll()
+        this._closeGroup()
         window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
@@ -97,7 +99,22 @@ export default class FilterRange extends ShopwareComponent {
             window.clearTimeout(this._timer)
         }
         this._timer = window.setTimeout(() => {
+            this._closeGroup()
             window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
         }, this.options.debounce || 500)
+    }
+
+    _group() {
+        const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
+        const el = this.el.querySelector(`[data-component="${name}"]`)
+        if (!el || !window.Shopware?.getComponentInstanceByElement) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(name, el)
+    }
+
+    _closeGroup() {
+        this._group()?.close?.()
     }
 }

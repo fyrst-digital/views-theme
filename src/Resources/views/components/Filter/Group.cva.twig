@@ -1,3 +1,21 @@
 {
-    root: { base: 'vi-filter-group d-contents' },
+    root: {
+        base: 'vi-filter-group',
+        variants: {
+            layout: {
+                bar: '',
+                stacked: 'w-100',
+            },
+        },
+    },
+    body: {
+        base: 'vi-filter-group-body bg-body border rounded',
+        variants: {
+            layout: {
+                bar: 'shadow',
+                stacked: 'w-100 shadow-none',
+            },
+        },
+    },
+    content: { base: 'vi-filter-group-body__content overflow-auto p-3' },
 }

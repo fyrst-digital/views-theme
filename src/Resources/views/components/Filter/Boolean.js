@@ -57,22 +57,24 @@ export default class FilterBoolean extends ShopwareComponent {
         this._input.checked = !!params?.[this.options.name]
     }
 
-    refreshDisabled(aggregations) {
+    applyAvailability(aggregations) {
         if (!this.options.name || !aggregations) {
             return
         }
 
         const bucket = aggregations[this.options.name]
         const max = Number(bucket?.max || 0)
-        if (max > 0 || this._input?.checked) {
-            this.el.hidden = false
-            if (this._input) {
-                this._input.disabled = false
-            }
-            return
-        }
+        const unavailable = max <= 0 && !this._input?.checked
 
-        this.el.hidden = true
+        this.el.hidden = false
+        if (this._input) {
+            this._input.disabled = unavailable
+        }
+    }
+
+    /** @deprecated use applyAvailability */
+    refreshDisabled(aggregations) {
+        this.applyAvailability(aggregations)
     }
 
     _onChange() {

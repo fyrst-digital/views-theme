@@ -2,6 +2,8 @@
     name,
     displayName = null,
     layout = 'bar',
+    disabled = false,
+    checked = false,
     cva = {},
 %}
 
@@ -28,6 +30,8 @@
             :label="displayName"
             value="1"
             :reverse="true"
+            :checked="checked"
+            :disabled="disabled"
             class="d-inline-flex align-items-center gap-2 m-0 p-0"
             input:class="flex-shrink-0"
             label:class="m-0"

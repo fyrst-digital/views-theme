@@ -8,7 +8,14 @@
             },
         },
     },
-    label: { base: 'form-check-label' },
+    label: { 
+        base: 'form-check-label',
+        variants: {
+            disabled: {
+                true: 'opacity-50'
+            }, 
+        },
+    },
     description: { base: 'form-text' },
     feedback: { base: 'form-field-feedback' },
 }

@@ -31,6 +31,20 @@
     bottom: auto;
   }
 
+  &[data-placement='top-start'] {
+    bottom: calc(anchor(top) + var(--vi-offset, 0.25rem));
+    left: anchor(left);
+    right: auto;
+    top: auto;
+  }
+
+  &[data-placement='top-end'] {
+    bottom: calc(anchor(top) + var(--vi-offset, 0.25rem));
+    right: anchor(right);
+    left: auto;
+    top: auto;
+  }
+
   .vi-filter-group-body__content {
     max-height: var(--vi-content-max-h, min(50vh, 20rem));
   }

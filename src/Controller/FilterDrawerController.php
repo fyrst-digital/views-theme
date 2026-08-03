@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
+use Fyrst\ViewsTheme\Service\FilterAggregationLoader;
 use Shopware\Core\Content\Product\SalesChannel\Listing\AbstractProductListingRoute;
 use Shopware\Core\Content\Product\SalesChannel\Search\AbstractProductSearchRoute;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -23,6 +24,7 @@ class FilterDrawerController extends AbstractComponentController
         ComponentRendererInterface $components,
         private readonly AbstractProductListingRoute $listingRoute,
         private readonly AbstractProductSearchRoute $searchRoute,
+        private readonly FilterAggregationLoader $aggregationLoader,
     ) {
         parent::__construct($components);
     }
@@ -35,7 +37,7 @@ class FilterDrawerController extends AbstractComponentController
     )]
     public function category(string $navigationId, Request $request, SalesChannelContext $context): Response
     {
-        $this->forceAggregationRequest($request);
+        $this->aggregationLoader->forceCatalogAggregationRequest($request);
 
         $result = $this->listingRoute
             ->load($navigationId, $request, $context, new Criteria())
@@ -58,7 +60,7 @@ class FilterDrawerController extends AbstractComponentController
             throw RoutingException::missingRequestParameter('search');
         }
 
-        $this->forceAggregationRequest($request);
+        $this->aggregationLoader->forceCatalogAggregationRequest($request);
 
         $result = $this->searchRoute
             ->load($request, $context, new Criteria())
@@ -67,13 +69,5 @@ class FilterDrawerController extends AbstractComponentController
         return $this->renderComponent('ViewsTheme:Filter:Drawer', [
             'listing' => $result,
         ]);
-    }
-
-    private function forceAggregationRequest(Request $request): void
-    {
-        $request->request->set('only-aggregations', true);
-        $request->request->set('reduce-aggregations', true);
-        $request->query->set('only-aggregations', '1');
-        $request->query->set('reduce-aggregations', '1');
     }
 }

@@ -108,6 +108,8 @@ class Listing
             'history' => true,
             'resultsComponent' => 'ViewsTheme:Product:Listing:Results',
             'changedEvent' => 'ViewsTheme:Listing:Changed',
+            'syncedEvent' => 'ViewsTheme:Listing:ControlsSynced',
+            'availabilitySyncedEvent' => 'ViewsTheme:Listing:AvailabilitySynced',
             'loadingEvent' => 'ViewsTheme:Listing:Loading',
             'scrollOffset' => 15,
         ];

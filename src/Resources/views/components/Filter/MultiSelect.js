@@ -3,6 +3,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
         name: null,
         propertyName: null,
         listingComponent: 'ViewsTheme:Product:Listing',
+        groupComponent: 'ViewsTheme:Filter:Group',
     }
 
     init() {
@@ -70,7 +71,11 @@ export default class FilterMultiSelect extends ShopwareComponent {
         this._syncCount()
     }
 
-    refreshDisabled(aggregations) {
+    /**
+     * Apply reduced-aggregation availability (catalog stays full in DOM).
+     * Empty facets stay visible with disabled toggle + options (not hidden).
+     */
+    applyAvailability(aggregations) {
         if (!aggregations || !this.options.name) {
             return
         }
@@ -89,10 +94,8 @@ export default class FilterMultiSelect extends ShopwareComponent {
             allowedIds = Object.values(bucket.entities).map((entity) => entity.id).filter(Boolean)
         }
 
-        if (!allowedIds.length && !this._checked().length) {
-            this.el.hidden = true
-            return
-        }
+        const checked = this._checked()
+        const unavailable = !allowedIds.length && !checked.length
 
         this.el.hidden = false
         this._inputs().forEach((input) => {
@@ -100,8 +103,18 @@ export default class FilterMultiSelect extends ShopwareComponent {
                 input.disabled = false
                 return
             }
-            input.disabled = allowedIds.length > 0 && !allowedIds.includes(input.value)
+            input.disabled = !allowedIds.includes(input.value)
         })
+
+        if (unavailable) {
+            this._closeGroup()
+        }
+        this._group()?.setDisabled?.(unavailable)
+    }
+
+    /** @deprecated use applyAvailability */
+    refreshDisabled(aggregations) {
+        this.applyAvailability(aggregations)
     }
 
     _onClick(event) {
@@ -114,11 +127,13 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
         event.preventDefault()
         this.resetAll()
+        this._closeGroup()
         window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
     _onChange() {
         this._syncCount()
+        this._closeGroup()
         window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
     }
 
@@ -130,12 +145,22 @@ export default class FilterMultiSelect extends ShopwareComponent {
         return Array.from(this.el.querySelectorAll('input[type="checkbox"]'))
     }
 
+    _group() {
+        const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
+        const el = this.el.querySelector(`[data-component="${name}"]`)
+        if (!el || !window.Shopware?.getComponentInstanceByElement) {
+            return null
+        }
+
+        return window.Shopware.getComponentInstanceByElement(name, el)
+    }
+
+    _closeGroup() {
+        this._group()?.close?.()
+    }
+
     _syncCount() {
         const count = this._checked().length
-        const group = this.el.querySelector('[data-component="ViewsTheme:Filter:Group"]')
-        const instance = group && window.Shopware
-            ? window.Shopware.getComponentInstanceByElement('ViewsTheme:Filter:Group', group)
-            : null
-        instance?.setCount?.(count || null)
+        this._group()?.setCount?.(count || null)
     }
 }

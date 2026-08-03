@@ -11,6 +11,7 @@ export default class ProductListing extends ShopwareComponent {
         panelComponent: 'ViewsTheme:Filter:Panel',
         changedEvent: 'ViewsTheme:Listing:Changed',
         syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
+        availabilitySyncedEvent: 'ViewsTheme:Listing:AvailabilitySynced',
         loadingEvent: 'ViewsTheme:Listing:Loading',
         scrollOffset: 15,
         controlComponents: [
@@ -46,6 +47,7 @@ export default class ProductListing extends ShopwareComponent {
         this.syncControls()
         requestAnimationFrame(() => {
             this.syncControls()
+            void this.syncAvailability()
         })
     }
 
@@ -74,11 +76,68 @@ export default class ProductListing extends ShopwareComponent {
     /**
      * Discover controls then hydrate from URL (lazy Filter:Drawer open, init, popstate).
      * Emits ControlsSynced so Filter:Active can refresh chips (callMethod has no return value).
+     * Does not apply reduced-aggregation availability — call syncAvailability() after.
      */
     syncControls() {
         this.refreshControls()
         this.hydrateFromUrl()
         window.Shopware.emitQueued(this.options.syncedEvent, { source: this.el })
+    }
+
+    /**
+     * Catalog stays full in the DOM; availability comes from reduced aggregations JSON.
+     * Call after hydrate (init, drawer) and after apply. Params may be control values or
+     * pre-built request params when options.built is true.
+     *
+     * @param {Record<string, unknown>|null} [params]
+     * @param {{ built?: boolean }} [options]
+     */
+    async syncAvailability(params = null, options = {}) {
+        if (!this.options.disableEmptyFilter || !this.options.aggregationsUrl) {
+            return
+        }
+
+        this.refreshControls()
+
+        const requestParams = options.built
+            ? (params || {})
+            : this._buildRequestParams(params ?? this._collectValues())
+
+        const standalone = !this._busy
+        if (standalone) {
+            window.Shopware.emitQueued(this.options.loadingEvent, {
+                busy: true,
+                source: this.el,
+                availability: true,
+            })
+        }
+
+        try {
+            await this._fetchAndApplyAvailability(requestParams)
+            window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
+                ok: true,
+                params: requestParams,
+                source: this.el,
+            })
+        } catch (error) {
+            if (error?.name === 'AbortError') {
+                return
+            }
+            console.error('ProductListing: Failed to sync filter availability', error)
+            window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
+                ok: false,
+                error: error?.message || 'availability-failed',
+                source: this.el,
+            })
+        } finally {
+            if (standalone) {
+                window.Shopware.emitQueued(this.options.loadingEvent, {
+                    busy: false,
+                    source: this.el,
+                    availability: true,
+                })
+            }
+        }
     }
 
     registerControl(control) {
@@ -273,9 +332,7 @@ export default class ProductListing extends ShopwareComponent {
                 this._pushHistory(requestParams)
             }
 
-            if (this.options.disableEmptyFilter && this.options.aggregationsUrl) {
-                await this._refreshAggregations(requestParams)
-            }
+            await this.syncAvailability(requestParams, { built: true })
 
             this._updateAriaLive()
 
@@ -389,37 +446,41 @@ export default class ProductListing extends ShopwareComponent {
         return response.text()
     }
 
-    async _refreshAggregations(params) {
-        try {
-            const target = new URL(this.options.aggregationsUrl, window.location.origin)
-            const skip = new Set(this.options.displayParamKeys || [])
-            skip.add('p')
-            skip.add('order')
+    async _fetchAndApplyAvailability(params) {
+        const target = new URL(this.options.aggregationsUrl, window.location.origin)
+        const skip = new Set(this.options.displayParamKeys || [])
+        skip.add('p')
+        skip.add('order')
 
-            Object.entries(params).forEach(([key, value]) => {
-                if (skip.has(key)) {
-                    return
-                }
-                target.searchParams.set(key, value)
-            })
-
-            const response = await fetch(target.toString(), {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            })
-
-            if (!response.ok) {
+        Object.entries(params).forEach(([key, value]) => {
+            if (skip.has(key)) {
                 return
             }
+            target.searchParams.set(key, value)
+        })
 
-            const aggregations = await response.json()
-            this._controls.forEach((control) => {
-                if (typeof control.refreshDisabled === 'function') {
-                    control.refreshDisabled(aggregations)
-                }
-            })
-        } catch (error) {
-            console.error('ProductListing: Failed to refresh aggregations', error)
+        const response = await fetch(target.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+
+        if (!response.ok) {
+            throw new Error(`Availability fetch failed: ${response.status}`)
         }
+
+        const aggregations = await response.json()
+        this._applyAvailability(aggregations)
+    }
+
+    _applyAvailability(aggregations) {
+        this._controls.forEach((control) => {
+            if (typeof control.applyAvailability === 'function') {
+                control.applyAvailability(aggregations)
+                return
+            }
+            if (typeof control.refreshDisabled === 'function') {
+                control.refreshDisabled(aggregations)
+            }
+        })
     }
 
     _replaceResults(html) {

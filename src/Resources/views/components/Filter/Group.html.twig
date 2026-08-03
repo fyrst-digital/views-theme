@@ -4,11 +4,12 @@
     open = false,
     id = 'vi-filter-group-' ~ random(),
     layout = 'bar',
+    disabled = false,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['toggle']) %}
+{% do vi_define_attrs(['toggle', 'body', 'content', 'footer']) %}
 
 {% set anchorName = '--' ~ id %}
 
@@ -17,7 +18,7 @@
         'data-component': 'ViewsTheme:Filter:Group',
         'data-component-options': { open: open, layout: layout }|json_encode,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     {% block toggle %}
         <twig:ViewsTheme:Filter:Group:Toggle
@@ -27,9 +28,32 @@
                 controls: id,
                 count: count,
                 layout: layout,
+                disabled: disabled,
             }|merge(layout == 'bar' ? {
                 style: 'anchor-name: ' ~ anchorName,
             } : {})).all() }}
         />
     {% endblock %}
+
+    <div
+        id="{{ id }}"
+        class="{{ vi_class('body', { layout: layout }) }}"
+        {% if layout == 'bar' %}
+            popover="auto"
+            data-placement="bottom-start"
+            style="position-anchor: {{ anchorName }}"
+        {% else %}
+            hidden
+        {% endif %}
+        {{ vi_attrs('body') }}
+    >
+        <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
+            {% block content %}{% endblock %}
+        </div>
+        {% block footer %}
+            <twig:ViewsTheme:Filter:Group:Footer
+                {{ ...vi_attrs('footer').all() }}
+            />
+        {% endblock %}
+    </div>
 </div>

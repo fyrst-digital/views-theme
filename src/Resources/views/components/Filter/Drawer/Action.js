@@ -100,7 +100,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
             await new Promise((resolve) => {
                 requestAnimationFrame(() => requestAnimationFrame(resolve))
             })
-            this._syncListingControls()
+            await this._syncListingControls()
         } catch (error) {
             console.error('FilterDrawerAction: Failed to open filter drawer', error)
         } finally {
@@ -172,7 +172,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
         }
 
         this.el.setAttribute('aria-expanded', 'true')
-        this._syncListingControls()
+        void this._syncListingControls()
     }
 
     _onDrawerClose(drawerEl) {
@@ -182,7 +182,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
 
         this.el.setAttribute('aria-expanded', 'false')
         this._unmountDrawer()
-        this._syncListingControls()
+        void this._syncListingControls()
         this.el.focus()
     }
 
@@ -194,7 +194,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
         this._drawerEl = null
     }
 
-    _syncListingControls() {
+    async _syncListingControls() {
         if (!window.Shopware?.getComponentInstanceByElement) {
             return
         }
@@ -216,11 +216,12 @@ export default class FilterDrawerAction extends ShopwareComponent {
 
         if (typeof listing.syncControls === 'function') {
             listing.syncControls()
-            return
+        } else if (typeof listing.refreshControls === 'function') {
+            listing.refreshControls()
         }
 
-        if (typeof listing.refreshControls === 'function') {
-            listing.refreshControls()
+        if (typeof listing.syncAvailability === 'function') {
+            await listing.syncAvailability()
         }
     }
 }

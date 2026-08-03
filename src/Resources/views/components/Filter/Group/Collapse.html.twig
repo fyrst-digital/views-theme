@@ -9,6 +9,10 @@
 
 {% set anchorName = '--' ~ id %}
 
+{#
+  Optional body shell. Prefer Filter:Group (owns toggle + body).
+  Kept for direct composition / overrides; same BEM as Group body CVA.
+#}
 <div
     {{ attributes.defaults({
         id: id,

@@ -4,17 +4,21 @@
     maxPoints = 5,
     id = 'vi-filter-rating-' ~ random(),
     layout = 'bar',
+    disabled = false,
+    allowedMax = null,
+    selectedValue = null,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['list', 'item', 'chip', 'collapse']) %}
+{% do vi_define_attrs(['list', 'item', 'chip', 'group']) %}
 
-{% set groupId = 'vi-filter-group-' ~ random() %}
 {% set options = {
     name: name,
     listingComponent: 'ViewsTheme:Product:Listing',
 } %}
+
+{% set facetDisabled = disabled or (allowedMax is not null and allowedMax <= 0 and selectedValue is null) %}
 
 <div
     {{ attributes.defaults({
@@ -24,30 +28,30 @@
     class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
-        :label="displayName"
-        :id="groupId"
-        :layout="layout"
-    />
-
-    <twig:ViewsTheme:Filter:Group:Collapse
-        {{ ...vi_attrs('collapse').defaults({
-            id: groupId,
+        {{ ...vi_attrs('group').defaults({
+            label: displayName,
             layout: layout,
+            count: selectedValue ? 1 : null,
+            disabled: facetDisabled,
         }).all() }}
     >
         <ul {{ vi_attrs('list') }} class="{{ vi_class('list') }}" aria-label="{{ displayName }}">
             {% for points in maxPoints..1 %}
                 {% set pointsLabel = points ~ '+' %}
+                {% set isSelected = selectedValue is not null and (points ~ '') == (selectedValue ~ '') %}
+                {% set isDisabled = facetDisabled or (allowedMax is not null and allowedMax > 0 and points > allowedMax and not isSelected) %}
                 <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                     <twig:ViewsTheme:Filter:Chip
                         type="radio"
                         :name="id"
                         :value="points"
                         :label="pointsLabel"
+                        :checked="isSelected"
+                        :disabled="isDisabled"
                         {{ ...vi_attrs('chip').all() }}
                     />
                 </li>
             {% endfor %}
         </ul>
-    </twig:ViewsTheme:Filter:Group:Collapse>
+    </twig:ViewsTheme:Filter:Group>
 </div>
