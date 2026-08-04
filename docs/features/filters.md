@@ -129,8 +129,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
-| MultiSelect CVA | Host: `root` + nested `group` / `collapse` / `options` / `footer` (class + attrs on children). List chrome SoT = `MultiSelect:Options` CVA (`root`/`item`, incl. `p-3` grid); batch HTML is Options-only. `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only |
-| Boolean | Bar chip + [`Form:Switch`](form-input.md#formswitch) (`class="d-inline-flex …"` + `:reverse`; BS form fix in `scss/_form.scss`) |
+| Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Boolean: `chip` DOM + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
 | Active chips | Below bar (`Filter:Active`) |
 | On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |

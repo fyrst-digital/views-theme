@@ -30,6 +30,7 @@
     class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
+        class="{{ vi_class('group') }}"
         {{ ...vi_attrs('group').defaults({
             id: id,
             label: displayName,
@@ -39,6 +40,7 @@
         }).all() }}
     >
         <twig:ViewsTheme:Filter:Group:Collapse
+            class="{{ vi_class('collapse') }}"
             {{ ...vi_attrs('collapse').defaults({
                 id: id,
                 layout: layout,
@@ -51,6 +53,7 @@
                     {% set isDisabled = facetDisabled or (allowedMax is not null and allowedMax > 0 and points > allowedMax and not isSelected) %}
                     <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                         <twig:ViewsTheme:Filter:Chip
+                            class="{{ vi_class('chip') }}"
                             type="radio"
                             :name="inputName"
                             :value="points"
@@ -63,6 +66,7 @@
                 {% endfor %}
             </ul>
             <twig:ViewsTheme:Filter:Group:Footer
+                class="{{ vi_class('footer') }}"
                 {{ ...vi_attrs('footer').all() }}
             />
         </twig:ViewsTheme:Filter:Group:Collapse>

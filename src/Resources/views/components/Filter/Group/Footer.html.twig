@@ -1,4 +1,5 @@
 {% props
+    icon = 'arrow-counter-clockwise',
     cva = {},
 %}
 
@@ -16,6 +17,7 @@
             {{ vi_attrs('reset') }}
             class="{{ vi_class('reset') }}"
         >
+            {{ vi_icon(icon) }}
             {{ 'viewsTheme.filter.reset'|trans|sw_sanitize }}
         </button>
     {% endblock %}

@@ -27,16 +27,17 @@
 >
     <div {{ vi_attrs('chip') }} class="{{ vi_class('chip', { layout: layout }) }}">
         <twig:ViewsTheme:Form:Switch
-            id="{{ switchId }}"
-            :label="displayName"
-            value="1"
-            :reverse="true"
-            :checked="checked"
-            :disabled="disabled"
-            class="d-inline-flex align-items-center gap-2 m-0 p-0"
+            class="{{ vi_class('switch') }}"
             input:class="flex-shrink-0"
             label:class="m-0"
-            {{ ...vi_attrs('switch').all() }}
+            {{ ...vi_attrs('switch').defaults({
+                id: switchId,
+                label: displayName,
+                value: '1',
+                reverse: true,
+                checked: checked,
+                disabled: disabled,
+            }).all() }}
         />
     </div>
 </div>

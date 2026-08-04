@@ -27,6 +27,7 @@
     class="{{ vi_class('root', { layout: layout }) }}"
 >
     <twig:ViewsTheme:Filter:Group
+        class="{{ vi_class('group') }}"
         {{ ...vi_attrs('group').defaults({
             id: id,
             label: displayName,
@@ -34,6 +35,7 @@
         }).all() }}
     >
         <twig:ViewsTheme:Filter:Group:Collapse
+            class="{{ vi_class('collapse') }}"
             {{ ...vi_attrs('collapse').defaults({
                 id: id,
                 layout: layout,
@@ -47,6 +49,7 @@
                     {% if max is not null %}max="{{ max }}"{% endif %}
                     placeholder="{{ min }}"
                     data-range="min"
+                    {{ vi_attrs('input') }}
                     class="{{ vi_class('input') }}"
                     aria-label="{{ displayName }} min"
                 >
@@ -57,11 +60,13 @@
                     {% if max is not null %}max="{{ max }}"{% endif %}
                     placeholder="{{ max }}"
                     data-range="max"
+                    {{ vi_attrs('input') }}
                     class="{{ vi_class('input') }}"
                     aria-label="{{ displayName }} max"
                 >
             </div>
             <twig:ViewsTheme:Filter:Group:Footer
+                class="{{ vi_class('footer') }}"
                 {{ ...vi_attrs('footer').all() }}
             />
         </twig:ViewsTheme:Filter:Group:Collapse>
