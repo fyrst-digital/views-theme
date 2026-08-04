@@ -75,6 +75,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
     /**
      * Replace option list HTML from server batch (order + disabled baked in).
+     * Keeps the existing <ul> (host options:class / SSR attrs); swaps children only.
      */
     replaceOptions(html) {
         if (typeof html !== 'string' || html === '') {
@@ -90,13 +91,18 @@ export default class FilterMultiSelect extends ShopwareComponent {
         }
 
         if (existing) {
-            existing.replaceWith(next)
+            existing.replaceChildren(...next.children)
         } else {
             const group = this.el.querySelector(
                 `[data-component="${this.options.groupComponent || 'ViewsTheme:Filter:Group'}"]`,
             )
-            const bodyContent = group?.querySelector('.vi-filter-group-body__content')
-            bodyContent?.replaceChildren(next)
+            const body = group?.querySelector('.vi-filter-group-body')
+            const footer = body?.querySelector('.vi-filter-group-body__footer')
+            if (footer) {
+                footer.before(next)
+            } else {
+                body?.append(next)
+            }
         }
 
         this._syncCount()

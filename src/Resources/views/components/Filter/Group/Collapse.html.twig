@@ -5,11 +5,10 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['content']) %}
 
 {% set anchorName = '--' ~ id %}
 
-{# Body shell for Filter:Group. Facets compose controls + Footer inside content. #}
+{# Body shell for Filter:Group. Facets compose controls + Footer as direct children. #}
 <div
     {{ attributes.defaults({
         id: id,
@@ -22,7 +21,5 @@
     })) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
-    <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
-        {% block content %}{% endblock %}
-    </div>
+    {% block content %}{% endblock %}
 </div>

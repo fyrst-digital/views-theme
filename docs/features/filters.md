@@ -14,7 +14,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
-| `Filter:Group:Collapse` | **Body shell** (popover/accordion root + content). Facets compose controls + Footer inside; shared `id` with Group |
+| `Filter:Group:Collapse` | **Body shell** (popover/accordion root only). Facets compose controls + Footer as direct children; shared `id` with Group |
 | `Filter:Group:Footer` | Reset chrome (`data-filter-reset`); composed by facets inside Collapse |
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`) |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`) |
@@ -113,7 +113,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Facet host (bar) | Real box: `d-inline-flex` (MultiSelect / Range / Rating / Boolean) |
 | Facet host (stacked) | `d-block w-100` |
 | `Filter:Group` | Real box filling the facet; owns toggle; body is Collapse in content |
-| `Filter:Group:Collapse` | Popover/accordion body shell (`vi-filter-group-body`); facets put controls + Footer in content |
+| `Filter:Group:Collapse` | Popover/accordion body shell (`vi-filter-group-body`); facets put controls + Footer as direct children |
 | Empty facets | Stay in the bar; Group toggle + options `disabled` (not `hidden`) |
 | No `d-contents` | Do not use contents on filter bar hosts or Group |
 
@@ -129,6 +129,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
+| MultiSelect CVA | Host: `root` + nested `group` / `collapse` / `options` / `footer` (class + attrs on children). List chrome SoT = `MultiSelect:Options` CVA (`root`/`item`, incl. `p-3` grid); batch HTML is Options-only. `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only |
 | Boolean | Bar chip + [`Form:Switch`](form-input.md#formswitch) (`class="d-inline-flex …"` + `:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
 | Active chips | Below bar (`Filter:Active`) |
