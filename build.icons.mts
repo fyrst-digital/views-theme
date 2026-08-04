@@ -97,7 +97,7 @@ const icons: Record<string, Record<string, string[]>> = {
       "handbag-bold",
       "handshake-bold",
       "heart-bold",
-      "heart-fill-bold",
+      "heart-fill",
       "info-bold",
       "list-bold",
       "magnifying-glass-bold",

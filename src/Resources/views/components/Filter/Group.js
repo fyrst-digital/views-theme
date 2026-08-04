@@ -44,18 +44,15 @@ export default class FilterGroup extends ShopwareComponent {
     }
 
     setCount(count) {
-        if (!this._count) {
+        if (!this._count || !window.Shopware?.getComponentInstanceByElement) {
             return
         }
 
-        if (count) {
-            this._count.hidden = false
-            this._count.textContent = `(${count})`
-            return
-        }
-
-        this._count.hidden = true
-        this._count.textContent = ''
+        const instance = window.Shopware.getComponentInstanceByElement(
+            this.options.countComponent,
+            this._count,
+        )
+        instance?.setCount?.(count)
     }
 
     setDisabled(disabled) {

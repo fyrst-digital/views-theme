@@ -373,7 +373,10 @@ Root dispatches bubbling `input` (while dragging / each step) and `change` (comm
 |-------|------|
 | `--vi-track-h` | Track height |
 | `--vi-fill-start` / `--vi-fill-end` | Fill edges as `%` (set by JS) |
-| `--vi-thumb-size` / `--vi-thumb-bg` / `--vi-thumb-border` / `--vi-thumb-shadow` / `--vi-thumb-focus` | Thumbs (pseudo) |
+| `--vi-thumb-size` / `--vi-thumb-bg` / `--vi-thumb-border` / `--vi-thumb-shadow` | Thumb base |
+| `--vi-thumb-hover-border` / `--vi-thumb-hover-shadow` | Thumb hover |
+| `--vi-thumb-active-shadow` | Thumb while dragging |
+| `--vi-thumb-focus` | Thumb `:focus-visible` ring |
 
 Track/fill colors default via CVA (`bg-light` / `bg-primary`). Theme may override the BEM host if needed.
 

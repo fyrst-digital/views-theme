@@ -29,6 +29,7 @@
     <span class="{{ vi_class('label') }}">{{ label }}</span>
     <twig:ViewsTheme:Filter:Group:Count
         :count="count"
+        class="{{ vi_class('count') }}"
         {{ ...vi_attrs('count').all() }}
     />
     {{ vi_icon('caret-down', { class: vi_class('caret') }) }}

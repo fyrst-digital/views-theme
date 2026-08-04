@@ -13,7 +13,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
 | `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
-| `Filter:Group:Count` | Selection badge; updated via Group `setCount` |
+| `Filter:Group:Count` | Selection badge; count SoT = `options.count`; `setCount` paints (Group delegates) |
 | `Filter:Group:Collapse` | **Body shell** (popover/accordion root only). Facets compose controls + Footer as direct children; shared `id` with Group |
 | `Filter:Group:Footer` | Reset chrome: `ViewsTheme:Button` (`color=link` `size=sm`, `data-filter-reset`); composed by facets inside Collapse |
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`) |
