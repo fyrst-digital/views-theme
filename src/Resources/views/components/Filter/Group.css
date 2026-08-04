@@ -53,6 +53,7 @@
 
     &:not(:popover-open) {
       opacity: 0;
+      visibility: hidden;
     }
 
     &:popover-open {
