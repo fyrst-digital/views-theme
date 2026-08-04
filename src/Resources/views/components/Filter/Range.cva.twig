@@ -10,7 +10,14 @@
     },
     group: { base: 'vi-filter-range__group' },
     collapse: { base: 'vi-filter-range__collapse' },
-    fields: { base: 'vi-filter-range__fields d-flex gap-2 p-3' },
-    input: { base: 'vi-filter-range__input form-control' },
+    body: { base: 'vi-filter-range__body d-flex flex-column gap-3 p-3' },
+    fields: { base: 'vi-filter-range__fields d-flex align-items-center gap-2' },
+    field: { base: 'vi-filter-range__field position-relative flex-fill min-w-0' },
+    input: { base: 'vi-filter-range__input form-control pe-4' },
+    unit: {
+        base: 'vi-filter-range__unit position-absolute top-50 end-0 translate-middle-y pe-3 text-body-secondary pe-none',
+    },
+    divider: { base: 'vi-filter-range__divider flex-shrink-0 text-body-secondary' },
+    slider: { base: 'vi-filter-range__slider px-1' },
     footer: { base: 'vi-filter-range__footer p-2' },
 }

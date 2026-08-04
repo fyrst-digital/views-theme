@@ -8,6 +8,7 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
 | `ViewsTheme:Form:Select` | Stacked select field (`form-group` + `<select>`) |
 | `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
+| `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
 
 `Form:Input` replaces Storefront `component/form/form-input.html.twig` for theme-owned forms. `Form:Select` replaces `component/form/form-select.html.twig`.
 
@@ -78,6 +79,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Cart:PromotionForm` | Uses `Form:Input:Group` + `Button` in `append` ([cart-drawer](cart-drawer.md#promotion-form)) |
 | `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
 | `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
+| `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
 | `Account:Register`, `Address:*` | Still core `form-input` / `form-select` includes |
 
 ---
@@ -291,12 +293,101 @@ No co-located `Switch.css`. Dense bar layout is caller utilities. Theme BS form-
 ### Call sites
 
 | Consumer | Status |
-|----------|--------|
+|---------|--------|
 | `Filter:Boolean` | Bar chip + `Form:Switch` (`class` utilities + `:reverse`) — [filters.md](filters.md) |
+
+---
+
+## Form:Slider
+
+Single- or dual-thumb range control. Native stacked `<input type="range">` thumbs (no third-party lib). Owns fill paint + clamp via co-located JS.
+
+### Usage
+
+```twig
+{# Dual thumb #}
+<twig:ViewsTheme:Form:Slider
+    mode="range"
+    :min="0"
+    :max="1200"
+    :step="1"
+    :start="0"
+    :end="1200"
+    ariaLabelMin="Price min"
+    ariaLabelMax="Price max"
+/>
+
+{# Single thumb #}
+<twig:ViewsTheme:Form:Slider
+    mode="single"
+    :min="0"
+    :max="100"
+    :value="50"
+    name="opacity"
+    ariaLabel="Opacity"
+/>
+```
+
+### Props
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `id` | `vi-form-slider-{random}` | Root id; thumbs get `-min` / `-max` / `-value` |
+| `mode` | `'single'` | `'single'` \| `'range'` |
+| `min` / `max` | `0` / `100` | Bounds |
+| `step` | `1` | |
+| `value` | `min` | Single thumb |
+| `start` / `end` | `min` / `max` | Range thumbs |
+| `name` | `null` | Single: optional form name |
+| `minName` / `maxName` | `null` | Range: optional form names |
+| `disabled` | `false` | Use `false` not `null` in defaults |
+| `ariaLabel` | `null` | Single (or fallback) |
+| `ariaLabelMin` / `ariaLabelMax` | `null` | Range |
+| `cva` | `{}` | |
+
+### Classes / slots
+
+Layout/chrome that has a Bootstrap utility lives in CVA. Component CSS is geometry tokens, range appearance reset, thumb **pseudos**, runtime fill `%`, and range z-index only.
+
+| Slot | Default base | Caller override |
+|------|--------------|-----------------|
+| root | `vi-form-slider position-relative d-block w-100` (+ mode BEM; disabled → `pe-none opacity-50`) | `class="…"` |
+| track | `vi-form-slider__track` + absolute/center/`rounded-pill`/`bg-light`/`pe-none` | `track:class` |
+| fill | `vi-form-slider__fill` + absolute/`rounded-pill`/`bg-primary` | `fill:class` |
+| input | `vi-form-slider__input` + absolute fill/`m-0 p-0`/`bg-transparent`/`pe-none` | `input:class` |
+
+Nested attrs: `track:*`, `fill:*`, `input:*`.
+
+### JS API (`data-component="ViewsTheme:Form:Slider"`)
+
+| Method | Role |
+|--------|------|
+| `getValues()` | `{ value }` or `{ start, end }` (numbers) |
+| `setValues(values, { silent? })` | Update thumbs + fill; `silent` (default `true`) skips root events |
+
+Root dispatches bubbling `input` (while dragging / each step) and `change` (commit — thumb release). `setValues` with `silent: false` emits both. Consumers that mutate listings should apply on **`change` only**, not `input`.
+
+### CSS tokens (component consume + fallback)
+
+| Token | Role |
+|-------|------|
+| `--vi-track-h` | Track height |
+| `--vi-fill-start` / `--vi-fill-end` | Fill edges as `%` (set by JS) |
+| `--vi-thumb-size` / `--vi-thumb-bg` / `--vi-thumb-border` / `--vi-thumb-shadow` / `--vi-thumb-focus` | Thumbs (pseudo) |
+
+Track/fill colors default via CVA (`bg-light` / `bg-primary`). Theme may override the BEM host if needed.
+
+Co-located: `Form/Slider.css` (non-utility only).
+
+### Call sites
+
+| Consumer | Status |
+|----------|--------|
+| `Filter:Range` | `mode="range"` under price fields — [filters.md](filters.md) |
 
 ## Related
 
 - [UX components](../conventions/ux-components.md)
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
-- [Filters](filters.md) (`Filter:Boolean`)
+- [Filters](filters.md) (`Filter:Boolean`, `Filter:Range`)

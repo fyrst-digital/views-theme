@@ -4,18 +4,27 @@
     maxKey = 'max-price',
     min = 0,
     max = null,
+    step = 1,
+    unit = context.currency.symbol|default(''),
     layout = 'bar',
     id = 'vi-filter-range-' ~ random(),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['fields', 'input', 'group', 'collapse', 'footer']) %}
+{% do vi_define_attrs(['body', 'fields', 'field', 'input', 'unit', 'divider', 'slider', 'group', 'collapse', 'footer']) %}
 
+{% set boundMin = min is not null ? min : 0 %}
+{% set boundMax = max is not null ? max : 100 %}
 {% set options = {
     minKey: minKey,
     maxKey: maxKey,
+    min: boundMin,
+    max: boundMax,
+    step: step,
+    unit: unit,
     listingComponent: 'ViewsTheme:Product:Listing',
+    sliderComponent: 'ViewsTheme:Form:Slider',
     debounce: 500,
 } %}
 
@@ -41,29 +50,57 @@
                 layout: layout,
             }).all() }}
         >
-            <div {{ vi_attrs('fields') }} class="{{ vi_class('fields') }}">
-                <input
-                    type="number"
-                    inputmode="decimal"
-                    min="{{ min }}"
-                    {% if max is not null %}max="{{ max }}"{% endif %}
-                    placeholder="{{ min }}"
-                    data-range="min"
-                    {{ vi_attrs('input') }}
-                    class="{{ vi_class('input') }}"
-                    aria-label="{{ displayName }} min"
-                >
-                <input
-                    type="number"
-                    inputmode="decimal"
-                    min="{{ min }}"
-                    {% if max is not null %}max="{{ max }}"{% endif %}
-                    placeholder="{{ max }}"
-                    data-range="max"
-                    {{ vi_attrs('input') }}
-                    class="{{ vi_class('input') }}"
-                    aria-label="{{ displayName }} max"
-                >
+            <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
+                <div {{ vi_attrs('fields') }} class="{{ vi_class('fields') }}">
+                    <div {{ vi_attrs('field') }} class="{{ vi_class('field') }}">
+                        <input
+                            type="number"
+                            inputmode="decimal"
+                            min="{{ boundMin }}"
+                            max="{{ boundMax }}"
+                            step="{{ step }}"
+                            placeholder="{{ boundMin }}"
+                            data-range="min"
+                            {{ vi_attrs('input') }}
+                            class="{{ vi_class('input') }}"
+                            aria-label="{{ displayName }} min"
+                        >
+                        {% if unit is not empty %}
+                            <span {{ vi_attrs('unit') }} class="{{ vi_class('unit') }}" aria-hidden="true">{{ unit }}</span>
+                        {% endif %}
+                    </div>
+                    <span {{ vi_attrs('divider') }} class="{{ vi_class('divider') }}" aria-hidden="true">&ndash;</span>
+                    <div {{ vi_attrs('field') }} class="{{ vi_class('field') }}">
+                        <input
+                            type="number"
+                            inputmode="decimal"
+                            min="{{ boundMin }}"
+                            max="{{ boundMax }}"
+                            step="{{ step }}"
+                            placeholder="{{ boundMax }}"
+                            data-range="max"
+                            {{ vi_attrs('input') }}
+                            class="{{ vi_class('input') }}"
+                            aria-label="{{ displayName }} max"
+                        >
+                        {% if unit is not empty %}
+                            <span {{ vi_attrs('unit') }} class="{{ vi_class('unit') }}" aria-hidden="true">{{ unit }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <twig:ViewsTheme:Form:Slider
+                    class="{{ vi_class('slider') }}"
+                    id="{{ id }}-slider"
+                    mode="range"
+                    :min="boundMin"
+                    :max="boundMax"
+                    :step="step"
+                    :start="boundMin"
+                    :end="boundMax"
+                    ariaLabelMin="{{ displayName }} min"
+                    ariaLabelMax="{{ displayName }} max"
+                    {{ ...vi_attrs('slider').all() }}
+                />
             </div>
             <twig:ViewsTheme:Filter:Group:Footer
                 class="{{ vi_class('footer') }}"

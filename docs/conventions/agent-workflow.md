@@ -35,6 +35,21 @@ Agents must **never** run asset, theme, or JS compile/watch commands. The human 
 
 Build steps for humans are documented in [getting-started.md](../getting-started.md). Do not treat those sections as agent runbooks.
 
+## Surgical edits only (critical)
+
+Prefer **minimal, targeted patches**. Do **not** replace whole files when fixing a local issue.
+
+| Do | Don't |
+|----|--------|
+| Read the file on disk immediately before editing | Edit from a stale mental snapshot of an earlier version |
+| Use a targeted search/replace (smallest possible hunk) for local fixes | Full-file rewrite / overwrite for a few-line change |
+| Preserve unrelated human (or prior) edits in the same file | “Recreate” the file and wipe concurrent tweaks (tokens, fallbacks, formatting) |
+| Re-read after the user (or another turn) may have edited the file | Assume disk still matches what you last wrote |
+
+**Full-file write is OK only** when creating a **new** file, or when the user **explicitly** asks to rewrite / replace the whole file.
+
+Full-file overwrites are a common agent failure mode: a small rule fix clobbers intentional human changes that landed between turns.
+
 ## Related
 
 - [Hard rules checklist](hard-rules.md)
