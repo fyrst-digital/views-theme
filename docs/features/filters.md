@@ -6,10 +6,10 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 
 | Piece | Responsibility |
 |-------|----------------|
-| Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel |
-| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle) |
-| `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"`) |
-| `Filter:Panel` | Class-backed shell: Active + aria-live; facets from resolver; `layout` cascades into facet props |
+| Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel; reads product-listing CMS config |
+| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle); forwards `showActive` via `viShowActiveFilters` |
+| `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"` always; `showActive` from CMS) |
+| `Filter:Panel` | Class-backed shell: optional Active + aria-live; facets from resolver; `layout` cascades into facet props |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
 | `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
@@ -48,8 +48,8 @@ Each facet is `{ component, props }` rendered with `{{ component(facet.component
 | **Availability** | Which facets show / options enable — reduced aggregations JSON only |
 | `Product:Listing` | Discover controls, hydrate, `syncAvailability`, apply/history, Results XHR |
 | Facet controls | Working DOM; `getValues` / `setFromUrl` / `applyAvailability` |
-| Desktop `Filter:Panel` | Always-mounted bar (bridge: `class="d-none d-lg-block"`; default `layout=bar`) |
-| `Filter:Drawer` | Disposable mobile view (refetch each open; Panel `layout=stacked`; **full catalog** SSR) |
+| Desktop `Filter:Panel` | Always-mounted (bridge: `class="d-none d-lg-block"`; `layout` from CMS `viewsTheme.value.filterLayout`, default `bar`; `showActive` from CMS) |
+| `Filter:Drawer` | Disposable mobile view (refetch each open; Panel `layout=stacked` forced; `showActive` from CMS; **full catalog** SSR) |
 
 No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, not session POSTs like cart).
 
@@ -93,6 +93,33 @@ Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. O
 
 Listing **discovers** controls under its root and under the **active** `Filter:Panel` (open drawer Panel when mounted/open; otherwise page sidebar Panel). No per-control `registerControl` required. Chip labels are de-duplicated by id.
 
+## CMS presentation config
+
+Theme extends core product-listing CMS element config (admin override + `defaultConfig` merge). Presentation only — does not change which aggregations load.
+
+Namespaced under one Shopware FieldConfig key (`source` + `value` blob):
+
+```js
+viewsTheme: {
+  source: 'static',
+  value: {
+    filterLayout: 'bar',       // 'bar' | 'stacked'
+    showActiveFilters: true,
+  },
+}
+```
+
+| Path | Type | Default | Applies to |
+|------|------|---------|------------|
+| `viewsTheme.value.filterLayout` | `bar` \| `stacked` | `bar` | **Desktop** `Filter:Panel` only (bridge). Drawer always `stacked`. |
+| `viewsTheme.value.showActiveFilters` | bool | `true` | Desktop Panel **and** Drawer Panel |
+
+Bridge reads `cmsPage.getFirstElementOfType('product-listing').config.viewsTheme.value`. Missing keys / search (no slot) → defaults above. Drawer XHR has no CMS page: Action sends `viShowActiveFilters=0|1`; `FilterDrawerController` passes `showActive` into `Filter:Drawer`.
+
+Config is **per content language** (cms slot translation). Save once per language you use on the storefront.
+
+Admin: `src/Resources/app/administration/` — mutates `cmsService` product-listing `defaultConfig.viewsTheme`; overrides `sw-cms-el-config-product-listing` filter tab (theme info banner + layout select + active switch).
+
 ## Layout prop
 
 Shared CVA variant prop on Panel, facets, Group, and Toggle:
@@ -102,7 +129,9 @@ Shared CVA variant prop on Panel, facets, Group, and Toggle:
 | `bar` | yes | Horizontal chip bar; **real box** facet hosts; popover + `position-anchor` bodies |
 | `stacked` | — | Column stack; `d-block w-100` hosts; full-width toggles; accordion (no popover attrs) |
 
-Cascade: `Filter:Drawer` → `Filter:Panel layout="stacked"` → merge into each facet → Group → Collapse. Group JS uses `options.layout === 'stacked'` (no `#vi-filter-drawer` sniff).
+Cascade: desktop bridge → `layout` from CMS (`viewsTheme.value.filterLayout`); `Filter:Drawer` → `Filter:Panel layout="stacked"` (forced) → merge into each facet → Group → Collapse. Group JS uses `options.layout === 'stacked'` (no `#vi-filter-drawer` sniff).
+
+`showActive` (Panel prop, default `true`): when false, `Filter:Active` is not rendered.
 
 ### Box tree (critical)
 
@@ -131,7 +160,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
-| Active chips | Below bar (`Filter:Active`) |
+| Active chips | Below bar (`Filter:Active`) when `showActive` |
 | On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |
 
 `layout=stacked` (mobile `Filter:Drawer`):
@@ -168,8 +197,8 @@ One facet **Panel** template. Placement + `layout`:
 
 | Viewport | Behaviour |
 |----------|-----------|
-| `lg+` | SSR `Filter:Panel` in listing chrome (`class="d-none d-lg-block"`; default `layout=bar`) |
-| `< lg` | `Filter:Drawer:Action` fetches `Filter:Drawer` (Panel `layout=stacked`); unmount on close |
+| `lg+` | SSR `Filter:Panel` in listing chrome (`class="d-none d-lg-block"`; `layout` from CMS, default `bar`) |
+| `< lg` | `Filter:Drawer:Action` fetches `Filter:Drawer` (Panel `layout=stacked` always); unmount on close |
 
 Identity hooks: only `data-component="ViewsTheme:…"`. Drawer `id` (`#vi-filter-drawer`) for a11y / multi-drawer disambiguation (not layout detection).
 
@@ -214,6 +243,7 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Role | Path |
 |------|------|
 | Drawer compose / Action | `components/Filter/Drawer.*`, `components/Filter/Drawer/Action.*` |
+| CMS admin config extension | `app/administration/src/extension/sw-cms/elements/product-listing/` + `main.js` |
 | Panel (class + Twig + busy CSS) | `components/Filter/Panel.{php,html.twig,js,cva.twig,css}` |
 | Group disclosure host + popover CSS | `components/Filter/Group.{js,html.twig,cva.twig,css}` (CSS targets Collapse root `.vi-filter-group-body`) |
 | Form SCSS | `app/storefront/src/scss/_form.scss` |

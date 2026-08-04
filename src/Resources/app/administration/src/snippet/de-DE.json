@@ -1,0 +1,20 @@
+{
+  "viewsTheme": {
+    "sw-cms": {
+      "elements": {
+        "productListing": {
+          "config": {
+            "filter": {
+              "themeOnlyInfo": "Diese Einstellungen gelten nur für das Views Theme (oder davon abgeleitete Themes). Bei anderen Storefront-Themes haben sie keine Wirkung.",
+              "labelFilterLayout": "Filter-Layout",
+              "layoutBar": "Leiste",
+              "layoutStacked": "Gestapelt",
+              "labelShowActiveFilters": "Aktive Filter anzeigen",
+              "helpTextShowActiveFilters": "Zeigt entfernbare Chips für die aktuell gewählten Filter (Desktop-Leiste und mobiler Drawer)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

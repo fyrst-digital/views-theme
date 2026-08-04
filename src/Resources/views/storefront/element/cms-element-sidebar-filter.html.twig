@@ -1,12 +1,26 @@
 {% sw_extends '@Storefront/storefront/element/cms-element-sidebar-filter.html.twig' %}
 
 {% block element_sidebar_filter %}
+    {% set listingSlot = null %}
     {% if listing is not defined or listing is null %}
         {% if cmsPage is defined %}
-            {% set slot = cmsPage.getFirstElementOfType('product-listing') %}
-            {% set listing = slot.data.listing %}
+            {% set listingSlot = cmsPage.getFirstElementOfType('product-listing') %}
+            {% set listing = listingSlot.data.listing %}
         {% endif %}
+    {% elseif cmsPage is defined %}
+        {% set listingSlot = cmsPage.getFirstElementOfType('product-listing') %}
     {% endif %}
+
+    {% set viewsThemeFilter = listingSlot and listingSlot.config.viewsTheme.value is defined
+        ? listingSlot.config.viewsTheme.value
+        : {} %}
+    {% set filterLayout = viewsThemeFilter.filterLayout|default('bar') %}
+    {% if filterLayout not in ['bar', 'stacked'] %}
+        {% set filterLayout = 'bar' %}
+    {% endif %}
+    {% set showActiveFilters = viewsThemeFilter.showActiveFilters is defined
+        ? viewsThemeFilter.showActiveFilters
+        : true %}
 
     {% if listing and listing.aggregations.elements|length > 0 %}
         {% set filterLabel = 'listing.filterTitleText'|trans|sw_sanitize %}
@@ -29,6 +43,7 @@
             <twig:ViewsTheme:Filter:Drawer:Action
                 drawerUrl="{{ filterDrawerUrl }}"
                 label="{{ filterLabel }}"
+                :showActive="showActiveFilters"
             />
         {% endif %}
 
@@ -37,6 +52,8 @@
             :listing="listing"
             :ariaLiveUpdates="true"
             :showHeader="false"
+            layout="{{ filterLayout }}"
+            :showActive="showActiveFilters"
         />
     {% endif %}
 {% endblock %}

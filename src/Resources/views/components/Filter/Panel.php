@@ -29,6 +29,11 @@ class Panel
     public bool $showHeader = false;
 
     /**
+     * Whether to render the active-filter chip row (`Filter:Active`).
+     */
+    public bool $showActive = true;
+
+    /**
      * Layout chrome: horizontal chip bar (`bar`) or vertical accordion stack (`stacked`).
      */
     public string $layout = 'bar';

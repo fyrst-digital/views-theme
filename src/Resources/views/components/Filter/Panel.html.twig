@@ -37,9 +37,11 @@
         </div>
     {% endblock %}
 
-    {% block active %}
-        <twig:ViewsTheme:Filter:Active class="{{ vi_class('active') }}" />
-    {% endblock %}
+    {% if showActive %}
+        {% block active %}
+            <twig:ViewsTheme:Filter:Active class="{{ vi_class('active') }}" />
+        {% endblock %}
+    {% endif %}
 
     {% if ariaLiveUpdates %}
         {% block live %}

@@ -6,6 +6,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
         listingComponent: 'ViewsTheme:Product:Listing',
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
+        showActive: true,
     }
 
     init() {
@@ -115,6 +116,10 @@ export default class FilterDrawerAction extends ShopwareComponent {
         current.forEach((value, key) => {
             url.searchParams.set(key, value)
         })
+        url.searchParams.set(
+            'viShowActiveFilters',
+            this.options.showActive === false ? '0' : '1',
+        )
         return url.toString()
     }
 

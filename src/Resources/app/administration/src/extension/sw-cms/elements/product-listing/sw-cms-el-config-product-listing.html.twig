@@ -1,0 +1,55 @@
+{% block sw_cms_element_product_listing_config_filter_by_wrapper %}
+{% parent %}
+
+{% block vi_cms_element_product_listing_config_filter_settings %}
+    <div 
+        :style="{
+            padding: '24px',
+            borderRadius: '10px',
+            backgroundColor: 'var(--color-background-tertiary-default)',
+        }">
+        {% block vi_cms_element_product_listing_config_filter_settings_notification %}
+            <mt-banner variant="info">
+                {{ $t('viewsTheme.sw-cms.elements.productListing.config.filter.themeOnlyInfo') }}
+            </mt-banner>
+        {% endblock %}
+
+        <sw-cms-inherit-wrapper
+            field="viewsTheme"
+            :element="element"
+        >
+            <template #default="{ isInherited }">
+                <div    
+                    :style="{
+                        display: 'grid',
+                        gap: '24px',
+                        'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
+                        alignItems: 'end',
+                    }">
+                    {% block vi_cms_element_product_listing_config_filter_settings_filter_layout %}
+                        <mt-select
+                            v-model="element.config.viewsTheme.value.filterLayout"
+                            :label="$t('viewsTheme.sw-cms.elements.productListing.config.filter.labelFilterLayout')"
+                            :options="filterLayoutOptions"
+                            :disabled="isInherited"
+                            :hide-clearable-button="true"
+                            :style="{ margin: '0px' }"
+                        />
+                    {% endblock %}
+
+                    {% block vi_cms_element_product_listing_config_filter_settings_show_active_filter %}
+                        <mt-switch
+                            v-model="element.config.viewsTheme.value.showActiveFilters"
+                            :label="$t('viewsTheme.sw-cms.elements.productListing.config.filter.labelShowActiveFilters')"
+                            :help-text="$t('viewsTheme.sw-cms.elements.productListing.config.filter.helpTextShowActiveFilters')"
+                            :disabled="isInherited"
+                            :style="{ margin: '0px' }"
+                            bordered
+                        />
+                    {% endblock %}
+                </div>
+            </template>
+        </sw-cms-inherit-wrapper>
+    </div>
+{% endblock %}
+{% endblock %}

@@ -1,5 +1,6 @@
 {% props
     listing = null,
+    showActive = true,
     label = 'listing.filterTitleText'|trans|sw_sanitize,
     cva = {},
 %}
@@ -26,6 +27,7 @@
                 :listing="listing"
                 :ariaLiveUpdates="true"
                 :showHeader="false"
+                :showActive="showActive"
                 layout="stacked"
                 class="p-6"
             />

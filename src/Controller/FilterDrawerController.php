@@ -45,6 +45,7 @@ class FilterDrawerController extends AbstractComponentController
 
         return $this->renderComponent('ViewsTheme:Filter:Drawer', [
             'listing' => $result,
+            'showActive' => $request->query->getBoolean('viShowActiveFilters', true),
         ]);
     }
 
@@ -68,6 +69,7 @@ class FilterDrawerController extends AbstractComponentController
 
         return $this->renderComponent('ViewsTheme:Filter:Drawer', [
             'listing' => $result,
+            'showActive' => $request->query->getBoolean('viShowActiveFilters', true),
         ]);
     }
 }

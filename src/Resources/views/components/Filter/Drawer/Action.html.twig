@@ -2,6 +2,7 @@
     label = 'listing.filterTitleText'|trans|sw_sanitize,
     drawerUrl = null,
     drawerId = 'vi-filter-drawer',
+    showActive = true,
     color = 'outline-primary',
     size = 'md',
     cva = {},
@@ -16,6 +17,7 @@
     listingComponent: 'ViewsTheme:Product:Listing',
     openEvent: 'ViewsTheme:Drawer:Open',
     closeEvent: 'ViewsTheme:Drawer:Close',
+    showActive: showActive,
 } %}
 
 <twig:ViewsTheme:Button
