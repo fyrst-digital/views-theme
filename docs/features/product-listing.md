@@ -12,7 +12,7 @@ Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters
 | `Product:Listing:Actions` | Top bar: Pagination + Sorting |
 | `Product:Listing:Empty` | Empty results shell (default Alert; overridable `content`) |
 | `Grid` | Items container (CSS grid shell) — [grid.md](grid.md) |
-| `Pagination` / `Sorting` | Theme chrome + controls registered with Listing |
+| `Pagination` / `Sorting` | Theme chrome + controls registered with Listing; Pagination hrefs preserve listing query (`preserveQuery`) — [pagination.md](pagination.md) |
 | Filters | [filters.md](filters.md) |
 | Controllers | `ListingController` — results HTML + aggregations JSON |
 

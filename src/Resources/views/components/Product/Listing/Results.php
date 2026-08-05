@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product\Listing;
 
-use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -35,8 +34,6 @@ class Results
 
     public bool $showBottomPagination = false;
 
-    public string $paginationSearchQuery = '';
-
     /**
      * @param array<string, mixed> $data
      */
@@ -60,12 +57,5 @@ class Results
 
         $this->hasResults = $total > 0;
         $this->showBottomPagination = $limit > 0 && $total > $limit;
-
-        if ($this->searchResult instanceof ProductListingResult) {
-            $search = $this->searchResult->getCurrentFilter('search');
-            if (\is_string($search) && $search !== '') {
-                $this->paginationSearchQuery = '&search=' . rawurlencode($search);
-            }
-        }
     }
 }

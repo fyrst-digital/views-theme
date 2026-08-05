@@ -23,7 +23,6 @@
                 class="{{ vi_class('actions') }}"
                 {{ ...vi_attrs('actions').defaults({
                     searchResult: searchResult,
-                    paginationSearchQuery: paginationSearchQuery,
                 }).all() }}
             />
         {% endblock %}
@@ -72,7 +71,7 @@
                 {{ ...vi_attrs('paginationBottom').defaults({
                     entities: searchResult,
                     location: 'bottom',
-                    searchQuery: paginationSearchQuery,
+                    preserveQuery: true,
                 }).all() }}
             />
         {% endblock %}

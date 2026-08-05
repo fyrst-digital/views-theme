@@ -1,6 +1,5 @@
 {% props
     searchResult = null,
-    paginationSearchQuery = '',
     cva = {},
 %}
 
@@ -17,7 +16,7 @@
             {{ ...vi_attrs('pagination').defaults({
                 entities: searchResult,
                 location: 'top',
-                searchQuery: paginationSearchQuery,
+                preserveQuery: true,
             }).all() }}
         />
     {% endblock %}
