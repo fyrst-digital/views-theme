@@ -53,7 +53,7 @@ Guest + cookie consent: without `wishlist-enabled` cookie, owner requests core `
 
 - Composes `ViewsTheme:Button` (single `vi_icon` via `icon` prop); no wrapper, no `data-add-to-wishlist`
 - Props: `productId`, `showText`, `size`, `color`, `appearance` (`null` \| `circle`), `icon` (default `heart`), `iconActive` (default `heart-fill`), `cva`
-- Options `icons: { add, remove }` — JS `_sync` swaps the icon **name** class on the existing node (pack suffix inferred from `vi_icon` markup, e.g. `-bold`); also updates `aria-pressed` + title/label
+- Options `icons: { add, remove }` — JS `_sync` swaps the icon **name** class on the existing node (`icon-${name}` only, no pack suffix); also updates `aria-pressed` + title/label
 - Circle layout in co-located CSS; works with theme `icons.mode: css`
 
 ## Badge
