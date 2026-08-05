@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={loadingEvent:`ViewsTheme:Listing:Loading`};init(){this._onLoading=this._onLoading.bind(this),window.Shopware.on(this.options.loadingEvent,this._onLoading)}destroy(){window.Shopware.off(this.options.loadingEvent,this._onLoading)}_onLoading(e){this.el.setAttribute(`aria-busy`,e?.busy?`true`:`false`)}};export{e as default};
+//# sourceMappingURL=Panel-C2w8LVkT.js.map

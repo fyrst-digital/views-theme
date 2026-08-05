@@ -1,0 +1,1 @@
+{"version":3,"file":"Flashes-DaV6vV4z.js","names":[],"sources":["../../../../../../../../../../../custom/static-plugins/ViewsTheme/src/Resources/views/components/Cart/Drawer/Flashes.js"],"sourcesContent":["export default class CartDrawerFlashes extends ShopwareComponent {\n    init() {}\n}\n"],"mappings":"AAAA,IAAqB,EAArB,cAA+C,iBAAkB,CAC7D,MAAO"}

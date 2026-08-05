@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={drawerComponentName:`ViewsTheme:Drawer`};init(){this._onTransitionEnd=this._onTransitionEnd.bind(this),this.el.addEventListener(`transitionend`,this._onTransitionEnd)}destroy(){this.el.removeEventListener(`transitionend`,this._onTransitionEnd)}_onTransitionEnd(e){e.target!==this.el||e.propertyName!==`transform`||window.Shopware.callMethod(this.options.drawerComponentName,`onPanelTransitionEnd`)}};export{e as default};
+//# sourceMappingURL=Panel-DX0OkfBr.js.map
