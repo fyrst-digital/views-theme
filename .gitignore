@@ -1,4 +1,6 @@
 node_modules
 src/Resources/app/storefront/dist/storefront
+src/Resources/app/administration/.tmp
+.opencode/plans
 vendor
 .phpunit.cache

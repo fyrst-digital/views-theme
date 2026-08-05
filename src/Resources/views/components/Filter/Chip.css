@@ -16,8 +16,8 @@
 }
 
 .vi-filter-chip__swatch {
-  width: var(--vi-swatch, 1rem);
-  height: var(--vi-swatch, 1rem);
+  width: var(--vi-swatch, 16px);
+  height: var(--vi-swatch, 16px);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

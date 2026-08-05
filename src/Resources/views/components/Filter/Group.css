@@ -13,33 +13,33 @@
   margin: 0;
   overflow: hidden;
   width: max-content;
-  min-width: var(--vi-min-w, 16rem);
-  max-width: var(--vi-max-w, min(100vw - 1.5rem, 25rem));
-  max-height: var(--vi-max-h, min(70vh, 26rem));
+  min-width: var(--vi-min-w, 256px);
+  max-width: var(--vi-max-w, min(100vw - 24px, 400px));
+  max-height: var(--vi-max-h, min(70vh, 416px));
 
   &[data-placement='bottom-start'] {
-    top: calc(anchor(bottom) + var(--vi-offset, 0.25rem));
+    top: calc(anchor(bottom) + var(--vi-offset, 4px));
     left: anchor(left);
     right: auto;
     bottom: auto;
   }
 
   &[data-placement='bottom-end'] {
-    top: calc(anchor(bottom) + var(--vi-offset, 0.25rem));
+    top: calc(anchor(bottom) + var(--vi-offset, 4px));
     right: anchor(right);
     left: auto;
     bottom: auto;
   }
 
   &[data-placement='top-start'] {
-    bottom: calc(anchor(top) + var(--vi-offset, 0.25rem));
+    bottom: calc(anchor(top) + var(--vi-offset, 4px));
     left: anchor(left);
     right: auto;
     top: auto;
   }
 
   &[data-placement='top-end'] {
-    bottom: calc(anchor(top) + var(--vi-offset, 0.25rem));
+    bottom: calc(anchor(top) + var(--vi-offset, 4px));
     right: anchor(right);
     left: auto;
     top: auto;
