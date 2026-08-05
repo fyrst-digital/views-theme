@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={fallbackSrc:null};init(){this._triedFallback=!1,this._onError=this._onError.bind(this),this.el.addEventListener(`error`,this._onError),this.el.complete&&this.el.naturalWidth===0&&this._onError()}destroy(){this.el.removeEventListener(`error`,this._onError)}_onError(){let e=this.options.fallbackSrc;if(e&&!this._triedFallback){this._triedFallback=!0,this.el.src=e;return}this.el.remove()}};export{e as default};
+//# sourceMappingURL=Flag-vZENBQwP.js.map
