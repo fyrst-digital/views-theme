@@ -63,7 +63,10 @@ export default class FilterRating extends ShopwareComponent {
     setFromUrl(params) {
         const value = params?.[this.options.name]
         this._inputs().forEach((input) => {
-            input.checked = String(input.value) === String(value || '')
+            const next = String(input.value) === String(value || '')
+            if (input.checked !== next) {
+                input.checked = next
+            }
         })
     }
 
@@ -83,11 +86,15 @@ export default class FilterRating extends ShopwareComponent {
         this._inputs().forEach((input) => {
             const isSelected = selectedValue !== null && String(input.value) === selectedValue
             if (isSelected) {
-                input.checked = true
+                if (!input.checked) {
+                    input.checked = true
+                }
                 input.disabled = false
                 return
             }
-            input.checked = false
+            if (input.checked) {
+                input.checked = false
+            }
             if (unavailable) {
                 input.disabled = true
                 return

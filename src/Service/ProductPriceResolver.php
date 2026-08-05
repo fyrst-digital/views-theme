@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Service;
 
+use Fyrst\ViewsTheme\Struct\ProductPriceData;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 

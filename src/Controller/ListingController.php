@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\FilterAggregationLoader;
+use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
 use Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder;
-use Shopware\Core\Content\Product\SalesChannel\Listing\AbstractProductListingRoute;
-use Shopware\Core\Content\Product\SalesChannel\Search\AbstractProductSearchRoute;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Fyrst\ViewsTheme\Service\ProductListingGateway;
+use Fyrst\ViewsTheme\Struct\ListingScope;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -24,12 +23,11 @@ class ListingController extends AbstractComponentController
 {
     public function __construct(
         ComponentRendererInterface $components,
-        private readonly AbstractProductListingRoute $listingRoute,
-        private readonly AbstractProductSearchRoute $searchRoute,
-        private readonly FilterAggregationLoader $aggregationLoader,
+        ComponentHtmlRenderer $htmlRenderer,
+        private readonly ProductListingGateway $gateway,
         private readonly FilterOptionsPayloadBuilder $optionsPayloadBuilder,
     ) {
-        parent::__construct($components);
+        parent::__construct($components, $htmlRenderer);
     }
 
     #[Route(
@@ -40,11 +38,16 @@ class ListingController extends AbstractComponentController
     )]
     public function category(string $navigationId, Request $request, SalesChannelContext $context): Response
     {
-        $result = $this->listingRoute
-            ->load($navigationId, $request, $context, new Criteria())
-            ->getResult();
+        $result = $this->gateway->loadResults(
+            ListingScope::category($navigationId),
+            $request,
+            $context,
+        );
 
-        return $this->renderComponent('ViewsTheme:Product:Listing:Results', $this->resultsProps($request, $result));
+        return $this->renderComponent(
+            'ViewsTheme:Product:Listing:Results',
+            $this->resultsProps($request, $result),
+        );
     }
 
     #[Route(
@@ -55,13 +58,13 @@ class ListingController extends AbstractComponentController
     )]
     public function categoryAggregations(string $navigationId, Request $request, SalesChannelContext $context): JsonResponse
     {
-        $this->aggregationLoader->forceReducedAggregationRequest($request);
+        $aggs = $this->gateway->loadReducedAggregations(
+            ListingScope::category($navigationId),
+            $request,
+            $context,
+        );
 
-        $result = $this->listingRoute
-            ->load($navigationId, $request, $context, new Criteria())
-            ->getResult();
-
-        return $this->aggregationsResponse($result->getAggregations());
+        return $this->aggregationsResponse($aggs);
     }
 
     #[Route(
@@ -85,18 +88,21 @@ class ListingController extends AbstractComponentController
     )]
     public function search(Request $request, SalesChannelContext $context): Response
     {
-        if (!$request->get('search')) {
+        $term = $request->get('search');
+        if (!\is_string($term) || $term === '') {
             throw RoutingException::missingRequestParameter('search');
         }
 
-        $request->request->set('no-aggregations', true);
-        $request->query->set('no-aggregations', '1');
+        $result = $this->gateway->loadResults(
+            ListingScope::search($term),
+            $request,
+            $context,
+        );
 
-        $result = $this->searchRoute
-            ->load($request, $context, new Criteria())
-            ->getListingResult();
-
-        return $this->renderComponent('ViewsTheme:Product:Listing:Results', $this->resultsProps($request, $result));
+        return $this->renderComponent(
+            'ViewsTheme:Product:Listing:Results',
+            $this->resultsProps($request, $result),
+        );
     }
 
     #[Route(
@@ -107,17 +113,18 @@ class ListingController extends AbstractComponentController
     )]
     public function searchAggregations(Request $request, SalesChannelContext $context): JsonResponse
     {
-        if (!$request->get('search')) {
+        $term = $request->get('search');
+        if (!\is_string($term) || $term === '') {
             throw RoutingException::missingRequestParameter('search');
         }
 
-        $this->aggregationLoader->forceReducedAggregationRequest($request);
+        $aggs = $this->gateway->loadReducedAggregations(
+            ListingScope::search($term),
+            $request,
+            $context,
+        );
 
-        $result = $this->searchRoute
-            ->load($request, $context, new Criteria())
-            ->getListingResult();
-
-        return $this->aggregationsResponse($result->getAggregations());
+        return $this->aggregationsResponse($aggs);
     }
 
     #[Route(
@@ -139,12 +146,6 @@ class ListingController extends AbstractComponentController
     {
         $payload = $this->optionsPayloadBuilder->build($request, $context);
 
-        foreach ($payload['options'] as $key => $html) {
-            if (\is_string($html)) {
-                $payload['options'][$key] = $this->replaceStorefrontPlaceholders($html);
-            }
-        }
-
         $response = new JsonResponse($payload);
         $response->headers->set('x-robots-tag', 'noindex');
 
@@ -152,13 +153,15 @@ class ListingController extends AbstractComponentController
     }
 
     /**
-     * @param array<string, mixed>|object $aggregations
+     * @param array<string, mixed>|object|null $aggregations
      */
     private function aggregationsResponse(mixed $aggregations): JsonResponse
     {
         $mapped = [];
-        foreach ($aggregations as $aggregation) {
-            $mapped[$aggregation->getName()] = $aggregation;
+        if ($aggregations !== null) {
+            foreach ($aggregations as $aggregation) {
+                $mapped[$aggregation->getName()] = $aggregation;
+            }
         }
 
         $response = new JsonResponse($mapped);

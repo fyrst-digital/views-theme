@@ -73,7 +73,7 @@ final class FilterFacetResolver
             return self::entitySortKey($a) <=> self::entitySortKey($b);
         });
 
-        return new FilterFacet('ViewsTheme:Filter:MultiSelect', [
+        return new FilterFacet(FilterComponents::MULTI_SELECT, [
             'name' => 'manufacturer',
             'displayName' => $this->trans('listing.filterManufacturerDisplayName'),
             'elements' => $elements,
@@ -101,7 +101,7 @@ final class FilterFacetResolver
                 continue;
             }
 
-            $facets[] = new FilterFacet('ViewsTheme:Filter:MultiSelect', [
+            $facets[] = new FilterFacet(FilterComponents::MULTI_SELECT, [
                 'name' => 'properties',
                 'displayName' => self::entityDisplayName($property),
                 'elements' => $property->getOptions() ?? [],
@@ -123,7 +123,7 @@ final class FilterFacetResolver
             return null;
         }
 
-        return new FilterFacet('ViewsTheme:Filter:Range', [
+        return new FilterFacet(FilterComponents::RANGE, [
             'displayName' => $this->trans('listing.filterPriceDisplayName'),
             'minKey' => 'min-price',
             'maxKey' => 'max-price',
@@ -143,7 +143,7 @@ final class FilterFacetResolver
             return null;
         }
 
-        return new FilterFacet('ViewsTheme:Filter:Rating', [
+        return new FilterFacet(FilterComponents::RATING, [
             'displayName' => $this->trans('listing.filterRatingDisplayName'),
             'name' => 'rating',
         ]);
@@ -160,7 +160,7 @@ final class FilterFacetResolver
             return null;
         }
 
-        return new FilterFacet('ViewsTheme:Filter:Boolean', [
+        return new FilterFacet(FilterComponents::BOOLEAN, [
             'name' => 'shipping-free',
             'displayName' => $this->trans('listing.filterFreeShippingDisplayName'),
         ]);

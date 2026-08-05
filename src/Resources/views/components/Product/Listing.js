@@ -218,17 +218,12 @@ export default class ProductListing extends ShopwareComponent {
         }
     }
 
-    registerControl(control) {
+    _registerControl(control) {
         if (!control || typeof control.getValues !== 'function') {
             return
         }
 
-        this._pruneControls()
         this._controls.add(control)
-    }
-
-    unregisterControl(control) {
-        this._controls.delete(control)
     }
 
     _pruneControls() {
@@ -249,7 +244,7 @@ export default class ProductListing extends ShopwareComponent {
             root.querySelectorAll(`[data-component="${name}"]`).forEach((el) => {
                 const instance = window.Shopware.getComponentInstanceByElement(name, el)
                 if (instance) {
-                    this.registerControl(instance)
+                    this._registerControl(instance)
                 }
             })
         })
@@ -275,17 +270,13 @@ export default class ProductListing extends ShopwareComponent {
     /**
      * When Filter:Drawer is open, only its Panel controls count.
      * Otherwise use page panels (exclude any leftover drawer mount).
-     * Prefer aria-hidden/d-flex over data-open (open attr flips one frame later).
+     * Uses Drawer.isOpen() — never CSS classes as JS state.
      */
     _activeFilterPanels() {
         const panelName = this.options.panelComponent || 'ViewsTheme:Filter:Panel'
         const panels = [...document.querySelectorAll(`[data-component="${panelName}"]`)]
         const drawer = document.querySelector('#vi-filter-drawer')
-        const drawerActive = Boolean(
-            drawer
-            && drawer.classList.contains('d-flex')
-            && drawer.getAttribute('aria-hidden') !== 'true',
-        )
+        const drawerActive = this._isFilterDrawerOpen(drawer)
 
         if (drawerActive) {
             return panels.filter((panel) => drawer.contains(panel))
@@ -294,11 +285,36 @@ export default class ProductListing extends ShopwareComponent {
         return panels.filter((panel) => !panel.closest('#vi-filter-drawer'))
     }
 
+    /**
+     * @param {Element|null} drawerEl
+     */
+    _isFilterDrawerOpen(drawerEl) {
+        if (!drawerEl || !window.Shopware?.getComponentInstanceByElement) {
+            return false
+        }
+
+        const instance = window.Shopware.getComponentInstanceByElement(
+            'ViewsTheme:Drawer',
+            drawerEl,
+        )
+        if (instance && typeof instance.isOpen === 'function') {
+            return Boolean(instance.isOpen())
+        }
+
+        return drawerEl.getAttribute('aria-hidden') !== 'true'
+    }
+
     _hydrateControlsFromUrl() {
-        const params = this._urlParams()
+        this._hydrateControlsFromParams(this._urlParams())
+    }
+
+    /**
+     * @param {Record<string, string>} params
+     */
+    _hydrateControlsFromParams(params) {
         this._controls.forEach((control) => {
             if (typeof control.setFromUrl === 'function') {
-                control.setFromUrl(params)
+                control.setFromUrl(params || {})
             }
         })
     }
@@ -413,11 +429,16 @@ export default class ProductListing extends ShopwareComponent {
             const html = await resultsPromise
 
             this._replaceResults(html)
-            this._scrollToListing()
+            await this._waitForResultsControls()
+            this.refreshControls()
 
+            // Hydrate from the params that produced this response — never from
+            // location.search before history push (stale URL thrash on switches).
             if (pushHistory && this.options.history) {
                 this._pushHistory(requestParams)
             }
+            this._hydrateControlsFromParams(requestParams)
+            this._scrollToListing()
 
             let optionsPayload = undefined
             if (optionsRequested) {
@@ -433,6 +454,7 @@ export default class ProductListing extends ShopwareComponent {
 
             if (optionsPayload) {
                 this.refreshControls()
+                this._hydrateControlsFromParams(requestParams)
                 this._applyFilterOptionsPayload(optionsPayload)
                 window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
                     ok: true,
@@ -646,30 +668,6 @@ export default class ProductListing extends ShopwareComponent {
 
             if (meta[key] && typeof control.applyOptionsMeta === 'function') {
                 control.applyOptionsMeta(meta[key])
-            } else if (meta[key] && typeof control.applyAvailability !== 'function') {
-                // no-op
-            }
-        })
-
-        // Controls discovered only by data-filter-key (e.g. not yet in set)
-        document.querySelectorAll('[data-filter-key]').forEach((el) => {
-            const key = el.getAttribute('data-filter-key')
-            if (!key) {
-                return
-            }
-            const name = el.getAttribute('data-component')
-            if (!name || !window.Shopware?.getComponentInstanceByElement) {
-                return
-            }
-            const instance = window.Shopware.getComponentInstanceByElement(name, el)
-            if (!instance) {
-                return
-            }
-            if (typeof options[key] === 'string' && typeof instance.replaceOptions === 'function') {
-                instance.replaceOptions(options[key])
-            }
-            if (meta[key] && typeof instance.applyOptionsMeta === 'function') {
-                instance.applyOptionsMeta(meta[key])
             }
         })
     }
@@ -703,6 +701,38 @@ export default class ProductListing extends ShopwareComponent {
 
         if (!existing && next) {
             this.el.appendChild(next)
+        }
+    }
+
+    /**
+     * Wait for Pagination/Sorting inside Results after island swap (async import mount).
+     */
+    async _waitForResultsControls(retries = 20) {
+        const names = ['ViewsTheme:Pagination', 'ViewsTheme:Sorting']
+        const results = this.el.querySelector(
+            `[data-component="${this.options.resultsComponent}"]`,
+        )
+        if (!results || !window.Shopware?.getComponentInstanceByElement) {
+            return
+        }
+
+        for (let i = 0; i < retries; i++) {
+            const ready = names.every((name) => {
+                const els = results.querySelectorAll(`[data-component="${name}"]`)
+                if (!els.length) {
+                    return true
+                }
+                return [...els].every((el) =>
+                    window.Shopware.getComponentInstanceByElement(name, el),
+                )
+            })
+            if (ready) {
+                return
+            }
+
+            await new Promise((resolve) => {
+                requestAnimationFrame(resolve)
+            })
         }
     }
 

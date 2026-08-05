@@ -1,3 +1,5 @@
+import { createSerialQueue } from '../../app/storefront/src/views-theme/serial-queue.js'
+
 export default class Wishlist extends ShopwareComponent {
     static options = {
         listPath: null,
@@ -14,8 +16,12 @@ export default class Wishlist extends ShopwareComponent {
 
     init() {
         this._products = {}
-        this._busy = false
-        this._queued = null
+        this._queue = createSerialQueue({
+            coalesceKey: (job) => {
+                const id = job?.payload?.productId
+                return id ? String(id) : null
+            },
+        })
         this._onToggle = this._onToggle.bind(this)
 
         window.Shopware.on(this.options.toggleEvent, this._onToggle)
@@ -24,7 +30,7 @@ export default class Wishlist extends ShopwareComponent {
 
     destroy() {
         window.Shopware.off(this.options.toggleEvent, this._onToggle)
-        this._queued = null
+        this._queue?.clear()
     }
 
     _onToggle(payload) {
@@ -33,7 +39,7 @@ export default class Wishlist extends ShopwareComponent {
             return
         }
 
-        this._enqueue(this._has(productId) ? 'remove' : 'add', async () => {
+        void this._enqueue(this._has(productId) ? 'remove' : 'add', async () => {
             if (this._has(productId)) {
                 await this._remove(productId)
             } else {
@@ -65,45 +71,29 @@ export default class Wishlist extends ShopwareComponent {
         }
     }
 
-    _enqueue(action, runner, payload = {}) {
-        if (this._busy) {
-            this._queued = { action, runner, payload }
-            return
-        }
-
-        void this._run(action, runner, payload)
-    }
-
-    async _run(action, runner, payload = {}) {
-        this._busy = true
-
-        try {
-            await runner()
-            this._emitChanged({
-                ok: true,
-                action,
-                productId: payload?.productId || null,
-                source: payload?.source || null,
-            })
-        } catch (error) {
-            if (error?.code !== 'consent') {
-                console.error(`Wishlist: ${action} failed`, error)
+    async _enqueue(action, runner, payload = {}) {
+        await this._queue.enqueue({ action, runner, payload }, async (job) => {
+            try {
+                await job.runner()
+                this._emitChanged({
+                    ok: true,
+                    action: job.action,
+                    productId: job.payload?.productId || null,
+                    source: job.payload?.source || null,
+                })
+            } catch (error) {
+                if (error?.code !== 'consent') {
+                    console.error(`Wishlist: ${job.action} failed`, error)
+                }
+                this._emitChanged({
+                    ok: false,
+                    action: job.action,
+                    productId: job.payload?.productId || null,
+                    error: error?.message || null,
+                    source: job.payload?.source || null,
+                })
             }
-            this._emitChanged({
-                ok: false,
-                action,
-                productId: payload?.productId || null,
-                error: error?.message || null,
-                source: payload?.source || null,
-            })
-        } finally {
-            this._busy = false
-            const next = this._queued
-            this._queued = null
-            if (next) {
-                void this._run(next.action, next.runner, next.payload)
-            }
-        }
+        })
     }
 
     async _add(productId) {

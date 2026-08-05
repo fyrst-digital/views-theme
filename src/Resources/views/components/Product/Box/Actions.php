@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
 
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
-use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -33,7 +32,7 @@ class Actions
 
     public function __construct(
         private readonly SystemConfigService $systemConfigService,
-        private readonly RequestStack $requestStack,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
     ) {
     }
 
@@ -52,7 +51,7 @@ class Actions
         $displayFrom = $this->product->getCalculatedPrices()->count() > 1;
         $allowBuy = (bool) $this->systemConfigService->get(
             'core.listing.allowBuyInListing',
-            $this->salesChannelContext()?->getSalesChannelId(),
+            $this->salesChannelContextAccessor->get()?->getSalesChannelId(),
         );
 
         $this->displayBuyButton = $isAvailable
@@ -61,15 +60,4 @@ class Actions
             && $allowBuy;
     }
 
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
-    }
 }

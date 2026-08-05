@@ -14,7 +14,7 @@ Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters
 | `Grid` | Items container (CSS grid shell) — [grid.md](grid.md) |
 | `Pagination` / `Sorting` | Theme chrome + controls registered with Listing; Pagination hrefs preserve listing query (`preserveQuery`) — [pagination.md](pagination.md) |
 | Filters | [filters.md](filters.md) |
-| Controllers | `ListingController` — results HTML, aggregations JSON, filter-options JSON |
+| Controllers | `ListingController` via `ProductListingGateway` — results HTML, aggregations JSON, filter-options JSON |
 
 ## Composition
 
@@ -45,7 +45,7 @@ Sidebar (sibling): desktop `Filter:Panel` + mobile `Filter:Drawer:Action` — se
 | `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` | HTML `Filter:Drawer` |
 | `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` | HTML `Filter:Drawer` |
 
-Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`. Filter-options payload + drawer: [filters.md](filters.md).
+Loaders: `ProductListingGateway` → core listing/search routes. Results XHR sets `no-aggregations`. Render via `AbstractComponentController` + `ComponentHtmlRenderer`. Filter-options payload + drawer: [filters.md](filters.md).
 
 ## Owner JS (`Listing.js`)
 
@@ -56,10 +56,11 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 | `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ControlsSynced` (selection only) |
 | `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability`; abort + seq guard |
 | `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback); same options abort/seq |
-| `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → swap lists; options abort does not fail Results apply |
+| `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → after Results swap, await Pagination/Sorting mount, `refreshControls`, push history, hydrate controls from **request params** (not stale URL), then options; options abort does not fail Results apply |
 | `reset` / `resetAll` | Delegate to controls then apply |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
+| Active panels | Drawer open via `Drawer.isOpen()` on `#vi-filter-drawer` — never CSS classes |
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
 

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
-use Shopware\Core\PlatformRequest;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -55,6 +54,7 @@ class Listing
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly SystemConfigService $systemConfigService,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
     ) {
     }
 
@@ -68,7 +68,7 @@ class Listing
             $this->boxLayout = 'default';
         }
 
-        $salesChannelId = $this->salesChannelContext()?->getSalesChannelId();
+        $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
 
         if ($this->disableEmptyFilter === null) {
             $this->disableEmptyFilter = (bool) $this->systemConfigService->get(
@@ -114,17 +114,6 @@ class Listing
         ];
     }
 
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
-    }
 
     private function navigationId(): ?string
     {

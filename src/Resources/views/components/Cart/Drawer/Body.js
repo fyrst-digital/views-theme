@@ -1,3 +1,9 @@
+import {
+    abortRequest,
+    beginRequest,
+    fetchText,
+} from '../../../../app/storefront/src/views-theme/lazy-shell.js'
+
 export default class CartDrawerBody extends ShopwareComponent {
     static options = {
         drawerUrl: null,
@@ -12,6 +18,7 @@ export default class CartDrawerBody extends ShopwareComponent {
     init() {
         this._busy = false
         this._queued = false
+        this._fetch = { controller: null, seq: 0 }
         this._onCartChanged = this._onCartChanged.bind(this)
         this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
         this._alertEl = this.el.querySelector(':scope > [role="alert"]')
@@ -21,6 +28,7 @@ export default class CartDrawerBody extends ShopwareComponent {
 
     destroy() {
         window.Shopware.off(this.options.changedEvent, this._onCartChanged)
+        abortRequest(this._fetch)
         this._queued = false
     }
 
@@ -50,28 +58,23 @@ export default class CartDrawerBody extends ShopwareComponent {
         try {
             do {
                 this._queued = false
-                const html = await this._fetchHtml(this.options.drawerUrl)
+                const request = beginRequest(this._fetch)
+                const html = await fetchText(this.options.drawerUrl, { signal: request.signal })
+                if (!request.isCurrent()) {
+                    continue
+                }
                 this._apply(html)
             } while (this._queued)
         } catch (error) {
+            if (error?.name === 'AbortError') {
+                return
+            }
             console.error('CartDrawerBody: Failed to refresh cart drawer', error)
             this._showError(null)
         } finally {
             this._busy = false
             this.el.removeAttribute('aria-busy')
         }
-    }
-
-    async _fetchHtml(url) {
-        const response = await fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        })
-
-        if (!response.ok) {
-            throw new Error(`Drawer fetch failed: ${response.status}`)
-        }
-
-        return response.text()
     }
 
     _parseFragment(html) {

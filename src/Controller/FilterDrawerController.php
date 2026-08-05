@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\FilterAggregationLoader;
-use Shopware\Core\Content\Product\SalesChannel\Listing\AbstractProductListingRoute;
-use Shopware\Core\Content\Product\SalesChannel\Search\AbstractProductSearchRoute;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
+use Fyrst\ViewsTheme\Service\ProductListingGateway;
+use Fyrst\ViewsTheme\Struct\ListingScope;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -22,11 +21,10 @@ class FilterDrawerController extends AbstractComponentController
 {
     public function __construct(
         ComponentRendererInterface $components,
-        private readonly AbstractProductListingRoute $listingRoute,
-        private readonly AbstractProductSearchRoute $searchRoute,
-        private readonly FilterAggregationLoader $aggregationLoader,
+        ComponentHtmlRenderer $htmlRenderer,
+        private readonly ProductListingGateway $gateway,
     ) {
-        parent::__construct($components);
+        parent::__construct($components, $htmlRenderer);
     }
 
     #[Route(
@@ -37,11 +35,11 @@ class FilterDrawerController extends AbstractComponentController
     )]
     public function category(string $navigationId, Request $request, SalesChannelContext $context): Response
     {
-        $this->aggregationLoader->forceCatalogAggregationRequest($request);
-
-        $result = $this->listingRoute
-            ->load($navigationId, $request, $context, new Criteria())
-            ->getResult();
+        $result = $this->gateway->loadCatalogAggregations(
+            ListingScope::category($navigationId),
+            $request,
+            $context,
+        );
 
         return $this->renderComponent('ViewsTheme:Filter:Drawer', [
             'listing' => $result,
@@ -57,15 +55,16 @@ class FilterDrawerController extends AbstractComponentController
     )]
     public function search(Request $request, SalesChannelContext $context): Response
     {
-        if (!$request->get('search')) {
+        $term = $request->get('search');
+        if (!\is_string($term) || $term === '') {
             throw RoutingException::missingRequestParameter('search');
         }
 
-        $this->aggregationLoader->forceCatalogAggregationRequest($request);
-
-        $result = $this->searchRoute
-            ->load($request, $context, new Criteria())
-            ->getListingResult();
+        $result = $this->gateway->loadCatalogAggregations(
+            ListingScope::search($term),
+            $request,
+            $context,
+        );
 
         return $this->renderComponent('ViewsTheme:Filter:Drawer', [
             'listing' => $result,

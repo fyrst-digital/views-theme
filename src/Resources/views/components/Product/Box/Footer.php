@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
 
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
-use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -45,7 +44,7 @@ class Footer
     public function __construct(
         private readonly ProductDetailUrlBuilder $productDetailUrlBuilder,
         private readonly SystemConfigService $systemConfigService,
-        private readonly RequestStack $requestStack,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
     ) {
     }
 
@@ -55,7 +54,7 @@ class Footer
     #[PostMount]
     public function postMount(array $data): void
     {
-        $salesChannelId = $this->salesChannelContext()?->getSalesChannelId();
+        $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
         $this->priceShowTaxNote ??= (bool) $this->systemConfigService->get(
             'core.listing.allowBuyInListing',
             $salesChannelId,
@@ -72,15 +71,4 @@ class Footer
         );
     }
 
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
-    }
 }

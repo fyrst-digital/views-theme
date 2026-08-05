@@ -57,7 +57,10 @@ export default class FilterBoolean extends ShopwareComponent {
             return
         }
 
-        this._input.checked = !!params?.[this.options.name]
+        const next = !!params?.[this.options.name]
+        if (this._input.checked !== next) {
+            this._input.checked = next
+        }
     }
 
     /**
@@ -71,7 +74,10 @@ export default class FilterBoolean extends ShopwareComponent {
         this.el.hidden = false
         if (this._input) {
             if (meta.checked !== undefined) {
-                this._input.checked = !!meta.checked
+                const next = !!meta.checked
+                if (this._input.checked !== next) {
+                    this._input.checked = next
+                }
             }
             this._input.disabled = !!meta.disabled
         }

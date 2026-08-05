@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
+use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
@@ -19,9 +20,10 @@ class CartDrawerController extends AbstractComponentController
 {
     public function __construct(
         ComponentRendererInterface $components,
+        ComponentHtmlRenderer $htmlRenderer,
         private readonly CheckoutCartPageLoader $cartPageLoader,
     ) {
-        parent::__construct($components);
+        parent::__construct($components, $htmlRenderer);
     }
 
     #[Route(

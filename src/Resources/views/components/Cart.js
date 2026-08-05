@@ -1,3 +1,5 @@
+import { createSerialQueue } from '../../app/storefront/src/views-theme/serial-queue.js'
+
 export default class Cart extends ShopwareComponent {
     static options = {
         cartJsonUrl: null,
@@ -18,8 +20,12 @@ export default class Cart extends ShopwareComponent {
     }
 
     init() {
-        this._busy = false
-        this._queued = null
+        this._queue = createSerialQueue({
+            coalesceKey: (job) => {
+                const id = job?.payload?.lineItemId
+                return id ? `${job.action}:${id}` : null
+            },
+        })
         this._onAdd = this._onAdd.bind(this)
         this._onRemove = this._onRemove.bind(this)
         this._onUpdate = this._onUpdate.bind(this)
@@ -40,11 +46,11 @@ export default class Cart extends ShopwareComponent {
         window.Shopware.off(this.options.promoteEvent, this._onPromote)
         window.Shopware.off(this.options.configureEvent, this._onConfigure)
 
-        this._queued = null
+        this._queue?.clear()
     }
 
     _onAdd(payload) {
-        this._enqueue('add', async () => {
+        void this._enqueue('add', async () => {
             const formData = payload?.formData instanceof FormData
                 ? this._forAjax(payload.formData)
                 : this._buildAddFormData(payload)
@@ -54,7 +60,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onRemove(payload) {
-        this._enqueue('remove', async () => {
+        void this._enqueue('remove', async () => {
             const id = payload?.lineItemId
             if (!id) {
                 throw new Error('lineItemId is required')
@@ -66,7 +72,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onUpdate(payload) {
-        this._enqueue('update', async () => {
+        void this._enqueue('update', async () => {
             const id = payload?.lineItemId
             const quantity = payload?.quantity
             if (!id || quantity == null) {
@@ -80,7 +86,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onPromote(payload) {
-        this._enqueue('promote', async () => {
+        void this._enqueue('promote', async () => {
             const formData = payload?.formData instanceof FormData
                 ? this._forAjax(payload.formData)
                 : (() => {
@@ -94,7 +100,7 @@ export default class Cart extends ShopwareComponent {
     }
 
     _onConfigure(payload) {
-        this._enqueue('configure', async () => {
+        void this._enqueue('configure', async () => {
             const formData = payload?.formData instanceof FormData
                 ? this._forAjax(payload.formData)
                 : new FormData()
@@ -103,41 +109,25 @@ export default class Cart extends ShopwareComponent {
         }, payload)
     }
 
-    _enqueue(action, runner, payload = {}) {
-        if (this._busy) {
-            this._queued = { action, runner, payload }
-            return
-        }
-
-        void this._run(action, runner, payload)
-    }
-
-    async _run(action, runner, payload = {}) {
-        this._busy = true
-
-        try {
-            await runner()
-            await this._emitChanged({
-                ok: true,
-                action,
-                source: payload?.source || null,
-            })
-        } catch (error) {
-            console.error(`Cart: ${action} failed`, error)
-            await this._emitChanged({
-                ok: false,
-                action,
-                error: error?.message || null,
-                source: payload?.source || null,
-            })
-        } finally {
-            this._busy = false
-            const next = this._queued
-            this._queued = null
-            if (next) {
-                void this._run(next.action, next.runner, next.payload)
+    async _enqueue(action, runner, payload = {}) {
+        await this._queue.enqueue({ action, runner, payload }, async (job) => {
+            try {
+                await job.runner()
+                await this._emitChanged({
+                    ok: true,
+                    action: job.action,
+                    source: job.payload?.source || null,
+                })
+            } catch (error) {
+                console.error(`Cart: ${job.action} failed`, error)
+                await this._emitChanged({
+                    ok: false,
+                    action: job.action,
+                    error: error?.message || null,
+                    source: job.payload?.source || null,
+                })
             }
-        }
+        })
     }
 
     async _emitChanged({ ok, action, error = null, source = null }) {

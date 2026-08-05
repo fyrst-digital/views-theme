@@ -1,5 +1,22 @@
 # JavaScript conventions
 
+## Minimal helpers
+
+Aligned with Shopware `Sw` UX components: **no general utils grab-bag**. Prefer bus + methods on the owning component. Cross-cutting code only when several owners share identical lifecycle.
+
+| Location | Contents | Rule |
+|----------|----------|------|
+| `app/storefront/src/views-theme/` | `body-lock.js`, `lazy-shell.js`, `serial-queue.js` | Relative imports from co-located component JS; **not** `data-component` roots; outside `views/components/` so Vite does not treat them as component entries |
+| Co-located `Name.js` | Feature behavior | Default |
+
+| Helper | Used by |
+|--------|---------|
+| `body-lock.js` | `Drawer`, `Search:Overlay` (ref-counted `overflow-hidden`) |
+| `lazy-shell.js` | Cart/Nav/Filter drawer Actions, Search Action, Cart Body (parse/mount/wait/fetch/abort) |
+| `serial-queue.js` | `Cart`, `Wishlist` (per-key coalesce) |
+
+Do **not** put UX helpers in legacy `app/storefront/src/helper/` (PluginManager pipeline).
+
 ## Selectors & structure
 
 **Never use CSS classes as JavaScript selectors.**
@@ -238,7 +255,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (serial queue, per-lineItemId coalesce) → `ViewsTheme:Cart:Changed`
 - Theme owns header drawer open + in-drawer mutations; `Product:Action:Buy` → `Cart:Add` → badge + Action `open()` when `openOnActions` includes `add` (default). Public `callMethod(…, 'open'|'close')`. Variants grid still core AddToCart
 - Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
