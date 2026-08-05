@@ -61,6 +61,8 @@ No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, no
 | Availability | Reduced aggs (`only-aggregations` + `reduce-aggregations` + current filters) | Empty facets **visible + disabled** (toggle + options); invalid options `disabled`; **available options sorted first** (SSR + client) |
 | Selection | URL / request | Checked state |
 
+**Property multi-select (OR within group):** core’s properties listing filter uses `exclude=false`, so reduced `properties` aggs drop sibling options once one option in a group is selected. Core storefront JS therefore **does not disable** other options in a property group that already has a selection (`FilterPropertySelectPlugin`). Views mirrors that in `FilterAvailabilityApplier` (SSR + batch `filter-options`: when the group’s `selectedIds` is non-empty, `allowedIds` = full catalog group) and in `MultiSelect.applyAvailability` fallback. Manufacturer multi-select has no such unlock — only checked rows stay enabled when missing from reduced aggs.
+
 **SSR (first paint):** when `disableEmptyFilter` and the request has filter params, `Filter:Panel` loads reduced aggs via `FilterAggregationLoader`, then `FilterAvailabilityApplier` sets `disabled` / `allowedIds` / `selectedIds` on facet props before Twig. No flash of invalid filters.
 
 **Client (live updates):** Listing **`syncFilterOptions()`** batch-fetches option list HTML + meta (server owns available-first order and disabled flags):

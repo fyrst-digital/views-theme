@@ -151,10 +151,11 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
         const checked = this._checked()
         const unavailable = !allowedIds.length && !checked.length
+        const unlockGroup = !!this.options.propertyName && checked.length > 0
 
         this.el.hidden = false
         this._inputs().forEach((input) => {
-            if (input.checked) {
+            if (input.checked || unlockGroup) {
                 input.disabled = false
                 return
             }

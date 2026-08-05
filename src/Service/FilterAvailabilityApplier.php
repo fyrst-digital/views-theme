@@ -49,6 +49,9 @@ final class FilterAvailabilityApplier
                 } elseif ($name === 'properties' && $propertyName !== null && $propertyName !== '') {
                     $allowed = $allowedPropertiesByGroup[$propertyName] ?? [];
                     $selected = $this->intersectSelected($selectedByParam['properties'] ?? [], $elementIds);
+                    if ($selected !== []) {
+                        $allowed = $elementIds;
+                    }
                 } else {
                     $out[] = $facet;
                     continue;
