@@ -73,6 +73,8 @@ No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, no
 
 Closed groups update in the background (no open required). Falls back to reduced-aggs JSON (`syncAvailability`) if `filterOptionsUrl` is missing.
 
+**Stale races:** filter-options and availability fetches use a dedicated `AbortController` plus a monotonic sequence. A newer options request aborts the previous one; completed responses whose seq no longer matches are ignored so rapid apply / drawer open cannot paint outdated option HTML or disabled state. Results HTML keeps its own abort (opening the drawer does not cancel an in-flight Results swap).
+
 Panel listens to `ViewsTheme:Listing:Loading` (`aria-busy`) during standalone options/availability fetch.
 
 Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. Option order/disabled come from SSR Panel applier + batch `filter-options`.

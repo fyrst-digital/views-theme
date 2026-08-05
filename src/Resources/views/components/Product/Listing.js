@@ -38,6 +38,8 @@ export default class ProductListing extends ShopwareComponent {
         this._busy = false
         this._queued = null
         this._abort = null
+        this._optionsAbort = null
+        this._optionsSeq = 0
         this._ignorePopstate = false
         this._onPopstate = this._onPopstate.bind(this)
 
@@ -55,6 +57,7 @@ export default class ProductListing extends ShopwareComponent {
     destroy() {
         window.removeEventListener('popstate', this._onPopstate)
         this._abortFetch()
+        this._abortOptionsFetch()
         this._controls.clear()
         this._queued = null
     }
@@ -185,6 +188,9 @@ export default class ProductListing extends ShopwareComponent {
 
         try {
             const payload = await this._fetchFilterOptions(requestParams)
+            if (!payload) {
+                return
+            }
             this._applyFilterOptionsPayload(payload)
             window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
                 ok: true,
@@ -394,20 +400,35 @@ export default class ProductListing extends ShopwareComponent {
 
         this._pruneControls()
         const requestParams = this._buildRequestParams(params)
+        const optionsRequested = Boolean(
+            this.options.disableEmptyFilter && this.options.filterOptionsUrl,
+        )
 
         try {
             const resultsPromise = this._fetchHtml(this.options.resultsUrl, requestParams)
-            const optionsPromise = this.options.disableEmptyFilter && this.options.filterOptionsUrl
+            const optionsPromise = optionsRequested
                 ? this._fetchFilterOptions(requestParams)
-                : Promise.resolve(null)
+                : Promise.resolve(undefined)
 
-            const [html, optionsPayload] = await Promise.all([resultsPromise, optionsPromise])
+            const html = await resultsPromise
 
             this._replaceResults(html)
             this._scrollToListing()
 
             if (pushHistory && this.options.history) {
                 this._pushHistory(requestParams)
+            }
+
+            let optionsPayload = undefined
+            if (optionsRequested) {
+                try {
+                    optionsPayload = await optionsPromise
+                } catch (error) {
+                    if (error?.name !== 'AbortError') {
+                        throw error
+                    }
+                    optionsPayload = null
+                }
             }
 
             if (optionsPayload) {
@@ -418,7 +439,7 @@ export default class ProductListing extends ShopwareComponent {
                     params: requestParams,
                     source: this.el,
                 })
-            } else {
+            } else if (optionsPayload === undefined && this.options.disableEmptyFilter) {
                 await this.syncFilterOptions(requestParams, { built: true })
             }
 
@@ -535,6 +556,7 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     async _fetchAndApplyAvailability(params) {
+        const { signal, seq } = this._beginOptionsFetch()
         const target = new URL(this.options.aggregationsUrl, window.location.origin)
         const skip = new Set(this.options.displayParamKeys || [])
         skip.add('p')
@@ -549,6 +571,7 @@ export default class ProductListing extends ShopwareComponent {
 
         const response = await fetch(target.toString(), {
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal,
         })
 
         if (!response.ok) {
@@ -556,10 +579,18 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         const aggregations = await response.json()
+        if (!this._isCurrentOptionsSeq(seq)) {
+            return
+        }
+
         this._applyAvailability(aggregations)
     }
 
+    /**
+     * @returns {Promise<object|null>} Payload, or null when superseded by a newer options request.
+     */
     async _fetchFilterOptions(params) {
+        const { signal, seq } = this._beginOptionsFetch()
         const target = new URL(this.options.filterOptionsUrl, window.location.origin)
         const skip = new Set(this.options.displayParamKeys || [])
         skip.add('p')
@@ -574,13 +605,19 @@ export default class ProductListing extends ShopwareComponent {
 
         const response = await fetch(target.toString(), {
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal,
         })
 
         if (!response.ok) {
             throw new Error(`Filter options fetch failed: ${response.status}`)
         }
 
-        return response.json()
+        const payload = await response.json()
+        if (!this._isCurrentOptionsSeq(seq)) {
+            return null
+        }
+
+        return payload
     }
 
     /**
@@ -742,5 +779,27 @@ export default class ProductListing extends ShopwareComponent {
             this._abort.abort()
             this._abort = null
         }
+    }
+
+    _beginOptionsFetch() {
+        this._abortOptionsFetch()
+        this._optionsAbort = new AbortController()
+        this._optionsSeq += 1
+
+        return {
+            signal: this._optionsAbort.signal,
+            seq: this._optionsSeq,
+        }
+    }
+
+    _abortOptionsFetch() {
+        if (this._optionsAbort) {
+            this._optionsAbort.abort()
+            this._optionsAbort = null
+        }
+    }
+
+    _isCurrentOptionsSeq(seq) {
+        return seq === this._optionsSeq
     }
 }

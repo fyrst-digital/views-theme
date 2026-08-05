@@ -52,9 +52,9 @@ Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render vi
 | `refreshControls()` | Discover controls in listing el + active `Filter:Panel` |
 | `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
 | `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ControlsSynced` (selection only) |
-| `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability` |
-| `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback) |
-| `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → swap lists on all MultiSelects |
+| `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability`; abort + seq guard |
+| `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback); same options abort/seq |
+| `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → swap lists; options abort does not fail Results apply |
 | `reset` / `resetAll` | Delegate to controls then apply |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
