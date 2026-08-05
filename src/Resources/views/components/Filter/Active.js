@@ -105,6 +105,7 @@ export default class FilterActive extends ShopwareComponent {
             const node = this._chipTemplate.content.cloneNode(true)
             const button = node.querySelector('[data-filter-id]')
             const labelEl = node.querySelector('[data-active-chip-label]')
+            const swatch = node.querySelector('[data-active-chip-swatch]')
             if (button) {
                 button.setAttribute('data-filter-id', item.id)
                 button.setAttribute(
@@ -115,11 +116,41 @@ export default class FilterActive extends ShopwareComponent {
             if (labelEl) {
                 labelEl.textContent = item.label
             }
+            this._paintSwatch(swatch, item)
             this.el.appendChild(node)
         })
 
         if (this._resetTemplate) {
             this.el.appendChild(this._resetTemplate.content.cloneNode(true))
         }
+    }
+
+    /**
+     * Prefer image over hex (same order as Filter:Chip). Style only — no HTML inject.
+     */
+    _paintSwatch(swatch, item) {
+        if (!swatch) {
+            return
+        }
+
+        const image = typeof item?.previewImageUrl === 'string' ? item.previewImageUrl.trim() : ''
+        const hex = typeof item?.previewHex === 'string' ? item.previewHex.trim() : ''
+
+        if (image) {
+            swatch.hidden = false
+            swatch.style.backgroundImage = `url("${image.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}")`
+            swatch.style.backgroundColor = ''
+            return
+        }
+
+        if (hex) {
+            swatch.hidden = false
+            swatch.style.backgroundImage = ''
+            swatch.style.backgroundColor = hex
+            return
+        }
+
+        swatch.hidden = true
+        swatch.removeAttribute('style')
     }
 }

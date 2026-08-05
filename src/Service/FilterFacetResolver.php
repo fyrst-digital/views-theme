@@ -96,12 +96,17 @@ final class FilterFacetResolver
                 continue;
             }
 
-            $displayName = self::entityDisplayName($property);
+            $groupId = $property->getUniqueIdentifier();
+            if (!\is_string($groupId) || $groupId === '') {
+                continue;
+            }
+
             $facets[] = new FilterFacet('ViewsTheme:Filter:MultiSelect', [
                 'name' => 'properties',
-                'displayName' => $displayName,
+                'displayName' => self::entityDisplayName($property),
                 'elements' => $property->getOptions() ?? [],
-                'propertyName' => $displayName,
+                // Stable group id for batch/SSR filterKey (not translated label).
+                'propertyName' => $groupId,
             ]);
         }
 

@@ -80,8 +80,10 @@ Examples:
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
 | `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` |
 | `frontend.views-theme.listing.category.aggregations` | `/vi/listing/category/{navigationId}/aggregations` |
+| `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{navigationId}/filter-options` |
 | `frontend.views-theme.listing.search` | `/vi/listing/search` |
 | `frontend.views-theme.listing.search.aggregations` | `/vi/listing/search/aggregations` |
+| `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` |
 | `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` |
 | `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` |
 

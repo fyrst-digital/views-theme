@@ -137,6 +137,9 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
         if (this.options.propertyName && bucket?.entities) {
             const group = Object.values(bucket.entities).find((entity) => {
+                if (entity?.id === this.options.propertyName) {
+                    return true
+                }
                 const name = entity?.translated?.name || entity?.name
                 return name === this.options.propertyName
             })

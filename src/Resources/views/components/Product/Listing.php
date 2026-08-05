@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
-use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -14,6 +13,8 @@ use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
  * View-model for Product:Listing — owner options + layout/referrer defaults; Twig composes Results.
+ *
+ * XHR URLs (results / aggregations / filter-options) are bridge-owned via Twig path() — not resolved here.
  */
 #[AsTwigComponent]
 class Listing
@@ -90,11 +91,6 @@ class Listing
             }
         }
 
-        if ($this->resultsUrl === null && $this->searchResult instanceof ProductListingResult) {
-            $this->resultsUrl = $this->resolveResultsUrl();
-            $this->aggregationsUrl = $this->resolveAggregationsUrl();
-        }
-
         $baseParams = $this->params === [] ? new \stdClass() : $this->params;
 
         $this->componentOptions = [
@@ -116,16 +112,6 @@ class Listing
             'loadingEvent' => 'ViewsTheme:Listing:Loading',
             'scrollOffset' => 15,
         ];
-    }
-
-    private function resolveResultsUrl(): ?string
-    {
-        return $this->resultsUrl;
-    }
-
-    private function resolveAggregationsUrl(): ?string
-    {
-        return $this->aggregationsUrl;
     }
 
     private function salesChannelContext(): ?SalesChannelContext

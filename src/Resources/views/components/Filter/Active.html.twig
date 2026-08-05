@@ -3,7 +3,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['chip', 'reset']) %}
+{% do vi_define_attrs(['chip', 'swatch', 'label', 'reset']) %}
 
 {% set options = {
     listingComponent: 'ViewsTheme:Product:Listing',
@@ -27,7 +27,13 @@
             data-filter-id=""
             class="{{ vi_class('chip') }}"
         >
-            <span data-active-chip-label></span>
+            <span
+                data-active-chip-swatch
+                hidden
+                class="{{ vi_class('swatch') }}"
+                aria-hidden="true"
+            ></span>
+            <span data-active-chip-label class="{{ vi_class('label') }}"></span>
         </button>
     </template>
 

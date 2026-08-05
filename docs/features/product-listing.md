@@ -14,7 +14,7 @@ Theme-owned product grid: owner JS, Results island, Pagination, Sorting, Filters
 | `Grid` | Items container (CSS grid shell) — [grid.md](grid.md) |
 | `Pagination` / `Sorting` | Theme chrome + controls registered with Listing; Pagination hrefs preserve listing query (`preserveQuery`) — [pagination.md](pagination.md) |
 | Filters | [filters.md](filters.md) |
-| Controllers | `ListingController` — results HTML + aggregations JSON |
+| Controllers | `ListingController` — results HTML, aggregations JSON, filter-options JSON |
 
 ## Composition
 
@@ -38,12 +38,14 @@ Sidebar (sibling): desktop `Filter:Panel` + mobile `Filter:Drawer:Action` — se
 |-------|------|----------|
 | `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` | HTML `Product:Listing:Results` |
 | `frontend.views-theme.listing.category.aggregations` | `…/aggregations` | JSON aggregations |
+| `frontend.views-theme.listing.category.filter-options` | `…/filter-options` | JSON `{ options, meta }` |
 | `frontend.views-theme.listing.search` | `/vi/listing/search` | HTML Results |
 | `frontend.views-theme.listing.search.aggregations` | `…/aggregations` | JSON |
+| `frontend.views-theme.listing.search.filter-options` | `…/filter-options` | JSON `{ options, meta }` |
 | `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` | HTML `Filter:Drawer` |
 | `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` | HTML `Filter:Drawer` |
 
-Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`. Filter drawer: [filters.md](filters.md).
+Loaders: `AbstractProductListingRoute` / `AbstractProductSearchRoute`. Render via `AbstractComponentController::renderComponent()`. Filter-options payload + drawer: [filters.md](filters.md).
 
 ## Owner JS (`Listing.js`)
 
@@ -70,7 +72,7 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `filte
 | Prop | Notes |
 |------|--------|
 | `searchResult` | Initial SSR result |
-| `resultsUrl` / `aggregationsUrl` | Theme routes (bridge resolves category/search) |
+| `resultsUrl` / `aggregationsUrl` / `filterOptionsUrl` | Theme routes from bridge `path()` only (not resolved in PHP) |
 | `params` | Always-merged query (e.g. `{ search }`) |
 | `boxLayout` / `referrerCategoryId` | Forwarded to Results / Box |
 | `disableEmptyFilter` | Config default; enables `syncAvailability` (reduced aggs) |

@@ -32,7 +32,6 @@ final class FilterAvailabilityApplier
         $allowedManufacturer = $this->entityIds($reduced->get('manufacturer'));
         $allowedPropertiesByGroup = $this->propertyOptionIdsByGroup($reduced->get('properties'));
         $ratingMax = $this->maxValue($reduced->get('rating'));
-        $shippingFreeMax = $this->maxValue($reduced->get('shipping-free'));
 
         $out = [];
         foreach ($facets as $facet) {
@@ -72,7 +71,8 @@ final class FilterAvailabilityApplier
             if ($component === 'ViewsTheme:Filter:Boolean') {
                 $name = (string) ($props['name'] ?? '');
                 $selected = ($selectedByParam[$name] ?? []) !== [];
-                $available = $shippingFreeMax > 0 || $selected;
+                $max = $name !== '' ? $this->maxValue($reduced->get($name)) : 0.0;
+                $available = $max > 0 || $selected;
                 $props['disabled'] = !$available;
                 $props['checked'] = $selected;
                 unset($props['hidden']);
@@ -150,7 +150,7 @@ final class FilterAvailabilityApplier
     }
 
     /**
-     * @return array<string, list<string>> group display name => option ids
+     * @return array<string, list<string>> property group id => option ids
      */
     private function propertyOptionIdsByGroup(mixed $result): array
     {
@@ -164,8 +164,8 @@ final class FilterAvailabilityApplier
                 continue;
             }
 
-            $name = $this->entityDisplayName($group);
-            if ($name === '') {
+            $groupId = $group->getUniqueIdentifier();
+            if (!\is_string($groupId) || $groupId === '') {
                 continue;
             }
 
@@ -181,7 +181,7 @@ final class FilterAvailabilityApplier
                     }
                 }
             }
-            $map[$name] = $ids;
+            $map[$groupId] = $ids;
         }
 
         return $map;
@@ -321,22 +321,5 @@ final class FilterAvailabilityApplier
         }
 
         return array_values(array_filter(explode('|', $raw), static fn (string $v): bool => $v !== ''));
-    }
-
-    private function entityDisplayName(Entity $entity): string
-    {
-        $translated = $entity->getTranslated();
-        if (isset($translated['name']) && \is_string($translated['name'])) {
-            return $translated['name'];
-        }
-
-        if (method_exists($entity, 'getName')) {
-            $name = $entity->getName();
-            if (\is_string($name)) {
-                return $name;
-            }
-        }
-
-        return '';
     }
 }

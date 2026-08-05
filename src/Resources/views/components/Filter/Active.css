@@ -1,0 +1,7 @@
+.vi-filter-active__swatch {
+  width: var(--vi-swatch, 16px);
+  height: var(--vi-swatch, 16px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

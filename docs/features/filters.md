@@ -19,7 +19,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`) |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`). Range: number fields + `Form:Slider` (`mode=range`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
-| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS) |
+| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS); swatch from `getLabels` `previewImageUrl` / `previewHex` |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
@@ -85,7 +85,7 @@ Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. O
 |--------|------|
 | `getValues()` | `{ key: string \| string[] }` |
 | `getParamKeys()` | Query keys this control owns (even when empty) |
-| `getLabels()` | `[{ id, label, previewHex?, previewImageUrl? }]` |
+| `getLabels()` | `[{ id, label, previewHex?, previewImageUrl? }]` — Active chips paint image-over-hex swatch when present |
 | `setFromUrl(params)` | Hydrate from query (init / popstate / drawer open) |
 | `reset(id)` / `resetAll()` | Clear |
 | `replaceOptions(html)` | MultiSelect: swap `[data-filter-options]` list from batch |
@@ -222,10 +222,16 @@ See [JS lazy-loaded shells](../conventions/javascript.md#lazy-loaded-shells-crit
 | `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{id}/filter-options` | JSON `{ options, meta }` |
 | `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` | JSON `{ options, meta }` |
 
-`options` keys: `manufacturer`, `properties:{name}`, … → MultiSelect `<ul data-filter-options>` HTML.  
+`options` keys: `manufacturer`, `properties:{groupId}`, … → MultiSelect `<ul data-filter-options>` HTML.  
 `meta` keys: same + `shipping-free` / `rating` → `{ disabled, count?, checked?, allowedMax?, selectedValue? }`.
 
-Drawer loaders: `only-aggregations` (full catalog). Filter-options builder: catalog + reduced + applier + `MultiSelect:Options` render.
+Property facet `filterKey` / batch key uses the **property group UUID** (`propertyName` prop), not the translated label. URL selection stays `properties=optionId|optionId`.
+
+Boolean availability looks up reduced max by facet `name` (today `shipping-free`).
+
+Drawer loaders: `only-aggregations` (full catalog). Filter-options builder: catalog + reduced + applier + `MultiSelect:Options` render (**two** listing loads per batch by design — catalog then reduced).
+
+SSR Panel: when `disableEmptyFilter` and the request already has filter params, Panel runs an extra reduced aggregation so first paint has correct disabled state (then client may revalidate via filter-options).
 
 ## Events
 
