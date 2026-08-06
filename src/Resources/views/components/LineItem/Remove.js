@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class LineItemRemove extends ShopwareComponent {
     static options = {
         lineItemId: null,

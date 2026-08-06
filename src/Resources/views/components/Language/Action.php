@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Language;
 
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -47,7 +46,7 @@ class Action
     public ?string $flagCodeFallback = null;
 
     public function __construct(
-        private readonly RequestStack $requestStack,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
     ) {
     }
 
@@ -57,7 +56,7 @@ class Action
     #[PostMount]
     public function postMount(array $data): void
     {
-        $context = $this->salesChannelContext();
+        $context = $this->salesChannelContextAccessor->get();
 
         $this->languages ??= [];
         $this->activeLanguageId ??= $context?->getLanguageId();
@@ -110,17 +109,6 @@ class Action
         }
     }
 
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
-    }
 
     private function countItems(mixed $items): int
     {

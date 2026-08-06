@@ -38,7 +38,7 @@ final class FilterAvailabilityApplier
             $props = $facet->props;
             $component = $facet->component;
 
-            if ($component === 'ViewsTheme:Filter:MultiSelect') {
+            if ($component === FilterComponents::MULTI_SELECT) {
                 $name = (string) ($props['name'] ?? '');
                 $propertyName = isset($props['propertyName']) ? (string) $props['propertyName'] : null;
                 $elementIds = $this->catalogElementIds($props['elements'] ?? []);
@@ -49,6 +49,7 @@ final class FilterAvailabilityApplier
                 } elseif ($name === 'properties' && $propertyName !== null && $propertyName !== '') {
                     $allowed = $allowedPropertiesByGroup[$propertyName] ?? [];
                     $selected = $this->intersectSelected($selectedByParam['properties'] ?? [], $elementIds);
+                    // Property OR within group: unlock full catalog when any option selected (core parity).
                     if ($selected !== []) {
                         $allowed = $elementIds;
                     }
@@ -71,7 +72,7 @@ final class FilterAvailabilityApplier
                 continue;
             }
 
-            if ($component === 'ViewsTheme:Filter:Boolean') {
+            if ($component === FilterComponents::BOOLEAN) {
                 $name = (string) ($props['name'] ?? '');
                 $selected = ($selectedByParam[$name] ?? []) !== [];
                 $max = $name !== '' ? $this->maxValue($reduced->get($name)) : 0.0;
@@ -83,7 +84,7 @@ final class FilterAvailabilityApplier
                 continue;
             }
 
-            if ($component === 'ViewsTheme:Filter:Rating') {
+            if ($component === FilterComponents::RATING) {
                 $name = (string) ($props['name'] ?? 'rating');
                 $selectedRaw = $selectedByParam[$name][0] ?? null;
                 $selected = $selectedRaw !== null && $selectedRaw !== '' ? (string) $selectedRaw : null;
@@ -100,34 +101,6 @@ final class FilterAvailabilityApplier
         }
 
         return $out;
-    }
-
-    /**
-     * @return array<string, list<string>>
-     */
-    public function selectedFromRequest(\Symfony\Component\HttpFoundation\Request $request): array
-    {
-        return [
-            'manufacturer' => $this->splitParam($request->get('manufacturer')),
-            'properties' => $this->splitParam($request->get('properties')),
-            'rating' => $this->splitParam($request->get('rating')),
-            'shipping-free' => $this->splitParam($request->get('shipping-free')),
-        ];
-    }
-
-    public function requestHasFilterParams(\Symfony\Component\HttpFoundation\Request $request): bool
-    {
-        foreach (['manufacturer', 'properties', 'rating', 'shipping-free', 'min-price', 'max-price'] as $key) {
-            $value = $request->get($key);
-            if (\is_string($value) && $value !== '') {
-                return true;
-            }
-            if (\is_array($value) && $value !== []) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -308,21 +281,5 @@ final class FilterAvailabilityApplier
         }
 
         return $out;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function splitParam(mixed $raw): array
-    {
-        if (\is_array($raw)) {
-            return array_values(array_filter(array_map('strval', $raw), static fn (string $v): bool => $v !== ''));
-        }
-
-        if (!\is_string($raw) || $raw === '') {
-            return [];
-        }
-
-        return array_values(array_filter(explode('|', $raw), static fn (string $v): bool => $v !== ''));
     }
 }

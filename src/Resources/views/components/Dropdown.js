@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class Dropdown extends ShopwareComponent {
     static options = {
         lgUpMedia: '(max-width: 1023.98px)',

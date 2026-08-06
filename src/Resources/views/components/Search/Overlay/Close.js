@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class SearchOverlayClose extends ShopwareComponent {
     static options = {
         overlayComponentName: 'ViewsTheme:Search:Overlay',

@@ -1,5 +1,74 @@
 # JavaScript conventions
 
+## Module layers
+
+Component entries stay co-located for Shopware’s import map. Domain and shared logic live under `app/storefront/src/modules/` (not Vite component entries).
+
+**Import rule:** always use `@views-theme/modules/…` — never relative paths into `modules/`.
+
+```js
+import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
+import { setBodyLock } from '@views-theme/modules/body-lock.js'
+```
+
+(`@modules` alone is not a valid npm package name; scoped packages need `@scope/name`.)
+
+Wiring:
+
+| Context | Mechanism |
+|---------|-----------|
+| Component **build** | `vite.components.config.mts` → `resolveAliases['@views-theme/modules']` |
+| Component **dev server** | npm `"@views-theme/modules": "file:./src/modules"` → `node_modules/@views-theme/modules` (works with `--ignore-scripts`) |
+| IDE | root `jsconfig.json` paths |
+
+Storefront app root **must** have `package.json` with `vite` + the local modules package. `build-components` runs `npm install` there when `node_modules` is missing.
+
+> **Shopware gap:** plugin `vite.components.config.mts` aliases are not applied by the unified component dev server ([shopware#19032](https://github.com/shopware/shopware/issues/19032)). The `file:` dependency is the dual-path workaround.
+
+```
+views/components/**/*.js          # ShopwareComponent entries (data-component)
+        │ import '@views-theme/modules/…'
+app/storefront/src/modules/
+  shared/     http · dom · component
+  listing/    Product:Listing domain only
+  lazy-shell.js · body-lock.js · serial-queue.js
+```
+
+| Layer | May import |
+|-------|------------|
+| Component entry | `@views-theme/modules/*` |
+| `Product/Listing.js` | any `@views-theme/modules/listing/*` |
+| Filters / Pagination / Sorting | `@views-theme/modules/listing/apply.js` only (+ shared / lazy-shell as needed) |
+| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` |
+| `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing internals |
+
+| Path | Role |
+|------|------|
+| `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
+| `shared/dom.js` | parse HTML, replaceMount, replaceComponentIsland |
+| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `eventEl`, …) |
+| `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
+| `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
+| `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
+| `body-lock.js` | ref-counted body scroll lock (Drawer + Overlay) |
+| `serial-queue.js` | Cart + Wishlist |
+| `types.js` | Shared JSDoc `@typedef`s (empty runtime export) |
+| `shopware-globals.d.ts` | Ambient `ShopwareComponent` / `window.Shopware` for IDE |
+
+Do **not** put UX helpers in legacy `app/storefront/src/helper/` (PluginManager pipeline).
+
+## JSDoc
+
+| Target | Required |
+|--------|----------|
+| Component class | `@extends {ShopwareComponent}` + short role blurb when non-obvious |
+| Module file | `@module @views-theme/modules/…` |
+| Exported functions | `@param` / `@returns` (use typedefs from `types.js` where shared) |
+| Cross-file types | `import('@views-theme/modules/types.js').ListingOptions` etc. |
+
+IDE: root `jsconfig.json` paths + `include` for components, modules, and `shopware-globals.d.ts`.
+
 ## Selectors & structure
 
 **Never use CSS classes as JavaScript selectors.**
@@ -238,7 +307,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (latest-wins queue) → `ViewsTheme:Cart:Changed`
+- Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (serial queue, per-lineItemId coalesce) → `ViewsTheme:Cart:Changed`
 - Theme owns header drawer open + in-drawer mutations; `Product:Action:Buy` → `Cart:Add` → badge + Action `open()` when `openOnActions` includes `add` (default). Public `callMethod(…, 'open'|'close')`. Variants grid still core AddToCart
 - Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)

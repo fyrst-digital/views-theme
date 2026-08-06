@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class NavigationBar extends ShopwareComponent {
     static options = {
         debounceTime: 150,

@@ -1,3 +1,9 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterMultiSelect extends ShopwareComponent {
     static options = {
         name: null,
@@ -67,10 +73,17 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
         const raw = params?.[this.options.name]
         const selected = typeof raw === 'string' && raw !== '' ? raw.split('|') : []
+        let changed = false
         this._inputs().forEach((input) => {
-            input.checked = selected.includes(input.value)
+            const next = selected.includes(input.value)
+            if (input.checked !== next) {
+                input.checked = next
+                changed = true
+            }
         })
-        this._syncCount()
+        if (changed) {
+            this._syncCount()
+        }
     }
 
     /**
@@ -90,21 +103,11 @@ export default class FilterMultiSelect extends ShopwareComponent {
             return
         }
 
-        if (existing) {
-            existing.replaceChildren(...next.children)
-        } else {
-            const group = this.el.querySelector(
-                `[data-component="${this.options.groupComponent || 'ViewsTheme:Filter:Group'}"]`,
-            )
-            const body = group?.querySelector('.vi-filter-group-body')
-            const footer = body?.querySelector('.vi-filter-group-body__footer')
-            if (footer) {
-                footer.before(next)
-            } else {
-                body?.append(next)
-            }
+        if (!existing) {
+            return
         }
 
+        existing.replaceChildren(...next.children)
         this._syncCount()
     }
 
@@ -170,11 +173,6 @@ export default class FilterMultiSelect extends ShopwareComponent {
         this._group()?.setDisabled?.(unavailable)
     }
 
-    /** @deprecated use applyAvailability */
-    refreshDisabled(aggregations) {
-        this.applyAvailability(aggregations)
-    }
-
     _sortOptionsAvailableFirst() {
         const list = this.el.querySelector('[data-filter-options]')
         if (!list) {
@@ -213,13 +211,13 @@ export default class FilterMultiSelect extends ShopwareComponent {
         event.preventDefault()
         this.resetAll()
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _onChange() {
         this._syncCount()
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _checked() {
@@ -233,11 +231,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
     _group() {
         const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
         const el = this.el.querySelector(`[data-component="${name}"]`)
-        if (!el || !window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(name, el)
+        return getInstanceByElement(name, el)
     }
 
     _closeGroup() {

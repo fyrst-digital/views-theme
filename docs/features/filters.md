@@ -11,6 +11,10 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"` always; `showActive` from CMS) |
 | `Filter:Panel` | Class-backed shell: optional Active + aria-live; facets from resolver; `layout` cascades into facet props |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
+| `FilterFacetPipeline` | Resolve catalog + optional reduced availability (Panel SSR + batch options) |
+| `FilterRequestSelection` | Parse selected ids from request (`splitParam`) |
+| `FilterAvailabilityApplier` | Pure facet mutation from reduced aggs |
+| `ProductListingGateway` | Category/search listing I/O for drawer + options + results |
 | `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; count SoT = `options.count`; `setCount` paints (Group delegates) |
@@ -25,9 +29,9 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 
 ## Facet resolution (server)
 
-`Filter:Panel.php` `#[PostMount]` calls `FilterFacetResolver::resolve($listing)` → `list<FilterFacet>`.
+`Filter:Panel.php` `#[PostMount]` uses `FilterFacetPipeline::resolveWithAvailability(...)` → `list<FilterFacet>`.
 
-Each facet is `{ component, props }` rendered with `{{ component(facet.component, facet.props|merge({ layout: layout })) }}` — no aggregation `if`s in Twig. `layout` is presentation (Panel-owned), not resolver data.
+Each facet is `{ component, props }` rendered with `{{ component(facet.component, facet.props|merge({ layout: layout })) }}` — no aggregation `if`s in Twig. `layout` is presentation (Panel-owned), not resolver data. `FilterFacet::key()` is the batch options key SoT.
 
 | Aggregation key | Gate | Component |
 |-----------------|------|-----------|
@@ -63,7 +67,7 @@ No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, no
 
 **Property multi-select (OR within group):** core’s properties listing filter uses `exclude=false`, so reduced `properties` aggs drop sibling options once one option in a group is selected. Core storefront JS therefore **does not disable** other options in a property group that already has a selection (`FilterPropertySelectPlugin`). Views mirrors that in `FilterAvailabilityApplier` (SSR + batch `filter-options`: when the group’s `selectedIds` is non-empty, `allowedIds` = full catalog group) and in `MultiSelect.applyAvailability` fallback. Manufacturer multi-select has no such unlock — only checked rows stay enabled when missing from reduced aggs.
 
-**SSR (first paint):** when `disableEmptyFilter` and the request has filter params, `Filter:Panel` loads reduced aggs via `FilterAggregationLoader`, then `FilterAvailabilityApplier` sets `disabled` / `allowedIds` / `selectedIds` on facet props before Twig. No flash of invalid filters.
+**SSR (first paint):** when `disableEmptyFilter` and the request has filter params, `FilterFacetPipeline` loads reduced aggs and applies availability (`disabled` / `allowedIds` / `selectedIds`) before Twig. No flash of invalid filters.
 
 **Client (live updates):** Listing **`syncFilterOptions()`** batch-fetches option list HTML + meta (server owns available-first order and disabled flags):
 

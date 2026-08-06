@@ -4,6 +4,9 @@ const ANALYTICS = {
     productViewed: 'product:search-suggestion-product-viewed',
 }
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class SearchBar extends ShopwareComponent {
     static options = {
         suggestUrl: null,

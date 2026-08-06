@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartShippingCalculation extends ShopwareComponent {
     static options = {
         configureEvent: 'ViewsTheme:Cart:Configure',

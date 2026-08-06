@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartDrawerActionBadge extends ShopwareComponent {
     static options = {
         changedEvent: 'ViewsTheme:Cart:Changed',

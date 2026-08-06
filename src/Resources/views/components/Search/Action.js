@@ -1,3 +1,16 @@
+import {
+    abortRequest,
+    beginRequest,
+    fetchText,
+    getInstanceByElement,
+    replaceMount,
+    unmountEl,
+    waitForInstance,
+} from '@views-theme/modules/lazy-shell.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class SearchAction extends ShopwareComponent {
     static options = {
         overlayUrl: null,
@@ -11,6 +24,7 @@ export default class SearchAction extends ShopwareComponent {
         this._overlayEl = null
         this._preservedTerm = ''
         this._loading = false
+        this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
         this._onOverlayOpen = this._onOverlayOpen.bind(this)
         this._onOverlayClose = this._onOverlayClose.bind(this)
@@ -24,6 +38,8 @@ export default class SearchAction extends ShopwareComponent {
         this.el.removeEventListener('click', this._onClick)
         window.Shopware.off(this.options.openEvent, this._onOverlayOpen)
         window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
+        abortRequest(this._fetch)
+        this._unmountOverlay()
     }
 
     /**
@@ -81,19 +97,20 @@ export default class SearchAction extends ShopwareComponent {
 
         this._loading = true
         this.el.setAttribute('aria-busy', 'true')
+        const request = beginRequest(this._fetch)
 
         try {
-            const response = await fetch(this.options.overlayUrl, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            })
-
-            if (!response.ok) {
-                throw new Error(`Overlay fetch failed: ${response.status}`)
+            const html = await fetchText(this.options.overlayUrl, { signal: request.signal })
+            if (!request.isCurrent()) {
+                return
             }
 
-            const html = await response.text()
-            this._replaceOverlay(html)
-            await this._waitForOverlayInstance()
+            this._overlayEl = replaceMount(this.options.overlaySelector, html)
+            await waitForInstance(() => this._getOverlayInstance())
+
+            if (!request.isCurrent()) {
+                return
+            }
 
             const overlay = this._getOverlayInstance()
             if (!overlay || typeof overlay.open !== 'function') {
@@ -103,43 +120,13 @@ export default class SearchAction extends ShopwareComponent {
 
             await overlay.open({ term: this._preservedTerm || null })
         } catch (error) {
+            if (error?.name === 'AbortError') {
+                return
+            }
             console.error('SearchAction: Failed to open search overlay', error)
         } finally {
             this._loading = false
             this.el.removeAttribute('aria-busy')
-        }
-    }
-
-    _parseRoot(html) {
-        const template = document.createElement('template')
-        template.innerHTML = html.trim()
-        return template.content.firstElementChild
-    }
-
-    _replaceOverlay(html) {
-        const existing = document.querySelector(this.options.overlaySelector)
-        if (existing) {
-            existing.remove()
-        }
-
-        const overlayEl = this._parseRoot(html)
-        if (!overlayEl) {
-            throw new Error('SearchAction: Overlay markup is empty')
-        }
-
-        document.body.appendChild(overlayEl)
-        this._overlayEl = overlayEl
-    }
-
-    async _waitForOverlayInstance(retries = 20) {
-        for (let i = 0; i < retries; i++) {
-            if (this._getOverlayInstance()) {
-                return
-            }
-
-            await new Promise((resolve) => {
-                requestAnimationFrame(resolve)
-            })
         }
     }
 
@@ -148,14 +135,7 @@ export default class SearchAction extends ShopwareComponent {
             this._overlayEl = document.querySelector(this.options.overlaySelector)
         }
 
-        if (!this._overlayEl || !window.Shopware) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(
-            this.options.overlayComponentName,
-            this._overlayEl,
-        )
+        return getInstanceByElement(this.options.overlayComponentName, this._overlayEl)
     }
 
     _onOverlayOpen(payload) {
@@ -181,10 +161,7 @@ export default class SearchAction extends ShopwareComponent {
     }
 
     _unmountOverlay() {
-        const el = this._overlayEl || document.querySelector(this.options.overlaySelector)
-        if (el) {
-            el.remove()
-        }
+        unmountEl(this._overlayEl, this.options.overlaySelector)
         this._overlayEl = null
     }
 }

@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class ScrollArea extends ShopwareComponent {
     init() {
         this._onScroll = this._syncScrollEdges.bind(this)

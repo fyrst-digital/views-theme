@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Filter;
 
-use Fyrst\ViewsTheme\Service\FilterAggregationLoader;
-use Fyrst\ViewsTheme\Service\FilterAvailabilityApplier;
-use Fyrst\ViewsTheme\Service\FilterFacetResolver;
+use Fyrst\ViewsTheme\Service\FilterFacetPipeline;
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Fyrst\ViewsTheme\Struct\FilterFacet;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\PlatformRequest;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -51,11 +48,10 @@ class Panel
     public mixed $disableEmptyFilter = null;
 
     public function __construct(
-        private readonly FilterFacetResolver $filterFacetResolver,
-        private readonly FilterAggregationLoader $aggregationLoader,
-        private readonly FilterAvailabilityApplier $availabilityApplier,
+        private readonly FilterFacetPipeline $facetPipeline,
         private readonly SystemConfigService $systemConfigService,
         private readonly RequestStack $requestStack,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
     ) {
     }
 
@@ -65,10 +61,8 @@ class Panel
     #[PostMount]
     public function postMount(array $data): void
     {
-        $this->facets = $this->filterFacetResolver->resolve($this->listing);
-
         if ($this->disableEmptyFilter === null) {
-            $salesChannelId = $this->salesChannelContext()?->getSalesChannelId();
+            $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
             $this->disableEmptyFilter = (bool) $this->systemConfigService->get(
                 'core.listing.disableEmptyFilterOptions',
                 $salesChannelId,
@@ -77,38 +71,19 @@ class Panel
             $this->disableEmptyFilter = (bool) $this->disableEmptyFilter;
         }
 
-        if (!$this->disableEmptyFilter) {
-            return;
-        }
-
         $request = $this->requestStack->getCurrentRequest();
-        $context = $this->salesChannelContext();
+        $context = $this->salesChannelContextAccessor->get();
         if ($request === null || $context === null) {
+            $this->facets = $this->facetPipeline->resolveCatalog($this->listing);
+
             return;
         }
 
-        if (!$this->availabilityApplier->requestHasFilterParams($request)) {
-            return;
-        }
-
-        $reduced = $this->aggregationLoader->loadReduced($request, $context, $this->listing);
-        if ($reduced === null) {
-            return;
-        }
-
-        $selected = $this->availabilityApplier->selectedFromRequest($request);
-        $this->facets = $this->availabilityApplier->apply($this->facets, $reduced, $selected);
-    }
-
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
+        $this->facets = $this->facetPipeline->resolveWithAvailability(
+            $this->listing,
+            $request,
+            $context,
+            (bool) $this->disableEmptyFilter,
+        );
     }
 }

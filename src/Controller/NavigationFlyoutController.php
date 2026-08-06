@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Controller;
 
+use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
 use Shopware\Core\Content\Category\Service\NavigationLoaderInterface;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -19,9 +20,10 @@ class NavigationFlyoutController extends AbstractComponentController
 
     public function __construct(
         ComponentRendererInterface $components,
+        ComponentHtmlRenderer $htmlRenderer,
         private readonly NavigationLoaderInterface $navigationLoader,
     ) {
-        parent::__construct($components);
+        parent::__construct($components, $htmlRenderer);
     }
 
     #[Route(

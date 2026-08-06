@@ -45,10 +45,23 @@ src/
 
 - Co-located `<Name>.js` next to interactive UX components (`ShopwareComponent` + import map).
 - Theme entry `app/storefront/src/main.js` is minimal (no PluginManager plugins remaining).
+- Shared / domain JS modules live under `app/storefront/src/modules/` and are imported via `@views-theme/modules/…` (Vite alias) — see [javascript.md](conventions/javascript.md#module-layers).
 
 ### SCSS
 
 - Theme styles: `app/storefront/src/scss/` via `theme.json`.
+
+### Listing / filter PHP
+
+| Service | Role |
+|---------|------|
+| `ProductListingGateway` + `ListingScope` | Single I/O path: category/search × results / catalog aggs / reduced aggs; unified `navigationId` resolution |
+| `FilterFacetPipeline` | Catalog resolve + optional availability (SSR Panel + batch options) |
+| `FilterRequestSelection` | Request param parse (`splitParam`, selected map) |
+| `FilterAvailabilityApplier` | Pure facet mutation from reduced aggs |
+| `FilterOptionsPayloadBuilder` | Batch JSON via pipeline + `ComponentHtmlRenderer` |
+| `ComponentHtmlRenderer` | UX `createAndRender` + media/SEO placeholders (SoT) |
+| `SalesChannelContextAccessor` | Request-stack SCC for class components |
 
 ## Page extensions
 
@@ -96,10 +109,11 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Rule | Detail |
 |------|--------|
 | Use | `AbstractComponentController::renderComponent()` (Response wrapper) |
-| SoT | `AbstractComponentController::replaceStorefrontPlaceholders()` — media always, then SEO when context + storefront host are present |
+| SoT | `ComponentHtmlRenderer` (injected) — media always, then SEO when context + storefront host are present |
 | Never | `new Response($this->components->createAndRender(…))` without replace |
 | Why | `category_url()` / `seoUrl()` emit placeholders (`{domain}/navigation/{id}#`); unresolved → 404 |
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
+| JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
 Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `FilterDrawerController`, `ListingController`.
 
@@ -119,8 +133,8 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Theme route / controller | Loader | App hook | Notes |
 |--------------------------|--------|----------|--------|
 | Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
-| Listing results/aggs (`ListingController`) | `AbstractProductListingRoute` / `AbstractProductSearchRoute` | *(none on raw listing DTO)* | HTML `Product:Listing:Results` + JSON aggregations; query param parity with core storefront |
-| Filter drawer (`FilterDrawerController`) | `AbstractProductListingRoute` / `AbstractProductSearchRoute` | *(none on raw listing DTO)* | HTML `Filter:Drawer` (aggs-only request flags); [filters.md](features/filters.md) |
+| Listing results/aggs (`ListingController`) | `ProductListingGateway` → core listing/search routes | *(none on raw listing DTO)* | Results use `no-aggregations`; reduced aggs / filter-options via gateway; [product-listing.md](features/product-listing.md) |
+| Filter drawer (`FilterDrawerController`) | `ProductListingGateway` catalog aggs | *(none on raw listing DTO)* | HTML `Filter:Drawer`; [filters.md](features/filters.md) |
 | Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
 | Nav drawer langs/currencies (same action) | `HeaderPageletLoader` | `header-pagelet-loaded` | Header chrome only on full drawer open |
 | Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |

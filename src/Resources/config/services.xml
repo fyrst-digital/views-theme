@@ -35,6 +35,47 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Service\SalesChannelContextAccessor">
+            <argument type="service" id="request_stack"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaUrlPlaceholderHandlerInterface"/>
+            <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\ProductListingGateway">
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterRequestSelection"/>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterFacetResolver">
+            <argument type="service" id="translator"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterAggregationLoader">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterFacetPipeline">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterFacetResolver"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAggregationLoader"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterRequestSelection"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterFacetPipeline"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Controller\VariantsGridController" public="true">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry"/>
@@ -48,6 +89,7 @@
 
         <service id="Fyrst\ViewsTheme\Controller\SearchOverlayController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Suggest\SuggestPageLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -56,6 +98,7 @@
 
         <service id="Fyrst\ViewsTheme\Controller\NavigationDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoader"/>
             <argument type="service" id="Shopware\Storefront\Pagelet\Header\HeaderPageletLoader"/>
             <call method="setContainer">
@@ -65,6 +108,7 @@
 
         <service id="Fyrst\ViewsTheme\Controller\NavigationFlyoutController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Core\Content\Category\Service\NavigationLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -73,6 +117,7 @@
 
         <service id="Fyrst\ViewsTheme\Controller\CartDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -90,31 +135,10 @@
 
         <service id="Fyrst\ViewsTheme\Service\ProductPriceResolver"/>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterFacetResolver">
-            <argument type="service" id="translator"/>
-        </service>
-
-        <service id="Fyrst\ViewsTheme\Service\FilterAggregationLoader">
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
-        </service>
-
-        <service id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
-
-        <service id="Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterFacetResolver"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAggregationLoader"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
-            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-        </service>
-
         <service id="Fyrst\ViewsTheme\Controller\ListingController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAggregationLoader"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
             <argument type="service" id="Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -123,9 +147,8 @@
 
         <service id="Fyrst\ViewsTheme\Controller\FilterDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAggregationLoader"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

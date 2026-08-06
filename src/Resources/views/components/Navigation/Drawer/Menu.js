@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class NavigationDrawerMenu extends ShopwareComponent {
     static options = {
         drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',

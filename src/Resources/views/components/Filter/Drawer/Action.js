@@ -1,3 +1,18 @@
+import { syncListingControls } from '@views-theme/modules/listing/apply.js'
+import {
+    abortRequest,
+    beginRequest,
+    eventEl,
+    fetchText,
+    getInstanceByElement,
+    replaceMount,
+    unmountEl,
+    waitForInstance,
+} from '@views-theme/modules/lazy-shell.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterDrawerAction extends ShopwareComponent {
     static options = {
         drawerUrl: null,
@@ -12,6 +27,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
     init() {
         this._drawerEl = null
         this._loading = false
+        this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
         this._onDrawerOpen = this._onDrawerOpen.bind(this)
         this._onDrawerClose = this._onDrawerClose.bind(this)
@@ -25,6 +41,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
         this.el.removeEventListener('click', this._onClick)
         window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
+        abortRequest(this._fetch)
         this._unmountDrawer()
     }
 
@@ -76,19 +93,20 @@ export default class FilterDrawerAction extends ShopwareComponent {
 
         this._loading = true
         this.el.setAttribute('aria-busy', 'true')
+        const request = beginRequest(this._fetch)
 
         try {
-            const response = await fetch(this._drawerRequestUrl(), {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            })
-
-            if (!response.ok) {
-                throw new Error(`Drawer fetch failed: ${response.status}`)
+            const html = await fetchText(this._drawerRequestUrl(), { signal: request.signal })
+            if (!request.isCurrent()) {
+                return
             }
 
-            const html = await response.text()
-            this._replaceDrawer(html)
-            await this._waitForDrawerInstance()
+            this._drawerEl = replaceMount(this.options.drawerSelector, html)
+            await waitForInstance(() => this._getDrawerInstance())
+
+            if (!request.isCurrent()) {
+                return
+            }
 
             const drawer = this._getDrawerInstance()
             if (!drawer || typeof drawer.open !== 'function') {
@@ -103,6 +121,9 @@ export default class FilterDrawerAction extends ShopwareComponent {
             })
             await this._syncListingControls()
         } catch (error) {
+            if (error?.name === 'AbortError') {
+                return
+            }
             console.error('FilterDrawerAction: Failed to open filter drawer', error)
         } finally {
             this._loading = false
@@ -123,55 +144,19 @@ export default class FilterDrawerAction extends ShopwareComponent {
         return url.toString()
     }
 
-    _parseRoot(html) {
-        const template = document.createElement('template')
-        template.innerHTML = html.trim()
-        return template.content.firstElementChild
-    }
-
-    _replaceDrawer(html) {
-        const existing = document.querySelector(this.options.drawerSelector)
-        if (existing) {
-            existing.remove()
-        }
-
-        const drawerEl = this._parseRoot(html)
-        if (!drawerEl) {
-            throw new Error('FilterDrawerAction: Drawer markup is empty')
-        }
-
-        document.body.appendChild(drawerEl)
-        this._drawerEl = drawerEl
-    }
-
-    async _waitForDrawerInstance(retries = 20) {
-        for (let i = 0; i < retries; i++) {
-            if (this._getDrawerInstance()) {
-                return
-            }
-
-            await new Promise((resolve) => {
-                requestAnimationFrame(resolve)
-            })
-        }
-    }
-
     _getDrawerInstance() {
         if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
             this._drawerEl = document.querySelector(this.options.drawerSelector)
         }
 
-        if (!this._drawerEl || !window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(
-            this.options.drawerComponentName,
-            this._drawerEl,
-        )
+        return getInstanceByElement(this.options.drawerComponentName, this._drawerEl)
     }
 
-    _onDrawerOpen(drawerEl) {
+    /**
+     * @param {unknown} payload
+     */
+    _onDrawerOpen(payload) {
+        const drawerEl = eventEl(payload) ?? payload
         if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
@@ -180,7 +165,11 @@ export default class FilterDrawerAction extends ShopwareComponent {
         void this._syncListingControls()
     }
 
-    _onDrawerClose(drawerEl) {
+    /**
+     * @param {unknown} payload
+     */
+    _onDrawerClose(payload) {
+        const drawerEl = eventEl(payload) ?? payload
         if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
@@ -192,37 +181,19 @@ export default class FilterDrawerAction extends ShopwareComponent {
     }
 
     _unmountDrawer() {
-        const el = this._drawerEl || document.querySelector(this.options.drawerSelector)
-        if (el) {
-            el.remove()
-        }
+        unmountEl(this._drawerEl, this.options.drawerSelector)
         this._drawerEl = null
     }
 
     async _syncListingControls() {
-        if (!window.Shopware?.getComponentInstanceByElement) {
-            return
-        }
+        syncListingControls(this.options.listingComponent)
 
         const listingEl = document.querySelector(
             `[data-component="${this.options.listingComponent}"]`,
         )
-        if (!listingEl) {
-            return
-        }
-
-        const listing = window.Shopware.getComponentInstanceByElement(
-            this.options.listingComponent,
-            listingEl,
-        )
+        const listing = getInstanceByElement(this.options.listingComponent, listingEl)
         if (!listing) {
             return
-        }
-
-        if (typeof listing.syncControls === 'function') {
-            listing.syncControls()
-        } else if (typeof listing.refreshControls === 'function') {
-            listing.refreshControls()
         }
 
         if (typeof listing.syncFilterOptions === 'function') {

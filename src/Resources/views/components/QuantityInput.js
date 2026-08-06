@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class QuantityInput extends ShopwareComponent {
     static options = {
         inputSelector: 'input[type="number"]',

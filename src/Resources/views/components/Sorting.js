@@ -1,3 +1,10 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+
+/**
+ * Listing control: sort order select.
+ *
+ * @extends {ShopwareComponent}
+ */
 export default class Sorting extends ShopwareComponent {
     static options = {
         listingComponent: 'ViewsTheme:Product:Listing',
@@ -52,11 +59,9 @@ export default class Sorting extends ShopwareComponent {
             return
         }
 
-        window.Shopware.callMethod(
-            this.options.listingComponent,
-            'apply',
-            { order: this._select.value, p: 1 },
-            { resetPage: false },
+        applyListing(
+            { order: this._select.value },
+            { listingComponent: this.options.listingComponent },
         )
     }
 }

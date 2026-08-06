@@ -1,0 +1,11 @@
+{
+  "name": "@views-theme/storefront",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ViewsTheme storefront component build + module resolution",
+  "devDependencies": {
+    "@views-theme/modules": "file:./src/modules",
+    "vite": "8.0.9"
+  }
+}

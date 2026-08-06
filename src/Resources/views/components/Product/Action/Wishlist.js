@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class ProductActionWishlist extends ShopwareComponent {
     static options = {
         productId: null,

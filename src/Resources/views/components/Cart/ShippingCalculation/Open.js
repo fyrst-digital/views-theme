@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartShippingCalculationOpen extends ShopwareComponent {
     static options = {
         shippingCalculationComponentName: 'ViewsTheme:Cart:ShippingCalculation',

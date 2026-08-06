@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
-use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -66,7 +65,7 @@ class Box
     public bool $wishlistEnabled = false;
 
     public function __construct(
-        private readonly RequestStack $requestStack,
+        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
         private readonly SystemConfigService $systemConfigService,
     ) {}
 
@@ -82,7 +81,7 @@ class Box
 
         $this->wishlistEnabled = (bool) $this->systemConfigService->get(
             'core.cart.wishlistEnabled',
-            $this->salesChannelContext()?->getSalesChannelId(),
+            $this->salesChannelContextAccessor->get()?->getSalesChannelId(),
         );
 
         if (!$this->product instanceof SalesChannelProductEntity) {
@@ -95,17 +94,6 @@ class Box
         $this->price = $this->product->getCalculatedPrice()->getUnitPrice();
     }
 
-    private function salesChannelContext(): ?SalesChannelContext
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
-            return null;
-        }
-
-        $context = $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
-
-        return $context instanceof SalesChannelContext ? $context : null;
-    }
 
     private function translatedName(SalesChannelProductEntity $product): string
     {

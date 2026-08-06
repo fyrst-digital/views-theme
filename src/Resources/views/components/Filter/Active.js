@@ -1,3 +1,9 @@
+import { resetListing } from '@views-theme/modules/listing/apply.js'
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterActive extends ShopwareComponent {
     static options = {
         listingComponent: 'ViewsTheme:Product:Listing',
@@ -46,13 +52,13 @@ export default class FilterActive extends ShopwareComponent {
         event.preventDefault()
 
         if (target.hasAttribute('data-reset-all')) {
-            window.Shopware.callMethod(this.options.listingComponent, 'resetAll')
+            resetListing(this.options.listingComponent)
             return
         }
 
         const id = target.getAttribute('data-filter-id')
         if (id) {
-            window.Shopware.callMethod(this.options.listingComponent, 'reset', id)
+            resetListing(this.options.listingComponent, id)
         }
     }
 
@@ -60,21 +66,10 @@ export default class FilterActive extends ShopwareComponent {
      * callMethod discards return values — resolve Listing and call getActiveLabels directly.
      */
     _listing() {
-        if (!window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
         const el = document.querySelector(
             `[data-component="${this.options.listingComponent}"]`,
         )
-        if (!el) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(
-            this.options.listingComponent,
-            el,
-        )
+        return getInstanceByElement(this.options.listingComponent, el)
     }
 
     _clearLive() {

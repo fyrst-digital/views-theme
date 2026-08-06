@@ -48,16 +48,17 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 1. `ViewsTheme:Cart:Drawer:Action` reads `drawerUrl` / `openOnActions` from `data-component-options`
 2. **Click:** if Drawer open → `close()` (no fetch); else `open()`
-3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer`
-4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
-5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()` (logs if instance never mounts)
-6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
-7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
-8. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
+ 3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer` (`AbortController`; stale responses ignored)
+ 4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
+ 5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()` (logs if instance never mounts)
+ 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
+ 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
+ 8. Action `destroy()` aborts in-flight open fetch and unmounts any open shell
+ 9. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
 
 ### Mutation API
 
-Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoints. Concurrent intents use a **latest-wins** queue.
+Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoints. Concurrent intents use a **serial queue** with per-`lineItemId` coalesce (last write wins per line item; unkeyed intents FIFO).
 
 | Event (request) | Payload | HTTP |
 |-----------------|---------|------|
@@ -86,7 +87,7 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Pr
    - `ViewsTheme:Cart:Drawer:Items`
    - `ViewsTheme:Cart:Drawer:Footer` (optional — remove when missing in response, append when newly present)
    - `ViewsTheme:Cart:Drawer:Heading`
-4. Parse with `<template>`; latest-wins while a fetch is in flight. Island swap: both → replace; existing only → remove; next only → append to target root
+ 4. Parse with `<template>`; Body refresh aborts stale fetches and queues one follow-up while busy. Island swap: both → replace; existing only → remove; next only → append to target root
 
 Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
 

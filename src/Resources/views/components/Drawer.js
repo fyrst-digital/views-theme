@@ -1,3 +1,8 @@
+import { setBodyLock } from '@views-theme/modules/body-lock.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class Drawer extends ShopwareComponent {
     static options = {
         openClass: 'd-flex',
@@ -14,6 +19,7 @@ export default class Drawer extends ShopwareComponent {
         this._open = false
         this._closing = false
         this._closeTimer = null
+        this._lockOwner = Symbol('drawer-body-lock')
         this._onKeydown = this._onKeydown.bind(this)
 
         this.el.inert = true
@@ -177,6 +183,6 @@ export default class Drawer extends ShopwareComponent {
     }
 
     _setBodyLock(locked) {
-        document.body.classList.toggle(this.options.bodyOpenClass, locked)
+        setBodyLock(this.options.bodyOpenClass, this._lockOwner, locked)
     }
 }

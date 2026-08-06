@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class NavigationFlyout extends ShopwareComponent {
     static options = {
         durationVar: '--vi-flyout-duration',

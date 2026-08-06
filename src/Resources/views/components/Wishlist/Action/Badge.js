@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class WishlistActionBadge extends ShopwareComponent {
     static options = {
         changedEvent: 'ViewsTheme:Wishlist:Changed',

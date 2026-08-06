@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterPanel extends ShopwareComponent {
     static options = {
         loadingEvent: 'ViewsTheme:Listing:Loading',
