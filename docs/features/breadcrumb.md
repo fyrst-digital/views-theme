@@ -8,7 +8,7 @@ Theme-owned navigation trail. Single SoT: **`categoryId`** → core `CategoryBre
 |-------|----------------|
 | Storefront bridge | `storefront/layout/breadcrumb.html.twig` → resolve id → `Breadcrumb` |
 | PDP / CMS placement | Core `cms_breadcrumb` / layout include → bridge |
-| Optional header | `Product:Header` may compose `Breadcrumb` when buy-widget is theme-owned |
+| Buy container header | `Product:Header` in [BuyContainer](buy-container.md) composes `Breadcrumb` + name when `showHeader` |
 | `Breadcrumb` | Class VM: `categoryId` → builder → `items`; Twig composes list + separators |
 | `Breadcrumb:Item` | Leaf crumb (link / folder / current) |
 

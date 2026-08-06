@@ -39,7 +39,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
-- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md).
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md).
 
 ### Storefront JS
 

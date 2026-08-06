@@ -1,0 +1,19 @@
+{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+
+{% block buy_widget %}
+    {% if product %}
+        {% set variantsGrid = null %}
+        {% if page is defined and page.extensions.viewsTheme is defined %}
+            {% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
+        {% endif %}
+
+        <twig:ViewsTheme:Product:BuyContainer
+            :product="product"
+            :configuratorSettings="configuratorSettings|default(null)"
+            :totalReviews="totalReviews|default(0)"
+            :elementId="elementId|default(null)"
+            :pageType="pageType|default(null)"
+            :variantsGrid="variantsGrid"
+        />
+    {% endif %}
+{% endblock %}
