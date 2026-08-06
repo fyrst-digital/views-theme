@@ -4,7 +4,7 @@
     drawerId = 'vi-filter-drawer',
     showActive = true,
     color = 'outline-primary',
-    size = 'md',
+    size = 'sm',
     cva = {},
 %}
 
@@ -24,10 +24,11 @@
     class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         type: 'button',
-        icon: 'funnel',
+        icon: 'sliders',
         label: label,
         color: color,
         size: size,
+        full: true,
         'aria-haspopup': 'dialog',
         'aria-controls': drawerId,
         'aria-expanded': 'false',

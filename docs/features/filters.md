@@ -7,7 +7,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel; reads product-listing CMS config |
-| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle); forwards `showActive` via `viShowActiveFilters` |
+| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle); forwards `showActive` via `viShowActiveFilters`. Button chrome: `icon=sliders`, `size=sm`, `full`, `color=outline-primary`, `d-lg-none` |
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"` always; `showActive` from CMS) |
 | `Filter:Panel` | Class-backed shell: optional Active + aria-live; facets from resolver; `layout` cascades into facet props |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
