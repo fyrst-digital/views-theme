@@ -17,7 +17,7 @@ Theme-owned wishlist: product toggle, header/nav badge, guest localStorage and l
 - Header: `Wishlist:Action` (`:label="false"`)
 - Nav drawer title: `Wishlist:Action` with drawer-scoped `badgeId` / `liveId`
 - Listing box: `Product:Action:Wishlist` on Cover `append`, `appearance="circle"`
-- PDP: `Product:Action:Wishlist` in `BuyContainer` with `showText`
+- PDP: `BuyContainer` → `Product:Actions` → `Product:Action:Wishlist` (`showText`, `size: sm`)
 
 ## Events
 

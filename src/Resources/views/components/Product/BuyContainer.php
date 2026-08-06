@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -56,19 +56,11 @@ class BuyContainer
 
     public bool $productActive = false;
 
-    public bool $wishlistEnabled = false;
-
     public bool $useVariantsGrid = false;
-
-    public bool $showTieredBlock = false;
-
-    public bool $showReviewsBlock = false;
 
     public bool $showBuyFormBlock = false;
 
     public bool $showConfiguratorBlock = false;
-
-    public bool $showWishlistBlock = false;
 
     public bool $showOrderNumberBlock = false;
 
@@ -87,18 +79,8 @@ class BuyContainer
     {
         $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
 
-        $this->wishlistEnabled = (bool) $this->systemConfigService->get(
-            'core.cart.wishlistEnabled',
-            $salesChannelId,
-        );
-
         $variantsGridActive = (bool) $this->systemConfigService->get(
             'ViewsTheme.config.variantsGridActive',
-            $salesChannelId,
-        );
-
-        $reviewsEnabled = (bool) $this->systemConfigService->get(
-            'core.listing.showReview',
             $salesChannelId,
         );
 
@@ -123,18 +105,6 @@ class BuyContainer
 
         $this->useVariantsGrid = $variantsGridActive && $variantCount > 0;
 
-        $calculatedPrices = $this->product->getCalculatedPrices();
-        $this->showTieredBlock = $this->showTieredPrices
-            && $calculatedPrices !== null
-            && $calculatedPrices->count() > 1;
-
-        $ratingAverage = $this->product->getRatingAverage();
-        $this->showReviewsBlock = $this->showReviews
-            && $reviewsEnabled
-            && $this->totalReviews > 0
-            && $ratingAverage !== null
-            && $ratingAverage > 0;
-
         $this->showBuyFormBlock = $this->productActive
             && $this->showBuyForm
             && !$this->useVariantsGrid;
@@ -144,8 +114,6 @@ class BuyContainer
             && $this->product->getParentId() !== null
             && \is_countable($this->configuratorSettings)
             && \count($this->configuratorSettings) > 0;
-
-        $this->showWishlistBlock = $this->showActions && $this->wishlistEnabled;
 
         $productNumber = $this->product->getProductNumber();
         $this->showOrderNumberBlock = $this->showOrderNumber

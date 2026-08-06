@@ -6,7 +6,6 @@ namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

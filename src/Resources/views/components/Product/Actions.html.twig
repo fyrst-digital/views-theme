@@ -1,47 +1,24 @@
-{% props
-    product,
-    href = null,
-    showQuantity = false,
-    cva = {},
-%}
+{% do vi_define_cva(cva, ['root', 'wishlist']) %}
+{% do vi_define_attrs(['wishlist']) %}
 
-{% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
-{% set displayFrom = product.calculatedPrices.count > 1 %}
-{% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+{% if wishlistEnabled %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block prepend %}{% endblock %}
 
-{% do vi_define_cva(cva) %}
+        {% block wishlist %}
+            <twig:ViewsTheme:Product:Action:Wishlist
+                class="{{ vi_class('wishlist') }}"
+                {{ ...vi_attrs('wishlist').defaults({
+                    productId: productId,
+                    showText: true,
+                    size: 'sm',
+                }).all() }}
+            />
+        {% endblock %}
 
-{% do vi_define_attrs(['buy', 'detail']) %}
-
-<div
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
->
-    {% block prepend %}{% endblock %}
-
-    {% block content %}
-        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-            {% block buy %}
-                <twig:ViewsTheme:Product:Action:Buy
-                    class="{{ vi_class('buy') }}"
-                    {{ ...vi_attrs('buy').defaults({
-                        product: product,
-                        showQuantity: showQuantity,
-                    }).all() }}
-                />
-            {% endblock %}
-        {% else %}
-            {% block detail %}
-                <twig:ViewsTheme:Product:Action:Detail
-                    class="{{ vi_class('detail') }}"
-                    {{ ...vi_attrs('detail').defaults({
-                        product: product,
-                        href: href,
-                    }).all() }}
-                />
-            {% endblock %}
-        {% endif %}
-    {% endblock %}
-
-    {% block append %}{% endblock %}
-</div>
+        {% block append %}{% endblock %}
+    </div>
+{% endif %}

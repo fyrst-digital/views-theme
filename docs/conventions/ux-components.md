@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Reviews`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`.
 
 ## Props / CVA / attributes
 
@@ -306,8 +306,8 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
     username:size="lg"
 />
 
-{# Caller — deeper nest on Buy via Actions (button chrome, not buyLabel) #}
-<twig:ViewsTheme:Product:Actions
+{# Caller — deeper nest on Buy via Box:Actions (button chrome, not buyLabel) #}
+<twig:ViewsTheme:Product:Box:Actions
     :product="product"
     :buy:button:label="true"
     buy:button:label="{{ 'custom.add'|trans }}"

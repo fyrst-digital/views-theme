@@ -2,14 +2,11 @@
     'root',
     'header',
     'reviews',
-    'reviewLabel',
-    'reviewLink',
     'prices',
     'delivery',
     'configurator',
     'buy',
     'actions',
-    'wishlist',
     'orderNumber',
     'orderNumberLabel',
     'orderNumberValue',
@@ -17,14 +14,11 @@
 {% do vi_define_attrs([
     'header',
     'reviews',
-    'reviewLabel',
-    'reviewLink',
     'prices',
     'delivery',
     'configurator',
     'buy',
     'actions',
-    'wishlist',
     'orderNumber',
     'orderNumberLabel',
     'orderNumberValue',
@@ -34,159 +28,86 @@
     {{ attributes }}
     class="{{ vi_class('root') }} {{ rootElementClass }}"
 >
-    {% block richSnippets %}
-        {# @deprecated tag:v6.8.0 - Product microdata replaced by JSON-LD in json-ld-product.html.twig. Will be removed. #}
-        {% if not feature('JSON_LD_DATA') %}
-            {% if product.manufacturer %}
-                <div itemprop="brand" itemtype="https://schema.org/Brand" itemscope>
-                    <meta itemprop="name" content="{{ product.manufacturer.translated.name }}">
-                </div>
-            {% endif %}
-            {% if product.ean %}
-                <meta itemprop="gtin13" content="{{ product.ean }}">
-            {% endif %}
-            {% if product.manufacturerNumber %}
-                <meta itemprop="mpn" content="{{ product.manufacturerNumber }}">
-            {% endif %}
+    {% block header %}
+        {% if showHeader %}
+            <twig:ViewsTheme:Product:Header
+                class="{{ vi_class('header') }}"
+                {{ ...vi_attrs('header').defaults({
+                    product: product,
+                    nameShowLink: false,
+                    nameTag: 'h1',
+                }).all() }}
+            />
         {% endif %}
     {% endblock %}
 
-    {% block buyContainer %}
-        <div
-            {% if not feature('JSON_LD_DATA') %}
-                itemprop="offers"
-                itemscope
-                itemtype="{% if product.calculatedPrices|length > 1 %}https://schema.org/AggregateOffer{% else %}https://schema.org/Offer{% endif %}"
-            {% endif %}
-        >
-            {% block data %}
-                {% if not feature('JSON_LD_DATA') %}
-                    <meta itemprop="url" content="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}">
-                    <meta itemprop="priceCurrency" content="{{ context.currency.translated.shortName }}">
-                {% endif %}
+    {% block reviews %}
+        <twig:ViewsTheme:Product:Reviews
+            class="{{ vi_class('reviews') }}"
+            {{ ...vi_attrs('reviews').defaults({
+                product: product,
+                totalReviews: totalReviews,
+                showReviews: showReviews,
+            }).all() }}
+        />
+    {% endblock %}
 
-                {% block header %}
-                    {% if showHeader %}
-                        <twig:ViewsTheme:Product:Header
-                            class="{{ vi_class('header') }}"
-                            {{ ...vi_attrs('header').defaults({
-                                product: product,
-                                nameShowLink: false,
-                                nameTag: 'h1',
-                            }).all() }}
-                        />
-                    {% endif %}
-                {% endblock %}
+    {% block prices %}
+        <twig:ViewsTheme:Product:Prices
+            class="{{ vi_class('prices') }}"
+            {{ ...vi_attrs('prices').defaults({
+                product: product,
+                showPrice: showPrice,
+                showTieredPrices: showTieredPrices,
+                showTaxNote: showTaxNote,
+            }).all() }}
+        />
+    {% endblock %}
 
-                {% block reviews %}
-                    {% if showReviewsBlock %}
-                        {% set remoteClickOptions = {
-                            selector: '#review-tab-' ~ product.id,
-                            scrollToElement: true,
-                            excludedViewports: ['XS'],
-                        } %}
-                        {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
+    {% block delivery %}
+        {% if showDelivery %}
+            <div {{ vi_attrs('delivery') }} class="{{ vi_class('delivery') }}">
+                {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
 
-                        <div {{ vi_attrs('reviews') }} class="{{ vi_class('reviews') }}">
-                            <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
-                            <div {{ vi_attrs('reviewLabel') }} class="{{ vi_class('reviewLabel') }}">
-                                {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
-                                <a
-                                    {{ vi_attrs('reviewLink').defaults({
-                                        'data-bs-toggle': 'tab',
-                                        'data-off-canvas-tabs': 'true',
-                                        'data-remote-click': 'true',
-                                        'data-remote-click-options': remoteClickOptions|json_encode,
-                                        href: reviewTabHref,
-                                        'aria-controls': 'review-tab-pane',
-                                    }) }}
-                                    class="{{ vi_class('reviewLink') }}"
-                                >
-                                    {{ totalReviews }}
-                                    {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
-                                </a>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endblock %}
+    {% block configurator %}
+        {% if showConfiguratorBlock %}
+            <div {{ vi_attrs('configurator') }} class="{{ vi_class('configurator') }}">
+                {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' %}
+            </div>
+        {% endif %}
+    {% endblock %}
 
-                {% block prices %}
-                    <div {{ vi_attrs('prices') }} class="{{ vi_class('prices') }}">
-                        {% if showTieredBlock %}
-                            <twig:ViewsTheme:Product:Price:Tiered
-                                :product="product"
-                                :prices="product.calculatedPrices"
-                            />
-                        {% endif %}
-                        <twig:ViewsTheme:Product:Price
-                            :product="product"
-                            :showPrice="showPrice"
-                        />
-                        {% if showTaxNote %}
-                            <twig:ViewsTheme:Product:Price:Tax />
-                        {% endif %}
-                    </div>
-                {% endblock %}
+    {% block buy %}
+        {% if useVariantsGrid %}
+            <twig:ViewsTheme:VariantsGrid:Container
+                :variants="variantsGrid.variants"
+                :groups="variantsGrid.groups"
+                :pagination="variantsGrid.pagination"
+                :pageParameter="variantsGrid.pageParameter"
+                :parentId="variantsGrid.parentId"
+            />
+        {% elseif showBuyFormBlock %}
+            <twig:ViewsTheme:Product:Action:Buy
+                class="{{ vi_class('buy') }}"
+                {{ ...vi_attrs('buy').defaults({
+                    product: product,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
 
-                {% block delivery %}
-                    {% if showDelivery %}
-                        <div {{ vi_attrs('delivery') }} class="{{ vi_class('delivery') }}">
-                            {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
-                        </div>
-                    {% endif %}
-                {% endblock %}
-            {% endblock %}
-
-            {% block configurator %}
-                {% if showConfiguratorBlock %}
-                    <div {{ vi_attrs('configurator') }} class="{{ vi_class('configurator') }}">
-                        {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' %}
-                    </div>
-                {% endif %}
-            {% endblock %}
-
-            {% block buy %}
-                {% if useVariantsGrid %}
-                    <twig:ViewsTheme:VariantsGrid:Container
-                        :variants="variantsGrid.variants"
-                        :groups="variantsGrid.groups"
-                        :pagination="variantsGrid.pagination"
-                        :pageParameter="variantsGrid.pageParameter"
-                        :parentId="variantsGrid.parentId"
-                    />
-                {% elseif showBuyFormBlock %}
-                    <twig:ViewsTheme:Product:Action:Buy
-                        class="{{ vi_class('buy') }}"
-                        {{ ...vi_attrs('buy').defaults({
-                            product: product,
-                        }).all() }}
-                    />
-                {% endif %}
-            {% endblock %}
-
-            {% block actions %}
-                {% if showActions %}
-                    <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                        {% block actionPrepend %}{% endblock %}
-
-                        {% block wishlist %}
-                            {% if showWishlistBlock %}
-                                <twig:ViewsTheme:Product:Action:Wishlist
-                                    class="{{ vi_class('wishlist') }}"
-                                    {{ ...vi_attrs('wishlist').defaults({
-                                        productId: product.id,
-                                        showText: true,
-                                        size: 'sm',
-                                    }).all() }}
-                                />
-                            {% endif %}
-                        {% endblock %}
-
-                        {% block actionAppend %}{% endblock %}
-                    </div>
-                {% endif %}
-            {% endblock %}
-        </div>
+    {% block actions %}
+        {% if showActions %}
+            <twig:ViewsTheme:Product:Actions
+                class="{{ vi_class('actions') }}"
+                {{ ...vi_attrs('actions').defaults({
+                    product: product,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     {% block orderNumber %}
@@ -195,19 +116,9 @@
                 <span {{ vi_attrs('orderNumberLabel') }} class="{{ vi_class('orderNumberLabel') }}">
                     {{ 'detail.productNumberLabel'|trans|sw_sanitize }}
                 </span>
-                {% if not feature('JSON_LD_DATA') %}
-                    <meta itemprop="productID" content="{{ product.id }}">
-                    <span
-                        {{ vi_attrs('orderNumberValue').defaults({ itemprop: 'sku' }) }}
-                        class="{{ vi_class('orderNumberValue') }}"
-                    >
-                        {{ product.productNumber }}
-                    </span>
-                {% else %}
-                    <span {{ vi_attrs('orderNumberValue') }} class="{{ vi_class('orderNumberValue') }}">
-                        {{ product.productNumber }}
-                    </span>
-                {% endif %}
+                <span {{ vi_attrs('orderNumberValue') }} class="{{ vi_class('orderNumberValue') }}">
+                    {{ product.productNumber }}
+                </span>
             </div>
         {% endif %}
     {% endblock %}
