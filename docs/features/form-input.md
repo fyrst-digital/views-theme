@@ -282,13 +282,13 @@ Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Prese
 |------|--------------|-----------------|
 | root | `form-check form-switch` | `class="…"` (e.g. `d-inline-flex gap-2 m-0 p-0`) |
 | input | `form-check-input cursor-pointer` (+ `is-invalid`) | `input:class` |
-| label | `form-check-label` | `label:class` |
+| label | `form-check-label cursor-pointer` | `label:class` |
 | description | `form-text` | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
 Nested attrs: `input:*`, `label:*`, `description:*`, `feedback:*`.
 
-No co-located `Switch.css`. Dense bar layout is caller utilities. Theme BS form-check/switch float & negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
+Co-located `Switch.css`: label opacity + `cursor: not-allowed` on root/label/input when `:disabled`. Dense bar layout is caller utilities. Theme BS form-check/switch float & negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
 
 ### Call sites
 
