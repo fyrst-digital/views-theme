@@ -6,7 +6,7 @@ import {
     replaceMount,
     unmountEl,
     waitForInstance,
-} from '../../../app/storefront/src/views-theme/lazy-shell.js'
+} from '@views-theme/modules/lazy-shell.js'
 
 export default class SearchAction extends ShopwareComponent {
     static options = {

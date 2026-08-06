@@ -45,7 +45,7 @@ src/
 
 - Co-located `<Name>.js` next to interactive UX components (`ShopwareComponent` + import map).
 - Theme entry `app/storefront/src/main.js` is minimal (no PluginManager plugins remaining).
-- Minimal cross-cutting helpers (not components) live under `app/storefront/src/views-theme/` and are imported relatively — see [javascript.md](conventions/javascript.md#minimal-helpers).
+- Shared / domain JS modules live under `app/storefront/src/modules/` and are imported via `@views-theme/modules/…` (Vite alias) — see [javascript.md](conventions/javascript.md#module-layers).
 
 ### SCSS
 

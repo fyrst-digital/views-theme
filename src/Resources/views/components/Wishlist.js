@@ -1,4 +1,4 @@
-import { createSerialQueue } from '../../app/storefront/src/views-theme/serial-queue.js'
+import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
 
 export default class Wishlist extends ShopwareComponent {
     static options = {

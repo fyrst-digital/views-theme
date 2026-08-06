@@ -1,4 +1,4 @@
-import { setBodyLock } from '../../app/storefront/src/views-theme/body-lock.js'
+import { setBodyLock } from '@views-theme/modules/body-lock.js'
 
 export default class Drawer extends ShopwareComponent {
     static options = {

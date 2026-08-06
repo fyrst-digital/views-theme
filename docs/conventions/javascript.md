@@ -1,19 +1,55 @@
 # JavaScript conventions
 
-## Minimal helpers
+## Module layers
 
-Aligned with Shopware `Sw` UX components: **no general utils grab-bag**. Prefer bus + methods on the owning component. Cross-cutting code only when several owners share identical lifecycle.
+Component entries stay co-located for Shopware’s import map. Domain and shared logic live under `app/storefront/src/modules/` (not Vite component entries).
 
-| Location | Contents | Rule |
-|----------|----------|------|
-| `app/storefront/src/views-theme/` | `body-lock.js`, `lazy-shell.js`, `serial-queue.js` | Relative imports from co-located component JS; **not** `data-component` roots; outside `views/components/` so Vite does not treat them as component entries |
-| Co-located `Name.js` | Feature behavior | Default |
+**Import rule:** always use `@views-theme/modules/…` — never relative paths into `modules/`.
 
-| Helper | Used by |
-|--------|---------|
-| `body-lock.js` | `Drawer`, `Search:Overlay` (ref-counted `overflow-hidden`) |
-| `lazy-shell.js` | Cart/Nav/Filter drawer Actions, Search Action, Cart Body (parse/mount/wait/fetch/abort) |
-| `serial-queue.js` | `Cart`, `Wishlist` (per-key coalesce) |
+```js
+import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
+import { setBodyLock } from '@views-theme/modules/body-lock.js'
+```
+
+(`@modules` alone is not a valid npm package name; scoped packages need `@scope/name`.)
+
+Wiring:
+
+| Context | Mechanism |
+|---------|-----------|
+| Component **build** | `vite.components.config.mts` → `resolveAliases['@views-theme/modules']` |
+| Component **dev server** | npm `"@views-theme/modules": "file:./src/modules"` → `node_modules/@views-theme/modules` (works with `--ignore-scripts`) |
+| IDE | root `jsconfig.json` paths |
+
+Storefront app root **must** have `package.json` with `vite` + the local modules package. `build-components` runs `npm install` there when `node_modules` is missing.
+
+> **Shopware gap:** plugin `vite.components.config.mts` aliases are not applied by the unified component dev server ([shopware#19032](https://github.com/shopware/shopware/issues/19032)). The `file:` dependency is the dual-path workaround.
+
+```
+views/components/**/*.js          # ShopwareComponent entries (data-component)
+        │ import '@views-theme/modules/…'
+app/storefront/src/modules/
+  shared/     http · dom · component
+  listing/    Product:Listing domain only
+  lazy-shell.js · body-lock.js · serial-queue.js
+```
+
+| Layer | May import |
+|-------|------------|
+| Component entry | `@views-theme/modules/*` (listing only from `Product/Listing.js`) |
+| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` |
+| `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
+| Filters / Cart / shells | `@views-theme/modules/shared/*`, façades — **not** `@views-theme/modules/listing/*` |
+
+| Path | Role |
+|------|------|
+| `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
+| `shared/dom.js` | parse HTML, replaceMount, replaceComponentIsland |
+| `shared/component.js` | instance lookup + wait helpers |
+| `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
+| `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
+| `body-lock.js` | ref-counted body scroll lock (Drawer + Overlay) |
+| `serial-queue.js` | Cart + Wishlist |
 
 Do **not** put UX helpers in legacy `app/storefront/src/helper/` (PluginManager pipeline).
 

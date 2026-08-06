@@ -49,6 +49,17 @@ Loaders: `ProductListingGateway` → core listing/search routes. Results XHR set
 
 ## Owner JS (`Listing.js`)
 
+Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` — import via `@views-theme/modules/listing/…` only:
+
+| Module | Role |
+|--------|------|
+| `params.js` | Request param merge, control value collect, history keys, URL parse |
+| `history.js` | `pushState` + popstate-ignore flag |
+| `controls.js` | Control registry (discover / prune / panels / hydrate / labels) |
+| `fetch.js` | Results HTML + filter-options + aggregations XHR (abort/seq) |
+| `filter-options.js` | Apply options payload / availability onto controls |
+| `results-dom.js` | Results island swap, wait Pagination/Sorting mount, scroll, aria-live |
+
 | API | Role |
 |-----|------|
 | `refreshControls()` | Discover controls in listing el + active `Filter:Panel` |
@@ -61,6 +72,8 @@ Loaders: `ProductListingGateway` → core listing/search routes. Results XHR set
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 | Active panels | Drawer open via `Drawer.isOpen()` on `#vi-filter-drawer` — never CSS classes |
+
+Filters must not import `@views-theme/modules/listing/*` — use `callMethod('ViewsTheme:Product:Listing', …)` only.
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
 
