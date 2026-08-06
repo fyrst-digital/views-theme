@@ -1,8 +1,12 @@
-/** XHR helpers for theme component modules. */
+/**
+ * XHR helpers for theme component modules.
+ *
+ * @module @views-theme/modules/shared/http
+ */
 
 /**
  * @param {string} url
- * @param {{ signal?: AbortSignal, headers?: Record<string, string> }} [options]
+ * @param {import('@views-theme/modules/types.js').HttpFetchOptions} [options]
  * @returns {Promise<string>}
  */
 export async function fetchText(url, options = {}) {
@@ -23,7 +27,7 @@ export async function fetchText(url, options = {}) {
 
 /**
  * @param {string} url
- * @param {{ signal?: AbortSignal, headers?: Record<string, string> }} [options]
+ * @param {import('@views-theme/modules/types.js').HttpFetchOptions} [options]
  * @returns {Promise<unknown>}
  */
 export async function fetchJson(url, options = {}) {
@@ -45,7 +49,7 @@ export async function fetchJson(url, options = {}) {
 /**
  * @param {string} baseUrl
  * @param {Record<string, string>} params
- * @param {Set<string>} [skipKeys]
+ * @param {Set<string>|null} [skipKeys]
  * @returns {string}
  */
 export function urlWithParams(baseUrl, params, skipKeys = null) {
@@ -60,8 +64,8 @@ export function urlWithParams(baseUrl, params, skipKeys = null) {
 }
 
 /**
- * @param {{ controller?: AbortController|null, seq?: number }} state
- * @returns {{ controller: AbortController, signal: AbortSignal, id: number, isCurrent: () => boolean }}
+ * @param {import('@views-theme/modules/types.js').RequestState} state
+ * @returns {import('@views-theme/modules/types.js').BeginRequestResult}
  */
 export function beginRequest(state) {
     if (state.controller) {
@@ -82,7 +86,7 @@ export function beginRequest(state) {
 }
 
 /**
- * @param {{ controller?: AbortController|null }} state
+ * @param {import('@views-theme/modules/types.js').RequestState} state
  */
 export function abortRequest(state) {
     if (state.controller) {

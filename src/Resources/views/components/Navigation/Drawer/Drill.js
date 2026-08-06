@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class NavigationDrawerDrill extends ShopwareComponent {
     static options = {
         url: null,

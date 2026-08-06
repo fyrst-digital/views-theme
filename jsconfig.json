@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@views-theme/modules/*": ["src/Resources/app/storefront/src/modules/*"]
+      "@views-theme/modules/*": ["./src/Resources/app/storefront/src/modules/*"]
     },
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -11,6 +10,7 @@
   },
   "include": [
     "src/Resources/views/components/**/*.js",
-    "src/Resources/app/storefront/src/modules/**/*.js"
+    "src/Resources/app/storefront/src/modules/**/*.js",
+    "src/Resources/app/storefront/src/modules/**/*.d.ts"
   ]
 }

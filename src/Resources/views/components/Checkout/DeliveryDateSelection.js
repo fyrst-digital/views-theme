@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CheckoutDeliveryDateSelection extends ShopwareComponent {
   static options = {
     inputSelector: 'input[type="date"]',

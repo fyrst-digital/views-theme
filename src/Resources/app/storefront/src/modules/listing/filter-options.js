@@ -1,8 +1,23 @@
-/** Apply filter-options payload / reduced aggregations onto controls. */
+/**
+ * Apply filter-options payload / reduced aggregations onto controls.
+ *
+ * @module @views-theme/modules/listing/filter-options
+ */
 
 /**
- * @param {Iterable<object>} controls
- * @param {{ options?: Record<string, string>, meta?: Record<string, Record<string, unknown>> }} payload
+ * @param {import('@views-theme/modules/types.js').ListingControl} control
+ * @returns {string|null}
+ */
+export function controlFilterKey(control) {
+    const key = control.options?.filterKey
+        || control.el?.getAttribute?.('data-filter-key')
+        || control.options?.name
+    return key || null
+}
+
+/**
+ * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
+ * @param {import('@views-theme/modules/types.js').FilterOptionsPayload} payload
  */
 export function applyFilterOptionsPayload(controls, payload) {
     if (!payload || typeof payload !== 'object') {
@@ -13,9 +28,7 @@ export function applyFilterOptionsPayload(controls, payload) {
     const meta = payload.meta || {}
 
     for (const control of controls) {
-        const key = control.options?.filterKey
-            || control.el?.getAttribute?.('data-filter-key')
-            || control.options?.name
+        const key = controlFilterKey(control)
         if (!key) {
             continue
         }
@@ -31,30 +44,13 @@ export function applyFilterOptionsPayload(controls, payload) {
 }
 
 /**
- * @param {Iterable<object>} controls
+ * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
  * @param {object} aggregations
  */
 export function applyAvailability(controls, aggregations) {
     for (const control of controls) {
         if (typeof control.applyAvailability === 'function') {
             control.applyAvailability(aggregations)
-            continue
-        }
-        if (typeof control.refreshDisabled === 'function') {
-            control.refreshDisabled(aggregations)
         }
     }
-}
-
-/**
- * Control key for batch options map.
- *
- * @param {object} control
- * @returns {string|null}
- */
-export function controlFilterKey(control) {
-    const key = control.options?.filterKey
-        || control.el?.getAttribute?.('data-filter-key')
-        || control.options?.name
-    return key || null
 }

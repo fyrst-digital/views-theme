@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FormSlider extends ShopwareComponent {
     static options = {
         mode: 'single',

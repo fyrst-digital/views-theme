@@ -8,6 +8,9 @@ import {
     waitForInstance,
 } from '@views-theme/modules/lazy-shell.js'
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartDrawerAction extends ShopwareComponent {
     static options = {
         drawerUrl: null,

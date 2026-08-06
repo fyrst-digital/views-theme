@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class Backdrop extends ShopwareComponent {
     static options = {
         componentName: null,

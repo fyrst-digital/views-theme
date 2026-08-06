@@ -1,5 +1,10 @@
-/** Ref-counted body scroll lock for stacked shells (Drawer + Search Overlay). */
+/**
+ * Ref-counted body scroll lock for stacked shells (Drawer + Search Overlay).
+ *
+ * @module @views-theme/modules/body-lock
+ */
 
+/** @type {Set<string|symbol>} */
 const owners = new Set()
 
 /**

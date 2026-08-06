@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartPromotionForm extends ShopwareComponent {
     static options = {
         promoteEvent: 'ViewsTheme:Cart:Promote',

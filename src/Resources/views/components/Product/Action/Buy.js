@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class ProductActionBuy extends ShopwareComponent {
     static options = {
         addEvent: 'ViewsTheme:Cart:Add',

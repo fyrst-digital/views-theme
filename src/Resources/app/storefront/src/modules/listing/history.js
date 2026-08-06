@@ -1,17 +1,33 @@
-/** Listing history push / popstate helpers. */
+/**
+ * Listing history push / popstate helpers.
+ *
+ * @module @views-theme/modules/listing/history
+ */
 
 import { listingHistoryKeys } from '@views-theme/modules/listing/params.js'
 
 /**
- * @returns {{
- *   push: (params: Record<string, string>, options: object, controls: Iterable<unknown>) => void,
- *   shouldIgnorePopstate: () => boolean,
- * }}
+ * @typedef {object} HistoryController
+ * @property {(
+ *   params: import('@views-theme/modules/types.js').ListingRequestParams,
+ *   options: import('@views-theme/modules/types.js').ListingOptions,
+ *   controls: Iterable<import('@views-theme/modules/types.js').ListingControl>,
+ * ) => void} push
+ * @property {() => boolean} shouldIgnorePopstate
+ */
+
+/**
+ * @returns {HistoryController}
  */
 export function createHistoryController() {
     let ignorePopstate = false
 
     return {
+        /**
+         * @param {import('@views-theme/modules/types.js').ListingRequestParams} params
+         * @param {import('@views-theme/modules/types.js').ListingOptions} options
+         * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
+         */
         push(params, options, controls) {
             const skip = new Set(options.displayParamKeys || [])
             const keys = listingHistoryKeys(options, controls)

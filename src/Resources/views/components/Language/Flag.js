@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class LanguageFlag extends ShopwareComponent {
     static options = {
         fallbackSrc: null,

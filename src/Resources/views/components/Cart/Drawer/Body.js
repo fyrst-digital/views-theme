@@ -4,6 +4,9 @@ import {
     fetchText,
 } from '@views-theme/modules/lazy-shell.js'
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class CartDrawerBody extends ShopwareComponent {
     static options = {
         drawerUrl: null,

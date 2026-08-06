@@ -1,3 +1,9 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterRange extends ShopwareComponent {
     static options = {
         minKey: 'min-price',
@@ -108,7 +114,7 @@ export default class FilterRange extends ShopwareComponent {
         event.preventDefault()
         this.resetAll()
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _onFieldInput() {
@@ -156,7 +162,7 @@ export default class FilterRange extends ShopwareComponent {
             this._timer = null
         }
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _syncSliderFromFields({ silent = true } = {}) {
@@ -233,22 +239,13 @@ export default class FilterRange extends ShopwareComponent {
 
     _slider() {
         const name = this.options.sliderComponent || 'ViewsTheme:Form:Slider'
-        const el = this._sliderEl()
-        if (!el || !window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(name, el)
+        return getInstanceByElement(name, this._sliderEl())
     }
 
     _group() {
         const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
         const el = this.el.querySelector(`[data-component="${name}"]`)
-        if (!el || !window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(name, el)
+        return getInstanceByElement(name, el)
     }
 
     _closeGroup() {

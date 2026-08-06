@@ -1,5 +1,8 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class Drawer extends ShopwareComponent {
     static options = {
         openClass: 'd-flex',

@@ -59,6 +59,7 @@ Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` �
 | `fetch.js` | Results HTML + filter-options + aggregations XHR (abort/seq) |
 | `filter-options.js` | Apply options payload / availability onto controls |
 | `results-dom.js` | Results island swap, wait Pagination/Sorting mount, scroll, aria-live |
+| `apply.js` | Façade for controls: `applyListing` / `syncListingControls` / `resetListing` |
 
 | API | Role |
 |-----|------|
@@ -73,7 +74,7 @@ Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` �
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 | Active panels | Drawer open via `Drawer.isOpen()` on `#vi-filter-drawer` — never CSS classes |
 
-Filters must not import `@views-theme/modules/listing/*` — use `callMethod('ViewsTheme:Product:Listing', …)` only.
+Controls (filters, pagination, sorting) call Listing only via `@views-theme/modules/listing/apply.js` façades (`applyListing`, `syncListingControls`, `resetListing`) — not raw `callMethod(…, 'apply')` and not other `listing/*` internals.
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
 

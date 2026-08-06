@@ -1,3 +1,9 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterRating extends ShopwareComponent {
     static options = {
         name: 'rating',
@@ -137,11 +143,6 @@ export default class FilterRating extends ShopwareComponent {
         this._group()?.setDisabled?.(unavailable)
     }
 
-    /** @deprecated use applyAvailability */
-    refreshDisabled(aggregations) {
-        this.applyAvailability(aggregations)
-    }
-
     _onClick(event) {
         const reset = event.target instanceof Element
             ? event.target.closest('[data-filter-reset]')
@@ -153,7 +154,7 @@ export default class FilterRating extends ShopwareComponent {
         event.preventDefault()
         this.resetAll()
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _selected() {
@@ -166,17 +167,13 @@ export default class FilterRating extends ShopwareComponent {
 
     _onChange() {
         this._closeGroup()
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _group() {
         const name = this.options.groupComponent || 'ViewsTheme:Filter:Group'
         const el = this.el.querySelector(`[data-component="${name}"]`)
-        if (!el || !window.Shopware?.getComponentInstanceByElement) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(name, el)
+        return getInstanceByElement(name, el)
     }
 
     _closeGroup() {

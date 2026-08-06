@@ -1,6 +1,8 @@
+import { syncListingControls } from '@views-theme/modules/listing/apply.js'
 import {
     abortRequest,
     beginRequest,
+    eventEl,
     fetchText,
     getInstanceByElement,
     replaceMount,
@@ -8,6 +10,9 @@ import {
     waitForInstance,
 } from '@views-theme/modules/lazy-shell.js'
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterDrawerAction extends ShopwareComponent {
     static options = {
         drawerUrl: null,
@@ -147,7 +152,11 @@ export default class FilterDrawerAction extends ShopwareComponent {
         return getInstanceByElement(this.options.drawerComponentName, this._drawerEl)
     }
 
-    _onDrawerOpen(drawerEl) {
+    /**
+     * @param {unknown} payload
+     */
+    _onDrawerOpen(payload) {
+        const drawerEl = eventEl(payload) ?? payload
         if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
@@ -156,7 +165,11 @@ export default class FilterDrawerAction extends ShopwareComponent {
         void this._syncListingControls()
     }
 
-    _onDrawerClose(drawerEl) {
+    /**
+     * @param {unknown} payload
+     */
+    _onDrawerClose(payload) {
+        const drawerEl = eventEl(payload) ?? payload
         if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
             return
         }
@@ -173,21 +186,12 @@ export default class FilterDrawerAction extends ShopwareComponent {
     }
 
     async _syncListingControls() {
-        if (window.Shopware?.callMethod) {
-            window.Shopware.callMethod(this.options.listingComponent, 'syncControls')
-        }
+        syncListingControls(this.options.listingComponent)
 
         const listingEl = document.querySelector(
             `[data-component="${this.options.listingComponent}"]`,
         )
-        if (!listingEl || !window.Shopware?.getComponentInstanceByElement) {
-            return
-        }
-
-        const listing = window.Shopware.getComponentInstanceByElement(
-            this.options.listingComponent,
-            listingEl,
-        )
+        const listing = getInstanceByElement(this.options.listingComponent, listingEl)
         if (!listing) {
             return
         }

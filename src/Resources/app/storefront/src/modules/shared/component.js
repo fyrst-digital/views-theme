@@ -1,16 +1,20 @@
-/** Shopware component instance helpers. */
+/**
+ * Shopware component instance helpers.
+ *
+ * @module @views-theme/modules/shared/component
+ */
 
 /**
  * @param {string} componentName
- * @param {Element|null} el
- * @returns {unknown}
+ * @param {Element|null|undefined} el
+ * @returns {ShopwareComponent|null}
  */
 export function getInstanceByElement(componentName, el) {
     if (!el || !window.Shopware?.getComponentInstanceByElement) {
         return null
     }
 
-    return window.Shopware.getComponentInstanceByElement(componentName, el)
+    return window.Shopware.getComponentInstanceByElement(componentName, el) || null
 }
 
 /**
@@ -40,6 +44,7 @@ export async function waitForInstance(getInstance, retries = 20) {
  * @param {Element} root
  * @param {string[]} componentNames
  * @param {number} [retries]
+ * @returns {Promise<void>}
  */
 export async function waitForComponentsIn(root, componentNames, retries = 20) {
     if (!root || !window.Shopware?.getComponentInstanceByElement) {
@@ -64,4 +69,24 @@ export async function waitForComponentsIn(root, componentNames, retries = 20) {
             requestAnimationFrame(resolve)
         })
     }
+}
+
+/**
+ * Normalize Drawer Open/Close bus payload to an element.
+ *
+ * @param {unknown} payload
+ * @returns {Element|null}
+ */
+export function eventEl(payload) {
+    if (!payload) {
+        return null
+    }
+    if (payload instanceof Element) {
+        return payload
+    }
+    if (typeof payload === 'object' && payload !== null && 'el' in payload) {
+        const el = /** @type {{ el?: unknown }} */ (payload).el
+        return el instanceof Element ? el : null
+    }
+    return null
 }

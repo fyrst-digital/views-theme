@@ -1,4 +1,8 @@
-/** Listing Results island DOM helpers. */
+/**
+ * Listing Results island DOM helpers.
+ *
+ * @module @views-theme/modules/listing/results-dom
+ */
 
 import { replaceComponentIsland } from '@views-theme/modules/shared/dom.js'
 import { waitForComponentsIn } from '@views-theme/modules/shared/component.js'
@@ -18,6 +22,7 @@ export function replaceResults(root, html, resultsComponent) {
  * @param {Element} root
  * @param {string} resultsComponent
  * @param {number} [retries]
+ * @returns {Promise<void>}
  */
 export async function waitForResultsControls(root, resultsComponent, retries = 20) {
     const results = root.querySelector(`[data-component="${resultsComponent}"]`)
@@ -42,7 +47,7 @@ export function scrollToListing(el, scrollOffset = 0) {
 }
 
 /**
- * @param {object} options
+ * @param {import('@views-theme/modules/types.js').ListingOptions} options
  * @param {Element} listingEl
  */
 export function updateAriaLive(options, listingEl) {

@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class VariantsGridContainer extends ShopwareComponent {
     static options = {
         quantityInputSelector: '[data-component="ViewsTheme:QuantityInput"] input[type="number"]',

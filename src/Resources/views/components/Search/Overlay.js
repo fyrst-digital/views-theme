@@ -1,5 +1,8 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class SearchOverlay extends ShopwareComponent {
     static options = {
         openClass: 'd-flex',

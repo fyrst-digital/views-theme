@@ -1,5 +1,10 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
 
+/**
+ * Cart mutation owner (HTTP + serial queue).
+ *
+ * @extends {ShopwareComponent}
+ */
 export default class Cart extends ShopwareComponent {
     static options = {
         cartJsonUrl: null,
@@ -20,7 +25,11 @@ export default class Cart extends ShopwareComponent {
     }
 
     init() {
+        /** @type {import('@views-theme/modules/serial-queue.js').SerialQueue<import('@views-theme/modules/types.js').CartQueueJob>} */
         this._queue = createSerialQueue({
+            /**
+             * @param {import('@views-theme/modules/types.js').CartQueueJob} job
+             */
             coalesceKey: (job) => {
                 const id = job?.payload?.lineItemId
                 return id ? `${job.action}:${id}` : null

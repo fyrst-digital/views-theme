@@ -1,3 +1,8 @@
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterGroup extends ShopwareComponent {
     static options = {
         open: false,
@@ -43,15 +48,15 @@ export default class FilterGroup extends ShopwareComponent {
         this._body = null
     }
 
+    /**
+     * @param {number|null} count
+     */
     setCount(count) {
-        if (!this._count || !window.Shopware?.getComponentInstanceByElement) {
+        if (!this._count) {
             return
         }
 
-        const instance = window.Shopware.getComponentInstanceByElement(
-            this.options.countComponent,
-            this._count,
-        )
+        const instance = getInstanceByElement(this.options.countComponent, this._count)
         instance?.setCount?.(count)
     }
 

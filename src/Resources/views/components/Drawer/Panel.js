@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class DrawerPanel extends ShopwareComponent {
     static options = {
         drawerComponentName: 'ViewsTheme:Drawer',

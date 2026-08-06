@@ -1,4 +1,7 @@
 /** Selection badge: count SoT is options; DOM is a paint. */
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterGroupCount extends ShopwareComponent {
     static options = {
         count: null,

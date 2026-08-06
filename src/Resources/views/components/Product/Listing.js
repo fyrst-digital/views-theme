@@ -10,7 +10,13 @@ import {
     waitForResultsControls,
 } from '@views-theme/modules/listing/results-dom.js'
 
+/**
+ * Product listing owner: URL SoT, control registry, Results XHR, filter-options.
+ *
+ * @extends {ShopwareComponent}
+ */
 export default class ProductListing extends ShopwareComponent {
+    /** @type {import('@views-theme/modules/types.js').ListingOptions} */
     static options = {
         resultsUrl: null,
         aggregationsUrl: null,
@@ -47,12 +53,14 @@ export default class ProductListing extends ShopwareComponent {
 
     init() {
         this._busy = false
+        /** @type {{ params: Record<string, unknown>, pushHistory: boolean }|null} */
         this._queued = null
         this._onPopstate = this._onPopstate.bind(this)
 
+        /** @type {import('@views-theme/modules/types.js').ListingModuleContext} */
         const ctx = {
             el: this.el,
-            getOptions: () => this.options,
+            getOptions: () => /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
         }
         this._registry = createControlsRegistry(ctx)
         this._fetch = createListingFetch(ctx)
@@ -76,10 +84,12 @@ export default class ProductListing extends ShopwareComponent {
         this._queued = null
     }
 
+    /** Re-scan control components (e.g. after Filter:Drawer mount/unmount). */
     refreshControls() {
         this._registry.refresh()
     }
 
+    /** Hydrate every registered control from the current URL query. */
     hydrateFromUrl() {
         this._registry.hydrateFromUrl()
     }
@@ -94,8 +104,11 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     /**
-     * @param {Record<string, unknown>|null} [params]
+     * Batch-refetch filter option lists (server order + disabled) and meta.
+     *
+     * @param {Record<string, unknown>|import('@views-theme/modules/types.js').ListingRequestParams|null} [params]
      * @param {{ built?: boolean }} [options]
+     * @returns {Promise<void>}
      */
     async syncFilterOptions(params = null, options = {}) {
         if (!this.options.disableEmptyFilter) {
@@ -120,8 +133,11 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     /**
-     * @param {Record<string, unknown>|null} [params]
+     * Fallback: reduced aggregations JSON → applyAvailability on controls.
+     *
+     * @param {Record<string, unknown>|import('@views-theme/modules/types.js').ListingRequestParams|null} [params]
      * @param {{ built?: boolean }} [options]
+     * @returns {Promise<void>}
      */
     async syncAvailability(params = null, options = {}) {
         if (!this.options.disableEmptyFilter || !this.options.aggregationsUrl) {
@@ -141,7 +157,7 @@ export default class ProductListing extends ShopwareComponent {
     }
 
     /**
-     * @param {Record<string, unknown>} patch
+     * @param {Record<string, unknown>} [patch]
      * @param {{ pushHistory?: boolean, resetPage?: boolean }} [options]
      */
     apply(patch = {}, options = {}) {
@@ -156,6 +172,9 @@ export default class ProductListing extends ShopwareComponent {
         this._enqueue(next, pushHistory)
     }
 
+    /**
+     * @param {string} id
+     */
     reset(id) {
         this.refreshControls()
         this._registry.forEach((control) => {
@@ -176,22 +195,41 @@ export default class ProductListing extends ShopwareComponent {
         this.apply({ p: 1 }, { resetPage: false })
     }
 
+    /**
+     * @returns {import('@views-theme/modules/types.js').ListingLabel[]}
+     */
     getActiveLabels() {
         return this._registry.getActiveLabels()
     }
 
+    /**
+     * @param {Record<string, unknown>|import('@views-theme/modules/types.js').ListingRequestParams|null} params
+     * @param {{ built?: boolean }} [options]
+     * @returns {import('@views-theme/modules/types.js').ListingRequestParams}
+     */
     _resolveParams(params, options = {}) {
         if (options.built) {
-            return params || {}
+            return /** @type {import('@views-theme/modules/types.js').ListingRequestParams} */ (params || {})
         }
-        return buildRequestParams(this.options, params ?? this._registry.collectValues())
+        return buildRequestParams(
+            /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
+            params ?? this._registry.collectValues(),
+        )
     }
 
+    /**
+     * @param {import('@views-theme/modules/types.js').FilterOptionsPayload} payload
+     */
     _applyOptions(payload) {
         this.refreshControls()
         applyFilterOptionsPayload(this._registry.values(), payload)
     }
 
+    /**
+     * @param {boolean} ok
+     * @param {import('@views-theme/modules/types.js').ListingRequestParams|Record<string, never>} params
+     * @param {string|null} [error]
+     */
     _emitAvailability(ok, params, error = null) {
         window.Shopware.emitQueued(this.options.availabilitySyncedEvent, {
             ok,
@@ -201,6 +239,11 @@ export default class ProductListing extends ShopwareComponent {
         })
     }
 
+    /**
+     * @param {() => Promise<void>} runner
+     * @param {string} failCode
+     * @returns {Promise<void>}
+     */
     async _withAvailabilityLoading(runner, failCode) {
         const standalone = !this._busy
         if (standalone) {
@@ -230,6 +273,10 @@ export default class ProductListing extends ShopwareComponent {
         }
     }
 
+    /**
+     * @param {Record<string, unknown>} params
+     * @param {boolean} pushHistory
+     */
     _enqueue(params, pushHistory) {
         this._queued = { params, pushHistory }
         if (!this._busy) {
@@ -237,6 +284,9 @@ export default class ProductListing extends ShopwareComponent {
         }
     }
 
+    /**
+     * @returns {Promise<void>}
+     */
     async _runQueue() {
         if (this._busy) {
             return
@@ -259,6 +309,11 @@ export default class ProductListing extends ShopwareComponent {
         }
     }
 
+    /**
+     * @param {Record<string, unknown>} params
+     * @param {boolean} pushHistory
+     * @returns {Promise<void>}
+     */
     async _fetchAndApply(params, pushHistory) {
         if (!this.options.resultsUrl) {
             console.error('ProductListing: resultsUrl is missing')
@@ -266,7 +321,10 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         this._registry.prune()
-        const requestParams = buildRequestParams(this.options, params)
+        const requestParams = buildRequestParams(
+            /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
+            params,
+        )
         const optionsRequested = Boolean(
             this.options.disableEmptyFilter && this.options.filterOptionsUrl,
         )
@@ -284,11 +342,16 @@ export default class ProductListing extends ShopwareComponent {
             this.refreshControls()
 
             if (pushHistory && this.options.history) {
-                this._history.push(requestParams, this.options, this._registry.values())
+                this._history.push(
+                    requestParams,
+                    /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
+                    this._registry.values(),
+                )
             }
             this._registry.hydrateFromParams(requestParams)
             scrollToListing(this.el, this.options.scrollOffset)
 
+            /** @type {import('@views-theme/modules/types.js').FilterOptionsPayload|null|undefined} */
             let optionsPayload = undefined
             if (optionsRequested) {
                 try {
@@ -310,7 +373,10 @@ export default class ProductListing extends ShopwareComponent {
                 await this.syncFilterOptions(requestParams, { built: true })
             }
 
-            updateAriaLive(this.options, this.el)
+            updateAriaLive(
+                /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
+                this.el,
+            )
 
             window.Shopware.emitQueued(this.options.changedEvent, {
                 ok: true,

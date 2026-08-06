@@ -1,5 +1,10 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
 
+/**
+ * Wishlist mutation owner (HTTP + serial queue).
+ *
+ * @extends {ShopwareComponent}
+ */
 export default class Wishlist extends ShopwareComponent {
     static options = {
         listPath: null,
@@ -16,7 +21,11 @@ export default class Wishlist extends ShopwareComponent {
 
     init() {
         this._products = {}
+        /** @type {import('@views-theme/modules/serial-queue.js').SerialQueue<import('@views-theme/modules/types.js').WishlistQueueJob>} */
         this._queue = createSerialQueue({
+            /**
+             * @param {import('@views-theme/modules/types.js').WishlistQueueJob} job
+             */
             coalesceKey: (job) => {
                 const id = job?.payload?.productId
                 return id ? String(id) : null

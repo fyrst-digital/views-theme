@@ -1,3 +1,6 @@
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class Pagination extends ShopwareComponent {
     static options = {
         page: null,

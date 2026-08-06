@@ -1,4 +1,8 @@
-/** DOM parse / mount helpers. */
+/**
+ * DOM parse / mount helpers.
+ *
+ * @module @views-theme/modules/shared/dom
+ */
 
 /**
  * @param {string} html

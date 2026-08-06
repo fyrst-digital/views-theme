@@ -1,20 +1,35 @@
 /**
  * Serial async queue with optional per-key coalesce (last write wins per key).
  *
- * @param {{ coalesceKey?: (job: unknown) => string|null|undefined }} [options]
+ * @module @views-theme/modules/serial-queue
+ * @template TJob
+ */
+
+/**
+ * @template TJob
+ * @typedef {object} SerialQueue
+ * @property {(job: TJob, run: (job: TJob) => Promise<void>) => Promise<void>} enqueue
+ * @property {() => void} clear
+ * @property {boolean} busy
+ */
+
+/**
+ * @template TJob
+ * @param {import('@views-theme/modules/types.js').SerialQueueOptions<TJob>} [options]
+ * @returns {SerialQueue<TJob>}
  */
 export function createSerialQueue(options = {}) {
     let busy = false
-    /** @type {unknown|null} */
+    /** @type {TJob|null} */
     let single = null
-    /** @type {Map<string, unknown>} */
+    /** @type {Map<string, TJob>} */
     const byKey = new Map()
-    /** @type {unknown[]} */
+    /** @type {TJob[]} */
     const fifo = []
 
     /**
-     * @param {unknown} job
-     * @param {(job: unknown) => Promise<void>} run
+     * @param {TJob} job
+     * @param {(job: TJob) => Promise<void>} run
      */
     async function enqueue(job, run) {
         const keyFn = options.coalesceKey
@@ -34,7 +49,7 @@ export function createSerialQueue(options = {}) {
     }
 
     /**
-     * @param {(job: unknown) => Promise<void>} run
+     * @param {(job: TJob) => Promise<void>} run
      */
     async function drain(run) {
         if (busy) {
@@ -44,13 +59,14 @@ export function createSerialQueue(options = {}) {
         busy = true
         try {
             while (single != null || byKey.size > 0 || fifo.length > 0) {
+                /** @type {TJob|null} */
                 let job = null
 
                 if (single != null) {
                     job = single
                     single = null
                 } else if (fifo.length > 0) {
-                    job = fifo.shift()
+                    job = /** @type {TJob} */ (fifo.shift())
                 } else {
                     const first = byKey.entries().next().value
                     if (!first) {

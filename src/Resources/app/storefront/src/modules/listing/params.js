@@ -1,4 +1,8 @@
-/** Pure listing query/param helpers. */
+/**
+ * Pure listing query/param helpers.
+ *
+ * @module @views-theme/modules/listing/params
+ */
 
 /**
  * @param {unknown} value
@@ -8,13 +12,13 @@ export function objectOption(value) {
     if (!value || Array.isArray(value)) {
         return {}
     }
-    return typeof value === 'object' ? value : {}
+    return typeof value === 'object' ? /** @type {Record<string, unknown>} */ (value) : {}
 }
 
 /**
- * @param {object} options
+ * @param {import('@views-theme/modules/types.js').ListingOptions} options
  * @param {Record<string, unknown>} controlParams
- * @returns {Record<string, string>}
+ * @returns {import('@views-theme/modules/types.js').ListingRequestParams}
  */
 export function buildRequestParams(options, controlParams) {
     const merged = {
@@ -23,6 +27,7 @@ export function buildRequestParams(options, controlParams) {
         ...controlParams,
     }
 
+    /** @type {import('@views-theme/modules/types.js').ListingRequestParams} */
     const out = {}
     Object.entries(merged).forEach(([key, value]) => {
         if (value === null || value === undefined || value === '') {
@@ -41,17 +46,18 @@ export function buildRequestParams(options, controlParams) {
 }
 
 /**
- * @param {Iterable<{ getValues?: () => Record<string, unknown> }>} controls
+ * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
  * @returns {Record<string, unknown>}
  */
 export function collectControlValues(controls) {
+    /** @type {Record<string, unknown>} */
     const values = {}
     for (const control of controls) {
         const part = (typeof control.getValues === 'function' ? control.getValues() : null) || {}
         Object.entries(part).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-                const merged = [...(values[key] || []), ...value]
-                values[key] = [...new Set(merged)]
+                const prev = Array.isArray(values[key]) ? /** @type {unknown[]} */ (values[key]) : []
+                values[key] = [...new Set([...prev, ...value])]
                 return
             }
             if (value !== null && value !== undefined && value !== '') {
@@ -63,8 +69,8 @@ export function collectControlValues(controls) {
 }
 
 /**
- * @param {object} options
- * @param {Iterable<{ getParamKeys?: () => string[] }>} controls
+ * @param {import('@views-theme/modules/types.js').ListingOptions} options
+ * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
  * @returns {Set<string>}
  */
 export function listingHistoryKeys(options, controls) {
@@ -86,7 +92,7 @@ export function listingHistoryKeys(options, controls) {
 }
 
 /**
- * @returns {Record<string, string>}
+ * @returns {import('@views-theme/modules/types.js').ListingRequestParams}
  */
 export function urlParams() {
     return Object.fromEntries(new URLSearchParams(window.location.search).entries())

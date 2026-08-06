@@ -1,3 +1,10 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+
+/**
+ * Pagination page link → Listing.apply.
+ *
+ * @extends {ShopwareComponent}
+ */
 export default class PaginationItem extends ShopwareComponent {
     static options = {
         page: 1,
@@ -26,11 +33,9 @@ export default class PaginationItem extends ShopwareComponent {
 
         event.preventDefault()
         const page = Number(this.options.page || 1)
-        window.Shopware.callMethod(
-            this.options.listingComponent,
-            'apply',
+        applyListing(
             { p: page },
-            { resetPage: false },
+            { listingComponent: this.options.listingComponent },
         )
     }
 }

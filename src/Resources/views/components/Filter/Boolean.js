@@ -1,3 +1,8 @@
+import { applyListing } from '@views-theme/modules/listing/apply.js'
+
+/**
+ * @extends {ShopwareComponent}
+ */
 export default class FilterBoolean extends ShopwareComponent {
     static options = {
         name: null,
@@ -6,6 +11,7 @@ export default class FilterBoolean extends ShopwareComponent {
     }
 
     init() {
+        /** @type {HTMLInputElement|null} */
         this._input = this.el.querySelector('input[type="checkbox"]')
         this._onChange = this._onChange.bind(this)
         this._input?.addEventListener('change', this._onChange)
@@ -18,6 +24,9 @@ export default class FilterBoolean extends ShopwareComponent {
         this._input?.removeEventListener('change', this._onChange)
     }
 
+    /**
+     * @returns {Record<string, unknown>}
+     */
     getValues() {
         if (!this.options.name || !this._input?.checked) {
             return {}
@@ -26,10 +35,16 @@ export default class FilterBoolean extends ShopwareComponent {
         return { [this.options.name]: '1' }
     }
 
+    /**
+     * @returns {string[]}
+     */
     getParamKeys() {
         return this.options.name ? [this.options.name] : []
     }
 
+    /**
+     * @returns {import('@views-theme/modules/types.js').ListingLabel[]}
+     */
     getLabels() {
         if (!this._input?.checked || !this.options.name) {
             return []
@@ -38,6 +53,9 @@ export default class FilterBoolean extends ShopwareComponent {
         return [{ id: this.options.name, label: this.options.displayName || this.options.name }]
     }
 
+    /**
+     * @param {string} id
+     */
     reset(id) {
         if (id === this.options.name && this._input) {
             this._input.checked = false
@@ -52,6 +70,9 @@ export default class FilterBoolean extends ShopwareComponent {
         this.el.hidden = false
     }
 
+    /**
+     * @param {Record<string, string>} params
+     */
     setFromUrl(params) {
         if (!this._input || !this.options.name) {
             return
@@ -83,6 +104,9 @@ export default class FilterBoolean extends ShopwareComponent {
         }
     }
 
+    /**
+     * @param {object} aggregations
+     */
     applyAvailability(aggregations) {
         if (!this.options.name || !aggregations) {
             return
@@ -98,12 +122,7 @@ export default class FilterBoolean extends ShopwareComponent {
         }
     }
 
-    /** @deprecated use applyAvailability */
-    refreshDisabled(aggregations) {
-        this.applyAvailability(aggregations)
-    }
-
     _onChange() {
-        window.Shopware.callMethod(this.options.listingComponent, 'apply', { p: 1 }, { resetPage: false })
+        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 }

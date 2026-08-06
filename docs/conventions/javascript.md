@@ -36,22 +36,38 @@ app/storefront/src/modules/
 
 | Layer | May import |
 |-------|------------|
-| Component entry | `@views-theme/modules/*` (listing only from `Product/Listing.js`) |
+| Component entry | `@views-theme/modules/*` |
+| `Product/Listing.js` | any `@views-theme/modules/listing/*` |
+| Filters / Pagination / Sorting | `@views-theme/modules/listing/apply.js` only (+ shared / lazy-shell as needed) |
 | `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Filters / Cart / shells | `@views-theme/modules/shared/*`, façades — **not** `@views-theme/modules/listing/*` |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing internals |
 
 | Path | Role |
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
 | `shared/dom.js` | parse HTML, replaceMount, replaceComponentIsland |
-| `shared/component.js` | instance lookup + wait helpers |
+| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `eventEl`, …) |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
+| `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
 | `body-lock.js` | ref-counted body scroll lock (Drawer + Overlay) |
 | `serial-queue.js` | Cart + Wishlist |
+| `types.js` | Shared JSDoc `@typedef`s (empty runtime export) |
+| `shopware-globals.d.ts` | Ambient `ShopwareComponent` / `window.Shopware` for IDE |
 
 Do **not** put UX helpers in legacy `app/storefront/src/helper/` (PluginManager pipeline).
+
+## JSDoc
+
+| Target | Required |
+|--------|----------|
+| Component class | `@extends {ShopwareComponent}` + short role blurb when non-obvious |
+| Module file | `@module @views-theme/modules/…` |
+| Exported functions | `@param` / `@returns` (use typedefs from `types.js` where shared) |
+| Cross-file types | `import('@views-theme/modules/types.js').ListingOptions` etc. |
+
+IDE: root `jsconfig.json` paths + `include` for components, modules, and `shopware-globals.d.ts`.
 
 ## Selectors & structure
 
