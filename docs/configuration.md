@@ -145,9 +145,9 @@ In component CSS:
 | `sw-color-brand-light` | color | `#faf5ee` |
 | `sw-color-brand-dark` | color | `#2E282A` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
-| `sw-logo-desktop` | media | |
-| `sw-logo-tablet` | media | |
-| `sw-logo-mobile` | media | |
+| `sw-logo-desktop` | media | Consumed by class `Page:Logo` as default `<img>` (`logoPath`); falls back to `bundles/viewstheme/img/views-logo.svg` |
+| `sw-logo-tablet` | media | `Page:Logo` tablet `<source>` when set and ≠ desktop |
+| `sw-logo-mobile` | media | `Page:Logo` mobile `<source>` when set and ≠ desktop |
 | `sw-logo-share` | media | |
 | `sw-logo-favicon` | media | |
 
