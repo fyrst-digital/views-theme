@@ -53,5 +53,6 @@ Full index: [docs/README.md](docs/README.md).
 | Filters | [docs/features/filters.md](docs/features/filters.md) |
 | Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
 | Sorting | [docs/features/sorting.md](docs/features/sorting.md) |
+| Breadcrumb | [docs/features/breadcrumb.md](docs/features/breadcrumb.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |
