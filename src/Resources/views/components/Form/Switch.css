@@ -3,6 +3,9 @@
   opacity: var(--vi-disabled-opacity, 0.5);
 }
 
-.form-switch:has(.form-check-input:disabled) {
+/* Beat cursor-pointer utilities on input/label when disabled. */
+.form-switch:has(.form-check-input:disabled),
+.form-switch:has(.form-check-input:disabled) .form-check-label,
+.form-switch:has(.form-check-input:disabled) .form-check-input {
   cursor: not-allowed;
 }

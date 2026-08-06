@@ -7,7 +7,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/element/cms-element-sidebar-filter.html.twig` → Drawer:Action + desktop Panel; reads product-listing CMS config |
-| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle); forwards `showActive` via `viShowActiveFilters` |
+| `Filter:Drawer:Action` | Mobile open: lazy fetch/mount `Filter:Drawer`; unmount on close (Cart/Nav shell lifecycle); forwards `showActive` via `viShowActiveFilters`. Button chrome: `icon=sliders`, `size=sm`, `full`, `color=outline-primary`, `d-lg-none` |
 | `Filter:Drawer` | Thin composition — **no** JS. `ViewsTheme:Drawer` + `Filter:Panel` (`layout="stacked"` always; `showActive` from CMS) |
 | `Filter:Panel` | Class-backed shell: optional Active + aria-live; facets from resolver; `layout` cascades into facet props |
 | `FilterFacetResolver` | Maps `listing.aggregations` → ordered `FilterFacet` list (gates, props, order) |
@@ -166,7 +166,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
-| Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
+| Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM (`cursor-default` — shell only; pointer on switch/label) + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
 | Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
 | Active chips | Below bar (`Filter:Active`) when `showActive` |
 | On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |
