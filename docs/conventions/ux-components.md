@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`.
 
 ## Props / CVA / attributes
 
@@ -465,7 +465,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
-| Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, Breadcrumb, ScrollUp | UX / shells |
+| Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, ScrollUp | UX / shells |
+| Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
 | Legacy `vi_define_classes` / `defaultBaseClasses` API | **Removed** |

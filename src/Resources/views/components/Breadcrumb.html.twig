@@ -1,23 +1,48 @@
-{% sw_extends '@Storefront/storefront/layout/breadcrumb.html.twig' %}
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['list', 'separator', 'item']) %}
 
-{% props
-    cva = {},
-%}
-
-{% do vi_define_cva({
-    separator: { base: 'vi-breadcrumb__separator breadcrumb-placeholder' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['separator']) %}
-
-{% block layout_breadcrumb_placeholder %}
-    {% if key != breadcrumbKeys|last %}
-        <div
-            {{ vi_attrs('separator').defaults({
-                'aria-hidden': 'true',
+    {% block root %}
+        <nav
+            {{ attributes.defaults({
+                'aria-label': 'breadcrumb',
             }) }}
-            class="{{ vi_class('separator') }}"
+            class="{{ vi_class('root') }}"
         >
-            {{ vi_icon('arrow-right') }}
-        </div>
-    {% endif %}
-{% endblock %}
+            {% block list %}
+                <ol
+                    {{ vi_attrs('list') }}
+                    class="{{ vi_class('list') }}"
+                >
+                    {% for item in items %}
+                        {% block item %}
+                            <twig:ViewsTheme:Breadcrumb:Item
+                                class="{{ vi_class('item') }}"
+                                {{ ...vi_attrs('item').defaults({
+                                    name: item.name,
+                                    href: item.href,
+                                    active: item.active,
+                                    folder: item.folder,
+                                    openInNewTab: item.openInNewTab,
+                                }).all() }}
+                            />
+                        {% endblock %}
+
+                        {% if not loop.last %}
+                            {% block separator %}
+                                <li
+                                    {{ vi_attrs('separator').defaults({
+                                        'aria-hidden': 'true',
+                                    }) }}
+                                    class="{{ vi_class('separator') }}"
+                                >
+                                    {{ vi_icon(separatorIcon) }}
+                                </li>
+                            {% endblock %}
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            {% endblock %}
+        </nav>
+    {% endblock %}
+{% endif %}

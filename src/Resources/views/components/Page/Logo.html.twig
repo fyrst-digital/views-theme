@@ -1,24 +1,14 @@
-{% props
-    element = 'a',
-    textLogo = null,
-    logoPath = asset('bundles/viewstheme/img/views-logo.svg', 'asset'),
-    href = path('frontend.home.page'),
-    title = 'header.logoLink'|trans|striptags,
-    cva = {},
-%}
-
 {% do vi_define_cva({
     root: { base: 'd-inline-flex' },
     text: { base: '' },
     image: { base: 'img-fluid' },
 }|replace_recursive(cva)) %}
 {% do vi_define_attrs(['image', 'text']) %}
-{% set imgLogoPath = desktopLogoPath ?: tabletLogoPath ?: resolvedLogoPath %}
 
 <{{ element|raw }}
     {{ attributes.defaults({
         href: element is same as('a') ? href : null,
-        title: title,
+        title: title ?? 'header.logoLink'|trans|striptags,
     }).without('data-component-template').without('class') }}
     class="{{ vi_class('root') }}"
 >
@@ -43,21 +33,21 @@
                     {% endif %}
                 {% endblock %}
 
-                {% block image_desktop %}
-                    {% if desktopLogoPath %}
+                {% block image_mobile %}
+                    {% if mobileLogoPath %}
                         <source
-                            srcset="{{ desktopLogoPath|sw_encode_url }}"
+                            srcset="{{ mobileLogoPath|sw_encode_url }}"
                             media="(max-width: {{ theme_config('breakpoint.md') - 1 }}px)"
                         >
                     {% endif %}
                 {% endblock %}
 
                 {% block image %}
-                    {% if imgLogoPath %}
+                    {% if logoPath %}
                         <img
                             {{ vi_attrs('image').defaults({
-                                src: imgLogoPath|sw_encode_url,
-                                alt: 'header.logoLink'|trans|striptags,
+                                src: logoPath|sw_encode_url,
+                                alt: title ?? 'header.logoLink'|trans|striptags,
                                 style: 'width: var(--vi-logo-w, auto)',
                             }) }}
                             class="{{ vi_class('image') }}"

@@ -1,0 +1,46 @@
+{% props
+    name = null,
+    href = null,
+    active = false,
+    folder = false,
+    openInNewTab = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['link', 'label']) %}
+
+{% set linked = not folder and not active and href is not empty %}
+
+<li
+    {{ attributes.defaults({
+        'aria-current': active ? 'page' : false,
+    }) }}
+    class="{{ vi_class('root', { active: active }) }}"
+>
+    {% block content %}
+        {% if linked %}
+            <a
+                {{ vi_attrs('link').defaults({
+                    href: href,
+                    title: name,
+                    target: openInNewTab ? '_blank' : false,
+                }) }}
+                class="{{ vi_class('link') }}"
+            >
+                {% block label %}
+                    {{ name }}
+                {% endblock %}
+            </a>
+        {% else %}
+            {% block plain %}
+                <span
+                    {{ vi_attrs('label').defaults({
+                        title: name,
+                    }) }}
+                    class="{{ vi_class('label', { active: active }) }}"
+                >{{ name }}</span>
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+</li>

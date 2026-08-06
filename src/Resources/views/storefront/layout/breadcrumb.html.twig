@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/layout/breadcrumb.html.twig' %}
+
+{% block layout_breadcrumb_inner %}
+    {% set id = null %}
+    {% if categoryId is defined and categoryId %}
+        {% set id = categoryId %}
+    {% elseif category is defined and category and category.id %}
+        {% set id = category.id %}
+    {% elseif breadcrumb is defined and breadcrumb and breadcrumb|length > 0 %}
+        {% set id = breadcrumb|last.categoryId %}
+    {% endif %}
+
+    {% if id %}
+        <twig:ViewsTheme:Breadcrumb :categoryId="id" />
+    {% endif %}
+{% endblock %}

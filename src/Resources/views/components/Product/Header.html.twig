@@ -16,18 +16,18 @@
     {% block prepend %}{% endblock %}
 
     {% block breadcrumb %}
-        {% if feature('v6.8.0.0') or feature('BREADCRUMB_REWORK') %}
-            {% component 'ViewsTheme:Breadcrumb' with {
-                context: context,
-                breadcrumb: page.breadcrumb,
-            } only %}{% endcomponent %}
-        {% else %}
-            {% component 'ViewsTheme:Breadcrumb' with {
-                context: context,
-                categoryId: shopware.navigation.id,
-            } only %}{% endcomponent %}
+        {% set id = null %}
+        {% if product.seoCategory and product.seoCategory.id %}
+            {% set id = product.seoCategory.id %}
+        {% elseif shopware.navigation.id is defined and shopware.navigation.id %}
+            {% set id = shopware.navigation.id %}
+        {% endif %}
+
+        {% if id %}
+            <twig:ViewsTheme:Breadcrumb :categoryId="id" />
         {% endif %}
     {% endblock %}
+
 
     {% block name %}
         <twig:ViewsTheme:Product:Name
