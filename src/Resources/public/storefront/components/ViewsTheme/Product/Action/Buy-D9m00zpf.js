@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={addEvent:`ViewsTheme:Cart:Add`};init(){this._onSubmit=this._onSubmit.bind(this),this.el.addEventListener(`submit`,this._onSubmit)}destroy(){this.el.removeEventListener(`submit`,this._onSubmit)}_onSubmit(e){e.preventDefault();let t=new FormData(this.el);window.Shopware.emit(this.options.addEvent,{formData:t,source:this.el})}};export{e as default};
+//# sourceMappingURL=Buy-D9m00zpf.js.map

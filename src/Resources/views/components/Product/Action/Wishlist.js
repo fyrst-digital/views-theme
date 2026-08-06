@@ -17,7 +17,6 @@ export default class ProductActionWishlist extends ShopwareComponent {
     init() {
         this._pressed = false
         this._busy = false
-        this._iconSuffix = undefined
         this._onClick = this._onClick.bind(this)
         this._onChanged = this._onChanged.bind(this)
 
@@ -129,53 +128,12 @@ export default class ProductActionWishlist extends ShopwareComponent {
             return
         }
 
-        if (this._iconSuffix === undefined) {
-            this._captureSuffix(el)
-        }
-
         const names = [this.options.icons.add, this.options.icons.remove].filter(Boolean)
         for (const n of names) {
             el.classList.remove(`icon-${n}`)
-            if (this._iconSuffix) {
-                el.classList.remove(`icon-${n}${this._iconSuffix}`)
-            }
         }
 
-        el.classList.add(this._iconNameClass(name))
-    }
-
-    _iconNameClass(name) {
-        if (this._iconSuffix) {
-            return `icon-${name}${this._iconSuffix}`
-        }
-
-        return `icon-${name}`
-    }
-
-    _captureSuffix(el) {
-        const names = [this.options.icons.add, this.options.icons.remove]
-            .filter(Boolean)
-            .sort((a, b) => b.length - a.length)
-
-        for (const cls of el.classList) {
-            if (!cls.startsWith('icon-') || cls.startsWith('icon-size')) {
-                continue
-            }
-
-            for (const n of names) {
-                if (cls === `icon-${n}`) {
-                    this._iconSuffix = ''
-                    return
-                }
-
-                if (cls.startsWith(`icon-${n}-`)) {
-                    this._iconSuffix = cls.slice(`icon-${n}`.length)
-                    return
-                }
-            }
-        }
-
-        this._iconSuffix = ''
+        el.classList.add(`icon-${name}`)
     }
 
     _iconEl() {

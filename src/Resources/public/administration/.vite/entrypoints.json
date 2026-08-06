@@ -1,0 +1,23 @@
+{
+  "base": "/bundles/viewstheme/administration/",
+  "entryPoints": {
+    "views-theme": {
+      "css": [],
+      "dynamic": [],
+      "js": [
+        "/bundles/viewstheme/administration/assets/views-theme-ZL6WsSlx.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}

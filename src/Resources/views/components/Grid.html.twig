@@ -1,0 +1,15 @@
+{% props
+    role = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        role: role,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}{% endblock %}
+</div>

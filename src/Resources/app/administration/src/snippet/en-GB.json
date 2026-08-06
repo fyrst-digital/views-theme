@@ -1,0 +1,20 @@
+{
+  "viewsTheme": {
+    "sw-cms": {
+      "elements": {
+        "productListing": {
+          "config": {
+            "filter": {
+              "themeOnlyInfo": "These settings are specific to Views Theme (or themes based on it). They have no effect with other storefront themes.",
+              "labelFilterLayout": "Filter layout",
+              "layoutBar": "Bar",
+              "layoutStacked": "Stacked",
+              "labelShowActiveFilters": "Show active filters",
+              "helpTextShowActiveFilters": "Displays removable chips for the currently selected filters (desktop bar and mobile drawer)."
+            }
+          }
+        }
+      }
+    }
+  }
+}

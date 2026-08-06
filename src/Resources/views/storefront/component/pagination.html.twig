@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/component/pagination.html.twig' %}
+
+{% block component_pagination_nav %}
+    <twig:ViewsTheme:Pagination
+        :entities="entities|default(null)"
+        :currentPage="currentPage|default(null)"
+        :totalPages="totalPages|default(null)"
+        :location="paginationLocation|default(null)"
+        :href="href is defined ? href : true"
+        :pageParameter="pageParameter|default('p')"
+        :preserveQuery="true"
+    />
+{% endblock %}

@@ -29,10 +29,11 @@ Full index: [docs/README.md](docs/README.md).
 | Topic | Doc |
 |-------|-----|
 | **Hard rules** (checklist) | [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) |
-| **Agent workflow** (refactors; no builds) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
+| **Agent workflow** (refactors; no builds; surgical edits) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
 | **UX Twig components** (prop defaults, class components) | [docs/conventions/ux-components.md#props](docs/conventions/ux-components.md#props) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
 | CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) |
+| Length units (critical): **px only** | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#length-units-critical) |
 | JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
 | Variants grid | [docs/features/variants-grid.md](docs/features/variants-grid.md) |
@@ -47,5 +48,10 @@ Full index: [docs/README.md](docs/README.md).
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
+| Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
+| Grid | [docs/features/grid.md](docs/features/grid.md) |
+| Filters | [docs/features/filters.md](docs/features/filters.md) |
+| Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
+| Sorting | [docs/features/sorting.md](docs/features/sorting.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |

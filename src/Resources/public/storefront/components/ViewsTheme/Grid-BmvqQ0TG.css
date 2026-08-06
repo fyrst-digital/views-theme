@@ -1,0 +1,1 @@
+.vi-grid{grid-template-columns:var(--vi-grid-columns,repeat(var(--vi-grid-col-count,12), minmax(0, 1fr)))}

@@ -1,89 +1,21 @@
-{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['results']) %}
 
-{#
-  Product listing under components/. Extends core listing for pagination/sorting.
-  Not a pure UX tag component — include path or theme inheritance only.
-#}
-
-{% props
-    cva = {},
-%}
-
-{% do vi_define_cva({
-    root: { base: 'vi-product-listing js-listing-wrapper' },
-    actions: { base: 'vi-product-listing__actions' },
-    empty: { base: 'vi-product-listing__empty' },
-}|replace_recursive(cva)) %}
-
-{% do vi_define_attrs(['actions', 'empty']) %}
-
-{% block element_product_listing_pagination_nav_actions %}
-    <div
-        {{ vi_attrs('actions') }}
-        class="{{ vi_class('actions') }}"
-    >
-        {% block element_product_listing_pagination_nav_top %}
-            {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
-                entities: searchResult,
-                fallbackUrl: paginationFallbackUrl,
-                paginationLocation: 'top',
-            } %}
-        {% endblock %}
-
-        {% block element_product_listing_sorting %}
-            {% sw_include '@Storefront/storefront/component/sorting.html.twig' with {
-                current: searchResult.sorting,
-                sortings: searchResult.availableSortings,
-            } %}
-        {% endblock %}
-    </div>
-{% endblock %}
-
-{% block element_product_listing_row %}
-    {% if searchResult.total > searchResult.limit %}
-        {% set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
-            '%count%': searchResult.elements|length,
-            '%total%': searchResult.total,
-        })|sw_sanitize %}
-    {% else %}
-        {% set ariaLiveText = 'listing.filterPanelAriaLive'|trans({'%count%': searchResult.total})|sw_sanitize %}
-    {% endif %}
-
-    <div
-        {{ attributes.defaults({
-            'data-aria-live-text': ariaLiveText,
-            role: searchResult.total > 0 ? 'list' : null,
-        }) }}
-        class="{{ vi_class('root') }}"
-    >
-        {% if searchResult.total > 0 %}
-            {% block element_product_listing_col %}
-                {% for product in searchResult %}
-                    {% block element_product_listing_box %}
-                        {% set listingBoxLayout = boxLayout|default('default') %}
-                        {% if listingBoxLayout is empty or listingBoxLayout is same as('standard') %}
-                            {% set listingBoxLayout = 'default' %}
-                        {% endif %}
-
-                        <twig:ViewsTheme:Product:Box
-                            :product="product"
-                            :layout="listingBoxLayout"
-                        />
-                    {% endblock %}
-                {% endfor %}
-            {% endblock %}
-        {% else %}
-            {% block element_product_listing_col_empty %}
-                <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
-                    {% block element_product_listing_col_empty_alert %}
-                        <twig:ViewsTheme:Alert
-                            type="info"
-                            content="{{ 'listing.emptyResultMessage'|trans|sw_sanitize }}"
-                            announceOnLoad
-                        />
-                    {% endblock %}
-                </div>
-            {% endblock %}
-        {% endif %}
-    </div>
-{% endblock %}
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Product:Listing',
+        'data-component-options': componentOptions|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block results %}
+        <twig:ViewsTheme:Product:Listing:Results
+            class="{{ vi_class('results') }}"
+            {{ ...vi_attrs('results').defaults({
+                searchResult: searchResult,
+                boxLayout: boxLayout,
+                referrerCategoryId: referrerCategoryId,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

@@ -9,7 +9,7 @@ Paginated variants grid on product detail pages for products with variants.
 - Quantity input for every variant row
 - Single "Add all to cart" button
 - Server-side filtering of rows with zero quantity via a dedicated controller
-- Seamless lazy-loading pagination via JavaScript fetch
+- Seamless lazy-loading pagination via JavaScript fetch (`VariantsGrid:Pagination` → theme `Pagination`)
 - Preserved quantities across pagination pages
 - Offcanvas cart opens after adding variants, matching default Shopware behavior
 - Configurable rows per page via plugin configuration

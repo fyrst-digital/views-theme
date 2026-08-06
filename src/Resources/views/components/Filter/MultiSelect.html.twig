@@ -1,0 +1,68 @@
+{% props
+    name,
+    displayName = null,
+    elements = [],
+    propertyName = null,
+    layout = 'bar',
+    disabled = false,
+    allowedIds = null,
+    selectedIds = [],
+    id = 'vi-filter-multi-select-' ~ random(),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['group', 'collapse', 'options', 'footer']) %}
+
+{% set filterKey = name == 'properties' and propertyName ? 'properties:' ~ propertyName : name %}
+{% set options = {
+    name: name,
+    propertyName: propertyName,
+    filterKey: filterKey,
+    listingComponent: 'ViewsTheme:Product:Listing',
+} %}
+
+{% set facetDisabled = disabled or (allowedIds is not null and allowedIds|length == 0 and selectedIds|length == 0) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:MultiSelect',
+        'data-component-options': options|json_encode,
+        'data-filter-key': filterKey,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
+>
+    <twig:ViewsTheme:Filter:Group
+        class="{{ vi_class('group') }}"
+        {{ ...vi_attrs('group').defaults({
+            id: id,
+            label: displayName,
+            layout: layout,
+            count: selectedIds|length > 0 ? selectedIds|length : null,
+            disabled: facetDisabled,
+        }).all() }}
+    >
+        <twig:ViewsTheme:Filter:Group:Collapse
+            class="{{ vi_class('collapse') }}"
+            {{ ...vi_attrs('collapse').defaults({
+                id: id,
+                layout: layout,
+            }).all() }}
+        >
+            <twig:ViewsTheme:Filter:MultiSelect:Options
+                class="{{ vi_class('options') }}"
+                {{ ...vi_attrs('options').defaults({
+                    displayName: displayName,
+                    elements: elements,
+                    allowedIds: allowedIds,
+                    selectedIds: selectedIds,
+                    filterKey: filterKey,
+                }).all() }}
+            />
+            <twig:ViewsTheme:Filter:Group:Footer
+                class="{{ vi_class('footer') }}"
+                {{ ...vi_attrs('footer').all() }}
+            />
+        </twig:ViewsTheme:Filter:Group:Collapse>
+    </twig:ViewsTheme:Filter:Group>
+</div>

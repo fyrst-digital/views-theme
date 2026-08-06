@@ -1,0 +1,69 @@
+/* Popover + CSS anchor (Dropdown-like). Sizes/motion via var(--token, fallback). */
+
+.vi-filter-group-toggle__caret {
+  transition: transform var(--vi-duration, 150ms) ease;
+}
+
+.vi-filter-group-toggle[aria-expanded='true'] .vi-filter-group-toggle__caret {
+  transform: rotate(180deg);
+}
+
+.vi-filter-group-body[popover] {
+  inset: unset;
+  margin: 0;
+  overflow: hidden;
+  width: max-content;
+  min-width: var(--vi-min-w, 256px);
+  max-width: var(--vi-max-w, min(100vw - 24px, 400px));
+  max-height: var(--vi-max-h, min(70vh, 416px));
+
+  &[data-placement='bottom-start'] {
+    top: calc(anchor(bottom) + var(--vi-offset, 4px));
+    left: anchor(left);
+    right: auto;
+    bottom: auto;
+  }
+
+  &[data-placement='bottom-end'] {
+    top: calc(anchor(bottom) + var(--vi-offset, 4px));
+    right: anchor(right);
+    left: auto;
+    bottom: auto;
+  }
+
+  &[data-placement='top-start'] {
+    bottom: calc(anchor(top) + var(--vi-offset, 4px));
+    left: anchor(left);
+    right: auto;
+    top: auto;
+  }
+
+  &[data-placement='top-end'] {
+    bottom: calc(anchor(top) + var(--vi-offset, 4px));
+    right: anchor(right);
+    left: auto;
+    top: auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity var(--vi-duration, 200ms) ease,
+      overlay var(--vi-duration, 200ms) allow-discrete,
+      display var(--vi-duration, 200ms) allow-discrete;
+
+    &:not(:popover-open) {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    &:popover-open {
+      opacity: 1;
+    }
+
+    @starting-style {
+      &:popover-open {
+        opacity: 0;
+      }
+    }
+  }
+}

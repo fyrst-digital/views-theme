@@ -1,0 +1,23 @@
+{
+    root: {
+        base: 'vi-form-slider position-relative d-block w-100',
+        variants: {
+            disabled: {
+                true: 'pe-none opacity-50',
+            },
+            mode: {
+                single: 'vi-form-slider--single',
+                range: 'vi-form-slider--range',
+            },
+        },
+    },
+    track: {
+        base: 'vi-form-slider__track position-absolute start-0 end-0 top-50 translate-middle-y rounded-pill bg-light pe-none',
+    },
+    fill: {
+        base: 'vi-form-slider__fill position-absolute top-0 bottom-0 rounded-pill bg-primary',
+    },
+    input: {
+        base: 'vi-form-slider__input position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100 m-0 p-0 bg-transparent pe-none',
+    },
+}

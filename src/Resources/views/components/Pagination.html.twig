@@ -1,0 +1,88 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['first', 'prev', 'page', 'next', 'last']) %}
+
+    {% set locationClass = location ? ' listing-pagination-' ~ location : '' %}
+
+    {% block root %}
+        <nav
+            {{ attributes.defaults({
+                'data-component': 'ViewsTheme:Pagination',
+                'data-component-options': {
+                    page: currentPage,
+                    pageParameter: pageParameter,
+                }|json_encode,
+                'aria-label': 'general.pagination.title'|trans|striptags,
+                'data-pagination-location': location ? location : false,
+            }) }}
+            class="{{ vi_class('root') }} listing-pagination{{ locationClass }}"
+        >
+            {% block first %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('first') }}"
+                    {{ ...vi_attrs('first').defaults({
+                        page: 1,
+                        href: this.pageHref(1),
+                        disabled: isFirst,
+                        icon: 'caret-line-left',
+                        label: 'general.pagination.first'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block prev %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('prev') }}"
+                    {{ ...vi_attrs('prev').defaults({
+                        page: prevPage,
+                        href: this.pageHref(prevPage),
+                        disabled: isFirst,
+                        icon: 'caret-left',
+                        label: 'general.pagination.prev'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block pages %}
+                {% for pageNumber in start..end %}
+                    {% block page %}
+                        <twig:ViewsTheme:Pagination:Item
+                            class="{{ vi_class('page') }}"
+                            {{ ...vi_attrs('page').defaults({
+                                page: pageNumber,
+                                href: this.pageHref(pageNumber),
+                                active: currentPage == pageNumber,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                {% endfor %}
+            {% endblock %}
+
+            {% block next %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('next') }}"
+                    {{ ...vi_attrs('next').defaults({
+                        page: nextPage,
+                        href: this.pageHref(nextPage),
+                        disabled: isLast,
+                        icon: 'caret-right',
+                        label: 'general.pagination.next'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block last %}
+                <twig:ViewsTheme:Pagination:Item
+                    class="{{ vi_class('last') }}"
+                    {{ ...vi_attrs('last').defaults({
+                        page: totalPages,
+                        href: this.pageHref(totalPages),
+                        disabled: isLast,
+                        icon: 'caret-line-right',
+                        label: 'general.pagination.last'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+        </nav>
+    {% endblock %}
+{% endif %}

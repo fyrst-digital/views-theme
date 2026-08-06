@@ -1,0 +1,17 @@
+{% props
+    count = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<span
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Group:Count',
+        'data-component-options': {
+            count: count,
+        }|json_encode,
+        hidden: count ? false : true,
+    }) }}
+    class="{{ vi_class('root') }}"
+>{% if count %}{{ count }}{% endif %}</span>

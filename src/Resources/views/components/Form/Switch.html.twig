@@ -1,0 +1,104 @@
+{% props
+    id = 'vi-form-switch-' ~ random(),
+    name = null,
+    label = null,
+    value = '1',
+    checked = false,
+    disabled = false,
+    reverse = false,
+    description = null,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% set isInvalid = error is not empty or (
+    violationPath is not empty
+    and formViolations
+    and formViolations.getViolations(violationPath) is not empty
+) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input', 'label', 'description', 'feedback']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {# reverse: label first (left) then track — no form-check-reverse #}
+    {% if reverse %}
+        {% block label %}
+            {% if label is not empty %}
+                <label
+                    {{ vi_attrs('label').defaults({
+                        for: id,
+                    }) }}
+                    class="{{ vi_class('label') }}"
+                >
+                    {{ label|raw }}
+                </label>
+            {% endif %}
+        {% endblock %}
+    {% endif %}
+
+    {% block input %}
+        <input
+            {{ vi_attrs('input').defaults({
+                type: 'checkbox',
+                role: 'switch',
+                id: id,
+                name: name is not empty ? name : false,
+                value: value is not empty ? value : false,
+                checked: checked is same as(true) ? true : false,
+                disabled: disabled is same as(true) ? true : false,
+                'data-validation': validationRules is not empty ? validationRules : false,
+                'aria-required': isRequired ? 'true' : false,
+                'aria-invalid': isInvalid ? 'true' : false,
+                'aria-describedby': description is not empty or isInvalid ? ariaDescribedBy : false,
+            }) }}
+            class="{{ vi_class('input', { invalid: isInvalid }) }}"
+        >
+    {% endblock %}
+
+    {% if not reverse %}
+        {{ block('label') }}
+    {% endif %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <small
+                {{ vi_attrs('description').defaults({
+                    id: descriptionId,
+                }) }}
+                class="{{ vi_class('description') }}"
+            >
+                {{ description }}
+            </small>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        {% if violationPath is not empty or error is not empty %}
+            <div
+                {{ vi_attrs('feedback').defaults({
+                    id: feedbackId,
+                }) }}
+                class="{{ vi_class('feedback') }}"
+            >
+                {% block feedback_violations %}
+                    {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}
+                        {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                            formViolations: formViolations,
+                            violationPath: violationPath,
+                        } %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>

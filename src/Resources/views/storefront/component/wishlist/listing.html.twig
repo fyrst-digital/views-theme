@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/component/wishlist/listing.html.twig' %}
+
+{% block product_listing %}
+    <twig:ViewsTheme:Wishlist:Listing
+        :searchResult="searchResult"
+        :params="params|default({})"
+        :sidebar="sidebar|default(false)"
+        :boxLayout="boxLayout|default('wishlist')"
+        :ariaLiveUpdates="ariaLiveUpdates|default(true)"
+        :disableEmptyFilter="disableEmptyFilter|default(false)"
+    />
+{% endblock %}

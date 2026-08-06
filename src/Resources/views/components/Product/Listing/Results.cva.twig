@@ -1,0 +1,30 @@
+{
+    root: { base: 'vi-product-listing-results d-flex flex-column gap-4' },
+    actions: { base: 'vi-product-listing-results__actions' },
+    grid: { 
+        base: 'vi-product-listing-results__grid', 
+        variants: {
+            size: {
+                sm: 'grid-size__sm',
+                md: 'grid-size__md gap-md-8',
+                lg: 'grid-size__lg',
+            }
+        },
+        compoundVariants: [{
+            size: ['sm', 'md', 'lg'],
+            class: 'gap-4',
+        }]
+    },
+    item: {
+        base: '',
+        variants: {
+            size: {
+                sm: '',
+                md: '',
+                lg: '',
+            },
+        },
+    },
+    empty: { base: 'vi-product-listing-results__empty' },
+    paginationBottom: { base: 'vi-product-listing-results__pagination-bottom' },
+}

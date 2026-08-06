@@ -39,7 +39,7 @@ Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefe
 
 Applies to **lazy-mounted shells** fetched by an Action:
 
-- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer)
+- `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer, Filter drawer)
 - `ViewsTheme:Search:Overlay`
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
@@ -109,6 +109,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Language flag (load error / fallback) | `ViewsTheme:Language:Flag` | `Language/Flag.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
+| Pagination (Listing control API) | `ViewsTheme:Pagination` | `Pagination.js` |
+| Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 
 Build (project root):
 
@@ -242,6 +244,25 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
+
+### Filter drawer / bar
+
+Lazy-loaded end-side filter drawer + desktop horizontal bar. **Product:Listing** owns filter state (URL + control registry); Action owns shell lifecycle.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Filter:Drawer:Action"` |
+| Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-filter-drawer` |
+| Panel (desktop SSR + drawer body) | `data-component="ViewsTheme:Filter:Panel"` |
+| Group (disclosure) | `data-component="ViewsTheme:Filter:Group"` |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open** with current `location.search`; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- After mount/unmount: `Shopware.callMethod('ViewsTheme:Product:Listing', 'syncControls')` (discover + hydrate from URL)
+- Desktop: always-mounted SSR Panel bar (`class="d-none d-lg-block"`); facet body = Popover API + CSS `position-anchor` (Group.js)
+- Drawer: Group switches to accordion (`popover` stripped); mobile Action only (`d-lg-none`)
+- Public `open()` / `close()` via `callMethod`
+
+See [Filters](../features/filters.md).
 
 ### Scroll area
 

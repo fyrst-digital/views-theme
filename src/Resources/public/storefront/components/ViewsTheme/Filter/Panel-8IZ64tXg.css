@@ -1,0 +1,1 @@
+.vi-filter-panel[aria-busy=true] .vi-filter-panel__items{pointer-events:none;opacity:var(--vi-filter-availability-pending-opacity,.55)}

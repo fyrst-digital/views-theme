@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{static options={count:null};setCount(e){this.options.count=e||null,this._paint()}_paint(){let e=this.options.count;if(e){this.el.hidden=!1,this.el.textContent=String(e);return}this.el.hidden=!0,this.el.textContent=``}};export{e as default};
+//# sourceMappingURL=Count-BKnVjYAl.js.map

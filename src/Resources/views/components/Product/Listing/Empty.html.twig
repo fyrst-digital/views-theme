@@ -1,0 +1,22 @@
+{% props
+    message = 'listing.emptyResultMessage'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'status',
+        'data-grid-span': 'full',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <twig:ViewsTheme:Alert
+            type="info"
+            content="{{ message }}"
+            announceOnLoad
+        />
+    {% endblock %}
+</div>

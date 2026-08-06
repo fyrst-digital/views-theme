@@ -1,0 +1,1 @@
+.vi-filter-boolean__chip:has(.form-check-input:disabled){opacity:var(--vi-chip-disabled-opacity,.4);pointer-events:none}

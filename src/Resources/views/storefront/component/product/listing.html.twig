@@ -1,0 +1,36 @@
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{% block product_listing %}
+    {% set listingNavigationId = null %}
+    {% if searchResult.currentFilters.navigationId is defined and searchResult.currentFilters.navigationId %}
+        {% set listingNavigationId = searchResult.currentFilters.navigationId %}
+    {% endif %}
+
+    {% set listingResultsUrl = dataUrl|default(null) %}
+    {% set listingAggregationsUrl = filterUrl|default(null) %}
+    {% set listingParams = params|default({}) %}
+
+    {% set listingFilterOptionsUrl = null %}
+    {% if listingNavigationId %}
+        {% set listingResultsUrl = path('frontend.views-theme.listing.category', { navigationId: listingNavigationId }) %}
+        {% set listingAggregationsUrl = path('frontend.views-theme.listing.category.aggregations', { navigationId: listingNavigationId }) %}
+        {% set listingFilterOptionsUrl = path('frontend.views-theme.listing.category.filter-options', { navigationId: listingNavigationId }) %}
+        {% set listingParams = {} %}
+    {% elseif listingParams.search is defined and listingParams.search %}
+        {% set listingResultsUrl = path('frontend.views-theme.listing.search') %}
+        {% set listingAggregationsUrl = path('frontend.views-theme.listing.search.aggregations') %}
+        {% set listingFilterOptionsUrl = path('frontend.views-theme.listing.search.filter-options') %}
+    {% endif %}
+
+    <twig:ViewsTheme:Product:Listing
+        :searchResult="searchResult"
+        :resultsUrl="listingResultsUrl"
+        :aggregationsUrl="listingAggregationsUrl"
+        :filterOptionsUrl="listingFilterOptionsUrl"
+        :params="listingParams"
+        :sidebar="sidebar|default(false)"
+        :boxLayout="boxLayout|default('default')"
+        :ariaLiveUpdates="ariaLiveUpdates|default(true)"
+        :disableEmptyFilter="disableEmptyFilter|default(null)"
+    />
+{% endblock %}

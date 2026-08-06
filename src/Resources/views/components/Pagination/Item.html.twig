@@ -1,0 +1,35 @@
+{% props
+    page = 1,
+    href = '#',
+    disabled = false,
+    active = false,
+    icon = null,
+    label = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<a
+    {{ attributes.defaults({
+        href: href,
+        'data-component': 'ViewsTheme:Pagination:Item',
+        'data-component-options': { page: page }|json_encode,
+        'title': label,
+        'aria-label': label,
+        'aria-current': active ? 'page' : false,
+        tabindex: disabled ? -1 : false,
+        'aria-disabled': disabled ? 'true' : false,
+    }) }}
+    class="{{ vi_class('root', { disabled: disabled, active: active }) }}"
+>
+    {% block content %}
+        {% if icon %}
+            {{ vi_icon(icon, {
+                class: vi_class('icon'),
+            }) }}
+        {% else %}
+            {{ page }}
+        {% endif %}
+    {% endblock %}
+</a>

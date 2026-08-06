@@ -22,8 +22,8 @@
             id: methodType ~ 'Method' ~ methodId,
             name: methodType ~ 'MethodId',
             value: methodId,
-            checked: methodId is same as(selectedMethodId) ? 'checked' : null,
-            disabled: methodDisabled is same as(true) ? 'disabled' : null,
+            checked: methodId is same as(selectedMethodId) ? 'checked' : false,
+            disabled: methodDisabled is same as(true) ? 'disabled' : false,
         }) }}
         class="{{ vi_class('input') }}"
     >

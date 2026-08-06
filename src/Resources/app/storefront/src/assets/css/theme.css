@@ -19,6 +19,10 @@
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
 }
+.btn {
+  --btn-disabled-border-color: var(--border-color);
+  --btn-disabled-bg: var(--light);
+}
 .btn-primary {
   --btn-color: var(--body-color);
 }
@@ -88,4 +92,10 @@
 }
 .vi-cart-drawer {
   --vi-drawer-width: min(420px, 100vw);
+}
+.vi-product-listing-results__grid {
+  --vi-grid-columns: repeat(auto-fill, minmax(min(100%, var(--vi-product-basis, 220px)), 1fr));
+  @media (width >= 1600px) {
+    --vi-product-basis: 320px;
+  }
 }

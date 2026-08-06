@@ -23,13 +23,34 @@ Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defa
 
 **Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ cx.…apply() }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
 
+## Length units (critical)
+
+Theme-owned **component CSS** and **token fallbacks / theme assigns** use **`px` only** for lengths.
+
+| OK | Not OK |
+|----|--------|
+| `px`, `%`, `vh` / `vw`, unitless `line-height`, `calc()` of those | `rem`, `em` for sizes, gaps, radii, offsets, token fallbacks |
+
+Bootstrap **utility classes** are fine (their internal scale is Bootstrap’s). Do not author new `rem`/`em` lengths in `components/**/*.css` or when assigning `--vi-*` in theme CSS.
+
+```css
+/* ✅ */
+width: var(--vi-thumb-size, 20px);
+max-width: var(--vi-max-w, min(100vw - 24px, 352px));
+
+/* ❌ */
+width: var(--vi-thumb-size, 1.25rem);
+max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem));
+```
+
 ## CSS custom properties (critical)
 
 Co-located component CSS (`components/**/*.css`) and theme CSS have **different** jobs for custom properties.
 
 | Layer | Role |
 |-------|------|
-| **Component CSS** | Structure + **consume** tokens with a **fallback default** only |
+| **Component CSS** | Structure + **consume** tokens with a **fallback default** only (`prop: var(--vi-*, fallback)`). No Bootstrap/Shopware override dumps |
+| **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
 | **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults |
 
 ### Component CSS — never assign tokens
@@ -39,34 +60,34 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 ```css
 /* ❌ NEVER — explicit token assignment in component CSS */
 .vi-language-action {
-  --vi-flag-w: 1.25rem;
-  --vi-max-w: min(100vw - 1.5rem, 16rem);
+  --vi-flag-w: 20px;
+  --vi-max-w: min(100vw - 24px, 256px);
 }
 .vi-language-action__flag-icon {
   width: var(--vi-flag-w);
 }
 
-/* ✅ ALWAYS — consume with fallback */
+/* ✅ ALWAYS — consume with fallback (px lengths) */
 .vi-language-action {
-  min-width: var(--vi-min-w, 10rem);
+  min-width: var(--vi-min-w, 160px);
 }
 .vi-language-action__flag-icon {
-  width: var(--vi-flag-w, 1.25rem);
-  border-radius: var(--vi-flag-radius, 0.125rem);
+  width: var(--vi-flag-w, 20px);
+  border-radius: var(--vi-flag-radius, 2px);
 }
 ```
 
-Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem))`.
+Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, …)` (prefer px in new/edited fallbacks).
 
 ### Theme CSS — assign to override
 
 Theme (and other callers) may set tokens on a host/class so component rules pick them up:
 
 ```css
-/* ✅ theme override */
+/* ✅ theme override (px) */
 .vi-language-action,
 .vi-currency-action {
-  --vi-max-w: min(100vw - 40px, 16rem);
+  --vi-max-w: min(100vw - 40px, 256px);
 }
 .vi-account__dropdown {
   --vi-max-w: min(100vw - 40px, 280px);
@@ -89,9 +110,9 @@ Prefer **short** `--vi-*` names. The host selector scopes the token — do not e
 --language-flag-aspect-ratio
 --dropdown-max-width
 
-/* ✅ short; set on the host */
-.vi-navigation-drawer-item__image { width: var(--vi-image-size, 1.75rem); }
-.vi-dropdown[popover] { max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem)); }
+/* ✅ short; set on the host (px lengths) */
+.vi-navigation-drawer-item__image { width: var(--vi-image-size, 28px); }
+.vi-dropdown[popover] { max-width: var(--vi-max-w, min(100vw - 24px, 352px)); }
 .vi-navigation-drawer-menu { --vi-menu-duration: 300ms; /* theme assign */ }
 ```
 

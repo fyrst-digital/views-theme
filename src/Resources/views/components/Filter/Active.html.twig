@@ -1,0 +1,49 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['chip', 'swatch', 'label', 'reset']) %}
+
+{% set options = {
+    listingComponent: 'ViewsTheme:Product:Listing',
+    changedEvent: 'ViewsTheme:Listing:Changed',
+    syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
+    resetAllLabel: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+    removeLabel: 'listing.filterRemoveAriaLabel'|trans|sw_sanitize,
+} %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Active',
+        'data-component-options': options|json_encode,
+        hidden: true,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <template data-active-chip-template>
+        <button
+            type="button"
+            data-filter-id=""
+            class="{{ vi_class('chip') }}"
+        >
+            <span
+                data-active-chip-swatch
+                hidden
+                class="{{ vi_class('swatch') }}"
+                aria-hidden="true"
+            ></span>
+            <span data-active-chip-label class="{{ vi_class('label') }}"></span>
+        </button>
+    </template>
+
+    <template data-active-reset-template>
+        <button
+            type="button"
+            data-reset-all
+            class="{{ vi_class('reset') }}"
+        >
+            {{ options.resetAllLabel }}
+        </button>
+    </template>
+</div>

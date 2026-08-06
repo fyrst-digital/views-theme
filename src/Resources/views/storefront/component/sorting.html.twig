@@ -1,0 +1,7 @@
+{% set showSorting = (slot is defined and slot.config.showSorting.value is defined) ? slot.config.showSorting.value : true %}
+
+<twig:ViewsTheme:Sorting
+    :current="current|default(null)"
+    :sortings="sortings|default([])"
+    :show="showSorting"
+/>

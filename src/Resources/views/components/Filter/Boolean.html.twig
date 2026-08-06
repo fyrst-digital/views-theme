@@ -1,0 +1,43 @@
+{% props
+    name,
+    displayName = null,
+    layout = 'bar',
+    disabled = false,
+    checked = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['chip', 'switch']) %}
+
+{% set switchId = 'vi-filter-boolean-' ~ random() %}
+{% set options = {
+    name: name,
+    displayName: displayName,
+    listingComponent: 'ViewsTheme:Product:Listing',
+} %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Boolean',
+        'data-component-options': options|json_encode,
+        'data-filter-key': name,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
+>
+    <div {{ vi_attrs('chip') }} class="{{ vi_class('chip', { layout: layout }) }}">
+        <twig:ViewsTheme:Form:Switch
+            class="{{ vi_class('switch') }}"
+            input:class="flex-shrink-0"
+            label:class="m-0"
+            {{ ...vi_attrs('switch').defaults({
+                id: switchId,
+                label: displayName,
+                value: '1',
+                reverse: true,
+                checked: checked,
+                disabled: disabled,
+            }).all() }}
+        />
+    </div>
+</div>

@@ -4,17 +4,17 @@
     size = 'md',
     color = 'light',
     appearance = null,
-    icon = 'heart',
+    icon = 'heart-bold',
     iconActive = 'heart-fill',
     cva = {},
 %}
+
+{% do vi_define_cva(cva) %}
 
 {% if productId is not empty %}
     {% set addLabel = 'listing.addToWishlist'|trans|sw_sanitize %}
     {% set removeLabel = 'listing.removeFromWishlist'|trans|sw_sanitize %}
     {% set buttonLabel = showText is same as(true) ? addLabel : null %}
-
-    {% do vi_define_cva(cva) %}
 
     <twig:ViewsTheme:Button
         class="{{ vi_class('root', { appearance: appearance }) }}"

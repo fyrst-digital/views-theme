@@ -1,32 +1,58 @@
-{% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'title', 'close', 'items', 'active', 'live']) %}
 
-{% props
-    cva = {},
-%}
-
-{% do vi_define_cva({
-    header: { base: 'vi-filter-panel__header' },
-    title: { base: 'vi-filter-panel__title' },
-    close: { base: 'vi-filter-panel__close btn js-offcanvas-close' },
-    container: { base: 'vi-filter-panel__container' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['close', 'container', 'header', 'title']) %}
-
-{% block component_filter_panel_header %}
-    <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
-        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-            {{ 'listing.filterTitleText'|trans }}
-        </div>
-        <div {{ vi_attrs('close') }} class="{{ vi_class('close') }}">
-            {{ vi_icon('x') }}
-        </div>
-    </div>
-{% endblock %}
-
-{% block component_filter_panel_items_container %}
-    <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
-        {% block component_filter_panel_items %}
-            {{ parent() }}
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Panel',
+        role: 'region',
+        'aria-label': 'listing.filterTitleText'|trans|sw_sanitize,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if showHeader %}
+        {% block header %}
+            <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
+                <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                    {{ 'listing.filterTitleText'|trans }}
+                </div>
+                <button
+                    type="button"
+                    {{ vi_attrs('close').defaults({
+                        'aria-label': 'listing.filterClose'|trans|striptags,
+                    }) }}
+                    class="{{ vi_class('close') }}"
+                    data-filter-close
+                >
+                    {{ vi_icon('x') }}
+                </button>
+            </div>
         {% endblock %}
-    </div>
-{% endblock %}
+    {% endif %}
+
+    {% block items %}
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items', { layout: layout }) }}" role="list">
+            {% for facet in facets %}
+                {{ component(facet.component, facet.props|merge({ layout: layout })) }}
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% if showActive %}
+        {% block active %}
+            <twig:ViewsTheme:Filter:Active class="{{ vi_class('active') }}" />
+        {% endblock %}
+    {% endif %}
+
+    {% if ariaLiveUpdates %}
+        {% block live %}
+            <div
+                {{ vi_attrs('live').defaults({
+                    'data-aria-live': true,
+                    'aria-live': 'polite',
+                    'aria-atomic': 'true',
+                }) }}
+                class="{{ vi_class('live') }}"
+            ></div>
+        {% endblock %}
+    {% endif %}
+</div>

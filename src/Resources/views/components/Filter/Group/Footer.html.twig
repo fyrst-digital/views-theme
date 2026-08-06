@@ -1,0 +1,25 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['reset']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('reset') }}"
+            {{ ...vi_attrs('reset').defaults({
+                type: 'button',
+                icon: 'arrow-counter-clockwise',
+                label: 'viewsTheme.filter.reset'|trans|sw_sanitize,
+                color: 'link',
+                size: 'sm',
+                'data-filter-reset': true,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

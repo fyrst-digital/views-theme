@@ -7,6 +7,8 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Input` | Stacked text field (`form-group` + control) |
 | `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
 | `ViewsTheme:Form:Select` | Stacked select field (`form-group` + `<select>`) |
+| `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
+| `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
 
 `Form:Input` replaces Storefront `component/form/form-input.html.twig` for theme-owned forms. `Form:Select` replaces `component/form/form-select.html.twig`.
 
@@ -76,6 +78,8 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Account:Login` | Uses `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
 | `Cart:PromotionForm` | Uses `Form:Input:Group` + `Button` in `append` ([cart-drawer](cart-drawer.md#promotion-form)) |
 | `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
+| `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
+| `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
 | `Account:Register`, `Address:*` | Still core `form-input` / `form-select` includes |
 
 ---
@@ -234,8 +238,159 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 | `options` (HTML string) | `:options` prop **or** `{% block options %}` override |
 | `attributes` hash | nested `select:…` |
 
+---
+
+## Form:Switch
+
+Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
+
+### Usage
+
+```twig
+{# Dense bar chip — caller owns flex utilities; BS float/margin fix in scss/_form.scss #}
+<twig:ViewsTheme:Form:Switch
+    id="shippingFree"
+    name="shipping-free"
+    label="{{ 'listing.filterFreeShippingDisplayName'|trans|sw_sanitize }}"
+    value="1"
+    :reverse="true"
+    class="d-inline-flex align-items-center gap-2 m-0 p-0"
+    input:class="flex-shrink-0"
+    label:class="m-0"
+/>
+```
+
+### Props
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `id` | `vi-form-switch-{random}` | Label `for` target |
+| `name` | `null` | Omitted when empty |
+| `label` | `null` | Beside the track |
+| `value` | `'1'` | Checkbox value when on |
+| `checked` | `false` | |
+| `disabled` | `false` | Use `false` not `null` in defaults |
+| `reverse` | `false` | DOM order: label then input (no `form-check-reverse`) |
+| `description` | `null` | Help text |
+| `validationRules` | `null` | → `data-validation` |
+| `violationPath` / `error` / `formViolations` | same as Input | Optional invalid chrome |
+| `cva` | `{}` | |
+
+### Classes / slots
+
+| Slot | Default base | Caller override |
+|------|--------------|-----------------|
+| root | `form-check form-switch` | `class="…"` (e.g. `d-inline-flex gap-2 m-0 p-0`) |
+| input | `form-check-input cursor-pointer` (+ `is-invalid`) | `input:class` |
+| label | `form-check-label` | `label:class` |
+| description | `form-text` | `description:class` |
+| feedback | `form-field-feedback` | `feedback:class` |
+
+Nested attrs: `input:*`, `label:*`, `description:*`, `feedback:*`.
+
+No co-located `Switch.css`. Dense bar layout is caller utilities. Theme BS form-check/switch float & negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
+
+### Call sites
+
+| Consumer | Status |
+|---------|--------|
+| `Filter:Boolean` | Bar chip + `Form:Switch` (`class` utilities + `:reverse`) — [filters.md](filters.md) |
+
+---
+
+## Form:Slider
+
+Single- or dual-thumb range control. Native stacked `<input type="range">` thumbs (no third-party lib). Owns fill paint + clamp via co-located JS.
+
+### Usage
+
+```twig
+{# Dual thumb #}
+<twig:ViewsTheme:Form:Slider
+    mode="range"
+    :min="0"
+    :max="1200"
+    :step="1"
+    :start="0"
+    :end="1200"
+    ariaLabelMin="Price min"
+    ariaLabelMax="Price max"
+/>
+
+{# Single thumb #}
+<twig:ViewsTheme:Form:Slider
+    mode="single"
+    :min="0"
+    :max="100"
+    :value="50"
+    name="opacity"
+    ariaLabel="Opacity"
+/>
+```
+
+### Props
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `id` | `vi-form-slider-{random}` | Root id; thumbs get `-min` / `-max` / `-value` |
+| `mode` | `'single'` | `'single'` \| `'range'` |
+| `min` / `max` | `0` / `100` | Bounds |
+| `step` | `1` | |
+| `value` | `min` | Single thumb |
+| `start` / `end` | `min` / `max` | Range thumbs |
+| `name` | `null` | Single: optional form name |
+| `minName` / `maxName` | `null` | Range: optional form names |
+| `disabled` | `false` | Use `false` not `null` in defaults |
+| `ariaLabel` | `null` | Single (or fallback) |
+| `ariaLabelMin` / `ariaLabelMax` | `null` | Range |
+| `cva` | `{}` | |
+
+### Classes / slots
+
+Layout/chrome that has a Bootstrap utility lives in CVA. Component CSS is geometry tokens, range appearance reset, thumb **pseudos**, runtime fill `%`, and range z-index only.
+
+| Slot | Default base | Caller override |
+|------|--------------|-----------------|
+| root | `vi-form-slider position-relative d-block w-100` (+ mode BEM; disabled → `pe-none opacity-50`) | `class="…"` |
+| track | `vi-form-slider__track` + absolute/center/`rounded-pill`/`bg-light`/`pe-none` | `track:class` |
+| fill | `vi-form-slider__fill` + absolute/`rounded-pill`/`bg-primary` | `fill:class` |
+| input | `vi-form-slider__input` + absolute fill/`m-0 p-0`/`bg-transparent`/`pe-none` | `input:class` |
+
+Nested attrs: `track:*`, `fill:*`, `input:*`.
+
+### JS API (`data-component="ViewsTheme:Form:Slider"`)
+
+| Method | Role |
+|--------|------|
+| `getValues()` | `{ value }` or `{ start, end }` (numbers) |
+| `setValues(values, { silent? })` | Update thumbs + fill; `silent` (default `true`) skips root events |
+
+Root dispatches bubbling `input` (while dragging / each step) and `change` (commit — thumb release). `setValues` with `silent: false` emits both. Consumers that mutate listings should apply on **`change` only**, not `input`.
+
+### CSS tokens (component consume + fallback)
+
+| Token | Role |
+|-------|------|
+| `--vi-track-h` | Track height |
+| `--vi-fill-start` / `--vi-fill-end` | Fill edges as `%` (set by JS) |
+| `--vi-thumb-size` / `--vi-thumb-bg` / `--vi-thumb-border` / `--vi-thumb-shadow` | Thumb base |
+| `--vi-thumb-hover-border` / `--vi-thumb-hover-shadow` | Thumb hover |
+| `--vi-thumb-active-shadow` | Thumb while dragging |
+| `--vi-thumb-focus` | Thumb `:focus-visible` ring |
+
+Track/fill colors default via CVA (`bg-light` / `bg-primary`). Theme may override the BEM host if needed.
+
+Co-located: `Form/Slider.css` (non-utility only).
+
+### Call sites
+
+| Consumer | Status |
+|----------|--------|
+| `Filter:Range` | `mode="range"` under price fields — [filters.md](filters.md) |
+
 ## Related
 
 - [UX components](../conventions/ux-components.md)
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
+- [Filters](filters.md) (`Filter:Boolean`, `Filter:Range`)

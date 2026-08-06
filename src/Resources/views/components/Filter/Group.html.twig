@@ -1,0 +1,39 @@
+{% props
+    label = null,
+    count = null,
+    open = false,
+    id = 'vi-filter-group-' ~ random(),
+    layout = 'bar',
+    disabled = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['toggle']) %}
+
+{% set anchorName = '--' ~ id %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Group',
+        'data-component-options': { open: open, layout: layout }|json_encode,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
+>
+    {% block toggle %}
+        <twig:ViewsTheme:Filter:Group:Toggle
+            {{ ...vi_attrs('toggle').defaults({
+                label: label,
+                expanded: open,
+                controls: id,
+                count: count,
+                layout: layout,
+                disabled: disabled,
+            }|merge(layout == 'bar' ? {
+                style: 'anchor-name: ' ~ anchorName,
+            } : {})).all() }}
+        />
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+</div>

@@ -1,0 +1,3 @@
+.vi-pagination__item {
+    min-width: var(--vi-item-min-w, 28px);
+}

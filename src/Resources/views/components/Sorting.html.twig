@@ -1,0 +1,25 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['select']) %}
+
+    {% set sortingId = 'vi-listing-sorting-' ~ random() %}
+
+    <div
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Sorting',
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block select %}
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('select') }}"
+                {{ ...vi_attrs('select').defaults({
+                    id: sortingId,
+                    options: options,
+                    value: current,
+                    'select:aria-label': 'general.sortingLabel'|trans|striptags,
+                }).all() }}
+            />
+        {% endblock %}
+    </div>
+{% endif %}

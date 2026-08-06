@@ -53,16 +53,25 @@ Guest + cookie consent: without `wishlist-enabled` cookie, owner requests core `
 
 - Composes `ViewsTheme:Button` (single `vi_icon` via `icon` prop); no wrapper, no `data-add-to-wishlist`
 - Props: `productId`, `showText`, `size`, `color`, `appearance` (`null` \| `circle`), `icon` (default `heart`), `iconActive` (default `heart-fill`), `cva`
-- Options `icons: { add, remove }` — JS `_sync` swaps the icon **name** class on the existing node (pack suffix inferred from `vi_icon` markup, e.g. `-bold`); also updates `aria-pressed` + title/label
+- Options `icons: { add, remove }` — JS `_sync` swaps the icon **name** class on the existing node (`icon-${name}` only, no pack suffix); also updates `aria-pressed` + title/label
 - Circle layout in co-located CSS; works with theme `icons.mode: css`
 
 ## Badge
 
 No `data-wishlist-storage` / `data-wishlist-widget`. Listens to `Wishlist:Changed`; updates optional live region by `liveId`.
 
+## Listing page
+
+| Piece | Responsibility |
+|-------|----------------|
+| Storefront bridge | `storefront/component/wishlist/listing.html.twig` — mounts `Wishlist:Listing` |
+| `Wishlist:Listing` | Forwards props into `Product:Listing`; clears `actions`; overrides `Listing:Empty` `content` (illustration + copy) |
+
+See [product-listing.md](product-listing.md) for the shared grid shell and Box wiring (`boxLayout` default `wishlist`).
+
 ## Known gaps
 
-- Wishlist **page** / guest pagelet still core (may still expect core storage on a basket node)
+- Wishlist **page** chrome / guest pagelet still mostly core outside the listing bridge
 - Core GA wishlist events hook `WishlistStorage` plugin instances — may not fire until a bridge exists
 - Merge pagelet HTML into listing row is not handled (IDs merge only)
 
@@ -74,3 +83,5 @@ No `data-wishlist-storage` / `data-wishlist-widget`. Listens to `Wishlist:Change
 | Product toggle | `components/Product/Action/Wishlist.{html.twig,cva.twig,js,css}` |
 | Header action | `components/Wishlist/Action.html.twig` + `Action.cva.twig` |
 | Badge | `components/Wishlist/Action/Badge.{html.twig,cva.twig,js}` |
+| Listing shell | `components/Wishlist/Listing.html.twig` |
+| Listing bridge | `storefront/component/wishlist/listing.html.twig` |

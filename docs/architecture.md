@@ -39,7 +39,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
-- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md).
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md).
 
 ### Storefront JS
 
@@ -78,6 +78,14 @@ Examples:
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
 | `frontend.views-theme.navigation.flyout` | `/vi/navigation/flyout/{navigationId}` |
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
+| `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` |
+| `frontend.views-theme.listing.category.aggregations` | `/vi/listing/category/{navigationId}/aggregations` |
+| `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{navigationId}/filter-options` |
+| `frontend.views-theme.listing.search` | `/vi/listing/search` |
+| `frontend.views-theme.listing.search.aggregations` | `/vi/listing/search/aggregations` |
+| `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` |
+| `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` |
+| `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -93,7 +101,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Why | `category_url()` / `seoUrl()` emit placeholders (`{domain}/navigation/{id}#`); unresolved → 404 |
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 
-Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`.
+Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `FilterDrawerController`, `ListingController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -111,6 +119,8 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Theme route / controller | Loader | App hook | Notes |
 |--------------------------|--------|----------|--------|
 | Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
+| Listing results/aggs (`ListingController`) | `AbstractProductListingRoute` / `AbstractProductSearchRoute` | *(none on raw listing DTO)* | HTML `Product:Listing:Results` + JSON aggregations; query param parity with core storefront |
+| Filter drawer (`FilterDrawerController`) | `AbstractProductListingRoute` / `AbstractProductSearchRoute` | *(none on raw listing DTO)* | HTML `Filter:Drawer` (aggs-only request flags); [filters.md](features/filters.md) |
 | Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
 | Nav drawer langs/currencies (same action) | `HeaderPageletLoader` | `header-pagelet-loaded` | Header chrome only on full drawer open |
 | Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |
@@ -129,3 +139,4 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 - [Navigation drawer](features/navigation-drawer.md)
 - [Navigation bar](features/navigation-bar.md)
 - [Cart drawer](features/cart-drawer.md)
+- [Filters](features/filters.md)

@@ -1,0 +1,106 @@
+{% props
+    id = 'vi-form-slider-' ~ random(),
+    mode = 'single',
+    min = 0,
+    max = 100,
+    step = 1,
+    value = null,
+    start = null,
+    end = null,
+    name = null,
+    minName = null,
+    maxName = null,
+    disabled = false,
+    ariaLabel = null,
+    ariaLabelMin = null,
+    ariaLabelMax = null,
+    cva = {},
+%}
+
+{% set isRange = mode is same as('range') %}
+{% set boundMin = min is not null ? min : 0 %}
+{% set boundMax = max is not null ? max : 100 %}
+{% set singleValue = value is not null ? value : boundMin %}
+{% set rangeStart = start is not null ? start : boundMin %}
+{% set rangeEnd = end is not null ? end : boundMax %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['track', 'fill', 'input']) %}
+
+{% set options = {
+    mode: isRange ? 'range' : 'single',
+    min: boundMin,
+    max: boundMax,
+    step: step,
+} %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        'data-component': 'ViewsTheme:Form:Slider',
+        'data-component-options': options|json_encode,
+    }) }}
+    class="{{ vi_class('root', { mode: isRange ? 'range' : 'single', disabled: disabled }) }}"
+    style="--vi-fill-start: 0%; --vi-fill-end: 100%;"
+>
+    {% block track %}
+        <div {{ vi_attrs('track') }} class="{{ vi_class('track') }}" aria-hidden="true">
+            <div {{ vi_attrs('fill') }} class="{{ vi_class('fill') }}"></div>
+        </div>
+    {% endblock %}
+
+    {% if isRange %}
+        {% block min %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'range',
+                    id: id ~ '-min',
+                    name: minName is not empty ? minName : false,
+                    min: boundMin,
+                    max: boundMax,
+                    step: step,
+                    value: rangeStart,
+                    disabled: disabled is same as(true) ? true : false,
+                    'data-slider': 'min',
+                    'aria-label': ariaLabelMin is not empty ? ariaLabelMin : (ariaLabel is not empty ? ariaLabel : false),
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+        {% endblock %}
+
+        {% block max %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'range',
+                    id: id ~ '-max',
+                    name: maxName is not empty ? maxName : false,
+                    min: boundMin,
+                    max: boundMax,
+                    step: step,
+                    value: rangeEnd,
+                    disabled: disabled is same as(true) ? true : false,
+                    'data-slider': 'max',
+                    'aria-label': ariaLabelMax is not empty ? ariaLabelMax : (ariaLabel is not empty ? ariaLabel : false),
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+        {% endblock %}
+    {% else %}
+        {% block value %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'range',
+                    id: id ~ '-value',
+                    name: name is not empty ? name : false,
+                    min: boundMin,
+                    max: boundMax,
+                    step: step,
+                    value: singleValue,
+                    disabled: disabled is same as(true) ? true : false,
+                    'data-slider': 'value',
+                    'aria-label': ariaLabel is not empty ? ariaLabel : false,
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+        {% endblock %}
+    {% endif %}
+</div>

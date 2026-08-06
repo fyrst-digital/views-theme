@@ -1,0 +1,2 @@
+var e=class extends ShopwareComponent{getValues(){return{}}getParamKeys(){return[`p`]}getLabels(){return[]}reset(){}resetAll(){}setFromUrl(){}};export{e as default};
+//# sourceMappingURL=Pagination-1zqnDkRy.js.map

@@ -16,14 +16,14 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, wishlist, account action, language/currency switch, form input, product box |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, wishlist, account action, language/currency switch, form input, product box, product listing, pagination, sorting, filters |
 
 ## Conventions
 
 - [Hard rules (checklist)](conventions/hard-rules.md)
-- [Agent workflow](conventions/agent-workflow.md) (holistic refactors; no build steps)
+- [Agent workflow](conventions/agent-workflow.md) (holistic refactors; no build steps; surgical edits)
 - [UX Twig components](conventions/ux-components.md) (target)
-- [CSS class API](conventions/css-classes.md) (legacy + UX notes)
+- [CSS class API](conventions/css-classes.md) (UX notes; CSS vars; **px** lengths)
 - [JavaScript selectors](conventions/javascript.md)
 - [Component templates](conventions/components.md)
 
@@ -51,6 +51,11 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Currency switch](features/currency-switch.md)
 - [Form input](features/form-input.md)
 - [Product box](features/product-box.md)
+- [Product listing](features/product-listing.md)
+- [Grid](features/grid.md)
+- [Pagination](features/pagination.md)
+- [Sorting](features/sorting.md)
+- [Filters](features/filters.md)
 
 ## Related
 

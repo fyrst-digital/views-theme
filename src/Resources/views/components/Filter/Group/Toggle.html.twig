@@ -1,0 +1,36 @@
+{% props
+    label = null,
+    expanded = false,
+    controls = null,
+    count = null,
+    layout = 'bar',
+    disabled = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['count', 'caret']) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Filter:Group:Toggle',
+        'aria-expanded': expanded ? 'true' : 'false',
+        'aria-controls': controls,
+        disabled: disabled is same as(true) ? 'disabled' : false,
+    }|merge(layout == 'bar' and disabled is not same as(true) ? {
+        'aria-haspopup': 'dialog',
+        popovertarget: controls,
+    } : (layout == 'bar' ? {
+        'aria-haspopup': 'dialog',
+    } : {}))) }}
+    class="{{ vi_class('root', { layout: layout, disabled: disabled }) }}"
+>
+    <span class="{{ vi_class('label') }}">{{ label }}</span>
+    <twig:ViewsTheme:Filter:Group:Count
+        :count="count"
+        class="{{ vi_class('count') }}"
+        {{ ...vi_attrs('count').all() }}
+    />
+    {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
+</button>
