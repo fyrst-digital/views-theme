@@ -51,7 +51,8 @@ Param names match core `ProductReviewLoader` (CMS SSR already loads via request)
 - Owner `apply` → build params → GET Results HTML → swap island → **pushState** → hydrate controls from request params
 - `popstate` → hydrate + fetch (no double push)
 - Full page load with query restores filters via CMS resolver + loader
-- **SSR note:** core loader only filters when `points` is a **list**. `ReviewPointsNormalizer` (+ `ReviewRequestSubscriber`) coerces scalar/`points[]`/pipe forms on the main request so CMS SSR matches XHR
+- **SSR note:** core loader only filters when `points` is a **list**. `ReviewPointsNormalizer` (+ `ReviewRequestSubscriber`) coerces scalar/`points[]`/pipe forms on the **query** bag only (never POST body — save needs scalar `points`)
+- **Save form values:** controller passes plain `formValues` array into Panel/Form (never `RequestDataBag`); violation re-render keeps submitted scalars + `formViolations`
 - Form open / success alerts are **local UI state** (not URL), except post-save HTML replace
 
 ## Controllers
@@ -62,7 +63,7 @@ Param names match core `ProductReviewLoader` (CMS SSR already loads via request)
 | `frontend.views-theme.review.save` | `POST /vi/product/{productId}/reviews` | HTML full `Review:Panel` |
 
 After load: fire `ProductReviewsWidgetLoadedHook` (App parity).  
-Save: call `AbstractProductReviewSaveRoute` only; on violations re-render form with `formViolations` + `mode=form`; on success reload + alert.
+Save: call `AbstractProductReviewSaveRoute` only; on violations re-render form with `formViolations` + plain `formValues` array (never `RequestDataBag`) + `mode=form`; on success reload + alert.
 
 Render via `AbstractComponentController::renderComponent()`.
 

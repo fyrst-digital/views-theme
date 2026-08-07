@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Core ProductReviewLoader only applies points filters when the value is a list.
- * URL SoT may send a scalar (`points=5`) or pipe-joined values — normalize both bags.
+ * URL SoT may send a scalar (`points=5`) or pipe-joined values — normalize the
+ * **query** bag only. Never touch the request body: save expects scalar `points`.
  */
 final class ReviewPointsNormalizer
 {
     public function normalize(Request $request): void
     {
         $this->normalizeBag($request->query);
-        $this->normalizeBag($request->request);
     }
 
     private function normalizeBag(InputBag $bag): void

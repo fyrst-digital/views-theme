@@ -45,9 +45,21 @@
                             announceOnLoad
                         />
                     {% elseif ratingSuccess == -1 %}
+                        {% set errorContent = 'detail.reviewFormErrorAlert'|trans|sw_sanitize %}
+                        {% if formViolations %}
+                            {% set violationLines = [] %}
+                            {% for violation in formViolations.violations %}
+                                {% set violationLines = violationLines|merge([
+                                    violation.message ~ (violation.propertyPath ? ' (' ~ violation.propertyPath ~ ')' : '')
+                                ]) %}
+                            {% endfor %}
+                            {% if violationLines is not empty %}
+                                {% set errorContent = errorContent ~ '<ul class="mb-0 mt-2"><li>' ~ violationLines|join('</li><li>') ~ '</li></ul>' %}
+                            {% endif %}
+                        {% endif %}
                         <twig:ViewsTheme:Alert
                             type="danger"
-                            content="{{ 'detail.reviewFormErrorAlert'|trans|sw_sanitize }}"
+                            content="{{ errorContent }}"
                             announceOnLoad
                             ariaLive="assertive"
                         />
@@ -66,7 +78,7 @@
                     {% if isLoggedIn %}
                         <twig:ViewsTheme:Review:Form
                             :reviews="reviews"
-                            :formData="formData"
+                            :formValues="formValues"
                             :formViolations="formViolations"
                             :productId="productId"
                             :parentId="parentId"

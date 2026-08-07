@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Resources\views\components\Review;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewEntity;
 use Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewResult;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -25,7 +26,12 @@ class Panel
 
     public mixed $formViolations = null;
 
-    public mixed $formData = null;
+    /**
+     * Prefill / resubmit values for Review:Form (plain scalars only).
+     *
+     * @var array{points?: float|int, title?: string, content?: string, id?: ?string}|null
+     */
+    public ?array $formValues = null;
 
     /** list | form */
     public string $mode = 'list';
@@ -91,8 +97,8 @@ class Panel
 
         $this->showForm = $this->mode === 'form';
 
-        if ($this->formData === null && $this->reviews->getCustomerReview() !== null) {
-            $this->formData = $this->reviews->getCustomerReview();
+        if ($this->formValues === null) {
+            $this->formValues = $this->formValuesFromCustomerReview($this->reviews->getCustomerReview());
         }
 
         $this->componentOptions = [
@@ -111,6 +117,23 @@ class Panel
             ],
             'loadingEvent' => 'ViewsTheme:Review:Loading',
             'changedEvent' => 'ViewsTheme:Review:Changed',
+        ];
+    }
+
+    /**
+     * @return array{points: float, title: string, content: string, id: ?string}|null
+     */
+    private function formValuesFromCustomerReview(?ProductReviewEntity $review): ?array
+    {
+        if ($review === null) {
+            return null;
+        }
+
+        return [
+            'points' => (float) $review->getPoints(),
+            'title' => (string) ($review->getTitle() ?? ''),
+            'content' => (string) ($review->getContent() ?? ''),
+            'id' => $review->getId(),
         ];
     }
 }

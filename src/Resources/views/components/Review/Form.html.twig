@@ -1,6 +1,6 @@
 {% props
     reviews = null,
-    formData = null,
+    formValues = null,
     formViolations = null,
     productId = null,
     parentId = null,
@@ -8,34 +8,13 @@
     cva = {},
 %}
 
-{% set data = formData %}
-{% if data is null and reviews and reviews.customerReview %}
-    {% set data = reviews.customerReview %}
-{% endif %}
-
-{% set currentPoints = reviews.matrix.maxPoints %}
-{% if data %}
-    {% if data.points is defined and data.points is not empty %}
-        {% set currentPoints = data.points %}
-    {% elseif data.get is defined and data.get('points') is not empty %}
-        {% set currentPoints = data.get('points')|number_format %}
-    {% endif %}
-{% endif %}
-
-{% set titleValue = null %}
-{% set contentValue = null %}
-{% if data %}
-    {% if data.title is defined %}
-        {% set titleValue = data.title %}
-    {% elseif data.get is defined %}
-        {% set titleValue = data.get('title') %}
-    {% endif %}
-    {% if data.content is defined %}
-        {% set contentValue = data.content %}
-    {% elseif data.get is defined %}
-        {% set contentValue = data.get('content') %}
-    {% endif %}
-{% endif %}
+{% set maxPoints = reviews ? reviews.matrix.maxPoints : 5 %}
+{% set currentPoints = formValues.points is defined and formValues.points is not null
+    ? formValues.points
+    : maxPoints %}
+{% set titleValue = formValues.title|default(null) %}
+{% set contentValue = formValues.content|default(null) %}
+{% set reviewId = formValues.id|default(reviews.customerReview.id|default(null)) %}
 
 {% set formId = 'vi-review-form-' ~ random() %}
 
@@ -55,8 +34,8 @@
         {% if parentId %}
             <input type="hidden" name="parentId" value="{{ parentId }}">
         {% endif %}
-        {% if reviews and reviews.customerReview %}
-            <input type="hidden" name="id" value="{{ reviews.customerReview.id }}">
+        {% if reviewId %}
+            <input type="hidden" name="id" value="{{ reviewId }}">
         {% endif %}
     {% endblock %}
 
@@ -65,7 +44,7 @@
             class="{{ vi_class('rating') }}"
             {{ ...vi_attrs('rating').defaults({
                 currentPoints: currentPoints,
-                maxPoints: reviews.matrix.maxPoints,
+                maxPoints: maxPoints,
             }).all() }}
         />
     {% endblock %}

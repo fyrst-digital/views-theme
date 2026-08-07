@@ -9,6 +9,7 @@ use Fyrst\ViewsTheme\Service\ProductReviewGateway;
 use Shopware\Core\Content\Product\SalesChannel\Review\AbstractProductReviewSaveRoute;
 use Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewsWidgetLoadedHook;
 use Shopware\Core\Framework\Adapter\Request\RequestParamHelper;
+use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\PlatformRequest;
@@ -72,14 +73,14 @@ class ReviewController extends AbstractComponentController
 
         $ratingSuccess = 1;
         $formViolations = null;
-        $formData = $data;
+        $formValues = $this->formValuesFromBag($data);
 
         try {
             $this->productReviewSaveRoute->save($productId, $data, $context);
             if ($data->has('id') && $data->get('id')) {
                 $ratingSuccess = 2;
             }
-            $formData = null;
+            $formValues = null;
         } catch (ConstraintViolationException $exception) {
             $ratingSuccess = -1;
             $formViolations = $exception;
@@ -88,14 +89,22 @@ class ReviewController extends AbstractComponentController
         $reviews = $this->gateway->load($request, $context, $productId, $parentId);
         $this->hook(new ProductReviewsWidgetLoadedHook($reviews, $context));
 
+        $resolvedParent = $parentId ?? $reviews->getParentId();
+
         return $this->renderComponent('ViewsTheme:Review:Panel', [
             'reviews' => $reviews,
             'productId' => $productId,
-            'parentId' => $parentId ?? $reviews->getParentId(),
+            'parentId' => $resolvedParent,
             'ratingSuccess' => $ratingSuccess,
             'formViolations' => $formViolations,
-            'formData' => $formData,
+            'formValues' => $formValues,
             'mode' => $ratingSuccess === -1 ? 'form' : 'list',
+            'listUrl' => $this->generateUrl('frontend.views-theme.review.list', [
+                'productId' => $productId,
+            ]),
+            'saveUrl' => $this->generateUrl('frontend.views-theme.review.save', [
+                'productId' => $productId,
+            ]),
         ]);
     }
 
@@ -104,5 +113,30 @@ class ReviewController extends AbstractComponentController
         $parentId = RequestParamHelper::get($request, 'parentId');
 
         return \is_string($parentId) && $parentId !== '' ? $parentId : null;
+    }
+
+    /**
+     * Plain scalars for Twig — never pass RequestDataBag into components.
+     *
+     * @return array{points: float, title: string, content: string, id: ?string}
+     */
+    private function formValuesFromBag(DataBag $data): array
+    {
+        $points = $data->get('points', 5);
+        if (\is_string($points) || \is_int($points) || \is_float($points)) {
+            $points = (float) $points;
+        } else {
+            $points = 5.0;
+        }
+
+        $id = $data->get('id');
+        $id = \is_string($id) && $id !== '' ? $id : null;
+
+        return [
+            'points' => $points,
+            'title' => (string) ($data->get('title') ?? ''),
+            'content' => (string) ($data->get('content') ?? ''),
+            'id' => $id,
+        ];
     }
 }

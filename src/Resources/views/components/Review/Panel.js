@@ -180,6 +180,8 @@ export default class ReviewPanel extends ShopwareComponent {
             }
 
             this.el.replaceWith(next)
+        } catch (error) {
+            console.error('ViewsTheme:Review:Panel save failed', error)
         } finally {
             this._setLoading(false)
         }
