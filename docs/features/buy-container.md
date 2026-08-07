@@ -10,7 +10,9 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 |-------|----------------|
 | Storefront bridge | `storefront/component/buy-widget/buy-widget.html.twig` — thin `sw_extends`; mounts `Product:BuyContainer` |
 | `Product:BuyContainer` | Class-backed buy shell: gates + composition; root keeps BuyBoxPlugin class |
-| `Product:Header` | Breadcrumb + name (in container when `showHeader`) |
+| `Product:Header` | Manufacturer + name + SKU (in container when `showHeader`) |
+| `Product:Manufacturer` | Brand name (optional external link); self-gated |
+| `Product:SKU` | Product number + label; self-gated |
 | `Product:Reviews` | Rating summary + review-tab link (self-gated `visible`) |
 | `Product:Prices` | Price stack shell: Tiered + Price + Tax |
 | `Product:Price` / `Price:Tiered` / `Price:Tax` | Leaves (parent-mounted by Prices) |
@@ -72,8 +74,9 @@ Derived as `rootElementClass` on the class component. Outer CMS element keeps `d
 ```
 Product:BuyContainer (class VM)
 ├─ header → Product:Header (when showHeader)
-│    ├─ Breadcrumb
-│    └─ Product:Name (h1, no link)
+│    ├─ manufacturer → Product:Manufacturer (when name)
+│    ├─ name → Product:Name (PDP: h1, no link via name:*)
+│    └─ sku → Product:SKU (when number)
 ├─ reviews → Product:Reviews (when visible)
 │    ├─ Review:Rating
 │    └─ label + review tab link
@@ -86,9 +89,8 @@ Product:BuyContainer (class VM)
 ├─ buy
 │    ├─ VariantsGrid:Container  XOR
 │    └─ Product:Action:Buy
-├─ actions → Product:Actions (when showActions)
-│    └─ Product:Action:Wishlist (when visible)
-└─ order number
+└─ actions → Product:Actions (when showActions)
+     └─ Product:Action:Wishlist (when wishlistEnabled)
 ```
 
 ## Props
@@ -110,7 +112,6 @@ Product:BuyContainer (class VM)
 | `showBuyForm` | `true` | Mount `Product:Action:Buy` when not variants grid |
 | `showActions` | `true` | Mount `Product:Actions` |
 | `showReviews` | `true` | Forwarded to `Product:Reviews` |
-| `showOrderNumber` | `true` | SKU row |
 | `showDelivery` | `true` | Core delivery include |
 | `showConfigurator` | `true` | Core configurator when applicable |
 | `cva` | `{}` | Multi-slot via `BuyContainer.cva.twig` |
@@ -124,9 +125,42 @@ Product:BuyContainer (class VM)
 | `useVariantsGrid` | config `variantsGridActive` ∧ grid has variants |
 | `showBuyFormBlock` | active ∧ `showBuyForm` ∧ not variants grid |
 | `showConfiguratorBlock` | `showConfigurator` ∧ parent ∧ settings ∧ not grid |
-| `showOrderNumberBlock` | `showOrderNumber` ∧ product number |
 
-Nested overrides: `header:…`, `reviews:…`, `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
+Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`), `reviews:…`, `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
+
+### `Product:Header` (anonymous)
+
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
+| `product` | required | Forwarded to children |
+| `showManufacturer` | `true` | Mount manufacturer block |
+| `showSku` | `false` | Mount sku block |
+| `cva` | `{}` | `Header.cva.twig`: `root`, `manufacturer`, `name`, `sku` |
+
+Nests: `manufacturer`, `name` (defaults `showLink: true`, `tag: 'div'`), `sku`. BuyContainer sets `showSku: true`, `'name:showLink': false`, `'name:tag': 'h1'`.
+
+### `Product:Manufacturer` (anonymous)
+
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
+| `product` | `null` | Source for name |
+| `name` | from manufacturer | Root omitted when empty |
+| `tag` | `'div'` | Root element |
+| `cva` | `{}` | `Manufacturer.cva.twig`: `root` |
+
+Plain brand name text. No logo/media.
+
+### `Product:SKU` (anonymous)
+
+| Prop / field | Default | Notes |
+|--------------|---------|--------|
+| `product` | `null` | Source for number |
+| `number` | `product.productNumber` | Root omitted when empty |
+| `showLabel` | `true` | Mount label nest |
+| `label` | `detail.productNumberLabel` | Snippet |
+| `cva` | `{}` | `SKU.cva.twig`: `root`, `label`, `value` |
+
+Nests: `label`, `value`. No foot SKU on BuyContainer — only via Header.
 
 ### `Product:Actions` (class-backed)
 
@@ -147,9 +181,8 @@ Nest: `wishlist` (PDP defaults: `showText: true`, `size: 'sm'`).
 |--------------|---------|--------|
 | `product` | required | |
 | `showPrice` | `true` | → `Product:Price` |
-| `showTieredPrices` | `true` | Gate multi-tier table |
+| `showTieredPrices` | `true` | Mount Tiered when `calculatedPrices.count > 1` |
 | `showTaxNote` | `true` | Mount `Product:Price:Tax` |
-| `showTieredBlock` | derived | `showTieredPrices` ∧ `calculatedPrices.count > 1` |
 | `cva` | `{}` | `Prices.cva.twig`: `root`, `tiered`, `price`, `tax` |
 
 Nests: `tiered`, `price`, `tax`.
@@ -185,7 +218,7 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 | `Product:Action:Buy` | [Product box](product-box.md) (shared API) |
 | `Product:Price*` / `Product:Prices` | [Product box](product-box.md) · this page |
 | Wishlist | [Wishlist](wishlist.md) |
-| Header / breadcrumb | [Breadcrumb](breadcrumb.md) |
+| Page breadcrumb | [Breadcrumb](breadcrumb.md) (layout / CMS — not in Header) |
 | Cart add bus | [Cart drawer](cart-drawer.md) |
 
 ## Future (out of scope)
@@ -194,6 +227,7 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 - Theme-owned delivery / configurator components
 - Variants grid → `ViewsTheme:Cart:Add` bus (still core AddToCart path)
 - `Box:Footer` adopting `Product:Prices`
+- Manufacturer logo / CMS manufacturer-logo element
 
 ## Key source files
 
@@ -201,9 +235,11 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 |------|------|
 | Bridge | `src/Resources/views/storefront/component/buy-widget/buy-widget.html.twig` |
 | Shell | `src/Resources/views/components/Product/BuyContainer.{php,html.twig,cva.twig}` |
+| Header | `src/Resources/views/components/Product/Header.{html.twig,cva.twig}` |
+| Manufacturer | `src/Resources/views/components/Product/Manufacturer.{html.twig,cva.twig}` |
+| SKU | `src/Resources/views/components/Product/SKU.{html.twig,cva.twig}` |
 | Prices stack | `src/Resources/views/components/Product/Prices.*` |
 | Reviews summary | `src/Resources/views/components/Product/Reviews.*` |
 | Secondary actions | `src/Resources/views/components/Product/Actions.*` |
-| Header | `src/Resources/views/components/Product/Header.html.twig` |
 | Buy action | `src/Resources/views/components/Product/Action/Buy.*` |
 | Variants data | `src/Subscriber/ProductPageSubscriber.php` |

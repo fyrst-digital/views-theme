@@ -6,7 +6,7 @@
     class="{{ vi_class('root') }}"
 >
     {% block tiered %}
-        {% if showTieredBlock %}
+        {% if showTieredPrices and product.calculatedPrices is not empty and product.calculatedPrices.count > 1 %}
             <twig:ViewsTheme:Product:Price:Tiered
                 class="{{ vi_class('tiered') }}"
                 {{ ...vi_attrs('tiered').defaults({

@@ -43,8 +43,6 @@ class BuyContainer
 
     public bool $showReviews = true;
 
-    public bool $showOrderNumber = true;
-
     public bool $showDelivery = true;
 
     public bool $showConfigurator = true;
@@ -61,8 +59,6 @@ class BuyContainer
     public bool $showBuyFormBlock = false;
 
     public bool $showConfiguratorBlock = false;
-
-    public bool $showOrderNumberBlock = false;
 
     public string $rootElementClass = 'product-detail-buy';
 
@@ -114,10 +110,5 @@ class BuyContainer
             && $this->product->getParentId() !== null
             && \is_countable($this->configuratorSettings)
             && \count($this->configuratorSettings) > 0;
-
-        $productNumber = $this->product->getProductNumber();
-        $this->showOrderNumberBlock = $this->showOrderNumber
-            && \is_string($productNumber)
-            && $productNumber !== '';
     }
 }

@@ -186,7 +186,7 @@ Buy when `displayBuyButton`; otherwise Detail (`product` + `href`).
 | `button:…` | `Button` | submit, icon `handbag`, label/title `listing.boxAddProduct`, color `primary`, size `md` |
 | `quantityInput:…` | `QuantityInput` | `inputName` / qty / min / max / steps from `product`; `unit: productUnit` |
 
-Co-located `Buy.js` → `ViewsTheme:Cart:Add`. Overrides: `button:label`, `quantityInput:size`, root `action`, …
+Co-located `Buy.js` → `ViewsTheme:Cart:Add`. Overrides: `button:label`, `quantityInput:size`, `quantityInput:icon:class` (shared ± icon slot), `quantityInput:decrease:*` / `increase:*` (`Button` nests), root `action`, …
 
 ### `Product:Action:Detail` (class-backed)
 

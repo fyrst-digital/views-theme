@@ -1,0 +1,35 @@
+{% props
+    product = null,
+    number = product ? product.productNumber|default(null) : null,
+    showLabel = true,
+    label = 'detail.productNumberLabel'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root', 'label', 'value']) %}
+{% do vi_define_attrs(['label', 'value']) %}
+
+{% if number %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block prepend %}{% endblock %}
+
+        {% block label %}
+            {% if showLabel %}
+                <span {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                    {{ label }}
+                </span>
+            {% endif %}
+        {% endblock %}
+
+        {% block value %}
+            <span {{ vi_attrs('value') }} class="{{ vi_class('value') }}">
+                {{ number }}
+            </span>
+        {% endblock %}
+
+        {% block append %}{% endblock %}
+    </div>
+{% endif %}

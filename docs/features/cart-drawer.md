@@ -152,7 +152,7 @@ Region-nested override keys on `LineItem:Product`:
 | `body:deliveryDate` | `LineItem:DeliveryDate` |
 | `footer` | `LineItem:Footer` |
 | `footer:price` | `LineItem:Price` |
-| `footer:quantityInput` | `LineItem:Quantity` (further `quantityInput:*` → `QuantityInput`) |
+| `footer:quantityInput` | `LineItem:Quantity` (further `quantityInput:*` → `QuantityInput`; ± are `Button` nests; `quantityInput:icon:class` / `decrease:*` / `increase:*`) |
 | `footer:remove` | `LineItem:Remove` (`button:*` → remove Button) |
 
 No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.

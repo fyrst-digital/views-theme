@@ -106,3 +106,9 @@
     --vi-product-basis: 320px;
   }
 }
+
+.vi-product-buy-container {
+  @variant sm {
+    --vi-quantity-input-max-w: 200px;
+  }
+}

@@ -7,9 +7,6 @@
     'configurator',
     'buy',
     'actions',
-    'orderNumber',
-    'orderNumberLabel',
-    'orderNumberValue',
 ]) %}
 {% do vi_define_attrs([
     'header',
@@ -19,9 +16,6 @@
     'configurator',
     'buy',
     'actions',
-    'orderNumber',
-    'orderNumberLabel',
-    'orderNumberValue',
 ]) %}
 
 <div
@@ -34,8 +28,9 @@
                 class="{{ vi_class('header') }}"
                 {{ ...vi_attrs('header').defaults({
                     product: product,
-                    nameShowLink: false,
-                    nameTag: 'h1',
+                    'name:showLink': false,
+                    'name:tag': 'h1',
+                    'manufacturer:class': 'text-body-tertiary fw-semibold',
                 }).all() }}
             />
         {% endif %}
@@ -57,9 +52,11 @@
             class="{{ vi_class('prices') }}"
             {{ ...vi_attrs('prices').defaults({
                 product: product,
-                showPrice: showPrice,
-                showTieredPrices: showTieredPrices,
+                showPrice: product.calculatedPrices is empty or product.calculatedPrices.count <= 1,
+                showTieredPrices: product.calculatedPrices is not empty and product.calculatedPrices.count > 1,
                 showTaxNote: showTaxNote,
+                'price:unit:class': 'fs-4',
+                'tax:class': 'fs-6',
             }).all() }}
         />
     {% endblock %}
@@ -107,19 +104,6 @@
                     product: product,
                 }).all() }}
             />
-        {% endif %}
-    {% endblock %}
-
-    {% block orderNumber %}
-        {% if showOrderNumberBlock %}
-            <div {{ vi_attrs('orderNumber') }} class="{{ vi_class('orderNumber') }}">
-                <span {{ vi_attrs('orderNumberLabel') }} class="{{ vi_class('orderNumberLabel') }}">
-                    {{ 'detail.productNumberLabel'|trans|sw_sanitize }}
-                </span>
-                <span {{ vi_attrs('orderNumberValue') }} class="{{ vi_class('orderNumberValue') }}">
-                    {{ product.productNumber }}
-                </span>
-            </div>
         {% endif %}
     {% endblock %}
 </div>

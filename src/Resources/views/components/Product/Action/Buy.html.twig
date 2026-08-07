@@ -1,6 +1,7 @@
 {% do vi_define_cva({
-    root: { base: 'vi-product-action-buy' },
-    button: { base: 'vi-product-action-buy__button' },
+    root: { base: 'vi-product-action-buy d-flex flex-row flex-wrap gap-2' },
+    button: { base: 'vi-product-action-buy__button col' },
+    quantityInput: { base: 'col-auto' },
 }|replace_recursive(cva)) %}
 {% do vi_define_attrs(['button', 'quantityInput']) %}
 
@@ -26,6 +27,7 @@
     {% block quantity %}
         {% if showQuantityField %}
             <twig:ViewsTheme:QuantityInput
+                class="{{ vi_class('quantityInput') }}"
                 {{ ...vi_attrs('quantityInput').defaults({
                     inputName: 'lineItems[' ~ product.id ~ '][quantity]',
                     quantity: product.minPurchase,

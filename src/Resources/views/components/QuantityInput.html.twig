@@ -5,7 +5,7 @@
     maxQuantity = 99,
     purchaseSteps = 1,
     unit = null,
-    size = null,
+    size = 'md',
     disabled = false,
     formName = null,
     cva = {},
@@ -23,16 +23,19 @@
     class="{{ vi_class('root', { size: size }) }}"
 >
     {% block decrease %}
-        <button
-            {{ vi_attrs('decrease').defaults({
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('decrease') }}"
+            icon:class="{{ vi_class('icon', { size: size }) }}"
+            {{ ...vi_attrs('decrease').defaults({
                 type: 'button',
+                icon: 'minus',
+                color: 'light',
+                size: size,
+                square: true,
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
-            }) }}
-            class="{{ vi_class('decrease') }}"
-        >
-            {{ vi_icon('minus') }}
-        </button>
+            }).all() }}
+        />
     {% endblock %}
 
     {% block field %}
@@ -61,15 +64,18 @@
     {% endif %}
 
     {% block increase %}
-        <button
-            {{ vi_attrs('increase').defaults({
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('increase') }}"
+            icon:class="{{ vi_class('icon', { size: size }) }}"
+            {{ ...vi_attrs('increase').defaults({
                 type: 'button',
+                icon: 'plus',
+                color: 'light',
+                size: size,
+                square: true,
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
-            }) }}
-            class="{{ vi_class('increase') }}"
-        >
-            {{ vi_icon('plus') }}
-        </button>
+            }).all() }}
+        />
     {% endblock %}
 </div>
