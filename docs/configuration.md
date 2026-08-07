@@ -170,3 +170,10 @@ Form controls use a global last-resort focus outline in `scss/_form.scss` (trans
 | `storefront/layout/meta.html.twig` | Links the CSS icon pack stylesheet when `mode` is `css` |
 
 `ThemeConfigSubscriber` exposes full `theme.json` as the Twig parameter `themeParameters` for the stylesheet link. UX components do not need `themeParameters` for icons.
+
+CSS packs are built with `npm run build:icons` (`build.icons.mts`). Each pack lists Iconify icons as strings (class = name) or `{ icon, class }` for a custom CSS class suffix after `icon-`:
+
+```ts
+"heart",
+{ icon: "star-fill", class: "star-fill-custom" }, // → .icon-star-fill-custom
+```

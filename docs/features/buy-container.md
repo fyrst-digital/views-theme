@@ -10,10 +10,10 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 |-------|----------------|
 | Storefront bridge | `storefront/component/buy-widget/buy-widget.html.twig` — thin `sw_extends`; mounts `Product:BuyContainer` |
 | `Product:BuyContainer` | Class-backed buy shell: gates + composition; root keeps BuyBoxPlugin class |
-| `Product:Header` | Manufacturer + name + SKU (in container when `showHeader`) |
+| `Product:Header` | Manufacturer + name + SKU + Rating (in container when `showHeader`) |
 | `Product:Manufacturer` | Brand name (optional external link); self-gated |
 | `Product:SKU` | Product number + label; self-gated |
-| `Product:Reviews` | Rating summary + review-tab link (self-gated `visible`) |
+| `Product:Rating` | Rating summary (via Header; self-gated `visible`) |
 | `Product:Prices` | Price stack shell: Tiered + Price + Tax |
 | `Product:Price` / `Price:Tiered` / `Price:Tax` | Leaves (parent-mounted by Prices) |
 | `Product:Action:Buy` | Add-to-cart form → cart drawer bus |
@@ -76,10 +76,10 @@ Product:BuyContainer (class VM)
 ├─ header → Product:Header (when showHeader)
 │    ├─ manufacturer → Product:Manufacturer (when name)
 │    ├─ name → Product:Name (PDP: h1, no link via name:*)
-│    └─ sku → Product:SKU (when number)
-├─ reviews → Product:Reviews (when visible)
-│    ├─ Review:Rating
-│    └─ label + review tab link
+│    ├─ sku → Product:SKU (when number)
+│    └─ rating → Product:Rating (when visible)
+│         ├─ Review:Rating
+│         └─ label
 ├─ prices → Product:Prices
 │    ├─ Product:Price:Tiered (when multi-tier)
 │    ├─ Product:Price
@@ -101,17 +101,17 @@ Product:BuyContainer (class VM)
 |--------------|---------|--------|
 | `product` | required | `SalesChannelProductEntity` |
 | `configuratorSettings` | `null` | Core buy-box / variant switch payload |
-| `totalReviews` | `0` | Forwarded to `Product:Reviews` |
+| `totalReviews` | `0` | Forwarded to Header → `Product:Rating` |
 | `elementId` | `null` | CMS element id → BuyBoxPlugin root class suffix |
 | `pageType` | `null` | Ambient CMS page type (reserved) |
 | `variantsGrid` | `null` | From `page.extensions.viewsTheme.variantsGrid` (bridge) |
-| `showHeader` | `true` | Mount `Product:Header` — future CMS toggle |
+| `showHeader` | `true` | Mount `Product:Header` (incl. rating) — future CMS toggle |
 | `showPrice` | `true` | Forwarded to `Product:Prices` |
 | `showTieredPrices` | `true` | Forwarded to `Product:Prices` |
 | `showTaxNote` | `true` | Forwarded to `Product:Prices` |
 | `showBuyForm` | `true` | Mount `Product:Action:Buy` when not variants grid |
 | `showActions` | `true` | Mount `Product:Actions` |
-| `showReviews` | `true` | Forwarded to `Product:Reviews` |
+| `showReviews` | `true` | Forwarded to Header → `Product:Rating` |
 | `showDelivery` | `true` | Core delivery include |
 | `showConfigurator` | `true` | Core configurator when applicable |
 | `cva` | `{}` | Multi-slot via `BuyContainer.cva.twig` |
@@ -126,7 +126,7 @@ Product:BuyContainer (class VM)
 | `showBuyFormBlock` | active ∧ `showBuyForm` ∧ not variants grid |
 | `showConfiguratorBlock` | `showConfigurator` ∧ parent ∧ settings ∧ not grid |
 
-Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`), `reviews:…`, `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
+Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
 
 ### `Product:Header` (anonymous)
 
@@ -135,9 +135,11 @@ Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:�
 | `product` | required | Forwarded to children |
 | `showManufacturer` | `true` | Mount manufacturer block |
 | `showSku` | `false` | Mount sku block |
-| `cva` | `{}` | `Header.cva.twig`: `root`, `manufacturer`, `name`, `sku` |
+| `totalReviews` | `0` | Forwarded to `Product:Rating` |
+| `showReviews` | `true` | Forwarded to `Product:Rating` |
+| `cva` | `{}` | `Header.cva.twig`: `root`, `manufacturer`, `name`, `sku`, `rating` |
 
-Nests: `manufacturer`, `name` (defaults `showLink: true`, `tag: 'div'`), `sku`. BuyContainer sets `showSku: true`, `'name:showLink': false`, `'name:tag': 'h1'`.
+Nests: `manufacturer`, `name` (defaults `showLink: true`, `tag: 'div'`), `sku`, `rating` (`Product:Rating`; self-gated). BuyContainer sets `totalReviews`, `showReviews`, `'name:showLink': false`, `'name:tag': 'h1'`.
 
 ### `Product:Manufacturer` (anonymous)
 
@@ -187,19 +189,21 @@ Nest: `wishlist` (PDP defaults: `showText: true`, `size: 'sm'`).
 
 Nests: `tiered`, `price`, `tax`.
 
-### `Product:Reviews` (class-backed)
+### `Product:Rating` (class-backed)
+
+Mounted by `Product:Header` (not BuyContainer). Root omitted when not `visible`.
 
 | Prop / field | Default | Notes |
 |--------------|---------|--------|
 | `product` | required | |
 | `totalReviews` | `0` | |
 | `showReviews` | `true` | Caller gate |
+| `size` | `'md'` | Forwarded to `Review:Rating` (`sm`/`md`/`lg`) |
 | `visible` | derived | `showReviews` ∧ config ∧ rating ∧ `totalReviews` |
 | `average` | derived | `product.ratingAverage` |
-| `remoteClickOptions` / `reviewTabHref` | derived | Core review-tab selectors |
-| `cva` | `{}` | `Reviews.cva.twig`: `root`, `rating`, `label`, `link` |
+| `cva` | `{}` | `Rating.cva.twig`: `root`, `rating`, `label` |
 
-Root omitted when not `visible`. Nests: `rating`, `label`, `link`.
+Nests: `rating` (`Review:Rating`), `label`. Override via `header:rating:…`.
 
 ## Variants grid
 
@@ -239,7 +243,7 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 | Manufacturer | `src/Resources/views/components/Product/Manufacturer.{html.twig,cva.twig}` |
 | SKU | `src/Resources/views/components/Product/SKU.{html.twig,cva.twig}` |
 | Prices stack | `src/Resources/views/components/Product/Prices.*` |
-| Reviews summary | `src/Resources/views/components/Product/Reviews.*` |
+| Rating summary | `src/Resources/views/components/Product/Rating.*` |
 | Secondary actions | `src/Resources/views/components/Product/Actions.*` |
 | Buy action | `src/Resources/views/components/Product/Action/Buy.*` |
 | Variants data | `src/Subscriber/ProductPageSubscriber.php` |

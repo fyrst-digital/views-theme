@@ -2,11 +2,13 @@
     product,
     showManufacturer = true,
     showSku = false,
+    totalReviews = 0,
+    showReviews = true,
     cva = {},
 %}
 
-{% do vi_define_cva(cva, ['root', 'manufacturer', 'name', 'sku']) %}
-{% do vi_define_attrs(['manufacturer', 'name', 'sku']) %}
+{% do vi_define_cva(cva, ['root', 'manufacturer', 'name', 'sku', 'rating']) %}
+{% do vi_define_attrs(['manufacturer', 'name', 'sku', 'rating']) %}
 
 <div
     {{ attributes }}
@@ -45,6 +47,18 @@
                 }).all() }}
             />
         {% endif %}
+    {% endblock %}
+
+    {% block rating %}
+        <twig:ViewsTheme:Product:Rating
+            class="{{ vi_class('rating') }}"
+            {{ ...vi_attrs('rating').defaults({
+                product: product,
+                totalReviews: totalReviews,
+                showReviews: showReviews,
+                size: 'sm',
+            }).all() }}
+        />
     {% endblock %}
 
     {% block append %}{% endblock %}

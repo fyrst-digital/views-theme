@@ -5,13 +5,15 @@ import type { IconifyJSON } from "@iconify/types"
 
 const buildPath = 'src/Resources/app/storefront/src/assets/css/icons'
 
+/** Iconify name, or object with source name + custom CSS class suffix (after `icon-`). */
+type IconEntry = string | { icon: string; class: string }
+
 /**
  * Icon packs. Outer key is pack name (output CSS basename),
- * inner key is Iconify set prefix, value is array of icon names.
- *
- * @type {Record<string, Record<string, string[]>>}
+ * inner key is Iconify set prefix, value is array of icon entries.
+ * String entries use the Iconify name as the CSS class suffix.
  */
-const icons: Record<string, Record<string, string[]>> = {
+const icons: Record<string, Record<string, IconEntry[]>> = {
   default: {
     ph: [
       "address-book",
@@ -113,6 +115,15 @@ const icons: Record<string, Record<string, string[]>> = {
       "sparkle-bold",
       "speedometer-bold",
       "stack-plus-bold",
+      "star-bold",
+      {
+        icon: "star-fill",
+        class: "star-fill-bold",
+      },
+      {
+        icon: "star-half-fill",
+        class: "star-half-fill-bold",
+      },
       "squares-four-bold",
       "ticket-bold",
       "trash-bold",
@@ -124,18 +135,28 @@ const icons: Record<string, Record<string, string[]>> = {
   },
 }
 
-const customIcons: string[] = []
+function resolveIconEntry(entry: IconEntry, pack: string): { icon: string; className: string } {
+	if (typeof entry === 'string') {
+		return { icon: entry, className: entry }
+	}
 
-function buildCSSClass(iconUrl: string, iconName: string, pack: string) {
-	const className = `icon-${iconName}`
-	return `.${className} {\n \t--svg: ${iconUrl}; \n}`;
+	if (!entry?.icon || !entry?.class) {
+		throw new Error(`Invalid icon entry in pack "${pack}": expected string or { icon, class }`)
+	}
+
+	return { icon: entry.icon, className: entry.class }
 }
 
-async function buildCSS(pack: string, packIcons: Record<string, string[]>) {
+function buildCSSClass(iconUrl: string, className: string) {
+	return `.icon-${className} {\n \t--svg: ${iconUrl}; \n}`;
+}
+
+async function buildCSS(pack: string, packIcons: Record<string, IconEntry[]>) {
 	const code: string[] = [];
 	for (const [setId, iconsArray] of Object.entries(packIcons)) {
 		const iconSet: IconifyJSON = JSON.parse(await readFile(locate(setId), 'utf8'));
-		for (const icon of iconsArray) {
+		for (const entry of iconsArray) {
+			const { icon, className } = resolveIconEntry(entry, pack)
 			const iconData = getIconData(iconSet, icon);
 
 			if (!iconData) {
@@ -150,7 +171,7 @@ async function buildCSS(pack: string, packIcons: Record<string, string[]>) {
 
 			const iconUrl = svgToURL(iconSvg);
 
-			code.push(buildCSSClass(iconUrl, icon, pack));
+			code.push(buildCSSClass(iconUrl, className));
 		}
 	}
 	return code.join('\n');

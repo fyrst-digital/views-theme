@@ -1,7 +1,6 @@
 {% do vi_define_cva(cva, [
     'root',
     'header',
-    'reviews',
     'prices',
     'delivery',
     'configurator',
@@ -10,7 +9,6 @@
 ]) %}
 {% do vi_define_attrs([
     'header',
-    'reviews',
     'prices',
     'delivery',
     'configurator',
@@ -28,23 +26,15 @@
                 class="{{ vi_class('header') }}"
                 {{ ...vi_attrs('header').defaults({
                     product: product,
+                    totalReviews: totalReviews,
+                    showReviews: showReviews,
                     'name:showLink': false,
                     'name:tag': 'h1',
                     'manufacturer:class': 'text-body-tertiary fw-semibold',
+                    'rating:class': 'mt-2',
                 }).all() }}
             />
         {% endif %}
-    {% endblock %}
-
-    {% block reviews %}
-        <twig:ViewsTheme:Product:Reviews
-            class="{{ vi_class('reviews') }}"
-            {{ ...vi_attrs('reviews').defaults({
-                product: product,
-                totalReviews: totalReviews,
-                showReviews: showReviews,
-            }).all() }}
-        />
     {% endblock %}
 
     {% block prices %}

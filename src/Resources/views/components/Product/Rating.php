@@ -11,16 +11,18 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Reviews — rating summary + review-tab link gates; Twig composes.
+ * View-model for Product:Rating — rating summary gates; Twig composes.
  */
 #[AsTwigComponent]
-class Reviews
+class Rating
 {
     public mixed $product = null;
 
     public int $totalReviews = 0;
 
     public bool $showReviews = true;
+
+    public string $size = 'md';
 
     /**
      * @var array<string, mixed>
@@ -30,17 +32,6 @@ class Reviews
     public bool $visible = false;
 
     public float $average = 0.0;
-
-    /**
-     * @var array{selector: string, scrollToElement: bool, excludedViewports: list<string>}
-     */
-    public array $remoteClickOptions = [
-        'selector' => '',
-        'scrollToElement' => true,
-        'excludedViewports' => ['XS'],
-    ];
-
-    public string $reviewTabHref = '';
 
     public function __construct(
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
@@ -69,17 +60,5 @@ class Reviews
             && $reviewsEnabled
             && $this->totalReviews > 0
             && $this->average > 0;
-
-        if (!$this->visible) {
-            return;
-        }
-
-        $productId = $this->product->getId();
-        $this->remoteClickOptions = [
-            'selector' => '#review-tab-' . $productId,
-            'scrollToElement' => true,
-            'excludedViewports' => ['XS'],
-        ];
-        $this->reviewTabHref = '#review-tab-' . $productId . '-pane';
     }
 }

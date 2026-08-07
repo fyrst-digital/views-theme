@@ -31,15 +31,17 @@ ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'default'`, so bare 
 | `pack` | `string` | theme / `'default'` | Icon pack folder under assets |
 | `mode` | `string` | theme / `'svg'` | `'svg'` (inline SVG) or `'css'` (empty span with classes) |
 | `class` | `string\|string[]` | — | Extra CSS classes appended to the root element (`span` or `svg`) |
-| `ariaHidden` | `bool` | `true` | Adds `aria-hidden="true"` in SVG mode |
-| `ariaLabel` | `string\|null` | `null` | Optional `aria-label` on the SVG |
-| `attr` | `array` | — | Extra HTML attributes merged onto the SVG root (SVG mode only). Prefer `class` for classes; `attr.class` is merged into the same class list |
+| `ariaHidden` | `bool` | `true` | Adds `aria-hidden="true"` on the root element (both modes) |
+| `ariaLabel` | `string\|null` | `null` | Optional `aria-label` on the root element (both modes) |
+| `attr` | `array` | — | Extra HTML attributes merged onto the root element (`span` or `svg`). Prefer `class` for classes; `attr.class` is merged into the same class list |
 
 ## Modes
 
+Root attributes (`class`, `ariaHidden`, `ariaLabel`, `attr`) apply the same way in both modes — on `<svg>` or `<span>`.
+
 ### `svg`
 
-Loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and a11y attributes on the `<svg>` root, and returns safe HTML markup.
+Loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and attributes on the `<svg>` root, and returns safe HTML markup.
 
 Classes: `icon icon-{name}` plus any `class` option values.
 
@@ -58,12 +60,14 @@ Renders a `<span>` with icon classes (no SVG body). Useful when icons are provid
 
 - Default pack: `class="icon icon-{name}"`
 - Other pack: `class="icon icon-{name}-{pack}"`
+- Same root attrs as SVG: `class`, `ariaHidden`, `ariaLabel`, `attr`
 
 ```twig
 {{ vi_icon('arrow-right') }}
 {{ vi_icon('arrow-right', { mode: 'css' }) }}
 {{ vi_icon('x', { class: 'foo bar' }) }}
 {{ vi_icon('cart', { class: ['vi-btn__icon', 'is-active'] }) }}
+{{ vi_icon('star-fill', { class: 'vi-review-rating__star', attr: { 'aria-hidden': 'true' } }) }}
 ```
 
 ## Asset path
