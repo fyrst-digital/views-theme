@@ -1,28 +1,32 @@
 # Product reviews
 
-Theme-owned PDP reviews tab: summary, matrix filter, list island, write/edit form. Core storefront review plugins / `FormAjaxSubmit` / `js-review-container` are **not** used.
+Theme-owned PDP Description/Reviews **tabs chrome** and reviews **content**: summary, matrix filter, list island, write/edit form. Core storefront review plugins / `FormAjaxSubmit` / `js-review-container` / Bootstrap `card-tabs` / `OffCanvasTabs` are **not** used.
 
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (strips offcanvas chrome) |
-| `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, save |
-| `Review:Results` | XHR-swappable list island (toolbar, items, pagination); list region host |
 | `Review:Results:Toolbar` | Language + sort + counter chrome |
 | `Review:Sidebar` | Aside column: Summary + Matrix + Teaser |
-| `Review:Summary` / `Teaser` | Counts chrome + always-visible Form host; Summary rating host = stars + Average |
 | `Review:Matrix` | Class VM points filter control (`points[]`); rows from matrix + URL SoT |
 | `Review:Alerts` | Post-save / validation flash alerts |
-| `Review:Item` | Single review card shell: Header → Content → Comment |
 | `Review:Item:Title` | Review heading text (+ optional `lang`); nested by Header |
 | `Review:Item:Header` | Title + stars (`Review:Rating`) + author (`viewsTheme.review.author`) + date |
 | `Review:Item:Content` | Body text (`nl2br`, optional `lang`) |
 | `Review:Item:Comment` | Merchant reply card; root-hosts `Blockquote` (+ default shop-owner footer snippet) |
-| `Review:Form` | Class VM + region host under Teaser (always shown): Login (guest) or create/edit fields; JS owns only `[data-review-form=save]` |
-| `Review:Form:Rating` / `Login` | Star picker (hidden `points` + `data-points` icons + one text from `pointLabels` options); icon props `iconFull` / `iconEmpty` (defaults `star-fill` / `star`, also in JS options) + account login (native POST) |
-| `Review:Rating` | Display stars leaf; icon props `iconFull` / `iconHalf` / `iconEmpty` (defaults `star-fill` / `star-half-fill` / `star`); also buy-box / product card |
 | `Review:Average` | Text average (`points` / `maxPoints`); composed by Summary when `totalReviewCount > 0` |
+| CMS bridge | `storefront/element/cms-element-product-description-reviews.html.twig` → `Cms:DescriptionReviews` |
+| Content bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (non-CMS / legacy include path) |
+| `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, form mode, save |
+| `Review:Results` | XHR-swappable island (toolbar, items, pagination) |
+| `Review:Summary` / `Matrix` / `Teaser` | Aside chrome + points control + write CTA |
+| `Review:Item` | Single review card; owner row gets edit CTA (`editable`) |
+| `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login |
+| `Review:Rating` | Display-only stars leaf (also buy-box / product card) |
+| `Cms:DescriptionReviews` | CMS element shell: which tabs/panes, `ratingSuccess` active tab, mounts content |
+| `Tabs` / `Tabs:List` / `Tab` / `Panel` | Generic a11y tabs primitive — [tabs.md](tabs.md) |
+| `Product:Description:Detail` | Description pane: title + `Product:Description` + `Product:Properties` |
 | Controllers | `ReviewController` — `/vi/product/{id}/reviews` list + save |
 | Gateway | `ProductReviewGateway` → core `AbstractProductReviewLoader` (+ points URL normalize) |
 | Core business APIs | `AbstractProductReviewSaveRoute` (validate/persist only) |
@@ -63,7 +67,34 @@ Review:Panel (data-component owner)
           │    ├─ Content
           │    └─ Comment          ← when review.comment → Blockquote
           └─ Pagination (ownerComponent = Review:Panel)
+Cms:DescriptionReviews (CMS shell — no JS)
+└─ Tabs (data-component — a11y owner)
+     ├─ Tabs:List
+     │    ├─ Tabs:Tab description
+     │    └─ Tabs:Tab reviews          ← if core.listing.showReview
+     └─ panels
+          ├─ Tabs:Panel description → Product:Description:Detail
+          │    ├─ title
+          │    ├─ Product:Description
+          │    └─ Product:Properties
+          └─ Tabs:Panel reviews → Review:Panel (data-component owner)
+               ├─ Summary
+               ├─ Matrix          ← control: points[]
+               ├─ Teaser          ← open/close form mode
+               └─ Main
+                    ├─ alerts
+                    ├─ form region → Form | Login
+                    └─ list region → Review:Results (island)
+                         ├─ Language / Sort / counter / Item × N / Pagination
 ```
+
+### Tabs chrome
+
+| Concern | Behaviour |
+|---------|-----------|
+| Primitive | [Tabs](tabs.md) — same UI all viewports; **no** mobile offcanvas clone |
+| Active tab (SSR) | Reviews when `ratingSuccess` is truthy or ∈ `{1, 2, -1}`; else Description → `Tabs.active` |
+| Stable ids | `description-tab-{productId}` / `review-tab-{productId}` (+ `-pane`) |
 
 ## URL query = filter SoT
 
@@ -131,7 +162,6 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | Component | Notes |
 |-----------|--------|
 | `Review:Results:Toolbar` | Language + Sort + counter; nests `language` / `sort` / `counter` |
-| `Review:Item` | Composition shell (no JS); nests `header` / `content` / `comment`; no numeric score or category row |
 | `Review:Item:Title` | Props `title` / `lang`; heading chrome; nested by Header |
 | `Review:Item:Header` | Presentational header; props `title` / `lang` / `points` / `externalUser` / `createdAt`; nests `title` → `Item:Title`, `rating` → `Review:Rating` |
 | `Review:Item:Content` | Props `content` / `lang`; body `nl2br` |
@@ -140,9 +170,12 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | `Review:Matrix:Check` / `Bar` / `Share` | Row cells; Check CVA `control`/`input`/`label` (`form-check*`); Bar nests `progress` → `Progress`; Share root |
 | `Blockquote` | Generic `<blockquote>`; CVA `root`/`content`/`footer`; props `content` / `footer` (string, default `null`) or blocks; body in nest `content` `<p>`; optional nest `footer` `<footer>` |
 | `Progress` | Generic bar; CVA `root`/`fill`; props `value`/`min`/`max`/`size` (`sm`\|`md`\|`lg`, default `md`)/`color` (`none`\|`primary`\|…\|`dark`, default `none`)/`striped`/`animate` (bool, default false) |
-| `Review:Rating` | Display stars leaf; class VM builds `starIcons` from `iconFull` / `iconHalf` / `iconEmpty` |
 | `Review:Average` | Visible average line; composed by Summary (`totalReviewCount > 0`) |
-
+| `Product:Description:Detail` | PDP description pane composition |
+| `Product:Properties` | Spec table from `product.sortedProperties` |
+| `Product:Description` | HTML description body (also product card) |
+| `Review:Item` | `editable` from Results; `Item.js` only mounted when editable |
+| `Review:Rating` | Display stars; class VM builds `starIcons` |
 | `Form:Textarea` | Shared primitive (title/content style parity with `Form:Input`) |
 | `Form:Switch` / `Form:Select` / `Form:Input` | Language, sort, form fields |
 | `Account:Login` | Nested in `Review:Login` (under `Review:Form`) with PDP redirect |
@@ -154,4 +187,5 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 - [Buy container](buy-container.md) — `Product:Rating` summary (not the tab)
 - [Product box](product-box.md) — card stars via `Review:Rating`
 - [Form input](form-input.md) — field primitives
+- [Tabs](tabs.md) — generic tabs primitive
 - [Architecture](../architecture.md) — `/vi/…` + App hooks

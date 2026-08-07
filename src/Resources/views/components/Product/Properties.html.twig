@@ -1,0 +1,38 @@
+{% props
+    product = null,
+    properties = product ? product.sortedProperties|default([]) : [],
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['table', 'row', 'label', 'value']) %}
+
+{% if properties|length > 0 %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block table %}
+            <table {{ vi_attrs('table') }} class="{{ vi_class('table') }}">
+                <tbody>
+                    {% for group in properties %}
+                        {% block row %}
+                            <tr {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+                                {% block label %}
+                                    <th scope="row" {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
+                                        {{ group.translated.name|e }}
+                                    </th>
+                                {% endblock %}
+                                {% block value %}
+                                    <td {{ vi_attrs('value') }} class="{{ vi_class('value') }}">
+                                        {{ group.options|map(option => "#{option.translated.name}")|join(', ') }}
+                                    </td>
+                                {% endblock %}
+                            </tr>
+                        {% endblock %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endblock %}
+    </div>
+{% endif %}

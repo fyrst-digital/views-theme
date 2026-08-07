@@ -1,0 +1,11 @@
+/* Active look follows aria-selected (JS state SoT) — not class toggles. */
+
+.vi-tabs__tab {
+  font-weight: var(--vi-tab-fw, 400);
+  color: var(--vi-tab-color, var(--bs-secondary-color, #6c757d));
+}
+
+.vi-tabs__tab[aria-selected='true'] {
+  font-weight: var(--vi-tab-fw-active, 600);
+  color: var(--vi-tab-color-active, var(--bs-body-color, #212529));
+}

@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-description-reviews.html.twig' %}
+
+{% block element_product_description_reviews %}
+    {% set product = element.data.product %}
+    {% set reviews = element.data.reviews %}
+    {% set ratingSuccess = element.data.ratingSuccess %}
+
+    {% if product %}
+        <twig:ViewsTheme:Cms:DescriptionReviews
+            :product="product"
+            :reviews="reviews"
+            :ratingSuccess="ratingSuccess"
+        />
+    {% endif %}
+{% endblock %}

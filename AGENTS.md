@@ -51,6 +51,7 @@ Full index: [docs/README.md](docs/README.md).
 | Buy container / PDP buy-box | [docs/features/buy-container.md](docs/features/buy-container.md) |
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
 | Product reviews | [docs/features/review.md](docs/features/review.md) |
+| Tabs | [docs/features/tabs.md](docs/features/tabs.md) |
 | Grid | [docs/features/grid.md](docs/features/grid.md) |
 | Filters | [docs/features/filters.md](docs/features/filters.md) |
 | Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
