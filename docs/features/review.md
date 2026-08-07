@@ -10,7 +10,7 @@ Theme-owned PDP reviews tab: summary, matrix filter, list island, write/edit for
 | `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, form mode, save |
 | `Review:Results` | XHR-swappable island (toolbar, items, pagination) |
 | `Review:Summary` / `Matrix` / `Teaser` | Aside chrome + points control + write CTA |
-| `Review:Item` | Single review card |
+| `Review:Item` | Single review card; owner row gets edit CTA (`editable`) |
 | `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login |
 | `Review:Rating` | Display-only stars leaf (also buy-box / product card) |
 | Controllers | `ReviewController` — `/vi/product/{id}/reviews` list + save |
@@ -29,12 +29,12 @@ Review:Panel (data-component owner)
 └─ Main
      ├─ alerts
      ├─ form region → Form | Login
-     └─ list region → Review:Results (island)
-          ├─ Language (control: language)
-          ├─ Sort (control: sort)
-          ├─ counter
-          ├─ Item × N
-          └─ Pagination (ownerComponent = Review:Panel)
+      └─ list region → Review:Results (island)
+           ├─ Language (control: language)
+           ├─ Sort (control: sort)
+           ├─ counter
+           ├─ Item × N   ← owner item: Edit → Panel.openForm
+           └─ Pagination (ownerComponent = Review:Panel)
 ```
 
 ## URL query = filter SoT
@@ -93,10 +93,20 @@ Events: `ViewsTheme:Review:Loading`, `ViewsTheme:Review:Changed`, `ViewsTheme:Re
 
 Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw listing internals.
 
+## Edit entry points
+
+| Entry | When |
+|-------|------|
+| `Review:Teaser` | Logged-in customer with `customerReview` (global aside CTA) |
+| `Review:Item` | Same customer’s review **on the current results page** (`review.id == reviews.customerReview.id`) → link-style button → `Panel.openForm` |
+
+Both reuse form prefill + hidden `id` from `customerReview` / `formValues`. Label: `detail.reviewExistsTeaserButton`. Teaser behavior unchanged.
+
 ## Related leaves
 
 | Component | Notes |
 |-----------|--------|
+| `Review:Item` | `editable` from Results; `Item.js` only mounted when editable |
 | `Review:Rating` | Display stars; class VM builds `starIcons` |
 | `Form:Textarea` | Shared primitive (title/content style parity with `Form:Input`) |
 | `Form:Switch` / `Form:Select` / `Form:Input` | Language, sort, form fields |

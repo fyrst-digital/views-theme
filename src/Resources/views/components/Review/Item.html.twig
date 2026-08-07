@@ -1,13 +1,16 @@
 {% props
     review = null,
+    editable = false,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['meta', 'date', 'points', 'title', 'content', 'comment']) %}
+{% do vi_define_attrs(['meta', 'date', 'points', 'title', 'content', 'comment', 'actions']) %}
 
 <article
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': editable ? 'ViewsTheme:Review:Item' : false,
+    }) }}
     class="{{ vi_class('root') }}"
 >
     {% block meta %}
@@ -64,6 +67,20 @@
                     {{ 'detail.reviewCommentLabel'|trans|sw_sanitize }}{{ review.comment }}
                 </footer>
             </blockquote>
+        {% endif %}
+    {% endblock %}
+
+    {% block actions %}
+        {% if editable %}
+            <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                <twig:ViewsTheme:Button
+                    type="button"
+                    color="link"
+                    size="sm"
+                    label="{{ 'detail.reviewExistsTeaserButton'|trans|striptags }}"
+                    data-review-item-action="edit"
+                />
+            </div>
         {% endif %}
     {% endblock %}
 </article>
