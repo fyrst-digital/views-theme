@@ -99,6 +99,8 @@ Examples:
 | `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` |
 | `frontend.views-theme.filter.drawer.category` | `/vi/filter/drawer/category/{navigationId}` |
 | `frontend.views-theme.filter.drawer.search` | `/vi/filter/drawer/search` |
+| `frontend.views-theme.review.list` | `/vi/product/{productId}/reviews` (GET) |
+| `frontend.views-theme.review.save` | `/vi/product/{productId}/reviews` (POST) |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -115,7 +117,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 | JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
-Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `FilterDrawerController`, `ListingController`.
+Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `FilterDrawerController`, `ListingController`, `ReviewController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -140,6 +142,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Nav drawer menu drill (`::menu`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | No header load |
 | Search suggest (`SearchOverlayController`) | `SuggestPageLoader` | `suggest-page-loaded` | |
 | Nav flyout (`NavigationFlyoutController`) | `NavigationLoaderInterface` | *(none — no core pagelet hook)* | Tree API + theme depth math |
+| Reviews list/save (`ReviewController`) | `ProductReviewGateway` → `AbstractProductReviewLoader`; save → `AbstractProductReviewSaveRoute` | `product-reviews-widget-loaded` | HTML `Review:Results` / `Review:Panel`; [review.md](features/review.md) |
 
 **Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 

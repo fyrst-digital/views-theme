@@ -1,0 +1,20 @@
+{
+    root: { base: 'form-group' },
+    label: { base: 'form-label' },
+    required: { base: 'form-required-label' },
+    textarea: {
+        base: 'form-control',
+        variants: {
+            invalid: {
+                true: 'is-invalid',
+            },
+            size: {
+                sm: 'form-control-sm',
+                md: 'py-2 px-4',
+                lg: 'form-control-lg',
+            },
+        },
+    },
+    description: { base: 'form-text' },
+    feedback: { base: 'form-field-feedback' },
+}

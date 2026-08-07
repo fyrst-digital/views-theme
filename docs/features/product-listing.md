@@ -49,17 +49,19 @@ Loaders: `ProductListingGateway` → core listing/search routes. Results XHR set
 
 ## Owner JS (`Listing.js`)
 
-Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` — import via `@views-theme/modules/listing/…` only:
+Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` — import via `@views-theme/modules/listing/…` only (plus `shared/*` for pure helpers):
 
 | Module | Role |
 |--------|------|
-| `params.js` | Request param merge, control value collect, history keys, URL parse |
-| `history.js` | `pushState` + popstate-ignore flag |
+| `params.js` | Request param merge (`\|` multi), history keys, URL parse; re-exports `objectOption` / `collectControlValues` from `shared/object-option` |
+| `history.js` | Thin wrapper → `shared/history` (scalar `set`, skip display keys) |
 | `controls.js` | Control registry (discover / prune / panels / hydrate / labels) |
 | `fetch.js` | Results HTML + filter-options + aggregations XHR (abort/seq) |
 | `filter-options.js` | Apply options payload / availability onto controls |
 | `results-dom.js` | Results island swap, wait Pagination/Sorting mount, scroll, aria-live |
 | `apply.js` | Façade for controls: `applyListing` / `syncListingControls` / `resetListing` |
+
+Domain stays isolated from `review/*` — [javascript.md](../conventions/javascript.md).
 
 | API | Role |
 |-----|------|

@@ -26,6 +26,7 @@
                         disabled: isFirst,
                         icon: 'caret-line-left',
                         label: 'general.pagination.first'|trans|striptags,
+                        ownerComponent: ownerComponent,
                     }).all() }}
                 />
             {% endblock %}
@@ -39,6 +40,7 @@
                         disabled: isFirst,
                         icon: 'caret-left',
                         label: 'general.pagination.prev'|trans|striptags,
+                        ownerComponent: ownerComponent,
                     }).all() }}
                 />
             {% endblock %}
@@ -52,6 +54,7 @@
                                 page: pageNumber,
                                 href: this.pageHref(pageNumber),
                                 active: currentPage == pageNumber,
+                                ownerComponent: ownerComponent,
                             }).all() }}
                         />
                     {% endblock %}
@@ -67,6 +70,7 @@
                         disabled: isLast,
                         icon: 'caret-right',
                         label: 'general.pagination.next'|trans|striptags,
+                        ownerComponent: ownerComponent,
                     }).all() }}
                 />
             {% endblock %}
@@ -80,6 +84,7 @@
                         disabled: isLast,
                         icon: 'caret-line-right',
                         label: 'general.pagination.last'|trans|striptags,
+                        ownerComponent: ownerComponent,
                     }).all() }}
                 />
             {% endblock %}

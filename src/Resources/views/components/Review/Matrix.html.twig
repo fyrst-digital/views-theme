@@ -1,0 +1,81 @@
+{% props
+    reviews = null,
+    cva = {},
+%}
+
+{% set totalReviewCount = reviews ? reviews.matrix.totalReviewCount : 0 %}
+{% set selectedPoints = app.request.get('points')|default([]) %}
+{% if selectedPoints is not iterable %}
+    {% set selectedPoints = selectedPoints is not empty ? [selectedPoints] : [] %}
+{% endif %}
+
+{% if totalReviewCount > 0 %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['row', 'check', 'bar', 'progress', 'fill', 'share']) %}
+
+    <div
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Review:Matrix',
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block rows %}
+            {% for matrix in reviews.matrix.matrix %}
+                {% set inputId = 'vi-review-matrix-' ~ matrix.points ~ '-' ~ random() %}
+                {% set isChecked = false %}
+                {% for point in selectedPoints %}
+                    {% if point == matrix.points %}
+                        {% set isChecked = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <div {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+                    {% block check %}
+                        <div {{ vi_attrs('check') }} class="{{ vi_class('check') }}">
+                            <div class="form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="{{ inputId }}"
+                                    name="points"
+                                    value="{{ matrix.points }}"
+                                    {% if isChecked %}checked{% endif %}
+                                    {% if matrix.count < 1 %}disabled{% endif %}
+                                >
+                                <label class="form-check-label text-nowrap" for="{{ inputId }}">
+                                    <small>
+                                        {{ ("detail.review#{matrix.points}PointRatingText")|trans|sw_sanitize }}
+                                        ({{ matrix.count }})
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                    {% endblock %}
+
+                    {% block bar %}
+                        <div {{ vi_attrs('bar') }} class="{{ vi_class('bar') }}">
+                            <div {{ vi_attrs('progress') }} class="{{ vi_class('progress') }}">
+                                <div
+                                    {{ vi_attrs('fill').defaults({
+                                        role: 'progressbar',
+                                        style: 'width: ' ~ matrix.percent ~ '%',
+                                        'aria-valuenow': matrix.percent,
+                                        'aria-valuemin': 0,
+                                        'aria-valuemax': 100,
+                                    }) }}
+                                    class="{{ vi_class('fill') }}"
+                                ></div>
+                            </div>
+                        </div>
+                    {% endblock %}
+
+                    {% block share %}
+                        <div {{ vi_attrs('share') }} class="{{ vi_class('share') }}">
+                            <p><small>{{ matrix.percent|round }}%</small></p>
+                        </div>
+                    {% endblock %}
+                </div>
+            {% endfor %}
+        {% endblock %}
+    </div>
+{% endif %}

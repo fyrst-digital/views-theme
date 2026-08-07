@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Rating`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Rating`.
 
 ## Props / CVA / attributes
 
@@ -466,7 +466,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells |
-| Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons`; Detail/Widget/Item/Form still legacy shells |
+| Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md) |
+| Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |

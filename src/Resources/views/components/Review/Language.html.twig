@@ -1,0 +1,29 @@
+{% props
+    checked = false,
+    disabled = false,
+    cva = {},
+%}
+
+{% set switchId = 'vi-review-language-' ~ random() %}
+
+{% do vi_define_cva(cva, ['root', 'switch']) %}
+{% do vi_define_attrs(['switch']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Language',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <twig:ViewsTheme:Form:Switch
+        class="{{ vi_class('switch') }}"
+        {{ ...vi_attrs('switch').defaults({
+            id: switchId,
+            name: 'language',
+            value: 'filter-language',
+            checked: checked,
+            disabled: disabled,
+            label: 'detail.reviewLanguageFilterLabel'|trans|sw_sanitize,
+        }).all() }}
+    />
+</div>

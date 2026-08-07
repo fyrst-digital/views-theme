@@ -1,55 +1,130 @@
-{% sw_extends '@Storefront/storefront/component/review/review-form.html.twig' %}
-
 {% props
+    reviews = null,
+    formData = null,
+    formViolations = null,
+    productId = null,
+    parentId = null,
+    saveUrl = null,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-review-form__rating form-group col-md-4 product-detail-review-form-rating' },
-}|replace_recursive(cva)) %}
+{% set data = formData %}
+{% if data is null and reviews and reviews.customerReview %}
+    {% set data = reviews.customerReview %}
+{% endif %}
 
-{% block component_review_form_rating %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-        <label for="#review-form-rating" class="form-label">
-            {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
-        </label>
+{% set currentPoints = reviews.matrix.maxPoints %}
+{% if data %}
+    {% if data.points is defined and data.points is not empty %}
+        {% set currentPoints = data.points %}
+    {% elseif data.get is defined and data.get('points') is not empty %}
+        {% set currentPoints = data.get('points')|number_format %}
+    {% endif %}
+{% endif %}
 
-        <div
-            id="review-form-rating"
-            class="product-detail-review-form-rating-input"
-            data-rating-system="true"
-        >
-            {% if data.get('points') is not empty %}
-                {% set currentPoints = data.get('points')|number_format %}
-            {% else %}
-                {% set currentPoints = reviews.matrix.maxPoints %}
-            {% endif %}
+{% set titleValue = null %}
+{% set contentValue = null %}
+{% if data %}
+    {% if data.title is defined %}
+        {% set titleValue = data.title %}
+    {% elseif data.get is defined %}
+        {% set titleValue = data.get('title') %}
+    {% endif %}
+    {% if data.content is defined %}
+        {% set contentValue = data.content %}
+    {% elseif data.get is defined %}
+        {% set contentValue = data.get('content') %}
+    {% endif %}
+{% endif %}
 
-            {% set maxPoints = reviews.matrix.maxPoints %}
+{% set formId = 'vi-review-form-' ~ random() %}
 
-            {% for point in 1..maxPoints %}
-                <label
-                    data-review-form-point="{{ point }}"
-                    class="product-detail-review-form-star{% if currentPoints >= point %} is-active{% endif %}"
-                >
-                    <input
-                        class="product-detail-review-form-radio"
-                        type="radio"
-                        name="points"
-                        value="{{ point }}"
-                        {% if currentPoints >= point %} checked="checked"{% endif %}
-                    >
-                    <span class="icon-review-star"></span>
-                </label>
-            {% endfor %}
-            {% for matrix in reviews.matrix.matrix %}
-                <p
-                    class="h6 product-detail-review-form-rating-text{% if currentPoints != matrix.points %} d-none{% endif %}"
-                    data-rating-text="{{ matrix.points }}"
-                >
-                    {{ ("detail.review" ~ matrix.points ~ "PointRatingText")|trans|sw_sanitize }}
-                </p>
-            {% endfor %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['rating', 'title', 'content', 'footer', 'actions']) %}
+
+<form
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Form',
+        action: saveUrl,
+        method: 'post',
+        'data-form-handler': 'true',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block forward %}
+        {% if parentId %}
+            <input type="hidden" name="parentId" value="{{ parentId }}">
+        {% endif %}
+        {% if reviews and reviews.customerReview %}
+            <input type="hidden" name="id" value="{{ reviews.customerReview.id }}">
+        {% endif %}
+    {% endblock %}
+
+    {% block rating %}
+        <twig:ViewsTheme:Review:Form:Rating
+            class="{{ vi_class('rating') }}"
+            {{ ...vi_attrs('rating').defaults({
+                currentPoints: currentPoints,
+                maxPoints: reviews.matrix.maxPoints,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block title %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('title') }}"
+            {{ ...vi_attrs('title').defaults({
+                id: formId ~ '-title',
+                name: 'title',
+                label: 'detail.reviewFormTitleLabel'|trans|sw_sanitize,
+                value: titleValue,
+                violationPath: '/title',
+                validationRules: 'required,minLength',
+                minlength: 5,
+                maxlength: 255,
+                description: 'detail.reviewTitleMinLengthHint'|trans|sw_sanitize,
+                formViolations: formViolations,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block content %}
+        <twig:ViewsTheme:Form:Textarea
+            class="{{ vi_class('content') }}"
+            {{ ...vi_attrs('content').defaults({
+                id: formId ~ '-content',
+                name: 'content',
+                label: 'detail.reviewFormContentLabel'|trans|sw_sanitize,
+                value: contentValue,
+                violationPath: '/content',
+                validationRules: 'required,minLength',
+                minlength: 40,
+                rows: 5,
+                description: 'detail.reviewTextMinLengthHint'|trans|sw_sanitize,
+                formViolations: formViolations,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block footer %}
+        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+            <p class="required-fields">
+                {{ 'general.requiredFields'|trans|sw_sanitize }}
+            </p>
+
+            <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                <twig:ViewsTheme:Button
+                    type="button"
+                    color="outline-secondary"
+                    label="{{ 'detail.reviewFormCancelText'|trans|striptags }}"
+                    data-review-form-action="cancel"
+                />
+                <twig:ViewsTheme:Button
+                    type="submit"
+                    color="primary"
+                    label="{{ 'detail.reviewFormSubmitText'|trans|striptags }}"
+                />
+            </div>
         </div>
-    </div>
-{% endblock %}
+    {% endblock %}
+</form>

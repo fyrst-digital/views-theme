@@ -7,9 +7,11 @@ Theme-owned page navigation with optional `Product:Listing` integration.
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/component/pagination.html.twig` → `Pagination` |
-| `Pagination` | Class VM (page window, href query) + control API for Listing (`p`) |
-| `Pagination:Item` | Leaf anchor; own click → Listing `apply({ p })` when present |
-| `Product:Listing` | When present, item clicks call `apply({ p })` instead of full navigation |
+| `Pagination` | Class VM (page window, href query) + control API for owner (`p`) |
+| `Pagination:Item` | Leaf anchor; click → owner `apply({ p })` via `ownerComponent` |
+| `Product:Listing` / `Review:Panel` | Owners; item clicks call `apply({ p })` instead of full navigation when owner is on page |
+
+Prop `ownerComponent` (default `ViewsTheme:Product:Listing`) selects which owner receives page changes (e.g. `ViewsTheme:Review:Panel` on PDP reviews).
 
 No core `ListingPagination` plugin.
 

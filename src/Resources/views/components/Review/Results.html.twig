@@ -1,0 +1,86 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['toolbar', 'language', 'sort', 'counter', 'items', 'item', 'empty', 'pagination']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Results',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block toolbar %}
+        <div {{ vi_attrs('toolbar') }} class="{{ vi_class('toolbar') }}">
+            {% block language %}
+                <div {{ vi_attrs('language') }} class="{{ vi_class('language') }}">
+                    <twig:ViewsTheme:Review:Language
+                        :checked="languageFilterActive"
+                        :disabled="languageFilterDisabled"
+                    />
+                </div>
+            {% endblock %}
+
+            {% block sort %}
+                {% if productReviewCount > 0 %}
+                    <div {{ vi_attrs('sort') }} class="{{ vi_class('sort') }}">
+                        <twig:ViewsTheme:Review:Sort
+                            :value="sortField"
+                            :options="sortOptions"
+                        />
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block counter %}
+        {% if productReviewCount > 0 %}
+            <p {{ vi_attrs('counter') }} class="{{ vi_class('counter') }}">
+                {% if productReviewCount > 1 and productReviewCount > reviewsPerPage %}
+                    <small>
+                        <strong>{{ currentListPage }}</strong>
+                        -
+                        <strong>{{ reviewsPerPage }}</strong>
+                        {{ 'detail.reviewCountBefore'|trans|sw_sanitize }}
+                        <strong>{{ productReviewCount }}</strong>
+                        {{ 'detail.reviewCountAfter'|trans({'%count%': productReviewCount})|sw_sanitize }}
+                    </small>
+                {% else %}
+                    <small>
+                        <strong>{{ productReviewCount }}</strong>
+                        {{ 'detail.reviewCountAfter'|trans({'%count%': productReviewCount})|sw_sanitize }}
+                    </small>
+                {% endif %}
+            </p>
+        {% endif %}
+    {% endblock %}
+
+    {% block items %}
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
+            {% for review in reviews %}
+                <div {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                    <twig:ViewsTheme:Review:Item :review="review" />
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% block empty %}
+        {% if productReviewCount <= 0 %}
+            <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
+                <twig:ViewsTheme:Alert
+                    type="info"
+                    content="{{ 'detail.reviewListEmpty'|trans|sw_sanitize }}"
+                />
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block pagination %}
+        <div {{ vi_attrs('pagination') }} class="{{ vi_class('pagination') }}">
+            <twig:ViewsTheme:Pagination
+                :entities="reviews"
+                preserveQuery
+                :ownerComponent="ownerComponent"
+            />
+        </div>
+    {% endblock %}
+</div>

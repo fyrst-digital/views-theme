@@ -6,6 +6,7 @@ Reusable form field primitives owned by the theme:
 |-----------|------|
 | `ViewsTheme:Form:Input` | Stacked text field (`form-group` + control) |
 | `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
+| `ViewsTheme:Form:Textarea` | Stacked textarea (`form-group` + control); same violation/description API as Input |
 | `ViewsTheme:Form:Select` | Stacked select field (`form-group` + `<select>`) |
 | `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
 | `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |

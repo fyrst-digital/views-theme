@@ -29,8 +29,9 @@ Storefront app root **must** have `package.json` with `vite` + the local modules
 views/components/**/*.js          # ShopwareComponent entries (data-component)
         │ import '@views-theme/modules/…'
 app/storefront/src/modules/
-  shared/     http · dom · component
+  shared/     http · dom · component · object-option · history
   listing/    Product:Listing domain only
+  review/     Review:Panel domain only
   lazy-shell.js · body-lock.js · serial-queue.js
 ```
 
@@ -38,18 +39,33 @@ app/storefront/src/modules/
 |-------|------------|
 | Component entry | `@views-theme/modules/*` |
 | `Product/Listing.js` | any `@views-theme/modules/listing/*` |
-| Filters / Pagination / Sorting | `@views-theme/modules/listing/apply.js` only (+ shared / lazy-shell as needed) |
-| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` |
+| `Review/Panel.js` | any `@views-theme/modules/review/*` |
+| Filters / Pagination / Sorting | `@views-theme/modules/listing/apply.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
+| Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
+| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` — **not** `review/*` |
+| `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing internals |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review internals |
+
+**URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third owner needs it.
+
+| Shared | Domain-local (keep in `listing/*` / `review/*`) |
+|--------|--------------------------------------------------|
+| `objectOption`, `collectControlValues` | `buildRequestParams` (`\|` vs array / `points[]`) |
+| `createHistoryController({ getKeys, writeParam, deleteParam, skipKeys })` | History key defaults; param encode |
+| http / dom / component | Fetch surfaces (filter-options vs save); control discovery |
 
 | Path | Role |
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
 | `shared/dom.js` | parse HTML, replaceMount, replaceComponentIsland |
 | `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `eventEl`, …) |
+| `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
+| `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
+| `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
+| `review/apply.js` | façade for review controls / Pagination → Panel |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
 | `body-lock.js` | ref-counted body scroll lock (Drawer + Overlay) |
 | `serial-queue.js` | Cart + Wishlist |

@@ -1,0 +1,42 @@
+{% props
+    productReviewCount = 0,
+    totalReviewCount = 0,
+    productAvgRating = 0,
+    maxPoints = 5,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'rating', 'average']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <p {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+            {{ 'detail.reviewTitle'|trans({
+                '%count%': productReviewCount,
+                '%total%': totalReviewCount,
+            })|sw_sanitize }}
+        </p>
+    {% endblock %}
+
+    {% block rating %}
+        <div {{ vi_attrs('rating') }} class="{{ vi_class('rating') }}">
+            <twig:ViewsTheme:Review:Rating :points="productAvgRating" />
+
+            {% if totalReviewCount > 0 %}
+                <p
+                    {{ vi_attrs('average').defaults({ 'aria-hidden': 'true' }) }}
+                    class="{{ vi_class('average') }}"
+                >
+                    {{ productAvgRating }}
+                    {{ 'detail.reviewAvgRate'|trans|sw_sanitize }}
+                    {{ maxPoints }}
+                    {{ 'detail.reviewAvgRateElements'|trans }}
+                </p>
+            {% endif %}
+        </div>
+    {% endblock %}
+</div>

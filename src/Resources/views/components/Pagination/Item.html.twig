@@ -5,6 +5,7 @@
     active = false,
     icon = null,
     label = null,
+    ownerComponent = 'ViewsTheme:Product:Listing',
     cva = {},
 %}
 
@@ -14,7 +15,11 @@
     {{ attributes.defaults({
         href: href,
         'data-component': 'ViewsTheme:Pagination:Item',
-        'data-component-options': { page: page }|json_encode,
+        'data-component-options': {
+            page: page,
+            listingComponent: ownerComponent,
+            listingSelector: '[data-component="' ~ ownerComponent ~ '"]',
+        }|json_encode,
         'title': label,
         'aria-label': label,
         'aria-current': active ? 'page' : false,

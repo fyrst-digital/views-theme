@@ -1,0 +1,102 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['aside', 'main', 'alerts', 'formShell', 'listShell']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Panel',
+        'data-component-options': componentOptions|json_encode,
+        'data-review-mode': mode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block aside %}
+        <div {{ vi_attrs('aside') }} class="{{ vi_class('aside') }}">
+            <twig:ViewsTheme:Review:Summary
+                :productReviewCount="productReviewCount"
+                :totalReviewCount="totalReviewCount"
+                :productAvgRating="productAvgRating"
+                :maxPoints="reviews.matrix.maxPoints"
+            />
+
+            <twig:ViewsTheme:Review:Matrix
+                :reviews="reviews"
+            />
+
+            <twig:ViewsTheme:Review:Teaser
+                :hasCustomerReview="hasCustomerReview"
+            />
+        </div>
+    {% endblock %}
+
+    {% block main %}
+        <div {{ vi_attrs('main') }} class="{{ vi_class('main') }}">
+            {% block alerts %}
+                <div {{ vi_attrs('alerts') }} class="{{ vi_class('alerts') }}">
+                    {% if ratingSuccess == 1 %}
+                        <twig:ViewsTheme:Alert
+                            type="success"
+                            content="{{ 'detail.reviewFormSuccessAlert'|trans|sw_sanitize }}"
+                            announceOnLoad
+                        />
+                    {% elseif ratingSuccess == 2 %}
+                        <twig:ViewsTheme:Alert
+                            type="success"
+                            content="{{ 'detail.reviewFormSuccessUpdateAlert'|trans|sw_sanitize }}"
+                            announceOnLoad
+                        />
+                    {% elseif ratingSuccess == -1 %}
+                        <twig:ViewsTheme:Alert
+                            type="danger"
+                            content="{{ 'detail.reviewFormErrorAlert'|trans|sw_sanitize }}"
+                            announceOnLoad
+                            ariaLive="assertive"
+                        />
+                    {% endif %}
+                </div>
+            {% endblock %}
+
+            {% block formShell %}
+                <div
+                    {{ vi_attrs('formShell').defaults({
+                        'data-review-region': 'form',
+                        hidden: not showForm,
+                    }) }}
+                    class="{{ vi_class('formShell') }}"
+                >
+                    {% if isLoggedIn %}
+                        <twig:ViewsTheme:Review:Form
+                            :reviews="reviews"
+                            :formData="formData"
+                            :formViolations="formViolations"
+                            :productId="productId"
+                            :parentId="parentId"
+                            :saveUrl="saveUrl"
+                        />
+                    {% else %}
+                        <twig:ViewsTheme:Review:Login
+                            :productId="productId"
+                            :parentId="parentId"
+                        />
+                    {% endif %}
+                </div>
+            {% endblock %}
+
+            {% block listShell %}
+                <div
+                    {{ vi_attrs('listShell').defaults({
+                        'data-review-region': 'list',
+                        hidden: showForm,
+                    }) }}
+                    class="{{ vi_class('listShell') }}"
+                >
+                    <twig:ViewsTheme:Review:Results
+                        :reviews="reviews"
+                        :productId="productId"
+                        :parentId="parentId"
+                    />
+                </div>
+            {% endblock %}
+
+        </div>
+    {% endblock %}
+</div>

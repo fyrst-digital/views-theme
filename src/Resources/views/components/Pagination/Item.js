@@ -1,7 +1,8 @@
 import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { applyReview } from '@views-theme/modules/review/apply.js'
 
 /**
- * Pagination page link → Listing.apply.
+ * Pagination page link → owner.apply({ p }).
  *
  * @extends {ShopwareComponent}
  */
@@ -33,9 +34,25 @@ export default class PaginationItem extends ShopwareComponent {
 
         event.preventDefault()
         const page = Number(this.options.page || 1)
+        const owner = this.options.listingComponent || 'ViewsTheme:Product:Listing'
+
+        if (owner === 'ViewsTheme:Review:Panel') {
+            applyReview(
+                { p: page },
+                {
+                    panelComponent: owner,
+                    callOptions: { resetPage: false },
+                },
+            )
+            return
+        }
+
         applyListing(
             { p: page },
-            { listingComponent: this.options.listingComponent },
+            {
+                listingComponent: owner,
+                callOptions: { resetPage: false },
+            },
         )
     }
 }

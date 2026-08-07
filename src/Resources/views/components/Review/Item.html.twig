@@ -1,15 +1,69 @@
-{% sw_extends '@Storefront/storefront/component/review/review-item.html.twig' %}
-
 {% props
+    review = null,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-review-item__points col-md-auto product-detail-review-item-points' },
-}|replace_recursive(cva)) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['meta', 'date', 'points', 'title', 'content', 'comment']) %}
 
-{% block component_review_item_info_points %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-        <twig:ViewsTheme:Review:Rating :points="review.points" />
-    </div>
-{% endblock %}
+<article
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block meta %}
+        <div {{ vi_attrs('meta') }} class="{{ vi_class('meta') }}">
+            {% block date %}
+                <p {{ vi_attrs('date') }} class="{{ vi_class('date') }}">
+                    <small>
+                        {{ review.createdAt|format_date('long') }}
+                        {{ review.createdAt|format_time('short') }}
+                    </small>
+                </p>
+            {% endblock %}
+
+            {% block points %}
+                <div {{ vi_attrs('points') }} class="{{ vi_class('points') }}">
+                    <twig:ViewsTheme:Review:Rating
+                        :points="review.points"
+                        altText="{{ 'detail.reviewRatingAltText'|trans({
+                            '%points%': review.points,
+                            '%maxPoints%': 5,
+                        }) }}"
+                    />
+                </div>
+            {% endblock %}
+
+            {% block title %}
+                <p
+                    {{ vi_attrs('title').defaults({
+                        lang: review.language ? review.language.translationCode.code : false,
+                    }) }}
+                    class="{{ vi_class('title') }}"
+                >
+                    {{ review.title }}
+                </p>
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block content %}
+        <p
+            {{ vi_attrs('content').defaults({
+                lang: review.language ? review.language.translationCode.code : false,
+            }) }}
+            class="{{ vi_class('content') }}"
+        >
+            {{ review.content|nl2br }}
+        </p>
+    {% endblock %}
+
+    {% block comment %}
+        {% if review.comment %}
+            <blockquote {{ vi_attrs('comment') }} class="{{ vi_class('comment') }}">
+                <footer>
+                    {{ 'detail.reviewCommentLabel'|trans|sw_sanitize }}{{ review.comment }}
+                </footer>
+            </blockquote>
+        {% endif %}
+    {% endblock %}
+</article>
