@@ -5,7 +5,6 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Review:Form',
         'data-review-region': 'form',
-        hidden: hidden,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -26,6 +25,7 @@
                     action: saveUrl,
                     method: 'post',
                     'data-form-handler': 'true',
+                    'data-review-form': 'save',
                 }) }}
                 class="{{ vi_class('form') }}"
             >
@@ -62,6 +62,7 @@
                             maxlength: 255,
                             description: 'detail.reviewTitleMinLengthHint'|trans|sw_sanitize,
                             formViolations: formViolations,
+                            'label:class': 'fw-semibold',
                         }).all() }}
                     />
                 {% endblock %}
@@ -80,6 +81,7 @@
                             rows: 5,
                             description: 'detail.reviewTextMinLengthHint'|trans|sw_sanitize,
                             formViolations: formViolations,
+                            'label:class': 'fw-semibold',
                         }).all() }}
                     />
                 {% endblock %}
@@ -91,12 +93,6 @@
                         </p>
 
                         <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                            <twig:ViewsTheme:Button
-                                type="button"
-                                color="outline-secondary"
-                                label="{{ 'detail.reviewFormCancelText'|trans|striptags }}"
-                                data-review-form-action="cancel"
-                            />
                             <twig:ViewsTheme:Button
                                 type="submit"
                                 color="primary"

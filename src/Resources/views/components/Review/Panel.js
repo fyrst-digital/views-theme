@@ -15,7 +15,7 @@ const RESULTS_CONTROL_NAMES = [
 ]
 
 /**
- * Review panel owner: URL SoT, list island XHR, form mode, save.
+ * Review panel owner: URL SoT, list island XHR, save.
  *
  * @extends {ShopwareComponent}
  */
@@ -59,21 +59,6 @@ export default class ReviewPanel extends ShopwareComponent {
         window.removeEventListener('popstate', this._onPopstate)
         this._fetch.abortAll()
         this._controls.clear()
-    }
-
-    openForm() {
-        this._setMode('form')
-    }
-
-    closeForm() {
-        this._setMode('list')
-    }
-
-    /**
-     * @param {'list'|'form'} mode
-     */
-    setMode(mode) {
-        this._setMode(mode === 'form' ? 'form' : 'list')
     }
 
     refreshControls() {
@@ -134,7 +119,6 @@ export default class ReviewPanel extends ShopwareComponent {
             }
 
             replaceComponentIsland(this.el, html, this.options.listComponent)
-            this._syncRegionVisibility()
 
             const results = this.el.querySelector(
                 `[data-component="${this.options.listComponent}"]`,
@@ -197,34 +181,6 @@ export default class ReviewPanel extends ShopwareComponent {
         }
         this.syncControls()
         void this.apply({}, { pushHistory: false, resetPage: false })
-    }
-
-    /**
-     * @param {'list'|'form'} mode
-     */
-    _setMode(mode) {
-        this.el.setAttribute('data-review-mode', mode)
-        this._syncRegionVisibility()
-
-        window.Shopware.emitQueued('ViewsTheme:Review:Mode', {
-            source: this.el,
-            mode,
-        })
-    }
-
-    _syncRegionVisibility() {
-        const mode = this.el.getAttribute('data-review-mode') === 'form' ? 'form' : 'list'
-        const formRegion = this.el.querySelector('[data-review-region="form"]')
-        const listRegion = this.el.querySelector(
-            `[data-component="${this.options.listComponent}"]`,
-        )
-
-        if (formRegion instanceof HTMLElement) {
-            formRegion.hidden = mode !== 'form'
-        }
-        if (listRegion instanceof HTMLElement) {
-            listRegion.hidden = mode !== 'list'
-        }
     }
 
     /**

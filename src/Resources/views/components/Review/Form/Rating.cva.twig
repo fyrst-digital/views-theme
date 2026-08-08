@@ -1,14 +1,14 @@
 {
-    root: { base: 'vi-review-form-rating' },
-    label: { base: 'vi-review-form-rating__label form-label' },
+    root: { base: 'vi-review-form-rating d-flex flex-row flex-wrap gap-2' },
+    label: { base: 'vi-review-form-rating__label form-label fw-semibold m-0 col-12' },
     stars: { base: 'vi-review-form-rating__stars d-flex flex-row' },
     star: {
-        base: 'vi-review-form-rating__star',
+        base: 'vi-review-form-rating__star cursor-pointer',
         variants: {
             active: {
                 true: 'is-active',
             },
         },
     },
-    text: { base: 'vi-review-form-rating__text h6' },
+    text: { base: 'vi-review-form-rating__text fs-6 fw-medium' },
 }

@@ -1,11 +1,10 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['sidebar', 'main', 'alerts', 'form', 'results']) %}
+{% do vi_define_attrs(['sidebar', 'main', 'alerts', 'results']) %}
 
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Review:Panel',
         'data-component-options': componentOptions|json_encode,
-        'data-review-mode': mode,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -19,6 +18,12 @@
                 maxPoints: reviews.matrix.maxPoints,
                 reviews: reviews,
                 hasCustomerReview: hasCustomerReview,
+                'teaser:form:reviews': reviews,
+                'teaser:form:formValues': formValues,
+                'teaser:form:formViolations': formViolations,
+                'teaser:form:productId': productId,
+                'teaser:form:parentId': parentId,
+                'teaser:form:saveUrl': saveUrl,
             }).all() }}
         />
     {% endblock %}
@@ -35,21 +40,6 @@
                 />
             {% endblock %}
 
-            {% block form %}
-                <twig:ViewsTheme:Review:Form
-                    class="{{ vi_class('form') }}"
-                    {{ ...vi_attrs('form').defaults({
-                        reviews: reviews,
-                        formValues: formValues,
-                        formViolations: formViolations,
-                        productId: productId,
-                        parentId: parentId,
-                        saveUrl: saveUrl,
-                        hidden: not showForm,
-                    }).all() }}
-                />
-            {% endblock %}
-
             {% block results %}
                 <twig:ViewsTheme:Review:Results
                     class="{{ vi_class('results') }}"
@@ -57,7 +47,6 @@
                         reviews: reviews,
                         productId: productId,
                         parentId: parentId,
-                        hidden: showForm,
                     }).all() }}
                 />
             {% endblock %}

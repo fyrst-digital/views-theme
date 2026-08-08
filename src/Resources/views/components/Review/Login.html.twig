@@ -15,7 +15,7 @@
 {% endif %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['login', 'actions']) %}
+{% do vi_define_attrs(['login']) %}
 
 <div
     {{ attributes }}
@@ -30,16 +30,5 @@
                 redirectParameters: redirectParameters,
             }).all() }}
         />
-    {% endblock %}
-
-    {% block actions %}
-        <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-            <twig:ViewsTheme:Button
-                type="button"
-                color="outline-secondary"
-                label="{{ 'detail.reviewLoginCancelButton'|trans|striptags }}"
-                data-review-form-action="cancel"
-            />
-        </div>
     {% endblock %}
 </div>

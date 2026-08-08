@@ -1,23 +1,22 @@
 /**
- * Review form region — login cancel + create/edit submit via Panel.save.
+ * Review form region — write/edit submit via Panel.save.
+ * Guest Account:Login submits natively (not intercepted).
  *
  * @extends {ShopwareComponent}
  */
 export default class ReviewForm extends ShopwareComponent {
     static options = {
         panelComponent: 'ViewsTheme:Review:Panel',
+        saveFormSelector: '[data-review-form="save"]',
     }
 
     init() {
         this._onSubmit = this._onSubmit.bind(this)
-        this._onClick = this._onClick.bind(this)
         this.el.addEventListener('submit', this._onSubmit)
-        this.el.addEventListener('click', this._onClick)
     }
 
     destroy() {
         this.el.removeEventListener('submit', this._onSubmit)
-        this.el.removeEventListener('click', this._onClick)
     }
 
     /**
@@ -30,25 +29,14 @@ export default class ReviewForm extends ShopwareComponent {
         if (!form || !this.el.contains(form)) {
             return
         }
+        if (!form.matches(this.options.saveFormSelector)) {
+            return
+        }
         event.preventDefault()
         window.Shopware.callMethod(
             this.options.panelComponent,
             'save',
             new FormData(form),
         )
-    }
-
-    /**
-     * @param {MouseEvent} event
-     */
-    _onClick(event) {
-        const target = event.target instanceof Element
-            ? event.target.closest('[data-review-form-action="cancel"]')
-            : null
-        if (!target || !this.el.contains(target)) {
-            return
-        }
-        event.preventDefault()
-        window.Shopware.callMethod(this.options.panelComponent, 'closeForm')
     }
 }

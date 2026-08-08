@@ -1,11 +1,17 @@
 {% props
     currentPoints = 5,
     maxPoints = 5,
-    labels = [],
+    iconFull = 'star-fill',
+    iconEmpty = 'star',
     cva = {},
 %}
 
-{% set ratingId = 'vi-review-form-rating-' ~ random() %}
+{% set pointLabels = {} %}
+{% for point in 1..maxPoints %}
+    {% set pointLabels = pointLabels|merge({
+        ('p' ~ point): ("detail.review#{point}PointRatingText")|trans|striptags,
+    }) %}
+{% endfor %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['label', 'stars', 'star', 'text']) %}
@@ -15,56 +21,49 @@
         'data-component': 'ViewsTheme:Review:Form:Rating',
         'data-component-options': {
             currentPoints: currentPoints,
+            pointLabels: pointLabels,
+            iconFull: iconFull,
+            iconEmpty: iconEmpty,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
     {% block label %}
-        <span {{ vi_attrs('label') }} class="{{ vi_class('label') }}" id="{{ ratingId }}-label">
+        <div {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
             {{ 'detail.reviewFormRatingLabel'|trans|sw_sanitize }}{{ 'general.required'|trans|sw_sanitize }}
-        </span>
+        </div>
+    {% endblock %}
+
+    {% block value %}
+        <input type="hidden" name="points" value="{{ currentPoints }}">
     {% endblock %}
 
     {% block stars %}
         <div
             {{ vi_attrs('stars').defaults({
-                role: 'radiogroup',
-                'aria-labelledby': ratingId ~ '-label',
+                'data-rating-stars': true,
             }) }}
             class="{{ vi_class('stars') }}"
         >
             {% for point in 1..maxPoints %}
-                <label
-                    {{ vi_attrs('star').defaults({
-                        'data-review-form-point': point,
-                    }) }}
-                    class="{{ vi_class('star', { active: currentPoints >= point }) }}"
-                >
-                    <input
-                        type="radio"
-                        name="points"
-                        value="{{ point }}"
-                        class="visually-hidden"
-                        aria-label="{{ ("detail.review#{point}PointRatingText")|trans|striptags }}"
-                        {% if currentPoints == point %}checked{% endif %}
-                    >
-                    {{ vi_icon(currentPoints >= point ? 'star-fill' : 'star') }}
-                </label>
+                {{ vi_icon(currentPoints >= point ? iconFull : iconEmpty, {
+                    class: vi_class('star', { active: currentPoints >= point }),
+                    attr: {
+                        'data-points': point,
+                    },
+                }) }}
             {% endfor %}
         </div>
     {% endblock %}
 
-    {% block texts %}
-        {% for point in 1..maxPoints %}
-            <p
-                {{ vi_attrs('text').defaults({
-                    'data-rating-text': point,
-                    hidden: currentPoints != point,
-                }) }}
-                class="{{ vi_class('text') }}"
-            >
-                {{ ("detail.review#{point}PointRatingText")|trans|sw_sanitize }}
-            </p>
-        {% endfor %}
+    {% block text %}
+        <div
+            {{ vi_attrs('text').defaults({
+                'data-rating-text': true,
+            }) }}
+            class="{{ vi_class('text') }}"
+        >
+            {{ pointLabels['p' ~ currentPoints]|default('') }}
+        </div>
     {% endblock %}
 </div>

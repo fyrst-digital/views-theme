@@ -9,6 +9,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['teaser']) %}
 
 <div
     {{ attributes }}
@@ -31,7 +32,9 @@
 
     {% block teaser %}
         <twig:ViewsTheme:Review:Teaser
-            :hasCustomerReview="hasCustomerReview"
+            {{ ...vi_attrs('teaser').defaults({
+                hasCustomerReview: hasCustomerReview,
+            }).all() }}
         />
     {% endblock %}
 </div>

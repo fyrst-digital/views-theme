@@ -98,7 +98,6 @@ class ReviewController extends AbstractComponentController
             'ratingSuccess' => $ratingSuccess,
             'formViolations' => $formViolations,
             'formValues' => $formValues,
-            'mode' => $ratingSuccess === -1 ? 'form' : 'list',
             'listUrl' => $this->generateUrl('frontend.views-theme.review.list', [
                 'productId' => $productId,
             ]),

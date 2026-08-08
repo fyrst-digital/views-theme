@@ -7,22 +7,21 @@ Theme-owned PDP reviews tab: summary, matrix filter, list island, write/edit for
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (strips offcanvas chrome) |
-| `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, form mode, save |
+| `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, save |
 | `Review:Results` | XHR-swappable list island (toolbar, items, pagination); list region host |
 | `Review:Results:Toolbar` | Language + sort + counter chrome |
 | `Review:Sidebar` | Aside column: Summary + Matrix + Teaser |
-| `Review:Summary` / `Teaser` | Counts chrome + write CTA; Summary rating host = stars + Average |
+| `Review:Summary` / `Teaser` | Counts chrome + always-visible Form host; Summary rating host = stars + Average |
 | `Review:Matrix` | Class VM points filter control (`points[]`); rows from matrix + URL SoT |
 | `Review:Alerts` | Post-save / validation flash alerts |
-| `Review:Item` | Single review card shell: Header → Content → Comment → Edit (`editable`) |
+| `Review:Item` | Single review card shell: Header → Content → Comment |
 | `Review:Item:Title` | Review heading text (+ optional `lang`); nested by Header |
 | `Review:Item:Header` | Title + stars (`Review:Rating`) + author (`viewsTheme.review.author`) + date |
 | `Review:Item:Content` | Body text (`nl2br`, optional `lang`) |
 | `Review:Item:Comment` | Merchant reply card; root-hosts `Blockquote` (+ default shop-owner footer snippet) |
-| `Review:Item:Edit` | Owner edit CTA → `Panel.openForm` (owns JS) |
-| `Review:Form` | Class VM + region host: Login (guest) or create/edit fields |
-| `Review:Form:Rating` / `Login` | Star picker + account login (Login nested under Form) |
-| `Review:Rating` | Display stars leaf; also buy-box / product card |
+| `Review:Form` | Class VM + region host under Teaser (always shown): Login (guest) or create/edit fields; JS owns only `[data-review-form=save]` |
+| `Review:Form:Rating` / `Login` | Star picker (hidden `points` + `data-points` icons + one text from `pointLabels` options); icon props `iconFull` / `iconEmpty` (defaults `star-fill` / `star`, also in JS options) + account login (native POST) |
+| `Review:Rating` | Display stars leaf; icon props `iconFull` / `iconHalf` / `iconEmpty` (defaults `star-fill` / `star-half-fill` / `star`); also buy-box / product card |
 | `Review:Average` | Text average (`points` / `maxPoints`); composed by Summary when `totalReviewCount > 0` |
 | Controllers | `ReviewController` — `/vi/product/{id}/reviews` list + save |
 | Gateway | `ProductReviewGateway` → core `AbstractProductReviewLoader` (+ points URL normalize) |
@@ -45,25 +44,25 @@ Review:Panel (data-component owner)
 │    │         ├─ Check   ← nest `check`
 │    │         ├─ Bar     ← nest `bar` → Progress
 │    │         └─ Share   ← nest `share`
-│    └─ Teaser          ← open/close form mode
+│    └─ Teaser          ← presentational; always hosts Form
+│         ├─ title / text
+│         └─ Form (data-review-region=form)   ← class VM; always visible
+│              ├─ Login                       ← guest
+│              └─ fields + Form:Rating        ← logged-in
 └─ Main
      ├─ Alerts
-     ├─ Form (data-review-region=form)   ← class VM; hidden in list mode
-     │    ├─ Login                       ← guest
-     │    └─ fields + Form:Rating        ← logged-in
-      └─ Results (island; list region)    ← hidden in form mode; XHR-swapped
-           ├─ Toolbar
-           │    ├─ Language (control: language)
-           │    ├─ Sort (control: sort)
-           │    └─ counter
-             ├─ Item × N
-             │    ├─ Header
-             │    │    ├─ Title
-             │    │    └─ Rating + author + date
-             │    ├─ Content
-              │    ├─ Comment          ← when review.comment → Blockquote
-              │    └─ Edit             ← owner only; → Panel.openForm
-            └─ Pagination (ownerComponent = Review:Panel)
+     └─ Results (island; list region)    ← always visible; XHR-swapped
+          ├─ Toolbar
+          │    ├─ Language (control: language)
+          │    ├─ Sort (control: sort)
+          │    └─ counter
+          ├─ Item × N
+          │    ├─ Header
+          │    │    ├─ Title
+          │    │    └─ Rating + author + date
+          │    ├─ Content
+          │    └─ Comment          ← when review.comment → Blockquote
+          └─ Pagination (ownerComponent = Review:Panel)
 ```
 
 ## URL query = filter SoT
@@ -82,7 +81,7 @@ Param names match core `ProductReviewLoader` (CMS SSR already loads via request)
 - Full page load with query restores filters via CMS resolver + loader
 - **SSR note:** core loader only filters when `points` is a **list**. `ReviewPointsNormalizer` (+ `ReviewRequestSubscriber`) coerces scalar/`points[]`/pipe forms on the **query** bag only (never POST body — save needs scalar `points`)
 - **Save form values:** controller passes plain `formValues` array into Panel/Form (never `RequestDataBag`); violation re-render keeps submitted scalars + `formViolations`
-- Form open / success alerts are **local UI state** (not URL), except post-save HTML replace
+- Success / validation alerts are **local UI state** (not URL), except post-save HTML replace
 
 ## Controllers
 
@@ -92,7 +91,7 @@ Param names match core `ProductReviewLoader` (CMS SSR already loads via request)
 | `frontend.views-theme.review.save` | `POST /vi/product/{productId}/reviews` | HTML full `Review:Panel` |
 
 After load: fire `ProductReviewsWidgetLoadedHook` (App parity).  
-Save: call `AbstractProductReviewSaveRoute` only; on violations re-render form with `formViolations` + plain `formValues` array (never `RequestDataBag`) + `mode=form`; on success reload + alert.
+Save: call `AbstractProductReviewSaveRoute` only; on violations re-render form with `formViolations` + plain `formValues` array (never `RequestDataBag`); on success reload + alert.
 
 Render via `AbstractComponentController::renderComponent()`.
 
@@ -104,10 +103,9 @@ Query also carries `parentId` when needed (variant products).
 |-----|------|
 | `apply(patch, { pushHistory, resetPage })` | Results XHR + history |
 | `syncControls` / `refreshControls` / `hydrateFromUrl` | Control registry |
-| `openForm` / `closeForm` | Toggle form ↔ list (`data-review-mode` + region `hidden`) |
 | `save(FormData)` | POST save → replace Panel root |
 
-Form region = `Review:Form` root (`data-review-region="form"`). List region = `Review:Results` root (`data-component` island). After Results XHR swap, Panel re-applies list `hidden` from current mode.
+Form region = `Review:Form` root under Teaser (`data-review-region="form"`), always visible. List region = `Review:Results` always visible.
 
 Modules under `@views-theme/modules/review/` (+ shared helpers):
 
@@ -120,41 +118,35 @@ Modules under `@views-theme/modules/review/` (+ shared helpers):
 
 Domain stays isolated from `listing/*` — [javascript.md](../conventions/javascript.md).
 
-Events: `ViewsTheme:Review:Loading`, `ViewsTheme:Review:Changed`, `ViewsTheme:Review:Mode`.
+Events: `ViewsTheme:Review:Loading`, `ViewsTheme:Review:Changed`.
 
 Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw listing internals.
 
-## Edit entry points
+## Write / edit
 
-| Entry | When |
-|-------|------|
-| `Review:Teaser` | Logged-in customer with `customerReview` (global aside CTA) |
-| `Review:Item:Edit` | Same customer’s review **on the current results page** (`review.id == reviews.customerReview.id`) → link-style button → `Panel.openForm` |
-
-Both reuse form prefill + hidden `id` from `customerReview` / `formValues`. Label: `detail.reviewExistsTeaserButton`. Teaser behavior unchanged.
+`Review:Teaser` always shows Form: guest login or write/edit prefilled from `customerReview` / `formValues` (hidden `id` when editing).
 
 ## Related leaves
 
 | Component | Notes |
 |-----------|--------|
 | `Review:Results:Toolbar` | Language + Sort + counter; nests `language` / `sort` / `counter` |
-| `Review:Item` | Composition shell (no JS); nests `header` / `content` / `comment` / `edit`; no numeric score or category row |
+| `Review:Item` | Composition shell (no JS); nests `header` / `content` / `comment`; no numeric score or category row |
 | `Review:Item:Title` | Props `title` / `lang`; heading chrome; nested by Header |
 | `Review:Item:Header` | Presentational header; props `title` / `lang` / `points` / `externalUser` / `createdAt`; nests `title` → `Item:Title`, `rating` → `Review:Rating` |
 | `Review:Item:Content` | Props `content` / `lang`; body `nl2br` |
 | `Review:Item:Comment` | Reply card; prop `comment`; body `nl2br`; root-hosts `Blockquote` via `class="{{ vi_class('root') }}"` + `attributes.defaults` (default `footer` = `viewsTheme.review.commentFooter`; Item nest `comment` extras merge into Comment root) |
-| `Review:Item:Edit` | `data-component`; nests `button` → `Button`; `Edit.js` → `Panel.openForm`; only when Results `editable` |
 | `Review:Matrix` | Class VM builds `rows` / `visible` from matrix + query `points`; JS control; nests `check` / `bar` / `share` |
 | `Review:Matrix:Check` / `Bar` / `Share` | Row cells; Check CVA `control`/`input`/`label` (`form-check*`); Bar nests `progress` → `Progress`; Share root |
 | `Blockquote` | Generic `<blockquote>`; CVA `root`/`content`/`footer`; props `content` / `footer` (string, default `null`) or blocks; body in nest `content` `<p>`; optional nest `footer` `<footer>` |
 | `Progress` | Generic bar; CVA `root`/`fill`; props `value`/`min`/`max`/`size` (`sm`\|`md`\|`lg`, default `md`)/`color` (`none`\|`primary`\|…\|`dark`, default `none`)/`striped`/`animate` (bool, default false) |
-| `Review:Rating` | Display stars leaf; class VM builds `starIcons` |
+| `Review:Rating` | Display stars leaf; class VM builds `starIcons` from `iconFull` / `iconHalf` / `iconEmpty` |
 | `Review:Average` | Visible average line; composed by Summary (`totalReviewCount > 0`) |
 
 | `Form:Textarea` | Shared primitive (title/content style parity with `Form:Input`) |
 | `Form:Switch` / `Form:Select` / `Form:Input` | Language, sort, form fields |
 | `Account:Login` | Nested in `Review:Login` (under `Review:Form`) with PDP redirect |
-| `Review:Login` | Presentational; cancel handled by `Form.js` (`data-review-form-action`) |
+| `Review:Login` | Presentational guest gate |
 | `Pagination` | `ownerComponent` prop targets Review:Panel on this page |
 
 ## Related

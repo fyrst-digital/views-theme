@@ -30,9 +30,6 @@ class Form
 
     public ?string $saveUrl = null;
 
-    /** When true, form region is not shown (list mode). */
-    public bool $hidden = false;
-
     /**
      * @var array<string, mixed>
      */

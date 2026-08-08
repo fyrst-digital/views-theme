@@ -24,13 +24,11 @@
     {% endblock %}
 
     {% block items %}
-        {% set customerReviewId = reviews.customerReview.id|default(null) %}
         <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
             {% for review in reviews %}
                 <div {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
                     <twig:ViewsTheme:Review:Item
                         :review="review"
-                        :editable="customerReviewId is not null and review.id == customerReviewId"
                     />
                 </div>
             {% endfor %}

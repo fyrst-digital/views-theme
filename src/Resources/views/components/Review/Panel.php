@@ -32,9 +32,6 @@ class Panel
      */
     public ?array $formValues = null;
 
-    /** list | form */
-    public string $mode = 'list';
-
     public ?string $listUrl = null;
 
     public ?string $saveUrl = null;
@@ -59,8 +56,6 @@ class Panel
 
     public bool $hasCustomerReview = false;
 
-    public bool $showForm = false;
-
     /**
      * @param array<string, mixed> $data
      */
@@ -80,12 +75,6 @@ class Panel
         $this->productAvgRating = $this->totalReviewCount > 0 ? round($avg, 2) : 0.0;
 
         $this->hasCustomerReview = $this->reviews->getCustomerReview() !== null;
-
-        if ($this->ratingSuccess === -1 || $this->ratingSuccess === '-1') {
-            $this->mode = 'form';
-        }
-
-        $this->showForm = $this->mode === 'form';
 
         if ($this->formValues === null) {
             $this->formValues = $this->formValuesFromCustomerReview($this->reviews->getCustomerReview());

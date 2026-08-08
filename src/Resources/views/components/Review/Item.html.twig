@@ -1,11 +1,10 @@
 {% props
     review = null,
-    editable = false,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'content', 'comment', 'edit']) %}
+{% do vi_define_attrs(['header', 'content', 'comment']) %}
 
 {% set reviewLang = review.language ? review.language.translationCode.code : null %}
 
@@ -43,15 +42,6 @@
                 {{ ...vi_attrs('comment').defaults({
                     comment: review.comment,
                 }).all() }}
-            />
-        {% endif %}
-    {% endblock %}
-
-    {% block edit %}
-        {% if editable %}
-            <twig:ViewsTheme:Review:Item:Edit
-                class="{{ vi_class('edit') }}"
-                {{ ...vi_attrs('edit').all() }}
             />
         {% endif %}
     {% endblock %}

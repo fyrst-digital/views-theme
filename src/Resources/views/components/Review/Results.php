@@ -50,7 +50,7 @@ class Results
      */
     public string $ownerComponent = 'ViewsTheme:Review:Panel';
 
-    /** When true, list island is not shown (form mode). */
+    /** Optional list-region visibility (unused on Panel; form always visible under Teaser). */
     public bool $hidden = false;
 
     public function __construct(

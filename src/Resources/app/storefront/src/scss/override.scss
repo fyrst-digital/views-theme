@@ -141,4 +141,7 @@ $utilities: (
   @each $key, $value in $spacers {
     --#{$prefix}spacing-#{$key}: #{$value};
   }
+  @each $key, $value in $font-sizes {
+    --#{$prefix}font-size-#{$key}: #{$value};
+  }
 }

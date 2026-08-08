@@ -4,12 +4,10 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['title', 'text', 'actions']) %}
+{% do vi_define_attrs(['title', 'text', 'form']) %}
 
 <div
-    {{ attributes.defaults({
-        'data-component': 'ViewsTheme:Review:Teaser',
-    }) }}
+    {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block title %}
@@ -32,23 +30,10 @@
         </p>
     {% endblock %}
 
-    {% block actions %}
-        <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-            <twig:ViewsTheme:Button
-                type="button"
-                color="primary"
-                label="{{ hasCustomerReview
-                    ? 'detail.reviewExistsTeaserButton'|trans|striptags
-                    : 'detail.reviewTeaserButton'|trans|striptags }}"
-                data-review-teaser-action="open"
-            />
-            <twig:ViewsTheme:Button
-                type="button"
-                color="outline-secondary"
-                label="{{ 'detail.reviewTeaserButtonHide'|trans|striptags }}"
-                data-review-teaser-action="close"
-                hidden
-            />
-        </div>
+    {% block form %}
+        <twig:ViewsTheme:Review:Form
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').all() }}
+        />
     {% endblock %}
 </div>
