@@ -1,0 +1,29 @@
+{% props
+    content = null,
+    footer = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['content', 'footer']) %}
+
+<blockquote
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    <p {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
+        {% block content %}
+            {% if content is not null %}
+                {{ content }}
+            {% endif %}
+        {% endblock %}
+    </p>
+
+    {% block footer %}
+        {% if footer is not null %}
+            <footer {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+                {{ footer }}
+            </footer>
+        {% endif %}
+    {% endblock %}
+</blockquote>

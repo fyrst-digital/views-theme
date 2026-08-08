@@ -75,6 +75,20 @@ $icon-sizes: (
 
 // BUtilities overrides
 $utilities: (
+  "width": (
+    property: width,
+    class: w,
+    values: (
+      25: 25%,
+      50: 50%,
+      75: 75%,
+      100: 100%,
+      auto: auto,
+      fit: fit-content,
+      min: min-content,
+      max: max-content,
+    )
+  ),
   "position": (
     property: position,
     responsive: true,

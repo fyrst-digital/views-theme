@@ -1,0 +1,25 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['button']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Item:Edit',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block button %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('button') }}"
+            {{ ...vi_attrs('button').defaults({
+                type: 'button',
+                color: 'link',
+                size: 'sm',
+                label: 'detail.reviewExistsTeaserButton'|trans|striptags,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

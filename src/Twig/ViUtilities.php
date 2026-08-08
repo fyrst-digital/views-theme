@@ -327,6 +327,10 @@ class ViUtilities extends AbstractExtension
             $map[$slotName] = new ViCvaSlot($cva, $extraClass);
         }
 
+        if (isset($map['root'])) {
+            $attributes = $attributes->without('class');
+        }
+
         $context['attributes'] = $attributes;
 
         return $map;

@@ -166,6 +166,46 @@ TWIG,
         self::assertSame('', $twig->getExtension(ViUtilities::class)->class([], 'x'));
     }
 
+    public function testRootClassMergedIntoViClassAndStrippedFromAttributes(): void
+    {
+        $twig = $this->createTwig([
+            't.html.twig' => <<<'TWIG'
+{% do vi_define_cva({ root: { base: 'vi-comment meddl' } }) %}
+{{ vi_class('root') }}|{{ attributes.all()|json_encode|raw }}
+TWIG,
+        ]);
+        $escaper = $twig->getRuntime(EscaperRuntime::class);
+
+        $html = $twig->render('t.html.twig', [
+            'attributes' => new ComponentAttributes([
+                'class' => 'vi-comment mt-2',
+                'data-x' => '1',
+            ], $escaper),
+        ]);
+
+        self::assertSame('vi-comment meddl mt-2|{"data-x":"1"}', $html);
+    }
+
+    public function testNestedSlotClassMergedAndStripped(): void
+    {
+        $twig = $this->createTwig([
+            't.html.twig' => <<<'TWIG'
+{% do vi_define_cva({ root: { base: 'vi-root' }, comment: { base: 'vi-comment meddl' } }) %}
+{{ vi_class('comment') }}|{{ attributes.all()|json_encode|raw }}
+TWIG,
+        ]);
+        $escaper = $twig->getRuntime(EscaperRuntime::class);
+
+        $html = $twig->render('t.html.twig', [
+            'attributes' => new ComponentAttributes([
+                'comment:class' => 'vi-comment mt-2',
+                'data-x' => '1',
+            ], $escaper),
+        ]);
+
+        self::assertSame('vi-comment meddl mt-2|{"data-x":"1"}', $html);
+    }
+
     public function testClassWalksOuterScopeExports(): void
     {
         $twig = $this->createTwig([

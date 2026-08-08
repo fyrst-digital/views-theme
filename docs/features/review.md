@@ -14,7 +14,12 @@ Theme-owned PDP reviews tab: summary, matrix filter, list island, write/edit for
 | `Review:Summary` / `Teaser` | Counts chrome + write CTA; Summary rating host = stars + Average |
 | `Review:Matrix` | Class VM points filter control (`points[]`); rows from matrix + URL SoT |
 | `Review:Alerts` | Post-save / validation flash alerts |
-| `Review:Item` | Single review card; owner row gets edit CTA (`editable`) |
+| `Review:Item` | Single review card shell: Header → Content → Comment → Edit (`editable`) |
+| `Review:Item:Title` | Review heading text (+ optional `lang`); nested by Header |
+| `Review:Item:Header` | Title + stars (`Review:Rating`) + author (`viewsTheme.review.author`) + date |
+| `Review:Item:Content` | Body text (`nl2br`, optional `lang`) |
+| `Review:Item:Comment` | Merchant reply card; root-hosts `Blockquote` (+ default shop-owner footer snippet) |
+| `Review:Item:Edit` | Owner edit CTA → `Panel.openForm` (owns JS) |
 | `Review:Form` | Class VM + region host: Login (guest) or create/edit fields |
 | `Review:Form:Rating` / `Login` | Star picker + account login (Login nested under Form) |
 | `Review:Rating` | Display stars leaf; also buy-box / product card |
@@ -51,8 +56,14 @@ Review:Panel (data-component owner)
            │    ├─ Language (control: language)
            │    ├─ Sort (control: sort)
            │    └─ counter
-           ├─ Item × N   ← owner item: Edit → Panel.openForm
-           └─ Pagination (ownerComponent = Review:Panel)
+             ├─ Item × N
+             │    ├─ Header
+             │    │    ├─ Title
+             │    │    └─ Rating + author + date
+             │    ├─ Content
+              │    ├─ Comment          ← when review.comment → Blockquote
+              │    └─ Edit             ← owner only; → Panel.openForm
+            └─ Pagination (ownerComponent = Review:Panel)
 ```
 
 ## URL query = filter SoT
@@ -118,7 +129,7 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | Entry | When |
 |-------|------|
 | `Review:Teaser` | Logged-in customer with `customerReview` (global aside CTA) |
-| `Review:Item` | Same customer’s review **on the current results page** (`review.id == reviews.customerReview.id`) → link-style button → `Panel.openForm` |
+| `Review:Item:Edit` | Same customer’s review **on the current results page** (`review.id == reviews.customerReview.id`) → link-style button → `Panel.openForm` |
 
 Both reuse form prefill + hidden `id` from `customerReview` / `formValues`. Label: `detail.reviewExistsTeaserButton`. Teaser behavior unchanged.
 
@@ -127,9 +138,15 @@ Both reuse form prefill + hidden `id` from `customerReview` / `formValues`. Labe
 | Component | Notes |
 |-----------|--------|
 | `Review:Results:Toolbar` | Language + Sort + counter; nests `language` / `sort` / `counter` |
-| `Review:Item` | `editable` from Results; `Item.js` only mounted when editable |
+| `Review:Item` | Composition shell (no JS); nests `header` / `content` / `comment` / `edit`; no numeric score or category row |
+| `Review:Item:Title` | Props `title` / `lang`; heading chrome; nested by Header |
+| `Review:Item:Header` | Presentational header; props `title` / `lang` / `points` / `externalUser` / `createdAt`; nests `title` → `Item:Title`, `rating` → `Review:Rating` |
+| `Review:Item:Content` | Props `content` / `lang`; body `nl2br` |
+| `Review:Item:Comment` | Reply card; prop `comment`; body `nl2br`; root-hosts `Blockquote` via `class="{{ vi_class('root') }}"` + `attributes.defaults` (default `footer` = `viewsTheme.review.commentFooter`; Item nest `comment` extras merge into Comment root) |
+| `Review:Item:Edit` | `data-component`; nests `button` → `Button`; `Edit.js` → `Panel.openForm`; only when Results `editable` |
 | `Review:Matrix` | Class VM builds `rows` / `visible` from matrix + query `points`; JS control; nests `check` / `bar` / `share` |
 | `Review:Matrix:Check` / `Bar` / `Share` | Row cells; Check CVA `control`/`input`/`label` (`form-check*`); Bar nests `progress` → `Progress`; Share root |
+| `Blockquote` | Generic `<blockquote>`; CVA `root`/`content`/`footer`; props `content` / `footer` (string, default `null`) or blocks; body in nest `content` `<p>`; optional nest `footer` `<footer>` |
 | `Progress` | Generic bar; CVA `root`/`fill`; props `value`/`min`/`max`/`size` (`sm`\|`md`\|`lg`, default `md`)/`color` (`none`\|`primary`\|…\|`dark`, default `none`)/`striped`/`animate` (bool, default false) |
 | `Review:Rating` | Display stars leaf; class VM builds `starIcons` |
 | `Review:Average` | Visible average line; composed by Summary (`totalReviewCount > 0`) |

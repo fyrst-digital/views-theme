@@ -3,7 +3,7 @@
  *
  * @extends {ShopwareComponent}
  */
-export default class ReviewItem extends ShopwareComponent {
+export default class ReviewItemEdit extends ShopwareComponent {
     static options = {
         panelComponent: 'ViewsTheme:Review:Panel',
     }
@@ -22,7 +22,7 @@ export default class ReviewItem extends ShopwareComponent {
      */
     _onClick(event) {
         const target = event.target instanceof Element
-            ? event.target.closest('[data-review-item-action="edit"]')
+            ? event.target.closest('button')
             : null
         if (!target || !this.el.contains(target)) {
             return
