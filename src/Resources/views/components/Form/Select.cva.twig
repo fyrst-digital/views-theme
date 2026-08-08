@@ -1,10 +1,21 @@
 {
-    root: { base: 'form-group' },
+    root: {
+        base: 'form-group d-flex flex-wrap',
+        variants: {
+            layout: {
+                stacked: 'flex-column',
+                bar: 'flex-row align-items-center gap-2',
+            },
+        },
+    },
     label: { 
         base: 'form-label',
         variants: {
             size: {
                 sm: 'fs-6',
+            },
+            layout: {
+                bar: 'm-0',
             }
         } 
     },
@@ -22,6 +33,9 @@
                 md: '',
                 lg: 'form-select-lg',
             },
+            layout: {
+                bar: 'col',
+            }
         },
     },
     description: { 

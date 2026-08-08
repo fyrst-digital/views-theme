@@ -5,6 +5,7 @@
     options = [],
     value = null,
     size = null,
+    layout = 'stacked',
     autocomplete = null,
     disabled = false,
     description = null,
@@ -30,7 +31,7 @@
 
 <div
     {{ attributes }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     {% block label %}
         {% if label %}
@@ -38,7 +39,7 @@
                 {{ vi_attrs('label').defaults({
                     for: id,
                 }) }}
-                class="{{ vi_class('label', {size: size}) }}"
+                class="{{ vi_class('label', {size: size,  layout: layout }) }}"
             >
                 {{ label|raw }}
 
@@ -67,7 +68,7 @@
                 'aria-required': isRequired ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}
-            class="{{ vi_class('select', { invalid: isInvalid, size: size }) }}"
+            class="{{ vi_class('select', { invalid: isInvalid, size: size, layout: layout }) }}"
         >
             {% block options %}
                 {% if options|length > 0 %}

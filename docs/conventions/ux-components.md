@@ -445,7 +445,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, Button, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
+| Alert, Button, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
@@ -468,7 +468,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells |
 | Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md) |
 | Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |
-| Review:Matrix (class-backed) + Matrix:Check / Bar / Share | UX + `vi_cva` + `Matrix.php` → `rows` / `visible`; nest cells |
+| Review:Matrix (class-backed) + Matrix:Check / Bar / Share | UX + `vi_cva` + `Matrix.php` → `rows` / `visible`; Bar → Progress |
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |

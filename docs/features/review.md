@@ -9,6 +9,7 @@ Theme-owned PDP reviews tab: summary, matrix filter, list island, write/edit for
 | Storefront bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (strips offcanvas chrome) |
 | `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, form mode, save |
 | `Review:Results` | XHR-swappable list island (toolbar, items, pagination); list region host |
+| `Review:Results:Toolbar` | Language + sort + counter chrome |
 | `Review:Sidebar` | Aside column: Summary + Matrix + Teaser |
 | `Review:Summary` / `Teaser` | Counts chrome + write CTA; Summary rating host = stars + Average |
 | `Review:Matrix` | Class VM points filter control (`points[]`); rows from matrix + URL SoT |
@@ -37,7 +38,7 @@ Review:Panel (data-component owner)
 │    ├─ Matrix          ← class VM; control: points[]
 │    │    └─ Row × N
 │    │         ├─ Check   ← nest `check`
-│    │         ├─ Bar     ← nest `bar` (progress/fill)
+│    │         ├─ Bar     ← nest `bar` → Progress
 │    │         └─ Share   ← nest `share`
 │    └─ Teaser          ← open/close form mode
 └─ Main
@@ -45,12 +46,13 @@ Review:Panel (data-component owner)
      ├─ Form (data-review-region=form)   ← class VM; hidden in list mode
      │    ├─ Login                       ← guest
      │    └─ fields + Form:Rating        ← logged-in
-     └─ Results (island; list region)    ← hidden in form mode; XHR-swapped
-          ├─ Language (control: language)
-          ├─ Sort (control: sort)
-          ├─ counter
-          ├─ Item × N   ← owner item: Edit → Panel.openForm
-          └─ Pagination (ownerComponent = Review:Panel)
+      └─ Results (island; list region)    ← hidden in form mode; XHR-swapped
+           ├─ Toolbar
+           │    ├─ Language (control: language)
+           │    ├─ Sort (control: sort)
+           │    └─ counter
+           ├─ Item × N   ← owner item: Edit → Panel.openForm
+           └─ Pagination (ownerComponent = Review:Panel)
 ```
 
 ## URL query = filter SoT
@@ -124,9 +126,11 @@ Both reuse form prefill + hidden `id` from `customerReview` / `formValues`. Labe
 
 | Component | Notes |
 |-----------|--------|
+| `Review:Results:Toolbar` | Language + Sort + counter; nests `language` / `sort` / `counter` |
 | `Review:Item` | `editable` from Results; `Item.js` only mounted when editable |
 | `Review:Matrix` | Class VM builds `rows` / `visible` from matrix + query `points`; JS control; nests `check` / `bar` / `share` |
-| `Review:Matrix:Check` / `Bar` / `Share` | Row cells; Check CVA `control`/`input`/`label` (`form-check*`); Bar `progress`/`fill`; Share root |
+| `Review:Matrix:Check` / `Bar` / `Share` | Row cells; Check CVA `control`/`input`/`label` (`form-check*`); Bar nests `progress` → `Progress`; Share root |
+| `Progress` | Generic bar; CVA `root`/`fill`; props `value`/`min`/`max`/`size` (`sm`\|`md`\|`lg`, default `md`)/`color` (`none`\|`primary`\|…\|`dark`, default `none`)/`striped`/`animate` (bool, default false) |
 | `Review:Rating` | Display stars leaf; class VM builds `starIcons` |
 | `Review:Average` | Visible average line; composed by Summary (`totalReviewCount > 0`) |
 

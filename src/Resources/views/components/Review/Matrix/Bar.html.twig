@@ -4,24 +4,18 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['progress', 'fill']) %}
+{% do vi_define_attrs(['progress']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        <div {{ vi_attrs('progress') }} class="{{ vi_class('progress') }}">
-            <div
-                {{ vi_attrs('fill').defaults({
-                    role: 'progressbar',
-                    style: 'width: ' ~ percent ~ '%',
-                    'aria-valuenow': percent,
-                    'aria-valuemin': 0,
-                    'aria-valuemax': 100,
-                }) }}
-                class="{{ vi_class('fill') }}"
-            ></div>
-        </div>
+        <twig:ViewsTheme:Progress
+            class="{{ vi_class('progress') }}"
+            {{ ...vi_attrs('progress').defaults({
+                value: percent,
+            }).all() }}
+        />
     {% endblock %}
 </div>

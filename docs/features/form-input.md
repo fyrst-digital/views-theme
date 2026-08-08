@@ -7,7 +7,7 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Input` | Stacked text field (`form-group` + control) |
 | `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
 | `ViewsTheme:Form:Textarea` | Stacked textarea (`form-group` + control); same violation/description API as Input |
-| `ViewsTheme:Form:Select` | Stacked select field (`form-group` + `<select>`) |
+| `ViewsTheme:Form:Select` | Select field (`form-group` + `<select>`); `layout` stacked (default) or bar |
 | `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
 | `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
 
@@ -141,7 +141,7 @@ Inside a parent `<twig:block name="append">`, Group shadows parent locals. Use *
 
 ## Form:Select
 
-Stacked select field: optional label + `<select>` + description / feedback. Does **not** own `<form>` or JS.
+Select field: optional label + `<select>` + description / feedback. Does **not** own `<form>` or JS. Default `layout` is stacked (label above control); `bar` is root-only flex utilities.
 
 **Simple:** pass `:options` (+ optional `:value`). **Complex:** override the `options` block (e.g. disabled “not available” rows in shipping calculation).
 
@@ -155,6 +155,17 @@ Stacked select field: optional label + `<select>` + description / feedback. Does
     label="{{ 'account.personalSalutationLabel'|trans|sw_sanitize }}"
     :options="salutationOptions"
     :value="selectedSalutationId"
+/>
+
+{# Bar — root inline flex (label margin unchanged) #}
+<twig:ViewsTheme:Form:Select
+    layout="bar"
+    id="sort"
+    name="sort"
+    label="{{ 'detail.reviewSortLabel'|trans|sw_sanitize }}"
+    :options="selectOptions"
+    :value="value"
+    size="sm"
 />
 
 {# Complex — block override #}
@@ -188,6 +199,7 @@ Stacked select field: optional label + `<select>` + description / feedback. Does
 | `options` | `[]` | Iterable of `{ value, label, disabled?, selected? }` |
 | `value` | `null` | Selected value (preferred over per-option `selected`) |
 | `size` | `null` | `sm` / `md` / `lg` → `form-select-*` |
+| `layout` | `'stacked'` | `'bar'` \| `'stacked'` → root CVA only |
 | `autocomplete` | `null` | |
 | `disabled` | `false` | |
 | `description` | `null` | Help text under the field |
@@ -210,7 +222,7 @@ Stacked select field: optional label + `<select>` + description / feedback. Does
 
 | Slot | Default base | Caller override |
 |------|--------------|-----------------|
-| root | `form-group` | `class="…"` |
+| root | `form-group` (+ layout: `bar` → `d-inline-flex align-items-center gap-2 m-0`) | `class="…"` |
 | label | `form-label` (+ size `sm → fs-6`) | `label:class` |
 | required | `form-required-label` | `required:class` |
 | select | `form-select cursor-pointer` (+ size / `is-invalid`) | `select:class` |

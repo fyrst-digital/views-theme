@@ -12,7 +12,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Review:Results island — counts, sort, language filter state.
+ * View-model for Review:Results island — counts, sort, language filter state for Toolbar.
  */
 #[AsTwigComponent]
 class Results
