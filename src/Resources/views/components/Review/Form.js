@@ -1,5 +1,5 @@
 /**
- * Review create/edit form — submits via Panel.save.
+ * Review form region — login cancel + create/edit submit via Panel.save.
  *
  * @extends {ShopwareComponent}
  */
@@ -24,14 +24,17 @@ export default class ReviewForm extends ShopwareComponent {
      * @param {SubmitEvent} event
      */
     _onSubmit(event) {
-        event.preventDefault()
-        if (!(this.el instanceof HTMLFormElement)) {
+        const form = event.target instanceof HTMLFormElement
+            ? event.target
+            : null
+        if (!form || !this.el.contains(form)) {
             return
         }
+        event.preventDefault()
         window.Shopware.callMethod(
             this.options.panelComponent,
             'save',
-            new FormData(this.el),
+            new FormData(form),
         )
     }
 

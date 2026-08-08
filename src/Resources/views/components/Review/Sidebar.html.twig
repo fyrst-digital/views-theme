@@ -1,0 +1,37 @@
+{% props
+    productReviewCount = 0,
+    totalReviewCount = 0,
+    productAvgRating = 0,
+    maxPoints = 5,
+    reviews = null,
+    hasCustomerReview = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block summary %}
+        <twig:ViewsTheme:Review:Summary
+            :productReviewCount="productReviewCount"
+            :totalReviewCount="totalReviewCount"
+            :productAvgRating="productAvgRating"
+            :maxPoints="maxPoints"
+        />
+    {% endblock %}
+
+    {% block matrix %}
+        <twig:ViewsTheme:Review:Matrix
+            :reviews="reviews"
+        />
+    {% endblock %}
+
+    {% block teaser %}
+        <twig:ViewsTheme:Review:Teaser
+            :hasCustomerReview="hasCustomerReview"
+        />
+    {% endblock %}
+</div>

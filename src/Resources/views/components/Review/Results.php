@@ -50,6 +50,9 @@ class Results
      */
     public string $ownerComponent = 'ViewsTheme:Review:Panel';
 
+    /** When true, list island is not shown (form mode). */
+    public bool $hidden = false;
+
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly SystemConfigService $systemConfigService,

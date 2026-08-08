@@ -104,3 +104,9 @@
     --vi-quantity-input-max-w: 200px;
   }
 }
+.vi-review-panel {
+  @media (width >= 1024px) {
+    --vi-grid-columns: auto minmax(0, 1fr);
+    --vi-sidebar-w: 320px;
+  }
+}

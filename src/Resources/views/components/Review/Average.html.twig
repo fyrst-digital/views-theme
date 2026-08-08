@@ -1,0 +1,19 @@
+{% props
+    points = 0,
+    maxPoints = 5,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'aria-hidden': 'true',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {{ points }}
+    {{ 'detail.reviewAvgRate'|trans|sw_sanitize }}
+    {{ maxPoints }}
+    {{ 'detail.reviewAvgRateElements'|trans }}
+</div>

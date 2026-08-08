@@ -112,3 +112,10 @@
     --vi-quantity-input-max-w: 200px;
   }
 }
+
+.vi-review-panel {
+  @variant lg {
+    --vi-grid-columns: auto minmax(0, 1fr);
+    --vi-sidebar-w: 320px;
+  }
+}

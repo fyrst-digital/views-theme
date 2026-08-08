@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['aside', 'main', 'alerts', 'formShell', 'listShell']) %}
+{% do vi_define_attrs(['sidebar', 'main', 'alerts', 'form', 'results']) %}
 
 <div
     {{ attributes.defaults({
@@ -9,106 +9,58 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block aside %}
-        <div {{ vi_attrs('aside') }} class="{{ vi_class('aside') }}">
-            <twig:ViewsTheme:Review:Summary
-                :productReviewCount="productReviewCount"
-                :totalReviewCount="totalReviewCount"
-                :productAvgRating="productAvgRating"
-                :maxPoints="reviews.matrix.maxPoints"
-            />
-
-            <twig:ViewsTheme:Review:Matrix
-                :reviews="reviews"
-            />
-
-            <twig:ViewsTheme:Review:Teaser
-                :hasCustomerReview="hasCustomerReview"
-            />
-        </div>
+    {% block sidebar %}
+        <twig:ViewsTheme:Review:Sidebar
+            class="{{ vi_class('sidebar') }}"
+            {{ ...vi_attrs('sidebar').defaults({
+                productReviewCount: productReviewCount,
+                totalReviewCount: totalReviewCount,
+                productAvgRating: productAvgRating,
+                maxPoints: reviews.matrix.maxPoints,
+                reviews: reviews,
+                hasCustomerReview: hasCustomerReview,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block main %}
         <div {{ vi_attrs('main') }} class="{{ vi_class('main') }}">
             {% block alerts %}
-                <div {{ vi_attrs('alerts') }} class="{{ vi_class('alerts') }}">
-                    {% if ratingSuccess == 1 %}
-                        <twig:ViewsTheme:Alert
-                            type="success"
-                            content="{{ 'detail.reviewFormSuccessAlert'|trans|sw_sanitize }}"
-                            announceOnLoad
-                        />
-                    {% elseif ratingSuccess == 2 %}
-                        <twig:ViewsTheme:Alert
-                            type="success"
-                            content="{{ 'detail.reviewFormSuccessUpdateAlert'|trans|sw_sanitize }}"
-                            announceOnLoad
-                        />
-                    {% elseif ratingSuccess == -1 %}
-                        {% set errorContent = 'detail.reviewFormErrorAlert'|trans|sw_sanitize %}
-                        {% if formViolations %}
-                            {% set violationLines = [] %}
-                            {% for violation in formViolations.violations %}
-                                {% set violationLines = violationLines|merge([
-                                    violation.message ~ (violation.propertyPath ? ' (' ~ violation.propertyPath ~ ')' : '')
-                                ]) %}
-                            {% endfor %}
-                            {% if violationLines is not empty %}
-                                {% set errorContent = errorContent ~ '<ul class="mb-0 mt-2"><li>' ~ violationLines|join('</li><li>') ~ '</li></ul>' %}
-                            {% endif %}
-                        {% endif %}
-                        <twig:ViewsTheme:Alert
-                            type="danger"
-                            content="{{ errorContent }}"
-                            announceOnLoad
-                            ariaLive="assertive"
-                        />
-                    {% endif %}
-                </div>
+                <twig:ViewsTheme:Review:Alerts
+                    class="{{ vi_class('alerts') }}"
+                    {{ ...vi_attrs('alerts').defaults({
+                        ratingSuccess: ratingSuccess,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
             {% endblock %}
 
-            {% block formShell %}
-                <div
-                    {{ vi_attrs('formShell').defaults({
-                        'data-review-region': 'form',
+            {% block form %}
+                <twig:ViewsTheme:Review:Form
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        reviews: reviews,
+                        formValues: formValues,
+                        formViolations: formViolations,
+                        productId: productId,
+                        parentId: parentId,
+                        saveUrl: saveUrl,
                         hidden: not showForm,
-                    }) }}
-                    class="{{ vi_class('formShell') }}"
-                >
-                    {% if isLoggedIn %}
-                        <twig:ViewsTheme:Review:Form
-                            :reviews="reviews"
-                            :formValues="formValues"
-                            :formViolations="formViolations"
-                            :productId="productId"
-                            :parentId="parentId"
-                            :saveUrl="saveUrl"
-                        />
-                    {% else %}
-                        <twig:ViewsTheme:Review:Login
-                            :productId="productId"
-                            :parentId="parentId"
-                        />
-                    {% endif %}
-                </div>
+                    }).all() }}
+                />
             {% endblock %}
 
-            {% block listShell %}
-                <div
-                    {{ vi_attrs('listShell').defaults({
-                        'data-review-region': 'list',
+            {% block results %}
+                <twig:ViewsTheme:Review:Results
+                    class="{{ vi_class('results') }}"
+                    {{ ...vi_attrs('results').defaults({
+                        reviews: reviews,
+                        productId: productId,
+                        parentId: parentId,
                         hidden: showForm,
-                    }) }}
-                    class="{{ vi_class('listShell') }}"
-                >
-                    <twig:ViewsTheme:Review:Results
-                        :reviews="reviews"
-                        :productId="productId"
-                        :parentId="parentId"
-                    />
-                </div>
+                    }).all() }}
+                />
             {% endblock %}
-
         </div>
     {% endblock %}
 </div>

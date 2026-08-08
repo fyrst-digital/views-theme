@@ -18,9 +18,7 @@
 {% do vi_define_attrs(['login', 'actions']) %}
 
 <div
-    {{ attributes.defaults({
-        'data-component': 'ViewsTheme:Review:Login',
-    }) }}
+    {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block login %}
@@ -40,7 +38,7 @@
                 type="button"
                 color="outline-secondary"
                 label="{{ 'detail.reviewLoginCancelButton'|trans|striptags }}"
-                data-review-login-action="cancel"
+                data-review-form-action="cancel"
             />
         </div>
     {% endblock %}

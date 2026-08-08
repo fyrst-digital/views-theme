@@ -13,13 +13,13 @@
     class="{{ vi_class('root') }}"
 >
     {% block title %}
-        <p {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
             {% if hasCustomerReview %}
                 {{ 'detail.reviewExistsTeaserTitle'|trans|sw_sanitize }}
             {% else %}
                 {{ 'detail.reviewTeaserTitle'|trans|sw_sanitize }}
             {% endif %}
-        </p>
+        </div>
     {% endblock %}
 
     {% block text %}

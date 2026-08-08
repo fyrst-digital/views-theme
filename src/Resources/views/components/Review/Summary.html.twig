@@ -7,36 +7,44 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['title', 'rating', 'average']) %}
+{% do vi_define_attrs(['title', 'rating', 'stars', 'average']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block title %}
-        <p {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
             {{ 'detail.reviewTitle'|trans({
                 '%count%': productReviewCount,
                 '%total%': totalReviewCount,
             })|sw_sanitize }}
-        </p>
+        </div>
     {% endblock %}
 
     {% block rating %}
         <div {{ vi_attrs('rating') }} class="{{ vi_class('rating') }}">
-            <twig:ViewsTheme:Review:Rating :points="productAvgRating" />
+            {% block stars %}
+                <twig:ViewsTheme:Review:Rating
+                    class="{{ vi_class('stars') }}"
+                    {{ ...vi_attrs('stars').defaults({
+                        points: productAvgRating,
+                        maxPoints: maxPoints,
+                    }).all() }}
+                />
+            {% endblock %}
 
-            {% if totalReviewCount > 0 %}
-                <p
-                    {{ vi_attrs('average').defaults({ 'aria-hidden': 'true' }) }}
-                    class="{{ vi_class('average') }}"
-                >
-                    {{ productAvgRating }}
-                    {{ 'detail.reviewAvgRate'|trans|sw_sanitize }}
-                    {{ maxPoints }}
-                    {{ 'detail.reviewAvgRateElements'|trans }}
-                </p>
-            {% endif %}
+            {% block average %}
+                {% if totalReviewCount > 0 %}
+                    <twig:ViewsTheme:Review:Average
+                        class="{{ vi_class('average') }}"
+                        {{ ...vi_attrs('average').defaults({
+                            points: productAvgRating,
+                            maxPoints: maxPoints,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
         </div>
     {% endblock %}
 </div>

@@ -118,6 +118,11 @@ $utilities: (
   ),
 );
 
+@property --vi-grid-columns {
+  syntax: "*";
+  inherits: false;
+}
+
 :root {
   @each $key, $value in $spacers {
     --#{$prefix}spacing-#{$key}: #{$value};

@@ -1,109 +1,111 @@
-{% props
-    reviews = null,
-    formValues = null,
-    formViolations = null,
-    productId = null,
-    parentId = null,
-    saveUrl = null,
-    cva = {},
-%}
-
-{% set maxPoints = reviews ? reviews.matrix.maxPoints : 5 %}
-{% set currentPoints = formValues.points is defined and formValues.points is not null
-    ? formValues.points
-    : maxPoints %}
-{% set titleValue = formValues.title|default(null) %}
-{% set contentValue = formValues.content|default(null) %}
-{% set reviewId = formValues.id|default(reviews.customerReview.id|default(null)) %}
-
-{% set formId = 'vi-review-form-' ~ random() %}
-
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['rating', 'title', 'content', 'footer', 'actions']) %}
+{% do vi_define_attrs(['login', 'form', 'rating', 'title', 'content', 'footer', 'actions']) %}
 
-<form
+<div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Review:Form',
-        action: saveUrl,
-        method: 'post',
-        'data-form-handler': 'true',
+        'data-review-region': 'form',
+        hidden: hidden,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block forward %}
-        {% if parentId %}
-            <input type="hidden" name="parentId" value="{{ parentId }}">
-        {% endif %}
-        {% if reviewId %}
-            <input type="hidden" name="id" value="{{ reviewId }}">
-        {% endif %}
-    {% endblock %}
+    {% if not isLoggedIn %}
+        {% block login %}
+            <twig:ViewsTheme:Review:Login
+                class="{{ vi_class('login') }}"
+                {{ ...vi_attrs('login').defaults({
+                    productId: productId,
+                    parentId: parentId,
+                }).all() }}
+            />
+        {% endblock %}
+    {% else %}
+        {% block form %}
+            <form
+                {{ vi_attrs('form').defaults({
+                    action: saveUrl,
+                    method: 'post',
+                    'data-form-handler': 'true',
+                }) }}
+                class="{{ vi_class('form') }}"
+            >
+                {% block forward %}
+                    {% if parentId %}
+                        <input type="hidden" name="parentId" value="{{ parentId }}">
+                    {% endif %}
+                    {% if reviewId %}
+                        <input type="hidden" name="id" value="{{ reviewId }}">
+                    {% endif %}
+                {% endblock %}
 
-    {% block rating %}
-        <twig:ViewsTheme:Review:Form:Rating
-            class="{{ vi_class('rating') }}"
-            {{ ...vi_attrs('rating').defaults({
-                currentPoints: currentPoints,
-                maxPoints: maxPoints,
-            }).all() }}
-        />
-    {% endblock %}
+                {% block rating %}
+                    <twig:ViewsTheme:Review:Form:Rating
+                        class="{{ vi_class('rating') }}"
+                        {{ ...vi_attrs('rating').defaults({
+                            currentPoints: currentPoints,
+                            maxPoints: maxPoints,
+                        }).all() }}
+                    />
+                {% endblock %}
 
-    {% block title %}
-        <twig:ViewsTheme:Form:Input
-            class="{{ vi_class('title') }}"
-            {{ ...vi_attrs('title').defaults({
-                id: formId ~ '-title',
-                name: 'title',
-                label: 'detail.reviewFormTitleLabel'|trans|sw_sanitize,
-                value: titleValue,
-                violationPath: '/title',
-                validationRules: 'required,minLength',
-                minlength: 5,
-                maxlength: 255,
-                description: 'detail.reviewTitleMinLengthHint'|trans|sw_sanitize,
-                formViolations: formViolations,
-            }).all() }}
-        />
-    {% endblock %}
+                {% block title %}
+                    <twig:ViewsTheme:Form:Input
+                        class="{{ vi_class('title') }}"
+                        {{ ...vi_attrs('title').defaults({
+                            id: formId ~ '-title',
+                            name: 'title',
+                            label: 'detail.reviewFormTitleLabel'|trans|sw_sanitize,
+                            value: titleValue,
+                            violationPath: '/title',
+                            validationRules: 'required,minLength',
+                            minlength: 5,
+                            maxlength: 255,
+                            description: 'detail.reviewTitleMinLengthHint'|trans|sw_sanitize,
+                            formViolations: formViolations,
+                        }).all() }}
+                    />
+                {% endblock %}
 
-    {% block content %}
-        <twig:ViewsTheme:Form:Textarea
-            class="{{ vi_class('content') }}"
-            {{ ...vi_attrs('content').defaults({
-                id: formId ~ '-content',
-                name: 'content',
-                label: 'detail.reviewFormContentLabel'|trans|sw_sanitize,
-                value: contentValue,
-                violationPath: '/content',
-                validationRules: 'required,minLength',
-                minlength: 40,
-                rows: 5,
-                description: 'detail.reviewTextMinLengthHint'|trans|sw_sanitize,
-                formViolations: formViolations,
-            }).all() }}
-        />
-    {% endblock %}
+                {% block content %}
+                    <twig:ViewsTheme:Form:Textarea
+                        class="{{ vi_class('content') }}"
+                        {{ ...vi_attrs('content').defaults({
+                            id: formId ~ '-content',
+                            name: 'content',
+                            label: 'detail.reviewFormContentLabel'|trans|sw_sanitize,
+                            value: contentValue,
+                            violationPath: '/content',
+                            validationRules: 'required,minLength',
+                            minlength: 40,
+                            rows: 5,
+                            description: 'detail.reviewTextMinLengthHint'|trans|sw_sanitize,
+                            formViolations: formViolations,
+                        }).all() }}
+                    />
+                {% endblock %}
 
-    {% block footer %}
-        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
-            <p class="required-fields">
-                {{ 'general.requiredFields'|trans|sw_sanitize }}
-            </p>
+                {% block footer %}
+                    <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+                        <p class="required-fields">
+                            {{ 'general.requiredFields'|trans|sw_sanitize }}
+                        </p>
 
-            <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                <twig:ViewsTheme:Button
-                    type="button"
-                    color="outline-secondary"
-                    label="{{ 'detail.reviewFormCancelText'|trans|striptags }}"
-                    data-review-form-action="cancel"
-                />
-                <twig:ViewsTheme:Button
-                    type="submit"
-                    color="primary"
-                    label="{{ 'detail.reviewFormSubmitText'|trans|striptags }}"
-                />
-            </div>
-        </div>
-    {% endblock %}
-</form>
+                        <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                            <twig:ViewsTheme:Button
+                                type="button"
+                                color="outline-secondary"
+                                label="{{ 'detail.reviewFormCancelText'|trans|striptags }}"
+                                data-review-form-action="cancel"
+                            />
+                            <twig:ViewsTheme:Button
+                                type="submit"
+                                color="primary"
+                                label="{{ 'detail.reviewFormSubmitText'|trans|striptags }}"
+                            />
+                        </div>
+                    </div>
+                {% endblock %}
+            </form>
+        {% endblock %}
+    {% endif %}
+</div>

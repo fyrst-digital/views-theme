@@ -26,7 +26,7 @@ final class ReviewPointsNormalizer
         }
 
         $raw = $bag->all()['points'];
-        $points = $this->toList($raw);
+        $points = self::toList($raw);
 
         if ($points === []) {
             $bag->remove('points');
@@ -38,9 +38,11 @@ final class ReviewPointsNormalizer
     }
 
     /**
+     * Normalize raw request `points` (scalar, list, or pipe-joined) to a string list.
+     *
      * @return list<string>
      */
-    private function toList(mixed $raw): array
+    public static function toList(mixed $raw): array
     {
         if (\is_array($raw)) {
             return array_values(array_map(

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Review;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewEntity;
 use Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewResult;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -58,16 +57,9 @@ class Panel
 
     public float $productAvgRating = 0.0;
 
-    public bool $isLoggedIn = false;
-
     public bool $hasCustomerReview = false;
 
     public bool $showForm = false;
-
-    public function __construct(
-        private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
-    ) {
-    }
 
     /**
      * @param array<string, mixed> $data
@@ -87,8 +79,6 @@ class Panel
         $avg = $this->reviews->getMatrix()->getAverageRating();
         $this->productAvgRating = $this->totalReviewCount > 0 ? round($avg, 2) : 0.0;
 
-        $customer = $this->salesChannelContextAccessor->get()?->getCustomer();
-        $this->isLoggedIn = $customer !== null && !$customer->getGuest();
         $this->hasCustomerReview = $this->reviews->getCustomerReview() !== null;
 
         if ($this->ratingSuccess === -1 || $this->ratingSuccess === '-1') {

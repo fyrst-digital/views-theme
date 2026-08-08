@@ -134,6 +134,7 @@ export default class ReviewPanel extends ShopwareComponent {
             }
 
             replaceComponentIsland(this.el, html, this.options.listComponent)
+            this._syncRegionVisibility()
 
             const results = this.el.querySelector(
                 `[data-component="${this.options.listComponent}"]`,
@@ -203,9 +204,20 @@ export default class ReviewPanel extends ShopwareComponent {
      */
     _setMode(mode) {
         this.el.setAttribute('data-review-mode', mode)
+        this._syncRegionVisibility()
 
+        window.Shopware.emitQueued('ViewsTheme:Review:Mode', {
+            source: this.el,
+            mode,
+        })
+    }
+
+    _syncRegionVisibility() {
+        const mode = this.el.getAttribute('data-review-mode') === 'form' ? 'form' : 'list'
         const formRegion = this.el.querySelector('[data-review-region="form"]')
-        const listRegion = this.el.querySelector('[data-review-region="list"]')
+        const listRegion = this.el.querySelector(
+            `[data-component="${this.options.listComponent}"]`,
+        )
 
         if (formRegion instanceof HTMLElement) {
             formRegion.hidden = mode !== 'form'
@@ -213,11 +225,6 @@ export default class ReviewPanel extends ShopwareComponent {
         if (listRegion instanceof HTMLElement) {
             listRegion.hidden = mode !== 'list'
         }
-
-        window.Shopware.emitQueued('ViewsTheme:Review:Mode', {
-            source: this.el,
-            mode,
-        })
     }
 
     /**
