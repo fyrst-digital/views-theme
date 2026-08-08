@@ -1,11 +1,15 @@
 /* Active look follows aria-selected (JS state SoT) — not class toggles. */
 
 .vi-tabs__tab {
-  font-weight: var(--vi-tab-fw, 400);
-  color: var(--vi-tab-color, var(--bs-secondary-color, #6c757d));
+  /* font-weight: var(--vi-tab-fw, 400);
+  color: var(--vi-tab-color, var(--tertiary-color)); */
+  --nav-link-color: var(--vi-tab-color, var(--tertiary-color));
+  --nav-link-hover-color: var(--vi-tab-hover-color, var(--link-hover-color));
 }
 
 .vi-tabs__tab[aria-selected='true'] {
-  font-weight: var(--vi-tab-fw-active, 600);
-  color: var(--vi-tab-color-active, var(--bs-body-color, #212529));
+  /* font-weight: var(--vi-tab-active-fw, 600);
+  color: var(--vi-tab-active-color, var(--body-color)); */
+  --nav-link-color: var(--vi-tab-active-color, var(--body-color));
+  --nav-link-font-weight: var(--vi-tab-active-fw, 600);
 }

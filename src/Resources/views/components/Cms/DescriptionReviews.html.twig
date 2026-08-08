@@ -44,46 +44,46 @@
             </twig:block>
 
             <twig:block name="panels">
-                <div class="{{ vi_class('panels') }}">
-                    {% block panelDescription %}
+                {% block panelDescription %}
+                    <twig:ViewsTheme:Tabs:Panel
+                        id="{{ descriptionPaneId }}"
+                        tab="{{ descriptionTabId }}"
+                        class="p-4"
+                        :active="not reviewsActive"
+                    >
+                        <twig:block name="content">
+                            {% if product %}
+                                <twig:ViewsTheme:Product:Description:Detail
+                                    :product="product"
+                                />
+                            {% endif %}
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Panel>
+                {% endblock %}
+
+                {% block panelReviews %}
+                    {% if showReview %}
                         <twig:ViewsTheme:Tabs:Panel
-                            id="{{ descriptionPaneId }}"
-                            tab="{{ descriptionTabId }}"
-                            :active="not reviewsActive"
+                            id="{{ reviewPaneId }}"
+                            tab="{{ reviewTabId }}"
+                            class="p-4"
+                            :active="reviewsActive"
                         >
                             <twig:block name="content">
-                                {% if product %}
-                                    <twig:ViewsTheme:Product:Description:Detail
-                                        :product="product"
+                                {% if reviews and productId %}
+                                    <twig:ViewsTheme:Review:Panel
+                                        :reviews="reviews"
+                                        :productId="productId"
+                                        :parentId="parentId"
+                                        :ratingSuccess="ratingSuccess"
+                                        :listUrl="listUrl"
+                                        :saveUrl="saveUrl"
                                     />
                                 {% endif %}
                             </twig:block>
                         </twig:ViewsTheme:Tabs:Panel>
-                    {% endblock %}
-
-                    {% block panelReviews %}
-                        {% if showReview %}
-                            <twig:ViewsTheme:Tabs:Panel
-                                id="{{ reviewPaneId }}"
-                                tab="{{ reviewTabId }}"
-                                :active="reviewsActive"
-                            >
-                                <twig:block name="content">
-                                    {% if reviews and productId %}
-                                        <twig:ViewsTheme:Review:Panel
-                                            :reviews="reviews"
-                                            :productId="productId"
-                                            :parentId="parentId"
-                                            :ratingSuccess="ratingSuccess"
-                                            :listUrl="listUrl"
-                                            :saveUrl="saveUrl"
-                                        />
-                                    {% endif %}
-                                </twig:block>
-                            </twig:ViewsTheme:Tabs:Panel>
-                        {% endif %}
-                    {% endblock %}
-                </div>
+                    {% endif %}
+                {% endblock %}
             </twig:block>
         </twig:ViewsTheme:Tabs>
     {% endblock %}
