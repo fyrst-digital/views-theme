@@ -9,7 +9,7 @@ PDP / CMS image gallery. Scroll-snap canvas synced with a thumbnail strip, prev/
 | `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex`, thumb+dot click delegation, control disabled state, `ViewsTheme:Gallery:Change` |
 | `Gallery:Thumbnails` | Vertical (md+) / horizontal (sm) strip; `scrollToIndex` keeps active thumb visible |
 | `Gallery:Thumb` | Thumb control identity + `aria-current`; `index` in options |
-| `Gallery:Canvas` | Scroll-snap track; `goTo(i)`; scroll settle → `callMethod(Gallery, 'setIndex', i)` |
+| `Gallery:Canvas` | Scroll-snap track; `goTo` via `scrollIntoView`; settle via `getBoundingClientRect`; resize re-pins current index (`behavior: 'instant'`) → `setIndex` only on user scroll |
 | `Gallery:Slide` | One media slide identity |
 | `Gallery:Control` | Prev/next → `callMethod(Gallery, 'prev'\|'next')` |
 | `Gallery:Dots` / `Gallery:Dot` | Dot nav; same index / `aria-current` pattern as thumbs |

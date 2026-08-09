@@ -1,5 +1,6 @@
 /**
- * Scroll-snap canvas track — goTo(index) + report active slide to Gallery.
+ * Scroll-snap canvas — goTo via scrollIntoView; settle via getBoundingClientRect;
+ * resize re-pins current index (no scrollLeft).
  *
  * @extends {ShopwareComponent}
  */
@@ -14,6 +15,7 @@ export default class GalleryCanvas extends ShopwareComponent {
         this._programmatic = false
         this._onScrollEnd = this._onScrollEnd.bind(this)
         this._onScroll = this._onScroll.bind(this)
+        this._onResize = this._onResize.bind(this)
 
         const track = this._track()
         if (!track) {
@@ -22,6 +24,9 @@ export default class GalleryCanvas extends ShopwareComponent {
 
         track.addEventListener('scrollend', this._onScrollEnd, { passive: true })
         track.addEventListener('scroll', this._onScroll, { passive: true })
+
+        this._resizeObserver = new ResizeObserver(this._onResize)
+        this._resizeObserver.observe(track)
     }
 
     destroy() {
@@ -30,35 +35,68 @@ export default class GalleryCanvas extends ShopwareComponent {
             track.removeEventListener('scrollend', this._onScrollEnd)
             track.removeEventListener('scroll', this._onScroll)
         }
+        this._resizeObserver?.disconnect()
+        this._resizeObserver = null
         clearTimeout(this._scrollTimer)
         clearTimeout(this._progTimer)
+        clearTimeout(this._resizeTimer)
     }
 
     /**
      * @param {number} index
+     * @param {{ behavior?: ScrollBehavior }} [options]
      */
-    goTo(index) {
-        const slides = this._slides()
-        const slide = slides[index]
-        const track = this._track()
-        if (!slide || !track) {
+    goTo(index, { behavior = 'smooth' } = {}) {
+        const slide = this._slides()[index]
+        if (!slide) {
             return
         }
 
         this._programmatic = true
         this._index = index
 
-        const left = slide.offsetLeft - track.offsetLeft
-        track.scrollTo({ left, behavior: 'smooth' })
+        // 'instant' is baseline; fall back to 'auto' where unsupported
+        const scrollBehavior =
+            behavior === 'instant' || behavior === 'auto' ? 'auto' : 'smooth'
 
+        slide.scrollIntoView({
+            behavior: scrollBehavior,
+            block: 'nearest',
+            inline: 'start',
+        })
+
+        this._releaseProgrammatic(scrollBehavior)
+    }
+
+    /**
+     * @param {string} behavior
+     */
+    _releaseProgrammatic(behavior) {
         clearTimeout(this._progTimer)
-        this._progTimer = setTimeout(() => {
-            this._programmatic = false
-        }, 450)
+
+        if (behavior === 'smooth') {
+            this._progTimer = setTimeout(() => {
+                this._programmatic = false
+            }, 450)
+            return
+        }
+
+        // auto / instant: clear after layout frames
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this._programmatic = false
+            })
+        })
+    }
+
+    _onResize() {
+        clearTimeout(this._resizeTimer)
+        this._resizeTimer = setTimeout(() => {
+            this.goTo(this._index, { behavior: 'instant' })
+        }, 50)
     }
 
     _onScroll() {
-        // Debounced fallback for browsers without reliable scrollend.
         clearTimeout(this._scrollTimer)
         this._scrollTimer = setTimeout(() => {
             this._settle()
@@ -72,7 +110,6 @@ export default class GalleryCanvas extends ShopwareComponent {
 
     _settle() {
         if (this._programmatic) {
-            this._programmatic = false
             return
         }
 
@@ -82,12 +119,14 @@ export default class GalleryCanvas extends ShopwareComponent {
             return
         }
 
-        const center = track.scrollLeft + track.clientWidth / 2
+        const root = track.getBoundingClientRect()
+        const center = root.left + root.width / 2
         let best = 0
         let bestDist = Infinity
 
         slides.forEach((slide, i) => {
-            const mid = slide.offsetLeft + slide.offsetWidth / 2
+            const rect = slide.getBoundingClientRect()
+            const mid = rect.left + rect.width / 2
             const dist = Math.abs(mid - center)
             if (dist < bestDist) {
                 bestDist = dist
