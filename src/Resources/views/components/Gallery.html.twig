@@ -1,0 +1,52 @@
+{% props
+    medias = [],
+    active = 0,
+    cva = {},
+%}
+
+{% set count = medias|length %}
+{% set activeIndex = active|default(0) %}
+{% if activeIndex < 0 %}
+    {% set activeIndex = 0 %}
+{% elseif count > 0 and activeIndex >= count %}
+    {% set activeIndex = count - 1 %}
+{% endif %}
+{% set multi = count > 1 %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['thumbnails', 'canvas']) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'region',
+        'aria-label': 'component.cms.imageGallery.ariaLabel'|trans({ '%total%': count })|striptags,
+        'data-component': 'ViewsTheme:Gallery',
+        'data-component-options': {
+            active: activeIndex,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if multi %}
+        {% block thumbnails %}
+            <twig:ViewsTheme:Gallery:Thumbnails
+                class="{{ vi_class('thumbnails') }}"
+                {{ ...vi_attrs('thumbnails').defaults({
+                    medias: medias,
+                    active: activeIndex,
+                }).all() }}
+            />
+        {% endblock %}
+    {% endif %}
+
+    {% block canvas %}
+        <twig:ViewsTheme:Gallery:Canvas
+            class="{{ vi_class('canvas') }}"
+            {{ ...vi_attrs('canvas').defaults({
+                medias: medias,
+                active: activeIndex,
+                multi: multi,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

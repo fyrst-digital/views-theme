@@ -1,0 +1,32 @@
+{% props
+    direction = 'next',
+    disabled = false,
+    cva = {},
+%}
+
+{% set isPrev = direction == 'prev' %}
+{% set label = isPrev
+    ? 'general.previous'|trans|striptags
+    : 'general.next'|trans|striptags
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        disabled: disabled ? true : false,
+        'aria-label': label,
+        title: label,
+        'aria-disabled': disabled ? 'true' : 'false',
+        'data-component': 'ViewsTheme:Gallery:Control',
+        'data-component-options': {
+            direction: direction,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root', { direction: direction }) }}"
+>
+    {% block icon %}
+        {{ vi_icon(isPrev ? 'caret-left' : 'caret-right') }}
+    {% endblock %}
+</button>

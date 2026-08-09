@@ -1,0 +1,26 @@
+.vi-gallery-thumb {
+  flex: 0 0 auto;
+  inline-size: var(--vi-thumb-size, 64px);
+  block-size: var(--vi-thumb-size, 64px);
+  padding: 0;
+  border: var(--vi-thumb-border-w, 2px) solid
+    var(--vi-thumb-border, transparent);
+  border-radius: var(--vi-thumb-radius, 8px);
+  overflow: hidden;
+  background: var(--vi-thumb-bg, #f1f3f5);
+  cursor: pointer;
+  scroll-snap-align: start;
+  appearance: none;
+}
+
+.vi-gallery-thumb[aria-current='true'] {
+  border-color: var(--vi-thumb-active-border, var(--bs-primary, #0d6efd));
+}
+
+.vi-gallery-thumb__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}

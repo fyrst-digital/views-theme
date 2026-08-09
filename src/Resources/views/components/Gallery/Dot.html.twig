@@ -1,0 +1,24 @@
+{% props
+    index = 0,
+    active = false,
+    total = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'aria-label': 'component.cms.imageGallery.sliderDotLabel'|trans({
+            '%index%': index + 1,
+            '%total%': total,
+        })|striptags,
+        'aria-current': active ? 'true' : 'false',
+        'data-component': 'ViewsTheme:Gallery:Dot',
+        'data-component-options': {
+            index: index,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+></button>

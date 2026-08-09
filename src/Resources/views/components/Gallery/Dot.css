@@ -1,0 +1,16 @@
+.vi-gallery-dot {
+  pointer-events: auto;
+  inline-size: var(--vi-dot-size, 10px);
+  block-size: var(--vi-dot-size, 10px);
+  padding: 0;
+  border-radius: 50%;
+  border: var(--vi-dot-border-w, 2px) solid var(--vi-dot-border, #6c757d);
+  background: var(--vi-dot-bg, transparent);
+  cursor: pointer;
+  appearance: none;
+}
+
+.vi-gallery-dot[aria-current='true'] {
+  border-color: var(--vi-dot-active-border, #fd7e14);
+  background: var(--vi-dot-active-bg, transparent);
+}

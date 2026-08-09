@@ -1,0 +1,20 @@
+.vi-gallery-slide {
+  flex: 0 0 100%;
+  min-inline-size: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--vi-slide-min-h, 320px);
+}
+
+.vi-gallery-slide__image {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: var(--vi-slide-max-h, 560px);
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}

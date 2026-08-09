@@ -1,0 +1,14 @@
+.vi-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vi-gap, 12px);
+  min-inline-size: 0;
+}
+
+@media (min-width: 768px) {
+  .vi-gallery {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--vi-gap, 16px);
+  }
+}

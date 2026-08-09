@@ -1,0 +1,43 @@
+{% props
+    media = null,
+    index = 0,
+    active = false,
+    total = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'aria-label': 'component.cms.imageGallery.sliderDotLabel'|trans({
+            '%index%': index + 1,
+            '%total%': total,
+        })|striptags,
+        'aria-current': active ? 'true' : 'false',
+        'data-component': 'ViewsTheme:Gallery:Thumb',
+        'data-component-options': {
+            index: index,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block media %}
+        {% if media %}
+            {% sw_thumbnails 'gallery-thumb' with {
+                media: media,
+                sizes: {
+                    default: '96px',
+                },
+                attributes: {
+                    class: vi_class('image'),
+                    alt: media.translated.alt|default(''),
+                    title: media.translated.title|default(''),
+                    loading: 'lazy',
+                    draggable: 'false',
+                },
+            } %}
+        {% endif %}
+    {% endblock %}
+</button>

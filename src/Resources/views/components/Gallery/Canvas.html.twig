@@ -1,0 +1,56 @@
+{% props
+    medias = [],
+    active = 0,
+    multi = false,
+    cva = {},
+%}
+
+{% set total = medias|length %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['track', 'controls', 'dots']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Gallery:Canvas',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block track %}
+        <div {{ vi_attrs('track') }} class="{{ vi_class('track') }}">
+            {% for media in medias %}
+                <twig:ViewsTheme:Gallery:Slide
+                    :media="media"
+                    :index="loop.index0"
+                    :priority="loop.first"
+                    :total="total"
+                />
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% if multi %}
+        {% block controls %}
+            <div {{ vi_attrs('controls') }} class="{{ vi_class('controls') }}">
+                <twig:ViewsTheme:Gallery:Control
+                    direction="prev"
+                    :disabled="active <= 0"
+                />
+                <twig:ViewsTheme:Gallery:Control
+                    direction="next"
+                    :disabled="active >= total - 1"
+                />
+            </div>
+        {% endblock %}
+
+        {% block dots %}
+            <twig:ViewsTheme:Gallery:Dots
+                class="{{ vi_class('dots') }}"
+                {{ ...vi_attrs('dots').defaults({
+                    total: total,
+                    active: active,
+                }).all() }}
+            />
+        {% endblock %}
+    {% endif %}
+</div>

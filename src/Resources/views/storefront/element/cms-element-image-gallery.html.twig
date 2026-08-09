@@ -1,0 +1,21 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-image-gallery.html.twig' %}
+
+{% block element_image_gallery %}
+    {% set mediaItems = [] %}
+    {% for item in element.data.sliderItems|default([]) %}
+        {% set mediaItems = mediaItems|merge([item.media]) %}
+    {% endfor %}
+
+    {# Core buybox passes 1-based startIndexSlider #}
+    {% set active = (startIndexSlider|default(1)) - 1 %}
+    {% if active < 0 %}
+        {% set active = 0 %}
+    {% endif %}
+
+    <div class="cms-element-{{ element.type }}">
+        <twig:ViewsTheme:Gallery
+            :medias="mediaItems"
+            :active="active"
+        />
+    </div>
+{% endblock %}
