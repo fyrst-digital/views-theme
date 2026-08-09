@@ -1,0 +1,26 @@
+{% props
+    id = null,
+    panel = null,
+    active = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        id: id,
+        role: 'tab',
+        'aria-controls': panel,
+        'aria-selected': active ? 'true' : 'false',
+        tabindex: active ? 0 : -1,
+        'data-component': 'ViewsTheme:Tabs:Tab',
+        'data-component-options': {
+            panel: panel,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}{% endblock %}
+</button>

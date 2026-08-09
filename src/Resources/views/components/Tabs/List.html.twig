@@ -1,0 +1,17 @@
+{% props
+    label = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'tablist',
+        'aria-label': label ?: false,
+        'data-component': 'ViewsTheme:Tabs:List',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}{% endblock %}
+</div>

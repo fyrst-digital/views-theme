@@ -1,0 +1,90 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['tabs']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block tabs %}
+        <twig:ViewsTheme:Tabs
+            class="{{ vi_class('tabs') }}"
+            active="{{ activeTabId }}"
+            {{ ...vi_attrs('tabs').all() }}
+        >
+            <twig:block name="list">
+                <twig:ViewsTheme:Tabs:List>
+                    <twig:block name="content">
+                        {% block tabDescription %}
+                            <twig:ViewsTheme:Tabs:Tab
+                                id="{{ descriptionTabId }}"
+                                panel="{{ descriptionPaneId }}"
+                                :active="not reviewsActive"
+                            >
+                                <twig:block name="content">
+                                    {{ 'detail.tabsDescription'|trans|sw_sanitize }}
+                                </twig:block>
+                            </twig:ViewsTheme:Tabs:Tab>
+                        {% endblock %}
+
+                        {% block tabReviews %}
+                            {% if showReview %}
+                                <twig:ViewsTheme:Tabs:Tab
+                                    id="{{ reviewTabId }}"
+                                    panel="{{ reviewPaneId }}"
+                                    :active="reviewsActive"
+                                >
+                                    <twig:block name="content">
+                                        {{ 'detail.tabsReview'|trans|sw_sanitize }}
+                                    </twig:block>
+                                </twig:ViewsTheme:Tabs:Tab>
+                            {% endif %}
+                        {% endblock %}
+                    </twig:block>
+                </twig:ViewsTheme:Tabs:List>
+            </twig:block>
+
+            <twig:block name="panels">
+                {% block panelDescription %}
+                    <twig:ViewsTheme:Tabs:Panel
+                        id="{{ descriptionPaneId }}"
+                        tab="{{ descriptionTabId }}"
+                        class="p-4"
+                        :active="not reviewsActive"
+                    >
+                        <twig:block name="content">
+                            {% if product %}
+                                <twig:ViewsTheme:Product:Description:Detail
+                                    :product="product"
+                                />
+                            {% endif %}
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Panel>
+                {% endblock %}
+
+                {% block panelReviews %}
+                    {% if showReview %}
+                        <twig:ViewsTheme:Tabs:Panel
+                            id="{{ reviewPaneId }}"
+                            tab="{{ reviewTabId }}"
+                            class="p-4"
+                            :active="reviewsActive"
+                        >
+                            <twig:block name="content">
+                                {% if reviews and productId %}
+                                    <twig:ViewsTheme:Review:Panel
+                                        :reviews="reviews"
+                                        :productId="productId"
+                                        :parentId="parentId"
+                                        :ratingSuccess="ratingSuccess"
+                                        :listUrl="listUrl"
+                                        :saveUrl="saveUrl"
+                                    />
+                                {% endif %}
+                            </twig:block>
+                        </twig:ViewsTheme:Tabs:Panel>
+                    {% endif %}
+                {% endblock %}
+            </twig:block>
+        </twig:ViewsTheme:Tabs>
+    {% endblock %}
+</div>

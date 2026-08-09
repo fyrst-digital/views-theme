@@ -1,0 +1,33 @@
+{% props
+    active = null,
+    label = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['list', 'panels']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Tabs',
+        'data-component-options': {
+            active: active,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block list %}
+        <twig:ViewsTheme:Tabs:List
+            class="{{ vi_class('list') }}"
+            {{ ...vi_attrs('list').defaults({
+                label: label,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block panels %}
+        <div {{ vi_attrs('panels') }} class="{{ vi_class('panels') }}">
+            {% block panel %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

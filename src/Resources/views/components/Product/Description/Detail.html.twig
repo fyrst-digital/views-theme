@@ -1,0 +1,46 @@
+{% props
+    product = null,
+    title = product
+        ? ('detail.descriptionTitle'|trans|sw_sanitize ~ ' "' ~ product.translated.name|default('')|e ~ '"')
+        : null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'body', 'properties']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        {% if title %}
+            <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                {{ title|raw }}
+            </h2>
+        {% endif %}
+    {% endblock %}
+
+    {% block body %}
+        {% if product %}
+            <twig:ViewsTheme:Product:Description
+                class="{{ vi_class('body') }}"
+                {{ ...vi_attrs('body').defaults({
+                    product: product,
+                    outputTags: true,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block properties %}
+        {% if product %}
+            <twig:ViewsTheme:Product:Properties
+                class="{{ vi_class('properties') }}"
+                {{ ...vi_attrs('properties').defaults({
+                    product: product,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</div>
