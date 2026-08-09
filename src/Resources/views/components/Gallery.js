@@ -35,6 +35,7 @@ export default class Gallery extends ShopwareComponent {
 
     destroy() {
         this.el.removeEventListener('click', this._onClick)
+        this._pauseVideos()
     }
 
     /**
@@ -51,6 +52,7 @@ export default class Gallery extends ShopwareComponent {
         const changed = next !== this._index
         this._index = next
         this._syncChrome(next)
+        this._pauseInactiveVideos()
 
         if (scroll) {
             this._canvas()?.goTo?.(next)
@@ -134,6 +136,31 @@ export default class Gallery extends ShopwareComponent {
         if (dot && this.el.contains(dot)) {
             event.preventDefault()
             this.select(this._optionIndex(dot, this.options.dotComponent))
+        }
+    }
+
+    /**
+     * Pause every slide video that is not the active index.
+     */
+    _pauseInactiveVideos() {
+        const active = this._index
+        for (const slide of this._slides()) {
+            if (this._optionIndex(slide, 'ViewsTheme:Gallery:Slide') === active) {
+                continue
+            }
+
+            for (const video of slide.querySelectorAll('video')) {
+                video.pause()
+            }
+        }
+    }
+
+    /**
+     * Pause all gallery videos (destroy / leave).
+     */
+    _pauseVideos() {
+        for (const video of this.el.querySelectorAll('video')) {
+            video.pause()
         }
     }
 

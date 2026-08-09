@@ -24,20 +24,60 @@
     class="{{ vi_class('root') }}"
 >
     {% block media %}
-        {% if media %}
-            {% sw_thumbnails 'gallery-thumb' with {
-                media: media,
-                sizes: {
-                    default: '96px',
-                },
-                attributes: {
-                    class: vi_class('image'),
-                    alt: media.translated.alt|default(''),
-                    title: media.translated.title|default(''),
-                    loading: 'lazy',
-                    draggable: 'false',
-                },
-            } %}
+        {% if media and media.isSpatialObject() == false %}
+            {% set isVideo = media.getMediaType().getName() === 'VIDEO' %}
+
+            {% if isVideo %}
+                {% set cover = media.extensions.videoCoverMedia ?? null %}
+
+                {% if cover %}
+                    {% block poster %}
+                        {% sw_thumbnails 'gallery-thumb-poster' with {
+                            media: cover,
+                            sizes: {
+                                default: '96px',
+                            },
+                            attributes: {
+                                class: vi_class('image'),
+                                alt: media.translated.alt|default(''),
+                                title: media.translated.title|default(''),
+                                loading: 'lazy',
+                                draggable: 'false',
+                            },
+                        } %}
+                    {% endblock %}
+                {% else %}
+                    {% block posterEmpty %}
+                        <span
+                            class="{{ vi_class('poster') }}"
+                            aria-hidden="true"
+                        ></span>
+                    {% endblock %}
+                {% endif %}
+
+                {% block play %}
+                    <span
+                        class="{{ vi_class('play') }}"
+                        aria-hidden="true"
+                    ></span>
+                {% endblock %}
+            {% else %}
+                {% block image %}
+                    {% sw_thumbnails 'gallery-thumb' with {
+                        media: media,
+                        sizes: {
+                            default: '96px',
+                        },
+                        attributes: {
+                            class: vi_class('image'),
+                            alt: media.translated.alt|default(''),
+                            title: media.translated.title|default(''),
+                            loading: 'lazy',
+                            draggable: 'false',
+                        },
+                    } %}
+                {% endblock %}
+            {% endif %}
         {% endif %}
     {% endblock %}
 </button>

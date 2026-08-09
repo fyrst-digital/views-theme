@@ -24,29 +24,44 @@
     class="{{ vi_class('root') }}"
 >
     {% block media %}
-        {% if media %}
-            {% set imageAttrs = {
-                class: vi_class('image'),
-                alt: media.translated.alt|default(''),
-                title: media.translated.title|default(''),
-                loading: priority ? 'eager' : 'lazy',
-                draggable: 'false',
-            } %}
+        {% if media and media.isSpatialObject() == false %}
+            {% if media.getMediaType().getName() === 'VIDEO' %}
+                {% block video %}
+                    {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                        media: media,
+                        attributes: {
+                            class: vi_class('video'),
+                            controls: true,
+                            title: media.translated.title|default(''),
+                        },
+                    } %}
+                {% endblock %}
+            {% else %}
+                {% set imageAttrs = {
+                    class: vi_class('image'),
+                    alt: media.translated.alt|default(''),
+                    title: media.translated.title|default(''),
+                    loading: priority ? 'eager' : 'lazy',
+                    draggable: 'false',
+                } %}
 
-            {% if priority %}
-                {% set imageAttrs = imageAttrs|merge({ fetchpriority: 'high' }) %}
+                {% if priority %}
+                    {% set imageAttrs = imageAttrs|merge({ fetchpriority: 'high' }) %}
+                {% endif %}
+
+                {% block image %}
+                    {% sw_thumbnails 'gallery-slide' with {
+                        media: media,
+                        sizes: {
+                            default: '100vw',
+                            sm: '100vw',
+                            md: '60vw',
+                            lg: '720px',
+                        },
+                        attributes: imageAttrs,
+                    } %}
+                {% endblock %}
             {% endif %}
-
-            {% sw_thumbnails 'gallery-slide' with {
-                media: media,
-                sizes: {
-                    default: '100vw',
-                    sm: '100vw',
-                    md: '60vw',
-                    lg: '720px',
-                },
-                attributes: imageAttrs,
-            } %}
         {% endif %}
     {% endblock %}
 </div>
