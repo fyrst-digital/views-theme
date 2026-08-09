@@ -40,10 +40,12 @@ Gallery (data-component owner)
 | `Gallery` | `medias` | Media entities (flat list; image + VIDEO) |
 | `Gallery` | `active` | 0-based initial index (SSR + JS hydrate) |
 | `Gallery` | `rewind` | When `true`, next on last → first and prev on first → last; controls stay enabled (default `false` = clamp + disable at ends) |
+| `Gallery` | `controlsOnHover` | When `true`, canvas prev/next hidden until canvas hover or control `:focus-visible` (default `false` = always visible). Touch / coarse pointer: always visible. Not `:focus-within` — mouse click focus must not stick controls open |
 | `Gallery:Thumb` / `Dot` | `index`, `active`, `total` | Identity + SSR `aria-current` |
 | `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends unless parent `rewind` |
 | `Gallery:Canvas` | `multi` | When false, omit controls + dots |
 | `Gallery:Canvas` | `rewind` | SSR control `disabled` when false at ends |
+| `Gallery:Canvas` | `controlsOnHover` | Sets `data-controls-on-hover`; CSS-only show/hide of `.vi-gallery-canvas__controls` |
 
 ## JS API
 
@@ -103,6 +105,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Orientation breakpoint | **Only** `Gallery.css` `@media (min-width: 768px)` — layout + thumbs height lock + track axis (no media in `Thumbnails.css`) |
 | Named areas | `.vi-gallery-canvas` → `canvas`; `.vi-gallery-thumbnails` → `thumbs` |
 | Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas |
+| Controls on hover | Canvas `data-controls-on-hover="true"` — hide `.vi-gallery-canvas__controls` until `:hover` or `:has(.vi-gallery-control:focus-visible)`; only under `@media (hover: hover) and (pointer: fine)`; fade `var(--vi-control-fade-duration, 150ms)` |
 
 ### Orientation tokens (theme assigns on gallery host)
 

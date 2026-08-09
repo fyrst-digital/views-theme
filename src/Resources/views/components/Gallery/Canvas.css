@@ -31,6 +31,40 @@
   pointer-events: none;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .vi-gallery-canvas[data-controls-on-hover='true'] .vi-gallery-canvas__controls {
+    opacity: 0;
+    transition: opacity var(--vi-control-fade-duration, 150ms) ease;
+  }
+
+  .vi-gallery-canvas[data-controls-on-hover='true']:hover
+    .vi-gallery-canvas__controls,
+  .vi-gallery-canvas[data-controls-on-hover='true']:has(
+      .vi-gallery-control:focus-visible
+    )
+    .vi-gallery-canvas__controls {
+    opacity: 1;
+  }
+
+  .vi-gallery-canvas[data-controls-on-hover='true'] .vi-gallery-control {
+    pointer-events: none;
+  }
+
+  .vi-gallery-canvas[data-controls-on-hover='true']:hover .vi-gallery-control,
+  .vi-gallery-canvas[data-controls-on-hover='true']:has(
+      .vi-gallery-control:focus-visible
+    )
+    .vi-gallery-control {
+    pointer-events: auto;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: reduce) {
+  .vi-gallery-canvas[data-controls-on-hover='true'] .vi-gallery-canvas__controls {
+    transition: none;
+  }
+}
+
 .vi-gallery-canvas__dots {
   position: absolute;
   inset-inline: 0;
