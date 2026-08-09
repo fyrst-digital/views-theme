@@ -53,6 +53,8 @@ Page:Header:Actions
 | `Page:Header:Action:Account` | `Account:Action` |
 | `Account:Dropdown` | `Account:Menu` inside `Dropdown` |
 
+Both shims emit Twig `{% deprecated %}` (`package="fyrst/views-theme"`, `version="1.0.0"`).
+
 Former names `Account:LoginForm` / `Account:UserActions` are gone (use `Account:Login` / `Account:Actions`). No shim files remain for those.
 
 ## Wire-up

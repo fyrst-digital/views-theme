@@ -22,6 +22,29 @@ Some templates still `sw_extends` core Storefront templates (register, address f
 - Compose UX children via `<twig:ViewsTheme:…>` or `@ViewsTheme/components/…` includes
 - Prefer plain `class="vi-…"` over any removed class-map API
 
+### Deprecated (runtime)
+
+These core `sw_extends` shells emit Twig `{% deprecated %}` on every render (`package="fyrst/views-theme"`, `version="1.0.0"` → `trigger_deprecation`). Rewrite as pure UX (optional thin storefront bridge).
+
+| Tag | Path |
+|-----|------|
+| `Account:LoginCard` | `Account/LoginCard.html.twig` |
+| `Account:Register` | `Account/Register.html.twig` |
+| `Address:EditorCreate` | `Address/EditorCreate.html.twig` |
+| `Address:Form` | `Address/Form.html.twig` |
+| `Address:Item` | `Address/Item.html.twig` |
+| `Address:ItemActions` | `Address/ItemActions.html.twig` |
+| `Address:Personal` | `Address/Personal.html.twig` |
+| `Address:PersonalCompany` | `Address/PersonalCompany.html.twig` |
+| `Cookie:Configuration` | `Cookie/Configuration.html.twig` |
+| `Cookie:ConfigurationGroup` | `Cookie/ConfigurationGroup.html.twig` |
+| `Order:Item` | `Order/Item.html.twig` |
+| `Order:ItemDetails` | `Order/ItemDetails.html.twig` |
+| `Order:ItemDetailsList` | `Order/ItemDetailsList.html.twig` |
+| `ScrollUp` | `ScrollUp.html.twig` |
+
+Related shims (replacement exists): `Account:Dropdown` → `Account:Menu` inside `Dropdown`; `Page:Header:Action:Account` → `Account:Action`.
+
 ## Related
 
 - [UX components](ux-components.md)

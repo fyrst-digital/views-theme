@@ -1,5 +1,7 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/address-item.html.twig' %}
 
+{% deprecated 'ViewsTheme:Address:Item is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
+
 {% set itemTag = 'li' %}
 
 {% if defaultShipping %}
