@@ -1,15 +1,12 @@
-# `vi_attr_classes`
+# `vi_attr_classes` (removed)
 
-Twig filter. Converts a class list into a full HTML attribute: `class="a b"`.
+**Removed.** Do not use.
 
-```twig
-<div {{ classes.main | vi_attr_classes }}></div>
-```
+Historical filter that converted a class list into a full HTML attribute (`class="a b"`).
 
-## Behavior
+Use [`vi_define_cva` / `vi_class`](vi-cva.md) instead.
 
-- Filters empty / null / false values
-- Deduplicates
-- Empty input → empty string (no attribute)
+## Related
 
-Use this on HTML tags. For string APIs (form macros, attribute bags), use [`vi_classes`](vi-classes.md) instead.
+- [Twig overview](overview.md)
+- [CSS class API](../conventions/css-classes.md)

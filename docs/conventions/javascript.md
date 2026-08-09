@@ -58,8 +58,8 @@ app/storefront/src/modules/
 | Path | Role |
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
-| `shared/dom.js` | parse HTML, replaceMount, replaceComponentIsland |
-| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `eventEl`, …) |
+| `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland |
+| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
@@ -152,7 +152,20 @@ The Action owns this lifecycle; the shell primitive only open/closes.
 
 See [Navigation bar](../features/navigation-bar.md).
 
-References: `Navigation/Drawer/Action.js`, `Navigation/Bar.js`, `Navigation/Flyout.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
+### Exception: Navigation drawer menu level cache
+
+`ViewsTheme:Navigation:Drawer:Menu` may keep an **in-session memory cache** of drill level HTML strings keyed by menu URL. Rules:
+
+| Rule | Required |
+|------|----------|
+| Storage | Memory on the Menu instance only — **no** `sessionStorage` / `localStorage` |
+| Scope | In-drawer drill levels only — not the outer Drawer Action shell (Action still refetch + unmount on open/close) |
+| Races | Abort in-flight fetch; ignore stale responses |
+| Lifetime | Cleared when the drawer shell unmounts (new open = new Menu) |
+
+See [Navigation drawer](../features/navigation-drawer.md).
+
+References: `Navigation/Drawer/Action.js`, `Navigation/Drawer/Menu.js`, `Navigation/Bar.js`, `Navigation/Flyout.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
 
 ## Co-located component JS
 
@@ -198,6 +211,18 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 | Tabs (a11y owner) | `ViewsTheme:Tabs` | `Tabs.js` |
 | Tabs list / tab / panel | `ViewsTheme:Tabs:List` / `Tab` / `Panel` | `Tabs/List.js` / `Tab.js` / `Panel.js` |
+| Product listing owner | `ViewsTheme:Product:Listing` | `Product/Listing.js` |
+| Product listing results | `ViewsTheme:Product:Listing:Results` | `Product/Listing/Results.js` |
+| Sorting | `ViewsTheme:Sorting` | `Sorting.js` |
+| Product buy | `ViewsTheme:Product:Action:Buy` | `Product/Action/Buy.js` |
+| Filter drawer action | `ViewsTheme:Filter:Drawer:Action` | `Filter/Drawer/Action.js` |
+| Filter panel | `ViewsTheme:Filter:Panel` | `Filter/Panel.js` |
+| Filter group / toggle / count | `ViewsTheme:Filter:Group` / `Group:Toggle` / `Group:Count` | `Filter/Group.js` etc. |
+| Filter multi-select / boolean / range / rating / active | `ViewsTheme:Filter:MultiSelect` etc. | `Filter/*.js` |
+| Review panel / results / matrix / sort / language / form / form rating | `ViewsTheme:Review:*` | `Review/*.js` |
+| Form slider | `ViewsTheme:Form:Slider` | `Form/Slider.js` |
+
+Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
 
 Build (project root):
 

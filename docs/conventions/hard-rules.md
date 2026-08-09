@@ -28,7 +28,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | **Length units (critical):** component CSS / token fallbacks use **`px` only** — no `rem`/`em` lengths | [css-classes.md — Length units](css-classes.md#length-units-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
 | **XHR UX HTML (critical):** always `AbstractComponentController::renderComponent()` — never raw `createAndRender` Response | [architecture.md — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |
-| **XHR data hooks:** after core loader, fire matching App `*LoadedHook` when core defines one | [architecture.md — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks) |
+| **XHR data hooks:** after core loader, fire matching App `*LoadedHook` when core defines one | [architecture.md — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks) |
 | Design tokens (font, brand colors, grid) | [configuration.md](../configuration.md) |
 | Plugin / theme config | [configuration.md](../configuration.md) |
 

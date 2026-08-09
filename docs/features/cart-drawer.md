@@ -107,7 +107,7 @@ Shell stays mounted (open state, focus trap). Only the islands are swapped — B
 
 Used for shell open and in-open island refresh. Third parties that enrich cart **page** data (App scripts on `checkout-cart-page-loaded`, or subscribers to `CheckoutCartPageLoadedEvent`) apply to the drawer automatically. Do **not** target `checkout-offcanvas-widget-loaded` for this UI.
 
-See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks).
+See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks).
 
 ### LineItem (shared UX)
 
@@ -244,7 +244,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Out of scope (v1)
 
-- Opening the theme drawer (or any shell) on product add / variants-grid success
+- Opening the theme drawer on variants-grid success (product add already auto-opens via `openOnActions: ['add']`)
 - Cookie offcanvas → `Drawer`
 - Full checkout / confirm page redesign
 - Cart page layout redesign (shared `LineItem:*` API + reload on mutation)

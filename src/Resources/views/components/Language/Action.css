@@ -1,5 +1,5 @@
 .vi-language-action {
-  min-width: var(--vi-min-w, 10rem);
+  min-width: var(--vi-min-w, 160px);
 }
 
 .vi-language-action__flag-icon {
@@ -7,7 +7,7 @@
   width: var(--vi-flag-w, 14px);
   height: auto;
   aspect-ratio: var(--vi-flag-ar, 4 / 3);
-  border-radius: var(--vi-flag-radius, 0.125rem);
+  border-radius: var(--vi-flag-radius, 2px);
   object-fit: cover;
 }
 

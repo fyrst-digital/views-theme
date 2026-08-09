@@ -2,7 +2,7 @@
 
 Twig function that renders icon markup. Implemented in `src/Twig/ViIcon.php`.
 
-There is also a Twig **macro** at `components/icon/icon.html.twig` (Shopware-style `source()` + `sw_icon_cache`) for template includes. Prefer the path that matches the surrounding code; both are exempt from the `vi_define_classes` map rules.
+There is also a Twig **macro** at `components/icon/icon.html.twig` (Shopware-style `source()` + `sw_icon_cache`) for template includes. Prefer the path that matches the surrounding code. The macro is separate from CVA (`vi_define_cva` / `vi_class`).
 
 ## Function signature
 
@@ -22,7 +22,7 @@ When `options` is omitted, null, or empty, `pack` and `mode` are taken from the 
 
 Hard fallbacks if no theme is available: `pack = 'default'`, `mode = 'svg'`.
 
-ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'default'`, so bare `{{ vi_icon('cart') }}` uses CSS mode in the storefront.
+ViewsTheme ships `theme.json` with `mode: 'css'` and `pack: 'bold'`, so bare `{{ vi_icon('cart') }}` uses CSS mode (bold pack) in the storefront.
 
 ### Options
 
@@ -41,7 +41,7 @@ Root attributes (`class`, `ariaHidden`, `ariaLabel`, `attr`) apply the same way 
 
 ### `svg`
 
-Loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and attributes on the `<svg>` root, and returns safe HTML markup.
+When `mode` is `svg`, loads `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg`, injects classes and attributes on the `<svg>` root, and returns safe HTML markup. Primary storefront path is **CSS mode** (below); SVG packs are optional / dist-oriented unless source SVGs are present.
 
 Classes: `icon icon-{name}` plus any `class` option values.
 
@@ -56,10 +56,10 @@ If the SVG file is missing, the function returns empty markup (no exception).
 
 ### `css`
 
-Renders a `<span>` with icon classes (no SVG body). Useful when icons are provided purely via CSS (stylesheet linked from `meta.html.twig` when theme `icons.mode` is `css`).
+Renders a `<span>` with icon classes (no SVG body). Stylesheets are built via `npm run build:icons` → `assets/css/icons/{pack}.css` and linked from `meta.html.twig` when theme `icons.mode` is `css`.
 
-- Default pack: `class="icon icon-{name}"`
-- Other pack: `class="icon icon-{name}-{pack}"`
+- Pack `default`: `class="icon icon-{name}"`
+- Other packs (e.g. `bold`): `class="icon icon-{name}-{pack}"`
 - Same root attrs as SVG: `class`, `ariaHidden`, `ariaLabel`, `attr`
 
 ```twig
@@ -72,9 +72,10 @@ Renders a `<span>` with icon classes (no SVG body). Useful when icons are provid
 
 ## Asset path
 
-```
-src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg
-```
+| Mode | Path |
+|------|------|
+| `css` (shipped) | `src/Resources/app/storefront/src/assets/css/icons/{pack}.css` (built) |
+| `svg` | `src/Resources/app/storefront/src/assets/icon/{pack}/{name}.svg` (when present) |
 
 Theme assets are registered via `theme.json` (`asset`: `app/storefront/src/assets`).
 

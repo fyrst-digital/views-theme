@@ -54,7 +54,7 @@ Compiled storefront JS for this theme is expected at:
 
 `src/Resources/app/storefront/dist/storefront/js/views-theme/views-theme.js`
 
-(see `theme.json` `script` entry).
+(see `theme.json` `script` entry). The path may be a **0-byte placeholder** in git until a successful storefront build — an empty file is not a working bundle.
 
 ## Configuration
 

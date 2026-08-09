@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Cms:DescriptionReviews`, `Tabs` / `Tabs:List` / `Tab` / `Panel`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Rating`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -163,7 +163,7 @@ Multi-slot class API:
 1. Default map: sibling **`Name.cva.twig`** (preferred for larger maps) or inline hash
 2. Compose: `{% do vi_define_cva(cva) %}`
 3. Caller override: `:cva="{ … }"` deep-merged into defaults
-4. Render: `class="{{ cx.root.apply({ size: size }) }}"` / `cx.label.apply(…)`
+4. Render: `class="{{ vi_class('root', { size: size }) }}"` / `vi_class('label', { … })`
 5. Extras: `class="…"` (root) and `label:class="…"` (nested)
 
 Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defaults()`.
@@ -180,7 +180,7 @@ See [vi_define_cva](../twig/vi-cva.md) and [CSS class API](css-classes.md).
 |--------|-------------------|
 | Own root | `{{ attributes }}` / `{{ attributes.defaults({ … }) }}` |
 | DOM nest (`<div>`, `<input>`, …) | `{{ vi_attrs('slot') }}` / `{{ vi_attrs('slot').defaults({ … }) }}` |
-| Child `<twig:…>` (overridable) | `class="{{ vi_class('slot') }}"` (or `cx…apply()`) + `{{ ...vi_attrs('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7; **no** `class` in defaults) |
+| Child `<twig:…>` (overridable) | `class="{{ vi_class('slot') }}"` + `{{ ...vi_attrs('slot').defaults({ … }).all() }}` (spread; Twig ≥ 3.7; **no** `class` in defaults) |
 
 #### Nest bind / resolve (`vi_define_*`)
 
@@ -196,7 +196,7 @@ After `vi_define_cva`, bind nests and (when needed) exported class strings — *
 | Nest bags | `vi_define_attrs(['buy', …])` | `vi_attrs('buy')` |
 | Class strings | `vi_define_cva(cva, ['root', …])` | `vi_class('root')` / `vi_class('root', { size })` |
 
-- Build **after** `vi_cva*` so slot `class` stripping has run.
+- Build **after** `vi_define_cva` so slot `class` stripping has run.
 - Defaults stay **inline** at the use site: `vi_attrs('slot').defaults({ … })`.
 - Own root stays on `attributes` / `attributes.defaults` — not via define.
 - Do **not** use one-off aliases (`parentAttributes`) or materialised props locals.
@@ -207,7 +207,7 @@ See [vi-attrs.md](../twig/vi-attrs.md).
 {# ❌ bare nest / set maps #}
 {{ ...attributes.nested('buy').defaults({…}).all() }}
 {% set attrs = { buy: attributes.nested('buy') } %}
-{% set classes = { root: cx.root.apply() } %}
+{% set classes = { root: vi_class('root') } %}
 ```
 
 #### DOM nodes
@@ -220,10 +220,10 @@ Stringifies the bag to HTML. Non-class attrs go through `vi_attrs('slot')` / `.d
 
 | Need | Pattern |
 |------|---------|
-| Own root / slot classes | `class="{{ vi_class('root') }}"` / `class="{{ cx.root.apply() }}"` |
+| Own root / slot classes | `class="{{ vi_class('root') }}"` / `class="{{ vi_class('root', { size }) }}"` |
 | Child root classes | `class="{{ vi_class('…') }}"` on the `<twig:…>` tag |
 | Child nested classes | `toggle:class="{{ vi_class('toggle') }}"` (etc.) |
-| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_cva*` → included in `cx.…apply()` / `vi_class` |
+| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_define_cva` → included in `vi_class` |
 
 After `vi_define_cva`, root `class` and nested `slot:class` are **stripped into CVA slots and removed** from the bag. Re-emit with `class="{{ vi_class('slot') }}"` / `slot:class="…"`, not via defaults. Root-host children: `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({…}).all() }}` (no `class` in defaults).
 
@@ -292,7 +292,7 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
 
 {# ❌ avoid — hardcoded props + bare nest (duplicate / order-dependent) #}
 <twig:ViewsTheme:Product:Action:Buy
-    class="{{ cx.buy.apply() }}"
+    class="{{ vi_class('buy') }}"
     :product="product"
     :showQuantity="showQuantity"
     :button:label="false"
@@ -335,7 +335,7 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
 
 ```twig
 {# ✅ body → default content block; for-loops OK #}
-<twig:ViewsTheme:Scroll:Area class="{{ cx.root.apply() }}">
+<twig:ViewsTheme:Scroll:Area class="{{ vi_class('root') }}">
     {% for item in items %}
         <twig:ViewsTheme:Some:Child :item="item" />
     {% endfor %}
@@ -380,8 +380,8 @@ Child mount merges parent context, then **child props win**. Host templates that
 ```
 
 - Defaults stay **inline** at the use site — do not invent materialised locals (`submitProps`, …).
-- Class variants: pass at **define** time (`vi_class('root', { size: size })`), not on `vi_class`.
-- Own-DOM-only hosts may still use `cx.slot.apply()` without define/export.
+- Class variants: always at the **use site** — `vi_class('root', { size: size })`. Do **not** bake variants into `vi_define_cva`.
+- Do **not** use `{% set cx %}` / `cx.slot.apply()` — only `vi_define_cva` + `vi_class`.
 - Do **not** use N locals (`toggleClass`, `parentAttributes`, …) or `{% set attrs/classes %}`.
 
 Parent props the child does **not** declare still resolve from the parent context. Prefer nest keys (`toggle:label`) over parallel parent props when composing hosts that share names (`label`, `color`, `id`, …).
@@ -462,7 +462,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
-| LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
+| LineItem:* (+ Quantity/Remove JS only), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells |

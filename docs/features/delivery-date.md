@@ -25,7 +25,7 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page override (`storefront/page/checkout/confirm.html.twig`).
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page bridge (`storefront/page/checkout/confirm/index.html.twig`, which extends core `confirm.html.twig`).
 
 Conventions:
 

@@ -11,7 +11,7 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 | Storefront bridge | `storefront/component/buy-widget/buy-widget.html.twig` — thin `sw_extends`; mounts `Product:BuyContainer` |
 | `Product:BuyContainer` | Class-backed buy shell: gates + composition; root keeps BuyBoxPlugin class |
 | `Product:Header` | Manufacturer + name + SKU + Rating (in container when `showHeader`) |
-| `Product:Manufacturer` | Brand name (optional external link); self-gated |
+| `Product:Manufacturer` | Brand name text only; self-gated |
 | `Product:SKU` | Product number + label; self-gated |
 | `Product:Rating` | Rating summary (via Header; self-gated `visible`) |
 | `Product:Prices` | Price stack shell: Tiered + Price + Tax |
@@ -106,8 +106,8 @@ Product:BuyContainer (class VM)
 | `pageType` | `null` | Ambient CMS page type (reserved) |
 | `variantsGrid` | `null` | From `page.extensions.viewsTheme.variantsGrid` (bridge) |
 | `showHeader` | `true` | Mount `Product:Header` (incl. rating) — future CMS toggle |
-| `showPrice` | `true` | Forwarded to `Product:Prices` |
-| `showTieredPrices` | `true` | Forwarded to `Product:Prices` |
+| `showPrice` | `true` | PHP default only — Twig forces XOR from `calculatedPrices` (see below) |
+| `showTieredPrices` | `true` | PHP default only — Twig forces XOR from `calculatedPrices` (see below) |
 | `showTaxNote` | `true` | Forwarded to `Product:Prices` |
 | `showBuyForm` | `true` | Mount `Product:Action:Buy` when not variants grid |
 | `showActions` | `true` | Mount `Product:Actions` |
@@ -125,6 +125,7 @@ Product:BuyContainer (class VM)
 | `useVariantsGrid` | config `variantsGridActive` ∧ grid has variants |
 | `showBuyFormBlock` | active ∧ `showBuyForm` ∧ not variants grid |
 | `showConfiguratorBlock` | `showConfigurator` ∧ parent ∧ settings ∧ not grid |
+| Prices XOR (Twig) | `showPrice` = single/empty `calculatedPrices`; `showTieredPrices` = `count > 1` — caller props are not passed through |
 
 Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
 
@@ -198,7 +199,7 @@ Mounted by `Product:Header` (not BuyContainer). Root omitted when not `visible`.
 | `product` | required | |
 | `totalReviews` | `0` | |
 | `showReviews` | `true` | Caller gate |
-| `size` | `'md'` | Forwarded to `Review:Rating` (`sm`/`md`/`lg`) |
+| `size` | `'md'` | Forwarded to `Review:Rating` (`sm`/`md`/`lg`); BuyContainer Header always passes `size: 'sm'` |
 | `visible` | derived | `showReviews` ∧ config ∧ rating ∧ `totalReviews` |
 | `average` | derived | `product.ratingAverage` |
 | `cva` | `{}` | `Rating.cva.twig`: `root`, `rating`, `label` |

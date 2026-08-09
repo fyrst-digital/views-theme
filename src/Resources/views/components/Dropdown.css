@@ -28,7 +28,7 @@
 
 .vi-dropdown[popover] {
   inset: unset;
-  max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem));
+  max-width: var(--vi-max-w, min(100vw - 24px, 352px));
 
   &[data-placement='bottom-end'] {
     top: anchor(bottom);

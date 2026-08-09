@@ -71,7 +71,7 @@ Must stay registered via the components `**/*.php` service prototype (autoconfig
 - **Redirect:** `data-form-add-dynamic-redirect="true"`
 - **Active option:** CVA `active` variant + `aria-current="true"`
 - **Display:** optional symbol in `prepend`; name via Button `label`; `caret-down` in `append`
-- **CSS:** co-located `Currency/Action.css` + `Currency/Menu.css` — consume tokens with fallbacks only (`var(--vi-min-w, 10rem)`, `var(--vi-symbol-min-w, 20px)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--vi-max-w` on the action host for Dropdown). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
+- **CSS:** co-located `Currency/Action.css` + `Currency/Menu.css` — consume tokens with fallbacks only (`var(--vi-min-w, 160px)`, `var(--vi-symbol-min-w, 20px)`, …). Theme may assign overrides in `app/storefront/src/css/components.css` (e.g. `--vi-max-w` on the action host for Dropdown). See [CSS custom properties](../conventions/css-classes.md#css-custom-properties-critical)
 
 ## Dropdown composition
 

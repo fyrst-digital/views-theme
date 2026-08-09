@@ -5,13 +5,13 @@
 .vi-navigation-flyout[popover] {
     inset: unset;
     position-anchor: --vi-navigation-bar;
-    top: calc(anchor(bottom) + var(--vi-flyout-offset, 0.5rem));
+    top: calc(anchor(bottom) + var(--vi-flyout-offset, 8px));
     left: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) left);
     right: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) right);
     bottom: auto;
     width: auto;
     opacity: 0;
-    transform: translateY(-0.25rem);
+    transform: translateY(-4px);
     pointer-events: none;
 }
 
@@ -21,7 +21,7 @@
     position: absolute;
     inset-inline: 0;
     bottom: 100%;
-    height: var(--vi-flyout-offset, 0.5rem);
+    height: var(--vi-flyout-offset, 8px);
 }
 
 .vi-navigation-flyout[popover]:popover-open {
@@ -41,13 +41,13 @@
 
     .vi-navigation-flyout[popover]:not(:popover-open) {
         opacity: 0;
-        transform: translateY(-0.25rem);
+        transform: translateY(-4px);
     }
 
     @starting-style {
         .vi-navigation-flyout[popover]:popover-open {
             opacity: 0;
-            transform: translateY(-0.25rem);
+            transform: translateY(-4px);
         }
     }
 }

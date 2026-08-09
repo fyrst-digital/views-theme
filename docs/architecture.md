@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer, cart drawer).
+ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, product listing/filters, reviews, …).
 
 ## Identity
 
@@ -21,15 +21,17 @@ src/
   Service/
   Struct/
   Subscriber/
-  Twig/                       # vi_icon, vi_merge_deep
+  Twig/                       # ViIcon, ViUtilities (vi_define_cva / vi_class / vi_define_attrs / vi_attrs / vi_merge_deep), ViCvaSlot
   Resources/
     config/
     theme.json
+    snippet/
+    public/
     views/
-      components/             # UX Twig components (primary UI)
+      components/             # UX Twig (+ optional co-located Name.php class VMs)
       storefront/             # Existing page/layout overrides only
     app/storefront/
-      src/                    # Theme SCSS + legacy bundle entry
+      src/                    # Theme SCSS/CSS + modules + legacy bundle entry
       dist/
 ```
 
@@ -51,17 +53,46 @@ src/
 
 - Theme styles: `app/storefront/src/scss/` via `theme.json`.
 
-### Listing / filter PHP
+### Services (`src/Service/`)
 
 | Service | Role |
 |---------|------|
-| `ProductListingGateway` + `ListingScope` | Single I/O path: category/search × results / catalog aggs / reduced aggs; unified `navigationId` resolution |
+| `ProductListingGateway` | Category/search × results / catalog aggs / reduced aggs; unified `navigationId` |
 | `FilterFacetPipeline` | Catalog resolve + optional availability (SSR Panel + batch options) |
+| `FilterFacetResolver` | Aggregations → `FilterFacet[]` |
+| `FilterAggregationLoader` | Catalog / reduced aggregation loads |
 | `FilterRequestSelection` | Request param parse (`splitParam`, selected map) |
 | `FilterAvailabilityApplier` | Pure facet mutation from reduced aggs |
 | `FilterOptionsPayloadBuilder` | Batch JSON via pipeline + `ComponentHtmlRenderer` |
+| `FilterComponents` | Const map of UX filter component names (not DI) |
 | `ComponentHtmlRenderer` | UX `createAndRender` + media/SEO placeholders (SoT) |
 | `SalesChannelContextAccessor` | Request-stack SCC for class components |
+| `ProductReviewGateway` | Review load for XHR / CMS |
+| `ReviewPointsNormalizer` | Normalize `points` query shapes |
+| `VariantsLoader` | Variants grid data for PDP extension |
+| `ProductDetailUrlBuilder` | Listing / PDP product URLs |
+| `ProductPriceResolver` | Price view-model DTO |
+| `ThemeParametersResolver` | Resolve active `theme.json` → Twig `themeParameters` (icons, etc.; not CSS assignment) |
+
+### Structs (`src/Struct/`)
+
+| Struct | Role |
+|--------|------|
+| `ListingScope` | Category vs search listing scope |
+| `FilterFacet` | Facet DTO for filters |
+| `ProductPriceData` | Price view-model |
+| `VariantsGridPagination` | Variants grid pagination state |
+
+## Subscribers
+
+| Subscriber | Event / role |
+|------------|----------------|
+| `ProductPageSubscriber` | `ProductPageLoadedEvent` → `page.extensions.viewsTheme.variantsGrid` |
+| `CheckoutConfirmPageSubscriber` | `CheckoutConfirmPageLoadedEvent` → `deliveryDate` extension |
+| `CheckoutOrderPlacedSubscriber` | `CheckoutOrderPlacedEvent` → persist preferred delivery date |
+| `CartContextSubscriber` | `StorefrontRenderEvent` → cart on SCC / `window.cartCount` |
+| `ThemeConfigSubscriber` | `StorefrontRenderEvent` → Twig `themeParameters` |
+| `ReviewRequestSubscriber` | `KernelEvents::REQUEST` → normalize review `points` query |
 
 ## Page extensions
 

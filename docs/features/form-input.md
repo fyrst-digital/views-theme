@@ -81,7 +81,60 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
 | `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
 | `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
+| `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |
 | `Account:Register`, `Address:*` | Still core `form-input` / `form-select` includes |
+
+---
+
+## Form:Textarea
+
+Stacked textarea: optional label + `<textarea>` + description / feedback. Same violation / description API as `Form:Input`. Does **not** own `<form>` or JS.
+
+### Usage
+
+```twig
+<twig:ViewsTheme:Form:Textarea
+    id="reviewContent"
+    name="content"
+    label="{{ 'detail.reviewContentLabel'|trans|sw_sanitize }}"
+    :rows="5"
+    validationRules="required"
+    violationPath="/content"
+/>
+```
+
+### Props
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `id` | `null` | Required at call site |
+| `name` | `null` | Required at call site |
+| `label` | `null` | Label text (HTML allowed; prefer sanitized) |
+| `value` | `null` | Text body |
+| `placeholder` | `null` | |
+| `rows` | `4` | Native `rows` |
+| `minlength` / `maxlength` | `null` | |
+| `disabled` | `false` | Use `false` not `null` in defaults |
+| `size` | `null` | `sm` / `md` / `lg` → `form-control-*` |
+| `description` | `null` | Help text under the field |
+| `validationRules` | `null` | Comma list → `data-validation` |
+| `violationPath` | `null` | Server violation key |
+| `error` | `false` | Force invalid styling without violations |
+| `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
+| `cva` | `{}` | Slot class overrides |
+
+### Classes / slots
+
+| Slot | Default base | Caller override |
+|------|--------------|-----------------|
+| root | `form-group` | `class="…"` |
+| label | `form-label` | `label:class` |
+| required | `form-required-label` | `required:class` |
+| textarea | `form-control` (+ size / `is-invalid`) | `textarea:class` |
+| description | `form-text` | `description:class` |
+| feedback | `form-field-feedback` | `feedback:class` |
+
+Nested attrs: `label:*`, `textarea:*`, `description:*`, `feedback:*`.
 
 ---
 
@@ -387,7 +440,7 @@ Root dispatches bubbling `input` (while dragging / each step) and `change` (comm
 | `--vi-track-h` | Track height |
 | `--vi-fill-start` / `--vi-fill-end` | Fill edges as `%` (set by JS) |
 | `--vi-thumb-size` / `--vi-thumb-bg` / `--vi-thumb-border` / `--vi-thumb-shadow` | Thumb base |
-| `--vi-thumb-hover-border` / `--vi-thumb-hover-shadow` | Thumb hover |
+| `--vi-thumb-hover-border-color` / `--vi-thumb-hover-shadow` | Thumb hover (`border-color` direct; no token assign) |
 | `--vi-thumb-active-shadow` | Thumb while dragging |
 | `--vi-thumb-focus` | Thumb `:focus-visible` ring |
 

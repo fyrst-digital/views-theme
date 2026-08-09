@@ -21,7 +21,7 @@ Prefer one system per property on a node (do not mix e.g. `gap-2` and `tw:gap-4`
 
 Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defaults()`.
 
-**Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ cx.…apply() }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
+**Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ vi_class('…') }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
 
 ## Length units (critical)
 
@@ -77,7 +77,7 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 }
 ```
 
-Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, …)` (prefer px in new/edited fallbacks).
+Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 24px, 352px))`.
 
 ### Theme CSS — assign to override
 

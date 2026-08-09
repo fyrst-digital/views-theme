@@ -145,6 +145,9 @@ In component CSS:
 | `sw-color-brand-light` | color | `#faf5ee` |
 | `sw-color-brand-dark` | color | `#2E282A` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
+| `sw-font-family-headline` | text | `'Figtree', sans-serif` |
+| `sw-text-color` | color | `#2E282A` |
+| `sw-headline-color` | color | `#2E282A` |
 | `sw-logo-desktop` | media | Consumed by class `Page:Logo` as default `<img>` (`logoPath`); falls back to `bundles/viewstheme/img/views-logo.svg` |
 | `sw-logo-tablet` | media | `Page:Logo` tablet `<source>` when set and ≠ desktop |
 | `sw-logo-mobile` | media | `Page:Logo` mobile `<source>` when set and ≠ desktop |
@@ -159,7 +162,7 @@ Form controls use a global last-resort focus outline in `scss/_form.scss` (trans
 
 ```json
 "icons": {
-  "pack": "default",
+  "pack": "bold",
   "mode": "css"
 }
 ```
@@ -169,7 +172,7 @@ Form controls use a global last-resort focus outline in `scss/_form.scss` (trans
 | [`vi_icon`](twig/vi-icon.md) | Uses `pack` / `mode` as defaults when the second argument is omitted |
 | `storefront/layout/meta.html.twig` | Links the CSS icon pack stylesheet when `mode` is `css` |
 
-`ThemeConfigSubscriber` exposes full `theme.json` as the Twig parameter `themeParameters` for the stylesheet link. UX components do not need `themeParameters` for icons.
+`ThemeConfigSubscriber` exposes full `theme.json` as the Twig parameter `themeParameters` (via `ThemeParametersResolver`) for the stylesheet link and related Twig defaults. It does **not** assign CSS custom properties — those come from Shopware theme compile (`--sw-*`) and Tailwind `theme.css` (`--tw-*`). UX components do not need `themeParameters` for icons beyond `vi_icon` defaults.
 
 CSS packs are built with `npm run build:icons` (`build.icons.mts`). Each pack lists Iconify icons as strings (class = name) or `{ icon, class }` for a custom CSS class suffix after `icon-`:
 

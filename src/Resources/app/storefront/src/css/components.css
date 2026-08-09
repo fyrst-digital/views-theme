@@ -73,7 +73,7 @@
 
 .vi-language-action,
 .vi-currency-action {
-  --vi-max-w: min(100vw - 40px, 16rem);
+  --vi-max-w: min(100vw - 40px, 256px);
 }
 .vi-language-action__toggle,
 .vi-currency-action__toggle {

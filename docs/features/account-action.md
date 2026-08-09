@@ -48,14 +48,12 @@ Page:Header:Actions
 
 ## Deprecations
 
-| Legacy | Replacement |
-|--------|-------------|
+| Legacy shim (still present) | Replacement |
+|-----------------------------|-------------|
 | `Page:Header:Action:Account` | `Account:Action` |
 | `Account:Dropdown` | `Account:Menu` inside `Dropdown` |
-| `Account:LoginForm` | `Account:Login` |
-| `Account:UserActions` | `Account:Actions` |
 
-Shims remain as thin wrappers with `@deprecated` comments where kept.
+Former names `Account:LoginForm` / `Account:UserActions` are gone (use `Account:Login` / `Account:Actions`). No shim files remain for those.
 
 ## Wire-up
 
@@ -93,7 +91,7 @@ See [Navigation drawer](navigation-drawer.md) and [UX components — Attributes]
 | `username:*` | email `Form:Input` |
 | `password:*` | password `Form:Input` |
 
-Defaults live in Login (type, id, name, label, placeholder, autocomplete, error, validationRules). Field root classes come from CVA slots `username` / `password` via `class="{{ cx.…apply() }}"` (not defaults). Field `id`s are unique per instance (`vi-login-{n}-mail` / `-password`) so header menu + login page can coexist. Caller `username:class` / `password:class` merge via CVA; deeper nests pass through (e.g. `username:input:class`).
+Defaults live in Login (type, id, name, label, placeholder, autocomplete, error, validationRules). Field root classes come from CVA slots `username` / `password` via `class="{{ vi_class('username') }}"` / `vi_class('password')` (not defaults). Field `id`s are unique per instance (`vi-login-{n}-mail` / `-password`) so header menu + login page can coexist. Caller `username:class` / `password:class` merge via CVA; deeper nests pass through (e.g. `username:input:class`).
 
 ```twig
 <twig:ViewsTheme:Account:Login

@@ -91,8 +91,12 @@ Options (Twig `data-component-options`): `resultsUrl`, `aggregationsUrl`, `filte
 | `searchResult` | Initial SSR result |
 | `resultsUrl` / `aggregationsUrl` / `filterOptionsUrl` | Theme routes from bridge `path()` only (not resolved in PHP) |
 | `params` | Always-merged query (e.g. `{ search }`) |
+| `sidebar` | Listing context flag (bridge / layout; not Results layout) |
 | `boxLayout` / `referrerCategoryId` | Forwarded to Results / Box |
+| `ariaLiveUpdates` | Default `true` — Results island aria-live announcements |
 | `disableEmptyFilter` | Config default; enables `syncAvailability` (reduced aggs) |
+
+Search pagelet bridge (`storefront/page/search/search-pagelet.html.twig`) mounts Listing with `boxLayout="minimal"`.
 
 ## Props (`Product:Listing:Results`)
 

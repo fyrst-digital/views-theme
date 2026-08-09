@@ -24,7 +24,7 @@ No PHP/JS / `data-component`.
 </twig:ViewsTheme:Grid>
 
 {# Or set track count via token #}
-<twig:ViewsTheme:Grid columns="4" gap="1rem">
+<twig:ViewsTheme:Grid columns="4" gap="16px">
     …
 </twig:ViewsTheme:Grid>
 ```

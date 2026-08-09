@@ -79,7 +79,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 | Custom field | `vi_navigation_image` on category (media type, translated) |
 | Resolve | `Menu` collects IDs from the current level → `searchMedia(ids, context.context)` once |
 | Render | `Item` prop `image`; `{% sw_thumbnails %}` before label when present |
-| Image tokens | `--vi-image-size` (`1.75rem`), `--vi-image-radius` (`0.25rem`), `--vi-image-ar` (`1 / 1`), `--vi-image-fit` (`cover`) |
+| Image tokens | `--vi-image-size` (`28px`), `--vi-image-radius` (`4px`), `--vi-image-ar` (`1 / 1`), `--vi-image-fit` (`cover`) |
 
 ### Drill-down flow
 
@@ -115,7 +115,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 | `drawer` | `MenuOffcanvasPageletLoader` → navigation; then `HeaderPageletLoader` → languages/currencies | `MenuOffcanvasPageletLoadedHook`, then `HeaderPageletLoadedHook` | `ViewsTheme:Navigation:Drawer` via `renderComponent()` |
 | `menu` | `MenuOffcanvasPageletLoader` only | `MenuOffcanvasPageletLoadedHook` | `ViewsTheme:Navigation:Drawer:Menu` via `renderComponent()` |
 
-Header load + `header-pagelet-loaded` run only on full drawer open (not menu drill). See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers--data--app-hooks).
+Header load + `header-pagelet-loaded` run only on full drawer open (not menu drill). See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks).
 
 ## Hooks
 

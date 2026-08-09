@@ -21,7 +21,7 @@ Theme-owned PDP Description/Reviews **tabs chrome** and reviews **content**: sum
 | `Review:Panel` | Class VM + **owner JS**: URL SoT, Results XHR, form mode, save |
 | `Review:Results` | XHR-swappable island (toolbar, items, pagination) |
 | `Review:Summary` / `Matrix` / `Teaser` | Aside chrome + points control + write CTA |
-| `Review:Item` | Single review card; owner row gets edit CTA (`editable`) |
+| `Review:Item` | Single review card (Header / Content / Comment); no per-row edit CTA |
 | `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login |
 | `Review:Rating` | Display-only stars leaf (also buy-box / product card) |
 | `Cms:DescriptionReviews` | CMS element shell: which tabs/panes, `ratingSuccess` active tab, mounts content |
@@ -77,15 +77,12 @@ Cms:DescriptionReviews (CMS shell — no JS)
           │    ├─ title
           │    ├─ Product:Description
           │    └─ Product:Properties
-          └─ Tabs:Panel reviews → Review:Panel (data-component owner)
-               ├─ Summary
-               ├─ Matrix          ← control: points[]
-               ├─ Teaser          ← open/close form mode
-               └─ Main
-                    ├─ alerts
-                    ├─ form region → Form | Login
-                    └─ list region → Review:Results (island)
-                         ├─ Language / Sort / counter / Item × N / Pagination
+           └─ Tabs:Panel reviews → Review:Panel (data-component owner)
+                ├─ Sidebar
+                │    ├─ Summary / Matrix / Teaser → Form (data-review-region=form)
+                └─ Main
+                     ├─ Alerts
+                     └─ Results (island) → Language / Sort / counter / Item × N / Pagination
 ```
 
 ### Tabs chrome
@@ -174,7 +171,7 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | `Product:Description:Detail` | PDP description pane composition |
 | `Product:Properties` | Spec table from `product.sortedProperties` |
 | `Product:Description` | HTML description body (also product card) |
-| `Review:Item` | `editable` from Results; `Item.js` only mounted when editable |
+| `Review:Item` | Presentational card only (no `editable` prop / no `Item.js`) |
 | `Review:Rating` | Display stars; class VM builds `starIcons` |
 | `Form:Textarea` | Shared primitive (title/content style parity with `Form:Input`) |
 | `Form:Switch` / `Form:Select` / `Form:Input` | Language, sort, form fields |

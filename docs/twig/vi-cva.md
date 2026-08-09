@@ -91,7 +91,14 @@ Do **not** bake variants into `vi_define_cva`.
 
 ## `.cva.twig` format
 
-Single Twig **hash expression** (optional `{# comments #}`). Evaluated with component context:
+Single Twig **hash expression** (optional `{# comments #}`). Evaluated with component context. Each slot may include Twig `Cva` keys:
+
+| Key | Role |
+|-----|------|
+| `base` | Always-on classes |
+| `variants` | Variant maps applied via `vi_class('slot', { … })` |
+| `compoundVariants` | Optional compound rules (when multiple variants match) |
+| `defaultVariants` | Optional defaults when a variant key is omitted at use site |
 
 ```twig
 {
@@ -100,6 +107,10 @@ Single Twig **hash expression** (optional `{# comments #}`). Evaluated with comp
         variants: {
             size: { sm: '…' },
         },
+        compoundVariants: [
+            { size: 'sm', color: 'primary', class: '…' },
+        ],
+        defaultVariants: { size: 'md' },
     },
     content: { base: 'vi-box__content' },
 }

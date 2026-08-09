@@ -1,17 +1,12 @@
-# `vi_classes`
+# `vi_classes` (removed)
 
-Twig filter. Converts a class list into a bare class string (no attribute wrapper). Use when a Shopware API expects a string.
+**Removed.** Do not use.
 
-```twig
-{# Form field macros #}
-additionalClass: classes.email | vi_classes,
+Historical filter that converted a class list into a bare class string for Shopware string APIs.
 
-{# Media / thumbnail attribute bags #}
-attributes: {
-  class: classes.image | vi_classes,
-}
-```
+Use [`vi_define_cva` / `vi_class`](vi-cva.md) instead.
 
-Do **not** use `|join(' ')` for class maps.
+## Related
 
-For HTML tags, prefer [`vi_attr_classes`](vi-attr-classes.md).
+- [Twig overview](overview.md)
+- [CSS class API](../conventions/css-classes.md)
