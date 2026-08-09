@@ -1,0 +1,21 @@
+{% props
+    percent = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['progress']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <twig:ViewsTheme:Progress
+            class="{{ vi_class('progress') }}"
+            {{ ...vi_attrs('progress').defaults({
+                value: percent,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

@@ -1,0 +1,50 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['row', 'check', 'bar', 'share']) %}
+
+    <div
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Review:Matrix',
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block content %}
+            {% for row in rows %}
+                {% block row %}
+                    <div {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+                        {% block check %}
+                            <twig:ViewsTheme:Review:Matrix:Check
+                                class="{{ vi_class('check') }}"
+                                {{ ...vi_attrs('check').defaults({
+                                    points: row.points,
+                                    count: row.count,
+                                    checked: row.checked,
+                                    disabled: row.disabled,
+                                    id: row.inputId,
+                                }).all() }}
+                            />
+                        {% endblock %}
+
+                        {% block bar %}
+                            <twig:ViewsTheme:Review:Matrix:Bar
+                                class="{{ vi_class('bar') }}"
+                                {{ ...vi_attrs('bar').defaults({
+                                    percent: row.percent,
+                                }).all() }}
+                            />
+                        {% endblock %}
+
+                        {% block share %}
+                            <twig:ViewsTheme:Review:Matrix:Share
+                                class="{{ vi_class('share') }}"
+                                {{ ...vi_attrs('share').defaults({
+                                    percent: row.percent,
+                                }).all() }}
+                            />
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
+    </div>
+{% endif %}

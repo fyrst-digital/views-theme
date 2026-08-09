@@ -25,7 +25,7 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 | `Product:Price:Tiered` | Tier table — parent-mounted (e.g. `Product:Prices`), not nested in Price |
 | `Product:Price:Tax` | Tax note — parent-mounted (`Product:Prices`, Box:Footer), not nested in Price |
 | `Product:Action:Buy` / `Detail` (class-backed) / `Wishlist` | Buy form (quantity gate + pack unit VM), details link (href VM + root-host Button), wishlist toggle |
-| `Review:Rating` (class-backed) | Star leaf (`points`, `maxPoints`, `altText`, `size` sm/md/lg default `md`); VM → `starIcons`; used when reviews enabled |
+| `Review:Rating` (class-backed) | Star leaf (`points`, `maxPoints`, `altText`, `size` sm/md/lg default `md`, `iconFull`/`iconHalf`/`iconEmpty` defaults `star-fill`/`star-half-fill`/`star`); VM → `starIcons`; used when reviews enabled |
 
 ## Wire-up
 

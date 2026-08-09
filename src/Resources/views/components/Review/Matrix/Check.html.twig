@@ -1,0 +1,41 @@
+{% props
+    points = 0,
+    count = 0,
+    checked = false,
+    disabled = false,
+    id = 'vi-review-matrix-' ~ points ~ '-' ~ random(),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['control', 'input', 'label']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'checkbox',
+                    id: id,
+                    name: 'points',
+                    value: points,
+                    checked: checked is same as(true) ? true : false,
+                    disabled: disabled is same as(true) ? true : false,
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+            <label
+                {{ vi_attrs('label').defaults({
+                    for: id,
+                }) }}
+                class="{{ vi_class('label') }}"
+            >
+                {{ ("detail.review#{points}PointRatingText")|trans|sw_sanitize }}
+                ({{ count }})
+            </label>
+        </div>
+    {% endblock %}
+</div>

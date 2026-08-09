@@ -1,0 +1,64 @@
+{% props
+    title = null,
+    lang = null,
+    points = null,
+    externalUser = null,
+    createdAt = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'rating', 'author', 'date']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <twig:ViewsTheme:Review:Item:Title
+            class="{{ vi_class('title') }}"
+            {{ ...vi_attrs('title').defaults({
+                title: title,
+                lang: lang,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block rating %}
+        <twig:ViewsTheme:Review:Rating
+            class="{{ vi_class('rating') }}"
+            {{ ...vi_attrs('rating').defaults({
+                points: points,
+                size: 'sm',
+                altText: 'detail.reviewRatingAltText'|trans({
+                    '%points%': points,
+                    '%maxPoints%': 5,
+                }),
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block author %}
+        {% if externalUser %}
+            <span {{ vi_attrs('author') }} class="{{ vi_class('author') }}">
+                {{ 'viewsTheme.review.author'|trans({
+                    '%name%': externalUser,
+                })|sw_sanitize }}
+            </span>
+        {% endif %}
+    {% endblock %}
+
+    {% block date %}
+        {% if createdAt %}
+            <time
+                {{ vi_attrs('date').defaults({
+                    datetime: createdAt|date('c'),
+                }) }}
+                class="{{ vi_class('date') }}"
+            >
+                {{ createdAt|format_date('long') }}
+                {{ createdAt|format_time('short') }}
+            </time>
+        {% endif %}
+    {% endblock %}
+</div>

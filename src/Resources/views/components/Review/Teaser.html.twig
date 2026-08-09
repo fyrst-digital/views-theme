@@ -1,0 +1,39 @@
+{% props
+    hasCustomerReview = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'text', 'form']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+            {% if hasCustomerReview %}
+                {{ 'detail.reviewExistsTeaserTitle'|trans|sw_sanitize }}
+            {% else %}
+                {{ 'detail.reviewTeaserTitle'|trans|sw_sanitize }}
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block text %}
+        <p {{ vi_attrs('text') }} class="{{ vi_class('text') }}">
+            {% if hasCustomerReview %}
+                {{ 'detail.reviewExistsTeaserText'|trans|sw_sanitize }}
+            {% else %}
+                {{ 'detail.reviewTeaserText'|trans|sw_sanitize }}
+            {% endif %}
+        </p>
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Review:Form
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').all() }}
+        />
+    {% endblock %}
+</div>

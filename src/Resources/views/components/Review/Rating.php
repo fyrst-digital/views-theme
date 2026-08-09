@@ -21,6 +21,12 @@ class Rating
 
     public string $size = 'md';
 
+    public string $iconFull = 'star-fill';
+
+    public string $iconHalf = 'star-half-fill';
+
+    public string $iconEmpty = 'star';
+
     /**
      * @var array<string, mixed>
      */
@@ -46,15 +52,15 @@ class Rating
         $icons = [];
 
         for ($i = 0; $i < $full; ++$i) {
-            $icons[] = 'star-fill';
+            $icons[] = $this->iconFull;
         }
 
         if ($half) {
-            $icons[] = 'star-half-fill';
+            $icons[] = $this->iconHalf;
         }
 
         for ($i = 0; $i < $blank; ++$i) {
-            $icons[] = 'star';
+            $icons[] = $this->iconEmpty;
         }
 
         $this->starIcons = $icons;

@@ -1,0 +1,55 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['sidebar', 'main', 'alerts', 'results']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Panel',
+        'data-component-options': componentOptions|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block sidebar %}
+        <twig:ViewsTheme:Review:Sidebar
+            class="{{ vi_class('sidebar') }}"
+            {{ ...vi_attrs('sidebar').defaults({
+                productReviewCount: productReviewCount,
+                totalReviewCount: totalReviewCount,
+                productAvgRating: productAvgRating,
+                maxPoints: reviews.matrix.maxPoints,
+                reviews: reviews,
+                hasCustomerReview: hasCustomerReview,
+                'teaser:form:reviews': reviews,
+                'teaser:form:formValues': formValues,
+                'teaser:form:formViolations': formViolations,
+                'teaser:form:productId': productId,
+                'teaser:form:parentId': parentId,
+                'teaser:form:saveUrl': saveUrl,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block main %}
+        <div {{ vi_attrs('main') }} class="{{ vi_class('main') }}">
+            {% block alerts %}
+                <twig:ViewsTheme:Review:Alerts
+                    class="{{ vi_class('alerts') }}"
+                    {{ ...vi_attrs('alerts').defaults({
+                        ratingSuccess: ratingSuccess,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block results %}
+                <twig:ViewsTheme:Review:Results
+                    class="{{ vi_class('results') }}"
+                    {{ ...vi_attrs('results').defaults({
+                        reviews: reviews,
+                        productId: productId,
+                        parentId: parentId,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

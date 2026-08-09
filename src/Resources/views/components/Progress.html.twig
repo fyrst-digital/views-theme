@@ -1,0 +1,31 @@
+{% props
+    value = 0,
+    min = 0,
+    max = 100,
+    size = 'md',
+    color = 'none',
+    striped = false,
+    animate = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['fill']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root', { size: size }) }}"
+>
+    {% block content %}
+        <div
+            {{ vi_attrs('fill').defaults({
+                role: 'progressbar',
+                style: 'width: ' ~ value ~ '%',
+                'aria-valuenow': value,
+                'aria-valuemin': min,
+                'aria-valuemax': max,
+            }) }}
+            class="{{ vi_class('fill', { color: color, striped: striped, animate: animate }) }}"
+        ></div>
+    {% endblock %}
+</div>

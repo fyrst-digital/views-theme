@@ -154,6 +154,28 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+
+        <service id="Fyrst\ViewsTheme\Service\ProductReviewGateway">
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewLoader"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Subscriber\ReviewRequestSubscriber">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Fyrst\ViewsTheme\Controller\ReviewController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductReviewGateway"/>
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewSaveRoute"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
             <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>

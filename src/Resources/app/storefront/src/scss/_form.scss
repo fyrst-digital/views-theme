@@ -44,3 +44,7 @@
     margin-left: 0;
   }
 }
+
+.form-text {
+  font-size: var(--form-text-fs, var(--font-size-6))
+}

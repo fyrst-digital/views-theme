@@ -20,9 +20,19 @@ Nest attribute bags stay separate: [`vi_define_attrs` / `vi_attrs`](vi-attrs.md)
 
 | Call | Role |
 |------|------|
-| `vi_define_cva(…)` | Load/bind CVA, strip `slot:class`, export slots for `vi_class` (returns `''`) |
-| `vi_class('slot')` | Exported slot → `apply()` |
+| `vi_define_cva(…)` | Load/bind CVA, strip root `class` + nested `slot:class` into slots, export for `vi_class` (returns `''`) |
+| `vi_class('slot')` | Exported slot → `apply()` (base + variants + caller extras; tokens unique) |
 | `vi_class('slot', { … })` | → `apply(variants)` |
+
+### Class consumption
+
+After `vi_define_cva`:
+
+- Caller root `class="…"` → folded into the `root` slot as extras, then **removed** from `attributes` (not only marked rendered).
+- Nested `slot:class` → folded into that slot, key stripped from the bag.
+- Re-emit with `class="{{ vi_class('…') }}"` / `slot:class="…"`. Do **not** put `class` back via `.defaults({ class: … })` or by relying on a stale bag.
+
+Bare `{{ ...attributes.all() }}` after define is safe for class (key is gone). Prefer root-host shape: `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({…}).all() }}`.
 
 Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name).
 

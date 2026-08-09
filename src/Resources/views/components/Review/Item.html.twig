@@ -1,15 +1,48 @@
-{% sw_extends '@Storefront/storefront/component/review/review-item.html.twig' %}
-
 {% props
+    review = null,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-review-item__points col-md-auto product-detail-review-item-points' },
-}|replace_recursive(cva)) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'content', 'comment']) %}
 
-{% block component_review_item_info_points %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-        <twig:ViewsTheme:Review:Rating :points="review.points" />
-    </div>
-{% endblock %}
+{% set reviewLang = review.language ? review.language.translationCode.code : null %}
+
+<article
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}
+        <twig:ViewsTheme:Review:Item:Header
+            class="{{ vi_class('header') }}"
+            {{ ...vi_attrs('header').defaults({
+                title: review.title,
+                lang: reviewLang,
+                points: review.points,
+                externalUser: review.externalUser,
+                createdAt: review.createdAt,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block content %}
+        <twig:ViewsTheme:Review:Item:Content
+            class="{{ vi_class('content') }}"
+            {{ ...vi_attrs('content').defaults({
+                content: review.content,
+                lang: reviewLang,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block comment %}
+        {% if review.comment %}
+            <twig:ViewsTheme:Review:Item:Comment
+                class="{{ vi_class('comment') }}"
+                {{ ...vi_attrs('comment').defaults({
+                    comment: review.comment,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</article>

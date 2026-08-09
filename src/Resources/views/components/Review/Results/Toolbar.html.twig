@@ -1,0 +1,58 @@
+{% props
+    languageFilterActive = false,
+    languageFilterDisabled = false,
+    sortField = 'createdAt',
+    sortOptions = [],
+    productReviewCount = 0,
+    reviewsPerPage = 10,
+    currentListPage = 1,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['language', 'sort', 'counter']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block language %}
+        <twig:ViewsTheme:Review:Language
+            class="{{ vi_class('language') }}"
+            {{ ...vi_attrs('language').defaults({
+                checked: languageFilterActive,
+                disabled: languageFilterDisabled,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block counter %}
+        {% if productReviewCount > 0 %}
+            <div {{ vi_attrs('counter') }} class="{{ vi_class('counter') }}">
+                {% if productReviewCount > 1 and productReviewCount > reviewsPerPage %}
+                    <strong>{{ currentListPage }}</strong>
+                    -
+                    <strong>{{ reviewsPerPage }}</strong>
+                    {{ 'detail.reviewCountBefore'|trans|sw_sanitize }}
+                    <strong>{{ productReviewCount }}</strong>
+                    {{ 'detail.reviewCountAfter'|trans({'%count%': productReviewCount})|sw_sanitize }}
+                {% else %}
+                    <strong>{{ productReviewCount }}</strong>
+                    {{ 'detail.reviewCountAfter'|trans({'%count%': productReviewCount})|sw_sanitize }}
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block sort %}
+        {% if productReviewCount > 0 %}
+            <twig:ViewsTheme:Review:Sort
+                class="{{ vi_class('sort') }}"
+                {{ ...vi_attrs('sort').defaults({
+                    value: sortField,
+                    options: sortOptions,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</div>

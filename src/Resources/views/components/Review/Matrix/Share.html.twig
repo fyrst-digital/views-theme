@@ -1,0 +1,15 @@
+{% props
+    percent = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {{ percent|round }}%
+    {% endblock %}
+</div>

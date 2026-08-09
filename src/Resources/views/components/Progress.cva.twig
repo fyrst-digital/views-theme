@@ -1,0 +1,33 @@
+{
+    root: {
+        base: 'vi-progress progress',
+        variants: {
+            size: {
+                sm: 'vi-progress-sm',
+                md: 'vi-progress-md',
+                lg: 'vi-progress-lg',
+            },
+        },
+    },
+    fill: {
+        base: 'vi-progress__fill progress-bar',
+        variants: {
+            color: {
+                none: '',
+                primary: 'bg-primary',
+                secondary: 'bg-secondary',
+                info: 'bg-info',
+                danger: 'bg-danger',
+                warning: 'bg-warning',
+                success: 'bg-success',
+                dark: 'bg-dark',
+            },
+            striped: {
+                true: 'progress-bar-striped',
+            },
+            animate: {
+                true: 'progress-bar-animated',
+            },
+        },
+    },
+}

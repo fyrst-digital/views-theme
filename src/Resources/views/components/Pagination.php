@@ -37,6 +37,11 @@ class Pagination
     public string $pageParameter = 'p';
 
     /**
+     * Owner that receives apply({ p }) — Product:Listing or Review:Panel.
+     */
+    public string $ownerComponent = 'ViewsTheme:Product:Listing';
+
+    /**
      * Legacy suffix (e.g. `&search=…`). Prefer {@see $query}.
      */
     public string $searchQuery = '';

@@ -4,16 +4,12 @@
  * @module @views-theme/modules/listing/params
  */
 
-/**
- * @param {unknown} value
- * @returns {Record<string, unknown>}
- */
-export function objectOption(value) {
-    if (!value || Array.isArray(value)) {
-        return {}
-    }
-    return typeof value === 'object' ? /** @type {Record<string, unknown>} */ (value) : {}
-}
+import {
+    collectControlValues,
+    objectOption,
+} from '@views-theme/modules/shared/object-option.js'
+
+export { collectControlValues, objectOption }
 
 /**
  * @param {import('@views-theme/modules/types.js').ListingOptions} options
@@ -43,29 +39,6 @@ export function buildRequestParams(options, controlParams) {
     })
 
     return out
-}
-
-/**
- * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
- * @returns {Record<string, unknown>}
- */
-export function collectControlValues(controls) {
-    /** @type {Record<string, unknown>} */
-    const values = {}
-    for (const control of controls) {
-        const part = (typeof control.getValues === 'function' ? control.getValues() : null) || {}
-        Object.entries(part).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                const prev = Array.isArray(values[key]) ? /** @type {unknown[]} */ (values[key]) : []
-                values[key] = [...new Set([...prev, ...value])]
-                return
-            }
-            if (value !== null && value !== undefined && value !== '') {
-                values[key] = value
-            }
-        })
-    }
-    return values
 }
 
 /**

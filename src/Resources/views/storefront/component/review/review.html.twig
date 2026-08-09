@@ -1,0 +1,19 @@
+{% sw_extends '@Storefront/storefront/component/review/review.html.twig' %}
+
+{% block utilities_offcanvas_meta %}{% endblock %}
+
+{% block utilities_offcanvas %}
+    {% set productId = reviews.productId|default(product.id|default(null)) %}
+    {% set parentId = reviews.parentId|default(product.parentId|default(null)) %}
+
+    {% if reviews and productId %}
+        <twig:ViewsTheme:Review:Panel
+            :reviews="reviews"
+            :productId="productId"
+            :parentId="parentId"
+            :ratingSuccess="ratingSuccess|default(null)"
+            listUrl="{{ path('frontend.views-theme.review.list', { productId: productId }) }}"
+            saveUrl="{{ path('frontend.views-theme.review.save', { productId: productId }) }}"
+        />
+    {% endif %}
+{% endblock %}

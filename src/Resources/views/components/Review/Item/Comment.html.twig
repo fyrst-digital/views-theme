@@ -1,0 +1,19 @@
+{% props
+    comment = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% if comment %}
+    {% block content %}
+        <twig:ViewsTheme:Blockquote
+            class="{{ vi_class('root') }}"
+            {{ ...attributes.defaults({
+                footer: 'viewsTheme.review.commentFooter'|trans|sw_sanitize,
+            }).all() }}
+        >
+            {{ comment|nl2br }}
+        </twig:ViewsTheme:Blockquote>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,37 @@
+{% props
+    value = 'createdAt',
+    options = [],
+    cva = {},
+%}
+
+{% set sortId = 'vi-review-sort-' ~ random() %}
+{% set selectOptions = [] %}
+{% for option in options %}
+    {% set selectOptions = selectOptions|merge([{
+        value: option.value,
+        label: option.label|trans|sw_sanitize,
+    }]) %}
+{% endfor %}
+
+{% do vi_define_cva(cva, ['root', 'select']) %}
+{% do vi_define_attrs(['select']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Sort',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <twig:ViewsTheme:Form:Select
+        class="{{ vi_class('select') }}"
+        {{ ...vi_attrs('select').defaults({
+            id: sortId,
+            name: 'sort',
+            label: 'detail.reviewSortLabel'|trans|sw_sanitize,
+            options: selectOptions,
+            value: value,
+            size: 'sm',
+            layout: 'bar',
+        }).all() }}
+    />
+</div>

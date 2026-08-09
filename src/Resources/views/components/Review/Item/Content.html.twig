@@ -1,0 +1,18 @@
+{% props
+    content = null,
+    lang = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<p
+    {{ attributes.defaults({
+        lang: lang ?: false,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {{ content|nl2br }}
+    {% endblock %}
+</p>

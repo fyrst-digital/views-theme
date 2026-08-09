@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Rating`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating` / `Matrix`.
 
 ## Props / CVA / attributes
 
@@ -225,7 +225,7 @@ Stringifies the bag to HTML. Non-class attrs go through `vi_attrs('slot')` / `.d
 | Child nested classes | `toggle:class="{{ vi_class('toggle') }}"` (etc.) |
 | Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_cva*` → included in `cx.…apply()` / `vi_class` |
 
-After `vi_define_cva`, root `class` is marked rendered; putting it in `.defaults({…})` on the same bag **drops** it (Symfony unsets rendered keys). Nested `slot:class` is stripped into the CVA slot — re-emit with `class="{{ vi_class('slot') }}"` / `slot:class="…"`, not via defaults.
+After `vi_define_cva`, root `class` and nested `slot:class` are **stripped into CVA slots and removed** from the bag. Re-emit with `class="{{ vi_class('slot') }}"` / `slot:class="…"`, not via defaults. Root-host children: `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({…}).all() }}` (no `class` in defaults).
 
 #### Child components (defaults forward)
 
@@ -325,7 +325,7 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
 |------|---------|
 | Loop / per-item data | Hardcoded `:item="child"`, `:variant="variant"`, … (not from parent `attributes`) |
 | Sealed leaf | Fixed child with **no** public nest API — hardcoded props only, no nest / no `attrs` entry |
-| Root host wrapper | Child *is* the component root — `{{ ...attributes.defaults({ … }).all() }}` (no nest) |
+| Root host wrapper | Child *is* the component root — `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({ … }).all() }}` (no nest; no `class` in defaults) |
 | Nested CVA classes | `label:class="{{ vi_class('label') }}"` / `icon:class="…"` stay on the tag |
 | **Form:Input:Group facade** | Flat control props (`type`, `placeholder`, `size`, …) **and** nest `input` — intentional dual API so callers use `field:placeholder` not only `field:input:placeholder` ([form-input](../features/form-input.md#forminputgroup)) |
 
@@ -445,7 +445,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 
 | Area | Status |
 |------|--------|
-| Alert, Button, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
+| Alert, Button, Blockquote, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
@@ -466,7 +466,9 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells |
-| Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons`; Detail/Widget/Item/Form still legacy shells |
+| Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md); Item:Comment → Blockquote |
+| Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |
+| Review:Matrix (class-backed) + Matrix:Check / Bar / Share | UX + `vi_cva` + `Matrix.php` → `rows` / `visible`; Bar → Progress |
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |

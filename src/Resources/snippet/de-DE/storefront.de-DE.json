@@ -13,8 +13,13 @@
             "checkout": "Zur Kasse",
             "cart": "Warenkorb",
             "summaryNote": "Steuern und Versandkosten werden an der Kasse berechnet."
+        },
+        "review": {
+            "author": "von %name%",
+            "commentFooter": "Antwort des Shopbetreibers"
         }
     },
+
     "variantsGrid": {
         "table": {
             "preview": "Vorschau"

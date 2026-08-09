@@ -1,0 +1,3 @@
+.vi-review-panel {
+    grid-template-columns: var(--vi-grid-columns, minmax(0, 1fr));
+}

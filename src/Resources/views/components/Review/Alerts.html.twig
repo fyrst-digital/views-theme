@@ -1,0 +1,47 @@
+{% props
+    ratingSuccess = null,
+    formViolations = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block alert %}
+        {% if ratingSuccess == 1 %}
+            <twig:ViewsTheme:Alert
+                type="success"
+                content="{{ 'detail.reviewFormSuccessAlert'|trans|sw_sanitize }}"
+                announceOnLoad
+            />
+        {% elseif ratingSuccess == 2 %}
+            <twig:ViewsTheme:Alert
+                type="success"
+                content="{{ 'detail.reviewFormSuccessUpdateAlert'|trans|sw_sanitize }}"
+                announceOnLoad
+            />
+        {% elseif ratingSuccess == -1 %}
+            {% set errorContent = 'detail.reviewFormErrorAlert'|trans|sw_sanitize %}
+            {% if formViolations %}
+                {% set violationLines = [] %}
+                {% for violation in formViolations.violations %}
+                    {% set violationLines = violationLines|merge([
+                        violation.message ~ (violation.propertyPath ? ' (' ~ violation.propertyPath ~ ')' : '')
+                    ]) %}
+                {% endfor %}
+                {% if violationLines is not empty %}
+                    {% set errorContent = errorContent ~ '<ul class="mb-0 mt-2"><li>' ~ violationLines|join('</li><li>') ~ '</li></ul>' %}
+                {% endif %}
+            {% endif %}
+            <twig:ViewsTheme:Alert
+                type="danger"
+                content="{{ errorContent }}"
+                announceOnLoad
+                ariaLive="assertive"
+            />
+        {% endif %}
+    {% endblock %}
+</div>

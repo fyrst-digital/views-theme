@@ -1,0 +1,108 @@
+{% props
+    id = null,
+    name = null,
+    label = null,
+    value = null,
+    placeholder = null,
+    rows = 4,
+    minlength = null,
+    maxlength = null,
+    disabled = false,
+    size = null,
+    description = null,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% set isInvalid = error is not empty or (
+    violationPath is not empty
+    and formViolations
+    and formViolations.getViolations(violationPath) is not empty
+) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['label', 'required', 'textarea', 'description', 'feedback']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block label %}
+        {% if label %}
+            <label
+                {{ vi_attrs('label').defaults({
+                    for: id,
+                }) }}
+                class="{{ vi_class('label') }}"
+            >
+                {{ label|raw }}
+
+                {% if isRequired %}
+                    <span
+                        {{ vi_attrs('required').defaults({
+                            'aria-hidden': 'true',
+                        }) }}
+                        class="{{ vi_class('required') }}"
+                    >
+                        {{ 'general.required'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </label>
+        {% endif %}
+    {% endblock %}
+
+    {% block textarea %}
+        <textarea
+            {{ vi_attrs('textarea').defaults({
+                id: id,
+                name: name,
+                rows: rows,
+                placeholder: placeholder is not empty ? placeholder : false,
+                minlength: minlength is not empty ? minlength : false,
+                maxlength: maxlength is not empty ? maxlength : false,
+                disabled: disabled is same as(true) ? true : false,
+                'data-validation': validationRules is not empty ? validationRules : false,
+                'aria-required': isRequired ? 'true' : false,
+                'aria-describedby': ariaDescribedBy,
+            }) }}
+            class="{{ vi_class('textarea', { invalid: isInvalid, size: size }) }}"
+        >{{ value is not empty ? value : '' }}</textarea>
+    {% endblock %}
+
+    {% block description %}
+        {% if description is not empty %}
+            <small
+                {{ vi_attrs('description').defaults({
+                    id: descriptionId,
+                }) }}
+                class="{{ vi_class('description') }}"
+            >
+                {{ description }}
+            </small>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ vi_attrs('feedback').defaults({
+                id: feedbackId,
+            }) }}
+            class="{{ vi_class('feedback') }}"
+        >
+            {% block feedback_violations %}
+                {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: formViolations,
+                        violationPath: violationPath,
+                    } %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

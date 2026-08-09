@@ -1,0 +1,58 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['toolbar', 'items', 'item', 'empty', 'pagination']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Review:Results',
+        hidden: hidden,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block toolbar %}
+        <twig:ViewsTheme:Review:Results:Toolbar
+            class="{{ vi_class('toolbar') }}"
+            {{ ...vi_attrs('toolbar').defaults({
+                languageFilterActive: languageFilterActive,
+                languageFilterDisabled: languageFilterDisabled,
+                sortField: sortField,
+                sortOptions: sortOptions,
+                productReviewCount: productReviewCount,
+                reviewsPerPage: reviewsPerPage,
+                currentListPage: currentListPage,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block items %}
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
+            {% for review in reviews %}
+                <div {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                    <twig:ViewsTheme:Review:Item
+                        :review="review"
+                    />
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% block empty %}
+        {% if productReviewCount <= 0 %}
+            <div {{ vi_attrs('empty') }} class="{{ vi_class('empty') }}">
+                <twig:ViewsTheme:Alert
+                    type="info"
+                    content="{{ 'detail.reviewListEmpty'|trans|sw_sanitize }}"
+                />
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block pagination %}
+        <div {{ vi_attrs('pagination') }} class="{{ vi_class('pagination') }}">
+            <twig:ViewsTheme:Pagination
+                :entities="reviews"
+                preserveQuery
+                :ownerComponent="ownerComponent"
+            />
+        </div>
+    {% endblock %}
+</div>
