@@ -1,15 +1,31 @@
 .vi-gallery {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--vi-gap, 12px);
   min-inline-size: 0;
 }
 
+.vi-gallery[data-multi='true'] {
+  grid-template-areas: var(--vi-areas, 'canvas' 'thumbs');
+  grid-template-columns: var(--vi-cols, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+/* Sole orientation breakpoint: side + vertical thumbs from md */
 @media (min-width: 768px) {
   .vi-gallery[data-multi='true'] {
-    display: grid;
-    grid-template-columns: var(--vi-thumbs-w, 80px) minmax(0, 1fr);
-    align-items: stretch;
+    grid-template-areas: var(--vi-areas, 'thumbs canvas');
+    grid-template-columns: var(--vi-thumbs-w, auto) minmax(0, 1fr);
     gap: var(--vi-gap, 16px);
+  }
+
+  .vi-gallery[data-multi='true'] .vi-gallery-thumbnails {
+    block-size: var(--vi-thumbs-h, 0);
+    min-block-size: var(--vi-thumbs-min-h, 100%);
+  }
+
+  .vi-gallery[data-multi='true'] .vi-gallery-thumbnails__track {
+    flex-direction: var(--vi-thumbs-dir, column);
+    block-size: var(--vi-thumbs-track-h, 100%);
+    scroll-snap-type: var(--vi-thumbs-snap, y mandatory);
   }
 }

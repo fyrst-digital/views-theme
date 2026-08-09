@@ -1,7 +1,7 @@
 .vi-gallery-canvas {
   position: relative;
   min-inline-size: 0;
-  order: 1;
+  grid-area: canvas;
 }
 
 .vi-gallery-canvas__track {

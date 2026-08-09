@@ -1,39 +1,22 @@
 .vi-gallery-thumbnails {
-  order: 2;
+  grid-area: thumbs;
   min-inline-size: 0;
-}
-
-@media (min-width: 768px) {
-  .vi-gallery-thumbnails {
-    order: 0;
-    /* Contribute no row height; stretch to canvas-sized grid row */
-    block-size: 0;
-    min-block-size: 100%;
-    overflow: hidden;
-  }
+  overflow: hidden;
+  block-size: var(--vi-thumbs-h, auto);
+  min-block-size: var(--vi-thumbs-min-h, 0);
 }
 
 .vi-gallery-thumbnails__track {
   display: flex;
-  flex-direction: row;
+  flex-direction: var(--vi-thumbs-dir, row);
   gap: var(--vi-thumb-gap, 8px);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
+  block-size: var(--vi-thumbs-track-h, auto);
+  overflow: auto;
+  scroll-snap-type: var(--vi-thumbs-snap, x mandatory);
   scrollbar-width: none;
   overscroll-behavior: contain;
 }
 
 .vi-gallery-thumbnails__track::-webkit-scrollbar {
   display: none;
-}
-
-@media (min-width: 768px) {
-  .vi-gallery-thumbnails__track {
-    flex-direction: column;
-    block-size: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-  }
 }

@@ -69,12 +69,28 @@ Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes
 | Concern | SoT |
 |---------|-----|
 | Slide size | `.vi-gallery-slide__image` only — `inline-size: 100%`, `block-size: auto` |
-| Aspect ratio | `aspect-ratio: var(--vi-image-ar, 4 / 3)` on the image (theme may override `--vi-image-ar`) |
-| Desktop thumbs height | Matches canvas image (grid row sized by canvas); thumbs `block-size: 0` + `min-block-size: 100%` + track `overflow-y: auto` |
-| Mobile thumbs | Horizontal strip under canvas (no height lock) |
-| Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas (no thumbs grid column) |
+| Thumb size | `.vi-gallery-thumb__image` only — `inline-size: var(--vi-thumb-size, 64px)`, `block-size: auto` (button has no fixed box size) |
+| Aspect ratio | `aspect-ratio: var(--vi-image-ar, 4 / 3)` on slide + thumb images (theme may override `--vi-image-ar`) |
+| Layout | Always `display: grid` — never flex |
+| Orientation breakpoint | **Only** `Gallery.css` `@media (min-width: 768px)` — layout + thumbs height lock + track axis (no media in `Thumbnails.css`) |
+| Named areas | `.vi-gallery-canvas` → `canvas`; `.vi-gallery-thumbnails` → `thumbs` |
+| Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas |
 
-Slide shell is snap/flex only — no min/max height floors. Canvas image leads layout height. Two-column desktop grid only when `data-multi="true"`.
+### Orientation tokens (theme assigns on gallery host)
+
+Defaults: under + horizontal track; from `md+` start + vertical track + height lock. Override by assigning tokens (use theme media queries if responsive).
+
+| Token | Under / horizontal fallback | Start / vertical fallback (`md+` in Gallery.css) |
+|-------|----------------------------|--------------------------------------------------|
+| `--vi-areas` | `'canvas' 'thumbs'` | `'thumbs canvas'` |
+| `--vi-cols` | `minmax(0, 1fr)` | — |
+| `--vi-thumbs-w` | — | `auto` (with `minmax(0, 1fr)` canvas col) |
+| `--vi-thumbs-dir` | `row` | `column` |
+| `--vi-thumbs-snap` | `x mandatory` | `y mandatory` |
+| `--vi-thumbs-h` / `--vi-thumbs-min-h` | `auto` / `0` | `0` / `100%` |
+| `--vi-thumbs-track-h` | `auto` | `100%` |
+
+`Thumbnails.css` only consumes these (horizontal fallbacks). Slide shell is snap only — canvas image leads layout height.
 
 ## CMS bridge
 
