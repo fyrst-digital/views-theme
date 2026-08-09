@@ -38,9 +38,11 @@ Gallery (data-component owner)
 |-----------|------|------|
 | `Gallery` | `medias` | Media entities (flat list) |
 | `Gallery` | `active` | 0-based initial index (SSR + JS hydrate) |
+| `Gallery` | `rewind` | When `true`, next on last → first and prev on first → last; controls stay enabled (default `false` = clamp + disable at ends) |
 | `Gallery:Thumb` / `Dot` | `index`, `active`, `total` | Identity + SSR `aria-current` |
-| `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends |
+| `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends unless parent `rewind` |
 | `Gallery:Canvas` | `multi` | When false, omit controls + dots |
+| `Gallery:Canvas` | `rewind` | SSR control `disabled` when false at ends |
 
 ## JS API
 
@@ -48,7 +50,7 @@ Gallery (data-component owner)
 |-----|------|
 | `select(index, { emit, scroll })` | Activate index; optional canvas scroll |
 | `setIndex(index, { emit })` | Canvas-driven update (no re-scroll) |
-| `prev()` / `next()` | Clamp at ends |
+| `prev()` / `next()` | Clamp at ends; wrap when `rewind` |
 | `ViewsTheme:Gallery:Change` | `{ el, index }` after user-facing change |
 
 Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes.
@@ -68,8 +70,11 @@ Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes
 |---------|-----|
 | Slide size | `.vi-gallery-slide__image` only — `inline-size: 100%`, `block-size: auto` |
 | Aspect ratio | `aspect-ratio: var(--vi-image-ar, 4 / 3)` on the image (theme may override `--vi-image-ar`) |
+| Desktop thumbs height | Matches canvas image (grid row sized by canvas); thumbs `block-size: 0` + `min-block-size: 100%` + track `overflow-y: auto` |
+| Mobile thumbs | Horizontal strip under canvas (no height lock) |
+| Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas (no thumbs grid column) |
 
-Slide shell is snap/flex only — no min/max height floors.
+Slide shell is snap/flex only — no min/max height floors. Canvas image leads layout height. Two-column desktop grid only when `data-multi="true"`.
 
 ## CMS bridge
 

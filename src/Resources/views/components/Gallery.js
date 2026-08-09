@@ -18,6 +18,7 @@ export default class Gallery extends ShopwareComponent {
         thumbnailsComponent: 'ViewsTheme:Gallery:Thumbnails',
         changeEvent: 'ViewsTheme:Gallery:Change',
         active: 0,
+        rewind: false,
     }
 
     init() {
@@ -76,11 +77,42 @@ export default class Gallery extends ShopwareComponent {
     }
 
     prev() {
+        const max = this._count() - 1
+        if (max < 0) {
+            return
+        }
+
+        if (this._index <= 0) {
+            if (this._rewind()) {
+                this.select(max)
+            }
+            return
+        }
+
         this.select(this._index - 1)
     }
 
     next() {
+        const max = this._count() - 1
+        if (max < 0) {
+            return
+        }
+
+        if (this._index >= max) {
+            if (this._rewind()) {
+                this.select(0)
+            }
+            return
+        }
+
         this.select(this._index + 1)
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    _rewind() {
+        return this.options.rewind === true || this.options.rewind === 'true'
     }
 
     /**
@@ -122,10 +154,14 @@ export default class Gallery extends ShopwareComponent {
         }
 
         const max = this._count() - 1
+        const wrap = this._rewind()
         for (const el of this._controls()) {
             const direction = this._optionDirection(el)
-            const disabled =
-                direction === 'prev' ? index <= 0 : index >= max
+            const disabled = wrap
+                ? false
+                : direction === 'prev'
+                  ? index <= 0
+                  : index >= max
             el.disabled = disabled
             el.setAttribute('aria-disabled', disabled ? 'true' : 'false')
         }

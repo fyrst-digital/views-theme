@@ -1,6 +1,5 @@
 .vi-gallery-canvas {
   position: relative;
-  flex: 1 1 auto;
   min-inline-size: 0;
   order: 1;
 }

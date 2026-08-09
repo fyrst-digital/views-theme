@@ -6,8 +6,10 @@
 @media (min-width: 768px) {
   .vi-gallery-thumbnails {
     order: 0;
-    flex: 0 0 var(--vi-thumbs-w, 80px);
-    max-block-size: var(--vi-thumbs-max-h, 560px);
+    /* Contribute no row height; stretch to canvas-sized grid row */
+    block-size: 0;
+    min-block-size: 100%;
+    overflow: hidden;
   }
 }
 
@@ -30,7 +32,6 @@
   .vi-gallery-thumbnails__track {
     flex-direction: column;
     block-size: 100%;
-    max-block-size: var(--vi-thumbs-max-h, 560px);
     overflow-x: hidden;
     overflow-y: auto;
     scroll-snap-type: y mandatory;

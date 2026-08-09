@@ -2,6 +2,7 @@
     medias = [],
     active = 0,
     multi = false,
+    rewind = false,
     cva = {},
 %}
 
@@ -34,11 +35,11 @@
             <div {{ vi_attrs('controls') }} class="{{ vi_class('controls') }}">
                 <twig:ViewsTheme:Gallery:Control
                     direction="prev"
-                    :disabled="active <= 0"
+                    :disabled="not rewind and active <= 0"
                 />
                 <twig:ViewsTheme:Gallery:Control
                     direction="next"
-                    :disabled="active >= total - 1"
+                    :disabled="not rewind and active >= total - 1"
                 />
             </div>
         {% endblock %}

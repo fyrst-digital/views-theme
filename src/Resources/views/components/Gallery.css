@@ -6,8 +6,9 @@
 }
 
 @media (min-width: 768px) {
-  .vi-gallery {
-    flex-direction: row;
+  .vi-gallery[data-multi='true'] {
+    display: grid;
+    grid-template-columns: var(--vi-thumbs-w, 80px) minmax(0, 1fr);
     align-items: stretch;
     gap: var(--vi-gap, 16px);
   }

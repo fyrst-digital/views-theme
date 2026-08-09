@@ -1,6 +1,7 @@
 {% props
     medias = [],
     active = 0,
+    rewind = true,
     cva = {},
 %}
 
@@ -20,9 +21,11 @@
     {{ attributes.defaults({
         role: 'region',
         'aria-label': 'component.cms.imageGallery.ariaLabel'|trans({ '%total%': count })|striptags,
+        'data-multi': multi ? 'true' : 'false',
         'data-component': 'ViewsTheme:Gallery',
         'data-component-options': {
             active: activeIndex,
+            rewind: rewind,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
@@ -46,6 +49,7 @@
                 medias: medias,
                 active: activeIndex,
                 multi: multi,
+                rewind: rewind,
             }).all() }}
         />
     {% endblock %}
