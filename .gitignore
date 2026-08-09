@@ -4,3 +4,4 @@ src/Resources/app/administration/.tmp
 .opencode/plans
 vendor
 .phpunit.cache
+.env
