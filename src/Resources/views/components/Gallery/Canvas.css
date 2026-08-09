@@ -13,7 +13,8 @@
   scrollbar-width: none;
   overscroll-behavior-x: contain;
   border-radius: var(--vi-canvas-radius, 8px);
-  background: var(--vi-canvas-bg, #e8eaf0);
+  background: var(--vi-canvas-bg, transparent);
+  gap: var(--vi-canvas-gap, 1px);
 }
 
 .vi-gallery-canvas__track::-webkit-scrollbar {
