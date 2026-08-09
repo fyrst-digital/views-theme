@@ -1,11 +1,15 @@
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
 /**
  * Thumbnail strip — scrolls the active thumb into view.
+ * Scrollport is nested ViewsTheme:Scroll:Area (axis-correct edge fades).
  *
  * @extends {ShopwareComponent}
  */
 export default class GalleryThumbnails extends ShopwareComponent {
     static options = {
         thumbComponent: 'ViewsTheme:Gallery:Thumb',
+        scrollComponent: 'ViewsTheme:Scroll:Area',
     }
 
     init() {}
@@ -16,7 +20,7 @@ export default class GalleryThumbnails extends ShopwareComponent {
     scrollToIndex(index) {
         const thumbs = this._thumbs()
         const thumb = thumbs[index]
-        const track = thumbs[0]?.parentElement
+        const track = this._track()
         if (!thumb || !track) {
             return
         }
@@ -28,14 +32,24 @@ export default class GalleryThumbnails extends ShopwareComponent {
                 track.offsetTop -
                 (track.clientHeight - thumb.offsetHeight) / 2
             track.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-            return
+        } else {
+            const left =
+                thumb.offsetLeft -
+                track.offsetLeft -
+                (track.clientWidth - thumb.offsetWidth) / 2
+            track.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
         }
 
-        const left =
-            thumb.offsetLeft -
-            track.offsetLeft -
-            (track.clientWidth - thumb.offsetWidth) / 2
-        track.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+        getInstanceByElement(this.options.scrollComponent, track)?.sync?.()
+    }
+
+    /**
+     * @returns {HTMLElement|null}
+     */
+    _track() {
+        return this.el.querySelector(
+            `[data-component="${this.options.scrollComponent}"]`,
+        )
     }
 
     /**

@@ -378,13 +378,20 @@ See [Filters](../features/filters.md).
 
 ### Scroll area
 
-Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `var(--vi-fade, 40px)`). Base CVA: `vi-scroll-area overflow-y-auto` — callers add axis extras (e.g. `overflow-x-clip`) via `class`.
+Reusable scrollport with **axis-correct** edge fades (co-located `Scroll/Area.css`, `var(--vi-fade, 40px)`). Base CVA: `vi-scroll-area overflow-auto` — callers may override overflow via `class` / `cva`.
 
 | Hook | Attribute |
 |------|-----------|
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
-JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block. Used by Search results and Navigation drawer menu.
+JS detects overflow and sets edge flags. CSS uses one dual-axis mask; edge stops stay solid until the matching flag is on (`--fade-top|bottom|start|end` 0→1). `@property` + `transition` ease those numbers (`var(--vi-fade-duration, 200ms)`). Solid defaults = no side ghosting on vertical strips.
+
+| Attr | Sets |
+|------|------|
+| `data-scroll-up` / `data-scroll-down` | `--fade-top` / `--fade-bottom` |
+| `data-scroll-start` / `data-scroll-end` | `--fade-start` / `--fade-end` |
+
+Public `sync()` re-reads edges after programmatic scroll. Put content in the component’s `content` block. Used by Search results, Navigation drawer menu, and Gallery thumbnails.
 
 ### Dropdown
 

@@ -16,7 +16,14 @@
     class="{{ vi_class('root') }}"
 >
     {% block track %}
-        <div {{ vi_attrs('track') }} class="{{ vi_class('track') }}">
+        <twig:ViewsTheme:Scroll:Area
+            class="{{ vi_class('track') }}"
+            {{ ...vi_attrs('track').defaults({
+                cva: {
+                    root: { base: 'vi-scroll-area' },
+                },
+            }).all() }}
+        >
             {% for media in medias %}
                 {% set index = loop.index0 %}
                 <twig:ViewsTheme:Gallery:Thumb
@@ -26,6 +33,6 @@
                     :total="total"
                 />
             {% endfor %}
-        </div>
+        </twig:ViewsTheme:Scroll:Area>
     {% endblock %}
 </div>

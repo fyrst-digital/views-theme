@@ -7,7 +7,7 @@ PDP / CMS image gallery. Scroll-snap canvas synced with a thumbnail strip, prev/
 | Piece | Responsibility |
 |-------|----------------|
 | `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex`, thumb+dot click delegation, control disabled state, `ViewsTheme:Gallery:Change` |
-| `Gallery:Thumbnails` | Vertical (md+) / horizontal (sm) strip; `scrollToIndex` keeps active thumb visible |
+| `Gallery:Thumbnails` | Strip shell; `scrollToIndex` keeps active thumb visible; composes `Scroll:Area` as scrollport (edge fades) |
 | `Gallery:Thumb` | Thumb control identity + `aria-current`; `index` in options |
 | `Gallery:Canvas` | Scroll-snap track; `goTo` via `scrollIntoView`; settle via `getBoundingClientRect`; resize re-pins current index (`behavior: 'instant'`) → `setIndex` only on user scroll |
 | `Gallery:Slide` | One media slide identity |
@@ -19,7 +19,8 @@ PDP / CMS image gallery. Scroll-snap canvas synced with a thumbnail strip, prev/
 ```
 Gallery (data-component owner)
 ├─ Gallery:Thumbnails          (only when medias|length > 1)
-│    └─ Gallery:Thumb × N
+│    └─ Scroll:Area            (scrollport + axis-correct edge fades; track BEM)
+│         └─ Gallery:Thumb × N
 └─ Gallery:Canvas
      ├─ track
      │    └─ Gallery:Slide × N
@@ -91,6 +92,8 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 | `--vi-thumbs-track-h` | `auto` | `100%` |
 
 `Thumbnails.css` only consumes these (horizontal fallbacks). Slide shell is snap only — canvas image leads layout height.
+
+Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`).
 
 ## CMS bridge
 

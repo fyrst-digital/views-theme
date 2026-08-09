@@ -94,7 +94,7 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile e
 - Flex scroll chain: Panel body (`min-h-0` + `overflow-hidden` + column flex) → Menu (`col` + `min-h-0` + `overflow-hidden`) → nested `Scroll:Area` (`flex-1 min-h-0`, edge fades) so long levels scroll inside the panel
 - Menu owns drill orchestration; `Scroll:Area` is the scrollport (not Menu root) — same composition pattern as Search results
 - Menu body is a single `[data-level]` surface inside `Scroll:Area`; drill keeps the outgoing level and appends the incoming one to the scrollport
-- After each level swap, scroll resets to top and Scroll:Area edge flags re-sync
+- After each level swap, scroll resets to top (Scroll:Area edge flags re-sync on scroll)
 - Two-phase slide: set `data-direction` + level states `from`/`enter` (absolute `inset: 0` in the relative scrollport, no transition) → set `data-animating` → flip to `out`/`in`
 - Scrollport (`.vi-navigation-drawer-menu__scroll`) uses `flex: 1 1 0` + `min-height: 0` so height comes from the Menu column, not content — levels can be absolute without a JS height lock
 - Forward: outgoing exits start-ward (`-100%`), incoming enters from end; back is the reverse
