@@ -62,6 +62,15 @@ Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes
 | Control ends | `disabled` + `aria-disabled` |
 | Canvas position | scroll-snap; `goTo` / user scroll |
 
+## CSS / sizing
+
+| Concern | SoT |
+|---------|-----|
+| Slide size | `.vi-gallery-slide__image` only — `inline-size: 100%`, `block-size: auto` |
+| Aspect ratio | `aspect-ratio: var(--vi-image-ar, 4 / 3)` on the image (theme may override `--vi-image-ar`) |
+
+Slide shell is snap/flex only — no min/max height floors.
+
 ## CMS bridge
 
 | File | Role |
