@@ -48,6 +48,7 @@ Full index: [docs/README.md](docs/README.md).
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
+| Buy container / PDP buy-box | [docs/features/buy-container.md](docs/features/buy-container.md) |
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
 | Grid | [docs/features/grid.md](docs/features/grid.md) |
 | Filters | [docs/features/filters.md](docs/features/filters.md) |

@@ -61,8 +61,8 @@ class ViIcon extends AbstractExtension
                 $classes[] = "icon-{$name}-{$pack}";
             }
             $classes = $this->mergeClasses($classes, $extraClass);
-            $classAttr = \htmlspecialchars(\implode(' ', $classes), \ENT_QUOTES, 'UTF-8');
-            $html = "<span class=\"{$classAttr}\"></span>";
+            $attributes = $this->buildRootAttributes($classes, $ariaHidden, $ariaLabel, $attr);
+            $html = '<span' . $attributes . '></span>';
 
             return new Markup($html, 'UTF-8');
         }
@@ -75,9 +75,20 @@ class ViIcon extends AbstractExtension
         }
 
         $classes = $this->mergeClasses(['icon', 'icon-' . $name], $extraClass);
-        $classString = \implode(' ', $classes);
+        $attributes = $this->buildRootAttributes($classes, $ariaHidden, $ariaLabel, $attr);
 
-        $attributes = ' class="' . \htmlspecialchars($classString, \ENT_QUOTES, 'UTF-8') . '"';
+        $svg = \preg_replace('/<svg\b([^>]*)>/i', '<svg$1' . $attributes . '>', $svg, 1) ?? $svg;
+
+        return new Markup($svg, 'UTF-8');
+    }
+
+    /**
+     * @param list<string> $classes
+     * @param array<string, mixed> $attr
+     */
+    private function buildRootAttributes(array $classes, mixed $ariaHidden, mixed $ariaLabel, array $attr): string
+    {
+        $attributes = ' class="' . \htmlspecialchars(\implode(' ', $classes), \ENT_QUOTES, 'UTF-8') . '"';
 
         if ($ariaHidden) {
             $attributes .= ' aria-hidden="true"';
@@ -88,12 +99,19 @@ class ViIcon extends AbstractExtension
         }
 
         foreach ($attr as $key => $value) {
+            if ($value === false || $value === null) {
+                continue;
+            }
+
+            if ($value === true) {
+                $attributes .= ' ' . $key;
+                continue;
+            }
+
             $attributes .= ' ' . $key . '="' . \htmlspecialchars((string) $value, \ENT_QUOTES, 'UTF-8') . '"';
         }
 
-        $svg = \preg_replace('/<svg\b([^>]*)>/i', '<svg$1' . $attributes . '>', $svg, 1) ?? $svg;
-
-        return new Markup($svg, 'UTF-8');
+        return $attributes;
     }
 
     /**

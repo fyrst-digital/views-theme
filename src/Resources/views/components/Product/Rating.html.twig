@@ -1,0 +1,25 @@
+{% do vi_define_cva(cva, ['root', 'rating', 'label']) %}
+{% do vi_define_attrs(['rating', 'label']) %}
+
+{% if visible %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block rating %}
+            <twig:ViewsTheme:Review:Rating
+                class="{{ vi_class('rating') }}"
+                {{ ...vi_attrs('rating').defaults({
+                    points: average,
+                    size: size,
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block label %}
+            <div {{ vi_attrs('label') }} class="{{ vi_class('label', { size: size }) }}">
+                ({{totalReviews}})
+            </div>
+        {% endblock %}
+    </div>
+{% endif %}

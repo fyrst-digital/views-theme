@@ -1,0 +1,17 @@
+{% props
+    product = null,
+    name = product and product.manufacturer ? product.manufacturer.translated.name|default(null) : null,
+    tag = 'div',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root']) %}
+
+{% if name %}
+    <{{ tag|raw }}
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {{ name }}
+    </{{ tag|raw }}>
+{% endif %}

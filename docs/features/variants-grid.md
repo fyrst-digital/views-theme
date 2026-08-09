@@ -35,7 +35,7 @@ See [Configuration](../configuration.md).
 
 ### Buy container integration
 
-The variants grid is rendered inside the `buy-container` component (`components/product/buy-container.html.twig`) via the `buy_widget_variants_grid` block. The `ProductPageSubscriber` attaches the grid data to the page under `page.extensions.viewsTheme.variantsGrid`.
+The variants grid is rendered inside `Product:BuyContainer` (`components/Product/BuyContainer.html.twig`) in the `buy` block when the grid is active and has variants. The buy-widget bridge forwards `page.extensions.viewsTheme.variantsGrid` (attached by `ProductPageSubscriber`). See [Buy container](buy-container.md).
 
 ### Custom controller
 

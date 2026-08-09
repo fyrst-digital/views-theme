@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
+namespace Fyrst\ViewsTheme\Resources\views\components\Product;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
@@ -11,29 +11,32 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Box:Actions — listing buy/detail gate; Twig only composes.
+ * View-model for Product:Rating — rating summary gates; Twig composes.
  */
 #[AsTwigComponent]
-class Actions
+class Rating
 {
     public mixed $product = null;
 
-    public ?string $href = null;
+    public int $totalReviews = 0;
 
-    public bool $showQuantity = false;
+    public bool $showReviews = true;
+
+    public string $size = 'md';
 
     /**
      * @var array<string, mixed>
      */
     public array $cva = [];
 
-    public bool $displayBuyButton = false;
+    public bool $visible = false;
+
+    public float $average = 0.0;
 
     public function __construct(
-        private readonly SystemConfigService $systemConfigService,
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
-    ) {
-    }
+        private readonly SystemConfigService $systemConfigService,
+    ) {}
 
     /**
      * @param array<string, mixed> $data
@@ -45,18 +48,17 @@ class Actions
             return;
         }
 
-        $isAvailable = !$this->product->getIsCloseout()
-            || $this->product->getStock() >= $this->product->getMinPurchase();
-        $displayFrom = $this->product->getCalculatedPrices()->count() > 1;
-        $allowBuy = (bool) $this->systemConfigService->get(
-            'core.listing.allowBuyInListing',
+        $reviewsEnabled = (bool) $this->systemConfigService->get(
+            'core.listing.showReview',
             $this->salesChannelContextAccessor->get()?->getSalesChannelId(),
         );
 
-        $this->displayBuyButton = $isAvailable
-            && !$displayFrom
-            && ($this->product->getChildCount() ?? 0) <= 0
-            && $allowBuy;
-    }
+        $ratingAverage = $this->product->getRatingAverage();
+        $this->average = $ratingAverage !== null ? (float) $ratingAverage : 0.0;
 
+        $this->visible = $this->showReviews
+            && $reviewsEnabled
+            && $this->totalReviews > 0
+            && $this->average > 0;
+    }
 }

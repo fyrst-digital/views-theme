@@ -16,9 +16,9 @@ Full guide: [UX Twig components](ux-components.md).
 
 ## Extends shells
 
-Some templates still `sw_extends` core Storefront templates (listing, buy-widget, register, address forms, etc.) and live under `components/`. They must:
+Some templates still `sw_extends` core Storefront templates (register, address forms, etc.) and live under `components/`. Prefer **pure UX + thin storefront bridge** (Box, BuyContainer, Listing) over keepsake extends shells under `components/`. Extends shells must:
 
-- Not introduce new `views/storefront/` files
+- Not introduce new `views/storefront/` files except documented bridges
 - Compose UX children via `<twig:ViewsTheme:…>` or `@ViewsTheme/components/…` includes
 - Prefer plain `class="vi-…"` over any removed class-map API
 

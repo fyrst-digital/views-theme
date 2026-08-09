@@ -1,118 +1,74 @@
-{% sw_extends '@Storefront/storefront/component/buy-widget/buy-widget.html.twig' %}
+{% do vi_define_cva(cva, [
+    'root',
+    'header',
+    'prices',
+    'delivery',
+    'configurator',
+    'buy',
+    'actions',
+]) %}
+{% do vi_define_attrs([
+    'header',
+    'prices',
+    'delivery',
+    'configurator',
+    'buy',
+    'actions',
+]) %}
 
-{#
-  Buy widget composition under components/. Extends core buy-widget.
-  Not a pure UX tag component — include path only.
-#}
-
-{% props
-    cva = {},
-%}
-
-{% set options = {
-    productHeader: {},
-    prices: {
-        showPrice: false,
-        showTaxNote: true,
-    },
-    showBuyForm: true,
-    showActions: true,
-}|merge(options|default({})) %}
-
-{% set variantsGrid = page.extensions.viewsTheme.variantsGrid|default(null) %}
-
-{% do vi_define_cva(cva) %}
-
-{% do vi_define_attrs(['reviews', 'reviewLabel', 'reviewLink', 'prices', 'actions']) %}
-
-{% block buy_widget_data %}
-    {% block buy_widget_data_rich_snippet_url %}
-        {{ parent() }}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }} {{ rootElementClass }}"
+>
+    {% block header %}
+        {% if showHeader %}
+            <twig:ViewsTheme:Product:Header
+                class="{{ vi_class('header') }}"
+                {{ ...vi_attrs('header').defaults({
+                    product: product,
+                    totalReviews: totalReviews,
+                    showReviews: showReviews,
+                    'name:showLink': false,
+                    'name:tag': 'h1',
+                    'manufacturer:class': 'text-body-tertiary fw-semibold',
+                    'rating:class': 'mt-2',
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
-    {% block buy_widget_data_rich_snippet_price_range %}
-        {{ parent() }}
+    {% block prices %}
+        <twig:ViewsTheme:Product:Prices
+            class="{{ vi_class('prices') }}"
+            {{ ...vi_attrs('prices').defaults({
+                product: product,
+                showPrice: product.calculatedPrices is empty or product.calculatedPrices.count <= 1,
+                showTieredPrices: product.calculatedPrices is not empty and product.calculatedPrices.count > 1,
+                showTaxNote: showTaxNote,
+                'price:unit:class': 'fs-4',
+                'tax:class': 'fs-6',
+            }).all() }}
+        />
     {% endblock %}
 
-    {% block buy_widget_data_rich_snippet_price_currency %}
-        {{ parent() }}
-    {% endblock %}
-
-    {% block buy_widget_header %}
-        <twig:ViewsTheme:Product:Header :product="product" />
-    {% endblock %}
-
-    {% block buy_widget_reviews %}
-        {% if product.ratingAverage > 0 and totalReviews > 0 and config('core.listing.showReview') %}
-            {% if remoteClickOptions is not defined %}
-                {% set remoteClickOptions = {
-                    selector: '#review-tab-' ~ product.id,
-                    scrollToElement: true,
-                    excludedViewports: ['XS'],
-                } %}
-            {% endif %}
-
-            {% if reviewTabHref is not defined %}
-                {% set reviewTabHref = '#review-tab-' ~ product.id ~ '-pane' %}
-            {% endif %}
-
-            <div {{ vi_attrs('reviews') }} class="{{ vi_class('reviews') }}">
-                <twig:ViewsTheme:Review:Rating :points="product.ratingAverage" />
-                <div {{ vi_attrs('reviewLabel') }} class="{{ vi_class('reviewLabel') }}">
-                    {{ 'detail.reviewLabelText'|trans({'%average%': product.ratingAverage})|sw_sanitize }}
-                    <a
-                        {{ vi_attrs('reviewLink').defaults({
-                            'data-bs-toggle': 'tab',
-                            'data-off-canvas-tabs': 'true',
-                            'data-remote-click': 'true',
-                            'data-remote-click-options': remoteClickOptions|json_encode,
-                            href: reviewTabHref,
-                            'aria-controls': 'review-tab-pane',
-                        }) }}
-                        class="{{ vi_class('reviewLink') }}"
-                    >
-                        {{ totalReviews }}
-                        {{ 'detail.reviewLinkText'|trans({'%count%': totalReviews})|sw_sanitize }}
-                    </a>
-                </div>
+    {% block delivery %}
+        {% if showDelivery %}
+            <div {{ vi_attrs('delivery') }} class="{{ vi_class('delivery') }}">
+                {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
             </div>
         {% endif %}
     {% endblock %}
 
-    {% block component_product_buy_container_prices %}
-        <div {{ vi_attrs('prices') }} class="{{ vi_class('prices') }}">
-            {% block buy_widget_price %}
-                {% if options.prices.showTieredPrices|default(true) and product.calculatedPrices.count > 1 %}
-                    <twig:ViewsTheme:Product:Price:Tiered
-                        :product="product"
-                        :prices="product.calculatedPrices"
-                    />
-                {% endif %}
-                <twig:ViewsTheme:Product:Price
-                    :product="product"
-                    :showPrice="options.prices.showPrice|default(false)"
-                />
-                {% if options.prices.showTaxNote|default(true) %}
-                    <twig:ViewsTheme:Product:Price:Tax />
-                {% endif %}
-            {% endblock %}
-        </div>
+    {% block configurator %}
+        {% if showConfiguratorBlock %}
+            <div {{ vi_attrs('configurator') }} class="{{ vi_class('configurator') }}">
+                {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' %}
+            </div>
+        {% endif %}
     {% endblock %}
 
-    {% block buy_widget_delivery_informations %}
-        {{ parent() }}
-    {% endblock %}
-{% endblock %}
-
-{% block buy_widget_configurator_include %}
-    {% if not (config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0) %}
-        {{ parent() }}
-    {% endif %}
-{% endblock %}
-
-{% block buy_widget_buy_form %}
-    {% block component_product_buy_container_variants_grid %}
-        {% if config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0 %}
+    {% block buy %}
+        {% if useVariantsGrid %}
             <twig:ViewsTheme:VariantsGrid:Container
                 :variants="variantsGrid.variants"
                 :groups="variantsGrid.groups"
@@ -120,43 +76,24 @@
                 :pageParameter="variantsGrid.pageParameter"
                 :parentId="variantsGrid.parentId"
             />
+        {% elseif showBuyFormBlock %}
+            <twig:ViewsTheme:Product:Action:Buy
+                class="{{ vi_class('buy') }}"
+                {{ ...vi_attrs('buy').defaults({
+                    product: product,
+                }).all() }}
+            />
         {% endif %}
     {% endblock %}
 
-    {% block component_product_buy_container_buy_form %}
-        {% if product.active
-            and options.showBuyForm is same as(true)
-            and not (config('ViewsTheme.config.variantsGridActive') and variantsGrid and variantsGrid.variants.count > 0)
-        %}
-            <twig:ViewsTheme:Product:Action:Buy :product="product" />
+    {% block actions %}
+        {% if showActions %}
+            <twig:ViewsTheme:Product:Actions
+                class="{{ vi_class('actions') }}"
+                {{ ...vi_attrs('actions').defaults({
+                    product: product,
+                }).all() }}
+            />
         {% endif %}
     {% endblock %}
-
-    {% block component_product_buy_container_actions %}
-        {% set productActions = {
-            wishlist: config('core.cart.wishlistEnabled'),
-        } %}
-
-        {% block component_product_buy_container_actions_container %}
-            {% if options.showActions is same as(true) %}
-                <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                    {% block component_product_buy_container_action_prepend %}{% endblock %}
-
-                    {% block component_product_buy_container_wishlist %}
-                        {% if productActions.wishlist %}
-                            <twig:ViewsTheme:Product:Action:Wishlist
-                                :productId="product.id"
-                                :showText="true"
-                                size="sm"
-                            />
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block component_product_buy_container_action_append %}{% endblock %}
-                </div>
-            {% endif %}
-        {% endblock %}
-    {% endblock %}
-{% endblock %}
-
-{% block buy_widget_wishlist %}{% endblock %}
+</div>

@@ -8,7 +8,6 @@ Theme-owned navigation trail. Single SoT: **`categoryId`** → core `CategoryBre
 |-------|----------------|
 | Storefront bridge | `storefront/layout/breadcrumb.html.twig` → resolve id → `Breadcrumb` |
 | PDP / CMS placement | Core `cms_breadcrumb` / layout include → bridge |
-| Optional header | `Product:Header` may compose `Breadcrumb` when buy-widget is theme-owned |
 | `Breadcrumb` | Class VM: `categoryId` → builder → `items`; Twig composes list + separators |
 | `Breadcrumb:Item` | Leaf crumb (link / folder / current) |
 
@@ -52,15 +51,6 @@ Core may still pass `categoryId`, `category`, or `breadcrumb`. Normalize to one 
 
 ```twig
 {% set id = … %} {# categoryId | category.id | breadcrumb|last.categoryId #}
-{% if id %}
-    <twig:ViewsTheme:Breadcrumb :categoryId="id" />
-{% endif %}
-```
-
-### `Product:Header`
-
-```twig
-{% set id = product.seoCategory.id ?? shopware.navigation.id %}
 {% if id %}
     <twig:ViewsTheme:Breadcrumb :categoryId="id" />
 {% endif %}
@@ -116,4 +106,3 @@ Core may still pass `categoryId`, `category`, or `breadcrumb`. Normalize to one 
 | Parent | `components/Breadcrumb.{php,html.twig,cva.twig}` |
 | Item | `components/Breadcrumb/Item.{html.twig,cva.twig}` |
 | Layout bridge | `storefront/layout/breadcrumb.html.twig` |
-| Optional PDP header | `components/Product/Header.html.twig` |

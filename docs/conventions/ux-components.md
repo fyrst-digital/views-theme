@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`.
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Rating`.
 
 ## Props / CVA / attributes
 
@@ -306,8 +306,8 @@ Same for **root HTML bags**: prefer `attributes.defaults({ action: path(…) })`
     username:size="lg"
 />
 
-{# Caller — deeper nest on Buy via Actions (button chrome, not buyLabel) #}
-<twig:ViewsTheme:Product:Actions
+{# Caller — deeper nest on Buy via Box:Actions (button chrome, not buyLabel) #}
+<twig:ViewsTheme:Product:Box:Actions
     :product="product"
     :buy:button:label="true"
     buy:button:label="{{ 'custom.add'|trans }}"
@@ -456,7 +456,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
-| Product:* | UX + BuyContainer shell; Listing class-backed + storefront listing bridge; Box via `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
+| Product:* | UX; BuyContainer class-backed + buy-widget bridge; Listing class-backed + storefront listing bridge; Box via `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
 | Product:Listing (class-backed + JS owner) | Results island + `/vi/listing/*` controllers; [product-listing.md](../features/product-listing.md) |
 | Pagination / Sorting (class-backed + JS) | Theme controls → Listing owner; [pagination.md](../features/pagination.md) · [sorting.md](../features/sorting.md) |
 | Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
@@ -465,7 +465,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | LineItem:* (+ Element Image/Variants/Features/Qty/Remove JS), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
-| Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, Review:*, ScrollUp | UX / shells |
+| Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells |
+| Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons`; Detail/Widget/Item/Form still legacy shells |
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
