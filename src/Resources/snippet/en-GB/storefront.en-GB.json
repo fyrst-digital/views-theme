@@ -21,7 +21,8 @@
         "gallery": {
             "fullscreenOpen": "Open fullscreen gallery",
             "fullscreenClose": "Close fullscreen gallery",
-            "fullscreenAriaLabel": "Fullscreen product gallery"
+            "fullscreenAriaLabel": "Fullscreen product gallery",
+            "dotsAriaLabel": "Gallery slide navigation"
         }
     },
 

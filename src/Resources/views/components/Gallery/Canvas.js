@@ -57,9 +57,12 @@ export default class GalleryCanvas extends ShopwareComponent {
         this._programmatic = true
         this._index = index
 
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
         // 'instant' is baseline; fall back to 'auto' where unsupported
         const scrollBehavior =
-            behavior === 'instant' || behavior === 'auto' ? 'auto' : 'smooth'
+            reduceMotion || behavior === 'instant' || behavior === 'auto'
+                ? 'auto'
+                : 'smooth'
 
         slide.scrollIntoView({
             behavior: scrollBehavior,

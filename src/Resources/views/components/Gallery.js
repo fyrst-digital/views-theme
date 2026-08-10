@@ -18,7 +18,7 @@ export default class Gallery extends ShopwareComponent {
         thumbnailsComponent: 'ViewsTheme:Gallery:Thumbnails',
         changeEvent: 'ViewsTheme:Gallery:Change',
         active: 0,
-        rewind: false,
+        rewind: true,
     }
 
     init() {

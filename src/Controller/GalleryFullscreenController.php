@@ -7,6 +7,7 @@ namespace Fyrst\ViewsTheme\Controller;
 use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
 use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Content\Media\SalesChannel\AbstractMediaRoute;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Routing\StorefrontRouteScope;
@@ -18,6 +19,8 @@ use Symfony\UX\TwigComponent\ComponentRendererInterface;
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
 class GalleryFullscreenController extends AbstractComponentController
 {
+    private const MAX_IDS = 50;
+
     public function __construct(
         ComponentRendererInterface $components,
         ComponentHtmlRenderer $htmlRenderer,
@@ -78,11 +81,15 @@ class GalleryFullscreenController extends AbstractComponentController
             }
 
             $value = trim((string) $id);
-            if ($value === '' || \in_array($value, $ids, true)) {
+            if ($value === '' || !Uuid::isValid($value) || \in_array($value, $ids, true)) {
                 continue;
             }
 
             $ids[] = $value;
+
+            if (\count($ids) >= self::MAX_IDS) {
+                break;
+            }
         }
 
         return $ids;

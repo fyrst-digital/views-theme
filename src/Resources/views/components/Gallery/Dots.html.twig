@@ -10,9 +10,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Gallery:Dots',
         role: 'group',
-        'aria-label': 'component.cms.imageGallery.ariaLabel'|trans({
-            '%total%': total,
-        })|striptags,
+        'aria-label': 'viewsTheme.gallery.dotsAriaLabel'|trans|striptags,
     }) }}
     class="{{ vi_class('root') }}"
 >

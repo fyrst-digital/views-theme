@@ -9,6 +9,7 @@
     cva = {},
 %}
 
+{% set medias = medias|filter(m => m and not m.isSpatialObject()) %}
 {% set count = medias|length %}
 {% set activeIndex = active|default(0) %}
 {% if activeIndex < 0 %}

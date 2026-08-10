@@ -28,6 +28,9 @@ export default class GalleryThumbnails extends ShopwareComponent {
         const thumbRect = thumb.getBoundingClientRect()
         const trackRect = track.getBoundingClientRect()
         const vertical = track.scrollHeight > track.clientHeight
+        const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'auto'
+            : 'smooth'
 
         if (vertical) {
             const top =
@@ -37,7 +40,7 @@ export default class GalleryThumbnails extends ShopwareComponent {
             const max = Math.max(0, track.scrollHeight - track.clientHeight)
             track.scrollTo({
                 top: Math.max(0, Math.min(top, max)),
-                behavior: 'smooth',
+                behavior,
             })
         } else {
             const left =
@@ -47,7 +50,7 @@ export default class GalleryThumbnails extends ShopwareComponent {
             const max = Math.max(0, track.scrollWidth - track.clientWidth)
             track.scrollTo({
                 left: Math.max(0, Math.min(left, max)),
-                behavior: 'smooth',
+                behavior,
             })
         }
 

@@ -54,8 +54,8 @@ Gallery:Fullscreen
 |-----------|------|------|
 | `Gallery` | `medias` | Media entities (flat list; image + VIDEO) |
 | `Gallery` | `active` | 0-based initial index (SSR + JS hydrate) |
-| `Gallery` | `rewind` | When `true`, next on last → first and prev on first → last; controls stay enabled (default `false` = clamp + disable at ends) |
-| `Gallery` | `controlsOnHover` | When `true`, canvas prev/next **and** fullscreen action hidden until canvas hover or control/fullscreen `:focus-visible` (default `false` = always visible). Touch / coarse pointer: always visible. Not `:focus-within` — mouse click focus must not stick controls open |
+| `Gallery` | `rewind` | When `true` (default), next on last → first and prev on first → last; controls stay enabled. `false` = clamp + disable at ends |
+| `Gallery` | `controlsOnHover` | When `true` (default), canvas prev/next **and** fullscreen action hidden until canvas hover or control/fullscreen `:focus-visible`. `false` = always visible. Touch / coarse pointer: always visible. Not `:focus-within` — mouse click focus must not stick controls open |
 | `Gallery` | `fullscreen` | When `true` and medias have ids, render canvas fullscreen action (default `false`). Nested fullscreen shell always passes `false` |
 | `Gallery` | `mode` | Layout variant: `default` (content-height, AR-driven slides) or `fullscreen` (height-fill panel; media `object-fit: contain`). Sets `data-mode`. Independent of boolean `fullscreen` |
 | `Gallery` | `thumbnailAlign` | Thumb strip group align: `start` (default) or `center`. Sets `data-thumbnail-align`. When `center`, list uses auto margins (centers when content fits; collapses when overflowing so scroll stays reachable). Nested fullscreen shell always passes `center` |
@@ -107,9 +107,11 @@ Shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when
 
 Loads public media via `AbstractMediaRoute` / `MediaRoute`, re-orders to match requested ids, renders `ViewsTheme:Gallery:Fullscreen`.
 
+Input: only valid UUIDs; max **50** ids (extra dropped). Invalid ids are ignored (no DAL errors).
+
 ## Media types
 
-Detection: `media.getMediaType().getName() === 'VIDEO'` (same as product cover). Spatial objects are skipped (no 3D UI).
+Detection: `media.getMediaType().getName() === 'VIDEO'` (same as product cover). Null and spatial objects are **filtered out of `medias` at Gallery root** (no empty snap cells); Slide/Thumb keep a defensive `isSpatialObject` guard.
 
 | Surface | IMAGE | VIDEO |
 |---------|-------|-------|
@@ -141,7 +143,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Active index | Gallery owner |
 | Active thumb / dot | `aria-current` — CSS keys off attribute |
 | Control ends | `disabled` + `aria-disabled` |
-| Canvas position | scroll-snap; `goTo` / user scroll |
+| Canvas position | scroll-snap; `goTo` via `scrollIntoView` (element target); `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
 
 ## CSS / sizing
 

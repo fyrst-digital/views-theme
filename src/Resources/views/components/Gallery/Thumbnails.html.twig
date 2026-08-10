@@ -18,11 +18,7 @@
     {% block track %}
         <twig:ViewsTheme:Scroll:Area
             class="{{ vi_class('track') }}"
-            {{ ...vi_attrs('track').defaults({
-                cva: {
-                    root: { base: 'vi-scroll-area' },
-                },
-            }).all() }}
+            {{ ...vi_attrs('track').defaults({}).all() }}
         >
             <div class="{{ vi_class('list') }}">
                 {% for media in medias %}

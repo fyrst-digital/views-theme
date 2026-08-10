@@ -28,6 +28,12 @@
   display: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .vi-gallery-canvas__track {
+    scroll-behavior: auto;
+  }
+}
+
 .vi-gallery-canvas__controls {
   position: absolute;
   inset-block: 0;
