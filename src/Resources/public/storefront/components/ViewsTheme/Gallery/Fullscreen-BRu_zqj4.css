@@ -1,0 +1,1 @@
+.vi-gallery-fullscreen{z-index:var(--vi-z,20)}.vi-gallery-fullscreen__panel{max-inline-size:var(--vi-max-w,100%);max-block-size:var(--vi-max-h,100%)}.vi-gallery-fullscreen__gallery{block-size:100%;min-block-size:0;inline-size:100%}

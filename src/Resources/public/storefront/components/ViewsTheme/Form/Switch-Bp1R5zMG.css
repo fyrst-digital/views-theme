@@ -1,0 +1,1 @@
+.form-switch:has(.form-check-input:disabled) .form-check-label{opacity:var(--vi-disabled-opacity,.5)}.form-switch:has(.form-check-input:disabled){cursor:not-allowed}.form-switch:has(.form-check-input:disabled) .form-check-label{cursor:not-allowed}.form-switch:has(.form-check-input:disabled) .form-check-input{cursor:not-allowed}
