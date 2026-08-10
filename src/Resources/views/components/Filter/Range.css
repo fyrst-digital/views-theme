@@ -1,8 +1,4 @@
-.vi-quantity-input {
-    max-width: var(--vi-quantity-input-max-w, auto);
-}
-
-.vi-quantity-input__field {
+.vi-filter-range__input {
     -moz-appearance: textfield;
     appearance: textfield;
 
