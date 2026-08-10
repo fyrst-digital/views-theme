@@ -49,7 +49,11 @@ class GalleryFullscreenController extends AbstractComponentController
             $medias = $this->orderByIds($collection, $ids);
         }
 
-        if ($medias !== [] && $active >= \count($medias)) {
+        if ($medias === []) {
+            return new Response('', Response::HTTP_NO_CONTENT);
+        }
+
+        if ($active >= \count($medias)) {
             $active = \count($medias) - 1;
         }
 

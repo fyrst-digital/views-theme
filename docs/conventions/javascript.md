@@ -404,7 +404,7 @@ Reusable scrollport with **axis-correct** edge fades (co-located `Scroll/Area.cs
 |------|-----------|
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
-JS detects overflow and sets edge flags. CSS uses one dual-axis mask; edge stops stay solid until the matching flag is on (`--fade-top|bottom|start|end` 0→1). `@property` + `transition` ease those numbers (`var(--vi-fade-duration, 200ms)`). Solid defaults = no side ghosting on vertical strips.
+JS detects overflow and sets edge flags. Horizontal position uses `Math.abs(scrollLeft)` so Firefox RTL (negative `scrollLeft`) still drives start/end fades. CSS uses one dual-axis mask; edge stops stay solid until the matching flag is on (`--fade-top|bottom|start|end` 0→1). `@property` + `transition` ease those numbers (`var(--vi-fade-duration, 200ms)`). Solid defaults = no side ghosting on vertical strips.
 
 | Attr | Sets |
 |------|------|

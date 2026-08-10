@@ -24,7 +24,7 @@
             direction: direction,
         }|json_encode,
     }) }}
-    class="{{ vi_class('root', { direction: direction }) }}"
+    class="{{ vi_class('root') }}"
 >
     {% block icon %}
         {{ vi_icon(isPrev ? 'caret-left' : 'caret-right') }}

@@ -76,6 +76,7 @@ Gallery:Fullscreen
 | `setIndex(index, { emit })` | Canvas-driven update (no re-scroll); same video pause |
 | `getIndex()` | Current 0-based index (fullscreen open/close hand-off) |
 | `prev()` / `next()` | Clamp at ends; wrap when `rewind` |
+| ArrowLeft/Up · ArrowRight/Down | When focus is inside gallery (not on `input` / `textarea` / `select` / `video` / contenteditable) → `prev` / `next` |
 | `ViewsTheme:Gallery:Change` | `{ el, index }` after user-facing change |
 | `Gallery:Action:Fullscreen` `open()` / `close()` | Lazy shell lifecycle |
 | `ViewsTheme:Gallery:Fullscreen:Open` | `{ el, index }` |
@@ -85,17 +86,21 @@ Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes
 
 Child → owner commands (Control / Canvas settle) resolve the **nearest** Gallery via `closest` + `getInstanceByElement` so nested fullscreen galleries do not cross-talk.
 
+Canvas settle: `scrollend` clears the programmatic gate (timeout is fallback only) so a user swipe during smooth `goTo` still updates chrome.
+
 ## Fullscreen flow
 
 1. `Gallery:Action:Fullscreen` reads `overlayUrl` + `ids` from options
 2. Click / `open()` → if another gallery’s shell is live, **close it first** (owner restores index + unmounts) so `replaceMount` does not tear down foreign DOM without Close
 3. `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N from parent `getIndex()`)
-4. Response root mounted on `document.body`; Action stores `_overlayEl` (owned only — never re-query foreign shells)
+4. Response root mounted on `document.body`; Action stores `_overlayEl` (owned only — never re-query foreign shells). Empty body / **204** (no medias) → no mount
 5. Action waits for Fullscreen instance → `open()` (body lock, aria, focus close)
 6. Nested `Gallery` is the media SoT inside the dialog
 7. Close (button / backdrop / Escape) → emit Close `{ el, index }` → **only** the owning Action (`payload.el === this._overlayEl`) restores parent index, returns focus, unmounts owned el
 
 Multi-instance: many Actions may listen on the same Open/Close bus; non-owners no-op. Toggle-on-click closes only the Action’s own shell.
+
+Singleton shell id: fixed `id="vi-gallery-fullscreen"` (one body-mounted shell at a time). Every Action’s `aria-controls` points at that id.
 
 Shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical).
 
@@ -107,7 +112,7 @@ Shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when
 
 Loads public media via `AbstractMediaRoute` / `MediaRoute`, re-orders to match requested ids, renders `ViewsTheme:Gallery:Fullscreen`.
 
-Input: only valid UUIDs; max **50** ids (extra dropped). Invalid ids are ignored (no DAL errors).
+Input: only valid UUIDs; max **50** ids (extra dropped). Invalid ids are ignored (no DAL errors). No resolvable medias → **204** empty body (Action does not mount).
 
 ## Media types
 
@@ -143,7 +148,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Active index | Gallery owner |
 | Active thumb / dot | `aria-current` — CSS keys off attribute |
 | Control ends | `disabled` + `aria-disabled` |
-| Canvas position | scroll-snap; `goTo` via `scrollIntoView` (element target); `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
+| Canvas position | scroll-snap; `goTo` via `scrollIntoView` (element target); `scrollend` clears programmatic settle gate; `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
 
 ## CSS / sizing
 
@@ -152,16 +157,17 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Slide size | Media: `inline-size: 100%`, `block-size: var(--vi-media-h, auto)`; shell `block-size: var(--vi-slide-h, auto)` |
 | Thumb size | `.vi-gallery-thumb__image` **and** `.vi-gallery-thumb__poster` — `inline-size: var(--vi-thumb-size, 64px)`, `block-size: auto` (button has no fixed box size) |
 | Aspect ratio | Slide media: `var(--vi-media-ar, var(--vi-image-ar, 4 / 3))`; thumb: `var(--vi-image-ar, 1 / 1)`. Theme may set shared `--vi-image-ar`; fullscreen sets **only** `--vi-media-ar` so thumbs keep their box |
-| Layout | Always `display: grid` — never flex. Host inits `gap` / `cols` / `rows` / `areas` / `h` / `padding` via tokens |
-| Canvas track | `.vi-gallery-canvas__track` — `display: grid`, `grid-auto-flow: column`, `grid-auto-columns: 100%`; `block-size: var(--vi-track-h, auto)` |
+| Layout | **Host** always `display: grid` (tokens for `gap` / `cols` / `rows` / `areas` / `h` / `padding`). Thumb strip / controls / dots may use flex |
+| Canvas track | `.vi-gallery-canvas__track` — `display: grid`, `grid-auto-flow: column`, `grid-auto-columns: 100%`; `gap: var(--vi-canvas-gap, 1px)` anti-bleed between snap cells; `block-size: var(--vi-track-h, auto)` |
 | `mode=default` | Content-height: token fallbacks only (no host assigns) |
 | `mode=fullscreen` | Host **assigns** tokens only (`--vi-gallery-p`, `--vi-h`, `--vi-rows`, `--vi-media-ar` / `--vi-media-fit`, `--vi-*-h`, thumbs height). Never assigns shared `--vi-image-ar` / `--vi-image-fit` (thumbs consume those). No property re-declarations, no descendant selectors |
 | Orientation breakpoint | **Only** `Gallery.css` nested `@media (min-width: 768px)` — **assigns** orientation tokens on multi host (no child rule rewrites; `Thumbnails.css` only consumes) |
 | Named areas | `.vi-gallery-canvas` → `canvas`; `.vi-gallery-thumbnails` → `thumbs` |
 | Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas; fullscreen action still allowed |
 | Controls on hover | Canvas `data-controls-on-hover="true"` — hide `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` until `:hover` or `:has(.vi-gallery-control:focus-visible)` / `:has(.vi-gallery-action-fullscreen:focus-visible)`; only under `@media (hover: hover) and (pointer: fine)`; fade `var(--vi-control-fade-duration, 150ms)` |
-| Fullscreen action | Canvas top-right (`.vi-gallery-canvas__fullscreen`); control-sized circular button (same tokens as `Gallery:Control`); same hover-gate as prev/next when `controlsOnHover` |
-| Fullscreen shell | Fixed inset, minimal viewport padding (`p-2` / `p-md-3`); panel fills remaining space |
+| Fullscreen action | Canvas top-right (`.vi-gallery-canvas__fullscreen`); control-sized circular button; same hover-gate as prev/next when `controlsOnHover` |
+| Control chrome | Shared circular button SoT in `Control.css` (`.vi-gallery-control`, `.vi-gallery-action-fullscreen`, `.vi-gallery-fullscreen-close`); Close adds position only |
+| Fullscreen shell | Fixed inset, minimal viewport padding (`p-2` / `p-md-3`); panel fills remaining space; singleton `#vi-gallery-fullscreen` |
 
 ### Host tokens (init on base / consume in children; assign on variants)
 
@@ -190,7 +196,7 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 
 `Thumbnails.css` / `Canvas.css` / `Slide.css` only **consume** height and media tokens. Host never re-declares those properties on variants.
 
-Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (flex + gap; margins consume `--vi-thumbs-mi` / `--vi-thumbs-mb`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`). `scrollToIndex` uses `getBoundingClientRect` + clamp so nested list + center margins stay correct.
+Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (flex + gap; margins consume `--vi-thumbs-mi` / `--vi-thumbs-mb`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`); horizontal edges use `Math.abs(scrollLeft)` (Firefox RTL). `scrollToIndex` uses `getBoundingClientRect` + clamp; axis from computed `flex-direction` (`--vi-thumbs-dir`).
 
 ## CMS bridge
 

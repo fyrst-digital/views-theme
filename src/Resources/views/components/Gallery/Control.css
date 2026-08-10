@@ -1,4 +1,7 @@
-.vi-gallery-control {
+/* Shared circular chrome for Control, Action:Fullscreen, Fullscreen:Close */
+.vi-gallery-control,
+.vi-gallery-action-fullscreen,
+.vi-gallery-fullscreen-close {
   pointer-events: auto;
   inline-size: var(--vi-control-size, 40px);
   block-size: var(--vi-control-size, 40px);

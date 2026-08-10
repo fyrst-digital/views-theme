@@ -22,19 +22,27 @@ export default class Gallery extends ShopwareComponent {
     }
 
     init() {
+        this._destroyed = false
         this._index = Number(this.options.active) || 0
         this._onClick = this._onClick.bind(this)
+        this._onKeydown = this._onKeydown.bind(this)
         this.el.addEventListener('click', this._onClick)
+        this.el.addEventListener('keydown', this._onKeydown)
         this._hydrate()
     }
 
     async _hydrate() {
         await waitForInstance(() => this._canvas())
+        if (this._destroyed) {
+            return
+        }
         this.select(this._index, { emit: false, scroll: true })
     }
 
     destroy() {
+        this._destroyed = true
         this.el.removeEventListener('click', this._onClick)
+        this.el.removeEventListener('keydown', this._onKeydown)
         this._pauseVideos()
     }
 
@@ -143,6 +151,34 @@ export default class Gallery extends ShopwareComponent {
         if (dot && this.el.contains(dot)) {
             event.preventDefault()
             this.select(this._optionIndex(dot, this.options.dotComponent))
+        }
+    }
+
+    /**
+     * @param {KeyboardEvent} event
+     */
+    _onKeydown(event) {
+        if (this._count() <= 1) {
+            return
+        }
+
+        if (!this.el.contains(event.target)) {
+            return
+        }
+
+        if (event.target.closest('input, textarea, select, video, [contenteditable="true"]')) {
+            return
+        }
+
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault()
+            this.prev()
+            return
+        }
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault()
+            this.next()
         }
     }
 

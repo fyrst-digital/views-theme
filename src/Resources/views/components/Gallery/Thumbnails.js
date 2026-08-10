@@ -27,7 +27,8 @@ export default class GalleryThumbnails extends ShopwareComponent {
 
         const thumbRect = thumb.getBoundingClientRect()
         const trackRect = track.getBoundingClientRect()
-        const vertical = track.scrollHeight > track.clientHeight
+        const dir = getComputedStyle(track).flexDirection
+        const vertical = dir === 'column' || dir === 'column-reverse'
         const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
             ? 'auto'
             : 'smooth'

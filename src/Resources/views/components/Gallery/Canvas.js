@@ -110,6 +110,8 @@ export default class GalleryCanvas extends ShopwareComponent {
 
     _onScrollEnd() {
         clearTimeout(this._scrollTimer)
+        clearTimeout(this._progTimer)
+        this._programmatic = false
         this._settle()
     }
 

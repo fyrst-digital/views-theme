@@ -1,15 +1,1 @@
-.vi-gallery-action-fullscreen {
-  pointer-events: auto;
-  inline-size: var(--vi-control-size, 40px);
-  block-size: var(--vi-control-size, 40px);
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--vi-control-bg, #fff);
-  color: var(--vi-control-color, #212529);
-  box-shadow: var(--vi-control-shadow, 0 1px 4px rgba(0, 0, 0, 0.12));
-  cursor: pointer;
-  appearance: none;
-}
+/* Chrome SoT: Gallery/Control.css (.vi-gallery-action-fullscreen) */

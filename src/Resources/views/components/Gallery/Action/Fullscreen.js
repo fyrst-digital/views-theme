@@ -114,6 +114,10 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
                 return
             }
 
+            if (!String(html || '').trim()) {
+                return
+            }
+
             this._overlayEl = replaceMount(this.options.overlaySelector, html)
             await waitForInstance(() => this._getOverlayInstance())
 

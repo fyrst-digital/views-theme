@@ -49,8 +49,12 @@ export default class ScrollArea extends ShopwareComponent {
 
         const canUp = scrollTop > 1
         const canDown = scrollTop + clientHeight < scrollHeight - 1
-        const canStart = scrollLeft > 1
-        const canEnd = scrollLeft + clientWidth < scrollWidth - 1
+
+        // abs() covers LTR and Firefox RTL (negative scrollLeft)
+        const maxX = Math.max(0, scrollWidth - clientWidth)
+        const x = Math.min(Math.abs(scrollLeft), maxX)
+        const canStart = x > 1
+        const canEnd = x < maxX - 1
 
         this.el.dataset.scrollUp = canUp ? 'true' : 'false'
         this.el.dataset.scrollDown = canDown ? 'true' : 'false'

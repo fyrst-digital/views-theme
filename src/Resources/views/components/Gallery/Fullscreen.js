@@ -129,9 +129,12 @@ export default class GalleryFullscreen extends ShopwareComponent {
      * @param {KeyboardEvent} event
      */
     _trapFocus(event) {
-        const focusables = Array.from(
-            window.focusHandler.getFocusableElements(this.el),
-        )
+        const fh = window.focusHandler
+        if (!fh?.getFocusableElements || !fh?.setFocus) {
+            return
+        }
+
+        const focusables = Array.from(fh.getFocusableElements(this.el))
 
         if (!focusables.length) {
             event.preventDefault()
@@ -145,14 +148,14 @@ export default class GalleryFullscreen extends ShopwareComponent {
         if (event.shiftKey) {
             if (active === first || !this.el.contains(active)) {
                 event.preventDefault()
-                window.focusHandler.setFocus(last, { focusVisible: true })
+                fh.setFocus(last, { focusVisible: true })
             }
             return
         }
 
         if (active === last || !this.el.contains(active)) {
             event.preventDefault()
-            window.focusHandler.setFocus(first, { focusVisible: true })
+            fh.setFocus(first, { focusVisible: true })
         }
     }
 
