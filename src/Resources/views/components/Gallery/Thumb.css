@@ -8,7 +8,7 @@
   overflow: hidden;
   background: var(--vi-thumb-bg, transparent);
   cursor: pointer;
-  scroll-snap-align: start;
+  scroll-snap-align: var(--vi-thumb-snap-align, start);
   appearance: none;
 }
 

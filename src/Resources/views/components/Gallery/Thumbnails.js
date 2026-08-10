@@ -25,19 +25,30 @@ export default class GalleryThumbnails extends ShopwareComponent {
             return
         }
 
+        const thumbRect = thumb.getBoundingClientRect()
+        const trackRect = track.getBoundingClientRect()
         const vertical = track.scrollHeight > track.clientHeight
+
         if (vertical) {
             const top =
-                thumb.offsetTop -
-                track.offsetTop -
-                (track.clientHeight - thumb.offsetHeight) / 2
-            track.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+                track.scrollTop +
+                (thumbRect.top - trackRect.top) -
+                (track.clientHeight - thumbRect.height) / 2
+            const max = Math.max(0, track.scrollHeight - track.clientHeight)
+            track.scrollTo({
+                top: Math.max(0, Math.min(top, max)),
+                behavior: 'smooth',
+            })
         } else {
             const left =
-                thumb.offsetLeft -
-                track.offsetLeft -
-                (track.clientWidth - thumb.offsetWidth) / 2
-            track.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+                track.scrollLeft +
+                (thumbRect.left - trackRect.left) -
+                (track.clientWidth - thumbRect.width) / 2
+            const max = Math.max(0, track.scrollWidth - track.clientWidth)
+            track.scrollTo({
+                left: Math.max(0, Math.min(left, max)),
+                behavior: 'smooth',
+            })
         }
 
         getInstanceByElement(this.options.scrollComponent, track)?.sync?.()

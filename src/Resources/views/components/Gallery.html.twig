@@ -5,6 +5,7 @@
     controlsOnHover = true,
     fullscreen = false,
     mode = 'default',
+    thumbnailAlign = 'start',
     cva = {},
 %}
 
@@ -17,6 +18,7 @@
 {% endif %}
 {% set multi = count > 1 %}
 {% set galleryMode = mode == 'fullscreen' ? 'fullscreen' : 'default' %}
+{% set thumbsAlign = thumbnailAlign == 'center' ? 'center' : 'start' %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['thumbnails', 'canvas']) %}
@@ -27,6 +29,7 @@
         'aria-label': 'component.cms.imageGallery.ariaLabel'|trans({ '%total%': count })|striptags,
         'data-multi': multi ? 'true' : 'false',
         'data-mode': galleryMode,
+        'data-thumbnail-align': thumbsAlign,
         'data-component': 'ViewsTheme:Gallery',
         'data-component-options': {
             active: activeIndex,

@@ -7,7 +7,7 @@ PDP / CMS media gallery (images + video). Scroll-snap canvas synced with a thumb
 | Piece | Responsibility |
 |-------|----------------|
 | `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex` / `getIndex`, thumb+dot click delegation, control disabled state, pause inactive slide videos, `ViewsTheme:Gallery:Change` |
-| `Gallery:Thumbnails` | Strip shell; `scrollToIndex` keeps active thumb visible; composes `Scroll:Area` as scrollport (edge fades) |
+| `Gallery:Thumbnails` | Strip shell; `scrollToIndex` keeps active thumb visible (rect math + clamp); composes `Scroll:Area` as scrollport (edge fades) + `__list` flex row/column |
 | `Gallery:Thumb` | Thumb control identity + `aria-current`; `index` in options; video = poster only + play badge |
 | `Gallery:Canvas` | Scroll-snap track; `goTo` via `scrollIntoView`; settle via `getBoundingClientRect`; resize re-pins current index (`behavior: 'instant'`) → `setIndex` only on user scroll; optional fullscreen action slot |
 | `Gallery:Slide` | One media slide identity; image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig` |
@@ -23,6 +23,8 @@ PDP / CMS media gallery (images + video). Scroll-snap canvas synced with a thumb
 Gallery (data-component owner)
 ├─ Gallery:Thumbnails          (only when medias|length > 1)
 │    └─ Scroll:Area            (scrollport + axis-correct edge fades; track BEM)
+│         └─ __list            (flex; center via auto margins when thumbnailAlign=center)
+│              └─ Gallery:Thumb × N
 └─ Gallery:Canvas
      ├─ track
      │    └─ Gallery:Slide × N
@@ -39,7 +41,7 @@ Gallery:Fullscreen
 ├─ Backdrop
 ├─ Gallery:Fullscreen:Close
 └─ panel
-     └─ Gallery (mode=fullscreen, fullscreen=false, controlsOnHover=false)
+     └─ Gallery (mode=fullscreen, fullscreen=false, controlsOnHover=false, thumbnailAlign=center)
 ```
 
 ```twig
@@ -56,6 +58,7 @@ Gallery:Fullscreen
 | `Gallery` | `controlsOnHover` | When `true`, canvas prev/next **and** fullscreen action hidden until canvas hover or control/fullscreen `:focus-visible` (default `false` = always visible). Touch / coarse pointer: always visible. Not `:focus-within` — mouse click focus must not stick controls open |
 | `Gallery` | `fullscreen` | When `true` and medias have ids, render canvas fullscreen action (default `false`). Nested fullscreen shell always passes `false` |
 | `Gallery` | `mode` | Layout variant: `default` (content-height, AR-driven slides) or `fullscreen` (height-fill panel; media `object-fit: contain`). Sets `data-mode`. Independent of boolean `fullscreen` |
+| `Gallery` | `thumbnailAlign` | Thumb strip group align: `start` (default) or `center`. Sets `data-thumbnail-align`. When `center`, list uses auto margins (centers when content fits; collapses when overflowing so scroll stays reachable). Nested fullscreen shell always passes `center` |
 | `Gallery:Thumb` / `Dot` | `index`, `active`, `total` | Identity + SSR `aria-current` |
 | `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends unless parent `rewind` |
 | `Gallery:Canvas` | `multi` | When false, omit controls + dots |
@@ -63,7 +66,7 @@ Gallery:Fullscreen
 | `Gallery:Canvas` | `controlsOnHover` | Sets `data-controls-on-hover`; CSS-only show/hide of `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` |
 | `Gallery:Canvas` | `fullscreen` | When true, top-right `Gallery:Action:Fullscreen` with media ids |
 | `Gallery:Action:Fullscreen` | `ids` | Ordered media UUIDs for XHR load |
-| `Gallery:Fullscreen` | `medias`, `active` | Passed through to nested `Gallery` |
+| `Gallery:Fullscreen` | `medias`, `active` | Passed through to nested `Gallery` (`mode=fullscreen`, `thumbnailAlign=center`, …) |
 
 ## JS API
 
@@ -170,6 +173,8 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 | `--vi-areas` | `none` | `'canvas' 'thumbs'` | `'thumbs canvas'` | — |
 | `--vi-thumbs-w` | — | — | used inside `--vi-cols` (`auto`) | — |
 | `--vi-thumbs-dir` / `--vi-thumbs-snap` | `row` / `x mandatory` (Thumbnails) | — | `column` / `y mandatory` | — |
+| `--vi-thumbs-mi` / `--vi-thumbs-mb` | `0` / `0` (list margins) | — | — | —; `thumbnailAlign=center` assigns `auto` / `auto` (center when fits; overflow margins collapse) |
+| `--vi-thumb-snap-align` | `start` (Thumb) | — | — | —; `thumbnailAlign=center` assigns `center` |
 | `--vi-thumbs-h` / `--vi-thumbs-min-h` | `auto` / `0` | — | `0` / `100%` | `auto` / `0` (md multi: h `100%`) |
 | `--vi-thumbs-track-h` | `auto` | — | `100%` | — |
 | `--vi-canvas-h` / `--vi-track-h` / `--vi-slide-h` / `--vi-media-h` | `auto` | — | — | `100%` |
@@ -180,7 +185,7 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 
 `Thumbnails.css` / `Canvas.css` / `Slide.css` only **consume** height and media tokens. Host never re-declares those properties on variants.
 
-Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`).
+Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (flex + gap; margins consume `--vi-thumbs-mi` / `--vi-thumbs-mb`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`). `scrollToIndex` uses `getBoundingClientRect` + clamp so nested list + center margins stay correct.
 
 ## CMS bridge
 

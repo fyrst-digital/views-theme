@@ -15,6 +15,12 @@
     --vi-areas: 'canvas' 'thumbs';
   }
 
+  &[data-thumbnail-align='center'] {
+    --vi-thumbs-mi: auto;
+    --vi-thumbs-mb: auto;
+    --vi-thumb-snap-align: center;
+  }
+
   /* Sole orientation breakpoint: side + vertical thumbs from md */
   @media (min-width: 768px) {
     &[data-multi='true'] {

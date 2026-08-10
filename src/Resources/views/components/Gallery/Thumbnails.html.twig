@@ -24,15 +24,17 @@
                 },
             }).all() }}
         >
-            {% for media in medias %}
-                {% set index = loop.index0 %}
-                <twig:ViewsTheme:Gallery:Thumb
-                    :media="media"
-                    :index="index"
-                    :active="index == active"
-                    :total="total"
-                />
-            {% endfor %}
+            <div class="{{ vi_class('list') }}">
+                {% for media in medias %}
+                    {% set index = loop.index0 %}
+                    <twig:ViewsTheme:Gallery:Thumb
+                        :media="media"
+                        :index="index"
+                        :active="index == active"
+                        :total="total"
+                    />
+                {% endfor %}
+            </div>
         </twig:ViewsTheme:Scroll:Area>
     {% endblock %}
 </div>
