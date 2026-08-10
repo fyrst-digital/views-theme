@@ -1,0 +1,49 @@
+{% props
+    medias = [],
+    active = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel', 'gallery']) %}
+
+<div
+    {{ attributes.defaults({
+        id: 'vi-gallery-fullscreen',
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'viewsTheme.gallery.fullscreenAriaLabel'|trans|striptags,
+        'aria-hidden': 'true',
+        inert: true,
+        'data-component': 'ViewsTheme:Gallery:Fullscreen',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block backdrop %}
+        <twig:ViewsTheme:Backdrop componentName="ViewsTheme:Gallery:Fullscreen" />
+    {% endblock %}
+
+    {% block close %}
+        <twig:ViewsTheme:Gallery:Fullscreen:Close />
+    {% endblock %}
+
+    {% block panel %}
+        <div
+            {{ vi_attrs('panel') }}
+            class="{{ vi_class('panel') }}"
+        >
+            {% block gallery %}
+                <twig:ViewsTheme:Gallery
+                    class="{{ vi_class('gallery') }}"
+                    {{ ...vi_attrs('gallery').defaults({
+                        medias: medias,
+                        active: active,
+                        mode: 'fullscreen',
+                        fullscreen: false,
+                        controlsOnHover: false,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

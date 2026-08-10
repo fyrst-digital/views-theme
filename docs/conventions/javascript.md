@@ -126,6 +126,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 
 - `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer, Filter drawer)
 - `ViewsTheme:Search:Overlay`
+- `ViewsTheme:Gallery:Fullscreen`
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
@@ -356,6 +357,24 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
+
+### Gallery fullscreen
+
+Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is the media SoT inside the shell.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Gallery:Action:Fullscreen"` |
+| Fullscreen root | `data-component="ViewsTheme:Gallery:Fullscreen"` / `#vi-gallery-fullscreen` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
+| Close | `data-component="ViewsTheme:Gallery:Fullscreen:Close"` |
+| Nested gallery | `data-component="ViewsTheme:Gallery"` (inside shell; `fullscreen=false`) |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + parent `getIndex()`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Open/Close payload: `{ el, index }` via `emitQueued`; Action restores parent index on close
+- Control / Canvas settle use **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries
+
+See [Gallery](../features/gallery.md).
 
 ### Filter drawer / bar
 

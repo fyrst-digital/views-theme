@@ -3,6 +3,8 @@
     active = 0,
     rewind = true,
     controlsOnHover = true,
+    fullscreen = false,
+    mode = 'default',
     cva = {},
 %}
 
@@ -14,6 +16,7 @@
     {% set activeIndex = count - 1 %}
 {% endif %}
 {% set multi = count > 1 %}
+{% set galleryMode = mode == 'fullscreen' ? 'fullscreen' : 'default' %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['thumbnails', 'canvas']) %}
@@ -23,6 +26,7 @@
         role: 'region',
         'aria-label': 'component.cms.imageGallery.ariaLabel'|trans({ '%total%': count })|striptags,
         'data-multi': multi ? 'true' : 'false',
+        'data-mode': galleryMode,
         'data-component': 'ViewsTheme:Gallery',
         'data-component-options': {
             active: activeIndex,
@@ -52,6 +56,7 @@
                 multi: multi,
                 rewind: rewind,
                 controlsOnHover: controlsOnHover,
+                fullscreen: fullscreen,
             }).all() }}
         />
     {% endblock %}

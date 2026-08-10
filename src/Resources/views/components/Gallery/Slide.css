@@ -1,6 +1,7 @@
 .vi-gallery-slide {
-  flex: 0 0 100%;
-  min-inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  block-size: var(--vi-slide-h, auto);
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
@@ -8,18 +9,19 @@
 .vi-gallery-slide__image,
 .vi-gallery-slide__video {
   inline-size: 100%;
-  block-size: auto;
-  aspect-ratio: var(--vi-image-ar, 4 / 3);
+  block-size: var(--vi-media-h, auto);
+  aspect-ratio: var(--vi-media-ar, var(--vi-image-ar, 4 / 3));
   display: block;
 }
 
 .vi-gallery-slide__image {
   pointer-events: none;
   user-select: none;
+  object-fit: var(--vi-media-fit, var(--vi-image-fit, fill));
 }
 
 .vi-gallery-slide__video {
   pointer-events: auto;
-  object-fit: var(--vi-image-fit, contain);
+  object-fit: var(--vi-media-fit, var(--vi-image-fit, contain));
   background: var(--vi-slide-video-bg, #000);
 }

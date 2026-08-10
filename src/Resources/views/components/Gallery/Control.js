@@ -1,5 +1,7 @@
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
 /**
- * Prev/next control — commands Gallery owner via callMethod.
+ * Prev/next control — commands nearest Gallery owner.
  *
  * @extends {ShopwareComponent}
  */
@@ -28,6 +30,18 @@ export default class GalleryControl extends ShopwareComponent {
         }
 
         const method = this.options.direction === 'prev' ? 'prev' : 'next'
-        window.Shopware.callMethod(this.options.galleryComponent, method)
+        const gallery = this._gallery()
+        if (gallery && typeof gallery[method] === 'function') {
+            gallery[method]()
+        }
+    }
+
+    /**
+     * @returns {import('../Gallery.js').default|null}
+     */
+    _gallery() {
+        const name = this.options.galleryComponent
+        const el = this.el.closest(`[data-component="${name}"]`)
+        return getInstanceByElement(name, el)
     }
 }

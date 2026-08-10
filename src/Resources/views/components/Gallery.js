@@ -111,6 +111,13 @@ export default class Gallery extends ShopwareComponent {
     }
 
     /**
+     * @returns {number}
+     */
+    getIndex() {
+        return this._index
+    }
+
+    /**
      * @returns {boolean}
      */
     _rewind() {

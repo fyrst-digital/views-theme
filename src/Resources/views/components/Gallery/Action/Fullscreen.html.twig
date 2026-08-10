@@ -1,0 +1,30 @@
+{% props
+    ids = [],
+    overlayUrl = path('frontend.views-theme.gallery.fullscreen'),
+    cva = {},
+%}
+
+{% set label = 'viewsTheme.gallery.fullscreenOpen'|trans|striptags %}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'aria-label': label,
+        title: label,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-gallery-fullscreen',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Gallery:Action:Fullscreen',
+        'data-component-options': {
+            overlayUrl: overlayUrl,
+            ids: ids,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block icon %}
+        {{ vi_icon('arrows-out') }}
+    {% endblock %}
+</button>

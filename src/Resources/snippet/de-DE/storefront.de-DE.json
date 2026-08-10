@@ -17,6 +17,11 @@
         "review": {
             "author": "von %name%",
             "commentFooter": "Antwort des Shopbetreibers"
+        },
+        "gallery": {
+            "fullscreenOpen": "Vollbildgalerie öffnen",
+            "fullscreenClose": "Vollbildgalerie schließen",
+            "fullscreenAriaLabel": "Vollbild-Produktgalerie"
         }
     },
 

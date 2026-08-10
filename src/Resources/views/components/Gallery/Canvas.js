@@ -1,3 +1,5 @@
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
 /**
  * Scroll-snap canvas — goTo via scrollIntoView; settle via getBoundingClientRect;
  * resize re-pins current index (no scrollLeft).
@@ -139,11 +141,16 @@ export default class GalleryCanvas extends ShopwareComponent {
         }
 
         this._index = best
-        window.Shopware.callMethod(
-            this.options.galleryComponent,
-            'setIndex',
-            best,
-        )
+        this._gallery()?.setIndex?.(best)
+    }
+
+    /**
+     * @returns {import('../Gallery.js').default|null}
+     */
+    _gallery() {
+        const name = this.options.galleryComponent
+        const el = this.el.closest(`[data-component="${name}"]`)
+        return getInstanceByElement(name, el)
     }
 
     /**

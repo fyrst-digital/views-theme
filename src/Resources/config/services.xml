@@ -96,6 +96,15 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\GalleryFullscreenController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Shopware\Core\Content\Media\SalesChannel\MediaRoute"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Controller\NavigationDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
             <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>

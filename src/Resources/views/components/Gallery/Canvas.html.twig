@@ -4,13 +4,22 @@
     multi = false,
     rewind = false,
     controlsOnHover = false,
+    fullscreen = false,
     cva = {},
 %}
 
 {% set total = medias|length %}
+{% set mediaIds = [] %}
+{% if fullscreen and total > 0 %}
+    {% for media in medias %}
+        {% if media and media.id %}
+            {% set mediaIds = mediaIds|merge([media.id]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['track', 'controls', 'dots']) %}
+{% do vi_define_attrs(['track', 'controls', 'fullscreen', 'dots']) %}
 
 <div
     {{ attributes.defaults({
@@ -45,7 +54,19 @@
                 />
             </div>
         {% endblock %}
+    {% endif %}
 
+    {% if fullscreen and mediaIds|length > 0 %}
+        {% block fullscreen %}
+            <div {{ vi_attrs('fullscreen') }} class="{{ vi_class('fullscreen') }}">
+                <twig:ViewsTheme:Gallery:Action:Fullscreen
+                    :ids="mediaIds"
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% if multi %}
         {% block dots %}
             <twig:ViewsTheme:Gallery:Dots
                 class="{{ vi_class('dots') }}"

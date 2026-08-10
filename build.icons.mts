@@ -18,6 +18,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
     ph: [
       "address-book",
       "arrows-in-cardinal",
+      "arrows-out",
       "arrow-counter-clockwise",
       "arrow-down",
       "arrow-left",
@@ -73,6 +74,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
     ph: [
       "address-book-bold",
       "arrows-in-cardinal-bold",
+      "arrows-out-bold",
       "arrow-counter-clockwise-bold",
       "arrow-down-bold",
       "arrow-left-bold",
