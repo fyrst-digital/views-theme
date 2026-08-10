@@ -13,7 +13,7 @@ PDP / CMS media gallery (images + video). Scroll-snap canvas synced with a thumb
 | `Gallery:Slide` | One media slide identity; image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig` |
 | `Gallery:Control` | Prev/next → nearest Gallery owner (`closest` + instance), never global `callMethod` |
 | `Gallery:Dots` / `Gallery:Dot` | Dot nav; same index / `aria-current` pattern as thumbs |
-| `Gallery:Action:Fullscreen` | Lazy shell owner: fetch/mount/unmount `Gallery:Fullscreen`; open with media `ids` + current index; on close restore parent index |
+| `Gallery:Action:Fullscreen` | Lazy shell owner (multi-instance): fetch/mount/unmount `Gallery:Fullscreen`; open with media `ids` + current index; on close restore **own** parent index. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`); never adopt foreign shells via global selector; unmount owned el only |
 | `Gallery:Fullscreen` | Dialog shell (body lock, Escape, Tab trap); composes nested `Gallery` (SoT, `mode="fullscreen"`, `fullscreen=false`) |
 | `Gallery:Fullscreen:Close` | Close control → `Fullscreen.close` |
 
@@ -88,11 +88,14 @@ Child → owner commands (Control / Canvas settle) resolve the **nearest** Galle
 ## Fullscreen flow
 
 1. `Gallery:Action:Fullscreen` reads `overlayUrl` + `ids` from options
-2. Click / `open()` → `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N from parent `getIndex()`)
-3. Response root mounted on `document.body` (leftover mount removed first)
-4. Action waits for Fullscreen instance → `open()` (body lock, aria, focus close)
-5. Nested `Gallery` is the media SoT inside the dialog
-6. Close (button / backdrop / Escape) → emit Close `{ el, index }` → Action `select`s parent + unmounts shell
+2. Click / `open()` → if another gallery’s shell is live, **close it first** (owner restores index + unmounts) so `replaceMount` does not tear down foreign DOM without Close
+3. `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N from parent `getIndex()`)
+4. Response root mounted on `document.body`; Action stores `_overlayEl` (owned only — never re-query foreign shells)
+5. Action waits for Fullscreen instance → `open()` (body lock, aria, focus close)
+6. Nested `Gallery` is the media SoT inside the dialog
+7. Close (button / backdrop / Escape) → emit Close `{ el, index }` → **only** the owning Action (`payload.el === this._overlayEl`) restores parent index, returns focus, unmounts owned el
+
+Multi-instance: many Actions may listen on the same Open/Close bus; non-owners no-op. Toggle-on-click closes only the Action’s own shell.
 
 Shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical).
 

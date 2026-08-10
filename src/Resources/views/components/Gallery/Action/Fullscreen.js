@@ -101,6 +101,8 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
         const request = beginRequest(this._fetch)
 
         try {
+            this._closeForeignShell()
+
             const url = new URL(this.options.overlayUrl, window.location.origin)
             for (const id of ids) {
                 url.searchParams.append('ids[]', String(id))
@@ -138,6 +140,26 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
     }
 
     /**
+     * Close another Action's live shell so its owner can restore index + unmount
+     * before this Action mounts. Avoids replaceMount tearing down a foreign DOM
+     * node without emitting Close.
+     */
+    _closeForeignShell() {
+        const existing = document.querySelector(this.options.overlaySelector)
+        if (!existing || existing === this._overlayEl) {
+            return
+        }
+
+        const inst = getInstanceByElement(this.options.overlayComponentName, existing)
+        if (inst && typeof inst.isOpen === 'function' && inst.isOpen() && typeof inst.close === 'function') {
+            inst.close()
+            return
+        }
+
+        existing.remove()
+    }
+
+    /**
      * @returns {number}
      */
     _galleryIndex() {
@@ -159,15 +181,15 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
 
     _getOverlayInstance() {
         if (!this._overlayEl || !document.body.contains(this._overlayEl)) {
-            this._overlayEl = document.querySelector(this.options.overlaySelector)
+            this._overlayEl = null
+            return null
         }
 
         return getInstanceByElement(this.options.overlayComponentName, this._overlayEl)
     }
 
     _onOverlayOpen(payload) {
-        const el = payload?.el ?? null
-        if (el && this._overlayEl && el !== this._overlayEl) {
+        if (!this._overlayEl || payload?.el !== this._overlayEl) {
             return
         }
 
@@ -175,8 +197,7 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
     }
 
     _onOverlayClose(payload) {
-        const el = payload?.el ?? null
-        if (el && this._overlayEl && el !== this._overlayEl) {
+        if (!this._overlayEl || payload?.el !== this._overlayEl) {
             return
         }
 
@@ -191,7 +212,9 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
     }
 
     _unmountOverlay() {
-        unmountEl(this._overlayEl, this.options.overlaySelector)
+        if (this._overlayEl) {
+            unmountEl(this._overlayEl)
+        }
         this._overlayEl = null
     }
 }

@@ -371,7 +371,8 @@ Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is t
 | Nested gallery | `data-component="ViewsTheme:Gallery"` (inside shell; `fullscreen=false`) |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + parent `getIndex()`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- Open/Close payload: `{ el, index }` via `emitQueued`; Action restores parent index on close
+- **Multi-instance ownership (critical):** unlike singleton Search/Cart Actions, many galleries may mount Actions on one page. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`). Never adopt a foreign shell via global selector; unmount owned el only (no selector fallback). Opening while another shell is live: close existing first so its owner restores index + unmounts, then mount
+- Open/Close payload: `{ el, index }` via `emitQueued`; owning Action restores **its** parent gallery index on close
 - Control / Canvas settle use **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries
 
 See [Gallery](../features/gallery.md).
