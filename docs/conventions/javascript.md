@@ -186,7 +186,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
 | Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
-| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
+| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` — theme-owned only; do **not** set core `data-quantity-selector` / `js-btn-*` hooks |
 | Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
