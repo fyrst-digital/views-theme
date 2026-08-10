@@ -1,0 +1,21 @@
+{% props
+    cva = {},
+%}
+
+{% set label = 'viewsTheme.gallery.fullscreenClose'|trans|striptags %}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Gallery:Fullscreen:Close',
+        'aria-label': label,
+        title: label,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block icon %}
+        {{ vi_icon('x') }}
+    {% endblock %}
+</button>

@@ -1,0 +1,80 @@
+{% props
+    medias = [],
+    active = 0,
+    multi = false,
+    rewind = true,
+    controlsOnHover = true,
+    fullscreen = false,
+    cva = {},
+%}
+
+{% set total = medias|length %}
+{% set mediaIds = [] %}
+{% if fullscreen and total > 0 %}
+    {% for media in medias %}
+        {% if media and media.id %}
+            {% set mediaIds = mediaIds|merge([media.id]) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['track', 'controls', 'fullscreen', 'dots']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Gallery:Canvas',
+        'data-controls-on-hover': controlsOnHover ? 'true' : 'false',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block track %}
+        <div {{ vi_attrs('track') }} class="{{ vi_class('track') }}">
+            {% for media in medias %}
+                <twig:ViewsTheme:Gallery:Slide
+                    :media="media"
+                    :index="loop.index0"
+                    :priority="loop.first"
+                    :total="total"
+                />
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    {% if multi %}
+        {% block controls %}
+            <div {{ vi_attrs('controls') }} class="{{ vi_class('controls') }}">
+                <twig:ViewsTheme:Gallery:Control
+                    direction="prev"
+                    :disabled="not rewind and active <= 0"
+                />
+                <twig:ViewsTheme:Gallery:Control
+                    direction="next"
+                    :disabled="not rewind and active >= total - 1"
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% if fullscreen and mediaIds|length > 0 %}
+        {% block fullscreen %}
+            <div {{ vi_attrs('fullscreen') }} class="{{ vi_class('fullscreen') }}">
+                <twig:ViewsTheme:Gallery:Action:Fullscreen
+                    :ids="mediaIds"
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% if multi %}
+        {% block dots %}
+            <twig:ViewsTheme:Gallery:Dots
+                class="{{ vi_class('dots') }}"
+                {{ ...vi_attrs('dots').defaults({
+                    total: total,
+                    active: active,
+                }).all() }}
+            />
+        {% endblock %}
+    {% endif %}
+</div>

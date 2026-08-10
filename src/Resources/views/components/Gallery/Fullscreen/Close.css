@@ -1,0 +1,7 @@
+/* Chrome SoT: Gallery/Control.css (.vi-gallery-fullscreen-close) */
+.vi-gallery-fullscreen-close {
+  position: absolute;
+  inset-block-start: var(--vi-control-inset, 8px);
+  inset-inline-end: var(--vi-control-inset, 8px);
+  z-index: 2;
+}

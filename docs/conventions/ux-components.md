@@ -465,7 +465,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | LineItem:* (+ Quantity/Remove JS only), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
-| Cookie:*, Filter, ContactChannel, MethodOption, GallerySlider, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
+| Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
+| Cookie:*, Filter, ContactChannel, MethodOption, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
 | Account:LoginCard / Register; Address:* shells; Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
 | Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md); Item:Comment → Blockquote |
 | Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |

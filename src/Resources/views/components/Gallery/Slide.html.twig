@@ -1,0 +1,67 @@
+{% props
+    media = null,
+    index = 0,
+    priority = false,
+    total = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'group',
+        'aria-roledescription': 'slide',
+        'aria-label': 'component.cms.imageGallery.sliderDotLabel'|trans({
+            '%index%': index + 1,
+            '%total%': total,
+        })|striptags,
+        'data-component': 'ViewsTheme:Gallery:Slide',
+        'data-component-options': {
+            index: index,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block media %}
+        {% if media and media.isSpatialObject() == false %}
+            {% if media.getMediaType().getName() === 'VIDEO' %}
+                {% block video %}
+                    {% sw_include '@Storefront/storefront/utilities/video.html.twig' with {
+                        media: media,
+                        attributes: {
+                            class: vi_class('video'),
+                            controls: true,
+                            title: media.translated.title|default(''),
+                        },
+                    } %}
+                {% endblock %}
+            {% else %}
+                {% set imageAttrs = {
+                    class: vi_class('image'),
+                    alt: media.translated.alt|default(''),
+                    title: media.translated.title|default(''),
+                    loading: priority ? 'eager' : 'lazy',
+                    draggable: 'false',
+                } %}
+
+                {% if priority %}
+                    {% set imageAttrs = imageAttrs|merge({ fetchpriority: 'high' }) %}
+                {% endif %}
+
+                {% block image %}
+                    {% sw_thumbnails 'gallery-slide' with {
+                        media: media,
+                        sizes: {
+                            default: '100vw',
+                            sm: '100vw',
+                            md: '60vw',
+                            lg: '720px',
+                        },
+                        attributes: imageAttrs,
+                    } %}
+                {% endblock %}
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+</div>

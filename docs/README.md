@@ -60,6 +60,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Sorting](features/sorting.md)
 - [Filters](features/filters.md)
 - [Breadcrumb](features/breadcrumb.md)
+- [Gallery](features/gallery.md)
 
 ## Undocumented / partial (no dedicated feature page)
 
@@ -68,7 +69,6 @@ Families that exist in code but are only covered lightly (or not at all) under `
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
 - **Account / Address / Order** — register, address book, order history (beyond [account-action](features/account-action.md))
 - **Cookie** — banner / configuration UX
-- **GallerySlider** — PDP gallery pieces
 - **Checkout extras** — ConfirmTos, UserComment (delivery date is documented)
 - **Page layout** — Logo, Footer, `meta.html.twig` + `CartContextSubscriber` / `cartCount`
 - **MethodOption**, **Offcanvas** (vs Drawer), **ScrollUp**

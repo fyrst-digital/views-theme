@@ -1,0 +1,26 @@
+{% props
+    total = 0,
+    active = 0,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Gallery:Dots',
+        role: 'group',
+        'aria-label': 'viewsTheme.gallery.dotsAriaLabel'|trans|striptags,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% for i in 0..(total - 1) %}
+            <twig:ViewsTheme:Gallery:Dot
+                :index="i"
+                :active="i == active"
+                :total="total"
+            />
+        {% endfor %}
+    {% endblock %}
+</div>

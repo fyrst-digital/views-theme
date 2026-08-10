@@ -49,16 +49,16 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 
 | Layer | Role |
 |-------|------|
-| **Component CSS** | Structure + **consume** tokens with a **fallback default** only (`prop: var(--vi-*, fallback)`). No Bootstrap/Shopware override dumps |
+| **Component CSS** | Structure: **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. No Bootstrap/Shopware override dumps |
 | **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
-| **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults |
+| **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults from outside |
 
-### Component CSS — never assign tokens
+### Init once, assign on variants
 
-**Never** define a custom property on a selector in component CSS. Defaults live only as the second argument to `var()`.
+Defaults live only as the second argument to `var()` on the base rule. Do **not** assign tokens as defaults on the base selector. Variants (`[data-*]`, media, state) override by **assigning** the token — not by re-declaring the CSS property.
 
 ```css
-/* ❌ NEVER — explicit token assignment in component CSS */
+/* ❌ NEVER — default assign on base (use var fallback instead) */
 .vi-language-action {
   --vi-flag-w: 20px;
   --vi-max-w: min(100vw - 24px, 256px);
@@ -67,7 +67,29 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
   width: var(--vi-flag-w);
 }
 
-/* ✅ ALWAYS — consume with fallback (px lengths) */
+/* ❌ NEVER — re-declare property with a different fallback on a variant */
+.vi-gallery {
+  padding: var(--vi-gallery-p, var(--spacing-0));
+
+  &[data-mode='fullscreen'] {
+    padding: var(--vi-gallery-p, var(--spacing-4));
+  }
+}
+
+/* ✅ ALWAYS — init once with fallback; variant assigns token only */
+.vi-gallery {
+  padding: var(--vi-gallery-p, var(--spacing-0));
+  grid-template-rows: var(--vi-rows, none);
+
+  &[data-mode='fullscreen'] {
+    --vi-gallery-p: var(--spacing-4);
+
+    &[data-multi='true'] {
+      --vi-rows: minmax(0, 1fr) auto;
+    }
+  }
+}
+
 .vi-language-action {
   min-width: var(--vi-min-w, 160px);
 }
@@ -77,7 +99,7 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 }
 ```
 
-Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 24px, 352px))`.
+Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 24px, 352px))`. Gallery host (`Gallery.css`) is the SoT for orientation + mode token assigns.
 
 ### Theme CSS — assign to override
 

@@ -1,0 +1,36 @@
+{% props
+    medias = [],
+    active = 0,
+    cva = {},
+%}
+
+{% set total = medias|length %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['track']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Gallery:Thumbnails',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block track %}
+        <twig:ViewsTheme:Scroll:Area
+            class="{{ vi_class('track') }}"
+            {{ ...vi_attrs('track').defaults({}).all() }}
+        >
+            <div class="{{ vi_class('list') }}">
+                {% for media in medias %}
+                    {% set index = loop.index0 %}
+                    <twig:ViewsTheme:Gallery:Thumb
+                        :media="media"
+                        :index="index"
+                        :active="index == active"
+                        :total="total"
+                    />
+                {% endfor %}
+            </div>
+        </twig:ViewsTheme:Scroll:Area>
+    {% endblock %}
+</div>

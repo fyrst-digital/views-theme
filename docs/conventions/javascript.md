@@ -126,6 +126,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 
 - `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer, Filter drawer)
 - `ViewsTheme:Search:Overlay`
+- `ViewsTheme:Gallery:Fullscreen`
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
@@ -185,7 +186,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
 | Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
-| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` |
+| Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` — theme-owned only; do **not** set core `data-quantity-selector` / `js-btn-*` hooks |
 | Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
@@ -357,6 +358,25 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 
 See [Cart drawer](../features/cart-drawer.md).
 
+### Gallery fullscreen
+
+Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is the media SoT inside the shell.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Gallery:Action:Fullscreen"` |
+| Fullscreen root | `data-component="ViewsTheme:Gallery:Fullscreen"` / `#vi-gallery-fullscreen` |
+| Backdrop | `data-component="ViewsTheme:Backdrop"` |
+| Close | `data-component="ViewsTheme:Gallery:Fullscreen:Close"` |
+| Nested gallery | `data-component="ViewsTheme:Gallery"` (inside shell; `fullscreen=false`) |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + parent `getIndex()`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- **Multi-instance ownership (critical):** unlike singleton Search/Cart Actions, many galleries may mount Actions on one page. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`). Never adopt a foreign shell via global selector; unmount owned el only (no selector fallback). Opening while another shell is live: close existing first so its owner restores index + unmounts, then mount
+- Open/Close payload: `{ el, index }` via `emitQueued`; owning Action restores **its** parent gallery index on close
+- Control / Canvas settle use **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries
+
+See [Gallery](../features/gallery.md).
+
 ### Filter drawer / bar
 
 Lazy-loaded end-side filter drawer + desktop horizontal bar. **Product:Listing** owns filter state (URL + control registry); Action owns shell lifecycle.
@@ -378,13 +398,20 @@ See [Filters](../features/filters.md).
 
 ### Scroll area
 
-Reusable scrollport with top/bottom mask fades (co-located `Scroll/Area.css`, `var(--vi-fade, 40px)`). Base CVA: `vi-scroll-area overflow-y-auto` — callers add axis extras (e.g. `overflow-x-clip`) via `class`.
+Reusable scrollport with **axis-correct** edge fades (co-located `Scroll/Area.css`, `var(--vi-fade, 40px)`). Base CVA: `vi-scroll-area overflow-auto` — callers may override overflow via `class` / `cva`.
 
 | Hook | Attribute |
 |------|-----------|
 | Root | `data-component="ViewsTheme:Scroll:Area"` |
 
-JS toggles `data-scroll-up` / `data-scroll-down`. Put content in the component’s `content` block. Used by Search results and Navigation drawer menu.
+JS detects overflow and sets edge flags. Horizontal position uses `Math.abs(scrollLeft)` so Firefox RTL (negative `scrollLeft`) still drives start/end fades. CSS uses one dual-axis mask; edge stops stay solid until the matching flag is on (`--fade-top|bottom|start|end` 0→1). `@property` + `transition` ease those numbers (`var(--vi-fade-duration, 200ms)`). Solid defaults = no side ghosting on vertical strips.
+
+| Attr | Sets |
+|------|------|
+| `data-scroll-up` / `data-scroll-down` | `--fade-top` / `--fade-bottom` |
+| `data-scroll-start` / `data-scroll-end` | `--fade-start` / `--fade-end` |
+
+Public `sync()` re-reads edges after programmatic scroll. Put content in the component’s `content` block. Used by Search results, Navigation drawer menu, and Gallery thumbnails.
 
 ### Dropdown
 

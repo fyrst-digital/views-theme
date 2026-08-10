@@ -1,0 +1,30 @@
+.vi-gallery-thumbnails {
+  grid-area: thumbs;
+  min-inline-size: 0;
+  overflow: hidden;
+  block-size: var(--vi-thumbs-h, auto);
+  min-block-size: var(--vi-thumbs-min-h, 0);
+}
+
+.vi-gallery-thumbnails__track {
+  display: flex;
+  flex-direction: var(--vi-thumbs-dir, row);
+  block-size: var(--vi-thumbs-track-h, auto);
+  overflow: auto;
+  scroll-snap-type: var(--vi-thumbs-snap, x mandatory);
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+}
+
+.vi-gallery-thumbnails__track::-webkit-scrollbar {
+  display: none;
+}
+
+.vi-gallery-thumbnails__list {
+  display: flex;
+  flex-direction: inherit;
+  gap: var(--vi-thumb-gap, 8px);
+  flex: 0 0 auto;
+  margin-inline: var(--vi-thumbs-mi, 0);
+  margin-block: var(--vi-thumbs-mb, 0);
+}
