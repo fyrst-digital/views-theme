@@ -1,8 +1,14 @@
 {
     root: {
         base: 'vi-line-item vi-line-item__product',
+        variants: {
+            layout: {
+                stacked: 'd-grid gx-3 gy-2 align-items-start',
+                grid: 'd-contents',
+            },
+        },
     },
     image: {
-        base: 'vi-line-item__image shrink-0 block overflow-hidden rounded-2 w-20 h-20',
+        base: 'vi-line-item__image flex-shrink-0 d-block overflow-hidden rounded-2',
     },
 }

@@ -50,7 +50,7 @@
     {% endblock %}
 
     {% block price %}
-        <div class="{{ vi_class('footer') }}">
+        <div class="{{ vi_class('footer', { layout: layout }) }}">
             <twig:ViewsTheme:LineItem:Price
                 class="{{ vi_class('price') }}"
                 {{ ...vi_attrs('price').defaults({

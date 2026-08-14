@@ -26,27 +26,27 @@ Cart:Page (data-component owner)
 ├─ Cart:Heading (h1, countDisplay=inline)
 ├─ [role=alert] (client error)
 └─ body (`data-cart-page-body`)
-     ├─ Cart:Items layout="grid"  (display:grid; no list wrapper)
-     │    ├─ header display:contents (desktop, aria-hidden)
-     │    └─ LineItem layout="grid" display:contents × N  |  Cart:Empty
-     └─ Cart:Page:Aside (when not empty)
+      ├─ Cart:Items layout="grid"  (d-grid; no list wrapper)
+      │    ├─ header d-none d-xl-contents (aria-hidden)
+      │    └─ LineItem layout="grid" d-contents × N  |  Cart:Empty
+      └─ Cart:Page:Aside (when not empty; position-xl-sticky)
           ├─ Cart:Summary
           ├─ Cart:Options
           └─ Cart:Actions (no cart-page link)
 ```
 
-Desktop (1280px+): items + sticky aside. Mobile: stack.
+Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
 
 ## LineItem `layout`
 
 | Value | Used by | Host |
 |-------|---------|------|
 | `stacked` (default) | Drawer `Cart:Items` | Cover + info / footer areas |
-| `grid` | Cart page `Cart:Items` | Desktop (1280px+): one grid; header + `LineItem` + footer `display: contents`. Cells: cover · info · qty · remove · unit · total. Mobile: cover · info, then footer flex row (qty · remove · total; unit hidden) |
+| `grid` | Cart page `Cart:Items` | Desktop (`xl`): one grid; header + `LineItem` + footer `d-contents`. Cells: cover · info · qty · remove · unit · total. Mobile: cover · info, then footer flex row (qty · remove · total; unit `d-none d-xl-block`) |
 
 `layout` is forwarded `Cart:Items` → `LineItem` → Product / Promotion / Container / Generic. Cart:Items passes `tag="div"` (no `<ul>` / `<li>`).
 
-`LineItem:UnitPrice` is **grid-only** (`lineItem.price.unitPrice`; skips delivery-discount scope). Shown from 1280px. Footer cell order: qty → remove → unit → total.
+`LineItem:UnitPrice` is **grid-only** (`lineItem.price.unitPrice`; skips delivery-discount scope). Shown from `xl`. Footer cell order: qty → remove → unit → total.
 
 ## Controller
 

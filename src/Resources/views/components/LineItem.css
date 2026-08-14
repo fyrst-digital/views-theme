@@ -1,65 +1,39 @@
 .vi-line-item {
   min-width: 0;
-}
-
-.vi-line-item[data-layout='stacked'] {
-  display: grid;
   grid-template-columns: var(--vi-line-item-cols, auto minmax(0, 1fr));
   grid-template-areas: var(--vi-line-item-areas, 'cover content' 'cover footer');
-  column-gap: var(--vi-line-item-col-gap, 16px);
-  row-gap: var(--vi-line-item-row-gap, 8px);
-  align-items: start;
-}
 
-.vi-line-item[data-layout='stacked'] .vi-line-item__image {
-  grid-area: cover;
-}
+  &[data-layout='stacked'] {
+    .vi-line-item__image {
+      grid-area: cover;
+    }
 
-.vi-line-item[data-layout='stacked'] .vi-line-item__content {
-  grid-area: content;
-}
+    .vi-line-item__content {
+      grid-area: content;
+    }
 
-.vi-line-item[data-layout='stacked'] .vi-line-item__footer {
-  grid-area: footer;
-}
-
-.vi-line-item[data-layout='stacked'] .vi-line-item__price {
-  margin-inline-start: auto;
-}
-
-.vi-line-item[data-layout='grid'] {
-  display: contents;
-}
-
-.vi-line-item[data-layout='grid'] .vi-line-item__footer {
-  display: flex;
-  grid-column: 1 / -1;
-  align-items: center;
-  gap: var(--vi-line-item-col-gap, 16px);
-}
-
-.vi-line-item[data-layout='grid'] .vi-line-item-price {
-  margin-inline-start: auto;
-}
-
-.vi-line-item[data-layout='grid'] .vi-line-item-unit-price {
-  display: none;
-}
-
-@media (min-width: 1280px) {
-  .vi-line-item[data-layout='grid'] .vi-line-item__footer {
-    display: contents;
+    .vi-line-item__footer {
+      grid-area: footer;
+    }
   }
 
-  .vi-line-item[data-layout='grid'] .vi-line-item-price {
-    margin-inline-start: 0;
-  }
+  &[data-layout='grid'] {
+    .vi-line-item__footer {
+      grid-column: 1 / -1;
+    }
 
-  .vi-line-item[data-layout='grid'] .vi-line-item-unit-price {
-    display: block;
-  }
+    .vi-line-item__price {
+      grid-column: var(--vi-price-col, auto);
+    }
 
-  .vi-line-item--promotion[data-layout='grid'] .vi-line-item-price {
-    grid-column: 6;
+    @media (min-width: 1260px) {
+      &.vi-line-item--promotion {
+        --vi-price-col: 6;
+      }
+    }
   }
+}
+
+.vi-line-item__image {
+  width: var(--vi-image-max-w, 80px);
 }
