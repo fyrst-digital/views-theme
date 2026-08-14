@@ -10,12 +10,12 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | `Cart:Page` | Owner JS: listen `Cart:Changed`, fetch `/vi/cart/page`, swap islands |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `Alert`; shared with drawer |
 | `Cart:Heading` | Title + inline count (`h1`); island |
-| `Cart:Items` | Line list (`layout="grid"`) or `Cart:Empty`; shared with drawer |
+| `Cart:Items` | One CSS grid (`layout="grid"`) or stacked flex; `Cart:Empty` when empty; shared with drawer |
 | `Cart:Page:Aside` | Summary + `Cart:Options` + checkout CTA — **omitted** when empty |
 | `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) |
 | `Cart:Options` | Shipping pre-calc + promotion form |
 | `Cart:Actions` | Checkout only (`cart` nest emptied) |
-| `LineItem` | `layout="grid"` → unit · qty · total columns (desktop) |
+| `LineItem` | `layout="grid"` → qty · remove · unit · total columns (desktop) |
 | `Cart` | HTTP owner (header); page does **not** reload |
 
 ## Composition
@@ -26,9 +26,9 @@ Cart:Page (data-component owner)
 ├─ Cart:Heading (h1, countDisplay=inline)
 ├─ [role=alert] (client error)
 └─ body (`data-cart-page-body`)
-     ├─ Cart:Items layout="grid"
-     │    ├─ column header (desktop, aria-hidden)
-     │    └─ LineItem layout="grid" × N  |  Cart:Empty
+     ├─ Cart:Items layout="grid"  (display:grid; no list wrapper)
+     │    ├─ header display:contents (desktop, aria-hidden)
+     │    └─ LineItem layout="grid" display:contents × N  |  Cart:Empty
      └─ Cart:Page:Aside (when not empty)
           ├─ Cart:Summary
           ├─ Cart:Options
@@ -42,11 +42,11 @@ Desktop (1280px+): items + sticky aside. Mobile: stack.
 | Value | Used by | Host |
 |-------|---------|------|
 | `stacked` (default) | Drawer `Cart:Items` | Cover + info / footer areas |
-| `grid` | Cart page `Cart:Items` | Cover · info · unit · qty · total · remove |
+| `grid` | Cart page `Cart:Items` | Desktop (1280px+): one grid; header + `LineItem` + footer `display: contents`. Cells: cover · info · qty · remove · unit · total. Mobile: cover · info, then footer flex row (qty · remove · total; unit hidden) |
 
-`layout` is forwarded `Cart:Items` → `LineItem` → Product / Promotion / Container / Generic.
+`layout` is forwarded `Cart:Items` → `LineItem` → Product / Promotion / Container / Generic. Cart:Items passes `tag="div"` (no `<ul>` / `<li>`).
 
-Grid footer uses `display: contents` so `LineItem:UnitPrice`, `LineItem:Price`, quantity, and remove join the product grid. `LineItem:UnitPrice` is **grid-only** (`lineItem.price.unitPrice`; skips delivery-discount scope).
+`LineItem:UnitPrice` is **grid-only** (`lineItem.price.unitPrice`; skips delivery-discount scope). Shown from 1280px. Footer cell order: qty → remove → unit → total.
 
 ## Controller
 

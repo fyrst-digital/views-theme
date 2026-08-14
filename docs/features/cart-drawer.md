@@ -14,7 +14,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
-| `Cart:Items` | Line list (`layout="stacked"`), or `Cart:Empty`; shared with [cart page](cart-page.md) |
+| `Cart:Items` | Line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`; shared with [cart page](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
 | `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
@@ -114,20 +114,20 @@ See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers
 ```text
 LineItem:Product
 ├─ Product:Cover
-└─ LineItem:Content
-   ├─ LineItem:Header → Product:Name
-   ├─ LineItem:Body → Product:Variations + Features + DeliveryDate
-    └─ LineItem:Footer → (grid: UnitPrice) + Price + Quantity + Remove
+├─ LineItem:Content
+│  ├─ LineItem:Header → Product:Name
+│  └─ LineItem:Body → Product:Variations + Features + DeliveryDate
+└─ LineItem:Footer → Quantity + Remove + Price (grid also UnitPrice; order qty · remove · unit · total)
 ```
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (default `li`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md)) forwarded to leaf root |
+| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md)) forwarded to leaf root |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name |
 | `LineItem:Body` | Variations / features / delivery |
-| `LineItem:Footer` | Line total + quantity + remove (one row); grid adds `UnitPrice` and uses `display: contents` |
+| `LineItem:Footer` | Quantity + line total + remove; grid adds `UnitPrice` and is `display: contents` so cells join the `Cart:Items` grid |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `LineItem:UnitPrice` | Unit price (`unitPrice\|currency`); rendered in `layout="grid"` footer only |
 | `Product:Cover` | Line thumb / placeholder |

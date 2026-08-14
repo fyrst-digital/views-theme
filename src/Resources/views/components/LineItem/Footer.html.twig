@@ -17,6 +17,27 @@
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
+    {% block quantity %}
+        <twig:ViewsTheme:LineItem:Quantity
+            class="{{ vi_class('quantity') }}"
+            {{ ...vi_attrs('quantityInput').defaults({
+                lineItem: lineItem,
+                nestingLevel: nestingLevel,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block remove %}
+        {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
+            <twig:ViewsTheme:LineItem:Remove
+                class="{{ vi_class('remove') }}"
+                {{ ...vi_attrs('remove').defaults({
+                    lineItem: lineItem,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
     {% block unitPrice %}
         {% if layout is same as('grid') %}
             <twig:ViewsTheme:LineItem:UnitPrice
@@ -37,30 +58,5 @@
                 showPrice: showPrice,
             }).all() }}
         />
-    {% endblock %}
-
-    {% block quantity %}
-        <div
-            {{ vi_attrs('quantity') }}
-            class="{{ vi_class('quantity', { layout: layout }) }}"
-        >
-            <twig:ViewsTheme:LineItem:Quantity
-                {{ ...vi_attrs('quantityInput').defaults({
-                    lineItem: lineItem,
-                    nestingLevel: nestingLevel,
-                }).all() }}
-            />
-
-            {% block remove %}
-                {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
-                    <twig:ViewsTheme:LineItem:Remove
-                        class="{{ vi_class('remove') }}"
-                        {{ ...vi_attrs('remove').defaults({
-                            lineItem: lineItem,
-                        }).all() }}
-                    />
-                {% endif %}
-            {% endblock %}
-        </div>
     {% endblock %}
 </div>

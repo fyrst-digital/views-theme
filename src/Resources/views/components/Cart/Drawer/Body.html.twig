@@ -45,7 +45,6 @@
     {% block content %}
         <twig:ViewsTheme:Cart:Items
             class="{{ vi_class('items') }}"
-            list:class="{{ vi_class('itemsList') }}"
             {{ ...vi_attrs('items').defaults({
                 cart: cart,
                 layout: 'stacked',

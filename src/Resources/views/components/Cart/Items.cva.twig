@@ -1,6 +1,12 @@
 {
     root: {
         base: 'vi-cart-items',
+        variants: {
+            layout: {
+                stacked: 'd-flex flex-column gap-3',
+                grid: '',
+            },
+        },
     },
     header: {
         base: 'vi-cart-items__header',
@@ -17,14 +23,8 @@
     headerTotal: {
         base: 'vi-cart-items__header-total',
     },
-    list: {
-        base: 'vi-cart-items__list list-unstyled mb-0 d-flex flex-column',
-        variants: {
-            layout: {
-                stacked: 'gap-3',
-                grid: 'gap-6',
-            },
-        },
+    headerRemove: {
+        base: 'vi-cart-items__header-remove',
     },
     item: {
         base: 'vi-cart-items__item',
