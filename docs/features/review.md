@@ -98,6 +98,8 @@ viewsTheme: {
 
 Bridge reads `element.config.viewsTheme.value.appearance`. Missing key / existing layouts → `tabs`. PHP normalizes unknown values to `tabs`.
 
+Config is **per content language** (cms slot translation). Save once per language you use on the storefront.
+
 Admin: `app/administration/src/extension/sw-cms/elements/product-description-reviews/` + `main.js` — Options tab, theme-only banner + appearance select.
 
 `Cms:DescriptionReviews` resolves chrome via Symfony UX `FromMethod` (`resolveTemplate`): tabs → `Cms/DescriptionReviews.html.twig`; accordion → `Cms/DescriptionReviews/Accordion.html.twig`.

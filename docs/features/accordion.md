@@ -70,7 +70,7 @@ Discovery uses `[data-component="ViewsTheme:Accordion:Header|Panel"]` — never 
 |---------|-----|
 | Expanded header | `aria-expanded` — set SSR from `active` prop; JS updates on change |
 | Collapsed panel | `inert` on `Accordion:Panel` (not `hidden` — `display: none` cannot animate) |
-| Visible panel | `Accordion/Panel.css`: `block-size: 0` → `auto` when previous sibling Header is `[aria-expanded='true']` (`interpolate-size: allow-keywords`; Firefox snaps until it ships) |
+| Visible panel | `Accordion/Panel.css`: `block-size: 0` → `auto` when Item `:has([aria-expanded='true'])` (`interpolate-size: allow-keywords`; Firefox snaps until it ships) |
 | Visual header | `Accordion/Header.css` keyed off `[aria-expanded='true']` — **not** CVA variants or JS `classList` |
 
 Padding belongs on nest `content` (`content:class`), not the Panel root.

@@ -9,6 +9,6 @@
   }
 }
 
-.vi-accordion__header[aria-expanded='true'] + .vi-accordion__panel {
+.vi-accordion__item:has([aria-expanded='true']) .vi-accordion__panel {
   block-size: auto;
 }
