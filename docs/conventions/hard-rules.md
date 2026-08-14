@@ -24,7 +24,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
 | **Lazy shells (critical):** never cache HTML/DOM; unmount on close; always (re)fetch on open (Search term via Open/Close payload only) | [javascript.md — Lazy-loaded shells](javascript.md#lazy-loaded-shells-critical) |
 | Removed legacy class-map APIs (`vi_attr_classes`, `vi_classes`, old map-style define) | [css-classes.md](css-classes.md) |
-| **CSS vars (critical):** init once `prop: var(--token, fallback)`; variants **assign** `--token` only (never re-declare prop with new fallback); theme assigns external overrides | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) |
+| **CSS vars (critical):** init once `prop: var(--token, fallback)`; variants **assign** `--token` only; chrome tokens `--vi-{component}-{prop}` (never `--vi-color` / `--vi-fw`); nest `&[aria-*]` | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) · [token naming](css-classes.md#token-naming) |
 | **Length units (critical):** component CSS / token fallbacks use **`px` only** — no `rem`/`em` lengths | [css-classes.md — Length units](css-classes.md#length-units-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
 | **XHR UX HTML (critical):** always `AbstractComponentController::renderComponent()` — never raw `createAndRender` Response | [architecture.md — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |

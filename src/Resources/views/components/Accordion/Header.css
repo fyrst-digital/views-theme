@@ -1,18 +1,26 @@
 .vi-accordion__header {
-  color: var(--vi-color, var(--tertiary-color));
-  font-weight: var(--vi-fw, 400);
-}
+  background-color: var(--vi-accordion-bg, var(--body-bg));
+  color: var(--vi-accordion-color, var(--tertiary-color));
+  font-weight: var(--vi-accordion-fw, 400);
+  transition: all var(--vi-accordion-duration, 150ms) ease;
 
-.vi-accordion__header[aria-expanded='true'] {
-  --vi-color: var(--vi-active-color, var(--body-color));
-  --vi-fw: var(--vi-active-fw, 600);
+  &:hover {
+    --vi-accordion-bg: var(--vi-accordion-hover-bg, var(--light));
+    --vi-accordion-color: var(--vi-accordion-hover-color, var(--body-color));
+  }
+
+  &[aria-expanded='true'] {
+    --vi-accordion-color: var(--vi-accordion-active-color, var(--body-color));
+    --vi-accordion-bg: var(--vi-accordion-active-bg, var(--light));
+    --vi-accordion-fw: var(--vi-accordion-active-fw, 600);
+
+    .vi-accordion__caret {
+      transform: rotate(180deg);
+    }
+  }
 }
 
 .vi-accordion__caret {
   flex-shrink: 0;
-  transition: transform var(--vi-duration, 150ms) ease;
-}
-
-.vi-accordion__header[aria-expanded='true'] .vi-accordion__caret {
-  transform: rotate(180deg);
+  transition: transform var(--vi-accordion-duration, 150ms) ease;
 }
