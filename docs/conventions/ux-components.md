@@ -462,7 +462,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
-| LineItem:* (+ Quantity/Remove JS only), Cart:* (+ mutation owner / drawer), Wishlist:* | UX + JS |
+| LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |

@@ -58,7 +58,7 @@ app/storefront/src/modules/
 | Path | Role |
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
-| `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland |
+| `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland, swapComponentIsland |
 | `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
@@ -185,7 +185,10 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
 | Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
-| Cart drawer flashes / heading / items / footer | `ViewsTheme:Cart:Drawer:Flashes` etc. | `Cart/Drawer/Flashes.js` etc. |
+| Cart flashes / items / heading | `ViewsTheme:Cart:Flashes` / `Items` / `Heading` | `Cart/Flashes.js` etc. |
+| Cart page | `ViewsTheme:Cart:Page` | `Cart/Page.js` |
+| Cart page aside | `ViewsTheme:Cart:Page:Aside` | `Cart/Page/Aside.js` |
+| Cart drawer heading / footer | `ViewsTheme:Cart:Drawer:Heading` / `Footer` | `Cart/Drawer/Heading.js` etc. |
 | Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` — theme-owned only; do **not** set core `data-quantity-selector` / `js-btn-*` hooks |
 | Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
@@ -348,7 +351,8 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (`Action/Badge.js` owns count) |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
-| Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (swap targets; co-located JS) |
+| Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
+| Heading / Footer | `data-component="ViewsTheme:Cart:Drawer:Heading"` / `ViewsTheme:Cart:Drawer:Footer` |
 | Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
@@ -359,6 +363,21 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 - Badge listens to `ViewsTheme:Cart:Changed` and updates text/`hidden` (no CSS class strings in JS)
 
 See [Cart drawer](../features/cart-drawer.md).
+
+### Cart page
+
+Storefront cart page owner. **Cart** owns mutations; **Page** owns island refresh (same fetch/swap pattern as drawer Body).
+
+| Hook | Attribute |
+|------|-----------|
+| Page owner | `data-component="ViewsTheme:Cart:Page"` |
+| Flashes / Heading / Items | `data-component="ViewsTheme:Cart:…"` |
+| Aside | `data-component="ViewsTheme:Cart:Page:Aside"` |
+
+- Page on `Changed`: re-fetch `/vi/cart/page` → swap Flashes / Heading / Items / Aside (Aside omitted when empty). Same fetch/swap pattern as drawer Body.
+- No full-page reload
+
+See [Cart page](../features/cart-page.md).
 
 ### Gallery fullscreen
 

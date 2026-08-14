@@ -6,19 +6,18 @@ import {
 import { parseHtmlFragment } from '@views-theme/modules/shared/dom.js'
 
 /**
- * In-open cart drawer island refresh.
+ * Cart page owner: island refresh on Cart:Changed.
  *
  * @extends {ShopwareComponent}
  */
-export default class CartDrawerBody extends ShopwareComponent {
+export default class CartPage extends ShopwareComponent {
     static options = {
-        drawerUrl: null,
+        pageUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
         flashesComponent: 'ViewsTheme:Cart:Flashes',
-        headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
+        headingComponent: 'ViewsTheme:Cart:Heading',
         itemsComponent: 'ViewsTheme:Cart:Items',
-        footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
-        drawerSelector: '#vi-cart-drawer',
+        asideComponent: 'ViewsTheme:Cart:Page:Aside',
     }
 
     init() {
@@ -26,7 +25,6 @@ export default class CartDrawerBody extends ShopwareComponent {
         this._queued = false
         this._fetch = { controller: null, seq: 0 }
         this._onCartChanged = this._onCartChanged.bind(this)
-        this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
         this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
         window.Shopware.on(this.options.changedEvent, this._onCartChanged)
@@ -36,6 +34,10 @@ export default class CartDrawerBody extends ShopwareComponent {
         window.Shopware.off(this.options.changedEvent, this._onCartChanged)
         abortRequest(this._fetch)
         this._queued = false
+    }
+
+    _bodyEl() {
+        return this.el.querySelector('[data-cart-page-body]') || this.el
     }
 
     async _onCartChanged(payload) {
@@ -54,7 +56,7 @@ export default class CartDrawerBody extends ShopwareComponent {
             return
         }
 
-        if (!this.options.drawerUrl) {
+        if (!this.options.pageUrl) {
             return
         }
 
@@ -65,7 +67,7 @@ export default class CartDrawerBody extends ShopwareComponent {
             do {
                 this._queued = false
                 const request = beginRequest(this._fetch)
-                const html = await fetchText(this.options.drawerUrl, { signal: request.signal })
+                const html = await fetchText(this.options.pageUrl, { signal: request.signal })
                 if (!request.isCurrent()) {
                     continue
                 }
@@ -75,7 +77,7 @@ export default class CartDrawerBody extends ShopwareComponent {
             if (error?.name === 'AbortError') {
                 return
             }
-            console.error('CartDrawerBody: Failed to refresh cart drawer', error)
+            console.error('CartPage: Failed to refresh cart page', error)
             this._showError(null)
         } finally {
             this._busy = false
@@ -89,9 +91,9 @@ export default class CartDrawerBody extends ShopwareComponent {
     _apply(html) {
         const source = parseHtmlFragment(html)
         this._swap(source, this.el, this.options.flashesComponent)
+        this._swap(source, this.el, this.options.headingComponent)
         this._swap(source, this.el, this.options.itemsComponent)
-        this._swap(source, this.el, this.options.footerComponent)
-        this._swap(source, this._drawerEl || document, this.options.headingComponent)
+        this._swap(source, this._bodyEl(), this.options.asideComponent)
     }
 
     /**

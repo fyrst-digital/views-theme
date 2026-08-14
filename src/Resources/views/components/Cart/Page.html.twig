@@ -1,0 +1,86 @@
+{% props
+    page,
+    pageUrl = path('frontend.views-theme.cart.page'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['flashes', 'heading', 'alert', 'body', 'items', 'aside']) %}
+
+{% set cart = page.cart %}
+{% set productsQuantity = cart.lineItems|length %}
+{% set isEmpty = productsQuantity < 1 %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Page',
+        'data-component-options': {
+            pageUrl: pageUrl,
+            changedEvent: 'ViewsTheme:Cart:Changed',
+            flashesComponent: 'ViewsTheme:Cart:Flashes',
+            headingComponent: 'ViewsTheme:Cart:Heading',
+            itemsComponent: 'ViewsTheme:Cart:Items',
+            asideComponent: 'ViewsTheme:Cart:Page:Aside',
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block heading %}
+        <twig:ViewsTheme:Cart:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                productsQuantity: productsQuantity,
+                countDisplay: 'inline',
+                titleTag: 'h1',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block alert %}
+        <div
+            {{ vi_attrs('alert').defaults({
+                role: 'alert',
+                hidden: true,
+                'data-fallback': 'error.message-default'|trans|striptags,
+            }) }}
+            class="{{ vi_class('alert') }}"
+        ></div>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body').defaults({
+                'data-cart-page-body': true,
+            }) }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block items %}
+                <twig:ViewsTheme:Cart:Items
+                    class="{{ vi_class('items') }}"
+                    {{ ...vi_attrs('items').defaults({
+                        cart: cart,
+                        layout: 'grid',
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block aside %}
+                {% if not isEmpty %}
+                    <twig:ViewsTheme:Cart:Page:Aside
+                        class="{{ vi_class('aside') }}"
+                        {{ ...vi_attrs('aside').defaults({
+                            page: page,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

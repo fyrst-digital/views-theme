@@ -41,7 +41,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
-- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md).
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), checkout cart page → [Cart page](features/cart-page.md).
 
 ### Storefront JS
 
@@ -122,6 +122,7 @@ Examples:
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
 | `frontend.views-theme.navigation.flyout` | `/vi/navigation/flyout/{navigationId}` |
 | `frontend.views-theme.cart.drawer` | `/vi/cart/drawer` |
+| `frontend.views-theme.cart.page` | `/vi/cart/page` |
 | `frontend.views-theme.listing.category` | `/vi/listing/category/{navigationId}` |
 | `frontend.views-theme.listing.category.aggregations` | `/vi/listing/category/{navigationId}/aggregations` |
 | `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{navigationId}/filter-options` |
@@ -149,7 +150,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 | JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
-Controllers: `CartDrawerController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`.
+Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -167,6 +168,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Theme route / controller | Loader | App hook | Notes |
 |--------------------------|--------|----------|--------|
 | Cart drawer (`CartDrawerController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | **Cart page DTO**, not offcanvas widget. Loader also dispatches `CheckoutCartPageLoadedEvent`. |
+| Cart page XHR (`CartPageController`) | `CheckoutCartPageLoader` | `checkout-cart-page-loaded` (`CheckoutCartPageLoadedHook`) | HTML `Cart:Page` islands; [cart-page.md](features/cart-page.md) |
 | Listing results/aggs (`ListingController`) | `ProductListingGateway` → core listing/search routes | *(none on raw listing DTO)* | Results use `no-aggregations`; reduced aggs / filter-options via gateway; [product-listing.md](features/product-listing.md) |
 | Filter drawer (`FilterDrawerController`) | `ProductListingGateway` catalog aggs | *(none on raw listing DTO)* | HTML `Filter:Drawer`; [filters.md](features/filters.md) |
 | Nav drawer open (`NavigationDrawerController::drawer`) | `MenuOffcanvasPageletLoader` | `menu-offcanvas-pagelet-loaded` | Same offcanvas menu data as core |
@@ -189,4 +191,5 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 - [Navigation drawer](features/navigation-drawer.md)
 - [Navigation bar](features/navigation-bar.md)
 - [Cart drawer](features/cart-drawer.md)
+- [Cart page](features/cart-page.md)
 - [Filters](features/filters.md)

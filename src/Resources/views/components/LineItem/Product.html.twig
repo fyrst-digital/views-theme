@@ -5,6 +5,7 @@
     nestingLevel = 0,
     deliveries = null,
     tag = 'li',
+    layout = 'stacked',
     cva = {},
 %}
 
@@ -18,8 +19,10 @@
     : null %}
 
 <{{ tag|raw }}
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
+    {{ attributes.defaults({
+        'data-layout': layout,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     {% block image %}
         <twig:ViewsTheme:Product:Cover
@@ -58,14 +61,18 @@
                     deliveries: deliveries,
                 }).all() }}
             />
-
-            <twig:ViewsTheme:LineItem:Footer
-                {{ ...vi_attrs('footer').defaults({
-                    lineItem: lineItem,
-                    showPrice: showPrice,
-                    nestingLevel: nestingLevel,
-                }).all() }}
-            />
         </twig:ViewsTheme:LineItem:Content>
+    {% endblock %}
+
+    {% block footer %}
+        <twig:ViewsTheme:LineItem:Footer
+            {{ ...vi_attrs('footer').defaults({
+                lineItem: lineItem,
+                showPrice: showPrice,
+                showRemoveButton: showRemoveButton,
+                nestingLevel: nestingLevel,
+                layout: layout,
+            }).all() }}
+        />
     {% endblock %}
 </{{ tag|raw }}>

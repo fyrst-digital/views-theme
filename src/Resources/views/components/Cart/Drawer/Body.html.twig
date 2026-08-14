@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['alert']) %}
+{% do vi_define_attrs(['alert', 'flashes', 'items']) %}
 
 {% set cart = page.cart %}
 
@@ -15,9 +15,9 @@
         'data-component-options': {
             drawerUrl: drawerUrl,
             changedEvent: 'ViewsTheme:Cart:Changed',
-            flashesComponent: 'ViewsTheme:Cart:Drawer:Flashes',
+            flashesComponent: 'ViewsTheme:Cart:Flashes',
             headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
-            itemsComponent: 'ViewsTheme:Cart:Drawer:Items',
+            itemsComponent: 'ViewsTheme:Cart:Items',
             footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
             drawerSelector: '#vi-cart-drawer',
         }|json_encode,
@@ -25,7 +25,10 @@
     class="{{ vi_class('root') }}"
 >
     {% block flashes %}
-        <twig:ViewsTheme:Cart:Drawer:Flashes />
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
     {% endblock %}
 
     {% block alert %}
@@ -40,7 +43,14 @@
     {% endblock %}
 
     {% block content %}
-        <twig:ViewsTheme:Cart:Drawer:Items :cart="cart" />
+        <twig:ViewsTheme:Cart:Items
+            class="{{ vi_class('items') }}"
+            list:class="{{ vi_class('itemsList') }}"
+            {{ ...vi_attrs('items').defaults({
+                cart: cart,
+                layout: 'stacked',
+            }).all() }}
+        />
     {% endblock %}
 
     {% block footer %}

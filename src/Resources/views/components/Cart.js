@@ -20,8 +20,6 @@ export default class Cart extends ShopwareComponent {
         configureEvent: 'ViewsTheme:Cart:Configure',
         changedEvent: 'ViewsTheme:Cart:Changed',
         placeholderId: '00000000000000000000000000000000',
-        drawerSelector: '#vi-cart-drawer',
-        cartPageSelector: '.is-active-route-frontend-checkout-cart-page, .is-ctl-checkout.is-act-cartpage',
     }
 
     init() {
@@ -159,22 +157,6 @@ export default class Cart extends ShopwareComponent {
             error,
             source,
         })
-
-        if (ok) {
-            this._reloadCartPageIfNeeded()
-        }
-    }
-
-    _reloadCartPageIfNeeded() {
-        if (document.querySelector(this.options.drawerSelector)) {
-            return
-        }
-
-        if (!document.querySelector(this.options.cartPageSelector)) {
-            return
-        }
-
-        window.location.reload()
     }
 
     async _fetchCartCount() {

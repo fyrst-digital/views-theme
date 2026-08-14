@@ -1,0 +1,16 @@
+{% props
+    lineItem,
+    showPrice = true,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% if showPrice is same as(true) and lineItem.payload.discountScope != 'delivery' %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {{ lineItem.price.unitPrice|currency }}
+    </div>
+{% endif %}

@@ -1,0 +1,65 @@
+{% props
+    cart,
+    layout = 'stacked',
+    showRemoveButton = true,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['empty', 'list', 'header', 'headerInfo', 'headerUnit', 'headerQuantity', 'headerTotal']) %}
+
+{% set isEmpty = cart.lineItems|length < 1 %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Items',
+        'data-layout': layout,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
+>
+    {% if isEmpty %}
+        {% block empty %}
+            <twig:ViewsTheme:Cart:Empty
+                {{ ...vi_attrs('empty').all() }}
+            />
+        {% endblock %}
+    {% else %}
+        {% block header %}
+            {% if layout is same as('grid') %}
+                <div
+                    {{ vi_attrs('header').defaults({
+                        'aria-hidden': 'true',
+                    }) }}
+                    class="{{ vi_class('header') }}"
+                >
+                    <span {{ vi_attrs('headerInfo') }} class="{{ vi_class('headerInfo') }}">
+                        {{ 'checkout.cartHeaderInfo'|trans|sw_sanitize }}
+                    </span>
+                    <span {{ vi_attrs('headerUnit') }} class="{{ vi_class('headerUnit') }}">
+                        {{ 'checkout.cartHeaderUnitPrice'|trans|sw_sanitize }}
+                    </span>
+                    <span {{ vi_attrs('headerQuantity') }} class="{{ vi_class('headerQuantity') }}">
+                        {{ 'checkout.cartHeaderQuantity'|trans|sw_sanitize }}
+                    </span>
+                    <span {{ vi_attrs('headerTotal') }} class="{{ vi_class('headerTotal') }}">
+                        {{ 'checkout.cartHeaderTotalPrice'|trans|sw_sanitize }}
+                    </span>
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block list %}
+            <ul {{ vi_attrs('list') }} class="{{ vi_class('list', { layout: layout }) }}">
+                {% for lineItem in cart.lineItems %}
+                    <twig:ViewsTheme:LineItem
+                        :lineItem="lineItem"
+                        :deliveries="cart.deliveries"
+                        :showRemoveButton="showRemoveButton"
+                        :layout="layout"
+                        class="{{ vi_class('item') }}"
+                    />
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endif %}
+</div>

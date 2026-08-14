@@ -5,6 +5,7 @@
     nestingLevel = 0,
     deliveries = null,
     tag = 'li',
+    layout = 'stacked',
 %}
 
 {% set PRODUCT_LINE_ITEM_TYPE = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::PRODUCT_LINE_ITEM_TYPE') %}
@@ -24,12 +25,14 @@
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"
             :tag="tag"
+            :layout="layout"
             {{ ...attributes }}
         />
     {% elseif isDiscount %}
         <twig:ViewsTheme:LineItem:Promotion
             :lineItem="lineItem"
             :tag="tag"
+            :layout="layout"
             {{ ...attributes }}
         />
     {% elseif isContainer %}
@@ -40,6 +43,7 @@
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"
             :tag="tag"
+            :layout="layout"
             {{ ...attributes }}
         />
     {% else %}
@@ -50,6 +54,7 @@
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"
             :tag="tag"
+            :layout="layout"
             {{ ...attributes }}
         />
     {% endif %}

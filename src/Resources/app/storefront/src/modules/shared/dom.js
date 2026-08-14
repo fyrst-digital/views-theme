@@ -57,23 +57,43 @@ export function unmountEl(el, selector) {
 }
 
 /**
- * Swap a nested `[data-component]` island inside root.
+ * Swap a nested `[data-component]` island inside root from an HTML string.
  *
  * @param {Element} root
  * @param {string} html
  * @param {string} componentName
  */
 export function replaceComponentIsland(root, html, componentName) {
-    const fragment = parseHtmlFragment(html)
-    const next = fragment.querySelector(`[data-component="${componentName}"]`)
-    const existing = root.querySelector(`[data-component="${componentName}"]`)
+    swapComponentIsland(parseHtmlFragment(html), root, componentName)
+}
+
+/**
+ * Swap a nested `[data-component]` island.
+ * both → replace; existing only → remove; next only → append to target.
+ *
+ * @param {ParentNode} sourceRoot
+ * @param {ParentNode} targetRoot
+ * @param {string} componentName
+ */
+export function swapComponentIsland(sourceRoot, targetRoot, componentName) {
+    if (!targetRoot) {
+        return
+    }
+
+    const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
+    const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
 
     if (existing && next) {
         existing.replaceWith(next)
         return
     }
 
+    if (existing && !next) {
+        existing.remove()
+        return
+    }
+
     if (!existing && next) {
-        root.appendChild(next)
+        targetRoot.appendChild(next)
     }
 }

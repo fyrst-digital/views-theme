@@ -13,8 +13,8 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
-| `Cart:Drawer:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; consumed on render so messages do not leak to page content |
-| `Cart:Drawer:Items` | Line list, or `Cart:Empty` when no line items |
+| `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
+| `Cart:Items` | Line list (`layout="stacked"`), or `Cart:Empty`; shared with [cart page](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
 | `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
@@ -40,7 +40,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
-- Cart page mutations (when drawer is closed) trigger a full page reload so list/summary stay correct without a cart-page redesign
+- Cart page mutations refresh theme `Cart:Page` islands — see [cart page](cart-page.md)
 
 ## How it works
 
@@ -82,11 +82,11 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Pr
 
 1. Sub-components emit cart intents
 2. `Cart` performs HTTP and emits `Cart:Changed`
-3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
-   - `ViewsTheme:Cart:Drawer:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
-   - `ViewsTheme:Cart:Drawer:Items`
-   - `ViewsTheme:Cart:Drawer:Footer` (optional — remove when missing in response, append when newly present)
-   - `ViewsTheme:Cart:Drawer:Heading`
+ 3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
+    - `ViewsTheme:Cart:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
+    - `ViewsTheme:Cart:Items` (`layout="stacked"`)
+    - `ViewsTheme:Cart:Drawer:Footer` (optional — remove when missing in response, append when newly present)
+    - `ViewsTheme:Cart:Drawer:Heading`
  4. Parse with `<template>`; Body refresh aborts stale fetches and queues one follow-up while busy. Island swap: both → replace; existing only → remove; next only → append to target root
 
 Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
@@ -117,18 +117,19 @@ LineItem:Product
 └─ LineItem:Content
    ├─ LineItem:Header → Product:Name
    ├─ LineItem:Body → Product:Variations + Features + DeliveryDate
-   └─ LineItem:Footer → Price + Quantity + Remove
+    └─ LineItem:Footer → (grid: UnitPrice) + Price + Quantity + Remove
 ```
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Type router → Product / Promotion / Container / Generic; prop `tag` (default `li`) forwarded to leaf root |
+| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (default `li`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md)) forwarded to leaf root |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name |
 | `LineItem:Body` | Variations / features / delivery |
-| `LineItem:Footer` | Line total + quantity + remove (one row) |
+| `LineItem:Footer` | Line total + quantity + remove (one row); grid adds `UnitPrice` and uses `display: contents` |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
+| `LineItem:UnitPrice` | Unit price (`unitPrice\|currency`); rendered in `layout="grid"` footer only |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
 | `Product:Variations` | `payload.options` |
@@ -151,6 +152,7 @@ Region-nested override keys on `LineItem:Product`:
 | `body:features` | `LineItem:Features` |
 | `body:deliveryDate` | `LineItem:DeliveryDate` |
 | `footer` | `LineItem:Footer` |
+| `footer:unitPrice` | `LineItem:UnitPrice` (grid layout only) |
 | `footer:price` | `LineItem:Price` |
 | `footer:quantityInput` | `LineItem:Quantity` (further `quantityInput:*` → `QuantityInput`; ± are `Button` nests; `quantityInput:icon:class` / `decrease:*` / `increase:*`) |
 | `footer:remove` | `LineItem:Remove` (`button:*` → remove Button) |
@@ -166,7 +168,8 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 | Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
-| Flashes / Heading / Items / Footer | `data-component="ViewsTheme:Cart:Drawer:…"` (island swap targets) |
+| Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
+| Heading / Footer | `data-component="ViewsTheme:Cart:Drawer:Heading"` / `ViewsTheme:Cart:Drawer:Footer` |
 | Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
@@ -233,7 +236,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Cart owner | `src/Resources/views/components/Cart.*` |
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
-| Body / islands | `src/Resources/views/components/Cart/Drawer/{Body,Flashes,Items,Footer,Heading}.*` |
+| Body / drawer islands | `src/Resources/views/components/Cart/Drawer/{Body,Footer,Heading}.*` |
+| Shared flashes / items | `src/Resources/views/components/Cart/{Flashes,Items}.*` |
 | Empty state | `src/Resources/views/components/Cart/Empty.*` |
 | Options | `src/Resources/views/components/Cart/Options.*` |
 | Actions | `src/Resources/views/components/Cart/Actions.*` |
@@ -247,4 +251,4 @@ See [JavaScript conventions](../conventions/javascript.md).
 - Opening the theme drawer on variants-grid success (product add already auto-opens via `openOnActions: ['add']`)
 - Cookie offcanvas → `Drawer`
 - Full checkout / confirm page redesign
-- Cart page layout redesign (shared `LineItem:*` API + reload on mutation)
+- Add-by-number / `Cart:AddProductForm`

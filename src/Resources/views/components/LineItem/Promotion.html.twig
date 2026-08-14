@@ -1,6 +1,7 @@
 {% props
     lineItem,
     tag = 'li',
+    layout = 'stacked',
     cva = {},
 %}
 
@@ -11,8 +12,10 @@
 {% set label = lineItem.label|trans|sw_sanitize %}
 
 <{{ tag|raw }}
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
+    {{ attributes.defaults({
+        'data-layout': layout,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     {% block image %}
         <div
@@ -43,12 +46,17 @@
                     </span>
                 </div>
             </div>
+        </twig:ViewsTheme:LineItem:Content>
+    {% endblock %}
 
+    {% block price %}
+        <div class="{{ vi_class('footer') }}">
             <twig:ViewsTheme:LineItem:Price
+                class="{{ vi_class('price') }}"
                 {{ ...vi_attrs('price').defaults({
                     lineItem: lineItem,
                 }).all() }}
             />
-        </twig:ViewsTheme:LineItem:Content>
+        </div>
     {% endblock %}
 </{{ tag|raw }}>

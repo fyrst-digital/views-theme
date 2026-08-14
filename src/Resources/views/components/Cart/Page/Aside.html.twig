@@ -1,0 +1,41 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['summary', 'options', 'actions']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Page:Aside',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block summary %}
+        <twig:ViewsTheme:Cart:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                summary: page.cart,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block options %}
+        <twig:ViewsTheme:Cart:Options
+            class="{{ vi_class('options') }}"
+            {{ ...vi_attrs('options').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block actions %}
+        <twig:ViewsTheme:Cart:Actions
+            class="{{ vi_class('actions') }}"
+            {{ ...vi_attrs('actions').all() }}
+        >
+            <twig:block name="cart"></twig:block>
+        </twig:ViewsTheme:Cart:Actions>
+    {% endblock %}
+</div>

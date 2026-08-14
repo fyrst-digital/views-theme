@@ -5,6 +5,7 @@
     nestingLevel = 0,
     deliveries = null,
     tag = 'li',
+    layout = 'stacked',
     cva = {},
 %}
 
@@ -20,6 +21,7 @@
         :nestingLevel="nestingLevel"
         :deliveries="deliveries"
         :tag="tag"
+        :layout="layout"
         class="{{ vi_class('root') }}"
         {{ ...attributes }}
     />

@@ -15,7 +15,9 @@
 {% do vi_define_attrs(['title', 'countInline', 'countBadge']) %}
 
 <div
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cart:Heading',
+    }) }}
     class="{{ vi_class('root') }}"
 >
     {% block title %}

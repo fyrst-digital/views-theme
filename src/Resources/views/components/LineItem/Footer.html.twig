@@ -3,17 +3,32 @@
     showPrice = true,
     nestingLevel = 0,
     showRemoveButton = true,
+    layout = 'stacked',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['price', 'quantity', 'quantityInput', 'remove']) %}
+{% do vi_define_attrs(['unitPrice', 'price', 'quantity', 'quantityInput', 'remove']) %}
 
 <div
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
+    {{ attributes.defaults({
+        'data-layout': layout,
+    }) }}
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
+    {% block unitPrice %}
+        {% if layout is same as('grid') %}
+            <twig:ViewsTheme:LineItem:UnitPrice
+                class="{{ vi_class('unitPrice') }}"
+                {{ ...vi_attrs('unitPrice').defaults({
+                    lineItem: lineItem,
+                    showPrice: showPrice,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
     {% block price %}
         <twig:ViewsTheme:LineItem:Price
             class="{{ vi_class('price') }}"
@@ -27,7 +42,7 @@
     {% block quantity %}
         <div
             {{ vi_attrs('quantity') }}
-            class="{{ vi_class('quantity') }}"
+            class="{{ vi_class('quantity', { layout: layout }) }}"
         >
             <twig:ViewsTheme:LineItem:Quantity
                 {{ ...vi_attrs('quantityInput').defaults({

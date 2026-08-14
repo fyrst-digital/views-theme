@@ -42,6 +42,7 @@ Full index: [docs/README.md](docs/README.md).
 | Navigation drawer | [docs/features/navigation-drawer.md](docs/features/navigation-drawer.md) |
 | Navigation bar / flyout | [docs/features/navigation-bar.md](docs/features/navigation-bar.md) |
 | Cart drawer | [docs/features/cart-drawer.md](docs/features/cart-drawer.md) |
+| Cart page | [docs/features/cart-page.md](docs/features/cart-page.md) |
 | Wishlist | [docs/features/wishlist.md](docs/features/wishlist.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |
 | Language switch | [docs/features/language-switch.md](docs/features/language-switch.md) |
