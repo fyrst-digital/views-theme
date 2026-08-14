@@ -18,6 +18,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | UX tags, **prop defaults** (no wasteful `resolved*`), **class components** for heavy view-model, CVA, attributes, BEM `vi-*`, scope (`components/` only) | [ux-components.md § Props](ux-components.md#props) · [class components](ux-components.md#class-components-php-backed) |
 | Component template checklist | [components.md](components.md) |
 | CVA: `vi_define_cva` + `vi_class` (no `{% set cx %}`) | [vi-cva.md](../twig/vi-cva.md) |
+| **CVA vs CSS (critical):** Bootstrap utility / prop / `xl` breakpoint → CVA; tokens only for tracks, areas, px with no utility | [css-classes.md — CVA vs CSS](css-classes.md#cva-vs-component-css-critical) |
 | Nest attrs: `vi_define_attrs` + `vi_attrs` (no `{% set attrs %}`) | [vi-attrs.md](../twig/vi-attrs.md) · [nested blocks](ux-components.md#nested-blocks-parent-locals-are-shadowed) |
 | Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
 | JS: `data-component`, no CSS selectors, no `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |

@@ -32,6 +32,7 @@ Full index: [docs/README.md](docs/README.md).
 | **Agent workflow** (refactors; no builds; surgical edits) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
 | **UX Twig components** (prop defaults, class components) | [docs/conventions/ux-components.md#props](docs/conventions/ux-components.md#props) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
+| **CVA vs CSS** (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#cva-vs-component-css-critical) |
 | CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) · [token naming](docs/conventions/css-classes.md#token-naming) |
 | Length units (critical): **px only** | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#length-units-critical) |
 | JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |

@@ -67,6 +67,8 @@ class="{{ vi_class('link', { level: level, active: isActive }) }}"
 
 Do **not** bake variants into `vi_define_cva`.
 
+What belongs in `base` / `variants` / `compoundVariants` vs component CSS: **[CVA vs CSS (critical)](../conventions/css-classes.md#cva-vs-component-css-critical)**. Utility chrome (`d-flex`, `gap-2`, `d-xl-contents`) is CVA. Do not wrap those in `--vi-*` tokens.
+
 ## Example
 
 ```twig
@@ -120,4 +122,4 @@ Single Twig **hash expression** (optional `{# comments #}`). Evaluated with comp
 
 - [vi-attrs](vi-attrs.md) — nest bags
 - [UX components](../conventions/ux-components.md)
-- [CSS class API](../conventions/css-classes.md)
+- [CSS class API](../conventions/css-classes.md) — [CVA vs CSS](../conventions/css-classes.md#cva-vs-component-css-critical)

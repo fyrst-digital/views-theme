@@ -116,6 +116,7 @@ Do **not** invent conventions from this file. Theme UI/JS/route rules live only 
 | New UI under `views/storefront/` | UX components under `views/components/` |
 | New `PluginManager` plugins / class selectors for JS | Co-located `ShopwareComponent` + `data-component` |
 | Reintroducing `vi_define_classes` / `vi_attr_classes` / `vi_classes` | `vi_define_cva` / `vi_class` (+ `vi_define_attrs` / `vi_attrs`) |
+| CSS token wrapping a Bootstrap utility (`--vi-d`, `--vi-gap`, `@media` + `--vi-unit-d`) | CVA `base` / `variants` / `d-xl-*` — [CVA vs CSS](../../docs/conventions/css-classes.md#cva-vs-component-css-critical) |
 | Hardcoded storefront paths in JS | `path('route.name')` in Twig → options |
 | Hardcoded SQL in templates | DAL / injected services |
 | `$_GET` / `$_POST` in services | `RequestStack` or controller args |

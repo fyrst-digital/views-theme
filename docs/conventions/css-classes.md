@@ -23,6 +23,102 @@ Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defa
 
 **Never** put `class` / `slot:class` inside `.defaults({…})` — use `class="{{ vi_class('…') }}"` (or `slot:class="…"`) on the tag. See [UX components — Attributes](ux-components.md#attributes).
 
+## CVA vs component CSS (critical)
+
+CVA is the **variant API**, not a bag for a BEM root. Check CVA first. Component CSS is only for structure Bootstrap cannot express.
+
+### Decision order
+
+1. Does a **Bootstrap utility** exist? → CVA (`base` / `variants` / `compoundVariants`).
+2. Does it change with a **component prop** (`layout`, `size`, `color`)? → `variants`. Two axes at once → `compoundVariants`.
+3. Does it change only at a **theme breakpoint**? → responsive utility (`d-xl-contents`, `position-xl-sticky`). Never invent `1280px`.
+4. Else → component CSS token (`--vi-*`).
+
+| CVA | CSS token |
+|-----|-----------|
+| `display`, `flex`/`grid` chrome, `gap`, `align-*`, `justify-*`, `margin`/`padding`, `font-size`/`fw`, visibility (`d-none` / `d-xl-block`) | Custom `grid-template-columns` / `grid-template-areas` |
+| Prop axes (`layout: stacked \| grid`) | `grid-column: 1 / -1`, `span 2`, column index |
+| Breakpoint chrome (`d-xl-*`, `align-items-xl-center`) | px size with no utility (`--vi-image-size`, `--vi-top`) |
+| | Inherited geometry a parent must set (`--vi-cols` on `Cart:Items`) |
+
+### Theme breakpoints
+
+SoT: `src/Resources/app/storefront/src/scss/override.scss` (`$grid-breakpoints`).
+
+| Token | Width |
+|-------|-------|
+| `sm` | 520px |
+| `md` | 768px |
+| `lg` | 1024px |
+| `xl` | **1260px** |
+| `xxl` | 1600px |
+
+Desktop storefront chrome uses **`xl`**, not `1280px`. Display utilities include `contents` (`d-contents`, `d-xl-contents`). Spacers `0–10` (`gap-6` = 24px). Position is responsive (`position-xl-sticky`).
+
+### Variants vs tokens
+
+```twig
+{# ✅ CVA — layout + xl chrome #}
+root: {
+    variants: {
+        layout: {
+            stacked: 'd-grid gx-3 gy-2 align-items-start',
+            grid: 'd-contents',
+        },
+    },
+},
+footer: {
+    variants: {
+        layout: {
+            stacked: 'd-flex align-items-center gap-2',
+            grid: 'd-flex d-xl-contents align-items-center gap-2',
+        },
+    },
+}
+```
+
+```css
+/* ✅ CSS — custom tracks / span only */
+.vi-cart-items[data-layout='grid'] {
+  grid-template-columns: var(--vi-cols, var(--vi-image-size, 80px) minmax(0, 1fr));
+
+  @media (min-width: 1260px) {
+    --vi-cols: var(--vi-image-size, 80px) minmax(0, 1fr) minmax(104px, auto) auto minmax(72px, auto) minmax(80px, auto);
+    --vi-span: span 2;
+  }
+}
+
+/* ❌ NEVER — wrap a utility in a token */
+.vi-line-item__unit-price {
+  display: var(--vi-unit-d, none);
+}
+@media (min-width: 1280px) {
+  --vi-unit-d: block;
+  --vi-col-gap: 16px;
+}
+```
+
+```twig
+{# ❌ same mistake as CVA base-only + CSS token #}
+root: { base: 'vi-line-item__unit-price' }
+
+{# ✅ #}
+root: { base: 'vi-line-item__unit-price d-none d-xl-block' }
+```
+
+`compoundVariants` when **two props** must combine (`size` + `color`, `pill` + `size`). A breakpoint switch is **not** a compound axis — use `d-xl-*`.
+
+### Bootstrap names only
+
+This theme’s utilities are Bootstrap (see `override.scss`). Do **not** invent Tailwind aliases in CVA.
+
+| Use | Not |
+|-----|-----|
+| `flex-shrink-0` | `shrink-0` |
+| `d-block` | `block` |
+| `width` / `height: var(--vi-image-size, 80px)` | `w-20` `h-20` |
+| `tw:…` only when Tailwind is required | unprefixed Tailwind |
+
 ## Length units (critical)
 
 Theme-owned **component CSS** and **token fallbacks / theme assigns** use **`px` only** for lengths.
@@ -49,7 +145,7 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 
 | Layer | Role |
 |-------|------|
-| **Component CSS** | Structure: **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. Nest variants on the host (`&[aria-*]`, `&:last-child`, `&[data-*]`). No Bootstrap/Shopware override dumps |
+| **Component CSS** | Structure **CVA cannot own** ([above](#cva-vs-component-css-critical)): **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. Nest variants on the host (`&[aria-*]`, `&:last-child`, `&[data-*]`). No Bootstrap/Shopware override dumps |
 | **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
 | **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults from outside |
 
