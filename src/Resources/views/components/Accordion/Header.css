@@ -1,0 +1,18 @@
+.vi-accordion__header {
+  color: var(--vi-color, var(--tertiary-color));
+  font-weight: var(--vi-fw, 400);
+}
+
+.vi-accordion__header[aria-expanded='true'] {
+  --vi-color: var(--vi-active-color, var(--body-color));
+  --vi-fw: var(--vi-active-fw, 600);
+}
+
+.vi-accordion__caret {
+  flex-shrink: 0;
+  transition: transform var(--vi-duration, 150ms) ease;
+}
+
+.vi-accordion__header[aria-expanded='true'] .vi-accordion__caret {
+  transform: rotate(180deg);
+}

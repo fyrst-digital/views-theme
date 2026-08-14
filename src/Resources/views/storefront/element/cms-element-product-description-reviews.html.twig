@@ -4,12 +4,17 @@
     {% set product = element.data.product %}
     {% set reviews = element.data.reviews %}
     {% set ratingSuccess = element.data.ratingSuccess %}
+    {% set viewsThemeConfig = element.config.viewsTheme.value is defined
+        ? element.config.viewsTheme.value
+        : {} %}
+    {% set appearance = viewsThemeConfig.appearance|default('tabs') %}
 
     {% if product %}
         <twig:ViewsTheme:Cms:DescriptionReviews
             :product="product"
             :reviews="reviews"
             :ratingSuccess="ratingSuccess"
+            appearance="{{ appearance }}"
         />
     {% endif %}
 {% endblock %}

@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` are anonymous UX + JS — not class-backed.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -468,6 +468,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
 | Cookie:*, Filter, ContactChannel, MethodOption, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
 | Account:LoginCard / Register; Address:* shells; Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
+| Tabs / Tabs:List / Tab / Panel | Anonymous UX + JS; [tabs.md](../features/tabs.md) |
+| Accordion / Item / Header / Panel | Anonymous UX + JS; [accordion.md](../features/accordion.md) |
 | Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md); Item:Comment → Blockquote |
 | Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |
 | Review:Matrix (class-backed) + Matrix:Check / Bar / Share | UX + `vi_cva` + `Matrix.php` → `rows` / `visible`; Bar → Progress |

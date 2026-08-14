@@ -212,6 +212,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 | Tabs (a11y owner) | `ViewsTheme:Tabs` | `Tabs.js` |
 | Tabs list / tab / panel | `ViewsTheme:Tabs:List` / `Tab` / `Panel` | `Tabs/List.js` / `Tab.js` / `Panel.js` |
+| Accordion (a11y owner) | `ViewsTheme:Accordion` | `Accordion.js` |
+| Accordion item / header / panel | `ViewsTheme:Accordion:Item` / `Header` / `Panel` | `Accordion/Item.js` / `Header.js` / `Panel.js` |
 | Product listing owner | `ViewsTheme:Product:Listing` | `Product/Listing.js` |
 | Product listing results | `ViewsTheme:Product:Listing:Results` | `Product/Listing/Results.js` |
 | Sorting | `ViewsTheme:Sorting` | `Sorting.js` |

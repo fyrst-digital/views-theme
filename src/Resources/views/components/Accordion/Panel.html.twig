@@ -1,0 +1,24 @@
+{% props
+    id = null,
+    header = null,
+    active = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        role: 'region',
+        'aria-labelledby': header,
+        hidden: not active,
+        'data-component': 'ViewsTheme:Accordion:Panel',
+        'data-component-options': {
+            header: header,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}{% endblock %}
+</div>

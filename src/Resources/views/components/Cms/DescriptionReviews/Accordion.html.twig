@@ -1,0 +1,93 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['accordion']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block accordion %}
+        <twig:ViewsTheme:Accordion
+            class="{{ vi_class('accordion') }}"
+            {{ ...vi_attrs('accordion').defaults({
+                active: activeTabId,
+                multiple: false,
+                collapsible: false,
+            }).all() }}
+        >
+            <twig:block name="items">
+                {% block itemDescription %}
+                    <twig:ViewsTheme:Accordion:Item>
+                        <twig:block name="header">
+                            <twig:ViewsTheme:Accordion:Header
+                                id="{{ descriptionTabId }}"
+                                panel="{{ descriptionPaneId }}"
+                                :active="not reviewsActive"
+                            >
+                                <twig:block name="content">
+                                    {{ 'detail.tabsDescription'|trans|sw_sanitize }}
+                                </twig:block>
+                            </twig:ViewsTheme:Accordion:Header>
+                        </twig:block>
+
+                        <twig:block name="panel">
+                            <twig:ViewsTheme:Accordion:Panel
+                                id="{{ descriptionPaneId }}"
+                                header="{{ descriptionTabId }}"
+                                class="p-4"
+                                :active="not reviewsActive"
+                            >
+                                <twig:block name="content">
+                                    {% if product %}
+                                        <twig:ViewsTheme:Product:Description:Detail
+                                            :product="product"
+                                        />
+                                    {% endif %}
+                                </twig:block>
+                            </twig:ViewsTheme:Accordion:Panel>
+                        </twig:block>
+                    </twig:ViewsTheme:Accordion:Item>
+                {% endblock %}
+
+                {% block itemReviews %}
+                    {% if showReview %}
+                        <twig:ViewsTheme:Accordion:Item>
+                            <twig:block name="header">
+                                <twig:ViewsTheme:Accordion:Header
+                                    id="{{ reviewTabId }}"
+                                    panel="{{ reviewPaneId }}"
+                                    :active="reviewsActive"
+                                >
+                                    <twig:block name="content">
+                                        {{ 'detail.tabsReview'|trans|sw_sanitize }}
+                                    </twig:block>
+                                </twig:ViewsTheme:Accordion:Header>
+                            </twig:block>
+
+                            <twig:block name="panel">
+                                <twig:ViewsTheme:Accordion:Panel
+                                    id="{{ reviewPaneId }}"
+                                    header="{{ reviewTabId }}"
+                                    class="p-4"
+                                    :active="reviewsActive"
+                                >
+                                    <twig:block name="content">
+                                        {% if reviews and productId %}
+                                            <twig:ViewsTheme:Review:Panel
+                                                :reviews="reviews"
+                                                :productId="productId"
+                                                :parentId="parentId"
+                                                :ratingSuccess="ratingSuccess"
+                                                :listUrl="listUrl"
+                                                :saveUrl="saveUrl"
+                                            />
+                                        {% endif %}
+                                    </twig:block>
+                                </twig:ViewsTheme:Accordion:Panel>
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Item>
+                    {% endif %}
+                {% endblock %}
+            </twig:block>
+        </twig:ViewsTheme:Accordion>
+    {% endblock %}
+</div>

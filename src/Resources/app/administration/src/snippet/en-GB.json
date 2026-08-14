@@ -13,6 +13,16 @@
               "helpTextShowActiveFilters": "Displays removable chips for the currently selected filters (desktop bar and mobile drawer)."
             }
           }
+        },
+        "productDescriptionReviews": {
+          "config": {
+            "appearance": {
+              "themeOnlyInfo": "These settings are specific to Views Theme (or themes based on it). They have no effect with other storefront themes.",
+              "label": "Appearance",
+              "tabs": "Tabs",
+              "accordion": "Accordion"
+            }
+          }
         }
       }
     }

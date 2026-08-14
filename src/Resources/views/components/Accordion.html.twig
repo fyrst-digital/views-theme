@@ -1,0 +1,27 @@
+{% props
+    active = null,
+    multiple = false,
+    collapsible = true,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['items']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Accordion',
+        'data-component-options': {
+            active: active,
+            multiple: multiple,
+            collapsible: collapsible,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block items %}
+        <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
+            {% block item %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>
