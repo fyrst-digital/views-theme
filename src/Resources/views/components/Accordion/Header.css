@@ -1,6 +1,6 @@
 .vi-accordion__header {
   background-color: var(--vi-accordion-bg, var(--body-bg));
-  color: var(--vi-accordion-color, var(--tertiary-color));
+  color: var(--vi-accordion-color, var(--body-color));
   font-weight: var(--vi-accordion-fw, 400);
   transition: all var(--vi-accordion-duration, 150ms) ease;
 

@@ -15,7 +15,7 @@
             }).all() }}
         >
             <twig:block name="items">
-                {% block itemDescription %}
+                {% block description %}
                     <twig:ViewsTheme:Accordion:Item>
                         <twig:block name="header">
                             <twig:ViewsTheme:Accordion:Header
@@ -33,7 +33,7 @@
                             <twig:ViewsTheme:Accordion:Panel
                                 id="{{ descriptionPaneId }}"
                                 header="{{ descriptionTabId }}"
-                                class="p-4"
+                                content:class="p-4"
                                 :active="not reviewsActive"
                             >
                                 <twig:block name="content">
@@ -48,7 +48,7 @@
                     </twig:ViewsTheme:Accordion:Item>
                 {% endblock %}
 
-                {% block itemReviews %}
+                {% block reviews %}
                     {% if showReview %}
                         <twig:ViewsTheme:Accordion:Item>
                             <twig:block name="header">
@@ -67,7 +67,7 @@
                                 <twig:ViewsTheme:Accordion:Panel
                                     id="{{ reviewPaneId }}"
                                     header="{{ reviewTabId }}"
-                                    class="p-4"
+                                    content:class="p-4"
                                     :active="reviewsActive"
                                 >
                                     <twig:block name="content">

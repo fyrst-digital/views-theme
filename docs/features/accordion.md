@@ -9,7 +9,7 @@ Generic accessible accordion primitive. Domain shells (e.g. PDP Description/Revi
 | `Accordion` | Owner JS: click + Arrow/Home/End, `toggle` / `open` / `close`, `ViewsTheme:Accordion:Change` — ARIA only, no class toggles |
 | `Accordion:Item` | Header + panel pair identity host |
 | `Accordion:Header` | Button + `aria-expanded` + `aria-controls` → panel id; look via `Header.css` + `[aria-expanded]` |
-| `Accordion:Panel` | `role="region"` + `aria-labelledby` → header id; `hidden` when collapsed |
+| `Accordion:Panel` | `role="region"` + `aria-labelledby` → header id; `inert` when collapsed; height via CSS |
 
 ## Composition
 
@@ -69,8 +69,11 @@ Discovery uses `[data-component="ViewsTheme:Accordion:Header|Panel"]` — never 
 | Concern | SoT |
 |---------|-----|
 | Expanded header | `aria-expanded` — set SSR from `active` prop; JS updates on change |
-| Visible panel | `hidden` on `Accordion:Panel` |
-| Visual expanded/collapsed | `Accordion/Header.css` keyed off `[aria-expanded='true']` — **not** CVA variants or JS `classList` |
+| Collapsed panel | `inert` on `Accordion:Panel` (not `hidden` — `display: none` cannot animate) |
+| Visible panel | `Accordion/Panel.css`: `block-size: 0` → `auto` when previous sibling Header is `[aria-expanded='true']` (`interpolate-size: allow-keywords`; Firefox snaps until it ships) |
+| Visual header | `Accordion/Header.css` keyed off `[aria-expanded='true']` — **not** CVA variants or JS `classList` |
+
+Padding belongs on nest `content` (`content:class`), not the Panel root.
 
 CVA on Header is chrome only (`base`). Runtime look cannot use CVA variants (Twig-time only).
 

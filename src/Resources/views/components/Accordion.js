@@ -1,6 +1,6 @@
 /**
  * Accessible accordion owner — discovers Accordion:Header / Accordion:Panel children.
- * State SoT is ARIA (`aria-expanded`) + panel `hidden`; look follows CSS.
+ * State SoT is ARIA (`aria-expanded`) + panel `inert`; look follows CSS.
  *
  * @extends {ShopwareComponent}
  */
@@ -163,7 +163,7 @@ export default class Accordion extends ShopwareComponent {
         const panelId = header.getAttribute('aria-controls')
         const panel = this._panels().find((el) => el.id === panelId)
         if (panel) {
-            panel.hidden = !expanded
+            panel.inert = !expanded
         }
     }
 

@@ -6,13 +6,14 @@
 %}
 
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['content']) %}
 
 <div
     {{ attributes.defaults({
         id: id,
         role: 'region',
         'aria-labelledby': header,
-        hidden: not active,
+        inert: not active,
         'data-component': 'ViewsTheme:Accordion:Panel',
         'data-component-options': {
             header: header,
@@ -20,5 +21,7 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block content %}{% endblock %}
+    <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
+        {% block content %}{% endblock %}
+    </div>
 </div>
