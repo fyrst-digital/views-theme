@@ -10,19 +10,26 @@ use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+use Symfony\UX\TwigComponent\Attribute\FromMethod;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Cms:DescriptionReviews — CMS element shell; composes Tabs + panes.
+ * View-model for Cms:DescriptionReviews — CMS element shell; Tabs or Accordion chrome.
  */
-#[AsTwigComponent]
+#[AsTwigComponent(template: new FromMethod('resolveTemplate'))]
 class DescriptionReviews
 {
+    public const APPEARANCE_TABS = 'tabs';
+
+    public const APPEARANCE_ACCORDION = 'accordion';
+
     public mixed $product = null;
 
     public mixed $reviews = null;
 
     public mixed $ratingSuccess = null;
+
+    public string $appearance = self::APPEARANCE_TABS;
 
     public ?bool $showReview = null;
 
@@ -82,6 +89,8 @@ class DescriptionReviews
             );
         }
 
+        $this->appearance = $this->normalizeAppearance($this->appearance);
+
         $this->reviewsActive = $this->showReview && $this->isReviewsActive($this->ratingSuccess);
 
         if ($this->productId) {
@@ -106,6 +115,28 @@ class DescriptionReviews
         }
 
         $this->activeTabId = $this->reviewsActive ? $this->reviewTabId : $this->descriptionTabId;
+    }
+
+    public function resolveTemplate(): string
+    {
+        if ($this->appearance === self::APPEARANCE_ACCORDION) {
+            return '@ViewsTheme/components/Cms/DescriptionReviews/Accordion.html.twig';
+        }
+
+        return '@ViewsTheme/components/Cms/DescriptionReviews.html.twig';
+    }
+
+    private function normalizeAppearance(mixed $appearance): string
+    {
+        if (!\is_string($appearance)) {
+            return self::APPEARANCE_TABS;
+        }
+
+        $appearance = strtolower(trim($appearance));
+
+        return $appearance === self::APPEARANCE_ACCORDION
+            ? self::APPEARANCE_ACCORDION
+            : self::APPEARANCE_TABS;
     }
 
     private function isReviewsActive(mixed $ratingSuccess): bool

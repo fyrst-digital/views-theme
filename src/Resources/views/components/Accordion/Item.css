@@ -1,0 +1,5 @@
+.vi-accordion__item {
+  &:last-child {
+    border-bottom-width: 0;
+  }
+}

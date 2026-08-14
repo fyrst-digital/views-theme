@@ -1,0 +1,27 @@
+{% props
+    id = null,
+    panel = null,
+    active = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        id: id,
+        'aria-expanded': active ? 'true' : 'false',
+        'aria-controls': panel,
+        'data-component': 'ViewsTheme:Accordion:Header',
+        'data-component-options': {
+            panel: panel,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <span class="{{ vi_class('label') }}">
+        {% block content %}{% endblock %}
+    </span>
+    {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
+</button>

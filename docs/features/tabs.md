@@ -87,9 +87,10 @@ CVA on Tab is chrome only (`base`). Runtime look cannot use CVA variants (Twig-t
 
 | Shell | Doc |
 |-------|-----|
-| `Cms:DescriptionReviews` | [review.md](review.md) |
+| `Cms:DescriptionReviews` (`appearance=tabs`, default) | [review.md](review.md) |
 
 ## Related
 
+- [Accordion](accordion.md) — stacked exclusive alternative for the same CMS shell
 - [Drawer](cart-drawer.md) — same primitive + domain-shell pattern
 - [JavaScript](../conventions/javascript.md)

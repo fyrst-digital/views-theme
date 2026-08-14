@@ -1,0 +1,14 @@
+.vi-accordion__panel {
+  interpolate-size: allow-keywords;
+  overflow: hidden;
+  block-size: 0;
+  transition: block-size var(--vi-accordion-duration, 150ms) ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.vi-accordion__item:has([aria-expanded='true']) .vi-accordion__panel {
+  block-size: auto;
+}

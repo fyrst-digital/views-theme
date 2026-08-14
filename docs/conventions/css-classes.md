@@ -49,7 +49,7 @@ Co-located component CSS (`components/**/*.css`) and theme CSS have **different*
 
 | Layer | Role |
 |-------|------|
-| **Component CSS** | Structure: **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. No Bootstrap/Shopware override dumps |
+| **Component CSS** | Structure: **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. Nest variants on the host (`&[aria-*]`, `&:last-child`, `&[data-*]`). No Bootstrap/Shopware override dumps |
 | **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
 | **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults from outside |
 
@@ -118,24 +118,41 @@ Theme (and other callers) may set tokens on a host/class so component rules pick
 
 ### Token naming
 
-Prefer **short** `--vi-*` names. The host selector scopes the token — do not encode the full component path.
+Custom properties **inherit**. A host class does **not** isolate a generic name. `--vi-color` on Accordion picks up a parent `--vi-color`.
 
 | Kind | Pattern | Examples |
 |------|---------|----------|
-| Shell / motion (theme-facing) | `--vi-{shell}-{property}` | `--vi-drawer-duration`, `--vi-flyout-offset`, `--vi-menu-duration` |
-| Local layout on a host | `--vi-{property}` | `--vi-image-size`, `--vi-max-w`, `--vi-fade`, `--vi-min-w` |
+| **Component chrome / motion** (color, fw, bg, duration) | `--vi-{component}-{prop}` | `--vi-tab-color`, `--vi-accordion-fw`, `--vi-drawer-duration` |
+| Shared geometry on a host | `--vi-{prop}` | `--vi-max-w`, `--vi-image-size`, `--vi-fade` |
 | CSS anchors (`anchor-name`) | `--vi-{element}` | `--vi-navigation-bar`, `--vi-header-main` (identity; not theme knobs) |
 
+**Never** generic look/motion names: `--vi-color`, `--vi-fw`, `--vi-bg`, `--vi-duration`, `--vi-active-color`.  
+**Never** the full component path: `--vi-accordion-header-active-background-color`.  
+Keep names short: `--vi-accordion-color`, not `--vi-accordion-header-color`.
+
 ```css
-/* ❌ long / unprefixed path in the name */
---vi-navigation-drawer-item-image-aspect-ratio
+/* ❌ generic — inherits / collides */
+.vi-accordion__header {
+  color: var(--vi-color, var(--tertiary-color));
+}
+
+/* ❌ full path */
+--vi-accordion-header-active-background-color
 --language-flag-aspect-ratio
 --dropdown-max-width
 
-/* ✅ short; set on the host (px lengths) */
+/* ✅ component chrome prefix (Tabs / Accordion / Drawer) */
+.vi-tabs__tab {
+  --nav-link-color: var(--vi-tab-color, var(--tertiary-color));
+}
+.vi-accordion__header {
+  color: var(--vi-accordion-color, var(--tertiary-color));
+}
+.vi-navigation-drawer-menu { --vi-menu-duration: 300ms; /* theme assign */ }
+
+/* ✅ shared geometry — name is already specific */
 .vi-navigation-drawer-item__image { width: var(--vi-image-size, 28px); }
 .vi-dropdown[popover] { max-width: var(--vi-max-w, min(100vw - 24px, 352px)); }
-.vi-navigation-drawer-menu { --vi-menu-duration: 300ms; /* theme assign */ }
 ```
 
 Do **not** rename design-system / Bootstrap APIs (`--bs-*`, `--btn-*`, `--badge-*`, `--sw-*`, `--spacing-*`, …).

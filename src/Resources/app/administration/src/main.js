@@ -1,4 +1,5 @@
 import './extension/sw-cms/elements/product-listing';
+import './extension/sw-cms/elements/product-description-reviews';
 import enGB from './snippet/en-GB.json';
 import deDE from './snippet/de-DE.json';
 
@@ -14,6 +15,16 @@ if (productListing?.defaultConfig) {
         value: {
             filterLayout: 'bar',
             showActiveFilters: true,
+        },
+    };
+}
+
+const descriptionReviews = Service('cmsService').getCmsElementConfigByName('product-description-reviews');
+if (descriptionReviews?.defaultConfig) {
+    descriptionReviews.defaultConfig.viewsTheme = {
+        source: 'static',
+        value: {
+            appearance: 'tabs',
         },
     };
 }

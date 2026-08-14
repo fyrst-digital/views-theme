@@ -1,0 +1,15 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Accordion:Item',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}{% endblock %}
+    {% block panel %}{% endblock %}
+</div>

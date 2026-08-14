@@ -13,6 +13,16 @@
               "helpTextShowActiveFilters": "Zeigt entfernbare Chips für die aktuell gewählten Filter (Desktop-Leiste und mobiler Drawer)."
             }
           }
+        },
+        "productDescriptionReviews": {
+          "config": {
+            "appearance": {
+              "themeOnlyInfo": "Diese Einstellungen gelten nur für das Views Theme (oder davon abgeleitete Themes). Bei anderen Storefront-Themes haben sie keine Wirkung.",
+              "label": "Darstellung",
+              "tabs": "Tabs",
+              "accordion": "Akkordeon"
+            }
+          }
         }
       }
     }

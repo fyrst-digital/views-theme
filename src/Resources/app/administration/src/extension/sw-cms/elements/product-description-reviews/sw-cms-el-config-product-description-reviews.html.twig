@@ -1,0 +1,37 @@
+{% block sw_cms_el_product_description_rating_config_options_alignment %}
+{% parent %}
+
+{% block vi_cms_element_product_description_reviews_config_appearance %}
+    <div
+        :style="{
+            padding: '24px',
+            borderRadius: '10px',
+            backgroundColor: 'var(--color-background-tertiary-default)',
+        }"
+    >
+        {% block vi_cms_element_product_description_reviews_config_appearance_notification %}
+            <mt-banner variant="info">
+                {{ $t('viewsTheme.sw-cms.elements.productDescriptionReviews.config.appearance.themeOnlyInfo') }}
+            </mt-banner>
+        {% endblock %}
+
+        <sw-cms-inherit-wrapper
+            field="viewsTheme"
+            :element="element"
+        >
+            <template #default="{ isInherited }">
+                {% block vi_cms_element_product_description_reviews_config_appearance_select %}
+                    <mt-select
+                        v-model="element.config.viewsTheme.value.appearance"
+                        :label="$t('viewsTheme.sw-cms.elements.productDescriptionReviews.config.appearance.label')"
+                        :options="appearanceOptions"
+                        :disabled="isInherited"
+                        :hide-clearable-button="true"
+                        :style="{ margin: '0px' }"
+                    />
+                {% endblock %}
+            </template>
+        </sw-cms-inherit-wrapper>
+    </div>
+{% endblock %}
+{% endblock %}

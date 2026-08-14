@@ -32,7 +32,7 @@ Full index: [docs/README.md](docs/README.md).
 | **Agent workflow** (refactors; no builds; surgical edits) | [docs/conventions/agent-workflow.md](docs/conventions/agent-workflow.md) |
 | **UX Twig components** (prop defaults, class components) | [docs/conventions/ux-components.md#props](docs/conventions/ux-components.md#props) |
 | Component templates | [docs/conventions/components.md](docs/conventions/components.md) |
-| CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) |
+| CSS vars (critical) | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#css-custom-properties-critical) · [token naming](docs/conventions/css-classes.md#token-naming) |
 | Length units (critical): **px only** | [docs/conventions/css-classes.md](docs/conventions/css-classes.md#length-units-critical) |
 | JS: `data-component` | [docs/conventions/javascript.md](docs/conventions/javascript.md) |
 | Twig extensions | [docs/twig/overview.md](docs/twig/overview.md) |
@@ -52,6 +52,7 @@ Full index: [docs/README.md](docs/README.md).
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
 | Product reviews | [docs/features/review.md](docs/features/review.md) |
 | Tabs | [docs/features/tabs.md](docs/features/tabs.md) |
+| Accordion | [docs/features/accordion.md](docs/features/accordion.md) |
 | Grid | [docs/features/grid.md](docs/features/grid.md) |
 | Filters | [docs/features/filters.md](docs/features/filters.md) |
 | Pagination | [docs/features/pagination.md](docs/features/pagination.md) |

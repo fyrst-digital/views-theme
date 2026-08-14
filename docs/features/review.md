@@ -1,6 +1,6 @@
 # Product reviews
 
-Theme-owned PDP Description/Reviews **tabs chrome** and reviews **content**: summary, matrix filter, list island, write/edit form. Core storefront review plugins / `FormAjaxSubmit` / `js-review-container` / Bootstrap `card-tabs` / `OffCanvasTabs` are **not** used.
+Theme-owned PDP Description/Reviews **chrome** (`tabs` or `accordion`) and reviews **content**: summary, matrix filter, list island, write/edit form. Core storefront review plugins / `FormAjaxSubmit` / `js-review-container` / Bootstrap `card-tabs` / `OffCanvasTabs` are **not** used.
 
 ## Ownership
 
@@ -24,8 +24,9 @@ Theme-owned PDP Description/Reviews **tabs chrome** and reviews **content**: sum
 | `Review:Item` | Single review card (Header / Content / Comment); no per-row edit CTA |
 | `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login |
 | `Review:Rating` | Display-only stars leaf (also buy-box / product card) |
-| `Cms:DescriptionReviews` | CMS element shell: which tabs/panes, `ratingSuccess` active tab, mounts content |
+| `Cms:DescriptionReviews` | CMS element shell: `appearance` (`tabs` \| `accordion`), which panes, `ratingSuccess` active item, mounts content |
 | `Tabs` / `Tabs:List` / `Tab` / `Panel` | Generic a11y tabs primitive — [tabs.md](tabs.md) |
+| `Accordion` / `Item` / `Header` / `Panel` | Generic a11y accordion primitive — [accordion.md](accordion.md) |
 | `Product:Description:Detail` | Description pane: title + `Product:Description` + `Product:Properties` |
 | Controllers | `ReviewController` — `/vi/product/{id}/reviews` list + save |
 | Gateway | `ProductReviewGateway` → core `AbstractProductReviewLoader` (+ points URL normalize) |
@@ -67,30 +68,49 @@ Review:Panel (data-component owner)
           │    ├─ Content
           │    └─ Comment          ← when review.comment → Blockquote
           └─ Pagination (ownerComponent = Review:Panel)
-Cms:DescriptionReviews (CMS shell — no JS)
-└─ Tabs (data-component — a11y owner)
-     ├─ Tabs:List
-     │    ├─ Tabs:Tab description
-     │    └─ Tabs:Tab reviews          ← if core.listing.showReview
-     └─ panels
-          ├─ Tabs:Panel description → Product:Description:Detail
-          │    ├─ title
-          │    ├─ Product:Description
-          │    └─ Product:Properties
-           └─ Tabs:Panel reviews → Review:Panel (data-component owner)
-                ├─ Sidebar
-                │    ├─ Summary / Matrix / Teaser → Form (data-review-region=form)
-                └─ Main
-                     ├─ Alerts
-                     └─ Results (island) → Language / Sort / counter / Item × N / Pagination
+ Cms:DescriptionReviews (CMS shell — no JS; FromMethod chrome)
+ ├─ appearance=tabs (default) → Tabs (data-component — a11y owner)
+ │    ├─ Tabs:List
+ │    │    ├─ Tabs:Tab description
+ │    │    └─ Tabs:Tab reviews          ← if core.listing.showReview
+ │    └─ panels
+ │         ├─ Tabs:Panel description → Product:Description:Detail
+ │         └─ Tabs:Panel reviews → Review:Panel
+ └─ appearance=accordion → Accordion (data-component — a11y owner)
+      ├─ Item description → Header + Panel → Product:Description:Detail
+      └─ Item reviews → Header + Panel → Review:Panel   ← if core.listing.showReview
 ```
 
-### Tabs chrome
+### CMS appearance
+
+Theme extends core `product-description-reviews` element config (admin override + `defaultConfig` merge). Presentation only.
+
+```js
+viewsTheme: {
+  source: 'static',
+  value: { appearance: 'tabs' }, // 'tabs' | 'accordion'
+}
+```
+
+| Path | Type | Default |
+|------|------|---------|
+| `viewsTheme.value.appearance` | `tabs` \| `accordion` | `tabs` |
+
+Bridge reads `element.config.viewsTheme.value.appearance`. Missing key / existing layouts → `tabs`. PHP normalizes unknown values to `tabs`.
+
+Config is **per content language** (cms slot translation). Save once per language you use on the storefront.
+
+Admin: `app/administration/src/extension/sw-cms/elements/product-description-reviews/` + `main.js` — Options tab, theme-only banner + appearance select.
+
+`Cms:DescriptionReviews` resolves chrome via Symfony UX `FromMethod` (`resolveTemplate`): tabs → `Cms/DescriptionReviews.html.twig`; accordion → `Cms/DescriptionReviews/Accordion.html.twig`.
+
+### Chrome
 
 | Concern | Behaviour |
 |---------|-----------|
-| Primitive | [Tabs](tabs.md) — same UI all viewports; **no** mobile offcanvas clone |
-| Active tab (SSR) | Reviews when `ratingSuccess` is truthy or ∈ `{1, 2, -1}`; else Description → `Tabs.active` |
+| Tabs | [Tabs](tabs.md) — same UI all viewports; **no** mobile offcanvas clone |
+| Accordion | [Accordion](accordion.md) — exclusive, not collapsible (one pane always open) |
+| Active item (SSR) | Reviews when `ratingSuccess` is truthy or ∈ `{1, 2, -1}`; else Description → `Tabs.active` / `Accordion.active` |
 | Stable ids | `description-tab-{productId}` / `review-tab-{productId}` (+ `-pane`) |
 
 ## URL query = filter SoT
@@ -184,5 +204,6 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 - [Buy container](buy-container.md) — `Product:Rating` summary (not the tab)
 - [Product box](product-box.md) — card stars via `Review:Rating`
 - [Form input](form-input.md) — field primitives
-- [Tabs](tabs.md) — generic tabs primitive
+- [Tabs](tabs.md) — default CMS chrome
+- [Accordion](accordion.md) — CMS `appearance=accordion` chrome
 - [Architecture](../architecture.md) — `/vi/…` + App hooks
