@@ -1,0 +1,11 @@
+{% sw_extends '@Storefront/storefront/component/account/login.html.twig' %}
+
+{% block component_account_login %}
+    <twig:ViewsTheme:Account:Login
+        :redirectTo="redirectTo|default(null)"
+        :redirectParameters="redirectParameters|default(null)"
+        :loginError="loginError|default(false)"
+        :errorSnippet="errorSnippet|default(null)"
+        :waitTime="waitTime|default(null)"
+    />
+{% endblock %}

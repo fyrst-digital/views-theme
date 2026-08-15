@@ -64,7 +64,7 @@
                 name: name,
                 autocomplete: autocomplete is not empty ? autocomplete : false,
                 disabled: disabled is same as(true) ? true : false,
-                'data-validation': validationRules is not empty ? validationRules : false,
+                required: isRequired ? true : false,
                 'aria-required': isRequired ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}

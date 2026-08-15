@@ -28,14 +28,6 @@ These core `sw_extends` shells emit Twig `{% deprecated %}` on every render (`pa
 
 | Tag | Path |
 |-----|------|
-| `Account:LoginCard` | `Account/LoginCard.html.twig` |
-| `Account:Register` | `Account/Register.html.twig` |
-| `Address:EditorCreate` | `Address/EditorCreate.html.twig` |
-| `Address:Form` | `Address/Form.html.twig` |
-| `Address:Item` | `Address/Item.html.twig` |
-| `Address:ItemActions` | `Address/ItemActions.html.twig` |
-| `Address:Personal` | `Address/Personal.html.twig` |
-| `Address:PersonalCompany` | `Address/PersonalCompany.html.twig` |
 | `Cookie:Configuration` | `Cookie/Configuration.html.twig` |
 | `Cookie:ConfigurationGroup` | `Cookie/ConfigurationGroup.html.twig` |
 | `Order:Item` | `Order/Item.html.twig` |

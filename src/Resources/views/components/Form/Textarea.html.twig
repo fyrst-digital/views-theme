@@ -67,7 +67,7 @@
                 minlength: minlength is not empty ? minlength : false,
                 maxlength: maxlength is not empty ? maxlength : false,
                 disabled: disabled is same as(true) ? true : false,
-                'data-validation': validationRules is not empty ? validationRules : false,
+                required: isRequired ? true : false,
                 'aria-required': isRequired ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}

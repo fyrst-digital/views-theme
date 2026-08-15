@@ -1,0 +1,31 @@
+{% sw_extends '@Storefront/storefront/page/account/register/index.html.twig' %}
+
+{% block page_account_register %}
+    <div class="vi-account-register-page">
+        {% block page_account_register_header %}
+            <h1>{{ 'account.loginRegistrationHeader'|trans|sw_sanitize }}</h1>
+        {% endblock %}
+
+        <twig:ViewsTheme:Grid columns="6" gap="6">
+            <twig:block name="content">
+            <twig:ViewsTheme:Account:Login
+                class="g-col-6 g-col-xl-2"
+                :loginError="loginError|default(false)"
+                :errorSnippet="errorSnippet|default(null)"
+                :waitTime="waitTime|default(null)"
+                :redirectTo="redirectTo|default(null)"
+                :redirectParameters="redirectParameters|default(null)"
+            />
+            <twig:ViewsTheme:Account:Register
+                class="g-col-6 g-col-xl-4"
+                :page="page"
+                :data="data|default(null)"
+                :redirectTo="redirectTo|default('frontend.account.home.page')"
+                :redirectParameters="redirectParameters|default(null)"
+                errorRoute="frontend.account.register.page"
+                cardTitle="{{ 'account.registerPersonalHeader'|trans|sw_sanitize }}"
+            />
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    </div>
+{% endblock %}

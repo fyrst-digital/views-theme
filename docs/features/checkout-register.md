@@ -1,0 +1,91 @@
+# Checkout register
+
+Theme-owned `/checkout/register` (`frontend.checkout.register.page`). Core renders `storefront/page/checkout/address/index.html.twig` — not `checkout/register/`. Empty cart and logged-in redirects stay in core `RegisterController`.
+
+Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` / no island JS / no `/vi/…`**. Aside is read-only.
+
+## Ownership
+
+| Piece | Responsibility |
+|-------|----------------|
+| Storefront bridge | `storefront/page/checkout/address/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Register` |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
+| `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside |
+| `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
+| `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
+| `Account:Register` | Register form (class VM, `guestSelectable`) |
+| Footer | Core `footer-minimal` via untouched `base_esi_footer` |
+
+Do **not** add `storefront/layout/header/header-minimal.html.twig`. Confirm/finish keep core `header-minimal`.
+
+## Composition
+
+```
+page/checkout/address/index.html.twig
+├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+│    ├─ Page:Logo
+│    ├─ header.supportInfo
+│    └─ Button (frontend.home.page)
+├─ page_checkout → Checkout:Register       (no data-component)
+│    ├─ Cart:Flashes
+│    ├─ heading (h1, checkout.addressHeader)
+│    ├─ Account:Login (always visible; redirectTo=frontend.checkout.confirm.page)
+│    ├─ Account:Register (guestSelectable)
+│    └─ Checkout:Register:Aside
+│         ├─ Cart:Summary
+│         └─ Cart:Items stacked, showRemoveButton=false, showQuantitySelect=false
+└─ base_esi_footer → core footer-minimal (untouched)
+```
+
+Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-register-cols`). Mobile: stack.
+
+Login is **always visible** — no collapse / Accordion.
+
+## Account:Register
+
+Class component. `Form:Handler` posts to `frontend.account.register.save`.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `guestSelectable` | `false` | Checkout: `true` — `Form:Switch` `createCustomerAccount` + `Form:Toggle` around passwords |
+| `redirectTo` | confirm (guest) / account home | Hidden input |
+| `errorRoute` | checkout register / account register | Hidden input |
+| `data` / `page` | | Prefill + countries / salutations |
+
+Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
+
+Captcha + privacy stay core includes.
+
+## Address fields
+
+`Address:Personal` (class) + `Address:PersonalCompany` + `Address:Form` (class) + `Address:CountryState` JS.
+
+Fields sit in `Grid` `columns="6"`. Spans: full = `g-col-6`, pair = `g-col-3`, third = `g-col-2`. No Bootstrap `row` / `col-md-*`.
+
+`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on PHP `:options` hashes / `countries` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not core option `data-*`.
+
+Guest, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
+
+## Shared SoT bridges
+
+| Bridge | Mount |
+|--------|--------|
+| `storefront/page/account/register/index.html.twig` | `Account:Login` + `Account:Register` |
+| `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Form:Handler` + Personal + Form |
+| `storefront/page/account/addressbook/address-item.html.twig` | `Address:Item` |
+| `storefront/page/account/addressbook/address-actions.html.twig` | `Address:ItemActions` |
+| `storefront/component/account/login.html.twig` | `Account:Login` |
+
+`Address:EditorCreate` composes Personal + Form + `Form:Handler` (native submit). No `data-form-ajax-submit`. Address-book **page** owner is out of scope.
+
+## Files
+
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,EditorCreate}.*`
+
+## Related
+
+- [Cart page](cart-page.md)
+- [Form input](form-input.md)
+- [Account action](account-action.md)
+- [Grid](grid.md)
+- [JavaScript](../conventions/javascript.md)

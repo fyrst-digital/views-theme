@@ -10,8 +10,11 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Select` | Select field (`form-group` + `<select>`); `layout` stacked (default) or bar |
 | `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
 | `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
+| `ViewsTheme:Form:Birthday` | Label + 3× `Form:Select` (day / month / year) |
+| `ViewsTheme:Form:Toggle` | Show/hide field group from a switch or select (`data-component`) |
+| `ViewsTheme:Form:Handler` | Form owner — Constraint Validation + submit loading (`data-component`) |
 
-`Form:Input` replaces Storefront `component/form/form-input.html.twig` for theme-owned forms. `Form:Select` replaces `component/form/form-select.html.twig`.
+`Form:Input` replaces Storefront `component/form/form-input.html.twig` for theme-owned forms. `Form:Select` replaces `component/form/form-select.html.twig`. Theme-owned forms must **not** use core `data-form-*` / `data-validation` / PluginManager form plugins.
 
 ## Usage
 
@@ -43,7 +46,9 @@ Reusable form field primitives owned by the theme:
 | `disabled` | `false` | |
 | `size` | `null` | `sm` / `md` / `lg` → `form-control-*` |
 | `description` | `null` | Help text under the field |
-| `validationRules` | `null` | Comma list → `data-validation` (Storefront form-handler) |
+| `validationRules` | `null` | Comma list. `'required'` → native `required` + `aria-required`. Do **not** emit `data-validation` |
+| `confirmFor` | `null` | Id of the field this input must match (`data-confirm-for`). `Form:Handler` sets `setCustomValidity` |
+| `confirmMessage` | `null` | Mismatch message (`data-confirm-message`) |
 | `violationPath` | `null` | Server violation key (e.g. `'/email'`) |
 | `error` | `false` | Force invalid styling without violations |
 | `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
@@ -76,13 +81,13 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 
 | Consumer | Status |
 |----------|--------|
-| `Account:Login` | Uses `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
+| `Account:Login` | `Form:Handler` + `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
 | `Cart:PromotionForm` | Uses `Form:Input:Group` + `Button` in `append` ([cart-drawer](cart-drawer.md#promotion-form)) |
 | `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
 | `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
 | `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
 | `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |
-| `Account:Register`, `Address:*` | Still core `form-input` / `form-select` includes |
+| `Account:Register`, `Address:*` | Theme `Form:*` in 6-col `Grid` — [checkout-register.md](checkout-register.md) |
 
 ---
 
@@ -117,7 +122,7 @@ Stacked textarea: optional label + `<textarea>` + description / feedback. Same v
 | `disabled` | `false` | Use `false` not `null` in defaults |
 | `size` | `null` | `sm` / `md` / `lg` → `form-control-*` |
 | `description` | `null` | Help text under the field |
-| `validationRules` | `null` | Comma list → `data-validation` |
+| `validationRules` | `null` | Comma list. `'required'` → native `required` + `aria-required` |
 | `violationPath` | `null` | Server violation key |
 | `error` | `false` | Force invalid styling without violations |
 | `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
@@ -256,7 +261,7 @@ Select field: optional label + `<select>` + description / feedback. Does **not**
 | `autocomplete` | `null` | |
 | `disabled` | `false` | |
 | `description` | `null` | Help text under the field |
-| `validationRules` | `null` | Comma list → `data-validation` |
+| `validationRules` | `null` | Comma list. `'required'` → native `required` + `aria-required` |
 | `violationPath` | `null` | Server violation key |
 | `error` | `false` | Force invalid styling without violations |
 | `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
@@ -338,7 +343,7 @@ Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Prese
 | `disabled` | `false` | Use `false` not `null` in defaults |
 | `reverse` | `false` | DOM order: label then input (no `form-check-reverse`) |
 | `description` | `null` | Help text |
-| `validationRules` | `null` | → `data-validation` |
+| `validationRules` | `null` | `'required'` → native `required` + `aria-required` |
 | `violationPath` / `error` / `formViolations` | same as Input | Optional invalid chrome |
 | `cva` | `{}` | |
 
@@ -454,9 +459,34 @@ Co-located: `Form/Slider.css` (non-utility only).
 |----------|--------|
 | `Filter:Range` | `mode="range"` under price fields — [filters.md](filters.md) |
 
+## Form:Birthday
+
+Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`).
+
+## Form:Toggle
+
+`data-component="ViewsTheme:Form:Toggle"`. Owns **control** + **content** blocks (content is a `fieldset`). `value` = show when the control matches. Show/hide via `hidden` / `inert` / `disabled`. Hidden fields drop `required` (restored on show). Nested toggles call `sync()` on inner instances. Driven by `Form:Switch` / `Form:Select`. No CSS/class targets.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `value` | `'1'` | Control value that reveals content |
+| `open` | `false` | Initial visibility (JS `sync()` still runs) |
+
+## Form:Handler
+
+Is the `<form>`. Constraint Validation + `confirmFor` match + `is-invalid` chrome. On valid submit: `disabled` + `aria-busy` on `button[type=submit]`, emit `ViewsTheme:Form:Handler:Submit`, then native submit unless `preventNative`.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `action` / `method` | `null` / `'post'` | Form attrs |
+| `preventNative` | `false` | `Review:Form` sets `true` and listens for `Submit` |
+
+Do **not** mount core `FormHandler` / `FormValidation` / `data-form-handler` / `window.formValidation`.
+
 ## Related
 
 - [UX components](../conventions/ux-components.md)
+- [Checkout register](checkout-register.md)
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
 - [Filters](filters.md) (`Filter:Boolean`, `Filter:Range`)

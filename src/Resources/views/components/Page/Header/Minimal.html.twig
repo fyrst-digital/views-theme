@@ -1,0 +1,40 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['logo', 'support', 'back']) %}
+
+<header
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block logo %}
+        <twig:ViewsTheme:Page:Logo
+            class="{{ vi_class('logo') }}"
+            {{ ...vi_attrs('logo').all() }}
+        />
+    {% endblock %}
+
+    {% block support %}
+        <div
+            {{ vi_attrs('support') }}
+            class="{{ vi_class('support') }}"
+        >
+            {{ 'header.supportInfo'|trans|sw_sanitize }}
+        </div>
+    {% endblock %}
+
+    {% block back %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('back') }}"
+            {{ ...vi_attrs('back').defaults({
+                type: 'link',
+                href: path('frontend.home.page'),
+                color: 'secondary',
+                label: 'checkout.finishButtonBackToShop'|trans|striptags,
+                title: 'checkout.finishButtonBackToShop'|trans|striptags,
+            }).all() }}
+        />
+    {% endblock %}
+</header>

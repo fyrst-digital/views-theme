@@ -46,6 +46,8 @@ Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
 
 `layout` is forwarded `Cart:Items` → `LineItem` → Product / Promotion / Container / Generic. Cart:Items passes `tag="div"` (no `<ul>` / `<li>`).
 
+`showQuantitySelect` (default `true`) is forwarded `Cart:Items` → `LineItem` → Footer → `LineItem:Quantity`. Checkout register aside sets `:showQuantitySelect="false"` (qty text, no stepper).
+
 `LineItem:UnitPrice` is **grid-only** (`lineItem.price.unitPrice`; skips delivery-discount scope). Shown from `xl`. Footer cell order: qty → remove → unit → total.
 
 ## Controller

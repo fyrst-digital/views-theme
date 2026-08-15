@@ -20,15 +20,15 @@
         {% endblock %}
     {% else %}
         {% block form %}
-            <form
-                {{ vi_attrs('form').defaults({
+            <twig:ViewsTheme:Form:Handler
+                class="{{ vi_class('form') }}"
+                {{ ...vi_attrs('form').defaults({
                     action: saveUrl,
                     method: 'post',
-                    'data-form-handler': 'true',
-                    'data-review-form': 'save',
-                }) }}
-                class="{{ vi_class('form') }}"
+                    preventNative: true,
+                }).all() }}
             >
+                <twig:block name="content">
                 {% block forward %}
                     {% if parentId %}
                         <input type="hidden" name="parentId" value="{{ parentId }}">
@@ -67,7 +67,7 @@
                     />
                 {% endblock %}
 
-                {% block content %}
+                {% block message %}
                     <twig:ViewsTheme:Form:Textarea
                         class="{{ vi_class('content') }}"
                         {{ ...vi_attrs('content').defaults({
@@ -101,7 +101,8 @@
                         </div>
                     </div>
                 {% endblock %}
-            </form>
+                </twig:block>
+            </twig:ViewsTheme:Form:Handler>
         {% endblock %}
     {% endif %}
 </div>

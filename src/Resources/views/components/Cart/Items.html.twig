@@ -2,6 +2,7 @@
     cart,
     layout = 'stacked',
     showRemoveButton = true,
+    showQuantitySelect = true,
     cva = {},
 %}
 
@@ -55,6 +56,7 @@
                     :lineItem="lineItem"
                     :deliveries="cart.deliveries"
                     :showRemoveButton="showRemoveButton"
+                    :showQuantitySelect="showQuantitySelect"
                     :layout="layout"
                     tag="div"
                     class="{{ vi_class('item') }}"

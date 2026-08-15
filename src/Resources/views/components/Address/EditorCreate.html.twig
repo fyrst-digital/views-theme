@@ -1,66 +1,68 @@
-{% sw_extends '@Storefront/storefront/component/address/address-editor-modal-create-address.html.twig' %}
-
-{% deprecated 'ViewsTheme:Address:EditorCreate is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
 {% props
+    address = null,
+    postedData = null,
+    typePrefix = '',
+    changeBilling = false,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'js-close-address-editor' },
-    fieldset: { base: 'address-editor-fieldset' },
-    requiredHint: { base: 'address-required-info required-fields form-text mt-3' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['fieldset', 'requiredHint']) %}
+{% set formData = postedData ?? address %}
 
-{% block component_address_address_editor_modal_create_address_form %}
-    <form
-            {{ attributes.defaults({
-                method: 'post',
-                action: path('frontend.account.addressbook'),
-                'data-form-ajax-submit': 'true',
-                'data-form-validation': 'true',
-                'data-form-ajax-submit-options': formAjaxSubmitOptions|json_encode,
-            }) }}
-            class="{{ vi_class('root') }}">
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['form', 'fields', 'hint', 'actions']) %}
 
-        {% block component_address_address_editor_modal_create_address_form_hidden_inputs %}
-            {{ parent() }}
-        {% endblock %}
+<twig:ViewsTheme:Form:Handler
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        action: path('frontend.account.addressbook'),
+        method: 'post',
+    }).all() }}
+>
+    <twig:block name="content">
+        {% block hidden %}{% endblock %}
 
-        {% block component_address_address_editor_modal_create_address_form_fields_include %}
-            <div {{ vi_attrs('fieldset') }} class="{{ vi_class('fieldset') }}">
-                {% component 'ViewsTheme:Address:Personal' with {
-                    data: postedData ?? address,
-                    prefix: 'address',
-                    idPrefix: typePrefix,
-                    scope: 'parent',
-                    parentSelector: 'form'
-                } %}{% endcomponent %}
-
-                {% component 'ViewsTheme:Address:Form' with {
-                    data: postedData ?? address,
-                    prefix: 'address',
-                    idPrefix: typePrefix,
-                    scope: 'parent',
-                    parentSelector: 'form',
-                    showFormCompany: true,
-                    showNoShippingPostfix: true,
-                    showVatIdField: changeBilling and context.customer and context.customer.guest ? true : false
-                } %}{% endcomponent %}
+        {% block fields %}
+            <div
+                {{ vi_attrs('fields') }}
+                class="{{ vi_class('fields') }}"
+            >
+                <twig:ViewsTheme:Address:Personal
+                    :data="formData"
+                    prefix="address"
+                    :idPrefix="typePrefix"
+                    :page="page|default(null)"
+                />
+                <twig:ViewsTheme:Address:Form
+                    :data="formData"
+                    prefix="address"
+                    :idPrefix="typePrefix"
+                    :page="page|default(null)"
+                    :showNoShippingPostfix="true"
+                    vatInputId="{{ typePrefix }}address-vatIds"
+                />
             </div>
         {% endblock %}
 
-        {% block component_address_address_editor_modal_create_address_required_hint %}
-            <p {{ vi_attrs('requiredHint') }} class="{{ vi_class('requiredHint') }}">
-                {% block component_address_address_editor_modal_create_address_required_hint_text %}
-                    {{ parent() }}
-                {% endblock %}
+        {% block hint %}
+            <p
+                {{ vi_attrs('hint') }}
+                class="{{ vi_class('hint') }}"
+            >
+                {{ 'general.requiredFields'|trans|sw_sanitize }}
             </p>
         {% endblock %}
 
-        {% block component_address_address_editor_modal_create_address_form_actions %}
-            {{ parent() }}
+        {% block actions %}
+            <div
+                {{ vi_attrs('actions') }}
+                class="{{ vi_class('actions') }}"
+            >
+                <twig:ViewsTheme:Button
+                    type="submit"
+                    color="primary"
+                    label="{{ 'account.addressSaveChange'|trans|sw_sanitize }}"
+                />
+            </div>
         {% endblock %}
-    </form>
-{% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Form:Handler>

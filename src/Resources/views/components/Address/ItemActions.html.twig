@@ -1,99 +1,96 @@
-{% sw_extends '@Storefront/storefront/page/account/addressbook/address-actions.html.twig' %}
-
-{% deprecated 'ViewsTheme:Address:ItemActions is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
 {% props
+    address,
+    defaultShipping = false,
+    defaultBilling = false,
+    defaultShippingAddress = null,
+    defaultBillingAddress = null,
     cva = {},
 %}
 
-{% set editButtonClass = 'btn btn-sm' %}
-{% if feature('v6.7.0.0') %}
-    {% set editButtonClass = editButtonClass ~ ' btn-link p-0 address-action-edit' %}
-{% else %}
-    {% set editButtonClass = editButtonClass ~ ' btn-light' %}
-{% endif %}
+{% set isDefaultShipping = defaultShipping or (defaultShippingAddress and defaultShippingAddress.id == address.id) %}
+{% set isDefaultBilling = defaultBilling or (defaultBillingAddress and defaultBillingAddress.id == address.id) %}
 
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['edit', 'delete', 'defaultBilling', 'defaultShipping']) %}
 
-{% do vi_define_attrs(['edit', 'deleteForm', 'deleteButton', 'setDefaultBilling', 'setDefaultShipping']) %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block edit %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('edit') }}"
+            {{ ...vi_attrs('edit').defaults({
+                type: 'link',
+                href: path('frontend.account.address.edit.page', { addressId: address.id }),
+                color: 'link',
+                size: 'sm',
+                icon: 'pencil-simple-line',
+                label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
+                title: 'account.addressesContentItemActionEdit'|trans|striptags,
+            }).all() }}
+        />
+    {% endblock %}
 
-{% block page_account_address_actions %}
-    {% block page_account_address_actions_buttons %}
-        {% block page_account_address_actions_update %}
-            <a
-                {{ vi_attrs('edit').defaults({
-                    href: path('frontend.account.address.edit.page', { addressId: address.id }),
-                    title: 'account.addressesContentItemActionEdit'|trans|striptags,
+    {% block delete %}
+        {% if not isDefaultShipping and not isDefaultBilling %}
+            <form
+                {{ vi_attrs('delete').defaults({
+                    action: path('frontend.account.address.delete', { addressId: address.id }),
+                    method: 'post',
                 }) }}
-                class="{{ vi_class('edit') }}"
+                class="{{ vi_class('delete') }}"
             >
-                {{ vi_icon('pencil-simple-line') }}
-                {{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}
-            </a>
-        {% endblock %}
-
-        {% block page_account_address_actions_delete %}
-            {% if defaultShippingAddress.id != address.id and defaultBillingAddress.id != address.id %}
-                <form
-                    {{ vi_attrs('deleteForm').defaults({
-                        action: path('frontend.account.address.delete', { addressId: address.id }),
-                        method: 'post',
-                    }) }}
-                    class="{{ vi_class('deleteForm') }}"
-                >
-                    <button
-                        {{ vi_attrs('deleteButton').defaults({
-                            type: 'submit',
-                            title: 'account.addressesContentItemActionDelete'|trans|striptags,
-                        }) }}
-                        class="{{ vi_class('deleteButton') }}"
-                    >
-                        {{ vi_icon('x') }}
-                        {{ 'account.addressesContentItemActionDelete'|trans|sw_sanitize }}
-                    </button>
-                </form>
-            {% endif %}
-        {% endblock %}
+                <twig:ViewsTheme:Button
+                    type="submit"
+                    color="link"
+                    size="sm"
+                    icon="x"
+                    label="{{ 'account.addressesContentItemActionDelete'|trans|sw_sanitize }}"
+                    title="{{ 'account.addressesContentItemActionDelete'|trans|striptags }}"
+                />
+            </form>
+        {% endif %}
     {% endblock %}
 
-    {% block page_account_address_actions_set_default %}
-        {% block page_account_address_actions_set_default_billing %}
-            {% if defaultBillingAddress.id != address.id %}
-                <form
-                    action="{{ path('frontend.account.address.set-default-address', { type: 'billing', addressId: address.id }) }}"
-                    method="post"
-                >
-                    <button
-                        {{ vi_attrs('setDefaultBilling').defaults({
-                            type: 'submit',
-                            title: 'account.addressesSetAsDefaultBillingAction'|trans|striptags,
-                        }) }}
-                        class="{{ vi_class('setDefaultBilling') }}"
-                    >
-                        {{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}
-                    </button>
-                </form>
-            {% endif %}
-        {% endblock %}
-
-        {% block page_account_address_actions_set_default_shipping %}
-            {% if defaultShippingAddress.id != address.id %}
-                <form
-                    action="{{ path('frontend.account.address.set-default-address', { type: 'shipping', addressId: address.id }) }}"
-                    method="post"
-                >
-                    <button
-                        {{ vi_attrs('setDefaultShipping').defaults({
-                            type: 'submit',
-                            title: 'account.addressesSetAsDefaultShippingAction'|trans|striptags,
-                            disabled: not address.country.shippingAvailable ? 'disabled' : null,
-                        }) }}
-                        class="{{ vi_class('setDefaultShipping') }}"
-                    >
-                        {{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}
-                    </button>
-                </form>
-            {% endif %}
-        {% endblock %}
+    {% block setDefaultBilling %}
+        {% if not isDefaultBilling %}
+            <form
+                action="{{ path('frontend.account.address.set-default-address', { type: 'billing', addressId: address.id }) }}"
+                method="post"
+            >
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('defaultBilling') }}"
+                    {{ ...vi_attrs('defaultBilling').defaults({
+                        type: 'submit',
+                        color: 'link',
+                        size: 'sm',
+                        label: 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize,
+                        title: 'account.addressesSetAsDefaultBillingAction'|trans|striptags,
+                    }).all() }}
+                />
+            </form>
+        {% endif %}
     {% endblock %}
-{% endblock %}
+
+    {% block setDefaultShipping %}
+        {% if not isDefaultShipping %}
+            <form
+                action="{{ path('frontend.account.address.set-default-address', { type: 'shipping', addressId: address.id }) }}"
+                method="post"
+            >
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('defaultShipping') }}"
+                    {{ ...vi_attrs('defaultShipping').defaults({
+                        type: 'submit',
+                        color: 'link',
+                        size: 'sm',
+                        label: 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize,
+                        title: 'account.addressesSetAsDefaultShippingAction'|trans|striptags,
+                        disabled: address.country.shippingAvailable ? false : true,
+                    }).all() }}
+                />
+            </form>
+        {% endif %}
+    {% endblock %}
+</div>

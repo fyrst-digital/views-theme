@@ -1,36 +1,73 @@
-{% sw_extends '@Storefront/storefront/component/address/address-personal-company.html.twig' %}
-
-{% deprecated 'ViewsTheme:Address:PersonalCompany is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
 {% props
+    data = null,
+    prefix = '',
+    idPrefix = '',
+    showVat = true,
+    vatValue = null,
+    formViolations = __context.formViolations|default(null),
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'row g-2 fields-company' },
-}|replace_recursive(cva)) %}
+{% set companyName = prefix ? prefix ~ '[company]' : 'company' %}
+{% set departmentName = prefix ? prefix ~ '[department]' : 'department' %}
+{% set vatName = prefix and prefix != 'billingAddress' ? prefix ~ '[vatIds][]' : 'vatIds[]' %}
 
-{% block component_address_form_company_fields %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-        {% block component_address_form_company_name %}
-            {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
-                additionalClass: 'col-12 field-company-name'
-            } %}
-        {% endblock %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['company', 'department', 'vat']) %}
 
-        {% block component_address_form_company_department %}
-            {% sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
-                additionalClass: 'col-sm-6 field-company-department'
-            } %}
-        {% endblock %}
+<twig:ViewsTheme:Grid
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+    columns="6"
+    gap="3"
+>
+    <twig:block name="content">
+    {% block company %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('company') }} g-col-3"
+            {{ ...vi_attrs('company').defaults({
+                id: idPrefix ~ prefix ~ '-company',
+                name: companyName,
+                value: data ? data.company|default(null) : null,
+                violationPath: prefix ? '/' ~ prefix ~ '/company' : '/company',
+                formViolations: formViolations,
+                validationRules: 'required',
+                autocomplete: 'section-personal organization',
+                label: 'address.companyNameLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
 
-        {# ludtwig-ignore twig-block-name-snake-case #}
-        {% block component_address_form_company_vatId %}
-            {% if prefix != 'shippingAddress' %}
-                {% sw_include '@Storefront/storefront/component/address/address-personal-vat-id.html.twig' with {
-                    vatIds: data.get('vatIds')
-                } %}
-            {% endif %}
-        {% endblock %}
-    </div>
-{% endblock %}
+    {% block department %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('department') }} g-col-3"
+            {{ ...vi_attrs('department').defaults({
+                id: idPrefix ~ prefix ~ '-department',
+                name: departmentName,
+                value: data ? data.department|default(null) : null,
+                violationPath: prefix ? '/' ~ prefix ~ '/department' : '/department',
+                formViolations: formViolations,
+                autocomplete: 'organization',
+                label: 'address.companyDepartmentLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block vat %}
+        {% if showVat %}
+            <twig:ViewsTheme:Form:Input
+                class="{{ vi_class('vat') }} g-col-3"
+                {{ ...vi_attrs('vat').defaults({
+                    id: idPrefix ~ prefix ~ '-vatIds',
+                    name: vatName,
+                    value: vatValue,
+                    violationPath: '/vatIds',
+                    formViolations: formViolations,
+                    autocomplete: 'off',
+                    label: 'address.companyVatLabel'|trans|sw_sanitize,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

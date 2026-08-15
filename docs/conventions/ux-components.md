@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:Form`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -447,7 +447,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 |------|--------|
 | Alert, Button, Blockquote, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
-| Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
+| Form:Input | UX + `vi_cva`; native `required` / `confirmFor`; used by Account:Login + Register/Address |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
@@ -467,7 +467,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
 | Cookie:*, Filter, ContactChannel, MethodOption, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
-| Account:LoginCard / Register; Address:* shells; Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
+| Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
 | Tabs / Tabs:List / Tab / Panel | Anonymous UX + JS; [tabs.md](../features/tabs.md) |
 | Accordion / Item / Header / Panel | Anonymous UX + JS; [accordion.md](../features/accordion.md) |
 | Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md); Item:Comment → Blockquote |

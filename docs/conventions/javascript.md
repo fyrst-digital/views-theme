@@ -227,6 +227,9 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Filter multi-select / boolean / range / rating / active | `ViewsTheme:Filter:MultiSelect` etc. | `Filter/*.js` |
 | Review panel / results / matrix / sort / language / form / form rating | `ViewsTheme:Review:*` | `Review/*.js` |
 | Form slider | `ViewsTheme:Form:Slider` | `Form/Slider.js` |
+| Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
+| Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
+| Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
 
 Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
 
