@@ -466,6 +466,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
 | LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
+| Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
 | Cookie:*, Filter, ContactChannel, MethodOption, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |

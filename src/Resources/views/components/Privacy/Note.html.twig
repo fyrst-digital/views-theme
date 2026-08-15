@@ -1,0 +1,83 @@
+{% props
+    title = 'general.privacyTitle'|trans|sw_sanitize,
+    snippet = 'general.privacyNoticeTextModal',
+    privacyUrl = path('frontend.cms.page', { id: config('core.basicInformation.privacyPage') }),
+    tosUrl = path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
+    requireCheckbox = config('core.loginRegistration.requireDataProtectionCheckbox') == 1,
+    id = 'acceptedDataProtection',
+    name = 'acceptedDataProtection',
+    violationPath = '/acceptedDataProtection',
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'text', 'control', 'checkbox', 'label', 'feedback']) %}
+
+{% set isInvalid = formViolations and formViolations.getViolations(violationPath) is not empty %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set linkClass = vi_class('link') %}
+{% set notice = snippet|trans({
+    '%privacyModalTagOpen%': '<a href="' ~ privacyUrl ~ '" class="' ~ linkClass ~ '" data-ajax-modal="true" data-url="' ~ privacyUrl ~ '" aria-haspopup="dialog">',
+    '%privacyModalTagClose%': '</a>',
+    '%tosModalTagOpen%': '<a href="' ~ tosUrl ~ '" class="' ~ linkClass ~ '" data-ajax-modal="true" data-url="' ~ tosUrl ~ '" aria-haspopup="dialog">',
+    '%tosModalTagClose%': '</a>',
+}) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        {% if title %}
+            <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                {{ title }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block notice %}
+        {% if requireCheckbox %}
+            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
+                <input
+                    {{ vi_attrs('checkbox').defaults({
+                        type: 'checkbox',
+                        id: id,
+                        name: name,
+                        value: '1',
+                        required: true,
+                        'aria-required': 'true',
+                        'aria-invalid': isInvalid ? 'true' : false,
+                        'aria-describedby': isInvalid ? feedbackId : false,
+                    }) }}
+                    class="{{ vi_class('checkbox', { invalid: isInvalid }) }}"
+                >
+                <label
+                    {{ vi_attrs('label').defaults({
+                        for: id,
+                    }) }}
+                    class="{{ vi_class('label') }}"
+                >
+                    {{ notice|raw }}
+                </label>
+            </div>
+            <div
+                {{ vi_attrs('feedback').defaults({
+                    id: feedbackId,
+                }) }}
+                class="{{ vi_class('feedback') }}"
+            >
+                {% if isInvalid %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: formViolations,
+                        violationPath: violationPath,
+                    } %}
+                {% endif %}
+            </div>
+        {% else %}
+            <div {{ vi_attrs('text') }} class="{{ vi_class('text') }}">
+                {{ notice|raw }}
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>

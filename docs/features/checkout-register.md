@@ -14,6 +14,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
 | `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
 | `Account:Register` | Register form (class VM, `guestSelectable`) |
+| `Privacy:Note` | Register footer privacy copy (+ optional `acceptedDataProtection` checkbox) |
 | Footer | Core `footer-minimal` via untouched `base_esi_footer` |
 
 Do **not** add `storefront/layout/header/header-minimal.html.twig`. Confirm/finish keep core `header-minimal`.
@@ -55,7 +56,22 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 
 Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
 
-Captcha + privacy stay core includes.
+Captcha stays a core include. Privacy is `Privacy:Note` (nest `privacy`).
+
+## Privacy:Note
+
+Anonymous UX. Replaces core `privacy-notice.html.twig` on theme-owned register. No `data-component`. CMS contact/newsletter keep the core include.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `title` | `general.privacyTitle` | Omit when empty |
+| `snippet` | `general.privacyNoticeTextModal` | `%privacyModalTagOpen%` / `%tosModalTagOpen%` wrap `<a data-ajax-modal>` |
+| `privacyUrl` / `tosUrl` | CMS pages from `core.basicInformation.*` | |
+| `requireCheckbox` | `core.loginRegistration.requireDataProtectionCheckbox == 1` | Native checkbox `acceptedDataProtection` + `required` (not `Form:Switch`) |
+| `id` / `name` | `acceptedDataProtection` | RegisterRoute `NotBlank` when required |
+| `formViolations` | ambient | Path `/acceptedDataProtection` |
+
+Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Product:Price:Tax`. Required-fields hint stays on `Account:Register` footer.
 
 ## Address fields
 
@@ -81,7 +97,7 @@ Guest, different-shipping, and company visibility use `Form:Toggle` (control + c
 
 ## Files
 
-`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Register/Credentials.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,EditorCreate}.*` · `src/Service/ComponentData.php`
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Register/Credentials.*` · `components/Privacy/Note.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,EditorCreate}.*` · `src/Service/ComponentData.php`
 
 ## Related
 

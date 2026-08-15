@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'form', 'personal', 'guest', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'submit']) %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'guest', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'privacy', 'submit']) %}
 
 <div
     {{ attributes }}
@@ -182,7 +182,10 @@
 
                 {% block footer %}
                     <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
-                        {% sw_include '@Storefront/storefront/component/privacy-notice.html.twig' %}
+                        <twig:ViewsTheme:Privacy:Note
+                            class="{{ vi_class('privacy') }}"
+                            {{ ...vi_attrs('privacy').all() }}
+                        />
                         <p class="{{ vi_class('requiredHint') }}">
                             {{ 'general.requiredFields'|trans|sw_sanitize }}
                         </p>
