@@ -1,4 +1,5 @@
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { setFieldEnabled } from '@views-theme/modules/shared/form.js'
 
 /**
  * Show/hide a field group from a switch or select control.
@@ -96,30 +97,8 @@ export default class FormToggle extends ShopwareComponent {
      * @param {boolean} enabled
      */
     _setFieldsEnabled(root, enabled) {
-        const fields = root.querySelectorAll('input, select, textarea, button')
-        fields.forEach((field) => {
-            if (enabled) {
-                if (field.hasAttribute('data-toggle-disabled')) {
-                    field.removeAttribute('disabled')
-                    field.removeAttribute('data-toggle-disabled')
-                }
-                if (field.hasAttribute('data-was-required')) {
-                    field.required = true
-                    field.setAttribute('aria-required', 'true')
-                    field.removeAttribute('data-was-required')
-                }
-                return
-            }
-
-            if (field.required) {
-                field.required = false
-                field.removeAttribute('aria-required')
-                field.setAttribute('data-was-required', '')
-            }
-            if (!field.disabled) {
-                field.disabled = true
-                field.setAttribute('data-toggle-disabled', '')
-            }
+        root.querySelectorAll('input, select, textarea, button').forEach((field) => {
+            setFieldEnabled(field, enabled)
         })
     }
 

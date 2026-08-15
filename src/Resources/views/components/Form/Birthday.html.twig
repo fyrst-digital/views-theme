@@ -1,34 +1,3 @@
-{% props
-    id = 'vi-form-birthday-' ~ random(),
-    prefix = null,
-    label = 'account.personalBirthdayLabel'|trans|sw_sanitize,
-    day = null,
-    month = null,
-    year = null,
-    validationRules = null,
-    formViolations = __context.formViolations|default(null),
-    cva = {},
-%}
-
-{% set isRequired = validationRules is not empty and 'required' in validationRules %}
-{% set currentYear = 'now'|date('Y') %}
-{% set startYear = currentYear - 120 %}
-{% set dayName = prefix ? prefix ~ '[birthdayDay]' : 'birthdayDay' %}
-{% set monthName = prefix ? prefix ~ '[birthdayMonth]' : 'birthdayMonth' %}
-{% set yearName = prefix ? prefix ~ '[birthdayYear]' : 'birthdayYear' %}
-{% set dayOptions = [{ value: '', label: 'account.personalBirthdaySelectDay'|trans|sw_sanitize, disabled: isRequired }] %}
-{% for n in 1..31 %}
-    {% set dayOptions = dayOptions|merge([{ value: n, label: n }]) %}
-{% endfor %}
-{% set monthOptions = [{ value: '', label: 'account.personalBirthdaySelectMonth'|trans|sw_sanitize, disabled: isRequired }] %}
-{% for n in 1..12 %}
-    {% set monthOptions = monthOptions|merge([{ value: n, label: n }]) %}
-{% endfor %}
-{% set yearOptions = [{ value: '', label: 'account.personalBirthdaySelectYear'|trans|sw_sanitize, disabled: isRequired }] %}
-{% for n in range(currentYear, startYear) %}
-    {% set yearOptions = yearOptions|merge([{ value: n, label: n }]) %}
-{% endfor %}
-
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['label', 'required', 'fields', 'day', 'month', 'year']) %}
 

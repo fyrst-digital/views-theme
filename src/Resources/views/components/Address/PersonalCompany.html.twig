@@ -1,38 +1,25 @@
-{% props
-    data = null,
-    prefix = '',
-    idPrefix = '',
-    showVat = true,
-    vatValue = null,
-    formViolations = __context.formViolations|default(null),
-    cva = {},
-%}
-
-{% set companyName = prefix ? prefix ~ '[company]' : 'company' %}
-{% set departmentName = prefix ? prefix ~ '[department]' : 'department' %}
-{% set vatName = prefix and prefix != 'billingAddress' ? prefix ~ '[vatIds][]' : 'vatIds[]' %}
-
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['company', 'department', 'vat']) %}
 
 <twig:ViewsTheme:Grid
-    {{ attributes }}
     class="{{ vi_class('root') }}"
-    columns="6"
-    gap="3"
+    {{ ...attributes.defaults({
+        columns: 6,
+        gap: '3',
+    }).all() }}
 >
     <twig:block name="content">
     {% block company %}
         <twig:ViewsTheme:Form:Input
-            class="{{ vi_class('company') }} g-col-3"
+            class="{{ vi_class('company') }}"
             {{ ...vi_attrs('company').defaults({
-                id: idPrefix ~ prefix ~ '-company',
-                name: companyName,
-                value: data ? data.company|default(null) : null,
-                violationPath: prefix ? '/' ~ prefix ~ '/company' : '/company',
+                id: fields.company.id,
+                name: fields.company.name,
+                value: fields.company.value,
+                violationPath: fields.company.violationPath,
                 formViolations: formViolations,
                 validationRules: 'required',
-                autocomplete: 'section-personal organization',
+                autocomplete: fields.company.autocomplete,
                 label: 'address.companyNameLabel'|trans|sw_sanitize,
             }).all() }}
         />
@@ -40,14 +27,14 @@
 
     {% block department %}
         <twig:ViewsTheme:Form:Input
-            class="{{ vi_class('department') }} g-col-3"
+            class="{{ vi_class('department') }}"
             {{ ...vi_attrs('department').defaults({
-                id: idPrefix ~ prefix ~ '-department',
-                name: departmentName,
-                value: data ? data.department|default(null) : null,
-                violationPath: prefix ? '/' ~ prefix ~ '/department' : '/department',
+                id: fields.department.id,
+                name: fields.department.name,
+                value: fields.department.value,
+                violationPath: fields.department.violationPath,
                 formViolations: formViolations,
-                autocomplete: 'organization',
+                autocomplete: fields.department.autocomplete,
                 label: 'address.companyDepartmentLabel'|trans|sw_sanitize,
             }).all() }}
         />
@@ -56,14 +43,14 @@
     {% block vat %}
         {% if showVat %}
             <twig:ViewsTheme:Form:Input
-                class="{{ vi_class('vat') }} g-col-3"
+                class="{{ vi_class('vat') }}"
                 {{ ...vi_attrs('vat').defaults({
-                    id: idPrefix ~ prefix ~ '-vatIds',
-                    name: vatName,
-                    value: vatValue,
-                    violationPath: '/vatIds',
+                    id: fields.vat.id,
+                    name: fields.vat.name,
+                    value: fields.vat.value,
+                    violationPath: fields.vat.violationPath,
                     formViolations: formViolations,
-                    autocomplete: 'off',
+                    autocomplete: fields.vat.autocomplete,
                     label: 'address.companyVatLabel'|trans|sw_sanitize,
                 }).all() }}
             />

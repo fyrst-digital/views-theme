@@ -5,7 +5,7 @@
     cva = {},
 %}
 
-{% set gapToken = gap is not empty and gap not in ['0', '1', '2', '3', '4', '5'] %}
+    {% set gapToken = gap is not empty and gap not in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'] %}
 {% set gapVariant = gapToken ? null : gap %}
 {% set tokenStyles = [] %}
 {% if columns is not empty %}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Account;
 
+use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -51,7 +52,7 @@ class Register
 
     public mixed $shippingAccountType = null;
 
-    public bool $guestChecked = false;
+    public bool $createAccountChecked = false;
 
     public bool $differentShipping = false;
 
@@ -97,62 +98,20 @@ class Register
         $this->showBirthdayField = (bool) $this->systemConfigService->get('core.loginRegistration.showBirthdayField', $salesChannelId);
 
         $createDefault = (int) $this->systemConfigService->get('core.loginRegistration.createCustomerAccountDefault', $salesChannelId) === 1;
-        $createFromData = $this->bagValue($this->data, 'createCustomerAccount');
-        $this->guestChecked = $createFromData !== null
+        $createFromData = ComponentData::get($this->data, 'createCustomerAccount');
+        $this->createAccountChecked = $createFromData !== null
             ? (bool) $createFromData
             : $createDefault;
 
-        $this->differentShipping = (bool) $this->bagValue($this->data, 'differentShippingAddress');
-        $this->email = $this->scalar($this->bagValue($this->data, 'email'));
-        $this->emailConfirmation = $this->scalar($this->bagValue($this->data, 'emailConfirmation'));
-        $this->accountType = $this->bagValue($this->data, 'accountType');
-        $this->billingAddress = $this->bagValue($this->data, 'billingAddress') ?? $this->data;
-        $this->shippingAddress = $this->bagValue($this->data, 'shippingAddress');
-        $this->shippingAccountType = $this->bagValue($this->shippingAddress, 'accountType');
+        $this->differentShipping = (bool) ComponentData::get($this->data, 'differentShippingAddress');
+        $this->email = ComponentData::scalar(ComponentData::get($this->data, 'email'));
+        $this->emailConfirmation = ComponentData::scalar(ComponentData::get($this->data, 'emailConfirmation'));
+        $this->accountType = ComponentData::get($this->data, 'accountType');
+        $this->billingAddress = ComponentData::get($this->data, 'billingAddress') ?? $this->data;
+        $this->shippingAddress = ComponentData::get($this->data, 'shippingAddress');
+        $this->shippingAccountType = ComponentData::get($this->shippingAddress, 'accountType');
 
-        if ($this->salutations === null && \is_object($this->page) && method_exists($this->page, 'getSalutations')) {
-            $this->salutations = $this->page->getSalutations();
-        }
-        if ($this->countries === null && \is_object($this->page) && method_exists($this->page, 'getCountries')) {
-            $this->countries = $this->page->getCountries();
-        }
-    }
-
-    private function bagValue(mixed $data, string $key): mixed
-    {
-        if ($data === null) {
-            return null;
-        }
-
-        if (\is_object($data) && method_exists($data, 'get')) {
-            try {
-                return $data->get($key);
-            } catch (\Throwable) {
-            }
-        }
-
-        if (\is_object($data)) {
-            $method = 'get' . ucfirst($key);
-            if (method_exists($data, $method)) {
-                return $data->{$method}();
-            }
-        }
-
-        if (\is_array($data)) {
-            return $data[$key] ?? null;
-        }
-
-        return null;
-    }
-
-    private function scalar(mixed $value): ?string
-    {
-        if (!\is_string($value) && !is_numeric($value)) {
-            return null;
-        }
-
-        $string = (string) $value;
-
-        return $string !== '' ? $string : null;
+        $this->salutations ??= ComponentData::pageSalutations($this->page);
+        $this->countries ??= ComponentData::pageCountries($this->page);
     }
 }

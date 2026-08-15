@@ -34,7 +34,7 @@ No PHP/JS / `data-component`.
 | Prop | Default | Notes |
 |------|---------|--------|
 | `role` | `null` | Root ARIA role |
-| `gap` | `null` | `'0'`…`'5'` → Bootstrap `gap-*`; other string → `--vi-grid-gap` + `data-grid-gap-mode="token"` |
+| `gap` | `null` | `'0'`…`'10'` → Bootstrap `gap-*`; other string → `--vi-grid-gap` + `data-grid-gap-mode="token"` |
 | `columns` | `null` | Scalar only → `--vi-grid-cols: N` (no breakpoint maps) |
 | `cva` | `{}` | Root override |
 

@@ -461,11 +461,11 @@ Co-located: `Form/Slider.css` (non-utility only).
 
 ## Form:Birthday
 
-Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`).
+Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
 
 ## Form:Toggle
 
-`data-component="ViewsTheme:Form:Toggle"`. Owns **control** + **content** blocks (content is a `fieldset`). `value` = show when the control matches. Show/hide via `hidden` / `inert` / `disabled`. Hidden fields drop `required` (restored on show). Nested toggles call `sync()` on inner instances. Driven by `Form:Switch` / `Form:Select`. No CSS/class targets.
+`data-component="ViewsTheme:Form:Toggle"`. Owns **control** + **content** blocks (content is a `fieldset`). `value` = show when the control matches. Show/hide via `hidden` / `inert` / `disabled`. Hidden fields drop `required` (restored on show) via `@views-theme/modules/shared/form.js` (`setFieldEnabled`, WeakMap — no `data-*` bookkeeping). Nested toggles call `sync()` on inner instances. Driven by `Form:Switch` / `Form:Select`. No CSS/class targets.
 
 | Prop | Default | Notes |
 |------|---------|--------|
@@ -474,12 +474,14 @@ Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `co
 
 ## Form:Handler
 
-Is the `<form>`. Constraint Validation + `confirmFor` match + `is-invalid` chrome. On valid submit: `disabled` + `aria-busy` on `button[type=submit]`, emit `ViewsTheme:Form:Handler:Submit`, then native submit unless `preventNative`.
+Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-invalid` / `aria-invalid` chrome (`setInvalidChrome`). On valid submit: `setSubmitting(true)` (`disabled` + `aria-busy` on `button[type=submit]`), emit `ViewsTheme:Form:Handler:Submit`, then native submit unless `preventNative`. `preventNative` callers (`Review:Form`) must call `setSubmitting(false)` when the async save finishes (or is replaced).
 
 | Prop | Default | Notes |
 |------|---------|--------|
 | `action` / `method` | `null` / `'post'` | Form attrs |
 | `preventNative` | `false` | `Review:Form` sets `true` and listens for `Submit` |
+
+Public JS: `setSubmitting(boolean)`.
 
 Do **not** mount core `FormHandler` / `FormValidation` / `data-form-handler` / `window.formValidation`.
 

@@ -22,7 +22,7 @@ Theme-owned PDP Description/Reviews **chrome** (`tabs` or `accordion`) and revie
 | `Review:Results` | XHR-swappable island (toolbar, items, pagination) |
 | `Review:Summary` / `Matrix` / `Teaser` | Aside chrome + points control + write CTA |
 | `Review:Item` | Single review card (Header / Content / Comment); no per-row edit CTA |
-| `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login. Save form uses `Form:Handler` (`preventNative`) then `Panel.save` |
+| `Review:Form` / `Form:Rating` / `Login` | Create/edit + star picker + account login. Save form uses `Form:Handler` (`preventNative`) then `Panel.save`; Form resets `setSubmitting(false)` if the handler is still mounted |
 | `Review:Rating` | Display-only stars leaf (also buy-box / product card) |
 | `Cms:DescriptionReviews` | CMS element shell: `appearance` (`tabs` \| `accordion`), which panes, `ratingSuccess` active item, mounts content |
 | `Tabs` / `Tabs:List` / `Tab` / `Panel` | Generic a11y tabs primitive — [tabs.md](tabs.md) |

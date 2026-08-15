@@ -4,6 +4,7 @@ import {
     fetchJson,
     urlWithParams,
 } from '@views-theme/modules/shared/http.js'
+import { setFieldEnabled, setRequired } from '@views-theme/modules/shared/form.js'
 
 /**
  * Country change — load states, set zip / VAT / state required.
@@ -58,8 +59,8 @@ export default class AddressCountryState extends ShopwareComponent {
             displayState: false,
         }
 
-        this._setRequired(this._zip, !!flags.requiredZip)
-        this._setRequired(this._vat, !!flags.requiredVat)
+        setRequired(this._zip, !!flags.requiredZip)
+        setRequired(this._vat, !!flags.requiredVat)
 
         if (!countryId || !this.options.countryDataUrl) {
             this._setStateOptions([], flags, preserveState)
@@ -130,7 +131,7 @@ export default class AddressCountryState extends ShopwareComponent {
             })
         }
 
-        this._setRequired(select, visible && !!flags.requiredState)
+        setRequired(select, visible && !!flags.requiredState)
         this._setHostHidden(select, !visible)
     }
 
@@ -145,43 +146,17 @@ export default class AddressCountryState extends ShopwareComponent {
     }
 
     /**
-     * @param {HTMLInputElement|HTMLSelectElement|null} field
-     * @param {boolean} required
-     */
-    _setRequired(field, required) {
-        if (!field) {
-            return
-        }
-        field.required = required
-        if (required) {
-            field.setAttribute('aria-required', 'true')
-        } else {
-            field.removeAttribute('aria-required')
-        }
-    }
-
-    /**
      * @param {HTMLElement} field
      * @param {boolean} hidden
      */
     _setHostHidden(field, hidden) {
-        const host = field.parentElement
+        const host = field.closest('[data-country-state-host]')
         if (!host) {
             return
         }
         host.hidden = hidden
         host.inert = hidden
-        if (hidden) {
-            if (!field.disabled) {
-                field.disabled = true
-                field.setAttribute('data-country-state-disabled', '')
-            }
-            return
-        }
-        if (field.hasAttribute('data-country-state-disabled')) {
-            field.disabled = false
-            field.removeAttribute('data-country-state-disabled')
-        }
+        setFieldEnabled(field, !hidden)
     }
 
     /**

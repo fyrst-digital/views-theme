@@ -1,15 +1,14 @@
 {% props
     address = null,
     postedData = null,
+    data = postedData ?? address,
     typePrefix = '',
     changeBilling = false,
     cva = {},
 %}
 
-{% set formData = postedData ?? address %}
-
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['form', 'fields', 'hint', 'actions']) %}
+{% do vi_define_attrs(['fields', 'personal', 'form', 'hint', 'actions', 'submit']) %}
 
 <twig:ViewsTheme:Form:Handler
     class="{{ vi_class('root') }}"
@@ -27,18 +26,24 @@
                 class="{{ vi_class('fields') }}"
             >
                 <twig:ViewsTheme:Address:Personal
-                    :data="formData"
-                    prefix="address"
-                    :idPrefix="typePrefix"
-                    :page="page|default(null)"
+                    class="{{ vi_class('personal') }}"
+                    {{ ...vi_attrs('personal').defaults({
+                        data: data,
+                        prefix: 'address',
+                        idPrefix: typePrefix,
+                        page: page|default(null),
+                    }).all() }}
                 />
                 <twig:ViewsTheme:Address:Form
-                    :data="formData"
-                    prefix="address"
-                    :idPrefix="typePrefix"
-                    :page="page|default(null)"
-                    :showNoShippingPostfix="true"
-                    vatInputId="{{ typePrefix }}address-vatIds"
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        data: data,
+                        prefix: 'address',
+                        idPrefix: typePrefix,
+                        page: page|default(null),
+                        showNoShippingPostfix: true,
+                        vatInputId: typePrefix ~ 'address-vatIds',
+                    }).all() }}
                 />
             </div>
         {% endblock %}
@@ -58,9 +63,12 @@
                 class="{{ vi_class('actions') }}"
             >
                 <twig:ViewsTheme:Button
-                    type="submit"
-                    color="primary"
-                    label="{{ 'account.addressSaveChange'|trans|sw_sanitize }}"
+                    class="{{ vi_class('submit') }}"
+                    {{ ...vi_attrs('submit').defaults({
+                        type: 'submit',
+                        color: 'primary',
+                        label: 'account.addressSaveChange'|trans|sw_sanitize,
+                    }).all() }}
                 />
             </div>
         {% endblock %}

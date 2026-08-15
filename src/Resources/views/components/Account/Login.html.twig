@@ -7,13 +7,12 @@
     errorSnippet = null,
     waitTime = null,
     layout = 'row',
+    loginId = 'vi-login-' ~ random(),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['description', 'username', 'password']) %}
-
-{% set loginId = 'vi-login-' ~ random() %}
 
 <twig:ViewsTheme:Form:Handler
     class="{{ vi_class('root', { layout: layout }) }}"

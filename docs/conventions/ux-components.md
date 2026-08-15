@@ -95,7 +95,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:Form`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -448,6 +448,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Alert, Button, Blockquote, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; native `required` / `confirmFor`; used by Account:Login + Register/Address |
+| Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
+| Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |

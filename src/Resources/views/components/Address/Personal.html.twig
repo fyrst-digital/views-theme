@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['accountType', 'salutation', 'title', 'firstName', 'lastName', 'birthday', 'company']) %}
+{% do vi_define_attrs(['accountType', 'accountTypeSelect', 'salutation', 'title', 'firstName', 'lastName', 'birthday', 'company']) %}
 
 <div
     {{ attributes }}
@@ -21,16 +21,18 @@
                             <twig:ViewsTheme:Grid columns="6" gap="3">
                                 <twig:block name="content">
                                 <twig:ViewsTheme:Form:Select
-                                    class="g-col-3"
-                                    id="{{ fields.accountType.id }}"
-                                    name="{{ fields.accountType.name }}"
-                                    :options="accountTypeOptions"
-                                    :value="accountTypeValue"
-                                    :disabled="companyAlways"
-                                    validationRules="required"
-                                    violationPath="{{ fields.accountType.violationPath }}"
-                                    autocomplete="off"
-                                    label="{{ 'account.personalTypeLabel'|trans|sw_sanitize }}"
+                                    class="{{ vi_class('accountTypeSelect') }}"
+                                    {{ ...vi_attrs('accountTypeSelect').defaults({
+                                        id: fields.accountType.id,
+                                        name: fields.accountType.name,
+                                        options: accountTypeOptions,
+                                        value: accountTypeValue,
+                                        disabled: companyAlways,
+                                        validationRules: 'required',
+                                        violationPath: fields.accountType.violationPath,
+                                        autocomplete: 'off',
+                                        label: 'account.personalTypeLabel'|trans|sw_sanitize,
+                                    }).all() }}
                                 />
                                 </twig:block>
                             </twig:ViewsTheme:Grid>
@@ -57,7 +59,7 @@
                     <input type="hidden" name="{{ fields.accountType.name }}" value="{{ businessType }}">
                     {% block companyAlways %}
                         <twig:ViewsTheme:Address:PersonalCompany
-                            class="{{ vi_class('company') }} g-col-6"
+                            class="{{ vi_class('company') }}"
                             {{ ...vi_attrs('company').defaults({
                                 data: data,
                                 prefix: prefix,
@@ -73,7 +75,7 @@
             {% block salutation %}
                 {% if showSalutation %}
                     <twig:ViewsTheme:Form:Select
-                        class="{{ vi_class('salutation') }} g-col-3"
+                        class="{{ vi_class('salutation') }}"
                         {{ ...vi_attrs('salutation').defaults({
                             id: fields.salutation.id,
                             name: fields.salutation.name,
@@ -91,7 +93,7 @@
             {% block title %}
                 {% if showTitle %}
                     <twig:ViewsTheme:Form:Input
-                        class="{{ vi_class('title') }} g-col-3"
+                        class="{{ vi_class('title') }}"
                         {{ ...vi_attrs('title').defaults({
                             id: fields.title.id,
                             name: fields.title.name,
@@ -107,7 +109,7 @@
 
             {% block firstName %}
                 <twig:ViewsTheme:Form:Input
-                    class="{{ vi_class('firstName') }} g-col-3"
+                    class="{{ vi_class('firstName') }}"
                     {{ ...vi_attrs('firstName').defaults({
                         id: fields.firstName.id,
                         name: fields.firstName.name,
@@ -123,7 +125,7 @@
 
             {% block lastName %}
                 <twig:ViewsTheme:Form:Input
-                    class="{{ vi_class('lastName') }} g-col-3"
+                    class="{{ vi_class('lastName') }}"
                     {{ ...vi_attrs('lastName').defaults({
                         id: fields.lastName.id,
                         name: fields.lastName.name,

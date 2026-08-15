@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Address;
 
+use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -71,7 +73,7 @@ class Form
     public ?string $countryStateId = null;
 
     /**
-     * @var array<string, array{id: string, name: string, value: mixed, violationPath: string|null, autocomplete: string}>
+     * @var array<string, array{id: string, name: string, value: mixed, violationPath: string, autocomplete?: string}>
      */
     public array $fields = [];
 
@@ -80,8 +82,6 @@ class Form
     public string $stateSelectId = '';
 
     public string $zipInputId = '';
-
-    public string $countryDataUrl = '';
 
     public function __construct(
         private readonly SystemConfigService $systemConfigService,
@@ -116,12 +116,10 @@ class Form
             $this->arrangement = ['city', 'state', 'zip'];
         }
 
-        if ($this->countries === null && \is_object($this->page) && method_exists($this->page, 'getCountries')) {
-            $this->countries = $this->page->getCountries();
-        }
+        $this->countries ??= ComponentData::pageCountries($this->page);
 
         $this->countryId = $this->resolveCountryId();
-        $this->countryStateId = $this->scalar($this->bagValue($this->data, 'countryStateId'));
+        $this->countryStateId = ComponentData::scalar(ComponentData::get($this->data, 'countryStateId'));
         $this->buildCountryOptions();
 
         $this->countrySelectId = $this->idPrefix . $this->prefix . 'AddressCountry';
@@ -133,7 +131,7 @@ class Form
 
     private function resolveCountryId(): ?string
     {
-        $fromData = $this->scalar($this->bagValue($this->data, 'countryId'));
+        $fromData = ComponentData::scalar(ComponentData::get($this->data, 'countryId'));
         if ($fromData !== null) {
             return $fromData;
         }
@@ -150,8 +148,8 @@ class Form
 
         $ids = [];
         foreach ($this->countries as $country) {
-            if (\is_object($country) && method_exists($country, 'getId')) {
-                $ids[] = (string) $country->getId();
+            if ($country instanceof CountryEntity) {
+                $ids[] = $country->getId();
             }
         }
 
@@ -179,29 +177,22 @@ class Form
         $noShipping = $this->translator->trans('address.countryPostfixNoShipping');
 
         foreach ($this->countries as $country) {
-            if (!\is_object($country) || !method_exists($country, 'getId')) {
+            if (!$country instanceof CountryEntity) {
                 continue;
             }
 
-            $id = (string) $country->getId();
-            $label = method_exists($country, 'getTranslation')
-                ? (string) ($country->getTranslation('name') ?? $id)
-                : $id;
-            $shippingAvailable = !method_exists($country, 'getShippingAvailable') || $country->getShippingAvailable();
+            $id = $country->getId();
+            $label = (string) ($country->getTranslation('name') ?? $country->getName() ?? $id);
+            $shippingAvailable = $country->getShippingAvailable();
             if ($this->showNoShippingPostfix && !$shippingAvailable) {
                 $label .= ' ' . $noShipping;
             }
 
-            $requiredZip = method_exists($country, 'getPostalCodeRequired') && $country->getPostalCodeRequired();
-            $requiredState = method_exists($country, 'getForceStateInRegistration') && $country->getForceStateInRegistration();
-            $requiredVat = method_exists($country, 'getVatIdRequired') && $country->getVatIdRequired();
-            $displayState = method_exists($country, 'getDisplayStateInRegistration') && $country->getDisplayStateInRegistration();
-
             $this->countryFlags[$id] = [
-                'requiredZip' => (bool) $requiredZip,
-                'requiredState' => (bool) $requiredState,
-                'requiredVat' => (bool) $requiredVat,
-                'displayState' => (bool) $displayState,
+                'requiredZip' => $country->getPostalCodeRequired(),
+                'requiredState' => $country->getForceStateInRegistration(),
+                'requiredVat' => (bool) $country->getVatIdRequired(),
+                'displayState' => $country->getDisplayStateInRegistration(),
             ];
 
             $this->countryOptions[] = [
@@ -209,44 +200,26 @@ class Form
                 'label' => $label,
                 'disabled' => $this->disableNonShippableCountries && !$shippingAvailable,
                 'selected' => $this->countryId === $id,
-                'requiredZip' => (bool) $requiredZip,
-                'requiredState' => (bool) $requiredState,
-                'requiredVat' => (bool) $requiredVat,
-                'displayState' => (bool) $displayState,
             ];
         }
     }
 
     /**
-     * @return array<string, array{id: string, name: string, value: mixed, violationPath: string|null, autocomplete: string}>
+     * @return array<string, array{id: string, name: string, value: mixed, violationPath: string, autocomplete?: string}>
      */
     private function buildFields(): array
     {
         $auto = $this->autocompletePrefix();
 
         return [
-            'street' => $this->field('-AddressStreet', 'street', $auto . 'address-line1'),
-            'additionalAddressLine1' => $this->field('AdditionalField1', 'additionalAddressLine1', $auto . 'address-line2'),
-            'additionalAddressLine2' => $this->field('AdditionalField2', 'additionalAddressLine2', $auto . 'address-line3'),
-            'city' => $this->field('AddressCity', 'city', $auto . 'address-level2'),
-            'zipcode' => $this->field('AddressZipcode', 'zipcode', $auto . 'postal-code'),
-            'country' => $this->field('AddressCountry', 'countryId', $auto . 'country-name', $this->countryId),
-            'countryState' => $this->field('AddressCountryState', 'countryStateId', $auto . 'address-level1', $this->countryStateId),
-            'phoneNumber' => $this->field('AddressPhoneNumber', 'phoneNumber', $auto . 'tel'),
-        ];
-    }
-
-    /**
-     * @return array{id: string, name: string, value: mixed, violationPath: string|null, autocomplete: string}
-     */
-    private function field(string $idSuffix, string $key, string $autocomplete, mixed $value = null): array
-    {
-        return [
-            'id' => $this->idPrefix . $this->prefix . $idSuffix,
-            'name' => $this->prefix . '[' . $key . ']',
-            'value' => $value ?? $this->bagValue($this->data, $key),
-            'violationPath' => '/' . $this->prefix . '/' . $key,
-            'autocomplete' => $autocomplete,
+            'street' => ComponentData::field($this->idPrefix, $this->prefix, '-AddressStreet', 'street', ComponentData::get($this->data, 'street'), true, $auto . 'address-line1'),
+            'additionalAddressLine1' => ComponentData::field($this->idPrefix, $this->prefix, 'AdditionalField1', 'additionalAddressLine1', ComponentData::get($this->data, 'additionalAddressLine1'), true, $auto . 'address-line2'),
+            'additionalAddressLine2' => ComponentData::field($this->idPrefix, $this->prefix, 'AdditionalField2', 'additionalAddressLine2', ComponentData::get($this->data, 'additionalAddressLine2'), true, $auto . 'address-line3'),
+            'city' => ComponentData::field($this->idPrefix, $this->prefix, 'AddressCity', 'city', ComponentData::get($this->data, 'city'), true, $auto . 'address-level2'),
+            'zipcode' => ComponentData::field($this->idPrefix, $this->prefix, 'AddressZipcode', 'zipcode', ComponentData::get($this->data, 'zipcode'), true, $auto . 'postal-code'),
+            'country' => ComponentData::field($this->idPrefix, $this->prefix, 'AddressCountry', 'countryId', $this->countryId, true, $auto . 'country-name'),
+            'countryState' => ComponentData::field($this->idPrefix, $this->prefix, 'AddressCountryState', 'countryStateId', $this->countryStateId, true, $auto . 'address-level1'),
+            'phoneNumber' => ComponentData::field($this->idPrefix, $this->prefix, 'AddressPhoneNumber', 'phoneNumber', ComponentData::get($this->data, 'phoneNumber'), true, $auto . 'tel'),
         ];
     }
 
@@ -260,46 +233,5 @@ class Form
         }
 
         return '';
-    }
-
-    private function bagValue(mixed $data, string $key): mixed
-    {
-        if ($data === null) {
-            return null;
-        }
-
-        if (\is_object($data) && method_exists($data, 'get')) {
-            try {
-                $value = $data->get($key);
-                if ($value !== null) {
-                    return $value;
-                }
-            } catch (\Throwable) {
-            }
-        }
-
-        if (\is_object($data)) {
-            $method = 'get' . ucfirst($key);
-            if (method_exists($data, $method)) {
-                return $data->{$method}();
-            }
-        }
-
-        if (\is_array($data)) {
-            return $data[$key] ?? null;
-        }
-
-        return null;
-    }
-
-    private function scalar(mixed $value): ?string
-    {
-        if (!\is_string($value) && !is_numeric($value)) {
-            return null;
-        }
-
-        $string = (string) $value;
-
-        return $string !== '' ? $string : null;
     }
 }

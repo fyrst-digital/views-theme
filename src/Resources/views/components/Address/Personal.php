@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Address;
 
+use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -75,7 +77,7 @@ class Personal
     public array $salutationOptions = [];
 
     /**
-     * @var array<string, array{id: string, name: string, value: mixed, violationPath: string|null}>
+     * @var array<string, array{id: string, name: string, value: mixed, violationPath: string, autocomplete?: string}>
      */
     public array $fields = [];
 
@@ -111,6 +113,7 @@ class Personal
             $this->accountTypeOptions = $this->buildAccountTypeOptions($resolvedType);
         }
 
+        $this->salutations ??= ComponentData::pageSalutations($this->page);
         $this->salutationOptions = $this->buildSalutationOptions();
         $this->fields = $this->buildFields();
     }
@@ -122,10 +125,10 @@ class Personal
         }
 
         $fromProp = \is_string($this->accountType) ? $this->accountType : null;
-        $fromData = $this->bagValue($this->data, 'accountType');
-        $company = $this->bagValue($this->data, 'company');
+        $fromData = ComponentData::get($this->data, 'accountType');
+        $company = ComponentData::get($this->data, 'company');
 
-        if ($fromProp === CustomerEntity::ACCOUNT_TYPE_BUSINESS || $fromData === CustomerEntity::ACCOUNT_TYPE_BUSINESS || $this->nonEmpty($company) !== null) {
+        if ($fromProp === CustomerEntity::ACCOUNT_TYPE_BUSINESS || $fromData === CustomerEntity::ACCOUNT_TYPE_BUSINESS || ComponentData::scalar($company) !== null) {
             return CustomerEntity::ACCOUNT_TYPE_BUSINESS;
         }
 
@@ -168,25 +171,18 @@ class Personal
      */
     private function buildSalutationOptions(): array
     {
-        $salutations = $this->salutations;
-        if ($salutations === null && \is_object($this->page) && method_exists($this->page, 'getSalutations')) {
-            $salutations = $this->page->getSalutations();
-        }
-
         $options = [];
-        if (!\is_iterable($salutations)) {
+        if (!\is_iterable($this->salutations)) {
             return $options;
         }
 
-        $selected = $this->bagValue($this->data, 'salutationId');
-        foreach ($salutations as $salutation) {
-            if (!\is_object($salutation) || !method_exists($salutation, 'getId')) {
+        $selected = ComponentData::get($this->data, 'salutationId');
+        foreach ($this->salutations as $salutation) {
+            if (!$salutation instanceof SalutationEntity) {
                 continue;
             }
-            $id = (string) $salutation->getId();
-            $label = method_exists($salutation, 'getTranslation')
-                ? (string) ($salutation->getTranslation('displayName') ?? $salutation->getTranslation('name') ?? $id)
-                : $id;
+            $id = $salutation->getId();
+            $label = (string) ($salutation->getTranslation('displayName') ?? $salutation->getDisplayName() ?? $salutation->getTranslation('name') ?? $id);
             $options[] = [
                 'value' => $id,
                 'label' => $label,
@@ -198,21 +194,21 @@ class Personal
     }
 
     /**
-     * @return array<string, array{id: string, name: string, value: mixed, violationPath: string|null}>
+     * @return array<string, array{id: string, name: string, value: mixed, violationPath: string, autocomplete?: string}>
      */
     private function buildFields(): array
     {
         $birthday = $this->resolveBirthday();
 
         return [
-            'accountType' => $this->field('accountType', 'accountType', $this->accountTypeValue),
-            'salutation' => $this->field('personalSalutation', 'salutationId', $this->bagValue($this->data, 'salutationId')),
-            'title' => $this->field('personalTitle', 'title', $this->bagValue($this->data, 'title')),
-            'firstName' => $this->field('-personalFirstName', 'firstName', $this->bagValue($this->data, 'firstName')),
-            'lastName' => $this->field('-personalLastName', 'lastName', $this->bagValue($this->data, 'lastName')),
-            'birthdayDay' => $this->field('personalBirthday-day', 'birthdayDay', $birthday['day'], false),
-            'birthdayMonth' => $this->field('personalBirthday-month', 'birthdayMonth', $birthday['month'], false),
-            'birthdayYear' => $this->field('personalBirthday-year', 'birthdayYear', $birthday['year'], false),
+            'accountType' => ComponentData::field($this->idPrefix, $this->prefix, 'accountType', 'accountType', $this->accountTypeValue),
+            'salutation' => ComponentData::field($this->idPrefix, $this->prefix, 'personalSalutation', 'salutationId', ComponentData::get($this->data, 'salutationId')),
+            'title' => ComponentData::field($this->idPrefix, $this->prefix, 'personalTitle', 'title', ComponentData::get($this->data, 'title')),
+            'firstName' => ComponentData::field($this->idPrefix, $this->prefix, '-personalFirstName', 'firstName', ComponentData::get($this->data, 'firstName')),
+            'lastName' => ComponentData::field($this->idPrefix, $this->prefix, '-personalLastName', 'lastName', ComponentData::get($this->data, 'lastName')),
+            'birthdayDay' => ComponentData::field($this->idPrefix, $this->prefix, 'personalBirthday-day', 'birthdayDay', $birthday['day'], false),
+            'birthdayMonth' => ComponentData::field($this->idPrefix, $this->prefix, 'personalBirthday-month', 'birthdayMonth', $birthday['month'], false),
+            'birthdayYear' => ComponentData::field($this->idPrefix, $this->prefix, 'personalBirthday-year', 'birthdayYear', $birthday['year'], false),
         ];
     }
 
@@ -221,14 +217,14 @@ class Personal
      */
     private function resolveBirthday(): array
     {
-        $day = $this->bagValue($this->data, 'birthdayDay');
-        $month = $this->bagValue($this->data, 'birthdayMonth');
-        $year = $this->bagValue($this->data, 'birthdayYear');
+        $day = ComponentData::get($this->data, 'birthdayDay');
+        $month = ComponentData::get($this->data, 'birthdayMonth');
+        $year = ComponentData::get($this->data, 'birthdayYear');
         if ($day !== null || $month !== null || $year !== null) {
             return ['day' => $day, 'month' => $month, 'year' => $year];
         }
 
-        $birthday = $this->bagValue($this->data, 'birthday');
+        $birthday = ComponentData::get($this->data, 'birthday');
         if ($birthday instanceof \DateTimeInterface) {
             return [
                 'day' => (int) $birthday->format('d'),
@@ -238,61 +234,5 @@ class Personal
         }
 
         return ['day' => null, 'month' => null, 'year' => null];
-    }
-
-    /**
-     * @return array{id: string, name: string, value: mixed, violationPath: string|null}
-     */
-    private function field(string $idSuffix, string $key, mixed $value, bool $prefixedName = true): array
-    {
-        $name = $prefixedName && $this->prefix !== '' ? $this->prefix . '[' . $key . ']' : $key;
-
-        return [
-            'id' => $this->idPrefix . $this->prefix . $idSuffix,
-            'name' => $name,
-            'value' => $value,
-            'violationPath' => $this->prefix !== '' ? '/' . $this->prefix . '/' . $key : '/' . $key,
-        ];
-    }
-
-    private function bagValue(mixed $data, string $key): mixed
-    {
-        if ($data === null) {
-            return null;
-        }
-
-        if (\is_object($data) && method_exists($data, 'get')) {
-            try {
-                $value = $data->get($key);
-                if ($value !== null) {
-                    return $value;
-                }
-            } catch (\Throwable) {
-            }
-        }
-
-        if (\is_object($data)) {
-            $method = 'get' . ucfirst($key);
-            if (method_exists($data, $method)) {
-                return $data->{$method}();
-            }
-        }
-
-        if (\is_array($data)) {
-            return $data[$key] ?? null;
-        }
-
-        return null;
-    }
-
-    private function nonEmpty(mixed $value): ?string
-    {
-        if (!\is_string($value) && !is_numeric($value)) {
-            return null;
-        }
-
-        $string = (string) $value;
-
-        return $string !== '' ? $string : null;
     }
 }

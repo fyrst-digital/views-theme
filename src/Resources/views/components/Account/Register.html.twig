@@ -1,72 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'form', 'personal', 'guest', 'email', 'emailConfirm', 'password', 'passwordConfirm', 'billing', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'submit']) %}
-
-{% set credentials %}
-    <twig:ViewsTheme:Form:Input
-        class="{{ vi_class('email') }} g-col-3"
-        {{ ...vi_attrs('email').defaults({
-            type: 'email',
-            id: 'personalMail',
-            name: 'email',
-            value: email,
-            violationPath: '/email',
-            formViolations: formViolations,
-            validationRules: 'required,email',
-            autocomplete: 'section-personal email',
-            label: 'account.personalMailLabel'|trans|sw_sanitize,
-        }).all() }}
-    />
-    {% if requireEmailConfirmation %}
-        <twig:ViewsTheme:Form:Input
-            class="{{ vi_class('emailConfirm') }} g-col-3"
-            {{ ...vi_attrs('emailConfirm').defaults({
-                type: 'email',
-                id: 'personalMailConfirmation',
-                name: 'emailConfirmation',
-                value: emailConfirmation,
-                violationPath: '/email',
-                formViolations: formViolations,
-                validationRules: 'required,email',
-                confirmFor: 'personalMail',
-                confirmMessage: 'account.personalMailConfirmationLabel'|trans|sw_sanitize,
-                autocomplete: 'section-personal email',
-                label: 'account.personalMailConfirmationLabel'|trans|sw_sanitize,
-            }).all() }}
-        />
-    {% endif %}
-    <twig:ViewsTheme:Form:Input
-        class="{{ vi_class('password') }} g-col-3"
-        {{ ...vi_attrs('password').defaults({
-            type: 'password',
-            id: 'personalPassword',
-            name: 'password',
-            violationPath: '/password',
-            formViolations: formViolations,
-            validationRules: 'required',
-            minlength: passwordMinLength > 0 ? passwordMinLength : null,
-            autocomplete: 'new-password',
-            description: passwordDescription,
-            label: 'account.personalPasswordLabel'|trans|sw_sanitize,
-        }).all() }}
-    />
-    {% if requirePasswordConfirmation %}
-        <twig:ViewsTheme:Form:Input
-            class="{{ vi_class('passwordConfirm') }} g-col-3"
-            {{ ...vi_attrs('passwordConfirm').defaults({
-                type: 'password',
-                id: 'personalPasswordConfirmation',
-                name: 'passwordConfirmation',
-                violationPath: '/passwordConfirmation',
-                formViolations: formViolations,
-                validationRules: 'required',
-                confirmFor: 'personalPassword',
-                confirmMessage: 'account.personalPasswordConfirmationLabel'|trans|sw_sanitize,
-                autocomplete: 'new-password',
-                label: 'account.personalPasswordConfirmationLabel'|trans|sw_sanitize,
-            }).all() }}
-        />
-    {% endif %}
-{% endset %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'guest', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'submit']) %}
 
 <div
     {{ attributes }}
@@ -128,7 +61,7 @@
                             class="{{ vi_class('guest') }}"
                             {{ ...vi_attrs('guest').defaults({
                                 value: 'true',
-                                open: guestChecked,
+                                open: createAccountChecked,
                             }).all() }}
                         >
                             <twig:block name="control">
@@ -136,24 +69,38 @@
                                     id="personalGuest"
                                     name="createCustomerAccount"
                                     value="true"
-                                    :checked="guestChecked"
+                                    :checked="createAccountChecked"
                                     label="{{ 'checkout.registerCustomermodeLabel'|trans|sw_sanitize }}"
                                 />
                             </twig:block>
                             <twig:block name="content">
-                                <twig:ViewsTheme:Grid columns="6" gap="3">
-                                    <twig:block name="content">
-                                    {{ credentials }}
-                                    </twig:block>
-                                </twig:ViewsTheme:Grid>
+                                <twig:ViewsTheme:Account:Register:Credentials
+                                    class="{{ vi_class('credentials') }}"
+                                    {{ ...vi_attrs('credentials').defaults({
+                                        email: email,
+                                        emailConfirmation: emailConfirmation,
+                                        requireEmailConfirmation: requireEmailConfirmation,
+                                        requirePasswordConfirmation: requirePasswordConfirmation,
+                                        passwordMinLength: passwordMinLength,
+                                        passwordDescription: passwordDescription,
+                                        formViolations: formViolations,
+                                    }).all() }}
+                                />
                             </twig:block>
                         </twig:ViewsTheme:Form:Toggle>
                     {% else %}
-                        <twig:ViewsTheme:Grid columns="6" gap="3">
-                            <twig:block name="content">
-                            {{ credentials }}
-                            </twig:block>
-                        </twig:ViewsTheme:Grid>
+                        <twig:ViewsTheme:Account:Register:Credentials
+                            class="{{ vi_class('credentials') }}"
+                            {{ ...vi_attrs('credentials').defaults({
+                                email: email,
+                                emailConfirmation: emailConfirmation,
+                                requireEmailConfirmation: requireEmailConfirmation,
+                                requirePasswordConfirmation: requirePasswordConfirmation,
+                                passwordMinLength: passwordMinLength,
+                                passwordDescription: passwordDescription,
+                                formViolations: formViolations,
+                            }).all() }}
+                        />
                     {% endif %}
                 {% endblock %}
 
@@ -163,13 +110,16 @@
                             {{ 'account.registerAddressBillingHeader'|trans|sw_sanitize }}
                         </legend>
                         <twig:ViewsTheme:Address:Form
-                            :data="billingAddress"
-                            :countries="countries"
-                            :page="page"
-                            prefix="billingAddress"
-                            :showNoShippingPostfix="true"
-                            :formViolations="formViolations"
-                            vatInputId="billingAddress-vatIds"
+                            class="{{ vi_class('billingForm') }}"
+                            {{ ...vi_attrs('billingForm').defaults({
+                                data: billingAddress,
+                                countries: countries,
+                                page: page,
+                                prefix: 'billingAddress',
+                                showNoShippingPostfix: true,
+                                formViolations: formViolations,
+                                vatInputId: 'billingAddress-vatIds',
+                            }).all() }}
                         />
                     </fieldset>
                 {% endblock %}

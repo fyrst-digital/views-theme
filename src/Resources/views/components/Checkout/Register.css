@@ -7,5 +7,5 @@
 }
 
 .vi-checkout-register-aside {
-    top: var(--vi-aside-top, var(--spacing-6));
+    top: var(--vi-top, 24px);
 }

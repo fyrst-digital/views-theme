@@ -37,7 +37,7 @@ page/checkout/address/index.html.twig
 └─ base_esi_footer → core footer-minimal (untouched)
 ```
 
-Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-register-cols`). Mobile: stack.
+Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-register-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
 
 Login is **always visible** — no collapse / Accordion.
 
@@ -47,7 +47,8 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `guestSelectable` | `false` | Checkout: `true` — `Form:Switch` `createCustomerAccount` + `Form:Toggle` around passwords |
+| `guestSelectable` | `false` | Checkout: `true` — `Form:Switch` `createCustomerAccount` + `Form:Toggle` around `Account:Register:Credentials` |
+| `createAccountChecked` | config / posted | Switch + toggle open (create-account, not “guest”) |
 | `redirectTo` | confirm (guest) / account home | Hidden input |
 | `errorRoute` | checkout register / account register | Hidden input |
 | `data` / `page` | | Prefill + countries / salutations |
@@ -58,11 +59,11 @@ Captcha + privacy stay core includes.
 
 ## Address fields
 
-`Address:Personal` (class) + `Address:PersonalCompany` + `Address:Form` (class) + `Address:CountryState` JS.
+`Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials`.
 
-Fields sit in `Grid` `columns="6"`. Spans: full = `g-col-6`, pair = `g-col-3`, third = `g-col-2`. No Bootstrap `row` / `col-md-*`.
+Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`.
 
-`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on PHP `:options` hashes / `countries` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not core option `data-*`.
+`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`.
 
 Guest, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
 
@@ -80,7 +81,7 @@ Guest, different-shipping, and company visibility use `Form:Toggle` (control + c
 
 ## Files
 
-`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,EditorCreate}.*`
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Register/Credentials.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,EditorCreate}.*` · `src/Service/ComponentData.php`
 
 ## Related
 

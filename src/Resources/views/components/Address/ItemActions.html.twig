@@ -56,18 +56,18 @@
     {% block setDefaultBilling %}
         {% if not isDefaultBilling %}
             <form
-                action="{{ path('frontend.account.address.set-default-address', { type: 'billing', addressId: address.id }) }}"
-                method="post"
+                {{ vi_attrs('defaultBilling').defaults({
+                    action: path('frontend.account.address.set-default-address', { type: 'billing', addressId: address.id }),
+                    method: 'post',
+                }) }}
+                class="{{ vi_class('defaultBilling') }}"
             >
                 <twig:ViewsTheme:Button
-                    class="{{ vi_class('defaultBilling') }}"
-                    {{ ...vi_attrs('defaultBilling').defaults({
-                        type: 'submit',
-                        color: 'link',
-                        size: 'sm',
-                        label: 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize,
-                        title: 'account.addressesSetAsDefaultBillingAction'|trans|striptags,
-                    }).all() }}
+                    type="submit"
+                    color="link"
+                    size="sm"
+                    label="{{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}"
+                    title="{{ 'account.addressesSetAsDefaultBillingAction'|trans|striptags }}"
                 />
             </form>
         {% endif %}
@@ -76,19 +76,19 @@
     {% block setDefaultShipping %}
         {% if not isDefaultShipping %}
             <form
-                action="{{ path('frontend.account.address.set-default-address', { type: 'shipping', addressId: address.id }) }}"
-                method="post"
+                {{ vi_attrs('defaultShipping').defaults({
+                    action: path('frontend.account.address.set-default-address', { type: 'shipping', addressId: address.id }),
+                    method: 'post',
+                }) }}
+                class="{{ vi_class('defaultShipping') }}"
             >
                 <twig:ViewsTheme:Button
-                    class="{{ vi_class('defaultShipping') }}"
-                    {{ ...vi_attrs('defaultShipping').defaults({
-                        type: 'submit',
-                        color: 'link',
-                        size: 'sm',
-                        label: 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize,
-                        title: 'account.addressesSetAsDefaultShippingAction'|trans|striptags,
-                        disabled: address.country.shippingAvailable ? false : true,
-                    }).all() }}
+                    type="submit"
+                    color="link"
+                    size="sm"
+                    label="{{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}"
+                    title="{{ 'account.addressesSetAsDefaultShippingAction'|trans|striptags }}"
+                    :disabled="address.country.shippingAvailable ? false : true"
                 />
             </form>
         {% endif %}
