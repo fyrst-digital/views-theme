@@ -9,7 +9,7 @@
     }).all() }}
 >
     <twig:block name="content">
-    {% block company %}
+    {% vi_block company %}
         <twig:ViewsTheme:Form:Input
             class="{{ vi_class('company') }}"
             {{ ...vi_attrs('company').defaults({
@@ -23,9 +23,9 @@
                 label: 'address.companyNameLabel'|trans|sw_sanitize,
             }).all() }}
         />
-    {% endblock %}
+    {% endvi_block %}
 
-    {% block department %}
+    {% vi_block department %}
         <twig:ViewsTheme:Form:Input
             class="{{ vi_class('department') }}"
             {{ ...vi_attrs('department').defaults({
@@ -38,9 +38,9 @@
                 label: 'address.companyDepartmentLabel'|trans|sw_sanitize,
             }).all() }}
         />
-    {% endblock %}
+    {% endvi_block %}
 
-    {% block vat %}
+    {% vi_block vat %}
         {% if showVat %}
             <twig:ViewsTheme:Form:Input
                 class="{{ vi_class('vat') }}"
@@ -55,6 +55,6 @@
                 }).all() }}
             />
         {% endif %}
-    {% endblock %}
+    {% endvi_block %}
     </twig:block>
 </twig:ViewsTheme:Grid>

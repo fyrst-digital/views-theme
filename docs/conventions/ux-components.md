@@ -390,13 +390,35 @@ See [vi-attrs.md](../twig/vi-attrs.md).
 
 ### Nested slots: props and single content owner
 
-Do **not** multi-hop blocks through nested `<twig:…>` hosts (no `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward).
+Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward.
+
+A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
+
+```twig
+<twig:ViewsTheme:Grid columns="6" gap="3">
+    <twig:block name="content">
+        {% vi_block prepend %}{% endvi_block %}
+        {% vi_block accountType %}
+            {# default #}
+        {% endvi_block %}
+        {% vi_block append %}{% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>
+```
+
+```twig
+<twig:ViewsTheme:Address:Personal …>
+    <twig:block name="accountType">…</twig:block>
+    <twig:block name="append">…</twig:block>
+</twig:ViewsTheme:Address:Personal>
+```
 
 | Need | Pattern |
 |------|---------|
 | Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `vi_attrs('slot').defaults({…})` |
 | Markup body | **One** component owns `{% block content %}` (the shell that wraps that DOM) |
 | Rich chrome override | Caller overrides a **whole** `{% block %}` on that shell (e.g. `header`) |
+| Slot inside a nested host | `{% vi_block NAME %}default{% endvi_block %}` — not `{% block NAME %}` inside the nested tag |
 
 ```twig
 {# Panel owns body content; title is a prop #}
@@ -487,5 +509,5 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 - [Component templates](components.md)
 - [JavaScript](javascript.md)
 - [`vi_cva`](../twig/vi-cva.md)
-- [vi_define_cva / vi_class](../twig/vi-cva.md) · [vi_define_attrs / vi_attrs](../twig/vi-attrs.md)
+- [vi_define_cva / vi_class](../twig/vi-cva.md) · [vi_define_attrs / vi_attrs](../twig/vi-attrs.md) · [`{% vi_block %}`](../twig/vi-block.md)
 - Shopware core README: `vendor/shopware/storefront/Resources/views/components/README.md`

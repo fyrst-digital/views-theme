@@ -12,7 +12,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Account:Register — guest/password/email gates; Twig composes fields.
+ * View-model for Account:Register — guest password gate; Twig composes fields.
  */
 #[AsTwigComponent]
 class Register

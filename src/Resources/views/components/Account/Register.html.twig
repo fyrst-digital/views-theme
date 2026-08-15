@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'form', 'personal', 'guest', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'privacy', 'submit']) %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'privacy', 'submit']) %}
 
 <div
     {{ attributes }}
@@ -52,56 +52,26 @@
                             showVat: true,
                             formViolations: formViolations,
                         }).all() }}
-                    />
-                {% endblock %}
-
-                {% block account %}
-                    {% if guestSelectable %}
-                        <twig:ViewsTheme:Form:Toggle
-                            class="{{ vi_class('guest') }}"
-                            {{ ...vi_attrs('guest').defaults({
-                                value: 'true',
-                                open: createAccountChecked,
-                            }).all() }}
-                        >
-                            <twig:block name="control">
-                                <twig:ViewsTheme:Form:Switch
-                                    id="personalGuest"
-                                    name="createCustomerAccount"
-                                    value="true"
-                                    :checked="createAccountChecked"
-                                    label="{{ 'checkout.registerCustomermodeLabel'|trans|sw_sanitize }}"
-                                />
-                            </twig:block>
-                            <twig:block name="content">
-                                <twig:ViewsTheme:Account:Register:Credentials
-                                    class="{{ vi_class('credentials') }}"
-                                    {{ ...vi_attrs('credentials').defaults({
-                                        email: email,
-                                        emailConfirmation: emailConfirmation,
-                                        requireEmailConfirmation: requireEmailConfirmation,
-                                        requirePasswordConfirmation: requirePasswordConfirmation,
-                                        passwordMinLength: passwordMinLength,
-                                        passwordDescription: passwordDescription,
-                                        formViolations: formViolations,
-                                    }).all() }}
-                                />
-                            </twig:block>
-                        </twig:ViewsTheme:Form:Toggle>
-                    {% else %}
-                        <twig:ViewsTheme:Account:Register:Credentials
-                            class="{{ vi_class('credentials') }}"
-                            {{ ...vi_attrs('credentials').defaults({
-                                email: email,
-                                emailConfirmation: emailConfirmation,
-                                requireEmailConfirmation: requireEmailConfirmation,
-                                requirePasswordConfirmation: requirePasswordConfirmation,
-                                passwordMinLength: passwordMinLength,
-                                passwordDescription: passwordDescription,
-                                formViolations: formViolations,
-                            }).all() }}
-                        />
-                    {% endif %}
+                    >
+                    <twig:block name="append">
+                        {% vi_block account %}
+                            <twig:ViewsTheme:Account:Register:Credentials
+                                class="{{ vi_class('credentials') }}"
+                                {{ ...vi_attrs('credentials').defaults({
+                                    email: email,
+                                    emailConfirmation: emailConfirmation,
+                                    requireEmailConfirmation: requireEmailConfirmation,
+                                    requirePasswordConfirmation: requirePasswordConfirmation,
+                                    passwordMinLength: passwordMinLength,
+                                    passwordDescription: passwordDescription,
+                                    guestSelectable: guestSelectable,
+                                    createAccountChecked: createAccountChecked,
+                                    formViolations: formViolations,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Address:Personal>
                 {% endblock %}
 
                 {% block billing %}

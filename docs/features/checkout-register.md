@@ -48,7 +48,7 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `guestSelectable` | `false` | Checkout: `true` — `Form:Switch` `createCustomerAccount` + `Form:Toggle` around `Account:Register:Credentials` |
+| `guestSelectable` | `false` | Checkout: `true` — Credentials owns `Form:Switch` `createCustomerAccount` + `Form:Toggle` around password only. Email always visible. |
 | `createAccountChecked` | config / posted | Switch + toggle open (create-account, not “guest”) |
 | `redirectTo` | confirm (guest) / account home | Hidden input |
 | `errorRoute` | checkout register / account register | Hidden input |
@@ -75,13 +75,13 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 ## Address fields
 
-`Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials`.
+`Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials` (email always visible; password gated when `guestSelectable`).
 
-Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`.
+Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
 
 `Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`.
 
-Guest, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
+Guest password, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
 
 ## Shared SoT bridges
 

@@ -21,7 +21,7 @@ src/
   Service/
   Struct/
   Subscriber/
-  Twig/                       # ViIcon, ViUtilities (vi_define_cva / vi_class / vi_define_attrs / vi_attrs / vi_merge_deep), ViCvaSlot
+  Twig/                       # ViIcon, ViUtilities (vi_define_cva / vi_class / vi_define_attrs / vi_attrs / vi_block / vi_merge_deep), ViCvaSlot, ViBlock*
   Resources/
     config/
     theme.json

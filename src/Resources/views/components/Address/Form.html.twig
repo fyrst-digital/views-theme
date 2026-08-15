@@ -22,7 +22,7 @@
         <twig:block name="content">
             <twig:ViewsTheme:Grid columns="6" gap="3">
                 <twig:block name="content">
-                {% block street %}
+                {% vi_block street %}
                     <twig:ViewsTheme:Form:Input
                         class="{{ vi_class('street') }}"
                         {{ ...vi_attrs('street').defaults({
@@ -36,9 +36,9 @@
                             label: 'address.streetLabel'|trans|sw_sanitize,
                         }).all() }}
                     />
-                {% endblock %}
+                {% endvi_block %}
 
-                {% block additional1 %}
+                {% vi_block additional1 %}
                     {% if showAdditional1 %}
                         <twig:ViewsTheme:Form:Input
                             class="{{ vi_class('additional1') }}"
@@ -54,9 +54,9 @@
                             }).all() }}
                         />
                     {% endif %}
-                {% endblock %}
+                {% endvi_block %}
 
-                {% block additional2 %}
+                {% vi_block additional2 %}
                     {% if showAdditional2 %}
                         <twig:ViewsTheme:Form:Input
                             class="{{ vi_class('additional2') }}"
@@ -72,9 +72,9 @@
                             }).all() }}
                         />
                     {% endif %}
-                {% endblock %}
+                {% endvi_block %}
 
-                {% block arrangement %}
+                {% vi_block arrangement %}
                     {% for part in arrangement %}
                         {% if part == 'city' %}
                             <twig:ViewsTheme:Form:Input
@@ -120,9 +120,9 @@
                             />
                         {% endif %}
                     {% endfor %}
-                {% endblock %}
+                {% endvi_block %}
 
-                {% block country %}
+                {% vi_block country %}
                     <twig:ViewsTheme:Form:Select
                         class="{{ vi_class('country') }}"
                         {{ ...vi_attrs('country').defaults({
@@ -137,9 +137,9 @@
                             label: 'address.countryLabel'|trans|sw_sanitize,
                         }).all() }}
                     />
-                {% endblock %}
+                {% endvi_block %}
 
-                {% block phone %}
+                {% vi_block phone %}
                     {% if showPhone %}
                         <twig:ViewsTheme:Form:Input
                             class="{{ vi_class('phone') }}"
@@ -156,7 +156,7 @@
                             }).all() }}
                         />
                     {% endif %}
-                {% endblock %}
+                {% endvi_block %}
                 </twig:block>
             </twig:ViewsTheme:Grid>
         </twig:block>

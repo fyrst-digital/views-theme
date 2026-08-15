@@ -7,8 +7,11 @@
 >
     {% block fields %}
         <twig:ViewsTheme:Grid columns="6" gap="3">
+
             <twig:block name="content">
-            {% block accountType %}
+            {% vi_block prepend %}{% endvi_block %}
+
+            {% vi_block accountType %}
                 {% if showAccountType %}
                     <twig:ViewsTheme:Form:Toggle
                         class="{{ vi_class('accountType') }}"
@@ -41,7 +44,7 @@
                             {% endif %}
                         </twig:block>
                         <twig:block name="content">
-                            {% block company %}
+                            {% vi_block company %}
                                 <twig:ViewsTheme:Address:PersonalCompany
                                     class="{{ vi_class('company') }}"
                                     {{ ...vi_attrs('company').defaults({
@@ -52,27 +55,25 @@
                                         formViolations: formViolations,
                                     }).all() }}
                                 />
-                            {% endblock %}
+                            {% endvi_block %}
                         </twig:block>
                     </twig:ViewsTheme:Form:Toggle>
                 {% elseif companyAlways %}
                     <input type="hidden" name="{{ fields.accountType.name }}" value="{{ businessType }}">
-                    {% block companyAlways %}
-                        <twig:ViewsTheme:Address:PersonalCompany
-                            class="{{ vi_class('company') }}"
-                            {{ ...vi_attrs('company').defaults({
-                                data: data,
-                                prefix: prefix,
-                                idPrefix: idPrefix,
-                                showVat: showVat,
-                                formViolations: formViolations,
-                            }).all() }}
-                        />
-                    {% endblock %}
+                    <twig:ViewsTheme:Address:PersonalCompany
+                        class="{{ vi_class('company') }}"
+                        {{ ...vi_attrs('company').defaults({
+                            data: data,
+                            prefix: prefix,
+                            idPrefix: idPrefix,
+                            showVat: showVat,
+                            formViolations: formViolations,
+                        }).all() }}
+                    />
                 {% endif %}
-            {% endblock %}
+            {% endvi_block %}
 
-            {% block salutation %}
+            {% vi_block salutation %}
                 {% if showSalutation %}
                     <twig:ViewsTheme:Form:Select
                         class="{{ vi_class('salutation') }}"
@@ -88,9 +89,9 @@
                         }).all() }}
                     />
                 {% endif %}
-            {% endblock %}
+            {% endvi_block %}
 
-            {% block title %}
+            {% vi_block title %}
                 {% if showTitle %}
                     <twig:ViewsTheme:Form:Input
                         class="{{ vi_class('title') }}"
@@ -105,9 +106,9 @@
                         }).all() }}
                     />
                 {% endif %}
-            {% endblock %}
+            {% endvi_block %}
 
-            {% block firstName %}
+            {% vi_block firstName %}
                 <twig:ViewsTheme:Form:Input
                     class="{{ vi_class('firstName') }}"
                     {{ ...vi_attrs('firstName').defaults({
@@ -121,9 +122,9 @@
                         label: 'account.personalFirstNameLabel'|trans|sw_sanitize,
                     }).all() }}
                 />
-            {% endblock %}
+            {% endvi_block %}
 
-            {% block lastName %}
+            {% vi_block lastName %}
                 <twig:ViewsTheme:Form:Input
                     class="{{ vi_class('lastName') }}"
                     {{ ...vi_attrs('lastName').defaults({
@@ -137,9 +138,9 @@
                         label: 'account.personalLastNameLabel'|trans|sw_sanitize,
                     }).all() }}
                 />
-            {% endblock %}
+            {% endvi_block %}
 
-            {% block birthday %}
+            {% vi_block birthday %}
                 {% if showBirthday %}
                     <twig:ViewsTheme:Form:Birthday
                         class="{{ vi_class('birthday') }}"
@@ -155,7 +156,9 @@
                         }).all() }}
                     />
                 {% endif %}
-            {% endblock %}
+            {% endvi_block %}
+
+            {% vi_block append %}{% endvi_block %}
             </twig:block>
         </twig:ViewsTheme:Grid>
     {% endblock %}
