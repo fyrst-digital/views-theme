@@ -1,14 +1,5 @@
-/* Host is display:contents so toggle stays in parent flex layout */
-.vi-dropdown-host {
-  display: contents;
-}
-
-/* Hide host (toggle + panel) below lg — same cascade, no anchor jump */
+/* Hide host (toggle + panel) below lg — CVA: d-none d-lg-contents on host extras */
 .vi-dropdown-host--lg-up {
-  @media (max-width: 1023.98px) {
-    display: none;
-  }
-
   /* Top-layer popover can outlive host box; force-dismiss without fade */
   @media (max-width: 1023.98px) {
     .vi-dropdown[popover] {

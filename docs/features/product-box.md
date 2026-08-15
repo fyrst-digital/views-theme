@@ -257,7 +257,7 @@ Root class uses prop `layout` (`layout-default`, `layout-image`, …). Cover ima
 
 - Layout variants (`image` / `minimal` / `wishlist`) not separate templates — all render the same Box shell; style via `layout-*` + tokens (Listing passes `boxLayout`)
 - No dedicated Box co-located CSS yet (Cover has CSS)
-- Cover children not nest+spread from Box (fixed badges/wishlist mounts)
+- Cover children: Box CVA/attrs nests `badges` / `wishlist` (`position-absolute` chrome)
 
 ## Files
 

@@ -28,6 +28,7 @@
                 description: 'detail.reviewLoginDescription'|trans|sw_sanitize,
                 redirectTo: app.request.attributes.get('_route'),
                 redirectParameters: redirectParameters,
+                layout: 'column',
             }).all() }}
         />
     {% endblock %}

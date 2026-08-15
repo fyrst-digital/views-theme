@@ -12,6 +12,7 @@
 
 {% do vi_define_cva({
     root: { base: 'vi-variants-grid variants-grid-container' },
+    actions: { base: 'variants-grid-actions d-flex justify-content-between align-items-center' },
 }|replace_recursive(cva)) %}
 
 <div
@@ -84,7 +85,7 @@
             >
             <div data-action="memory" style="display:none;"></div>
 
-            <div class="variants-grid-actions d-flex justify-content-between align-items-center">
+            <div class="{{ vi_class('actions') }}">
                 <div data-action="pagination">
                     <twig:ViewsTheme:VariantsGrid:Pagination
                         :pagination="pagination"

@@ -10,9 +10,6 @@
 
 .vi-filter-group-body[popover] {
   inset: unset;
-  margin: 0;
-  overflow: hidden;
-  width: max-content;
   min-width: var(--vi-min-w, 256px);
   max-width: var(--vi-max-w, min(100vw - 24px, 400px));
   max-height: var(--vi-max-h, min(70vh, 416px));

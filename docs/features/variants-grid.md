@@ -14,7 +14,8 @@ Paginated variants grid on product detail pages for products with variants.
 - Offcanvas cart opens after adding variants, matching default Shopware behavior
 - Configurable rows per page via plugin configuration
 - Unavailable variants are rendered as disabled rows
-- Color/option media rendered as swatches where applicable
+- Color/option media rendered as swatches where applicable (`Column:Options` CVA `swatch`)
+- Footer actions chrome via Container CVA `actions`
 
 ## Configuration
 

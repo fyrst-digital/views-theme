@@ -4,7 +4,6 @@
 
 .vi-drawer__panel {
     width: var(--vi-drawer-width, min(360px, 100vw));
-    max-width: 100%;
 }
 
 @media (prefers-reduced-motion: no-preference) {

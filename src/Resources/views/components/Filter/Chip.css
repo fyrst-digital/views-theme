@@ -1,5 +1,4 @@
 .vi-filter-chip {
-  max-width: var(--vi-chip-max-w, 100%);
   transition:
     border-color var(--vi-duration, 150ms) ease,
     background-color var(--vi-duration, 150ms) ease;

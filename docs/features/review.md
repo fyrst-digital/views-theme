@@ -195,7 +195,7 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | `Review:Rating` | Display stars; class VM builds `starIcons` |
 | `Form:Textarea` | Shared primitive (title/content style parity with `Form:Input`) |
 | `Form:Switch` / `Form:Select` / `Form:Input` | Language, sort, form fields |
-| `Account:Login` | Nested in `Review:Login` (under `Review:Form`) with PDP redirect |
+| `Account:Login` | Nested in `Review:Login` (under `Review:Form`) with PDP redirect; `layout: column` via nest defaults |
 | `Review:Login` | Presentational guest gate |
 | `Pagination` | `ownerComponent` prop targets Review:Panel on this page |
 

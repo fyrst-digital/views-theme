@@ -1,5 +1,13 @@
 {
-    root: { base: 'vi-gallery' },
+    root: {
+        base: 'vi-gallery d-grid gap-3 gap-md-4',
+        variants: {
+            mode: {
+                default: '',
+                fullscreen: 'p-4 h-100 overflow-hidden',
+            },
+        },
+    },
     thumbnails: { base: 'vi-gallery__thumbnails' },
     canvas: { base: 'vi-gallery__canvas' },
 }

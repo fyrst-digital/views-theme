@@ -23,6 +23,5 @@
 }
 
 .vi-accordion__caret {
-  flex-shrink: 0;
   transition: transform var(--vi-accordion-duration, 150ms) ease;
 }

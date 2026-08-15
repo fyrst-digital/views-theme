@@ -29,15 +29,15 @@ Page:Header:Actions
 
 ## Dropdown behavior
 
-- **DOM:** Host wrapper `vi-dropdown-host` (`display: contents`) → default toggle `Button` + panel popover. `data-component` on the **host**; panel keeps `class` / root CVA (`vi-dropdown`)
+- **DOM:** Host wrapper `vi-dropdown-host` (CVA `d-contents`) → default toggle `Button` + panel popover. `data-component` on the **host**; panel keeps `class` / root CVA (`vi-dropdown`)
 - **Open/close:** HTML Popover (`popover="auto"` + `popovertarget` on the Button) — Escape and outside click included
 - **Placement:** CSS only — `anchor-name` / `position-anchor` / `anchor()` via `placement` prop (`bottom-end` default). Values: `bottom-start` \| `bottom-center` \| `bottom-end` \| `top-start` \| `top-end`. No JS positioning
 - **Slots:** default `toggle` is Dropdown-owned `Button`; chrome only via nest `toggle:*` (defaults: `color: none`, `size: md`, optional `icon` / `label`). Override the whole `toggle` block for rich chrome (see Language/Currency). Default `content` = panel body
 - **JS (a11y only):** host root; finds panel `[popover]` + toggle `[popovertarget]`; syncs `aria-expanded` only
-- **Responsive hide:** `host:class="vi-dropdown-host--lg-up"` hides host + force-dismisses open panel below `lg` (no anchor jump)
+- **Responsive hide:** `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"` hides host + force-dismisses open panel below `lg` (no anchor jump)
 - **Composition:** `class` → panel, `toggle:class` → Button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults; **no** parallel chrome props)
 - **Visible label:** `toggle:label` defaults to `account.myAccount`; `:toggle:label="false"` hides it (icon-only). Button label classes via `toggle:label:class`
-- **Header wire-up:** `host:class="vi-dropdown-host--lg-up"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:toggle:label="false"`
+- **Header wire-up:** `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:toggle:label="false"`
 - **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
@@ -65,12 +65,12 @@ Former names `Account:LoginForm` / `Account:UserActions` are gone (use `Account:
 <twig:ViewsTheme:Account:Action
     :toggle:label="false"
     class="mt-2 p-0 vi-account__dropdown"
-    host:class="vi-dropdown-host--lg-up"
+    host:class="vi-dropdown-host--lg-up d-none d-lg-contents"
     toggle:class="header-action icon-size-3 icon-size-lg-4"
 />
 ```
 
-Below `lg`, `vi-dropdown-host--lg-up` hides the host and force-dismisses an open panel (same CSS cascade — no corner jump).
+Below `lg`, `d-none d-lg-contents` hides the host; `--lg-up` force-dismisses an open panel (same CSS cascade — no corner jump).
 
 `Navigation:Drawer` title (mobile entry; default label snippet):
 
@@ -86,7 +86,7 @@ See [Navigation drawer](navigation-drawer.md) and [UX components — Attributes]
 
 ## Account:Login field forwarding
 
-`Account:Login` spreads nested attribute bags into each `Form:Input`:
+`Account:Login` `layout` CVA (`row` default, `column` for Review guest form). Spreads nested attribute bags into each `Form:Input`:
 
 | Nest | Child |
 |------|--------|

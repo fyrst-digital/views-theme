@@ -149,14 +149,14 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 - **Bar CSS:** `anchor-name: --vi-navigation-bar` (flyout top) + button `appearance: none` (folder triggers). Active weight via JS `fw-semibold` (with `data-active`).
 - **Flyout chrome** (`bg-body`, `shadow`, `rounded-3`, `p-4`, `border-0`, `m-0`) in `Flyout.cva.twig` — same split as [Dropdown](../conventions/javascript.md#dropdown).
 - **Flyout CSS:** popover + dual anchor + open motion + hover-bridge `::before`; columns multi-column (`column-width` / `column-gap`); column groups `break-inside: avoid` + block-end margin; teaser `aspect-ratio` only.
-- **Flyout layout CVA:** root `d-flex flex-wrap flex-row gap-10 align-items-start` + `--teaser` variant; `columns` `col min-w-0`; teaser `col-auto`.
+- **Flyout layout CVA:** root `d-flex flex-wrap flex-row gap-10 align-items-start` + `--teaser` variant; `columns` `col min-w-0 column-gap-8`; Column `mb-8`; teaser `col-auto`.
 - Flyout is HTML **Popover** (`popover="manual"`) + CSS **anchor positioning** (hover intent stays JS-owned, so not `popover="auto"` / `popovertarget`).
 - Placement: `position-anchor: --vi-navigation-bar`; `top: calc(anchor(bottom) + offset)`; `left`/`right: anchor(var(--vi-flyout-width-anchor, --vi-navigation-bar) …)`. Width from Bar `widthAnchor` (Header:Main default `--vi-header-main` = logo → actions); top under Bar so the hover bridge spans only the offset gap. Override: `widthAnchor="--vi-navigation-bar"` on Main/Bar, or any page `anchor-name`.
 - Open state: `:popover-open` + `@starting-style` / `allow-discrete`; `showPopover` / `hidePopover` from Flyout JS.
 - Close wait: CSS is SoT — JS reads `--vi-flyout-duration` via options `durationVar` / `durationFallback` (default `150ms`) + 50ms slack; `prefers-reduced-motion: reduce` finishes immediately (same contract as Drawer).
 - Type hierarchy: column **heading** `text-body fw-semibold` + BS link-underline hover; child links `link-secondary` + link-underline hover.
 - Teaser: `rounded-3 overflow-hidden` + image `object-fit-cover` (CVA); not CMS promo blocks.
-- Tokens (component CSS reads only; theme may override): `--vi-flyout-offset` (top gap **and** hover-bridge height), `--vi-flyout-duration`, `--vi-column-min`, `--vi-column-gap`, `--vi-image-max-w`, `--vi-image-ar`. Width anchor token `--vi-flyout-width-anchor` is set by the Flyout prop / Bar mount (not theme CSS). Everything else via CVA / `class`.
+- Tokens (component CSS reads only; theme may override): `--vi-flyout-offset` (top gap **and** hover-bridge height), `--vi-flyout-duration`, `--vi-column-min`, `--vi-image-max-w`, `--vi-image-ar`. Column gap is CVA `column-gap-8` / Column `mb-8`. Width anchor token `--vi-flyout-width-anchor` is set by the Flyout prop / Bar mount (not theme CSS). Everything else via CVA / `class`.
 
 ## Key source files
 

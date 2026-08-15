@@ -1,6 +1,5 @@
 .vi-search-suggest-item {
     transition: all 200ms;
-    text-decoration-line: var(--vi-decoration, none) !important;
 
     &:hover,
     &:focus-visible {

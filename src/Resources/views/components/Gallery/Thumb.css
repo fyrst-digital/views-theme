@@ -1,13 +1,8 @@
 .vi-gallery-thumb {
-  position: relative;
-  flex: 0 0 auto;
-  padding: 0;
   border: var(--vi-thumb-border-w, 2px) solid
     var(--vi-thumb-border, transparent);
   border-radius: var(--vi-thumb-radius, 8px);
-  overflow: hidden;
   background: var(--vi-thumb-bg, transparent);
-  cursor: pointer;
   scroll-snap-align: var(--vi-thumb-snap-align, start);
   appearance: none;
 }
@@ -21,8 +16,6 @@
   inline-size: var(--vi-thumb-size, 64px);
   block-size: auto;
   aspect-ratio: var(--vi-image-ar, 1 / 1);
-  display: block;
-  pointer-events: none;
 }
 
 .vi-gallery-thumb__image {
@@ -31,12 +24,6 @@
 
 .vi-gallery-thumb__poster {
   background: var(--vi-thumb-poster-bg, #e9ecef);
-}
-
-.vi-gallery-thumb__play {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
 }
 
 .vi-gallery-thumb__play::before,

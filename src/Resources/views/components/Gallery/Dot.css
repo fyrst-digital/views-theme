@@ -1,12 +1,9 @@
 .vi-gallery-dot {
-  pointer-events: auto;
   inline-size: var(--vi-dot-size, 10px);
   aspect-ratio: var(--vi-dot-ar, 1);
-  padding: 0;
   border-radius: var(--vi-dot-radius, 100px);
   border: var(--vi-dot-border-w, 2px) solid var(--vi-dot-border, #6c757d);
   background: var(--vi-dot-bg, transparent);
-  cursor: pointer;
   appearance: none;
 }
 

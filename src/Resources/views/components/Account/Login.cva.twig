@@ -1,5 +1,14 @@
 {
-    root: { base: 'vi-account-login login-form d-flex flex-wrap flex-row gap-4' },
+    root: {
+        base: 'vi-account-login login-form d-flex flex-wrap gap-4',
+        variants: {
+            layout: {
+                row: 'flex-row',
+                column: 'flex-column',
+            },
+        },
+        defaultVariants: { layout: 'row' },
+    },
     description: { base: 'vi-account-login__description login-form-description' },
     username: { base: 'vi-account-login__email login-form-email flex-fill' },
     password: { base: 'vi-account-login__password login-form-password flex-fill' },

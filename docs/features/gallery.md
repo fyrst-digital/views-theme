@@ -157,11 +157,11 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Slide size | Media: `inline-size: 100%`, `block-size: var(--vi-media-h, auto)`; shell `block-size: var(--vi-slide-h, auto)` |
 | Thumb size | `.vi-gallery-thumb__image` **and** `.vi-gallery-thumb__poster` — `inline-size: var(--vi-thumb-size, 64px)`, `block-size: auto` (button has no fixed box size) |
 | Aspect ratio | Slide media: `var(--vi-media-ar, var(--vi-image-ar, 4 / 3))`; thumb: `var(--vi-image-ar, 1 / 1)`. Theme may set shared `--vi-image-ar`; fullscreen sets **only** `--vi-media-ar` so thumbs keep their box |
-| Layout | **Host** always `display: grid` (tokens for `gap` / `cols` / `rows` / `areas` / `h` / `padding`). Thumb strip / controls / dots may use flex |
+| Layout | Host CVA: `d-grid gap-3 gap-md-4`; `mode=fullscreen` → `p-4 h-100 overflow-hidden`. CSS tokens for `cols` / `rows` / `areas` / heights only |
 | Canvas track | `.vi-gallery-canvas__track` — `display: grid`, `grid-auto-flow: column`, `grid-auto-columns: 100%`; `gap: var(--vi-canvas-gap, 1px)` anti-bleed between snap cells; `block-size: var(--vi-track-h, auto)` |
 | `mode=default` | Content-height: token fallbacks only (no host assigns) |
-| `mode=fullscreen` | Host **assigns** tokens only (`--vi-gallery-p`, `--vi-h`, `--vi-rows`, `--vi-media-ar` / `--vi-media-fit`, `--vi-*-h`, thumbs height). Never assigns shared `--vi-image-ar` / `--vi-image-fit` (thumbs consume those). No property re-declarations, no descendant selectors |
-| Orientation breakpoint | **Only** `Gallery.css` nested `@media (min-width: 768px)` — **assigns** orientation tokens on multi host (no child rule rewrites; `Thumbnails.css` only consumes) |
+| `mode=fullscreen` | CVA variant for padding/height/overflow. Host **assigns** geometry tokens only (`--vi-min-h`, `--vi-rows`, `--vi-media-ar` / `--vi-media-fit`, `--vi-*-h`, thumbs height). Never assigns shared `--vi-image-ar` / `--vi-image-fit` (thumbs consume those). No property re-declarations, no descendant selectors |
+| Orientation breakpoint | **Only** `Gallery.css` nested `@media (min-width: 768px)` — **assigns** track/height/snap tokens on multi host. Thumb direction is CVA `flex-md-column` |
 | Named areas | `.vi-gallery-canvas` → `canvas`; `.vi-gallery-thumbnails` → `thumbs` |
 | Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas; fullscreen action still allowed |
 | Controls on hover | Canvas `data-controls-on-hover="true"` — hide `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` until `:hover` or `:has(.vi-gallery-control:focus-visible)` / `:has(.vi-gallery-action-fullscreen:focus-visible)`; only under `@media (hover: hover) and (pointer: fine)`; fade `var(--vi-control-fade-duration, 150ms)` |
@@ -175,16 +175,12 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 
 | Token | Default (var fallback) | Multi | `md+` multi assign | `mode=fullscreen` assign |
 |-------|------------------------|-------|--------------------|--------------------------|
-| `--vi-gap` | `12px` | — | `16px` | — |
-| `--vi-gallery-p` | `var(--spacing-0)` | — | — | `var(--spacing-4)` |
-| `--vi-h` / `--vi-min-h` | `auto` / `auto` | — | — | `100%` / `0` |
-| `--vi-overflow` | `visible` | — | — | `hidden` |
+| `--vi-min-h` | `auto` | — | — | `0` |
 | `--vi-cols` | `minmax(0, 1fr)` | — | `var(--vi-thumbs-w, auto) minmax(0, 1fr)` | — |
 | `--vi-rows` | `none` | — | — | multi: `minmax(0, 1fr) auto` (md: `minmax(0, 1fr)`); single: `minmax(0, 1fr)` |
 | `--vi-areas` | `none` | `'canvas' 'thumbs'` | `'thumbs canvas'` | — |
 | `--vi-thumbs-w` | — | — | used inside `--vi-cols` (`auto`) | — |
-| `--vi-thumbs-dir` / `--vi-thumbs-snap` | `row` / `x mandatory` (Thumbnails) | — | `column` / `y mandatory` | — |
-| `--vi-thumbs-mi` / `--vi-thumbs-mb` | `0` / `0` (list margins) | — | — | —; `thumbnailAlign=center` assigns `auto` / `auto` (center when fits; overflow margins collapse) |
+| `--vi-thumbs-snap` | `x mandatory` (Thumbnails) | — | `y mandatory` | — |
 | `--vi-thumb-snap-align` | `start` (Thumb) | — | — | —; `thumbnailAlign=center` assigns `center` |
 | `--vi-thumbs-h` / `--vi-thumbs-min-h` | `auto` / `0` | — | `0` / `100%` | `auto` / `0` (md multi: h `100%`) |
 | `--vi-thumbs-track-h` | `auto` | — | `100%` | — |
@@ -196,7 +192,7 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 
 `Thumbnails.css` / `Canvas.css` / `Slide.css` only **consume** height and media tokens. Host never re-declares those properties on variants.
 
-Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (flex + gap; margins consume `--vi-thumbs-mi` / `--vi-thumbs-mb`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`); horizontal edges use `Math.abs(scrollLeft)` (Firefox RTL). `scrollToIndex` uses `getBoundingClientRect` + clamp; axis from computed `flex-direction` (`--vi-thumbs-dir`).
+Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (CVA `d-flex flex-row flex-md-column gap-2`; `align=center` → `mx-auto my-auto`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`); horizontal edges use `Math.abs(scrollLeft)` (Firefox RTL). `scrollToIndex` uses `getBoundingClientRect` + clamp; axis from computed `flex-direction` (`flex-md-column` at `md`).
 
 ## CMS bridge
 

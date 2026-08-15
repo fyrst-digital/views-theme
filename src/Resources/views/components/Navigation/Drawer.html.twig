@@ -9,7 +9,6 @@
 %}
 
 {% do vi_define_cva(cva) %}
-
 {% do vi_define_attrs(['panel']) %}
 
 <twig:ViewsTheme:Drawer
@@ -29,7 +28,7 @@
             <twig:block name="header">
                 <twig:ViewsTheme:Drawer:Header>
                     <twig:block name="title">
-                        <div class="vi-drawer__title d-flex align-items-center gap-1 mb-0">
+                        <div class="{{ vi_class('title') }}">
                             {% if wishlist %}
                                 <twig:ViewsTheme:Wishlist:Action
                                     class="position-relative"
@@ -57,7 +56,7 @@
                 {% set languageCount = languages and languages.count is defined ? languages.count : (languages|default([])|length) %}
                 {% set currencyCount = currencies and currencies.count is defined ? currencies.count : (currencies|default([])|length) %}
                 {% if languageCount > 1 or currencyCount > 1 %}
-                    <div class="d-flex flex-wrap align-items-center gap-2 bg-light p-4 border-top">
+                    <div class="{{ vi_class('footer') }}">
                         <twig:ViewsTheme:Language:Action
                             :languages="languages"
                             placement="top-start"

@@ -3,6 +3,7 @@ import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 /**
  * Thumbnail strip — scrolls the active thumb into view.
  * Scrollport is nested ViewsTheme:Scroll:Area (axis-correct edge fades).
+ * Axis from computed flex-direction (`flex-md-column` at md).
  *
  * @extends {ShopwareComponent}
  */

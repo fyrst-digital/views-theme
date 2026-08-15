@@ -48,7 +48,7 @@
                     <twig:ViewsTheme:Tabs:Panel
                         id="{{ descriptionPaneId }}"
                         tab="{{ descriptionTabId }}"
-                        class="p-4"
+                        class="{{ vi_class('panel') }}"
                         :active="not reviewsActive"
                     >
                         <twig:block name="content">
@@ -66,7 +66,7 @@
                         <twig:ViewsTheme:Tabs:Panel
                             id="{{ reviewPaneId }}"
                             tab="{{ reviewTabId }}"
-                            class="p-4"
+                            class="{{ vi_class('panel') }}"
                             :active="reviewsActive"
                         >
                             <twig:block name="content">

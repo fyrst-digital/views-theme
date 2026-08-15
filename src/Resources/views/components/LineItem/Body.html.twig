@@ -16,7 +16,7 @@
     {% block variations %}
         {% if options is not empty %}
             <twig:ViewsTheme:Product:Variations
-                class="d-flex flex-wrap align-items-center gap-1 text-body-secondary small"
+                class="{{ vi_class('variations') }}"
                 {{ ...vi_attrs('variations').defaults({
                     variations: options,
                 }).all() }}

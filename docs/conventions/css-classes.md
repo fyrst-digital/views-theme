@@ -165,20 +165,20 @@ Defaults live only as the second argument to `var()` on the base rule. Do **not*
 
 /* ❌ NEVER — re-declare property with a different fallback on a variant */
 .vi-gallery {
-  padding: var(--vi-gallery-p, var(--spacing-0));
+  min-block-size: var(--vi-min-h, auto);
 
   &[data-mode='fullscreen'] {
-    padding: var(--vi-gallery-p, var(--spacing-4));
+    min-block-size: var(--vi-min-h, 0);
   }
 }
 
 /* ✅ ALWAYS — init once with fallback; variant assigns token only */
 .vi-gallery {
-  padding: var(--vi-gallery-p, var(--spacing-0));
+  min-block-size: var(--vi-min-h, auto);
   grid-template-rows: var(--vi-rows, none);
 
   &[data-mode='fullscreen'] {
-    --vi-gallery-p: var(--spacing-4);
+    --vi-min-h: 0;
 
     &[data-multi='true'] {
       --vi-rows: minmax(0, 1fr) auto;

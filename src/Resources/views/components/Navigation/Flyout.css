@@ -61,12 +61,10 @@
 
 .vi-navigation-flyout__columns {
     column-width: var(--vi-column-min, 160px);
-    column-gap: var(--vi-column-gap, var(--spacing-8));
 }
 
 .vi-navigation-flyout-column {
     break-inside: avoid;
-    margin-block-end: var(--vi-column-gap, var(--spacing-8));
 }
 
 .vi-navigation-flyout-teaser__image {

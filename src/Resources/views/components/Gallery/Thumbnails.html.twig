@@ -1,6 +1,7 @@
 {% props
     medias = [],
     active = 0,
+    align = 'start',
     cva = {},
 %}
 
@@ -20,7 +21,7 @@
             class="{{ vi_class('track') }}"
             {{ ...vi_attrs('track').defaults({}).all() }}
         >
-            <div class="{{ vi_class('list') }}">
+            <div class="{{ vi_class('list', { align: align }) }}">
                 {% for media in medias %}
                     {% set index = loop.index0 %}
                     <twig:ViewsTheme:Gallery:Thumb

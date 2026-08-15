@@ -444,7 +444,7 @@ Generic disclosure panel: HTML Popover API + CSS `position-anchor` / `anchor()` 
 | Panel | `[popover].vi-dropdown` |
 | Toggle | `Button` with `[popovertarget]` / `vi-dropdown__toggle` |
 
-JS runs on the host, resolves panel + toggle inside (`[popovertarget]`), and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the Button. Override the whole `toggle` block for rich chrome (no multi-hop into Button). Use `host:class="vi-dropdown-host--lg-up"` to hide the whole control below `lg` without popover anchor jump.
+JS runs on the host, resolves panel + toggle inside (`[popovertarget]`), and syncs `aria-expanded` on the toggle event. Open/close, light-dismiss, focus, and placement stay native/CSS. Root `class` / CVA apply to the **panel**; `host:class` / `host` CVA on the host; `toggle:*` on the Button. Override the whole `toggle` block for rich chrome (no multi-hop into Button). Use `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"` to hide the whole control below `lg` without popover anchor jump.
 
 Build storefront assets from Shopware root: `make build-storefront`.
 

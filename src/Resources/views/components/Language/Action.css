@@ -1,16 +1,3 @@
 .vi-language-action {
   min-width: var(--vi-min-w, 160px);
 }
-
-.vi-language-action__flag-icon {
-  display: block;
-  width: var(--vi-flag-w, 14px);
-  height: auto;
-  aspect-ratio: var(--vi-flag-ar, 4 / 3);
-  border-radius: var(--vi-flag-radius, 2px);
-  object-fit: cover;
-}
-
-.vi-language-action__caret {
-  flex-shrink: 0;
-}

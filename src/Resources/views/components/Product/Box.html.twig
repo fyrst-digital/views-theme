@@ -1,6 +1,6 @@
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['content', 'header', 'body', 'footer']) %}
+{% do vi_define_attrs(['content', 'header', 'body', 'footer', 'badges', 'wishlist']) %}
 
 <div
     {{ attributes.defaults({
@@ -15,24 +15,29 @@
             :referrerCategoryId="referrerCategoryId"
         >
             <twig:block name="prepend">
-                <twig:ViewsTheme:Product:Badges 
-                    class="position-absolute m-4"
-                    topseller:size="sm"
-                    topseller:color="dark"
-                    :topseller:pill="true"
-                    discount:size="sm"
-                    discount:color="danger"
-                    :discount:pill="true"
-                    :product="product" />
+                <twig:ViewsTheme:Product:Badges
+                    class="{{ vi_class('badges') }}"
+                    {{ ...vi_attrs('badges').defaults({
+                        product: product,
+                        'topseller:size': 'sm',
+                        'topseller:color': 'dark',
+                        'topseller:pill': true,
+                        'discount:size': 'sm',
+                        'discount:color': 'danger',
+                        'discount:pill': true,
+                    }).all() }}
+                />
             </twig:block>
 
             <twig:block name="append">
                 {% if wishlistEnabled %}
                     <twig:ViewsTheme:Product:Action:Wishlist
-                        :productId="id"
-                        :showText="false"
-                        appearance="circle"
-                        class="position-absolute end-0 top-0 m-4"
+                        class="{{ vi_class('wishlist') }}"
+                        {{ ...vi_attrs('wishlist').defaults({
+                            productId: id,
+                            showText: false,
+                            appearance: 'circle',
+                        }).all() }}
                     />
                 {% endif %}
             </twig:block>

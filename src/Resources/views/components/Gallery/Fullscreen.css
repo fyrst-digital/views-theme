@@ -9,7 +9,5 @@
 
 /* Nested Gallery mode=fullscreen owns fill; shell only sizes the mount slot */
 .vi-gallery-fullscreen__gallery {
-  block-size: 100%;
-  inline-size: 100%;
   min-block-size: 0;
 }

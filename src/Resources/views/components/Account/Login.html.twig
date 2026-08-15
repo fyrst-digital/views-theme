@@ -6,6 +6,7 @@
     loginError = false,
     errorSnippet = null,
     waitTime = null,
+    layout = 'row',
     cva = {},
 %}
 
@@ -20,7 +21,7 @@
         method: 'post',
         'data-form-handler': 'true',
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { layout: layout }) }}"
 >
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">

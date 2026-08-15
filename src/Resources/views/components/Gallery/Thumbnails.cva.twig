@@ -1,5 +1,13 @@
 {
-    root: { base: 'vi-gallery-thumbnails' },
-    track: { base: 'vi-gallery-thumbnails__track' },
-    list: { base: 'vi-gallery-thumbnails__list' },
+    root: { base: 'vi-gallery-thumbnails overflow-hidden' },
+    track: { base: 'vi-gallery-thumbnails__track d-flex flex-row flex-md-column overflow-auto' },
+    list: {
+        base: 'vi-gallery-thumbnails__list d-flex flex-row flex-md-column flex-shrink-0 gap-2',
+        variants: {
+            align: {
+                start: '',
+                center: 'mx-auto my-auto',
+            },
+        },
+    },
 }

@@ -20,7 +20,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Group:Count` | Selection badge; count SoT = `options.count`; `setCount` paints (Group delegates) |
 | `Filter:Group:Collapse` | **Body shell** (popover/accordion root only). Facets compose controls + Footer as direct children; shared `id` with Group |
 | `Filter:Group:Footer` | Reset chrome: `ViewsTheme:Button` (`color=link` `size=sm`, `data-filter-reset`); composed by facets inside Collapse |
-| `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`) |
+| `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`); root `mw-100` |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`). Range: number fields + `Form:Slider` (`mode=range`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
 | `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS); swatch from `getLabels` `previewImageUrl` / `previewHex` |
@@ -163,7 +163,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Panel `items` | CVA `flex-wrap align-items-center` horizontal chip bar |
 | Facet hosts | One flex item each (`d-inline-flex`) |
 | Group | Disclosure host inside facet; toggle chip; content = Collapse |
-| Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar` |
+| Collapse | HTML Popover API + CSS `position-anchor` / `anchor()`; Twig emits `popover` / anchor only for `bar`; bar CVA `m-0 overflow-hidden w-max` |
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM (`cursor-default` — shell only; pointer on switch/label) + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |

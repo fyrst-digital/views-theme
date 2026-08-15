@@ -37,7 +37,7 @@
             rewind: rewind,
         }|json_encode,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { mode: galleryMode }) }}"
 >
     {% if multi %}
         {% block thumbnails %}
@@ -46,6 +46,7 @@
                 {{ ...vi_attrs('thumbnails').defaults({
                     medias: medias,
                     active: activeIndex,
+                    align: thumbsAlign,
                 }).all() }}
             />
         {% endblock %}

@@ -1,5 +1,4 @@
 .vi-gallery-canvas {
-  position: relative;
   min-inline-size: 0;
   min-block-size: 0;
   block-size: var(--vi-canvas-h, auto);
@@ -13,8 +12,6 @@
   grid-auto-rows: var(--vi-track-rows, auto);
   min-block-size: 0;
   block-size: var(--vi-track-h, auto);
-  overflow-x: auto;
-  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -34,23 +31,9 @@
   }
 }
 
-.vi-gallery-canvas__controls {
-  position: absolute;
-  inset-block: 0;
-  inset-inline: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: var(--vi-control-inset, 8px);
-  pointer-events: none;
-}
-
 .vi-gallery-canvas__fullscreen {
-  position: absolute;
   inset-block-start: var(--vi-control-inset, 8px);
   inset-inline-end: var(--vi-control-inset, 8px);
-  z-index: 1;
-  pointer-events: auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -119,8 +102,5 @@
 }
 
 .vi-gallery-canvas__dots {
-  position: absolute;
-  inset-inline: 0;
   inset-block-end: var(--vi-dots-inset, 12px);
-  pointer-events: none;
 }

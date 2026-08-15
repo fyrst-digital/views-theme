@@ -1,5 +1,4 @@
-.vi-language-menu__flag-icon {
-  display: block;
+.vi-language-flag {
   width: var(--vi-flag-w, 14px);
   height: auto;
   aspect-ratio: var(--vi-flag-ar, 4 / 3);
