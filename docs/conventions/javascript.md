@@ -231,6 +231,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
 | Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
 | Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
+| Checkout method form | `ViewsTheme:Checkout:Method:Form` | `Checkout/Method/Form.js` |
+| Checkout confirm comment | `ViewsTheme:Checkout:Confirm:Comment` | `Checkout/Confirm/Comment.js` |
 
 Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
 
@@ -269,6 +271,18 @@ Data: `page.extensions.viewsTheme.deliveryDate`.
 | Wrapper | `data-component="ViewsTheme:Checkout:DeliveryDateSelection"` |
 
 See [Preferred delivery date](../features/delivery-date.md).
+
+### Checkout confirm
+
+No page-owner `data-component`. Comment persist and method configure are nested owners.
+
+| Hook | Attribute |
+|------|-----------|
+| Comment persist | `data-component="ViewsTheme:Checkout:Confirm:Comment"` |
+| Method configure | `data-component="ViewsTheme:Checkout:Method:Form"` |
+| Place-order form | `data-component="ViewsTheme:Form:Handler"` (`#confirmOrderForm`; associated `form=` fields included) |
+
+See [Checkout confirm](../features/checkout-confirm.md).
 
 ### Search overlay
 

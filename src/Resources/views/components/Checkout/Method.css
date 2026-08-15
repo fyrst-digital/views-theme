@@ -1,0 +1,6 @@
+.vi-checkout-method__image,
+.vi-checkout-method__image-element {
+    width: var(--vi-checkout-method-image, 48px);
+    height: var(--vi-checkout-method-image, 48px);
+    object-fit: contain;
+}

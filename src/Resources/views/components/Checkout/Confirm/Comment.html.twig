@@ -1,0 +1,39 @@
+{% props
+    formId = 'confirmOrderForm',
+    customerId = context.customer.id,
+    commentKey = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'field']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Checkout:Confirm:Comment',
+        'data-component-options': {
+            customerId: customerId,
+            fieldName: commentKey,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+            {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
+        </div>
+    {% endblock %}
+
+    {% block field %}
+        <twig:ViewsTheme:Form:Textarea
+            class="{{ vi_class('field') }}"
+            {{ ...vi_attrs('field').defaults({
+                id: commentKey,
+                name: commentKey,
+                label: 'checkout.customerCommentLabel'|trans|sw_sanitize,
+                placeholder: 'checkout.customerCommentPlaceholder'|trans|sw_sanitize,
+                'textarea:form': formId,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

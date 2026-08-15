@@ -15,6 +15,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Cart:Items',
         'data-layout': layout,
+        'data-show-remove': showRemoveButton ? 'true' : 'false',
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
@@ -39,7 +40,9 @@
                     <span {{ vi_attrs('headerQuantity') }} class="{{ vi_class('headerQuantity') }}">
                         {{ 'checkout.cartHeaderQuantity'|trans|sw_sanitize }}
                     </span>
-                    <span {{ vi_attrs('headerRemove') }} class="{{ vi_class('headerRemove') }}"></span>
+                    {% if showRemoveButton %}
+                        <span {{ vi_attrs('headerRemove') }} class="{{ vi_class('headerRemove') }}"></span>
+                    {% endif %}
                     <span {{ vi_attrs('headerUnit') }} class="{{ vi_class('headerUnit') }}">
                         {{ 'checkout.cartHeaderUnitPrice'|trans|sw_sanitize }}
                     </span>

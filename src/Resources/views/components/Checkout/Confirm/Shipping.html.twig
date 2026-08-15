@@ -1,0 +1,58 @@
+{% props
+    page,
+    selectedId = context.shippingMethod.id,
+    redirectTo = 'frontend.checkout.confirm.page',
+    cva = {},
+%}
+
+{% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
+
+{% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['title', 'form', 'method']) %}
+
+    <fieldset
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <legend
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
+            >
+                {{ 'checkout.confirmShippingMethod'|trans|sw_sanitize }}
+            </legend>
+        {% endblock %}
+
+        {% block form %}
+            <twig:ViewsTheme:Checkout:Method:Form
+                class="{{ vi_class('form') }}"
+                {{ ...vi_attrs('form').defaults({
+                    name: 'changeShippingForm',
+                    redirectTo: redirectTo,
+                }).all() }}
+            >
+                <twig:block name="content">
+                    {% for shipping in page.shippingMethods %}
+                        {% set description = null %}
+                        {% if shipping.translated.description and shipping.id is same as(selectedId) %}
+                            {% set description = shipping.translated.description %}
+                            {% set description = description|length > 75 ? description[:75] ~ ' ...' : description %}
+                        {% endif %}
+
+                        <twig:ViewsTheme:Checkout:Method
+                            class="{{ vi_class('method') }}"
+                            methodType="shipping"
+                            :methodId="shipping.id"
+                            :selectedMethodId="selectedId"
+                            :media="shipping.media"
+                            name="{{ shipping.translated.name }}"
+                            :description="description"
+                            {{ ...vi_attrs('method').all() }}
+                        />
+                    {% endfor %}
+                </twig:block>
+            </twig:ViewsTheme:Checkout:Method:Form>
+        {% endblock %}
+    </fieldset>
+{% endif %}

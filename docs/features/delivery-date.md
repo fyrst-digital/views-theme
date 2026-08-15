@@ -25,7 +25,7 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` from the `page_checkout_additional` block of the confirm-page bridge (`storefront/page/checkout/confirm/index.html.twig`, which extends core `confirm.html.twig`).
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside `Checkout:Confirm` additional (next to the customer comment). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md).
 
 Conventions:
 
@@ -68,3 +68,7 @@ Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min`
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
 | Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
 | JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |
+
+## Related
+
+- [Checkout confirm](checkout-confirm.md)

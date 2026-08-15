@@ -2,6 +2,7 @@
     productsQuantity = 0,
     countDisplay = 'badge',
     titleTag = 'div',
+    title = 'checkout.cartHeader'|trans|sw_sanitize,
     cva = {},
 %}
 
@@ -25,7 +26,7 @@
             {{ vi_attrs('title') }}
             class="{{ vi_class('title') }}"
         >
-            {{ 'checkout.cartHeader'|trans|sw_sanitize }}
+            {{ title }}
             {% if productsQuantity > 0 and countDisplay is same as('inline') %}
                 <span {{ vi_attrs('countInline') }} class="{{ vi_class('countInline') }}">
                     ({{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }})
