@@ -1,0 +1,11 @@
+.vi-checkout-confirm__body {
+    grid-template-columns: var(--vi-checkout-confirm-cols, minmax(0, 1fr));
+
+    @media (min-width: 1260px) {
+        --vi-checkout-confirm-cols: minmax(0, 1fr) var(--vi-checkout-confirm-aside, 360px);
+    }
+}
+
+.vi-checkout-confirm-aside {
+    top: var(--vi-top, 24px);
+}

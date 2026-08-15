@@ -17,6 +17,11 @@ export default class FormHandler extends ShopwareComponent {
         this.el.addEventListener('submit', this._onSubmit)
         this.el.addEventListener('input', this._onInput)
         this.el.addEventListener('change', this._onInput)
+        this._associated = this._fields().filter((field) => !this.el.contains(field))
+        this._associated.forEach((field) => {
+            field.addEventListener('input', this._onInput)
+            field.addEventListener('change', this._onInput)
+        })
         this._syncConfirmValidity()
     }
 
@@ -24,13 +29,21 @@ export default class FormHandler extends ShopwareComponent {
         this.el.removeEventListener('submit', this._onSubmit)
         this.el.removeEventListener('input', this._onInput)
         this.el.removeEventListener('change', this._onInput)
+        this._associated?.forEach((field) => {
+            field.removeEventListener('input', this._onInput)
+            field.removeEventListener('change', this._onInput)
+        })
     }
 
     /**
      * @param {boolean} submitting
      */
     setSubmitting(submitting) {
-        this.el.querySelectorAll('button[type="submit"]').forEach((button) => {
+        const buttons = new Set([
+            ...this.el.querySelectorAll('button[type="submit"]'),
+            ...this._fields().filter((el) => el instanceof HTMLButtonElement && el.type === 'submit'),
+        ])
+        buttons.forEach((button) => {
             button.disabled = submitting
             if (submitting) {
                 button.setAttribute('aria-busy', 'true')
@@ -70,7 +83,7 @@ export default class FormHandler extends ShopwareComponent {
      */
     _onInput(event) {
         const field = event.target
-        if (!(field instanceof HTMLElement) || !this.el.contains(field)) {
+        if (!(field instanceof HTMLElement) || field.form !== this.el) {
             return
         }
         if (!isFormControl(field)) {
@@ -81,13 +94,20 @@ export default class FormHandler extends ShopwareComponent {
         setInvalidChrome(field, !field.checkValidity())
     }
 
+    /**
+     * @returns {Array<Element>}
+     */
+    _fields() {
+        return Array.from(this.el.elements)
+    }
+
     _syncConfirmValidity() {
-        this.el.querySelectorAll('[data-confirm-for]').forEach((field) => {
-            if (!isFormControl(field)) {
+        this._fields().forEach((field) => {
+            if (!isFormControl(field) || !field.hasAttribute('data-confirm-for')) {
                 return
             }
             const otherId = field.getAttribute('data-confirm-for')
-            const other = otherId ? this.el.querySelector(`#${CSS.escape(otherId)}`) : null
+            const other = otherId ? document.getElementById(otherId) : null
             if (!isFormControl(other)) {
                 field.setCustomValidity('')
                 return
@@ -99,7 +119,7 @@ export default class FormHandler extends ShopwareComponent {
     }
 
     _syncInvalidChrome() {
-        this.el.querySelectorAll('input, select, textarea').forEach((field) => {
+        this._fields().forEach((field) => {
             if (isFormControl(field)) {
                 setInvalidChrome(field, !field.checkValidity())
             }

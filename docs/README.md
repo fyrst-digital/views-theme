@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, wishlist, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, wishlist, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
 
 ## Conventions
 
@@ -48,6 +48,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Cart drawer](features/cart-drawer.md)
 - [Cart page](features/cart-page.md)
 - [Checkout register](features/checkout-register.md)
+- [Checkout confirm](features/checkout-confirm.md)
 - [Wishlist](features/wishlist.md)
 - [Account action](features/account-action.md)
 - [Language switch](features/language-switch.md)
@@ -73,9 +74,8 @@ Families that exist in code but are only covered lightly (or not at all) under `
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
 - **Account / Address / Order** — address-book **page** owner and order history (register/address forms: [checkout-register](features/checkout-register.md); header login: [account-action](features/account-action.md))
 - **Cookie** — banner / configuration UX
-- **Checkout extras** — ConfirmTos, UserComment (delivery date is documented)
 - **Page layout** — Logo, Footer, `meta.html.twig` + `CartContextSubscriber` / `cartCount`
-- **MethodOption**, **Offcanvas** (vs Drawer), **ScrollUp**
+- **Offcanvas** (vs Drawer), **ScrollUp**
 - **Primitives** — Button, Alert, Badge, Progress, Blockquote (conventions + call sites)
 
 ## Related

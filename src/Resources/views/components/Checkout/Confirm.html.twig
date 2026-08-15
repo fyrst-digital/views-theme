@@ -1,0 +1,151 @@
+{% props
+    page,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['flashes', 'violations', 'heading', 'body', 'main', 'addresses', 'methods', 'payment', 'shipping', 'items', 'additional', 'comment', 'deliveryDate', 'aside']) %}
+
+{% set productsQuantity = page.cart.lineItems|length %}
+{% set showComment = config('core.cart.showCustomerComment') %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block violations %}
+        {% if formViolations %}
+            {% for violation in formViolations.getViolations() %}
+                {% set snippetName = "error.#{violation.code}" %}
+                {% set fieldName = violation.propertyPath|trim('/', 'left') %}
+
+                <twig:ViewsTheme:Alert
+                    class="{{ vi_class('violations') }}"
+                    type="danger"
+                    content="{{ snippetName|trans({'%field%': fieldName})|sw_sanitize }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                    {{ ...vi_attrs('violations').all() }}
+                />
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+
+    {% block heading %}
+        <twig:ViewsTheme:Cart:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                productsQuantity: productsQuantity,
+                countDisplay: 'inline',
+                titleTag: 'h1',
+                title: 'checkout.confirmHeader'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block main %}
+                <div
+                    {{ vi_attrs('main') }}
+                    class="{{ vi_class('main') }}"
+                >
+                    {% block addresses %}
+                        <twig:ViewsTheme:Checkout:Confirm:Addresses
+                            class="{{ vi_class('addresses') }}"
+                            {{ ...vi_attrs('addresses').defaults({
+                                page: page,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block methods %}
+                        <twig:ViewsTheme:Grid
+                            class="{{ vi_class('methods') }}"
+                            {{ ...vi_attrs('methods').defaults({
+                                gap: '4',
+                            }).all() }}
+                        >
+                            <twig:block name="content">
+                                {% vi_block payment %}
+                                    <twig:ViewsTheme:Checkout:Confirm:Payment
+                                        class="{{ vi_class('payment') }}"
+                                        {{ ...vi_attrs('payment').defaults({
+                                            page: page,
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+
+                                {% vi_block shipping %}
+                                    <twig:ViewsTheme:Checkout:Confirm:Shipping
+                                        class="{{ vi_class('shipping') }}"
+                                        {{ ...vi_attrs('shipping').defaults({
+                                            page: page,
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+                            </twig:block>
+                        </twig:ViewsTheme:Grid>
+                    {% endblock %}
+
+                    {% block items %}
+                        <twig:ViewsTheme:Cart:Items
+                            class="{{ vi_class('items') }}"
+                            {{ ...vi_attrs('items').defaults({
+                                cart: page.cart,
+                                layout: 'grid',
+                                showRemoveButton: false,
+                                showQuantitySelect: false,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block additional %}
+                        {% if showComment or page.extensions.viewsTheme.deliveryDate.active|default(false) %}
+                            <div
+                                {{ vi_attrs('additional') }}
+                                class="{{ vi_class('additional') }}"
+                            >
+                                {% block comment %}
+                                    {% if showComment %}
+                                        <twig:ViewsTheme:Checkout:Confirm:Comment
+                                            class="{{ vi_class('comment') }}"
+                                            {{ ...vi_attrs('comment').all() }}
+                                        />
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block delivery_date %}
+                                    <twig:ViewsTheme:Checkout:DeliveryDateSelection
+                                        class="{{ vi_class('deliveryDate') }}"
+                                        {{ ...vi_attrs('deliveryDate').all() }}
+                                    />
+                                {% endblock %}
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block aside %}
+                <twig:ViewsTheme:Checkout:Confirm:Aside
+                    class="{{ vi_class('aside') }}"
+                    {{ ...vi_attrs('aside').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

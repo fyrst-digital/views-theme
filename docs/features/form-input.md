@@ -88,6 +88,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
 | `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |
 | `Account:Register`, `Address:*` | Theme `Form:*` in 6-col `Grid` — [checkout-register.md](checkout-register.md) |
+| `Checkout:Confirm:Comment` | `Form:Textarea` associated with `#confirmOrderForm` — [checkout-confirm.md](checkout-confirm.md) |
 
 ---
 
@@ -474,7 +475,7 @@ Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`;
 
 ## Form:Handler
 
-Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-invalid` / `aria-invalid` chrome (`setInvalidChrome`). On valid submit: `setSubmitting(true)` (`disabled` + `aria-busy` on `button[type=submit]`), emit `ViewsTheme:Form:Handler:Submit`. Invalid (or `preventNative`) calls `preventDefault`. The native path does **not** call `HTMLFormElement.prototype.submit()` — the same `submit` event continues so core captcha plugins (capture listeners that attach a token, then `form.submit()`) can run. `preventNative` callers (`Review:Form`) must call `setSubmitting(false)` when the async save finishes (or is replaced).
+Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-invalid` / `aria-invalid` chrome (`setInvalidChrome`). Includes **associated** controls (`form="id"` outside the `<form>`): live chrome, `checkValidity`, and submit loading. On valid submit: `setSubmitting(true)` (`disabled` + `aria-busy` on `button[type=submit]`), emit `ViewsTheme:Form:Handler:Submit`. Invalid (or `preventNative`) calls `preventDefault`. The native path does **not** call `HTMLFormElement.prototype.submit()` — the same `submit` event continues so core captcha plugins (capture listeners that attach a token, then `form.submit()`) can run. `preventNative` callers (`Review:Form`) must call `setSubmitting(false)` when the async save finishes (or is replaced).
 
 | Prop | Default | Notes |
 |------|---------|--------|
@@ -489,6 +490,7 @@ Do **not** mount core `FormHandler` / `FormValidation` / `data-form-handler` / `
 
 - [UX components](../conventions/ux-components.md)
 - [Checkout register](checkout-register.md)
+- [Checkout confirm](checkout-confirm.md)
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
 - [Filters](filters.md) (`Filter:Boolean`, `Filter:Range`)

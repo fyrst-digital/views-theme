@@ -1,0 +1,71 @@
+{% props
+    page,
+    formId = 'confirmOrderForm',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'summary', 'tos', 'form', 'submit']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <h2
+            {{ vi_attrs('heading') }}
+            class="{{ vi_class('heading') }}"
+        >
+            {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block summary %}
+        <twig:ViewsTheme:Cart:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                summary: page.cart,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block tos %}
+        <twig:ViewsTheme:Checkout:Confirm:Tos
+            class="{{ vi_class('tos') }}"
+            {{ ...vi_attrs('tos').defaults({
+                formId: formId,
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                id: formId,
+                action: path('frontend.checkout.finish.order'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <input type="hidden" name="hash" value="{{ page.cart.hash }}">
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            size: 'lg',
+                            full: true,
+                            label: 'checkout.confirmSubmit'|trans|sw_sanitize,
+                            title: 'checkout.confirmSubmit'|trans|striptags,
+                            disabled: page.cart.errors.blockResubmit ? true : false,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</aside>

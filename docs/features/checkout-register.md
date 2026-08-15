@@ -17,7 +17,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | `Privacy:Note` | Register footer privacy copy (+ optional `acceptedDataProtection` checkbox) |
 | Footer | Core `footer-minimal` via untouched `base_esi_footer` |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`. Confirm/finish keep core `header-minimal`.
+Do **not** add `storefront/layout/header/header-minimal.html.twig`. Finish keeps core `header-minimal`. Confirm uses `Page:Header:Minimal` — [checkout-confirm](checkout-confirm.md).
 
 ## Composition
 
@@ -104,6 +104,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 ## Related
 
+- [Checkout confirm](checkout-confirm.md)
 - [Cart page](cart-page.md)
 - [Form input](form-input.md)
 - [Account action](account-action.md)

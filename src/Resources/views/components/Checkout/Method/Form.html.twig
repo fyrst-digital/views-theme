@@ -1,0 +1,37 @@
+{% props
+    action = path('frontend.checkout.configure'),
+    redirectTo = 'frontend.checkout.confirm.page',
+    redirectParameters = { redirected: 0 }|json_encode,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['redirectTo', 'redirectParameters']) %}
+
+<form
+    {{ attributes.defaults({
+        action: action,
+        method: 'post',
+        'data-component': 'ViewsTheme:Checkout:Method:Form',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block redirect %}
+        <input
+            {{ vi_attrs('redirectTo').defaults({
+                type: 'hidden',
+                name: 'redirectTo',
+                value: redirectTo,
+            }) }}
+        >
+        <input
+            {{ vi_attrs('redirectParameters').defaults({
+                type: 'hidden',
+                name: 'redirectParameters',
+                value: redirectParameters,
+            }) }}
+        >
+    {% endblock %}
+
+    {% block content %}{% endblock %}
+</form>
