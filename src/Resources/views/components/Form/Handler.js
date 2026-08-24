@@ -12,6 +12,7 @@ export default class FormHandler extends ShopwareComponent {
     }
 
     init() {
+        this.el.noValidate = true
         this._onSubmit = this._onSubmit.bind(this)
         this._onInput = this._onInput.bind(this)
         this.el.addEventListener('submit', this._onSubmit)
