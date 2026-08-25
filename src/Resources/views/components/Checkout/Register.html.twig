@@ -6,6 +6,7 @@
     loginError = __context.loginError|default(false),
     errorSnippet = __context.errorSnippet|default(null),
     waitTime = __context.waitTime|default(null),
+    formViolations = __context.formViolations|default(null),
     cva = {},
 %}
 
@@ -65,6 +66,7 @@
                                 redirectTo: redirectTo,
                                 redirectParameters: redirectParameters,
                                 errorRoute: 'frontend.checkout.register.page',
+                                formViolations: formViolations,
                             }).all() }}
                         />
                     {% endblock %}
