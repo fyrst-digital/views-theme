@@ -1,0 +1,23 @@
+{
+    root: { base: 'vi-address-list w-100' },
+    grid: { base: 'vi-address-list__grid' },
+    shipping: {
+        base: 'vi-address-list__shipping g-col-12 g-col-md-6 d-flex flex-column gap-3 p-3 border rounded min-w-0',
+        variants: {
+            shippingFirst: {
+                false: 'order-2',
+            },
+        },
+    },
+    billing: {
+        base: 'vi-address-list__billing g-col-12 g-col-md-6 d-flex flex-column gap-3 p-3 border rounded min-w-0',
+        variants: {
+            shippingFirst: {
+                false: 'order-1',
+            },
+        },
+    },
+    title: { base: 'vi-address-list__title fw-semibold fs-5 mb-0' },
+    body: { base: 'vi-address-list__body' },
+    equal: { base: 'vi-address-list__equal mb-0' },
+}

@@ -1,0 +1,78 @@
+{% props
+    billingAddress,
+    shippingAddress,
+    hideShippingAddress = false,
+    addressesEqual = billingAddress and shippingAddress and billingAddress.id is same as(shippingAddress.id),
+    shippingFirst = true,
+    showShippingWarning = false,
+    shippingTitle = 'checkout.shippingAddressHeader'|trans|sw_sanitize,
+    billingTitle = 'checkout.billingAddressHeader'|trans|sw_sanitize,
+    equalText = 'checkout.addressEqualText'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['grid', 'shipping', 'billing', 'title', 'body', 'equal']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <twig:ViewsTheme:Grid
+            class="{{ vi_class('grid') }}"
+            {{ ...vi_attrs('grid').defaults({
+                gap: '4',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% vi_block shipping %}
+                    {% if not hideShippingAddress %}
+                        <section
+                            {{ vi_attrs('shipping') }}
+                            class="{{ vi_class('shipping', { shippingFirst: shippingFirst }) }}"
+                        >
+                            <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                                {{ shippingTitle }}
+                            </h2>
+
+                            <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
+                                <twig:ViewsTheme:Address
+                                    :address="shippingAddress"
+                                    :showShippingWarning="showShippingWarning"
+                                />
+                            </div>
+
+                            {% vi_block shippingActions %}{% endvi_block %}
+                        </section>
+                    {% endif %}
+                {% endvi_block %}
+
+                {% vi_block billing %}
+                    <section
+                        {{ vi_attrs('billing') }}
+                        class="{{ vi_class('billing', { shippingFirst: shippingFirst }) }}"
+                    >
+                        <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                            {{ billingTitle }}
+                        </h2>
+
+                        <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
+                            {% if addressesEqual and not hideShippingAddress %}
+                                <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
+                                    {{ equalText }}
+                                </p>
+                            {% else %}
+                                <twig:ViewsTheme:Address
+                                    :address="billingAddress"
+                                />
+                            {% endif %}
+                        </div>
+
+                        {% vi_block billingActions %}{% endvi_block %}
+                    </section>
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    {% endblock %}
+</div>

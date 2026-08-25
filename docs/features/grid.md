@@ -74,6 +74,7 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 |--------|--------|
 | `Product:Listing:Results` | Items grid; density via Results `size` → item CVA `g-col-*`; host may set `--vi-grid-columns` |
 | `Account:Register` / `Address:*` | Field layout, 6-col base |
+| `Address:List` | Shipping + billing cards (`g-col-12 g-col-md-6`) |
 
 ## Files
 

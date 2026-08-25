@@ -1,5 +1,6 @@
 {% props
     cart,
+    lineItems = cart.lineItems,
     layout = 'stacked',
     showRemoveButton = true,
     showQuantitySelect = true,
@@ -9,7 +10,7 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['empty', 'header', 'headerInfo', 'headerUnit', 'headerQuantity', 'headerTotal', 'headerRemove']) %}
 
-{% set isEmpty = cart.lineItems|length < 1 %}
+{% set isEmpty = lineItems|length < 1 %}
 
 <div
     {{ attributes.defaults({
@@ -54,7 +55,7 @@
         {% endblock %}
 
         {% block items %}
-            {% for lineItem in cart.lineItems %}
+            {% for lineItem in lineItems %}
                 <twig:ViewsTheme:LineItem
                     :lineItem="lineItem"
                     :deliveries="cart.deliveries"

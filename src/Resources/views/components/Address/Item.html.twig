@@ -23,9 +23,9 @@
             class="{{ vi_class('body') }}"
         >
             {% block address %}
-                {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
-                    address: address,
-                } %}
+                <twig:ViewsTheme:Address
+                    :address="address"
+                />
             {% endblock %}
 
             {% block badge %}

@@ -1,0 +1,137 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['flashes', 'header', 'body', 'main', 'addresses', 'methods', 'payment', 'shipping', 'items', 'additional', 'comment', 'deliveryDate', 'aside']) %}
+
+{% set customerComment = page.order.customerComment %}
+{% set deliveryDateKey = config('ViewsTheme.config.deliveryDateCustomFieldKey')|default('preferred_delivery_date') %}
+{% set preferredDate = page.order.customFields[deliveryDateKey]|default(null) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block header %}
+        <twig:ViewsTheme:Checkout:Success:Header
+            class="{{ vi_class('header') }}"
+            {{ ...vi_attrs('header').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block main %}
+                <div
+                    {{ vi_attrs('main') }}
+                    class="{{ vi_class('main') }}"
+                >
+                    {% block addresses %}
+                        <twig:ViewsTheme:Checkout:Success:Addresses
+                            class="{{ vi_class('addresses') }}"
+                            {{ ...vi_attrs('addresses').defaults({
+                                page: page,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block methods %}
+                        <twig:ViewsTheme:Grid
+                            class="{{ vi_class('methods') }}"
+                            {{ ...vi_attrs('methods').defaults({
+                                gap: '4',
+                            }).all() }}
+                        >
+                            <twig:block name="content">
+                                {% vi_block payment %}
+                                    <twig:ViewsTheme:Checkout:Success:Payment
+                                        class="{{ vi_class('payment') }}"
+                                        {{ ...vi_attrs('payment').defaults({
+                                            page: page,
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+
+                                {% vi_block shipping %}
+                                    <twig:ViewsTheme:Checkout:Success:Shipping
+                                        class="{{ vi_class('shipping') }}"
+                                        {{ ...vi_attrs('shipping').defaults({
+                                            page: page,
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+                            </twig:block>
+                        </twig:ViewsTheme:Grid>
+                    {% endblock %}
+
+                    {% block items %}
+                        <twig:ViewsTheme:Cart:Items
+                            class="{{ vi_class('items') }}"
+                            {{ ...vi_attrs('items').defaults({
+                                cart: page.order,
+                                lineItems: page.order.nestedLineItems,
+                                layout: 'grid',
+                                showRemoveButton: false,
+                                showQuantitySelect: false,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block additional %}
+                        {% if customerComment or preferredDate %}
+                            <div
+                                {{ vi_attrs('additional') }}
+                                class="{{ vi_class('additional') }}"
+                            >
+                                {% block comment %}
+                                    {% if customerComment %}
+                                        <twig:ViewsTheme:Checkout:Success:Comment
+                                            class="{{ vi_class('comment') }}"
+                                            {{ ...vi_attrs('comment').defaults({
+                                                page: page,
+                                            }).all() }}
+                                        />
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block delivery_date %}
+                                    {% if preferredDate %}
+                                        <twig:ViewsTheme:Checkout:Success:DeliveryDate
+                                            class="{{ vi_class('deliveryDate') }}"
+                                            {{ ...vi_attrs('deliveryDate').defaults({
+                                                page: page,
+                                            }).all() }}
+                                        />
+                                    {% endif %}
+                                {% endblock %}
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block aside %}
+                <twig:ViewsTheme:Checkout:Success:Aside
+                    class="{{ vi_class('aside') }}"
+                    {{ ...vi_attrs('aside').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

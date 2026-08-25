@@ -14,9 +14,9 @@ Does **not** own account edit-order / complete-payment. Theme `storefront/page/a
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
 | `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
-| `Checkout:Confirm:Addresses` | Shipping + billing cards. Change → `Address:Manager:Action` (themed modal) |
+| `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
 | `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
-| `Checkout:Method` | Payment/shipping radio primitive |
+| `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
 | `Checkout:Confirm:Comment` | `Form:Textarea` + comment-only localStorage persist |
@@ -24,7 +24,7 @@ Does **not** own account edit-order / complete-payment. Theme `storefront/page/a
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
 | Footer | Core `footer-minimal` via untouched `base_esi_footer` |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`. Finish keeps core `header-minimal`.
+Do **not** add `storefront/layout/header/header-minimal.html.twig`. Success also uses `Page:Header:Minimal` — [checkout-success](checkout-success.md).
 
 ## Composition
 
@@ -38,7 +38,7 @@ page/checkout/confirm/index.html.twig
 │    ├─ Cart:Flashes
 │    ├─ formViolations → Alert
 │    ├─ Cart:Heading (h1, checkout.confirmHeader + count)
-│    ├─ Checkout:Confirm:Addresses
+│    ├─ Checkout:Confirm:Addresses → Address:List
 │    │    ├─ shipping card (unless hideShippingAddress) → Address:Manager:Action
 │    │    └─ billing card (or checkout.addressEqualText) → Address:Manager:Action
 │    ├─ Checkout:Confirm:Payment
@@ -72,6 +72,8 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 
 ## Checkout:Confirm:Addresses
 
+Thin adapter. Card chrome lives on [`Address:List`](address.md) (`showShippingWarning=true`). This tag keeps customer defaults and change buttons.
+
 | Prop | Default | Notes |
 |------|---------|--------|
 | `page` | required | |
@@ -79,9 +81,9 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 | `shippingAddress` | `context.customer.activeShippingAddress` | |
 | `hideShippingAddress` | `page.hideShippingAddress` | Digital-only |
 
-Shipping card omitted when hidden. Billing shows `checkout.addressEqualText` when both addresses share an id and shipping is visible. Address body is the core `address.html.twig` include (not `Address:Item`). Change buttons are `Address:Manager:Action` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. See [address manager](address-manager.md).
+Change buttons are `Address:Manager:Action` in `shippingActions` / `billingActions` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. See [address manager](address-manager.md).
 
-Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`, `shippingChange`, `billingChange`.
+Nests: `shippingChange`, `billingChange`. Card nests (`grid`, `shipping`, `billing`, `title`, `body`, `equal`) are on `Address:List`.
 
 ## Checkout:Method / Method:Form
 
@@ -93,6 +95,7 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`, `shippingChange`
 | `methodId` | required | Radio value |
 | `selectedMethodId` | `null` | |
 | `disabled` | `false` | |
+| `interactive` | `true` | `false` → no radio, `div` chrome (success recap) |
 | `media` / `name` / `description` | | Description only passed for the selected method |
 
 `Checkout:Method:Form` POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping is gated with `State::IS_PHYSICAL` (same as `Cart:ShippingCalculation`).
@@ -123,7 +126,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Edit-order isolation
 
-`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm`. Theme stub `storefront/page/account/order/index.html.twig` extends `@Storefront/storefront/page/checkout/_page.html.twig` and keeps core complete-payment includes (order header, address, payment/shipping, line-item table, update-order form, cancel modal). Redesign is a later issue.
+`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm` or `Checkout:Success`. Theme stub `storefront/page/account/order/index.html.twig` extends `@Storefront/storefront/page/checkout/_page.html.twig` and keeps core complete-payment includes (order header, address, payment/shipping, line-item table, update-order form, cancel modal). Redesign is a later issue.
 
 ## Files
 
@@ -132,7 +135,6 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 ## Out of scope
 
 - Footer / `footer-minimal`
-- Finish page / finish header
 - Account edit-order redesign (isolation stub only)
 - Addressbook listing page / account overview / edit-order address chrome
 - Qty / remove / `Cart:Changed` / `/vi/confirm`
@@ -142,8 +144,10 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Related
 
+- [Address](address.md)
 - [Address manager](address-manager.md)
 - [Checkout register](checkout-register.md)
+- [Checkout success](checkout-success.md)
 - [Cart page](cart-page.md)
 - [Preferred delivery date](delivery-date.md)
 - [Form input](form-input.md)
