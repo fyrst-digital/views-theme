@@ -1,0 +1,86 @@
+{% props
+    addresses = [],
+    type = 'shipping',
+    activeId = null,
+    defaultId = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['toolbar', 'search', 'create', 'items', 'item', 'empty', 'notFound']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:Manager:List',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block toolbar %}
+        <div
+            {{ vi_attrs('toolbar') }}
+            class="{{ vi_class('toolbar') }}"
+        >
+            {% block search %}
+                <twig:ViewsTheme:Form:Input
+                    class="{{ vi_class('search') }}"
+                    {{ ...vi_attrs('search').defaults({
+                        type: 'search',
+                        id: 'vi-address-search-' ~ type,
+                        name: 'search',
+                        autocomplete: 'off',
+                        placeholder: 'account.addressSearchPlaceholder'|trans|sw_sanitize,
+                        'aria-label': 'account.addressSearchPlaceholder'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block create %}
+                <twig:ViewsTheme:Address:Manager:Create
+                    class="{{ vi_class('create') }}"
+                    {{ ...vi_attrs('create').defaults({
+                        type: type,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block items %}
+        <ul
+            {{ vi_attrs('items') }}
+            class="{{ vi_class('items') }}"
+        >
+            {% for address in addresses %}
+                <twig:ViewsTheme:Address:Manager:Item
+                    class="{{ vi_class('item') }}"
+                    {{ ...vi_attrs('item').defaults({
+                        address: address,
+                        type: type,
+                        selected: address.id is same as(activeId),
+                        activeId: activeId,
+                        defaultId: defaultId,
+                        tag: 'li',
+                    }).all() }}
+                />
+            {% endfor %}
+        </ul>
+    {% endblock %}
+
+    {% block empty %}
+        <twig:ViewsTheme:Address:Manager:Status
+            class="{{ vi_class('empty') }}"
+            {{ ...vi_attrs('empty').defaults({
+                kind: 'empty',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block notFound %}
+        <twig:ViewsTheme:Address:Manager:Status
+            class="{{ vi_class('notFound') }}"
+            {{ ...vi_attrs('notFound').defaults({
+                kind: 'notFound',
+            }).all() }}
+        />
+    {% endblock %}
+</div>

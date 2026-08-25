@@ -1,0 +1,19 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Modal:Close',
+        'aria-label': 'global.default.close'|trans|striptags,
+        title: 'global.default.close'|trans|striptags,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block icon %}
+        {{ vi_icon('x') }}
+    {% endblock %}
+</button>

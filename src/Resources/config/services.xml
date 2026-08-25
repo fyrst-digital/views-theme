@@ -184,6 +184,18 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\AddressManagerController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Shopware\Storefront\Page\Address\Listing\AddressListingPageLoader"/>
+            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\ListAddressRoute"/>
+            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\UpsertAddressRoute"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Controller\ReviewController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
             <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>

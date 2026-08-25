@@ -4,41 +4,15 @@
     <div class="vi-account-address-form">
         <h1>{{ 'account.addressCreateWelcome'|trans|sw_sanitize }}</h1>
 
-        <twig:ViewsTheme:Form:Handler
-            action="{{ path('frontend.account.address.create') }}"
-            method="post"
-        >
-            <twig:block name="content">
-                <twig:ViewsTheme:Address:Personal
-                    :data="data.get('address')"
-                    :page="page"
-                    prefix="address"
-                    :accountType="data.get('address').get('accountType')"
-                />
-
-                <twig:ViewsTheme:Address:Form
-                    :data="data.get('address')"
-                    :page="page"
-                    prefix="address"
-                    vatInputId="address-vatIds"
-                />
-
-                <p>{{ 'general.requiredFields'|trans|sw_sanitize }}</p>
-
-                <div class="d-flex justify-content-between gap-3">
-                    <twig:ViewsTheme:Button
-                        type="link"
-                        href="{{ path('frontend.account.address.page') }}"
-                        color="secondary"
-                        label="{{ 'general.back'|trans|sw_sanitize }}"
-                    />
-                    <twig:ViewsTheme:Button
-                        type="submit"
-                        color="primary"
-                        label="{{ 'account.addressSaveChange'|trans|sw_sanitize }}"
-                    />
-                </div>
-            </twig:block>
-        </twig:ViewsTheme:Form:Handler>
+        <twig:ViewsTheme:Address:Editor
+            :action="path('frontend.account.address.create')"
+            :data="data.get('address')"
+            :page="page"
+            :formViolations="formViolations|default(null)"
+            :accountType="data.get('address').get('accountType')"
+            backHref="{{ path('frontend.account.address.page') }}"
+            vatInputId="address-vatIds"
+            :showNoShippingPostfix="false"
+        />
     </div>
 {% endblock %}

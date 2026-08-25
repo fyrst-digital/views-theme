@@ -1,0 +1,107 @@
+{% props
+    address,
+    type = 'shipping',
+    selected = false,
+    activeId = null,
+    defaultId = null,
+    tag = 'div',
+    cva = {},
+%}
+
+{% set shippingBlocked = type is same as('shipping') and not address.country.shippingAvailable %}
+{% set isDefault = defaultId and address.id is same as(defaultId) %}
+{% set menuId = 'vi-address-item-menu-' ~ type ~ '-' ~ address.id %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['radio', 'body', 'badge', 'menu', 'edit', 'default']) %}
+
+<{{ tag|raw }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:Manager:Item',
+        'data-component-options': {
+            addressId: address.id,
+            type: type,
+            disabled: shippingBlocked,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <label class="{{ vi_class('card') }}">
+            <input
+                {{ vi_attrs('radio').defaults({
+                    type: 'radio',
+                    name: type,
+                    value: address.id,
+                    checked: selected,
+                    disabled: shippingBlocked,
+                }) }}
+                class="{{ vi_class('radio') }}"
+            >
+
+            <div
+                {{ vi_attrs('body') }}
+                class="{{ vi_class('body') }}"
+            >
+                {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
+                    address: address,
+                    showShippingWarning: type is same as('shipping'),
+                } %}
+
+                {% if isDefault %}
+                    <twig:ViewsTheme:Badge
+                        class="{{ vi_class('badge') }}"
+                        {{ ...vi_attrs('badge').defaults({
+                            color: 'light',
+                            size: 'sm',
+                            pill: true,
+                            label: 'account.addressDefault'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endif %}
+            </div>
+        </label>
+
+        {% block menu %}
+            <twig:ViewsTheme:Dropdown
+                class="{{ vi_class('menu') }}"
+                {{ ...vi_attrs('menu').defaults({
+                    id: menuId,
+                    placement: 'bottom-end',
+                }).all() }}
+            >
+                <twig:block name="toggle">
+                    <twig:ViewsTheme:Button
+                        type="button"
+                        color="none"
+                        size="sm"
+                        icon="caret-down"
+                        :square="true"
+                        :label="'account.addressOptionsBtn'|trans|sw_sanitize"
+                        popovertarget="{{ menuId }}"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        aria-controls="{{ menuId }}"
+                        style="anchor-name: --{{ menuId }}"
+                    />
+                </twig:block>
+                <twig:block name="content">
+                    <twig:ViewsTheme:Address:Manager:Edit
+                        {{ ...vi_attrs('edit').defaults({
+                            addressId: address.id,
+                            type: type,
+                        }).all() }}
+                    />
+                    {% if not isDefault and not shippingBlocked %}
+                        <twig:ViewsTheme:Address:Manager:Default
+                            {{ ...vi_attrs('default').defaults({
+                                addressId: address.id,
+                                type: type,
+                            }).all() }}
+                        />
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Dropdown>
+        {% endblock %}
+    {% endblock %}
+</{{ tag|raw }}>

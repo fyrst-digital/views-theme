@@ -40,23 +40,15 @@
                                 } %}
                             </div>
 
-                            {% set shippingManagerOptions = {
-                                initialTab: 'shipping',
-                                activeShippingAddressId: shippingAddress.id,
-                                addressManagerUrl: path('frontend.account.addressmanager.get'),
-                                addressSwitchUrl: path('frontend.account.address.switch-default'),
-                            } %}
-
-                            <twig:ViewsTheme:Button
+                            <twig:ViewsTheme:Address:Manager:Action
                                 class="{{ vi_class('change') }}"
                                 {{ ...vi_attrs('shippingChange').defaults({
-                                    type: 'link',
+                                    tab: 'shipping',
+                                    hideShipping: hideShippingAddress,
                                     href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
                                     color: 'secondary',
                                     label: 'account.overviewChangeShipping'|trans|sw_sanitize,
                                     title: 'account.overviewChangeShipping'|trans|striptags,
-                                    'data-address-manager': 'true',
-                                    'data-address-manager-options': shippingManagerOptions|json_encode,
                                 }).all() }}
                             />
                         </section>
@@ -84,23 +76,15 @@
                             {% endif %}
                         </div>
 
-                        {% set billingManagerOptions = {
-                            initialTab: 'billing',
-                            addressId: billingAddress.id,
-                            addressManagerUrl: path('frontend.account.addressmanager.get'),
-                            addressSwitchUrl: path('frontend.account.address.switch-default'),
-                        } %}
-
-                        <twig:ViewsTheme:Button
+                        <twig:ViewsTheme:Address:Manager:Action
                             class="{{ vi_class('change') }}"
                             {{ ...vi_attrs('billingChange').defaults({
-                                type: 'link',
+                                tab: 'billing',
+                                hideShipping: hideShippingAddress,
                                 href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
                                 color: 'secondary',
                                 label: 'account.overviewChangeBilling'|trans|sw_sanitize,
                                 title: 'account.overviewChangeBilling'|trans|striptags,
-                                'data-address-manager': 'true',
-                                'data-address-manager-options': billingManagerOptions|json_encode,
                             }).all() }}
                         />
                     </section>

@@ -4,43 +4,18 @@
     <div class="vi-account-address-form">
         <h1>{{ 'account.addressEditMetaTitle'|trans|sw_sanitize }}</h1>
 
-        <twig:ViewsTheme:Form:Handler
-            action="{{ path('frontend.account.address.edit.save', { addressId: page.address.id }) }}"
-            method="post"
+        <twig:ViewsTheme:Address:Editor
+            :action="path('frontend.account.address.edit.save', { addressId: page.address.id })"
+            :data="page.address"
+            :page="page"
+            :formViolations="formViolations|default(null)"
+            backHref="{{ path('frontend.account.address.page') }}"
+            :showNoShippingPostfix="true"
+            vatInputId="address-vatIds"
         >
-            <twig:block name="content">
+            <twig:block name="hidden">
                 <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-
-                <twig:ViewsTheme:Address:Personal
-                    :data="page.address"
-                    :page="page"
-                    prefix="address"
-                />
-
-                <twig:ViewsTheme:Address:Form
-                    :data="page.address"
-                    :page="page"
-                    prefix="address"
-                    :showNoShippingPostfix="true"
-                    vatInputId="address-vatIds"
-                />
-
-                <p>{{ 'general.requiredFields'|trans|sw_sanitize }}</p>
-
-                <div class="d-flex justify-content-between gap-3">
-                    <twig:ViewsTheme:Button
-                        type="link"
-                        href="{{ path('frontend.account.address.page') }}"
-                        color="secondary"
-                        label="{{ 'general.back'|trans|sw_sanitize }}"
-                    />
-                    <twig:ViewsTheme:Button
-                        type="submit"
-                        color="primary"
-                        label="{{ 'account.addressSaveChange'|trans|sw_sanitize }}"
-                    />
-                </div>
             </twig:block>
-        </twig:ViewsTheme:Form:Handler>
+        </twig:ViewsTheme:Address:Editor>
     </div>
 {% endblock %}

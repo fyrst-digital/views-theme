@@ -1,0 +1,195 @@
+{% props
+    mode = 'list',
+    title = null,
+    page = null,
+    tab = 'shipping',
+    hideShipping = false,
+    shippingCurrent = null,
+    shippingAvailable = [],
+    billingCurrent = null,
+    billingAvailable = [],
+    activeShippingId = null,
+    activeBillingId = null,
+    defaultShippingId = null,
+    defaultBillingId = null,
+    redirectTo = 'frontend.checkout.confirm.page',
+    switchUrl = null,
+    editorAction = null,
+    editorData = null,
+    formViolations = null,
+    type = 'shipping',
+    submitLabel = null,
+    formId = 'vi-address-editor',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'body', 'footer', 'editor']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:Manager:View',
+        'data-component-options': {
+            mode: mode,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}
+        <twig:ViewsTheme:Modal:Header
+            class="{{ vi_class('header') }}"
+            {{ ...vi_attrs('header').defaults({
+                title: title,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block flashes %}
+                {% for flashType, messages in app.flashes %}
+                    <twig:ViewsTheme:Alert
+                        :type="flashType"
+                        :list="messages"
+                        announceOnLoad
+                        :ariaLive="flashType == 'danger' ? 'assertive' : 'polite'"
+                    />
+                {% endfor %}
+            {% endblock %}
+
+            {% if mode is same as('editor') %}
+                {% block editor %}
+                    <twig:ViewsTheme:Address:Editor
+                        class="{{ vi_class('editor') }}"
+                        {{ ...vi_attrs('editor').defaults({
+                            action: editorAction,
+                            data: editorData,
+                            page: page,
+                            formViolations: formViolations,
+                            typePrefix: type,
+                            formId: formId,
+                            preventNative: true,
+                            showActions: false,
+                            showNoShippingPostfix: true,
+                            disableNonShippableCountries: type is same as('shipping'),
+                            submitLabel: submitLabel,
+                        }).all() }}
+                    />
+                {% endblock %}
+            {% else %}
+                {% block list %}
+                    {% if hideShipping %}
+                        <twig:ViewsTheme:Address:Manager:Pane
+                            type="billing"
+                            :current="billingCurrent"
+                            :available="billingAvailable"
+                            :activeId="activeBillingId"
+                            :defaultId="defaultBillingId"
+                        />
+                    {% else %}
+                        <twig:ViewsTheme:Tabs
+                            active="{{ tab is same as('billing') ? 'vi-address-tab-billing' : 'vi-address-tab-shipping' }}"
+                            label="{{ 'account.addressModalTitle'|trans|striptags }}"
+                        >
+                            <twig:block name="list">
+                                <twig:ViewsTheme:Tabs:List>
+                                    <twig:block name="content">
+                                        <twig:ViewsTheme:Tabs:Tab
+                                            id="vi-address-tab-shipping"
+                                            panel="vi-address-pane-shipping"
+                                            :active="tab is not same as('billing')"
+                                        >
+                                            <twig:block name="content">
+                                                {{ 'account.addressesTitleShippingAddress'|trans|sw_sanitize }}
+                                            </twig:block>
+                                        </twig:ViewsTheme:Tabs:Tab>
+                                        <twig:ViewsTheme:Tabs:Tab
+                                            id="vi-address-tab-billing"
+                                            panel="vi-address-pane-billing"
+                                            :active="tab is same as('billing')"
+                                        >
+                                            <twig:block name="content">
+                                                {{ 'account.addressesTitleBillingAddress'|trans|sw_sanitize }}
+                                            </twig:block>
+                                        </twig:ViewsTheme:Tabs:Tab>
+                                    </twig:block>
+                                </twig:ViewsTheme:Tabs:List>
+                            </twig:block>
+                            <twig:block name="panels">
+                                <twig:ViewsTheme:Tabs:Panel
+                                    id="vi-address-pane-shipping"
+                                    tab="vi-address-tab-shipping"
+                                    :active="tab is not same as('billing')"
+                                >
+                                    <twig:block name="content">
+                                        <twig:ViewsTheme:Address:Manager:Pane
+                                            type="shipping"
+                                            :current="shippingCurrent"
+                                            :available="shippingAvailable"
+                                            :activeId="activeShippingId"
+                                            :defaultId="defaultShippingId"
+                                        />
+                                    </twig:block>
+                                </twig:ViewsTheme:Tabs:Panel>
+                                <twig:ViewsTheme:Tabs:Panel
+                                    id="vi-address-pane-billing"
+                                    tab="vi-address-tab-billing"
+                                    :active="tab is same as('billing')"
+                                >
+                                    <twig:block name="content">
+                                        <twig:ViewsTheme:Address:Manager:Pane
+                                            type="billing"
+                                            :current="billingCurrent"
+                                            :available="billingAvailable"
+                                            :activeId="activeBillingId"
+                                            :defaultId="defaultBillingId"
+                                        />
+                                    </twig:block>
+                                </twig:ViewsTheme:Tabs:Panel>
+                            </twig:block>
+                        </twig:ViewsTheme:Tabs>
+                    {% endif %}
+                {% endblock %}
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+        <div
+            {{ vi_attrs('footer') }}
+            class="{{ vi_class('footer') }}"
+        >
+            {% if mode is same as('editor') %}
+                <twig:ViewsTheme:Address:Manager:Back />
+                <twig:ViewsTheme:Button
+                    type="submit"
+                    color="primary"
+                    form="{{ formId }}"
+                    label="{{ submitLabel|default('account.addressSaveChange'|trans|sw_sanitize) }}"
+                />
+            {% else %}
+                <twig:ViewsTheme:Address:Manager:Dismiss />
+                <twig:ViewsTheme:Form:Handler
+                    id="vi-address-manager-switch"
+                    :action="switchUrl"
+                    method="post"
+                    :preventNative="true"
+                >
+                    <twig:block name="content">
+                        <input type="hidden" name="shippingAddressId" value="{{ activeShippingId }}">
+                        <input type="hidden" name="billingAddressId" value="{{ activeBillingId }}">
+                        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+                        <twig:ViewsTheme:Button
+                            type="submit"
+                            color="primary"
+                            label="{{ 'account.addressesChangeAddress'|trans|sw_sanitize }}"
+                        />
+                    </twig:block>
+                </twig:ViewsTheme:Form:Handler>
+            {% endif %}
+        </div>
+    {% endblock %}
+</div>

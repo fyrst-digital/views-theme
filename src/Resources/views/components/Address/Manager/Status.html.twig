@@ -1,0 +1,24 @@
+{% props
+    kind = 'empty',
+    cva = {},
+%}
+
+{% set message = kind is same as('notFound')
+    ? 'account.addressNotFound'|trans|sw_sanitize
+    : 'account.noAvailableAddresses'|trans|sw_sanitize %}
+
+{% do vi_define_cva(cva) %}
+
+<p
+    {{ attributes.defaults({
+        hidden: true,
+        role: 'status',
+        'data-component': 'ViewsTheme:Address:Manager:Status',
+        'data-component-options': {
+            kind: kind,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {{ message }}
+</p>

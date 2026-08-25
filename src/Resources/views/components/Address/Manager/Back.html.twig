@@ -1,0 +1,15 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        color: 'secondary',
+        label: 'general.back'|trans|sw_sanitize,
+        'data-component': 'ViewsTheme:Address:Manager:Back',
+    }).all() }}
+/>

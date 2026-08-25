@@ -1,0 +1,32 @@
+.vi-modal {
+    z-index: var(--vi-modal-z, 1045);
+}
+
+.vi-modal__panel {
+    width: var(--vi-modal-width, min(720px, 100%));
+    max-height: var(--vi-modal-max-h, min(90vh, 800px));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .vi-modal .vi-backdrop {
+        opacity: 0;
+        transition: opacity var(--vi-modal-duration, 250ms) ease;
+    }
+
+    .vi-modal[data-open='true'] .vi-backdrop {
+        opacity: 1;
+    }
+
+    .vi-modal__panel {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+            opacity var(--vi-modal-duration, 250ms) ease,
+            transform var(--vi-modal-duration, 250ms) ease;
+    }
+
+    .vi-modal[data-open='true'] .vi-modal__panel {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,25 @@
+{% props
+    addressId,
+    type = 'shipping',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Address:Manager:Default',
+        'data-component-options': {
+            addressId: addressId,
+            type: type,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if type is same as('shipping') %}
+        {{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}
+    {% else %}
+        {{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}
+    {% endif %}
+</button>

@@ -2,17 +2,19 @@ import { setBodyLock } from '@views-theme/modules/body-lock.js'
 import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
 
 /**
+ * Centered card dialog shell — open/close, body lock, Escape, Tab trap.
+ *
  * @extends {ShopwareComponent}
  */
-export default class Drawer extends ShopwareComponent {
+export default class Modal extends ShopwareComponent {
     static options = {
         openClass: 'd-flex',
         closedClass: 'd-none',
         bodyOpenClass: 'overflow-hidden',
-        openEvent: 'ViewsTheme:Drawer:Open',
-        closeEvent: 'ViewsTheme:Drawer:Close',
+        openEvent: 'ViewsTheme:Modal:Open',
+        closeEvent: 'ViewsTheme:Modal:Close',
         openAttr: 'data-open',
-        durationVar: '--vi-drawer-duration',
+        durationVar: '--vi-modal-duration',
         durationFallback: 250,
     }
 
@@ -20,7 +22,7 @@ export default class Drawer extends ShopwareComponent {
         this._open = false
         this._closing = false
         this._closeTimer = null
-        this._lockOwner = Symbol('drawer-body-lock')
+        this._lockOwner = Symbol('modal-body-lock')
         this._onKeydown = this._onKeydown.bind(this)
 
         this.el.inert = true
@@ -57,7 +59,7 @@ export default class Drawer extends ShopwareComponent {
             this.el.setAttribute(this.options.openAttr, 'true')
         })
 
-        window.Shopware.emitQueued(this.options.openEvent, this.el)
+        window.Shopware.emitQueued(this.options.openEvent, { el: this.el })
     }
 
     close() {
@@ -108,7 +110,7 @@ export default class Drawer extends ShopwareComponent {
         this.el.setAttribute('aria-hidden', 'true')
         this.el.inert = true
         this._setBodyLock(false)
-        window.Shopware.emitQueued(this.options.closeEvent, this.el)
+        window.Shopware.emitQueued(this.options.closeEvent, { el: this.el })
     }
 
     _clearCloseWait() {
@@ -155,6 +157,9 @@ export default class Drawer extends ShopwareComponent {
         }
     }
 
+    /**
+     * @param {boolean} locked
+     */
     _setBodyLock(locked) {
         setBodyLock(this.options.bodyOpenClass, this._lockOwner, locked)
     }
