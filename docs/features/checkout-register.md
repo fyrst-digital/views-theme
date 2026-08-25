@@ -10,7 +10,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/address/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Register` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
-| `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside |
+| `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside. Ambient `__context.formViolations` (and `data` / login errors) forwarded into `Account:Register` |
 | `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
 | `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
 | `Account:Register` | Register form (class VM, `guestSelectable`) |
@@ -31,7 +31,7 @@ page/checkout/address/index.html.twig
 │    ├─ Cart:Flashes
 │    ├─ heading (h1, checkout.addressHeader)
 │    ├─ Account:Login (always visible; redirectTo=frontend.checkout.confirm.page)
-│    ├─ Account:Register (guestSelectable)
+│    ├─ Account:Register (guestSelectable, formViolations)
 │    └─ Checkout:Register:Aside
 │         ├─ Cart:Summary
 │         └─ Cart:Items stacked, showRemoveButton=false, showQuantitySelect=false
@@ -49,11 +49,11 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 | Prop | Default | Notes |
 |------|---------|--------|
 | `guestSelectable` | `false` | Checkout: `true` — Credentials owns `Form:Switch` `createCustomerAccount` + `Form:Toggle` around password only. Email always visible. |
-| `createAccountChecked` | config / posted | Switch + toggle open (create-account, not “guest”). Empty `data` → shop default; posted bag → `createCustomerAccount` boolean (missing checkbox = guest) |
+| `createAccountChecked` | first load = shop `createCustomerAccountDefault`; posted key = boolean; omitted key on a **filled** bag when `guestSelectable` = guest (`false`); `guestSelectable` false always `true` | Switch + toggle open (create-account, not “guest”). Unchecked HTML checkboxes are omitted from POST — do not fall back to shop default on repost. |
 | `redirectTo` | confirm (guest) / account home | Hidden input |
 | `errorRoute` | checkout register / account register | Hidden input |
 | `data` / `page` | | Prefill + countries / salutations |
-| `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesce; forwarded into Personal / Form / Credentials / Privacy |
+| `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesces the Shopware request attribute when omitted. `Checkout:Register` reads ambient `__context.formViolations` and passes it; account register bridge passes `:formViolations`. Forwarded to Personal / Form / Credentials / `Privacy:Note`. |
 
 Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
 
@@ -72,7 +72,7 @@ Anonymous UX. Replaces core `privacy-notice.html.twig` on theme-owned register. 
 | `privacyUrl` / `tosUrl` | CMS pages from `core.basicInformation.*` | |
 | `requireCheckbox` | `core.loginRegistration.requireDataProtectionCheckbox == 1` | Native checkbox `acceptedDataProtection` + `required` (not `Form:Switch`) |
 | `id` / `name` | `acceptedDataProtection` | RegisterRoute `NotBlank` when required |
-| `formViolations` | ambient | Path `/acceptedDataProtection` |
+| `formViolations` | `__context` default; `Account:Register` passes explicitly | Path `/acceptedDataProtection`. Nested UX isolates page scope, so register must forward the prop. |
 
 Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Product:Price:Tax`. Required-fields hint stays on `Account:Register` footer.
 

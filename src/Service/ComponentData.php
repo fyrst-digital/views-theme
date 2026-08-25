@@ -55,6 +55,11 @@ final class ComponentData
         return \is_array($data) && $data === [];
     }
 
+    public static function isFilled(mixed $data): bool
+    {
+        return !self::isEmpty($data);
+    }
+
     public static function getBoolean(mixed $data, string $key): bool
     {
         return filter_var(self::get($data, $key), \FILTER_VALIDATE_BOOLEAN);

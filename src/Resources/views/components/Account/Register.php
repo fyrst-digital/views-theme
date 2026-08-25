@@ -104,11 +104,16 @@ class Register
         );
 
         $createDefault = (int) $this->systemConfigService->get('core.loginRegistration.createCustomerAccountDefault', $salesChannelId) === 1;
-        $this->createAccountChecked = $this->guestSelectable
-            ? (ComponentData::isEmpty($this->data)
-                ? $createDefault
-                : ComponentData::getBoolean($this->data, 'createCustomerAccount'))
-            : true;
+        $createFromData = ComponentData::get($this->data, 'createCustomerAccount');
+        if (!$this->guestSelectable) {
+            $this->createAccountChecked = true;
+        } elseif ($createFromData !== null) {
+            $this->createAccountChecked = ComponentData::getBoolean($this->data, 'createCustomerAccount');
+        } elseif (ComponentData::isFilled($this->data)) {
+            $this->createAccountChecked = false;
+        } else {
+            $this->createAccountChecked = $createDefault;
+        }
 
         $this->differentShipping = (bool) ComponentData::get($this->data, 'differentShippingAddress');
         $this->email = ComponentData::scalar(ComponentData::get($this->data, 'email'));
