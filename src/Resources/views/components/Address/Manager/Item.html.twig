@@ -43,10 +43,10 @@
                 {{ vi_attrs('body') }}
                 class="{{ vi_class('body') }}"
             >
-                {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
-                    address: address,
-                    showShippingWarning: type is same as('shipping'),
-                } %}
+                <twig:ViewsTheme:Address
+                    :address="address"
+                    :showShippingWarning="type is same as('shipping')"
+                />
 
                 {% if isDefault %}
                     <twig:ViewsTheme:Badge

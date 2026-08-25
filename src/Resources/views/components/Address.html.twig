@@ -1,0 +1,19 @@
+{% props
+    address,
+    showShippingWarning = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
+            address: address,
+            showShippingWarning: showShippingWarning,
+        } %}
+    {% endblock %}
+</div>

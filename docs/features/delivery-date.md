@@ -5,6 +5,7 @@ Optional "preferred delivery date" picker on the checkout confirm page. The sele
 ## Features
 
 - Native `<input type="date">` picker on `checkout/confirm` alongside the customer comment
+- Read-only echo on `checkout/finish` when the order custom field is set ([checkout success](checkout-success.md))
 - Min date is today (never in the past); max date is today plus a configurable number of days
 - Submitted with the standard confirm-order form — no custom AJAX route for persistence
 - Preferred, not required: empty value writes no custom field
@@ -46,6 +47,10 @@ Conventions:
 
 The component renders nothing when inactive.
 
+### Success page
+
+`Checkout:Success:DeliveryDate` reads `page.order.customFields[ViewsTheme.config.deliveryDateCustomFieldKey]` and prints the stored ISO date with `format_date`. Renders nothing when the field is empty. No picker / no JS.
+
 ### Persistence
 
 `CheckoutOrderPlacedSubscriber` on `CheckoutOrderPlacedEvent`:
@@ -67,8 +72,10 @@ Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min`
 | Confirm page subscriber | `src/Subscriber/CheckoutConfirmPageSubscriber.php` |
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
 | Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
+| Success display | `src/Resources/views/components/Checkout/Success/DeliveryDate.html.twig` |
 | JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |
 
 ## Related
 
 - [Checkout confirm](checkout-confirm.md)
+- [Checkout success](checkout-success.md)

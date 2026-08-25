@@ -1,0 +1,33 @@
+{% if visible %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['title', 'method']) %}
+
+    <section
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <h2
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
+            >
+                {{ 'checkout.confirmPaymentMethod'|trans|sw_sanitize }}
+            </h2>
+        {% endblock %}
+
+        {% block method %}
+            <twig:ViewsTheme:Checkout:Method
+                class="{{ vi_class('method') }}"
+                {{ ...vi_attrs('method').defaults({
+                    methodType: 'payment',
+                    methodId: methodId,
+                    selectedMethodId: methodId,
+                    interactive: false,
+                    media: media,
+                    name: name,
+                    description: description,
+                }).all() }}
+            />
+        {% endblock %}
+    </section>
+{% endif %}

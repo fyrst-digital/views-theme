@@ -7,89 +7,42 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['grid', 'shipping', 'billing', 'title', 'body', 'equal', 'shippingChange', 'billingChange']) %}
+{% do vi_define_attrs(['shippingChange', 'billingChange']) %}
 
-{% set addressesEqual = billingAddress and shippingAddress and billingAddress.id is same as(shippingAddress.id) %}
-
-<div
-    {{ attributes }}
+<twig:ViewsTheme:Address:List
     class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
+        hideShippingAddress: hideShippingAddress,
+        showShippingWarning: true,
+    }).all() }}
 >
-    {% block content %}
-        <twig:ViewsTheme:Grid
-            class="{{ vi_class('grid') }}"
-            {{ ...vi_attrs('grid').defaults({
-                gap: '4',
+    <twig:block name="shippingActions">
+        <twig:ViewsTheme:Address:Manager:Action
+            class="{{ vi_class('change') }}"
+            {{ ...vi_attrs('shippingChange').defaults({
+                tab: 'shipping',
+                hideShipping: hideShippingAddress,
+                href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
+                color: 'secondary',
+                label: 'account.overviewChangeShipping'|trans|sw_sanitize,
+                title: 'account.overviewChangeShipping'|trans|striptags,
             }).all() }}
-        >
-            <twig:block name="content">
-                {% vi_block shipping %}
-                    {% if not hideShippingAddress %}
-                        <section
-                            {{ vi_attrs('shipping') }}
-                            class="{{ vi_class('shipping') }}"
-                        >
-                            <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-                                {{ 'checkout.shippingAddressHeader'|trans|sw_sanitize }}
-                            </h2>
+        />
+    </twig:block>
 
-                            <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                                {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
-                                    address: shippingAddress,
-                                    showShippingWarning: true,
-                                } %}
-                            </div>
-
-                            <twig:ViewsTheme:Address:Manager:Action
-                                class="{{ vi_class('change') }}"
-                                {{ ...vi_attrs('shippingChange').defaults({
-                                    tab: 'shipping',
-                                    hideShipping: hideShippingAddress,
-                                    href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
-                                    color: 'secondary',
-                                    label: 'account.overviewChangeShipping'|trans|sw_sanitize,
-                                    title: 'account.overviewChangeShipping'|trans|striptags,
-                                }).all() }}
-                            />
-                        </section>
-                    {% endif %}
-                {% endvi_block %}
-
-                {% vi_block billing %}
-                    <section
-                        {{ vi_attrs('billing') }}
-                        class="{{ vi_class('billing') }}"
-                    >
-                        <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-                            {{ 'checkout.billingAddressHeader'|trans|sw_sanitize }}
-                        </h2>
-
-                        <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                            {% if addressesEqual and not hideShippingAddress %}
-                                <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
-                                    {{ 'checkout.addressEqualText'|trans|sw_sanitize }}
-                                </p>
-                            {% else %}
-                                {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
-                                    address: billingAddress,
-                                } %}
-                            {% endif %}
-                        </div>
-
-                        <twig:ViewsTheme:Address:Manager:Action
-                            class="{{ vi_class('change') }}"
-                            {{ ...vi_attrs('billingChange').defaults({
-                                tab: 'billing',
-                                hideShipping: hideShippingAddress,
-                                href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
-                                color: 'secondary',
-                                label: 'account.overviewChangeBilling'|trans|sw_sanitize,
-                                title: 'account.overviewChangeBilling'|trans|striptags,
-                            }).all() }}
-                        />
-                    </section>
-                {% endvi_block %}
-            </twig:block>
-        </twig:ViewsTheme:Grid>
-    {% endblock %}
-</div>
+    <twig:block name="billingActions">
+        <twig:ViewsTheme:Address:Manager:Action
+            class="{{ vi_class('change') }}"
+            {{ ...vi_attrs('billingChange').defaults({
+                tab: 'billing',
+                hideShipping: hideShippingAddress,
+                href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
+                color: 'secondary',
+                label: 'account.overviewChangeBilling'|trans|sw_sanitize,
+                title: 'account.overviewChangeBilling'|trans|striptags,
+            }).all() }}
+        />
+    </twig:block>
+</twig:ViewsTheme:Address:List>

@@ -1,0 +1,30 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'summary']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <h2
+            {{ vi_attrs('heading') }}
+            class="{{ vi_class('heading') }}"
+        >
+            {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block summary %}
+        <twig:ViewsTheme:Cart:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                summary: page.order,
+            }).all() }}
+        />
+    {% endblock %}
+</aside>

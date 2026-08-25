@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/checkout/finish/index.html.twig' %}
+
+{% block base_esi_header %}
+    <twig:ViewsTheme:Page:Header:Minimal />
+{% endblock %}
+
+{% block page_checkout %}
+    <twig:ViewsTheme:Checkout:Success :page="page" />
+{% endblock %}

@@ -46,6 +46,8 @@ Full index: [docs/README.md](docs/README.md).
 | Cart page | [docs/features/cart-page.md](docs/features/cart-page.md) |
 | Checkout register | [docs/features/checkout-register.md](docs/features/checkout-register.md) |
 | Checkout confirm | [docs/features/checkout-confirm.md](docs/features/checkout-confirm.md) |
+| Checkout success | [docs/features/checkout-success.md](docs/features/checkout-success.md) |
+| Address | [docs/features/address.md](docs/features/address.md) |
 | Address manager | [docs/features/address-manager.md](docs/features/address-manager.md) |
 | Wishlist | [docs/features/wishlist.md](docs/features/wishlist.md) |
 | Account action | [docs/features/account-action.md](docs/features/account-action.md) |

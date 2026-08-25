@@ -1,0 +1,29 @@
+{% props
+    page,
+    customFieldKey = config('ViewsTheme.config.deliveryDateCustomFieldKey')|default('preferred_delivery_date'),
+    date = page.order.customFields[customFieldKey]|default(null),
+    title = 'checkout.preferredDeliveryDateHeader'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'value']) %}
+
+{% if date %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                {{ title }}
+            </div>
+        {% endblock %}
+
+        {% block value %}
+            <div {{ vi_attrs('value') }} class="{{ vi_class('value') }}">
+                {{ date|format_date('medium', locale=app.request.locale) }}
+            </div>
+        {% endblock %}
+    </div>
+{% endif %}

@@ -17,7 +17,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | `Privacy:Note` | Register footer privacy copy (+ optional `acceptedDataProtection` checkbox) |
 | Footer | Core `footer-minimal` via untouched `base_esi_footer` |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`. Finish keeps core `header-minimal`. Confirm uses `Page:Header:Minimal` — [checkout-confirm](checkout-confirm.md).
+Do **not** add `storefront/layout/header/header-minimal.html.twig`. Success uses `Page:Header:Minimal` — [checkout-success](checkout-success.md). Confirm uses `Page:Header:Minimal` — [checkout-confirm](checkout-confirm.md).
 
 ## Composition
 
@@ -96,16 +96,18 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 | `storefront/page/account/addressbook/address-actions.html.twig` | `Address:ItemActions` |
 | `storefront/component/account/login.html.twig` | `Account:Login` |
 
-`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** page owner is out of scope — see [address manager](address-manager.md).
+`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** page owner is out of scope — listing rows use [`Address:Item`](address.md) (`Address` for lines). See [address manager](address-manager.md).
 
 ## Files
 
-`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Register/Credentials.*` · `components/Privacy/Note.*` · `components/Address/{Personal,PersonalCompany,Form,CountryState,Item,ItemActions,Editor}.*` · `src/Service/ComponentData.php`
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Register/Credentials.*` · `components/Privacy/Note.*` · `components/Address.{html.twig,cva.twig}` · `components/Address/{List,Personal,PersonalCompany,Form,CountryState,Item,ItemActions,Editor}.*` · `src/Service/ComponentData.php`
 
 ## Related
 
+- [Address](address.md)
 - [Address manager](address-manager.md)
 - [Checkout confirm](checkout-confirm.md)
+- [Checkout success](checkout-success.md)
 - [Cart page](cart-page.md)
 - [Form input](form-input.md)
 - [Account action](account-action.md)

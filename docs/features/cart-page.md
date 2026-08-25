@@ -10,7 +10,7 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | `Cart:Page` | Owner JS: listen `Cart:Changed`, fetch `/vi/cart/page`, swap islands |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `Alert`; shared with drawer |
 | `Cart:Heading` | Title + inline count (`h1`); island. `title` default `checkout.cartHeader` |
-| `Cart:Items` | One CSS grid (`layout="grid"`) or stacked flex; `Cart:Empty` when empty; shared with drawer |
+| `Cart:Items` | One CSS grid (`layout="grid"`) or stacked flex; `Cart:Empty` when empty; shared with drawer. Optional `lineItems` (default `cart.lineItems`) for order nested items on [checkout success](checkout-success.md) |
 | `Cart:Page:Aside` | Summary + `Cart:Options` + checkout CTA — **omitted** when empty |
 | `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) |
 | `Cart:Options` | Shipping pre-calc + promotion form |
@@ -93,7 +93,7 @@ Page options (`data-component-options`): `pageUrl`.
 ## Out of scope
 
 - Add-by-number / `Cart:AddProductForm`
-- Finish redesign (confirm is [checkout-confirm](checkout-confirm.md))
+- Finish / success page — [checkout-success](checkout-success.md)
 - Wishlist on line items
 - PayPal express / installment (core/PayPal inner blocks are not preserved)
 - Hidden GA line-item dump
@@ -112,4 +112,5 @@ Page options (`data-component-options`): `pageUrl`.
 
 - [Cart drawer](cart-drawer.md)
 - [Checkout confirm](checkout-confirm.md)
+- [Checkout success](checkout-success.md)
 - [Architecture — UX XHR](../architecture.md#ux-xhr-component-responses-critical)

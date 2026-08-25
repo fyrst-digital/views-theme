@@ -13,21 +13,21 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:View` | Panel island identity (`mode=list` \| `editor`). Inner fetch swaps this root — Modal is not remounted |
 | `Address:Manager:Pane` | Current card + available `List` for one type |
 | `Address:Manager:List` | Toolbar (search `input[type="search"]` + create), available items, empty / no-results `Status`. Client-side text filter |
-| `Address:Manager:Item` | Selectable card: radio + core `address.html.twig` + `Badge` “Standard” + `Dropdown` (edit, set default). **No delete**. Shipping unavailable → radio disabled. Click (not dropdown) → Manager `select(id, type)` |
+| `Address:Manager:Item` | Selectable card: radio + [`Address`](address.md) + `Badge` “Standard” + `Dropdown` (edit, set default). **No delete**. Shipping unavailable → radio disabled. Click (not dropdown) → Manager `select(id, type)` |
 | `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close` |
 | `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
 | `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
 
-Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** page stays `Address:Item` / `ItemActions` (out of scope).
+Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** page stays `Address:Item` / `ItemActions` (out of scope). Display pair chrome is [`Address:List`](address.md).
 
 ## Composition
 
 Confirm change:
 
 ```
-Checkout:Confirm:Addresses
-└─ Address:Manager:Action   (shipping and/or billing)
+Checkout:Confirm:Addresses → Address:List
+    └─ Address:Manager:Action   (shipping and/or billing)
 ```
 
 Lazy shell (body mount):
@@ -160,6 +160,7 @@ Action owns fetch/mount/unmount; Modal only open/closes. See [JS lazy-loaded she
 
 ## Related
 
+- [Address](address.md)
 - [Checkout confirm](checkout-confirm.md)
 - [Checkout register](checkout-register.md)
 - [Form input](form-input.md)

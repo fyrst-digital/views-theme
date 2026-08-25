@@ -1,0 +1,104 @@
+{% props
+    page,
+    changedPayment = page.changedPayment,
+    orderNumber = page.order.orderNumber,
+    shopName = config('core.basicInformation.shopName'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'orderNumber', 'teaser', 'subtitle', 'hidden']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h1
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {% if changedPayment %}
+                {{ 'checkout.finishUpdateHeader'|trans|sw_sanitize }}
+            {% else %}
+                {{ 'checkout.finishHeader'|trans({
+                    '%shop%': shopName,
+                })|sw_sanitize }}
+            {% endif %}
+        </h1>
+    {% endblock %}
+
+    {% block order_number %}
+        <p
+            {{ vi_attrs('orderNumber').defaults({
+                'data-order-number': orderNumber,
+            }) }}
+            class="{{ vi_class('orderNumber') }}"
+        >
+            {{ 'checkout.finishInfoOrdernumber'|trans|sw_sanitize }}{{ orderNumber }}
+        </p>
+    {% endblock %}
+
+    {% block enhanced_conversions %}
+        {% if storefrontAnalytics
+            and storefrontAnalytics.isActive()
+            and storefrontAnalytics.isTrackOrders()
+            and storefrontAnalytics.isEnhancedConversions()
+            and page.order.orderCustomer
+        %}
+            {# Google Enhanced Conversions requires email normalization before hashing:
+               https://support.google.com/google-ads/answer/13258081 #}
+            {% set email = page.order.orderCustomer.email|lower|trim %}
+            {% set emailParts = email|split('@') %}
+            {% if emailParts[1] == 'gmail.com' or emailParts[1] == 'googlemail.com' %}
+                {% set email = emailParts[0]|replace({'.': ''}) ~ '@' ~ emailParts[1] %}
+            {% endif %}
+            <script>
+                gtag('set', 'user_data', {
+                    'sha256_email_address': '{{ email|sha256 }}'
+                });
+            </script>
+        {% endif %}
+    {% endblock %}
+
+    {% block hidden_line_items %}
+        <div
+            {{ vi_attrs('hidden') }}
+            class="{{ vi_class('hidden') }}"
+        >
+            {% sw_include '@Storefront/storefront/component/checkout/hidden-line-items-information.html.twig' with {
+                cart: page.order,
+                lineItems: page.order.lineItems,
+            } %}
+        </div>
+    {% endblock %}
+
+    {% block subtitle %}
+        {% if changedPayment %}
+            {% if feature('v6.8.0.0') %}
+                {% set paymentName = page.order.primaryOrderTransaction.paymentMethod.translated.name %}
+            {% else %}
+                {% set paymentName = page.order.transactions.last.paymentMethod.translated.name %}
+            {% endif %}
+            <p
+                {{ vi_attrs('subtitle') }}
+                class="{{ vi_class('subtitle') }}"
+            >
+                {{ 'checkout.finishPaymentHeader'|trans({
+                    '%paymentName%': paymentName,
+                })|sw_sanitize }}
+            </p>
+        {% endif %}
+    {% endblock %}
+
+    {% block teaser %}
+        {% if not changedPayment %}
+            <p
+                {{ vi_attrs('teaser') }}
+                class="{{ vi_class('teaser') }}"
+            >
+                {{ 'checkout.finishInfoConfirmationMail'|trans|sw_sanitize }}
+            </p>
+        {% endif %}
+    {% endblock %}
+</div>

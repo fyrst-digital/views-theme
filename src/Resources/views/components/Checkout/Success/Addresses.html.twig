@@ -1,0 +1,8 @@
+<twig:ViewsTheme:Address:List
+    {{ ...attributes.defaults({
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
+        hideShippingAddress: hideShippingAddress,
+        cva: cva,
+    }).all() }}
+/>

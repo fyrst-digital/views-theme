@@ -3,6 +3,7 @@
     methodId,
     selectedMethodId = null,
     disabled = false,
+    interactive = true,
     media = null,
     name = null,
     description = null,
@@ -14,27 +15,28 @@
 
 {% set inputId = methodType ~ 'Method' ~ methodId %}
 {% set selected = methodId is same as(selectedMethodId) %}
+{% set labelTag = interactive ? 'label' : 'div' %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    <input
-        {{ vi_attrs('input').defaults({
-            type: 'radio',
-            id: inputId,
-            name: methodType ~ 'MethodId',
-            value: methodId,
-            checked: selected ? true : false,
-            disabled: disabled is same as(true) ? true : false,
-        }) }}
-        class="{{ vi_class('input') }}"
-    >
+    {% if interactive %}
+        <input
+            {{ vi_attrs('input').defaults({
+                type: 'radio',
+                id: inputId,
+                name: methodType ~ 'MethodId',
+                value: methodId,
+                checked: selected ? true : false,
+                disabled: disabled is same as(true) ? true : false,
+            }) }}
+            class="{{ vi_class('input') }}"
+        >
+    {% endif %}
 
-    <label
-        {{ vi_attrs('label').defaults({
-            for: inputId,
-        }) }}
+    <{{ labelTag|raw }}
+        {{ vi_attrs('label').defaults(interactive ? { for: inputId } : {}) }}
         class="{{ vi_class('label') }}"
     >
         {% if media %}
@@ -66,5 +68,5 @@
                 </div>
             {% endif %}
         </div>
-    </label>
+    </{{ labelTag|raw }}>
 </div>
