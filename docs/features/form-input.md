@@ -474,7 +474,7 @@ Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`;
 
 ## Form:Handler
 
-Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-invalid` / `aria-invalid` chrome (`setInvalidChrome`). On valid submit: `setSubmitting(true)` (`disabled` + `aria-busy` on `button[type=submit]`), emit `ViewsTheme:Form:Handler:Submit`, then native submit unless `preventNative`. `preventNative` callers (`Review:Form`) must call `setSubmitting(false)` when the async save finishes (or is replaced).
+Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-invalid` / `aria-invalid` chrome (`setInvalidChrome`). On valid submit: `setSubmitting(true)` (`disabled` + `aria-busy` on `button[type=submit]`), emit `ViewsTheme:Form:Handler:Submit`. Invalid (or `preventNative`) calls `preventDefault`. The native path does **not** call `HTMLFormElement.prototype.submit()` — the same `submit` event continues so core captcha plugins (capture listeners that attach a token, then `form.submit()`) can run. `preventNative` callers (`Review:Form`) must call `setSubmitting(false)` when the async save finishes (or is replaced).
 
 | Prop | Default | Notes |
 |------|---------|--------|
