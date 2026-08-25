@@ -1,0 +1,20 @@
+{% props
+    type = 'shipping',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        color: 'secondary',
+        icon: 'plus',
+        label: 'account.addressCreateBtn'|trans|sw_sanitize,
+        'data-component': 'ViewsTheme:Address:Manager:Create',
+        'data-component-options': {
+            type: type,
+        }|json_encode,
+    }).all() }}
+/>

@@ -36,6 +36,16 @@ final class ComponentDataTest extends TestCase
         self::assertNull(ComponentData::get($country, 'missing'));
     }
 
+    public function testIsFilled(): void
+    {
+        self::assertFalse(ComponentData::isFilled(null));
+        self::assertFalse(ComponentData::isFilled([]));
+        self::assertFalse(ComponentData::isFilled(new DataBag()));
+        self::assertTrue(ComponentData::isFilled(['email' => 'a@b.c']));
+        self::assertTrue(ComponentData::isFilled(new DataBag(['email' => 'a@b.c'])));
+        self::assertTrue(ComponentData::isFilled(new \stdClass()));
+    }
+
     public function testScalar(): void
     {
         self::assertSame('1', ComponentData::scalar(1));

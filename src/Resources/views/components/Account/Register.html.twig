@@ -154,7 +154,9 @@
                     <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
                         <twig:ViewsTheme:Privacy:Note
                             class="{{ vi_class('privacy') }}"
-                            {{ ...vi_attrs('privacy').all() }}
+                            {{ ...vi_attrs('privacy').defaults({
+                                formViolations: formViolations,
+                            }).all() }}
                         />
                         <p class="{{ vi_class('requiredHint') }}">
                             {{ 'general.requiredFields'|trans|sw_sanitize }}

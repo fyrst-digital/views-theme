@@ -11,6 +11,7 @@
     {{ attributes.defaults({
         action: action is not empty ? action : false,
         method: method,
+        novalidate: true,
         'data-component': 'ViewsTheme:Form:Handler',
         'data-component-options': {
             preventNative: preventNative,

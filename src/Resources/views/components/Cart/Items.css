@@ -10,5 +10,11 @@
       --vi-cols: var(--vi-image-size, 80px) minmax(0, 1fr) minmax(104px, auto) auto minmax(72px, auto) minmax(80px, auto);
       --vi-span: span 2;
     }
+
+    &[data-show-remove='false'] {
+      @media (min-width: 1260px) {
+        --vi-cols: var(--vi-image-size, 80px) minmax(0, 1fr) minmax(104px, auto) minmax(72px, auto) minmax(80px, auto);
+      }
+    }
   }
 }

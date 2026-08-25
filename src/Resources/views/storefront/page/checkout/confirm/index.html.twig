@@ -1,9 +1,9 @@
-{% sw_extends '@Storefront/storefront/page/checkout/confirm.html.twig' %}
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
 
-{% block page_checkout_additional %}
-    {{ parent() }}
+{% block base_esi_header %}
+    <twig:ViewsTheme:Page:Header:Minimal />
+{% endblock %}
 
-    {% block page_checkout_additional_preferred_delivery_date %}
-        <twig:ViewsTheme:Checkout:DeliveryDateSelection />
-    {% endblock %}
+{% block page_checkout %}
+    <twig:ViewsTheme:Checkout:Confirm :page="page" />
 {% endblock %}

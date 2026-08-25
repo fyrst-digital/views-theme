@@ -122,7 +122,7 @@ LineItem:Product
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md)) forwarded to leaf root |
+| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md) / [confirm](checkout-confirm.md)) forwarded to leaf root |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name |
@@ -250,5 +250,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 - Opening the theme drawer on variants-grid success (product add already auto-opens via `openOnActions: ['add']`)
 - Cookie offcanvas → `Drawer`
-- Full checkout / confirm page redesign
+- Finish page redesign (confirm is [checkout-confirm](checkout-confirm.md))
 - Add-by-number / `Cart:AddProductForm`

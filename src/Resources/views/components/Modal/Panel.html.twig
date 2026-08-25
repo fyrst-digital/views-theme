@@ -1,0 +1,40 @@
+{% props
+    title = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'body', 'footer']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Modal:Panel',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}
+        <twig:ViewsTheme:Modal:Header
+            {{ ...vi_attrs('header').defaults({
+                title: title,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block footer %}
+        <div
+            {{ vi_attrs('footer') }}
+            class="{{ vi_class('footer') }}"
+        >
+            {% block actions %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

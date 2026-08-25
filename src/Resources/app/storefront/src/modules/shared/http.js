@@ -7,22 +7,46 @@
 /**
  * @param {string} url
  * @param {import('@views-theme/modules/types.js').HttpFetchOptions} [options]
- * @returns {Promise<string>}
+ * @returns {Promise<Response>}
  */
-export async function fetchText(url, options = {}) {
-    const response = await fetch(url, {
+export async function fetchResponse(url, options = {}) {
+    return fetch(url, {
+        method: options.method || 'GET',
+        body: options.body,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
             ...(options.headers || {}),
         },
         signal: options.signal,
+        redirect: options.redirect || 'follow',
     })
+}
+
+/**
+ * @param {string} url
+ * @param {import('@views-theme/modules/types.js').HttpFetchOptions} [options]
+ * @returns {Promise<import('@views-theme/modules/types.js').HttpTextResult>}
+ */
+export async function fetchTextResult(url, options = {}) {
+    const response = await fetchResponse(url, options)
+    const text = await response.text()
 
     if (!response.ok) {
         throw new Error(`Fetch failed: ${response.status}`)
     }
 
-    return response.text()
+    return { status: response.status, text }
+}
+
+/**
+ * @param {string} url
+ * @param {import('@views-theme/modules/types.js').HttpFetchOptions} [options]
+ * @returns {Promise<string>}
+ */
+export async function fetchText(url, options = {}) {
+    const result = await fetchTextResult(url, options)
+
+    return result.text
 }
 
 /**
@@ -31,13 +55,7 @@ export async function fetchText(url, options = {}) {
  * @returns {Promise<unknown>}
  */
 export async function fetchJson(url, options = {}) {
-    const response = await fetch(url, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            ...(options.headers || {}),
-        },
-        signal: options.signal,
-    })
+    const response = await fetchResponse(url, options)
 
     if (!response.ok) {
         throw new Error(`Fetch failed: ${response.status}`)

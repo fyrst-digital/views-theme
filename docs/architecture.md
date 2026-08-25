@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, product listing/filters, reviews, …).
+ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, product listing/filters, reviews, address manager, …).
 
 ## Identity
 
@@ -134,6 +134,10 @@ Examples:
 | `frontend.views-theme.review.list` | `/vi/product/{productId}/reviews` (GET) |
 | `frontend.views-theme.review.save` | `/vi/product/{productId}/reviews` (POST) |
 | `frontend.views-theme.gallery.fullscreen` | `/vi/gallery/fullscreen` |
+| `frontend.views-theme.address.manager` | `/vi/address/manager` |
+| `frontend.views-theme.address.editor` | `/vi/address/editor` (GET) |
+| `frontend.views-theme.address.editor.save` | `/vi/address/editor` (POST) |
+| `frontend.views-theme.address.switch` | `/vi/address/switch` |
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
@@ -150,7 +154,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 | JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
-Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`.
+Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`, `AddressManagerController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -178,6 +182,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Nav flyout (`NavigationFlyoutController`) | `NavigationLoaderInterface` | *(none — no core pagelet hook)* | Tree API + theme depth math |
 | Reviews list/save (`ReviewController`) | `ProductReviewGateway` → `AbstractProductReviewLoader`; save → `AbstractProductReviewSaveRoute` | `product-reviews-widget-loaded` | HTML `Review:Results` / `Review:Panel`; [review.md](features/review.md) |
 | Gallery fullscreen (`GalleryFullscreenController`) | `AbstractMediaRoute` / `MediaRoute` | *(none — raw media list)* | HTML `Gallery:Fullscreen`; [gallery.md](features/gallery.md) |
+| Address manager (`AddressManagerController`) | `AddressListingPageLoader` | `address-book-widget-loaded` (`AddressBookWidgetLoadedHook`) | HTML `Address:Manager` / editor View island; upsert + context switch; [address-manager.md](features/address-manager.md) |
 
 **Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 
@@ -192,4 +197,6 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 - [Navigation bar](features/navigation-bar.md)
 - [Cart drawer](features/cart-drawer.md)
 - [Cart page](features/cart-page.md)
+- [Checkout confirm](features/checkout-confirm.md)
+- [Address manager](features/address-manager.md)
 - [Filters](features/filters.md)

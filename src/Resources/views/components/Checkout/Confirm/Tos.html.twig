@@ -1,0 +1,120 @@
+{% props
+    formId = 'confirmOrderForm',
+    tosUrl = path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }),
+    revocationUrl = path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') }),
+    formViolations = __context.formViolations|default(null),
+    page = __context.page|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'revocationNotice', 'control', 'tosCheckbox', 'tosLabel', 'tosFeedback', 'revocationCheckbox', 'revocationLabel', 'revocationFeedback']) %}
+
+{% set tosInvalid = formViolations and formViolations.getViolations('/tos') is not empty %}
+{% set revocationInvalid = formViolations and formViolations.getViolations('/revocation') is not empty %}
+{% set linkClass = vi_class('link') %}
+{% set tosNotice = 'checkout.confirmTermsTextModal'|trans({
+    '%tosModalTagOpen%': '<a href="' ~ tosUrl ~ '" class="' ~ linkClass ~ '" data-ajax-modal="true" data-url="' ~ tosUrl ~ '" aria-haspopup="dialog">',
+    '%tosModalTagClose%': '</a>',
+}) %}
+{% set revocationNotice = 'checkout.confirmRevocationNoticeModal'|trans({
+    '%revocationModalTagOpen%': '<a href="' ~ revocationUrl ~ '" class="' ~ linkClass ~ '" data-ajax-modal="true" data-url="' ~ revocationUrl ~ '" aria-haspopup="dialog">',
+    '%revocationModalTagClose%': '</a>',
+}) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+            {{ 'checkout.confirmTermsHeader'|trans|sw_sanitize }}
+        </div>
+    {% endblock %}
+
+    {% block revocation_notice %}
+        <div {{ vi_attrs('revocationNotice') }} class="{{ vi_class('revocationNotice') }}">
+            {{ revocationNotice|raw }}
+        </div>
+    {% endblock %}
+
+    {% block tos_control %}
+        <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
+            <input
+                {{ vi_attrs('tosCheckbox').defaults({
+                    type: 'checkbox',
+                    required: true,
+                    'aria-required': 'true',
+                    id: 'tos',
+                    form: formId,
+                    name: 'tos',
+                    'aria-invalid': tosInvalid ? 'true' : false,
+                    'aria-describedby': tosInvalid ? 'tos-feedback' : false,
+                }) }}
+                class="{{ vi_class('tosCheckbox', { invalid: tosInvalid }) }}"
+            >
+            <label
+                {{ vi_attrs('tosLabel').defaults({
+                    for: 'tos',
+                }) }}
+                class="{{ vi_class('tosLabel') }}"
+            >
+                {{ tosNotice|raw }}
+            </label>
+        </div>
+        <div
+            {{ vi_attrs('tosFeedback').defaults({
+                id: 'tos-feedback',
+            }) }}
+            class="{{ vi_class('tosFeedback') }}"
+        >
+            {% if tosInvalid %}
+                {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                    formViolations: formViolations,
+                    violationPath: '/tos',
+                } %}
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block revocation_control %}
+        {% if page and page.showRevocation %}
+            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
+                <input
+                    {{ vi_attrs('revocationCheckbox').defaults({
+                        type: 'checkbox',
+                        required: true,
+                        'aria-required': 'true',
+                        id: 'revocation',
+                        form: formId,
+                        name: 'revocation',
+                        'aria-invalid': revocationInvalid ? 'true' : false,
+                        'aria-describedby': revocationInvalid ? 'revocation-feedback' : false,
+                    }) }}
+                    class="{{ vi_class('revocationCheckbox', { invalid: revocationInvalid }) }}"
+                >
+                <label
+                    {{ vi_attrs('revocationLabel').defaults({
+                        for: 'revocation',
+                    }) }}
+                    class="{{ vi_class('revocationLabel') }}"
+                >
+                    {{ 'checkout.confirmRevocationTerms'|trans() }}
+                </label>
+            </div>
+            <div
+                {{ vi_attrs('revocationFeedback').defaults({
+                    id: 'revocation-feedback',
+                }) }}
+                class="{{ vi_class('revocationFeedback') }}"
+            >
+                {% if revocationInvalid %}
+                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                        formViolations: formViolations,
+                        violationPath: '/revocation',
+                    } %}
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>

@@ -1,4 +1,5 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
+import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
 
 /**
  * @extends {ShopwareComponent}
@@ -113,35 +114,7 @@ export default class SearchOverlay extends ShopwareComponent {
         }
 
         if (event.key === 'Tab') {
-            this._trapFocus(event)
-        }
-    }
-
-    _trapFocus(event) {
-        const focusables = Array.from(
-            window.focusHandler.getFocusableElements(this.el),
-        )
-
-        if (!focusables.length) {
-            event.preventDefault()
-            return
-        }
-
-        const first = focusables[0]
-        const last = focusables[focusables.length - 1]
-        const active = document.activeElement
-
-        if (event.shiftKey) {
-            if (active === first || !this.el.contains(active)) {
-                event.preventDefault()
-                window.focusHandler.setFocus(last, { focusVisible: true })
-            }
-            return
-        }
-
-        if (active === last || !this.el.contains(active)) {
-            event.preventDefault()
-            window.focusHandler.setFocus(first, { focusVisible: true })
+            trapFocus(event, this.el)
         }
     }
 

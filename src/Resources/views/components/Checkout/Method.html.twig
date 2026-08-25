@@ -1,16 +1,19 @@
 {% props
     methodType = 'payment',
     methodId,
-    methodDisabled = false,
-    methodMedia = null,
-    methodMeta = {},
     selectedMethodId = null,
+    disabled = false,
+    media = null,
+    name = null,
+    description = null,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-
 {% do vi_define_attrs(['input', 'label', 'image', 'content', 'name', 'description']) %}
+
+{% set inputId = methodType ~ 'Method' ~ methodId %}
+{% set selected = methodId is same as(selectedMethodId) %}
 
 <div
     {{ attributes }}
@@ -19,30 +22,30 @@
     <input
         {{ vi_attrs('input').defaults({
             type: 'radio',
-            id: methodType ~ 'Method' ~ methodId,
+            id: inputId,
             name: methodType ~ 'MethodId',
             value: methodId,
-            checked: methodId is same as(selectedMethodId) ? 'checked' : false,
-            disabled: methodDisabled is same as(true) ? 'disabled' : false,
+            checked: selected ? true : false,
+            disabled: disabled is same as(true) ? true : false,
         }) }}
         class="{{ vi_class('input') }}"
     >
 
     <label
         {{ vi_attrs('label').defaults({
-            for: methodType ~ 'Method' ~ methodId,
+            for: inputId,
         }) }}
         class="{{ vi_class('label') }}"
     >
-        {% if methodMedia %}
+        {% if media %}
             <div {{ vi_attrs('image') }} class="{{ vi_class('image') }}">
-                {% sw_thumbnails 'method-option-image-thumbnails' with {
-                    media: methodMedia,
+                {% sw_thumbnails 'checkout-method-image-thumbnails' with {
+                    media: media,
                     sizes: { default: '100px' },
                     attributes: {
                         class: vi_class('imageElement'),
-                        alt: (methodMeta.name|default('')),
-                        title: (methodMeta.name|default('')),
+                        alt: (media.translated.alt|default(name)),
+                        title: (media.translated.title|default(name)),
                     },
                 } %}
             </div>
@@ -50,11 +53,16 @@
 
         <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
             <div {{ vi_attrs('name') }} class="{{ vi_class('name') }}">
-                {{ methodMeta.name }}
+                {{ name }}
             </div>
-            {% if methodMeta.description %}
-                <div {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
-                    {{ methodMeta.description }}
+            {% if description %}
+                <div
+                    {{ vi_attrs('description').defaults({
+                        title: description|striptags,
+                    }) }}
+                    class="{{ vi_class('description') }}"
+                >
+                    {{ description|raw }}
                 </div>
             {% endif %}
         </div>

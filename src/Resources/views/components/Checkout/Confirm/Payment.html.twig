@@ -1,0 +1,54 @@
+{% props
+    page,
+    selectedId = context.paymentMethod.id,
+    redirectTo = 'frontend.checkout.confirm.page',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'form', 'method']) %}
+
+<fieldset
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <legend
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'checkout.confirmPaymentMethod'|trans|sw_sanitize }}
+        </legend>
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Checkout:Method:Form
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                name: 'changePaymentForm',
+                redirectTo: redirectTo,
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% for payment in page.paymentMethods %}
+                    {% set description = null %}
+                    {% if payment.translated.description and payment.id is same as(selectedId) %}
+                        {% set description = payment.translated.description %}
+                        {% set description = description|length > 75 ? description[:75] ~ ' ...' : description %}
+                    {% endif %}
+
+                    <twig:ViewsTheme:Checkout:Method
+                        class="{{ vi_class('method') }}"
+                        methodType="payment"
+                        :methodId="payment.id"
+                        :selectedMethodId="selectedId"
+                        :media="payment.media"
+                        name="{{ payment.translated.name }}"
+                        :description="description"
+                        {{ ...vi_attrs('method').all() }}
+                    />
+                {% endfor %}
+            </twig:block>
+        </twig:ViewsTheme:Checkout:Method:Form>
+    {% endblock %}
+</fieldset>
