@@ -1,0 +1,87 @@
+{% props
+    modalId = 'vi-account-profile-delete',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['copy', 'open', 'modal', 'panel', 'alert', 'confirm', 'form', 'submit']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block copy %}
+        <p
+            {{ vi_attrs('copy') }}
+            class="{{ vi_class('copy') }}"
+        >
+            {{ 'account.profileDeleteAlert'|trans|sw_sanitize }}
+        </p>
+    {% endblock %}
+
+    {% block open %}
+        <twig:ViewsTheme:Modal:Open
+            class="{{ vi_class('open') }}"
+            {{ ...vi_attrs('open').defaults({
+                modalId: modalId,
+                color: 'danger',
+                label: 'account.profileDeleteButton'|trans|sw_sanitize,
+                title: 'account.profileDeleteModalTitle'|trans|striptags,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block modal %}
+        <twig:ViewsTheme:Modal
+            class="{{ vi_class('modal') }}"
+            {{ ...vi_attrs('modal').defaults({
+                id: modalId,
+                title: 'account.profileDeleteModalTitle'|trans|sw_sanitize,
+            }).all() }}
+        >
+            <twig:block name="panel">
+                <twig:ViewsTheme:Modal:Panel
+                    class="{{ vi_class('panel') }}"
+                    {{ ...vi_attrs('panel').defaults({
+                        title: 'account.profileDeleteModalTitle'|trans|sw_sanitize,
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <p
+                            {{ vi_attrs('alert') }}
+                            class="{{ vi_class('alert') }}"
+                        >
+                            {{ 'account.profileDeleteAlert'|trans|sw_sanitize }}
+                        </p>
+                        <p
+                            {{ vi_attrs('confirm') }}
+                            class="{{ vi_class('confirm') }}"
+                        >
+                            {{ 'account.profileDeleteConfirm'|trans|sw_sanitize }}
+                        </p>
+                    </twig:block>
+                    <twig:block name="actions">
+                        <twig:ViewsTheme:Form:Handler
+                            class="{{ vi_class('form') }}"
+                            {{ ...vi_attrs('form').defaults({
+                                action: path('frontend.account.profile.delete'),
+                                method: 'post',
+                            }).all() }}
+                        >
+                            <twig:block name="content">
+                                <twig:ViewsTheme:Button
+                                    class="{{ vi_class('submit') }}"
+                                    {{ ...vi_attrs('submit').defaults({
+                                        type: 'submit',
+                                        color: 'danger',
+                                        label: 'account.profileDeleteButton'|trans|sw_sanitize,
+                                    }).all() }}
+                                />
+                            </twig:block>
+                        </twig:ViewsTheme:Form:Handler>
+                    </twig:block>
+                </twig:ViewsTheme:Modal:Panel>
+            </twig:block>
+        </twig:ViewsTheme:Modal>
+    {% endblock %}
+</div>

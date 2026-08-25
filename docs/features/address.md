@@ -1,6 +1,6 @@
 # Address
 
-Formatted address lines and the shipping + billing **pair**. Theme-owned display primitives. Account overview / edit-order / order history stay core until a later slice.
+Formatted address lines and the shipping + billing **pair**. Theme-owned display primitives. Account overview, addressbook listing, and edit-order recap consume these tags — [account pages](account.md).
 
 Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards. Those are listing and picker rows.
 
@@ -55,9 +55,9 @@ Anonymous. Shipping card is omitted when `hideShippingAddress`. Billing shows `e
 | `addressesEqual` | billing id === shipping id | Pass to override |
 | `shippingFirst` | `true` | DOM stays shipping then billing. `false` → Bootstrap `order-1` / `order-2` so billing paints first |
 | `showShippingWarning` | `false` | Shipping card only (confirm passes `true`) |
-| `shippingTitle` | `checkout.shippingAddressHeader` | Account later: `account.overviewShippingHeader` |
-| `billingTitle` | `checkout.billingAddressHeader` | Account later: `account.overviewBillingHeader` |
-| `equalText` | `checkout.addressEqualText` | Account later: `account.overviewAddressEqual` |
+| `shippingTitle` | `checkout.shippingAddressHeader` | Account: `account.overviewShippingHeader` |
+| `billingTitle` | `checkout.billingAddressHeader` | Account: `account.overviewBillingHeader` |
+| `equalText` | `checkout.addressEqualText` | Account: `account.overviewAddressEqual` |
 | `cva` | `{}` | Root `vi-address-list` |
 
 Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shipping` / `billing` (whole card), `shippingActions` / `billingActions` (footer; empty by default).
@@ -66,20 +66,20 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 `Checkout:Confirm:Addresses` keeps customer defaults (`activeBillingAddress` / `activeShippingAddress`, `page.hideShippingAddress`) and fills the action slots with `Address:Manager:Action` (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). Nests: `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
 
-`Checkout:Success:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`). No manager. See [checkout success](checkout-success.md).
+`Order:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`). `Checkout:Success:Addresses` is a shim. No manager. See [checkout success](checkout-success.md) and [account pages](account.md).
 
 ## Out of scope
 
-- Account overview / addressbook listing page owner / edit-order / order history
 - `Address:Card` — extract later if a standalone titled card is needed
 
 ## Files
 
-`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/{Confirm,Success}/Addresses.*`
+`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/Confirm/Addresses.*` · `components/Order/Addresses.*` · `components/Checkout/Success/Addresses.*` (shim → `Order:Addresses`)
 
 ## Related
 
 - [Address manager](address-manager.md)
+- [Account pages](account.md)
 - [Checkout confirm](checkout-confirm.md)
 - [Checkout success](checkout-success.md)
 - [Checkout register](checkout-register.md)

@@ -1,0 +1,3 @@
+.vi-account-recover__form {
+    max-width: var(--vi-account-auth-width, 560px);
+}

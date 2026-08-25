@@ -1,21 +1,14 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/edit.html.twig' %}
 
 {% block page_account_main_content %}
-    <div class="vi-account-address-form">
-        <h1>{{ 'account.addressEditMetaTitle'|trans|sw_sanitize }}</h1>
-
-        <twig:ViewsTheme:Address:Editor
-            :action="path('frontend.account.address.edit.save', { addressId: page.address.id })"
-            :data="page.address"
-            :page="page"
-            :formViolations="formViolations|default(null)"
-            backHref="{{ path('frontend.account.address.page') }}"
-            :showNoShippingPostfix="true"
-            vatInputId="address-vatIds"
-        >
-            <twig:block name="hidden">
-                <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-            </twig:block>
-        </twig:ViewsTheme:Address:Editor>
-    </div>
+    <twig:ViewsTheme:Account:Addressbook:Form
+        title="{{ 'account.addressEditMetaTitle'|trans|sw_sanitize }}"
+        :action="path('frontend.account.address.edit.save', { addressId: page.address.id })"
+        :data="page.address"
+        :page="page"
+        :formViolations="formViolations|default(null)"
+        :showNoShippingPostfix="true"
+        :redirectTo="redirectTo|default(null)"
+        vatInputId="address-vatIds"
+    />
 {% endblock %}

@@ -38,6 +38,9 @@
                 {% if not guestSelectable %}
                     <input type="hidden" name="createCustomerAccount" value="1">
                 {% endif %}
+                {% if requestedGroupId %}
+                    <input type="hidden" name="requestedGroupId" value="{{ requestedGroupId }}">
+                {% endif %}
 
                 {% block personal %}
                     <twig:ViewsTheme:Address:Personal
@@ -49,6 +52,7 @@
                             prefix: 'billingAddress',
                             accountType: accountType,
                             showBirthdayField: showBirthdayField,
+                            onlyCompanyRegistration: onlyCompanyRegistration,
                             showVat: true,
                             formViolations: formViolations,
                         }).all() }}

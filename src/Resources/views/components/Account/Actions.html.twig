@@ -13,6 +13,7 @@
         },
         address: {
             route: 'frontend.account.address.page',
+            activePrefix: 'frontend.account.address',
             label: 'account.addressLink'|trans|sw_sanitize,
             icon: 'address-book',
         },
@@ -49,7 +50,11 @@
                     class="{{ vi_class('nav') }}"
                 >
                     {% for key, action in actions %}
-                        {% set isActive = activeRoute is not empty and activeRoute is same as(action.route) %}
+                        {% set isActive = activeRoute is not empty and (
+                            action.activePrefix is defined
+                                ? activeRoute starts with action.activePrefix
+                                : activeRoute is same as(action.route)
+                        ) %}
                         {% block action %}
                             <twig:ViewsTheme:Button
                                 class="{{ vi_class('action') }}"

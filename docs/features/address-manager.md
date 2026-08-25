@@ -19,7 +19,7 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
 | `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
 
-Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** page stays `Address:Item` / `ItemActions` (out of scope). Display pair chrome is [`Address:List`](address.md).
+Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** page is [`Account:Addressbook`](account.md) (`Address:Item` / `ItemActions`). Display pair chrome is [`Address:List`](address.md).
 
 ## Composition
 
@@ -153,14 +153,13 @@ Action owns fetch/mount/unmount; Modal only open/closes. See [JS lazy-loaded she
 
 ## Out of scope
 
-- Addressbook **listing** page owner
 - Migrating Search overlay / Gallery fullscreen onto `Modal`
-- Account overview / edit-order address chrome
 - Core plugin unregister (unused once confirm stops emitting `data-address-manager`)
 
 ## Related
 
 - [Address](address.md)
+- [Account pages](account.md)
 - [Checkout confirm](checkout-confirm.md)
 - [Checkout register](checkout-register.md)
 - [Form input](form-input.md)

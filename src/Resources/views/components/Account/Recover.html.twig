@@ -1,0 +1,82 @@
+{% props
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['form', 'title', 'info', 'email', 'actions', 'back', 'submit']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                action: path('frontend.account.recover.request'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% block title %}
+                    <h1
+                        {{ vi_attrs('title') }}
+                        class="{{ vi_class('title') }}"
+                    >
+                        {{ 'account.profileRecoverPasswordTitle'|trans|sw_sanitize }}
+                    </h1>
+                {% endblock %}
+
+                <p
+                    {{ vi_attrs('info') }}
+                    class="{{ vi_class('info') }}"
+                >
+                    {{ 'account.profileRecoverPasswordInfo'|trans|sw_sanitize }}
+                </p>
+
+                <twig:ViewsTheme:Form:Input
+                    class="{{ vi_class('email') }}"
+                    {{ ...vi_attrs('email').defaults({
+                        type: 'email',
+                        id: 'recoverMail',
+                        name: 'email[email]',
+                        autocomplete: 'section-personal email',
+                        violationPath: '/email',
+                        formViolations: formViolations,
+                        validationRules: 'required,email',
+                        label: 'account.profileCurrentMail'|trans|sw_sanitize,
+                    }).all() }}
+                />
+
+                <div
+                    {{ vi_attrs('actions') }}
+                    class="{{ vi_class('actions') }}"
+                >
+                    {% vi_block back %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('back') }}"
+                            {{ ...vi_attrs('back').defaults({
+                                type: 'link',
+                                href: path('frontend.account.register.page'),
+                                color: 'secondary',
+                                label: 'general.back'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
+
+                    {% vi_block submit %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('submit') }}"
+                            {{ ...vi_attrs('submit').defaults({
+                                type: 'submit',
+                                color: 'primary',
+                                label: 'account.profileRecoverPasswordSubmit'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
+                </div>
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</div>

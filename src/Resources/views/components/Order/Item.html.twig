@@ -1,199 +1,199 @@
-{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
-
-{% deprecated 'ViewsTheme:Order:Item is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
-{% props
-    cva = {},
-%}
-
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'title', 'status', 'number', 'menu', 'summary', 'details']) %}
 
-{% do vi_define_attrs(['header', 'headerTitleContainer', 'headerTitle', 'status', 'orderNumber', 'contextMenu', 'summary', 'toggleBody']) %}
+{% set headerId = 'vi-order-' ~ order.id ~ '-header' %}
+{% set panelId = 'vi-order-' ~ order.id ~ '-panel' %}
+{% set menuId = 'vi-order-' ~ order.id ~ '-menu' %}
 
-{% block page_account_order_item_overview %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-
-        <div {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
-            {% set states = [
-                ORDER_TRANSACTION_STATE_FAILED,
-                ORDER_TRANSACTION_STATE_REMINDED,
-                ORDER_TRANSACTION_STATE_UNCONFIRMED,
-                ORDER_TRANSACTION_STATE_CANCELLED
-            ] %}
-
-            {% set orderState = order.stateMachineState.technicalName %}
-            {% set orderPaymentState = order.transactions.last.stateMachineState.technicalName %}
-
-            {% set isPaymentNeeded = orderPaymentState in states and orderState != ORDER_STATE_CANCELLED %}
-
-            {% block page_account_order_item_heading_title_container %}
-
-                <div {{ vi_attrs('headerTitleContainer') }} class="{{ vi_class('headerTitleContainer') }}">
-                    {% block page_account_order_item_heading_title %}
-                        <div {{ vi_attrs('headerTitle') }} class="{{ vi_class('headerTitle') }}">
-                            {{ 'account.orderHeadline'|trans|sw_sanitize }} {{ order.orderDateTime|format_date('short', locale=app.request.locale) }}
-                        </div>
-                    {% endblock %}
-
-                    {% block page_account_order_item_status %}
-                        <div {{ vi_attrs('status') }} class="{{ vi_class('status') }}">
-                            {% if isPaymentNeeded %}
-                                {% block page_account_order_item_status_badge_payment_process_needed %}
-                                    {{ parent() }}
-                                {% endblock %}
-                            {% else %}
-                                {% block page_account_order_item_status_badge %}
-                                    {{ parent() }}
-                                {% endblock %}
-                            {% endif %}
-                        </div>
-                    {% endblock %}
-
-                    {% block page_account_order_item_order_number_col %}
-                        <div {{ vi_attrs('orderNumber') }} class="{{ vi_class('orderNumber') }}">
-                            {% block page_account_order_item_order_number %}
-                                {{ 'account.orderNumber'|trans|sw_sanitize }} {{ order.orderNumber|sw_sanitize }}
-                            {% endblock %}
-                        </div>
-                    {% endblock %}
-
-                </div>
-
+<article
+    {{ attributes.defaults({
+        'aria-label': 'account.orderItemAriaLabel'|trans({ '%order_number%': order.orderNumber })|striptags,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}
+        <div
+            {{ vi_attrs('header') }}
+            class="{{ vi_class('header') }}"
+        >
+            {% block title %}
+                <h2
+                    {{ vi_attrs('title') }}
+                    class="{{ vi_class('title') }}"
+                >
+                    {{ 'account.orderHeadline'|trans|sw_sanitize }}
+                    {{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}
+                </h2>
             {% endblock %}
 
-            {% block page_account_order_item_context_menu_col %}
-                <div {{ vi_attrs('contextMenu') }} class="{{ vi_class('contextMenu') }}">
-
-                    {% block page_account_order_item_context_menu %}
-                        {% block page_account_order_item_context_menu_button %}
-                            <button class="btn btn-light btn-sm dropdown-toggle order-table-header-context-menu"
-                                    type="button"
-                                    id="accountOrderDropdown"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                    aria-label="{{ 'account.orderActions' }}">
-                                {{'orderItem.moreOptions'|trans}}
-                            </button>
-                        {% endblock %}
-
-                        {% block page_account_order_item_context_menu_content %}
-                            {{ parent() }}
-                        {% endblock %}
-                    {% endblock %}
-
-                    {% if orderState != ORDER_STATE_CANCELLED %}
-                        {% sw_include '@Storefront/storefront/page/account/order-history/cancel-order-modal.html.twig' %}
-                    {% endif %}
-                </div>
+            {% block status %}
+                {% if isPaymentNeeded %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('status') }}"
+                        {{ ...vi_attrs('status').defaults({
+                            type: 'link',
+                            href: path('frontend.account.edit-order.page', { orderId: order.id }),
+                            color: 'danger',
+                            size: 'sm',
+                            label: 'account.orderStatusActionCompletePayment'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% else %}
+                    <twig:ViewsTheme:Badge
+                        class="{{ vi_class('status') }}"
+                        {{ ...vi_attrs('status').defaults({
+                            color: 'light',
+                            pill: true,
+                            label: order.stateMachineState.translated.name,
+                        }).all() }}
+                    />
+                {% endif %}
             {% endblock %}
-        </div>
 
-        <div {{ vi_attrs('summary') }} class="{{ vi_class('summary') }}">
-            {% block page_account_order_item_order_table_body_col %}
-                {% block page_account_order_item_order_table_body %}
+            {% block number %}
+                <p
+                    {{ vi_attrs('number') }}
+                    class="{{ vi_class('number') }}"
+                >
+                    {{ 'account.orderNumber'|trans|sw_sanitize }}
+                    {{ order.orderNumber|sw_sanitize }}
+                </p>
+            {% endblock %}
 
-                    {% block page_account_order_item_order_table_body_cell_shipping_status %}
-                        {% if order.deliveries|length > 0 %}
-                            <twig:ViewsTheme:Order:SummaryItem
-                                label="{{ 'account.orderShippingStatus'|trans|sw_sanitize }}"
-                                value="{{ order.deliveries|first.stateMachineState.translated.name }}"
+            {% block menu %}
+                <twig:ViewsTheme:Dropdown
+                    class="{{ vi_class('menu') }}"
+                    {{ ...vi_attrs('menu').defaults({
+                        id: menuId,
+                        placement: 'bottom-end',
+                        'toggle:icon': 'dots-three',
+                        'toggle:label': false,
+                        'toggle:size': 'sm',
+                        'toggle:color': 'light',
+                        'toggle:title': 'account.orderActions'|trans|striptags,
+                        'toggle:aria-label': 'account.orderActions'|trans|striptags,
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        {% if allowChangePayment %}
+                            <twig:ViewsTheme:Button
+                                type="link"
+                                href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}"
+                                color="none"
+                                size="sm"
+                                justify="start"
+                                icon="{{ isPaymentNeeded ? 'check' : 'pencil-simple-line' }}"
+                                label="{{ (isPaymentNeeded ? 'account.orderStatusActionCompletePayment' : 'account.orderContextMenuChangePayment')|trans|sw_sanitize }}"
                             />
                         {% endif %}
-                    {% endblock %}
 
-                    {% block page_account_order_item_order_table_body_cell_payment_status %}
-                        <twig:ViewsTheme:Order:SummaryItem
-                            label="{{ 'account.orderPaymentStatus'|trans|sw_sanitize }}"
-                            value="{{ order.transactions|last.stateMachineState.translated.name }}"
-                        />
-                    {% endblock %}
+                        <twig:ViewsTheme:Form:Handler
+                            action="{{ path('frontend.checkout.line-item.add') }}"
+                            method="post"
+                        >
+                            <twig:block name="content">
+                                <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                {% for lineItem in order.lineItems %}
+                                    {% if lineItem.type == productLineItemType %}
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
+                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
+                                    {% endif %}
+                                {% endfor %}
+                                <twig:ViewsTheme:Button
+                                    type="submit"
+                                    color="none"
+                                    size="sm"
+                                    justify="start"
+                                    icon="arrows-clockwise"
+                                    label="{{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}"
+                                />
+                            </twig:block>
+                        </twig:ViewsTheme:Form:Handler>
 
-                    {% block page_account_order_item_order_table_body_cell_payment_method %}
-                        <twig:ViewsTheme:Order:SummaryItem
-                            label="{{ 'account.orderPaymentMethod'|trans|sw_sanitize }}"
-                            value="{{ order.transactions|last.paymentMethod.translated.name }}"
-                        />
-                    {% endblock %}
-
-                    {% block page_account_order_item_order_table_body_cell_shipping_method %}
-                        {% if order.deliveries|length > 0 %}
-                            <twig:ViewsTheme:Order:SummaryItem
-                                label="{{ 'account.orderShippingMethod'|trans|sw_sanitize }}"
-                                value="{{ order.deliveries|first.shippingMethod.translated.name }}"
+                        {% if allowOrderCancellation %}
+                            <twig:ViewsTheme:Modal:Open
+                                modalId="vi-order-cancel-{{ order.id }}"
+                                color="none"
+                                size="sm"
+                                justify="start"
+                                icon="x"
+                                label="{{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}"
                             />
+                            <twig:ViewsTheme:Order:Cancel :order="order" />
                         {% endif %}
-                    {% endblock %}
-
-                    {% block page_account_order_item_order_table_body_cell_user_comment %}
-                        {% if order.customerComment %}
-                            <twig:ViewsTheme:Order:SummaryItem
-                                label="{{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}"
-                                value="{{ order.customerComment|sw_sanitize|nl2br }}"
-                                class="flex-fill"
-                            />
-                        {% endif %}
-                    {% endblock %}
-
-                {% endblock %}
+                    </twig:block>
+                </twig:ViewsTheme:Dropdown>
             {% endblock %}
         </div>
+    {% endblock %}
 
-        <div {{ vi_attrs('toggleBody') }} class="{{ vi_class('toggleBody') }}">
-            {% block page_account_order_item_order_table_body_cell_toggle_order_details_button %}
-                <button class="btn btn-light btn-sm order-hide-btn collapsed"
-                    type="submit"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#order{{ order.orderNumber }}"
-                    aria-expanded="false"
-                    aria-controls="collapseExample">
-
-                    {% block page_account_order_item_order_table_body_cell_toggle_order_details_button_text %}
-                        {{ 'account.orderActionView'|trans|sw_sanitize }}
-                    {% endblock %}
-                </button>
-            {% endblock %}
+    {% block summary %}
+        <div
+            {{ vi_attrs('summary') }}
+            class="{{ vi_class('summary') }}"
+        >
+            {% if hasShipping %}
+                <twig:ViewsTheme:Order:SummaryItem
+                    label="{{ 'account.orderShippingStatus'|trans|sw_sanitize }}"
+                    value="{{ shippingStatus }}"
+                />
+            {% endif %}
+            <twig:ViewsTheme:Order:SummaryItem
+                label="{{ 'account.orderPaymentStatus'|trans|sw_sanitize }}"
+                value="{{ paymentStatus }}"
+            />
+            <twig:ViewsTheme:Order:SummaryItem
+                label="{{ 'account.orderPaymentMethod'|trans|sw_sanitize }}"
+                value="{{ paymentMethodName }}"
+            />
+            {% if hasShipping %}
+                <twig:ViewsTheme:Order:SummaryItem
+                    label="{{ 'account.orderShippingMethod'|trans|sw_sanitize }}"
+                    value="{{ shippingMethodName }}"
+                />
+            {% endif %}
+            {% if order.customerComment %}
+                <twig:ViewsTheme:Order:SummaryItem
+                    label="{{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}"
+                    value="{{ order.customerComment|sw_sanitize|nl2br }}"
+                />
+            {% endif %}
         </div>
+    {% endblock %}
 
-        {% block page_account_order_item_detail %}
-            {% component 'ViewsTheme:Order:ItemDetails' %}{% endcomponent %}
-        {% endblock %}
-    </div>
-{% endblock %}
-
-{# More option dropdown layout #}
-{% block page_account_order_item_context_menu_content_change_payment_button %}
-    {% set actionLabelSnippet = 'account.orderContextMenuChangePayment' %}
-    {% set actionIcon = 'pencil-simple-line' %}
-
-    {% if isPaymentNeeded %}
-        {% set actionLabelSnippet = 'account.orderStatusActionCompletePayment' %}
-        {% set actionIcon = 'check' %}
-    {% endif %}
-
-    <a class="dropdown-item order-item-context-menu-link"
-        href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}">
-        {{vi_icon(actionIcon)}}
-        {{ actionLabelSnippet|trans|sw_sanitize }}
-    </a>
-{% endblock %}
-
-{% block page_account_order_item_context_menu_reorder_form_button %}
-    <button class="dropdown-item order-item-context-menu-link" 
-        type="submit">
-        {{vi_icon('arrows-clockwise')}}
-        {{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}
-    </button>
-{% endblock %}
-
-{% block page_account_order_item_context_menu_cancel_order %}
-    {% if orderState != ORDER_STATE_CANCELLED and config('core.cart.enableOrderRefunds') %}
-        <button type="button"
-            class="dropdown-item order-item-context-menu-link"
-            data-bs-toggle="modal"
-            data-bs-target="#order-{{ order.id }}">
-            {{vi_icon('x')}}
-            {{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}
-        </button>
-    {% endif %}
-{% endblock %}
+    {% block details %}
+        <twig:ViewsTheme:Accordion
+            class="{{ vi_class('details') }}"
+            {{ ...vi_attrs('details').defaults({
+                collapsible: true,
+                multiple: false,
+            }).all() }}
+        >
+            <twig:block name="items">
+                <twig:ViewsTheme:Accordion:Item>
+                    <twig:block name="header">
+                        <twig:ViewsTheme:Accordion:Header
+                            id="{{ headerId }}"
+                            panel="{{ panelId }}"
+                        >
+                            <twig:block name="content">
+                                {{ 'account.orderActionView'|trans|sw_sanitize }}
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Header>
+                    </twig:block>
+                    <twig:block name="panel">
+                        <twig:ViewsTheme:Accordion:Panel id="{{ panelId }}" header="{{ headerId }}">
+                            <twig:block name="content">
+                                <twig:ViewsTheme:Order:ItemDetails :order="order" />
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Panel>
+                    </twig:block>
+                </twig:ViewsTheme:Accordion:Item>
+            </twig:block>
+        </twig:ViewsTheme:Accordion>
+    {% endblock %}
+</article>

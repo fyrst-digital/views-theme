@@ -1,0 +1,154 @@
+{% props
+    page,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% set ORDER_STATE_OPEN = constant('Shopware\\Core\\Checkout\\Order\\OrderStates::STATE_OPEN') %}
+{% set orderState = page.order.stateMachineState.technicalName %}
+{% set allowOrderCancellation = orderState == ORDER_STATE_OPEN and config('core.cart.enableOrderRefunds') %}
+{% set paymentMethodInvalid = true %}
+{% for payment in page.paymentMethods %}
+    {% if payment.id is same as(context.paymentMethod.id) %}
+        {% set paymentMethodInvalid = false %}
+    {% endif %}
+{% endfor %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['alerts', 'heading', 'body', 'main', 'addresses', 'methods', 'payment', 'shipping', 'items', 'aside']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block alerts %}
+        <div
+            {{ vi_attrs('alerts') }}
+            class="{{ vi_class('alerts') }}"
+        >
+            {% if page.errorCode == 'CHECKOUT__CUSTOMER_CANCELED_EXTERNAL_PAYMENT' %}
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ 'account.externalPaymentCanceled'|trans|sw_sanitize }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            {% elseif page.errorCode == 'CHECKOUT__PAYMENT_TOKEN_EXPIRED' %}
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ 'account.externalPaymentExpired'|trans|sw_sanitize }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            {% elseif page.errorCode is not null %}
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ 'account.externalPaymentFailure'|trans|sw_sanitize }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            {% endif %}
+
+            {% if formViolations %}
+                {% for violation in formViolations.getViolations() %}
+                    {% set snippetName = "error.#{violation.code}" %}
+                    {% set fieldName = violation.propertyPath|trim('/', 'left') %}
+                    <twig:ViewsTheme:Alert
+                        type="danger"
+                        content="{{ snippetName|trans({'%field%': fieldName})|sw_sanitize }}"
+                        announceOnLoad
+                        ariaLive="assertive"
+                    />
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.completePayment'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block main %}
+                <div
+                    {{ vi_attrs('main') }}
+                    class="{{ vi_class('main') }}"
+                >
+                    {% block addresses %}
+                        <twig:ViewsTheme:Order:Addresses
+                            class="{{ vi_class('addresses') }}"
+                            {{ ...vi_attrs('addresses').defaults({
+                                order: page.order,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block methods %}
+                        <twig:ViewsTheme:Grid
+                            class="{{ vi_class('methods') }}"
+                            {{ ...vi_attrs('methods').defaults({
+                                gap: '4',
+                            }).all() }}
+                        >
+                            <twig:block name="content">
+                                {% vi_block payment %}
+                                    <twig:ViewsTheme:Checkout:Confirm:Payment
+                                        class="{{ vi_class('payment') }}"
+                                        {{ ...vi_attrs('payment').defaults({
+                                            page: page,
+                                            selectedId: context.paymentMethod.id,
+                                            'form:action': path('frontend.account.edit-order.change-payment-method', { orderId: page.order.id }),
+                                            'form:redirectTo': '',
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+
+                                {% vi_block shipping %}
+                                    <twig:ViewsTheme:Checkout:Success:Shipping
+                                        class="{{ vi_class('shipping') }}"
+                                        {{ ...vi_attrs('shipping').defaults({
+                                            order: page.order,
+                                        }).all() }}
+                                    />
+                                {% endvi_block %}
+                            </twig:block>
+                        </twig:ViewsTheme:Grid>
+                    {% endblock %}
+
+                    {% block items %}
+                        <twig:ViewsTheme:Cart:Items
+                            class="{{ vi_class('items') }}"
+                            {{ ...vi_attrs('items').defaults({
+                                cart: page.order,
+                                lineItems: page.order.nestedLineItems,
+                                layout: 'grid',
+                                showRemoveButton: false,
+                                showQuantitySelect: false,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block aside %}
+                <twig:ViewsTheme:Account:Order:Edit:Aside
+                    class="{{ vi_class('aside') }}"
+                    {{ ...vi_attrs('aside').defaults({
+                        page: page,
+                        allowOrderCancellation: allowOrderCancellation,
+                        paymentMethodInvalid: paymentMethodInvalid,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

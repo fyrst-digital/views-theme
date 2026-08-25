@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/customer-group-register/index.html.twig' %}
+
+{% block page_account_customer_group_register %}
+    <twig:ViewsTheme:Account:CustomerGroupRegister
+        :page="page"
+        :data="data|default(null)"
+        :formViolations="formViolations|default(null)"
+    />
+{% endblock %}

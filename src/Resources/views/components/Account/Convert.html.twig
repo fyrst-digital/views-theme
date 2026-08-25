@@ -1,0 +1,108 @@
+{% props
+    formViolations = __context.formViolations|default(null),
+    passwordMinLength = config('core.loginRegistration.passwordMinLength'),
+    requirePasswordConfirmation = config('core.loginRegistration.requirePasswordConfirmation'),
+    cva = {},
+%}
+
+{% set passwordDescription = passwordMinLength != 0
+    ? 'account.personalPasswordDescription'|trans({ '%minLength%': passwordMinLength })|sw_sanitize
+    : null %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'form', 'password', 'confirm', 'privacy', 'hint', 'submit']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.convertGuestTitle'|trans|sw_sanitize,
+                intro: 'account.convertGuestInfo'|trans({
+                    '%email%': context.customer.email,
+                })|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                action: path('frontend.account.convert.save'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <twig:ViewsTheme:Form:Input
+                    class="{{ vi_class('password') }}"
+                    {{ ...vi_attrs('password').defaults({
+                        type: 'password',
+                        id: 'guestConversionPassword',
+                        name: 'password',
+                        autocomplete: 'new-password',
+                        description: passwordDescription,
+                        violationPath: '/password',
+                        formViolations: formViolations,
+                        validationRules: 'required,minLength',
+                        minlength: passwordMinLength,
+                        label: 'account.personalPasswordLabel'|trans|sw_sanitize,
+                    }).all() }}
+                />
+
+                {% if requirePasswordConfirmation %}
+                    <twig:ViewsTheme:Form:Input
+                        class="{{ vi_class('confirm') }}"
+                        {{ ...vi_attrs('confirm').defaults({
+                            type: 'password',
+                            id: 'guestConversionPasswordConfirmation',
+                            name: 'passwordConfirmation',
+                            autocomplete: 'new-password',
+                            violationPath: '/passwordConfirmation',
+                            formViolations: formViolations,
+                            validationRules: 'required',
+                            confirmFor: 'guestConversionPassword',
+                            label: 'account.personalPasswordConfirmationLabel'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endif %}
+
+                <twig:ViewsTheme:Privacy:Note
+                    class="{{ vi_class('privacy') }}"
+                    {{ ...vi_attrs('privacy').defaults({
+                        title: false,
+                        snippet: 'account.privacyNoticeTextModal',
+                        requireCheckbox: false,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+
+                {% block captcha %}
+                    {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' %}
+                {% endblock %}
+
+                <p
+                    {{ vi_attrs('hint') }}
+                    class="{{ vi_class('hint') }}"
+                >
+                    {{ 'general.requiredFields'|trans|sw_sanitize }}
+                </p>
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            size: 'lg',
+                            label: 'general.formSubmit'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</div>

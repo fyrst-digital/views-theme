@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/guest-auth.html.twig' %}
+
+{% block page_account_guest_auth %}
+    <twig:ViewsTheme:Account:GuestAuth
+        :redirectTo="redirectTo"
+        :redirectParameters="redirectParameters|default({})"
+        :formViolations="formViolations|default(null)"
+    />
+{% endblock %}

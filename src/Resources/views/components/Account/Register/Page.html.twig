@@ -1,0 +1,63 @@
+{% props
+    page,
+    data = null,
+    formViolations = __context.formViolations|default(null),
+    loginError = false,
+    errorSnippet = null,
+    waitTime = null,
+    redirectTo = 'frontend.account.home.page',
+    redirectParameters = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'grid', 'login', 'register']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.loginRegistrationHeader'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block grid %}
+        <twig:ViewsTheme:Grid
+            class="{{ vi_class('grid') }}"
+            {{ ...vi_attrs('grid').defaults({
+                columns: '6',
+                gap: '6',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <twig:ViewsTheme:Account:Login
+                    class="{{ vi_class('login') }}"
+                    {{ ...vi_attrs('login').defaults({
+                        loginError: loginError,
+                        errorSnippet: errorSnippet,
+                        waitTime: waitTime,
+                        redirectTo: redirectTo,
+                        redirectParameters: redirectParameters,
+                    }).all() }}
+                />
+                <twig:ViewsTheme:Account:Register
+                    class="{{ vi_class('register') }}"
+                    {{ ...vi_attrs('register').defaults({
+                        page: page,
+                        data: data,
+                        formViolations: formViolations,
+                        redirectTo: redirectTo,
+                        redirectParameters: redirectParameters,
+                        errorRoute: 'frontend.account.register.page',
+                        cardTitle: 'account.registerPersonalHeader'|trans|sw_sanitize,
+                    }).all() }}
+                />
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    {% endblock %}
+</div>

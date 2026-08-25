@@ -82,6 +82,7 @@ CVA on Header is chrome only (`base`). Runtime look cannot use CVA variants (Twi
 | Shell | Doc |
 |-------|-----|
 | `Cms:DescriptionReviews` (`appearance=accordion`) | [review.md](review.md) |
+| `Account:Profile` (email / password) · `Order:Item` (details) | [account.md](account.md) |
 
 ## Related
 

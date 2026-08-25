@@ -90,13 +90,13 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 | Bridge | Mount |
 |--------|--------|
-| `storefront/page/account/register/index.html.twig` | `Account:Login` + `Account:Register` |
+| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Account:Login` + `Account:Register` |
 | `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Address:Editor` |
 | `storefront/page/account/addressbook/address-item.html.twig` | `Address:Item` |
 | `storefront/page/account/addressbook/address-actions.html.twig` | `Address:ItemActions` |
 | `storefront/component/account/login.html.twig` | `Account:Login` |
 
-`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** page owner is out of scope — listing rows use [`Address:Item`](address.md) (`Address` for lines). See [address manager](address-manager.md).
+`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** is [`Account:Addressbook`](account.md) — listing rows use [`Address:Item`](address.md). See [address manager](address-manager.md).
 
 ## Files
 
@@ -110,6 +110,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 - [Checkout success](checkout-success.md)
 - [Cart page](cart-page.md)
 - [Form input](form-input.md)
+- [Account pages](account.md)
 - [Account action](account-action.md)
 - [Grid](grid.md)
 - [JavaScript](../conventions/javascript.md)

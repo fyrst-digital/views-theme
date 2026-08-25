@@ -1,0 +1,10 @@
+{% sw_extends '@Storefront/storefront/page/account/profile/index.html.twig' %}
+
+{% block page_account_main_content %}
+    <twig:ViewsTheme:Account:Profile
+        :page="page"
+        :formViolations="formViolations|default(null)"
+        :emailFormViolation="emailFormViolation|default(false)"
+        :passwordFormViolation="passwordFormViolation|default(false)"
+    />
+{% endblock %}

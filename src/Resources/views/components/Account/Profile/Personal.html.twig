@@ -1,0 +1,66 @@
+{% props
+    page = null,
+    customer = context.customer,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'form', 'personal', 'hint', 'submit']) %}
+
+<section
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h2
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'account.profilePersonalTitle'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                id: 'profilePersonalForm',
+                action: path('frontend.account.profile.save'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <twig:ViewsTheme:Address:Personal
+                    class="{{ vi_class('personal') }}"
+                    {{ ...vi_attrs('personal').defaults({
+                        data: customer,
+                        page: page,
+                        prefix: '',
+                        formViolations: formViolations,
+                        showVat: true,
+                    }).all() }}
+                />
+
+                <p
+                    {{ vi_attrs('hint') }}
+                    class="{{ vi_class('hint') }}"
+                >
+                    {{ 'general.requiredFields'|trans|sw_sanitize }}
+                </p>
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            label: 'account.profileSaveChanges'|trans|sw_sanitize,
+                            title: 'account.profileSaveChanges'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</section>

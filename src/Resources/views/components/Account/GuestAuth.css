@@ -1,0 +1,3 @@
+.vi-account-guest-auth__form {
+    max-width: var(--vi-account-auth-width, 560px);
+}

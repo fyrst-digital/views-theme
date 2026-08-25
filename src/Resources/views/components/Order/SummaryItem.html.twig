@@ -4,11 +4,7 @@
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-order-summary-item order-item-summary-item' },
-    label: { base: 'vi-order-summary-item__label order-item-summary-item-label' },
-    value: { base: 'vi-order-summary-item__value order-item-summary-item-value' },
-}|replace_recursive(cva)) %}
+{% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['label', 'value']) %}
 
 <div

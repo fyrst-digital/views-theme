@@ -2,24 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Success;
+namespace Fyrst\ViewsTheme\Resources\views\components\Order;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Feature;
-use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPage;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Checkout:Success:Addresses — order billing/shipping, 6.7 vs 6.8 delivery.
+ * View-model for Order:Addresses — order billing/shipping, 6.7 vs 6.8 delivery.
  * Template is a root-host of Address:List.
  */
 #[AsTwigComponent]
 class Addresses
 {
     public mixed $page = null;
+
+    public mixed $order = null;
 
     public mixed $billingAddress = null;
 
@@ -38,7 +39,7 @@ class Addresses
     #[PostMount]
     public function postMount(array $data): void
     {
-        $order = $this->order();
+        $order = $this->resolveOrder();
         if ($order === null) {
             return;
         }
@@ -59,13 +60,19 @@ class Addresses
         }
     }
 
-    private function order(): ?OrderEntity
+    private function resolveOrder(): ?OrderEntity
     {
-        if (!$this->page instanceof CheckoutFinishPage) {
-            return null;
+        if ($this->order instanceof OrderEntity) {
+            return $this->order;
         }
 
-        return $this->page->getOrder();
+        if (\is_object($this->page) && method_exists($this->page, 'getOrder')) {
+            $order = $this->page->getOrder();
+
+            return $order instanceof OrderEntity ? $order : null;
+        }
+
+        return null;
     }
 
     private function delivery(OrderEntity $order): ?OrderDeliveryEntity

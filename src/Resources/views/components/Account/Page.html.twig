@@ -1,0 +1,29 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['sidebar', 'main']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block sidebar %}
+        {% if context.customer and not context.customer.guest %}
+            <twig:ViewsTheme:Account:Sidebar
+                class="{{ vi_class('sidebar') }}"
+                {{ ...vi_attrs('sidebar').all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
+    {% block main %}
+        <div
+            {{ vi_attrs('main') }}
+            class="{{ vi_class('main') }}"
+        >
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>

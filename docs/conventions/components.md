@@ -30,9 +30,6 @@ These core `sw_extends` shells emit Twig `{% deprecated %}` on every render (`pa
 |-----|------|
 | `Cookie:Configuration` | `Cookie/Configuration.html.twig` |
 | `Cookie:ConfigurationGroup` | `Cookie/ConfigurationGroup.html.twig` |
-| `Order:Item` | `Order/Item.html.twig` |
-| `Order:ItemDetails` | `Order/ItemDetails.html.twig` |
-| `Order:ItemDetailsList` | `Order/ItemDetailsList.html.twig` |
 | `ScrollUp` | `ScrollUp.html.twig` |
 
 Related shims (replacement exists): `Account:Dropdown` → `Account:Menu` inside `Dropdown`; `Page:Header:Action:Account` → `Account:Action`.
