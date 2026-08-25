@@ -17,7 +17,7 @@
         <twig:ViewsTheme:Form:Handler
             class="{{ vi_class('form') }}"
             {{ ...vi_attrs('form').defaults({
-                action: path('frontend.account.register.save'),
+                action: formAction|default(path('frontend.account.register.save')),
                 method: 'post',
             }).all() }}
         >

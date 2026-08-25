@@ -39,7 +39,28 @@
                 billingTitle: 'account.overviewBillingHeader'|trans|sw_sanitize,
                 equalText: 'account.overviewAddressEqual'|trans|sw_sanitize,
             }).all() }}
-        />
+        >
+            <twig:block name="billingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultBillingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+            <twig:block name="shippingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultShippingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+        </twig:ViewsTheme:Address:List>
     {% endblock %}
 
     {% block toolbar %}

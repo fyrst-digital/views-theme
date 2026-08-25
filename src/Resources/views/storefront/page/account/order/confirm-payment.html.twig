@@ -1,0 +1,10 @@
+{% sw_extends '@Storefront/storefront/page/account/order/confirm-payment.html.twig' %}
+
+{% block page_checkout_change_payment_form %}
+    <twig:ViewsTheme:Checkout:Confirm:Payment
+        :page="page"
+        :selectedId="context.paymentMethod.id"
+        :action="path('frontend.account.edit-order.change-payment-method', { orderId: page.order.id })"
+        redirectTo=""
+    />
+{% endblock %}

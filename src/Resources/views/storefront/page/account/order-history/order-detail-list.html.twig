@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail-list.html.twig' %}
+
+{% block page_account_order_item_detail_body %}
+    <twig:ViewsTheme:Order:ItemDetailsList :order="order" />
+{% endblock %}

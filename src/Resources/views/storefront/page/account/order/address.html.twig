@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/page/account/order/address.html.twig' %}
+
+{% block page_checkout_confirm_address_inner %}
+    <twig:ViewsTheme:Order:Addresses :order="page.order" />
+{% endblock %}

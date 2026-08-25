@@ -1,6 +1,7 @@
 {% props
     page,
     selectedId = context.paymentMethod.id,
+    action = path('frontend.checkout.configure'),
     redirectTo = 'frontend.checkout.confirm.page',
     cva = {},
 %}
@@ -26,6 +27,7 @@
             class="{{ vi_class('form') }}"
             {{ ...vi_attrs('form').defaults({
                 name: 'changePaymentForm',
+                action: action,
                 redirectTo: redirectTo,
             }).all() }}
         >

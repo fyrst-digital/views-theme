@@ -106,8 +106,8 @@
                                         {{ ...vi_attrs('payment').defaults({
                                             page: page,
                                             selectedId: context.paymentMethod.id,
-                                            'form:action': path('frontend.account.edit-order.change-payment-method', { orderId: page.order.id }),
-                                            'form:redirectTo': '',
+                                            action: path('frontend.account.edit-order.change-payment-method', { orderId: page.order.id }),
+                                            redirectTo: '',
                                         }).all() }}
                                     />
                                 {% endvi_block %}

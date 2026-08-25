@@ -12,7 +12,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 | `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
 | `Checkout:Confirm:Addresses` | Adapter: customer `active*` addresses + `Address:Manager:Action` in the action slots |
 | `Checkout:Success:Addresses` | Class VM adapter: order addresses (6.7 vs 6.8 delivery) → `Address:List`, no change actions |
-| `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is out of scope |
+| `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is [`Account:Addressbook`](account.md) |
 | `Address:Manager:*` | Picker modal — [address manager](address-manager.md) |
 | `Address:Editor` / `Personal` / `Form` | Create/edit forms — [address manager](address-manager.md) / [checkout register](checkout-register.md) |
 

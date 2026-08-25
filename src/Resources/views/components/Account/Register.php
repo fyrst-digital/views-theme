@@ -36,6 +36,8 @@ class Register
 
     public ?string $cardTitle = null;
 
+    public ?string $formAction = null;
+
     public ?string $requestedGroupId = null;
 
     public bool $onlyCompanyRegistration = false;

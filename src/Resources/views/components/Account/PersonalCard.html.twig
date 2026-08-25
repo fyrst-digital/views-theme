@@ -42,14 +42,15 @@
             {% endblock %}
 
             {% block company %}
+                {% set billing = customer.defaultBillingAddress %}
                 {% if customer.company %}
                     <p
                         {{ vi_attrs('company') }}
                         class="{{ vi_class('company') }}"
                     >
                         {{ customer.company }}
-                        {% if customer.department %}
-                            <br>{{ customer.department }}
+                        {% if billing.department %}
+                            <br>{{ billing.department }}
                         {% endif %}
                     </p>
                 {% endif %}

@@ -11,6 +11,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront `_page` | `page_account` → `Account:Page` (sidebar + main slot) |
+| Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
 | `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
 | `Account:Sidebar` | Greeting + `Account:Actions` (no logout in the nav list) + logout footer |
 | `Account:Heading` | Shared h1 + intro |
@@ -27,6 +28,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Shared with [success](checkout-success.md) |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
 | `Account:Register:Page` | Login + register grid on `/account/register` |
+| Storefront `component/account/register.html.twig` | `Account:Register` (plugin / leftover includes) |
 | `Account:Recover` / `:ResetPassword` | Password recover / reset |
 | `Account:GuestAuth` | Guest order login (email + zip) |
 | `Account:Convert` | Guest → customer password |
@@ -103,6 +105,9 @@ Optional action key `activePrefix` marks the item active when `activeRoute` star
 |------|---------|--------|
 | `requestedGroupId` | `null` | Hidden input — customer-group register |
 | `onlyCompanyRegistration` | `false` | Forwarded to `Address:Personal` |
+| `formAction` | `frontend.account.register.save` | Override when a leftover include passes `formAction` |
+
+Profile personal form passes `showCompanyFields: true` into `Address:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
 
 ## Order:Item
 
@@ -121,24 +126,40 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | File | Mount |
 |------|--------|
 | `page/account/_page.html.twig` | `Account:Page` |
+| `page/account/sidebar.html.twig` | `Account:Sidebar` / `Account:Menu` |
 | `page/account/index.html.twig` | `Account:Overview` |
+| `page/account/address.html.twig` | `Address:List` (overview include) |
+| `page/account/newsletter.html.twig` | `Account:Newsletter` |
 | `page/account/profile/index.html.twig` | `Account:Profile` |
 | `page/account/addressbook/index.html.twig` | `Account:Addressbook` |
+| `page/account/addressbook/address-manager.html.twig` | `Account:Addressbook` |
 | `page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Addressbook:Form` |
 | `page/account/order-history/index.html.twig` | `Account:Orders` |
+| `page/account/order-history/order-item.html.twig` | `Order:Item` |
+| `page/account/order-history/order-detail.html.twig` | `Order:ItemDetails` |
+| `page/account/order-history/order-detail-list.html.twig` | `Order:ItemDetailsList` |
+| `page/account/order-history/order-detail-document.html.twig` | `Order:Documents` |
 | `page/account/order/index.html.twig` | `Account:Order:Edit` |
+| `page/account/order/header.html.twig` | `Page:Header:Minimal` |
+| `page/account/order/address.html.twig` | `Order:Addresses` |
+| `page/account/order/confirm-payment.html.twig` | `Checkout:Confirm:Payment` (edit-order action) |
+| `page/account/order/confirm-shipping.html.twig` | `Checkout:Success:Shipping` |
+| `page/account/order/cancel-order-modal.html.twig` | `Order:Cancel` |
 | `page/account/register/index.html.twig` | `Account:Register:Page` |
 | `page/account/profile/recover-password.html.twig` | `Account:Recover` |
 | `page/account/profile/reset-password.html.twig` | `Account:ResetPassword` |
 | `page/account/guest-auth.html.twig` | `Account:GuestAuth` |
 | `page/account/convert.html.twig` | `Account:Convert` |
 | `page/account/customer-group-register/index.html.twig` | `Account:CustomerGroupRegister` |
+| `component/account/login.html.twig` | `Account:Login` |
+| `component/account/register.html.twig` | `Account:Register` |
+| `component/account/customer-group-register.html.twig` | `Account:Register` + group extras |
 
-Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Item`; `address-actions.html.twig` → `Address:ItemActions`; `component/account/login.html.twig` → `Account:Login`.
+Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Item`; `address-actions.html.twig` → `Address:ItemActions`; `default-address-actions.html.twig` → edit `Button`. Logout stays on theme `_page` (empty main).
 
 ## Files
 
-`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**`
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
 
 ## Out of scope
 
