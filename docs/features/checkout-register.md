@@ -49,14 +49,17 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 | Prop | Default | Notes |
 |------|---------|--------|
 | `guestSelectable` | `false` | Checkout: `true` — Credentials owns `Form:Switch` `createCustomerAccount` + `Form:Toggle` around password only. Email always visible. |
-| `createAccountChecked` | config / posted | Switch + toggle open (create-account, not “guest”) |
+| `createAccountChecked` | config / posted | Switch + toggle open (create-account, not “guest”). Empty `data` → shop default; posted bag → `createCustomerAccount` boolean (missing checkbox = guest) |
 | `redirectTo` | confirm (guest) / account home | Hidden input |
 | `errorRoute` | checkout register / account register | Hidden input |
 | `data` / `page` | | Prefill + countries / salutations |
+| `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesce; forwarded into Personal / Form / Credentials / Privacy |
 
 Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
 
-Captcha stays a core include. Privacy is `Privacy:Note` (nest `privacy`).
+Captcha stays a core include. `Form:Handler` lets the native `submit` event continue after validation so captcha plugins can attach a token — it does not call `HTMLFormElement.prototype.submit()`. Privacy is `Privacy:Note` (nest `privacy`).
+
+`formViolations` is a Shopware request attribute (Twig global via `TemplateDataExtension`). Class VMs (`Account:Register`, `Address:Personal`, `Address:Form`) null-coalesce it in `#[PostMount]` when the prop is omitted. `Checkout:Register` and the account register page also pass it explicitly.
 
 ## Privacy:Note
 
@@ -79,7 +82,7 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
 
-`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`.
+`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`. Field ids (`countrySelectId`, `stateSelectId`, `zipInputId`, `vatInputId`) are resolved on the closest `form` (VAT lives in `Address:PersonalCompany`, not inside the CountryState wrapper).
 
 Guest password, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
 
