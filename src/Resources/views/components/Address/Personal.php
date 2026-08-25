@@ -9,6 +9,7 @@ use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -85,6 +86,7 @@ class Personal
         private readonly SystemConfigService $systemConfigService,
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
         private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -95,6 +97,10 @@ class Personal
     public function postMount(array $data): void
     {
         $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
+        $this->formViolations = ComponentData::formViolations(
+            $this->formViolations,
+            $this->requestStack->getCurrentRequest(),
+        );
         $showAccountTypeConfig = (bool) $this->systemConfigService->get('core.loginRegistration.showAccountTypeSelection', $salesChannelId);
 
         $this->showSalutation = (bool) $this->systemConfigService->get('core.loginRegistration.showSalutation', $salesChannelId);

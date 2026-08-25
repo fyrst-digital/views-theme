@@ -48,10 +48,10 @@ export default class FormHandler extends ShopwareComponent {
             return
         }
 
-        event.preventDefault()
         this._syncConfirmValidity()
 
         if (!this.el.checkValidity()) {
+            event.preventDefault()
             this._syncInvalidChrome()
             this.el.reportValidity()
             return
@@ -60,8 +60,8 @@ export default class FormHandler extends ShopwareComponent {
         this.setSubmitting(true)
         window.Shopware.emit(this.options.submitEvent, { el: this.el, form: this.el })
 
-        if (!this.options.preventNative) {
-            HTMLFormElement.prototype.submit.call(this.el)
+        if (this.options.preventNative) {
+            event.preventDefault()
         }
     }
 

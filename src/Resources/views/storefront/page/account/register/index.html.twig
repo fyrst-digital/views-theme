@@ -22,6 +22,7 @@
                 :data="data|default(null)"
                 :redirectTo="redirectTo|default('frontend.account.home.page')"
                 :redirectParameters="redirectParameters|default(null)"
+                :formViolations="formViolations|default(null)"
                 errorRoute="frontend.account.register.page"
                 cardTitle="{{ 'account.registerPersonalHeader'|trans|sw_sanitize }}"
             />

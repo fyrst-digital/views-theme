@@ -8,6 +8,7 @@ use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -87,6 +88,7 @@ class Form
         private readonly SystemConfigService $systemConfigService,
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
         private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -97,6 +99,10 @@ class Form
     public function postMount(array $data): void
     {
         $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
+        $this->formViolations = ComponentData::formViolations(
+            $this->formViolations,
+            $this->requestStack->getCurrentRequest(),
+        );
 
         $this->showAdditional1 = (bool) $this->systemConfigService->get('core.loginRegistration.showAdditionalAddressField1', $salesChannelId);
         $this->showAdditional2 = (bool) $this->systemConfigService->get('core.loginRegistration.showAdditionalAddressField2', $salesChannelId);

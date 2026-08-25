@@ -167,7 +167,8 @@ export default class AddressCountryState extends ShopwareComponent {
         if (!id) {
             return null
         }
-        const el = this.el.querySelector(`#${CSS.escape(id)}`)
+        const root = this.el.closest('form') ?? document
+        const el = root.querySelector(`#${CSS.escape(id)}`)
         return el instanceof HTMLInputElement || el instanceof HTMLSelectElement ? el : null
     }
 }

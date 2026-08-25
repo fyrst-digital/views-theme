@@ -62,6 +62,7 @@ Symfony UX hydrates public props **after** `mount()` and **before** `#[PostMount
 |---------|--------|
 | Input API + simple defaults | Public properties only |
 | Derivation / null→context / normalize | `#[PostMount]` reading `$this->*` |
+| Ambient `formViolations` (class form VMs) | `#[PostMount]` null-coalesce from `$request->attributes->get('formViolations')` via `ComponentData::formViolations()` — class components cannot use `{% props %} __context` |
 | `mount()` | Avoid unless a real pre-hydrate need exists |
 
 ```php

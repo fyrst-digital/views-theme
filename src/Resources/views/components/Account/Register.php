@@ -7,6 +7,7 @@ namespace Fyrst\ViewsTheme\Resources\views\components\Account;
 use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -74,6 +75,7 @@ class Register
         private readonly SystemConfigService $systemConfigService,
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
         private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -96,12 +98,17 @@ class Register
             ? $this->translator->trans('account.personalPasswordDescription', ['%minLength%' => $this->passwordMinLength])
             : '';
         $this->showBirthdayField = (bool) $this->systemConfigService->get('core.loginRegistration.showBirthdayField', $salesChannelId);
+        $this->formViolations = ComponentData::formViolations(
+            $this->formViolations,
+            $this->requestStack->getCurrentRequest(),
+        );
 
         $createDefault = (int) $this->systemConfigService->get('core.loginRegistration.createCustomerAccountDefault', $salesChannelId) === 1;
-        $createFromData = ComponentData::get($this->data, 'createCustomerAccount');
-        $this->createAccountChecked = $createFromData !== null
-            ? (bool) $createFromData
-            : $createDefault;
+        $this->createAccountChecked = $this->guestSelectable
+            ? (ComponentData::isEmpty($this->data)
+                ? $createDefault
+                : ComponentData::getBoolean($this->data, 'createCustomerAccount'))
+            : true;
 
         $this->differentShipping = (bool) ComponentData::get($this->data, 'differentShippingAddress');
         $this->email = ComponentData::scalar(ComponentData::get($this->data, 'email'));
