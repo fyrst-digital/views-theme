@@ -41,6 +41,19 @@ final class ComponentData
         return null;
     }
 
+    public static function isFilled(mixed $data): bool
+    {
+        if ($data instanceof ParameterBag) {
+            return $data->count() > 0;
+        }
+
+        if (\is_array($data)) {
+            return $data !== [];
+        }
+
+        return $data !== null;
+    }
+
     public static function scalar(mixed $value): ?string
     {
         if (!\is_string($value) && !is_numeric($value)) {
