@@ -1,36 +1,60 @@
-{% sw_extends '@Storefront/storefront/component/address/address-personal-company.html.twig' %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['company', 'department', 'vat']) %}
 
-{% deprecated 'ViewsTheme:Address:PersonalCompany is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        columns: 6,
+        gap: '3',
+    }).all() }}
+>
+    <twig:block name="content">
+    {% vi_block company %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('company') }}"
+            {{ ...vi_attrs('company').defaults({
+                id: fields.company.id,
+                name: fields.company.name,
+                value: fields.company.value,
+                violationPath: fields.company.violationPath,
+                formViolations: formViolations,
+                validationRules: 'required',
+                autocomplete: fields.company.autocomplete,
+                label: 'address.companyNameLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endvi_block %}
 
-{% props
-    cva = {},
-%}
+    {% vi_block department %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('department') }}"
+            {{ ...vi_attrs('department').defaults({
+                id: fields.department.id,
+                name: fields.department.name,
+                value: fields.department.value,
+                violationPath: fields.department.violationPath,
+                formViolations: formViolations,
+                autocomplete: fields.department.autocomplete,
+                label: 'address.companyDepartmentLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endvi_block %}
 
-{% do vi_define_cva({
-    root: { base: 'row g-2 fields-company' },
-}|replace_recursive(cva)) %}
-
-{% block component_address_form_company_fields %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-        {% block component_address_form_company_name %}
-            {% sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
-                additionalClass: 'col-12 field-company-name'
-            } %}
-        {% endblock %}
-
-        {% block component_address_form_company_department %}
-            {% sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
-                additionalClass: 'col-sm-6 field-company-department'
-            } %}
-        {% endblock %}
-
-        {# ludtwig-ignore twig-block-name-snake-case #}
-        {% block component_address_form_company_vatId %}
-            {% if prefix != 'shippingAddress' %}
-                {% sw_include '@Storefront/storefront/component/address/address-personal-vat-id.html.twig' with {
-                    vatIds: data.get('vatIds')
-                } %}
-            {% endif %}
-        {% endblock %}
-    </div>
-{% endblock %}
+    {% vi_block vat %}
+        {% if showVat %}
+            <twig:ViewsTheme:Form:Input
+                class="{{ vi_class('vat') }}"
+                {{ ...vi_attrs('vat').defaults({
+                    id: fields.vat.id,
+                    name: fields.vat.name,
+                    value: fields.vat.value,
+                    violationPath: fields.vat.violationPath,
+                    formViolations: formViolations,
+                    autocomplete: fields.vat.autocomplete,
+                    label: 'address.companyVatLabel'|trans|sw_sanitize,
+                }).all() }}
+            />
+        {% endif %}
+    {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

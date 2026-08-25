@@ -1,0 +1,40 @@
+{% props
+    id = 'vi-form-toggle-' ~ random(),
+    value = '1',
+    open = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['control', 'content']) %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        'data-component': 'ViewsTheme:Form:Toggle',
+        'data-component-options': {
+            value: value,
+            contentId: id ~ '-content',
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <div
+        {{ vi_attrs('control') }}
+        class="{{ vi_class('control') }}"
+    >
+        {% block control %}{% endblock %}
+    </div>
+
+    <fieldset
+        {{ vi_attrs('content').defaults({
+            id: id ~ '-content',
+            hidden: open ? false : true,
+            inert: open ? false : true,
+            disabled: open ? false : true,
+        }) }}
+        class="{{ vi_class('content') }}"
+    >
+        {% block content %}{% endblock %}
+    </fieldset>
+</div>

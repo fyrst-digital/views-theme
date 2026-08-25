@@ -1,0 +1,28 @@
+{% props
+    countryDataUrl = path('frontend.country.country.data'),
+    countries = {},
+    countrySelectId = null,
+    stateSelectId = null,
+    zipInputId = null,
+    vatInputId = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:CountryState',
+        'data-component-options': {
+            countryDataUrl: countryDataUrl,
+            countries: countries,
+            countrySelectId: countrySelectId,
+            stateSelectId: stateSelectId,
+            zipInputId: zipInputId,
+            vatInputId: vatInputId,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}{% endblock %}
+</div>

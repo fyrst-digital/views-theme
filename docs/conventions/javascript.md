@@ -29,7 +29,7 @@ Storefront app root **must** have `package.json` with `vite` + the local modules
 views/components/**/*.js          # ShopwareComponent entries (data-component)
         │ import '@views-theme/modules/…'
 app/storefront/src/modules/
-  shared/     http · dom · component · object-option · history
+  shared/     http · dom · component · object-option · history · form
   listing/    Product:Listing domain only
   review/     Review:Panel domain only
   lazy-shell.js · body-lock.js · serial-queue.js
@@ -62,6 +62,7 @@ app/storefront/src/modules/
 | `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
+| `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / CountryState) |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
@@ -227,6 +228,9 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Filter multi-select / boolean / range / rating / active | `ViewsTheme:Filter:MultiSelect` etc. | `Filter/*.js` |
 | Review panel / results / matrix / sort / language / form / form rating | `ViewsTheme:Review:*` | `Review/*.js` |
 | Form slider | `ViewsTheme:Form:Slider` | `Form/Slider.js` |
+| Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
+| Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
+| Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
 
 Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
 

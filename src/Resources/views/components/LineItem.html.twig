@@ -1,6 +1,7 @@
 {% props
     lineItem,
     showRemoveButton = true,
+    showQuantitySelect = true,
     showPrice = true,
     nestingLevel = 0,
     deliveries = null,
@@ -21,6 +22,7 @@
         <twig:ViewsTheme:LineItem:Product
             :lineItem="lineItem"
             :showRemoveButton="showRemoveButton"
+            :showQuantitySelect="showQuantitySelect"
             :showPrice="showPrice"
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"
@@ -39,6 +41,7 @@
         <twig:ViewsTheme:LineItem:Container
             :lineItem="lineItem"
             :showRemoveButton="showRemoveButton"
+            :showQuantitySelect="showQuantitySelect"
             :showPrice="showPrice"
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"
@@ -50,6 +53,7 @@
         <twig:ViewsTheme:LineItem:Generic
             :lineItem="lineItem"
             :showRemoveButton="showRemoveButton"
+            :showQuantitySelect="showQuantitySelect"
             :showPrice="showPrice"
             :nestingLevel="nestingLevel"
             :deliveries="deliveries"

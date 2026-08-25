@@ -1,0 +1,87 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['label', 'required', 'fields', 'day', 'month', 'year']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block label %}
+        {% if label %}
+            <div
+                {{ vi_attrs('label') }}
+                class="{{ vi_class('label') }}"
+            >
+                {{ label|raw }}
+
+                {% if isRequired %}
+                    <span
+                        {{ vi_attrs('required').defaults({
+                            'aria-hidden': 'true',
+                        }) }}
+                        class="{{ vi_class('required') }}"
+                    >
+                        {{ 'general.required'|trans|sw_sanitize }}
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block fields %}
+        <twig:ViewsTheme:Grid
+            class="{{ vi_class('fields') }}"
+            {{ ...vi_attrs('fields').defaults({
+                columns: 3,
+                gap: '2',
+            }).all() }}
+        >
+            <twig:block name="content">
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('day') }}"
+                {{ ...vi_attrs('day').defaults({
+                    id: id ~ '-day',
+                    name: dayName,
+                    options: dayOptions,
+                    value: day,
+                    autocomplete: 'bday-day',
+                    validationRules: validationRules,
+                    violationPath: '/birthdayDay',
+                    formViolations: formViolations,
+                    'label': false,
+                    'select:aria-label': 'account.personalBirthdayLabel'|trans|sw_sanitize,
+                }).all() }}
+            />
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('month') }}"
+                {{ ...vi_attrs('month').defaults({
+                    id: id ~ '-month',
+                    name: monthName,
+                    options: monthOptions,
+                    value: month,
+                    autocomplete: 'bday-month',
+                    validationRules: validationRules,
+                    violationPath: '/birthdayMonth',
+                    formViolations: formViolations,
+                    'label': false,
+                    'select:aria-label': 'account.personalBirthdaySelectMonth'|trans|sw_sanitize,
+                }).all() }}
+            />
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('year') }}"
+                {{ ...vi_attrs('year').defaults({
+                    id: id ~ '-year',
+                    name: yearName,
+                    options: yearOptions,
+                    value: year,
+                    autocomplete: 'bday-year',
+                    validationRules: validationRules,
+                    violationPath: '/birthdayYear',
+                    formViolations: formViolations,
+                    'label': false,
+                    'select:aria-label': 'account.personalBirthdaySelectYear'|trans|sw_sanitize,
+                }).all() }}
+            />
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    {% endblock %}
+</div>

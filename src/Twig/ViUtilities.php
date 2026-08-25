@@ -82,6 +82,13 @@ class ViUtilities extends AbstractExtension
         ];
     }
 
+    public function getTokenParsers(): array
+    {
+        return [
+            new ViBlockTokenParser(),
+        ];
+    }
+
     /**
      * Bind CVA config and export slots for `vi_class`. Use with `{% do %}` — no `{% set cx %}`.
      *

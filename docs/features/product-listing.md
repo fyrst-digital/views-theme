@@ -24,7 +24,7 @@ Product:Listing (data-component owner)
        ├─ Product:Listing:Actions → Pagination + Sorting
        ├─ Grid
        │    ├─ Product:Box × N
-       │    └─ or Product:Listing:Empty (data-grid-span=full)
+       │    └─ or Product:Listing:Empty (own CSS `grid-column: 1 / -1`)
        └─ Pagination bottom
 ```
 
@@ -135,7 +135,7 @@ Search pagelet bridge (`storefront/page/search/search-pagelet.html.twig`) mounts
 | Listing | `components/Product/Listing.{php,html.twig,cva.twig,js}` |
 | Results | `components/Product/Listing/Results.{php,html.twig,cva.twig,js}` |
 | Actions | `components/Product/Listing/Actions.{html.twig,cva.twig}` |
-| Empty | `components/Product/Listing/Empty.{html.twig,cva.twig}` |
+| Empty | `components/Product/Listing/Empty.{html.twig,cva.twig,css}` |
 | Grid | `components/Grid.*` — [grid.md](grid.md) |
 | Controller | `src/Controller/ListingController.php` |
 | Pagination / Sorting | `components/Pagination.*`, `components/Sorting.*` |

@@ -3,6 +3,7 @@
     showPrice = true,
     nestingLevel = 0,
     showRemoveButton = true,
+    showQuantitySelect = true,
     layout = 'stacked',
     cva = {},
 %}
@@ -23,6 +24,7 @@
             {{ ...vi_attrs('quantityInput').defaults({
                 lineItem: lineItem,
                 nestingLevel: nestingLevel,
+                showQuantitySelect: showQuantitySelect,
             }).all() }}
         />
     {% endblock %}

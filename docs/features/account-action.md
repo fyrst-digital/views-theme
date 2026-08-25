@@ -23,7 +23,7 @@ Page:Header:Actions
 | `Button` | `components/Button.*` | Default toggle control |
 | `Account:Menu` | `components/Account/Menu.*` | Account panel body (no dropdown chrome); nest `register` for CTA Button |
 | `Account:Actions` | `components/Account/Actions.*` | Logged-in nav links (`Button` + `activeRoute`) |
-| `Account:Login` | `components/Account/Login.*` | Login form (`Form:Input` fields + actions) |
+| `Account:Login` | `components/Account/Login.*` | Login form (`Form:Handler` + `Form:Input` fields + actions) |
 | `Account:Login:Actions` | `components/Account/Login/Actions.*` | Login submit + recover; nests `login` / `recovery` |
 | `Form:Input` | `components/Form/Input.*` | Shared text field (label, validation, violations) |
 
@@ -55,7 +55,9 @@ Page:Header:Actions
 
 Both shims emit Twig `{% deprecated %}` (`package="fyrst/views-theme"`, `version="1.0.0"`).
 
-Former names `Account:LoginForm` / `Account:UserActions` are gone (use `Account:Login` / `Account:Actions`). No shim files remain for those.
+`Account:LoginCard` is gone — callers use `Account:Login`. Thin bridge: `storefront/component/account/login.html.twig`.
+
+Register / address forms: [checkout-register.md](checkout-register.md).
 
 ## Wire-up
 

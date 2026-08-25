@@ -62,6 +62,7 @@ Symfony UX hydrates public props **after** `mount()` and **before** `#[PostMount
 |---------|--------|
 | Input API + simple defaults | Public properties only |
 | Derivation / null→context / normalize | `#[PostMount]` reading `$this->*` |
+| Ambient `formViolations` (class form VMs) | `#[PostMount]` null-coalesce from `$request->attributes->get('formViolations')` via `ComponentData::formViolations()` — class components cannot use `{% props %} __context` |
 | `mount()` | Avoid unless a real pre-hydrate need exists |
 
 ```php
@@ -95,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -390,13 +391,35 @@ See [vi-attrs.md](../twig/vi-attrs.md).
 
 ### Nested slots: props and single content owner
 
-Do **not** multi-hop blocks through nested `<twig:…>` hosts (no `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward).
+Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/forward.
+
+A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
+
+```twig
+<twig:ViewsTheme:Grid columns="6" gap="3">
+    <twig:block name="content">
+        {% vi_block prepend %}{% endvi_block %}
+        {% vi_block accountType %}
+            {# default #}
+        {% endvi_block %}
+        {% vi_block append %}{% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>
+```
+
+```twig
+<twig:ViewsTheme:Address:Personal …>
+    <twig:block name="accountType">…</twig:block>
+    <twig:block name="append">…</twig:block>
+</twig:ViewsTheme:Address:Personal>
+```
 
 | Need | Pattern |
 |------|---------|
 | Scalar / simple value (title text, ids, …) | **Prop** threaded via `{% props %}` and `vi_attrs('slot').defaults({…})` |
 | Markup body | **One** component owns `{% block content %}` (the shell that wraps that DOM) |
 | Rich chrome override | Caller overrides a **whole** `{% block %}` on that shell (e.g. `header`) |
+| Slot inside a nested host | `{% vi_block NAME %}default{% endvi_block %}` — not `{% block NAME %}` inside the nested tag |
 
 ```twig
 {# Panel owns body content; title is a prop #}
@@ -447,7 +470,9 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 |------|--------|
 | Alert, Button, Blockquote, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
 | Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
-| Form:Input | UX + `vi_cva`; used by Account:Login (Register/Address still core include) |
+| Form:Input | UX + `vi_cva`; native `required` / `confirmFor`; used by Account:Login + Register/Address |
+| Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
+| Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
@@ -464,10 +489,11 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
 | LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
+| Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
 | Cookie:*, Filter, ContactChannel, MethodOption, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
-| Account:LoginCard / Register; Address:* shells; Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
+| Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
 | Tabs / Tabs:List / Tab / Panel | Anonymous UX + JS; [tabs.md](../features/tabs.md) |
 | Accordion / Item / Header / Panel | Anonymous UX + JS; [accordion.md](../features/accordion.md) |
 | Review:* (Panel owner + Results island + Matrix/Sort/Language controls + Form/Login) | Theme-owned reviews + `/vi/product/…/reviews`; [review.md](../features/review.md); Item:Comment → Blockquote |
@@ -484,5 +510,5 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 - [Component templates](components.md)
 - [JavaScript](javascript.md)
 - [`vi_cva`](../twig/vi-cva.md)
-- [vi_define_cva / vi_class](../twig/vi-cva.md) · [vi_define_attrs / vi_attrs](../twig/vi-attrs.md)
+- [vi_define_cva / vi_class](../twig/vi-cva.md) · [vi_define_attrs / vi_attrs](../twig/vi-attrs.md) · [`{% vi_block %}`](../twig/vi-block.md)
 - Shopware core README: `vendor/shopware/storefront/Resources/views/components/README.md`

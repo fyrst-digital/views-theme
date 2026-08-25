@@ -10,7 +10,7 @@ Full guide: [UX Twig components](ux-components.md).
 2. Inputs: anonymous → `{% props %}` + simple defaults; heavy view-model → [class component](ux-components.md#class-components-php-backed) (`Name.php` + `#[PostMount]`). No wasteful `resolved*` — [Props](ux-components.md#props)
 3. `{% do vi_define_cva(cva) %}` or `{% do vi_define_cva(cva, ['root', …]) %}` (sibling `.cva.twig` + prop merge, or inline map); prop `cva = {}`; BEM `vi-*` roots — [vi-cva.md](../twig/vi-cva.md)
 4. `{% do vi_define_attrs(['slot', …]) %}` when using nests. Own root → `attributes.defaults`; DOM/child → `vi_class('slot')` + `vi_attrs('slot').defaults({…})` (**never** `class` in defaults; no `{% set cx/attrs %}`) — [vi-attrs.md](../twig/vi-attrs.md) · [ux-components.md](ux-components.md#attributes)
-5. Short `{% block %}` names
+5. Short `{% block %}` names on own HTML; [`{% vi_block %}`](../twig/vi-block.md) for slots inside a nested `<twig:…>` host
 6. Interactive root: `data-component="ViewsTheme:…"` **only** with co-located `<Name>.js` (no `data-ref` / `data-vi`)
 7. Co-located `<Name>.js` (`ShopwareComponent`) for every `data-component`
 
@@ -28,14 +28,6 @@ These core `sw_extends` shells emit Twig `{% deprecated %}` on every render (`pa
 
 | Tag | Path |
 |-----|------|
-| `Account:LoginCard` | `Account/LoginCard.html.twig` |
-| `Account:Register` | `Account/Register.html.twig` |
-| `Address:EditorCreate` | `Address/EditorCreate.html.twig` |
-| `Address:Form` | `Address/Form.html.twig` |
-| `Address:Item` | `Address/Item.html.twig` |
-| `Address:ItemActions` | `Address/ItemActions.html.twig` |
-| `Address:Personal` | `Address/Personal.html.twig` |
-| `Address:PersonalCompany` | `Address/PersonalCompany.html.twig` |
 | `Cookie:Configuration` | `Cookie/Configuration.html.twig` |
 | `Cookie:ConfigurationGroup` | `Cookie/ConfigurationGroup.html.twig` |
 | `Order:Item` | `Order/Item.html.twig` |

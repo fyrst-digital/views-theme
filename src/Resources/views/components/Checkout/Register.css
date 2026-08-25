@@ -1,0 +1,11 @@
+.vi-checkout-register__body {
+    grid-template-columns: var(--vi-checkout-register-cols, minmax(0, 1fr));
+
+    @media (min-width: 1260px) {
+        --vi-checkout-register-cols: minmax(0, 1fr) var(--vi-checkout-register-aside, 360px);
+    }
+}
+
+.vi-checkout-register-aside {
+    top: var(--vi-top, 24px);
+}

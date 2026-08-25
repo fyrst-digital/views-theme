@@ -1,0 +1,86 @@
+{% props
+    page,
+    data = __context.data|default(null),
+    redirectTo = __context.redirectTo|default('frontend.checkout.confirm.page'),
+    redirectParameters = __context.redirectParameters|default(null),
+    loginError = __context.loginError|default(false),
+    errorSnippet = __context.errorSnippet|default(null),
+    waitTime = __context.waitTime|default(null),
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['flashes', 'heading', 'body', 'main', 'login', 'register', 'aside']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block heading %}
+        <h1
+            {{ vi_attrs('heading') }}
+            class="{{ vi_class('heading') }}"
+        >
+            {{ 'checkout.addressHeader'|trans|sw_sanitize }}
+        </h1>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block main %}
+                <div
+                    {{ vi_attrs('main') }}
+                    class="{{ vi_class('main') }}"
+                >
+                    {% block login %}
+                        <twig:ViewsTheme:Account:Login
+                            class="{{ vi_class('login') }}"
+                            {{ ...vi_attrs('login').defaults({
+                                redirectTo: redirectTo,
+                                redirectParameters: redirectParameters,
+                                loginError: loginError,
+                                errorSnippet: errorSnippet,
+                                waitTime: waitTime,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block register %}
+                        <twig:ViewsTheme:Account:Register
+                            class="{{ vi_class('register') }}"
+                            {{ ...vi_attrs('register').defaults({
+                                page: page,
+                                data: data,
+                                guestSelectable: true,
+                                redirectTo: redirectTo,
+                                redirectParameters: redirectParameters,
+                                errorRoute: 'frontend.checkout.register.page',
+                                formViolations: formViolations,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+            {% block aside %}
+                <twig:ViewsTheme:Checkout:Register:Aside
+                    class="{{ vi_class('aside') }}"
+                    {{ ...vi_attrs('aside').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

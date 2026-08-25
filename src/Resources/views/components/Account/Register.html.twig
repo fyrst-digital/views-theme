@@ -1,301 +1,179 @@
-{% sw_extends '@Storefront/storefront/component/account/register.html.twig' %}
-
-{% deprecated 'ViewsTheme:Account:Register is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
-{% props
-    cva = {},
-%}
-
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'privacy', 'submit']) %}
 
-{% do vi_define_attrs(['header', 'form', 'personal', 'address', 'billing', 'shippingToggle', 'shipping', 'footerBody', 'submit']) %}
-
-{% block component_account_register %}
-  <div {{ attributes }} class="{{ vi_class('root') }}">
-    {% block component_account_register_header %}
-      {% if cardTitle %}
-        <h4 {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
-          {{ cardTitle }}
-        </h4>
-      {% endif %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block header %}
+        {% if cardTitle %}
+            <h2 {{ vi_attrs('header') }} class="{{ vi_class('header') }}">
+                {{ cardTitle }}
+            </h2>
+        {% endif %}
     {% endblock %}
 
-    {% block component_account_register_form %}
-      <form
-        {{ vi_attrs('form').defaults({
-            action: path('frontend.account.register.save'),
-            method: 'post',
-            'data-form-submit-loader': 'true',
-            'data-form-validation': 'true',
-        }) }}
-        class="{{ vi_class('form') }}">
-        {% block component_account_register_redirect %}
-          {{ parent() }}
-        {% endblock %}
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                action: path('frontend.account.register.save'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+                <input
+                    type="hidden"
+                    name="redirectParameters"
+                    value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}"
+                >
+                <input type="hidden" name="errorRoute" value="{{ errorRoute }}">
+                <input
+                    type="hidden"
+                    name="errorParameters"
+                    value="{{ errorParameters is iterable ? errorParameters|json_encode : errorParameters }}"
+                >
 
-        {% block component_account_register_create_account %}
-          {{ parent() }}
-        {% endblock %}
-
-        {% block component_account_register_form_action %}
-          {{ parent() }}
-        {% endblock %}
-
-        {% block component_account_register_personal %}
-          <div {{ vi_attrs('personal') }} class="{{ vi_class('personal') }}">
-            {% block component_account_register_personal_fields %}
-              {% block component_account_register_personal_address_fields %}
-                {% if feature('v6.7.0.0') %}
-                  {% set prefix = 'billingAddress' %}
+                {% if not guestSelectable %}
+                    <input type="hidden" name="createCustomerAccount" value="1">
                 {% endif %}
 
-                {% component 'ViewsTheme:Address:Personal' with {
-                    prefix: prefix,
-                    showBirthdayField: config('core.loginRegistration.showBirthdayField'),
-                    accountType: data.get('accountType')
-                } %}{% endcomponent %}
-              {% endblock %}
+                {% block personal %}
+                    <twig:ViewsTheme:Address:Personal
+                        class="{{ vi_class('personal') }}"
+                        {{ ...vi_attrs('personal').defaults({
+                            data: billingAddress,
+                            salutations: salutations,
+                            page: page,
+                            prefix: 'billingAddress',
+                            accountType: accountType,
+                            showBirthdayField: showBirthdayField,
+                            showVat: true,
+                            formViolations: formViolations,
+                        }).all() }}
+                    >
+                    <twig:block name="append">
+                        {% vi_block account %}
+                            <twig:ViewsTheme:Account:Register:Credentials
+                                class="{{ vi_class('credentials') }}"
+                                {{ ...vi_attrs('credentials').defaults({
+                                    email: email,
+                                    emailConfirmation: emailConfirmation,
+                                    requireEmailConfirmation: requireEmailConfirmation,
+                                    requirePasswordConfirmation: requirePasswordConfirmation,
+                                    passwordMinLength: passwordMinLength,
+                                    passwordDescription: passwordDescription,
+                                    guestSelectable: guestSelectable,
+                                    createAccountChecked: createAccountChecked,
+                                    formViolations: formViolations,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Address:Personal>
+                {% endblock %}
 
-              {% block component_account_register_company_fields %}
-                {% component 'ViewsTheme:Address:PersonalCompany' with {
-                    prefix: 'billingAddress',
-                    address: data.get('billingAddress')
-                } %}{% endcomponent %}
-              {% endblock %}
-
-              {% block component_account_register_guest_mode_fields %}
-                {% if guestMode.active is same as(true) %}
-                  <div class="g-col-12">
-                    <div class="form-check register-guest-control py-2 fw-semibold">
-                      {% block page_checkout_register_personal_guest_input %}
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          name="createCustomerAccount"
-                          {% if guestMode.default is same as(true) %}
-                            checked
-                          {% endif %}
-                          value="true"
-                          id="personalGuest"
-                          {% if config('core.loginRegistration.createCustomerAccountDefault') == 1 %}
-                            checked="checked"
-                          {% endif %}
-                          data-form-field-toggle="true"
-                          data-form-field-toggle-target=".js-form-field-toggle-guest-mode"
-                          data-form-field-toggle-value="true">
-                      {% endblock %}
-
-                      {% block page_checkout_register_personal_guest_label %}
-                        <label
-                          class="custom-control-label"
-                          for="personalGuest">
-                          {{
-                            'checkout.registerCustomermodeLabel'
-                            | trans
-                            | sw_sanitize
-                          }}
-                        </label>
-                      {% endblock %}
-                    </div>
-                  </div>
-                {% endif %}
-              {% endblock %}
-
-              {% block component_account_register_personal_account_fields %}
-                  {% block component_account_register_personal_mail %}
-                    {%
-                      sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-                          type: 'email',
-                          label: 'account.personalMailLabel'|trans|sw_sanitize,
-                          id: 'personalMail',
-                          name: 'email',
-                          value: data.get('email'),
-                          autocomplete: 'section-personal email',
-                          violationPath: '/email',
-                          validationRules: 'required,email',
-                          additionalClass: 'g-col-12',
-                      }
-                    %}
-                  {% endblock %}
-                  {% block component_account_register_personal_mail_confirmation %}
-                    {% if config('core.loginRegistration.requireEmailConfirmation') %}
-                      {%
-                        sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-                            type: 'email',
-                            label: 'account.personalMailConfirmationLabel'|trans|sw_sanitize,
-                            id: 'personalMailConfirmation',
-                            name: 'emailConfirmation',
-                            value: data.get('emailConfirmation'),
-                            autocomplete: 'section-personal email',
-                            violationPath: '/email',
-                            validationRules: 'confirmation,required,email',
-                            additionalClass: 'g-col-12',
-                        }
-                      %}
-                    {% endif %}
-                  {% endblock %}
-                  {% block component_account_register_personal_password %}
-                      {% set passwordFieldDescription = '' %}
-
-                      {% if config('core.loginRegistration.passwordMinLength') != 0 %}
-                          {% set passwordFieldDescription = 'account.personalPasswordDescription'|trans({
-                              '%minLength%': config('core.loginRegistration.passwordMinLength')
-                          })|sw_sanitize %}
-                      {% endif %}
-
-                      {% block component_account_register_personal_password_input %}
-                          {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-                              type: 'password',
-                              label: 'account.personalPasswordLabel'|trans|sw_sanitize,
-                              id: 'personalPassword',
-                              name: 'password',
-                              autocomplete: 'new-password',
-                              description: passwordFieldDescription,
-                              violationPath: '/password',
-                              validationRules: 'required,minLength',
-                              minlength: config('core.loginRegistration.passwordMinLength'),
-                              additionalClass: 'g-col-12 field-user-password js-form-field-toggle-guest-mode',
-                          } %}
-                      {% endblock %}
-                  {% endblock %}
-                  {% block component_account_register_personal_password_confirmation %}
-                    {% if config('core.loginRegistration.requirePasswordConfirmation') %}
-                      {% sw_include '@Storefront/storefront/component/form/form-input.html.twig' with {
-                          type: 'password',
-                          label: 'account.personalPasswordConfirmationLabel'|trans|sw_sanitize,
-                          id: 'personalPasswordConfirmation',
-                          name: 'passwordConfirmation',
-                          autocomplete: 'new-password',
-                          violationPath: '/passwordConfirmation',
-                          validationRules: 'required,confirmation',
-                          additionalClass: 'g-col-12 field-user-password-confirmation js-form-field-toggle-guest-mode',
-                      } %}
-                    {% endif %}
-                  {% endblock %}
-                </div>
-              {% endblock %}
-            {% endblock %}
-        {% endblock %}
-
-        {% block component_account_register_address %}
-          <div {{ vi_attrs('address') }} class="{{ vi_class('address') }}">
-            {% block component_account_register_address_fields %}
-              {% block component_account_register_address_billing %}
-                <div {{ vi_attrs('billing') }} class="{{ vi_class('billing') }}">
-                  {% block component_account_register_address_billing_header %}
-                    <h5 class="card-title">
-                      {{
-                        'account.registerAddressBillingHeader'
-                        | trans
-                        | sw_sanitize
-                      }}
-                    </h5>
-                  {% endblock %}
-
-                  {% block component_account_register_address_billing_fields %}
-                    <div class="grid gap-3">
-                      {% component 'ViewsTheme:Address:Form' with {
-                          prefix: 'billingAddress',
-                          data: data.get('billingAddress'),
-                          showNoShippingPostfix: true,
-                      } %}{% endcomponent %}
-                    </div>
-                  {% endblock %}
-                </div>
-              {% endblock %}
-
-              {% block component_account_register_address_different_shipping %}
-                <div {{ vi_attrs('shippingToggle') }} class="{{ vi_class('shippingToggle') }}">
-                  {% block component_account_register_address_different_shipping_control %}
-                    <div class="form-check register-different-shipping fw-semibold">
-                      {% block component_account_register_address_different_shipping_input %}
-                        {{ parent() }}
-                      {% endblock %}
-
-                      {% block component_account_register_address_different_shipping_label %}
-                        {{ parent() }}
-                      {% endblock %}
-                    </div>
-                  {% endblock %}
-
-                  {% block component_account_register_address_shipping %}
-                    <div {{ vi_attrs('shipping') }} class="{{ vi_class('shipping') }}">
-                      {% block component_account_register_address_shipping_header %}
-                        <h5 class="card-title">
-                          {{
-                            'account.registerAddressShippingHeader'
-                            | trans
-                            | sw_sanitize
-                          }}
-                        </h5>
-                      {% endblock %}
-
-                      {% block component_account_register_address_shipping_fields %}
-                        <div class="grid gap-3">
-                          {% block component_account_register_address_shipping_fields_personal %}
-                            {% component 'ViewsTheme:Address:Personal' with {
-                                prefix: 'shippingAddress',
-                                data: data.get('shippingAddress'),
-                                hideCustomerTypeSelect: false,
-                                customToggleTarget: true,
-                                accountType: data.get('shippingAddress').get('accountType')
-                            } %}{% endcomponent %}
-                          {% endblock %}
-
-                          {% block component_account_register_address_shipping_fields_company %}
-                            {% component 'ViewsTheme:Address:PersonalCompany' with {
-                                prefix: 'shippingAddress',
-                                customToggleTarget: true,
-                                address: data.get('shippingAddress')
-                            } %}{% endcomponent %}
-                          {% endblock %}
-
-                          {% block component_account_register_address_shipping_fields_address %}
-                            {% component 'ViewsTheme:Address:Form' with {
-                                prefix: 'shippingAddress',
-                                data: data.get('shippingAddress'),
+                {% block billing %}
+                    <fieldset {{ vi_attrs('billing') }} class="{{ vi_class('billing') }}">
+                        <legend class="{{ vi_class('sectionTitle') }}">
+                            {{ 'account.registerAddressBillingHeader'|trans|sw_sanitize }}
+                        </legend>
+                        <twig:ViewsTheme:Address:Form
+                            class="{{ vi_class('billingForm') }}"
+                            {{ ...vi_attrs('billingForm').defaults({
+                                data: billingAddress,
+                                countries: countries,
+                                page: page,
+                                prefix: 'billingAddress',
                                 showNoShippingPostfix: true,
-                                disableNonShippableCountries: true,
-                            } %}{% endcomponent %}
-                          {% endblock %}
-                        </div>
-                      {% endblock %}
+                                formViolations: formViolations,
+                                vatInputId: 'billingAddress-vatIds',
+                            }).all() }}
+                        />
+                    </fieldset>
+                {% endblock %}
+
+                {% block shipping %}
+                    <twig:ViewsTheme:Form:Toggle
+                        class="{{ vi_class('shippingToggle') }}"
+                        {{ ...vi_attrs('shippingToggle').defaults({
+                            value: '1',
+                            open: differentShipping,
+                        }).all() }}
+                    >
+                        <twig:block name="control">
+                            <twig:ViewsTheme:Form:Switch
+                                id="differentShippingAddress"
+                                name="differentShippingAddress"
+                                value="1"
+                                :checked="differentShipping"
+                                label="{{ 'account.registerDifferentShipping'|trans|sw_sanitize }}"
+                            />
+                        </twig:block>
+                        <twig:block name="content">
+                            <fieldset>
+                                <legend class="{{ vi_class('sectionTitle') }}">
+                                    {{ 'account.registerAddressShippingHeader'|trans|sw_sanitize }}
+                                </legend>
+                                <twig:ViewsTheme:Address:Personal
+                                    class="{{ vi_class('shippingPersonal') }}"
+                                    {{ ...vi_attrs('shippingPersonal').defaults({
+                                        data: shippingAddress,
+                                        salutations: salutations,
+                                        page: page,
+                                        prefix: 'shippingAddress',
+                                        accountType: shippingAccountType,
+                                        showBirthdayField: false,
+                                        showVat: false,
+                                        formViolations: formViolations,
+                                    }).all() }}
+                                />
+                                <twig:ViewsTheme:Address:Form
+                                    class="{{ vi_class('shippingForm') }}"
+                                    {{ ...vi_attrs('shippingForm').defaults({
+                                        data: shippingAddress,
+                                        countries: countries,
+                                        page: page,
+                                        prefix: 'shippingAddress',
+                                        showNoShippingPostfix: true,
+                                        disableNonShippableCountries: true,
+                                        formViolations: formViolations,
+                                    }).all() }}
+                                />
+                            </fieldset>
+                        </twig:block>
+                    </twig:ViewsTheme:Form:Toggle>
+                {% endblock %}
+
+                {% block captcha %}
+                    {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' %}
+                {% endblock %}
+
+                {% block footer %}
+                    <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+                        <twig:ViewsTheme:Privacy:Note
+                            class="{{ vi_class('privacy') }}"
+                            {{ ...vi_attrs('privacy').all() }}
+                        />
+                        <p class="{{ vi_class('requiredHint') }}">
+                            {{ 'general.requiredFields'|trans|sw_sanitize }}
+                        </p>
                     </div>
-                  {% endblock %}
-                </div>
-              {% endblock %}
-            {% endblock %}
-          </div>
-        {% endblock %}
+                {% endblock %}
 
-        {% block component_account_register_captcha %}
-          {{ parent() }}
-        {% endblock %}
-
-        <div {{ vi_attrs('footerBody') }} class="{{ vi_class('footerBody') }}">
-          {% block component_account_register_privacy %}
-            {% sw_include '@Storefront/storefront/component/privacy-notice.html.twig' %}
-          {% endblock %}
-
-          {% block component_account_register_required_fields %}
-            <div class="form-text register-required-info">
-              {{ 'general.requiredFields' | trans | sw_sanitize }}
-            </div>
-          {% endblock %}
-        </div>
-
-        {% block component_account_register_footer %}
-          <div {{ vi_attrs('submit') }} class="{{ vi_class('submit') }}">
-            {% block component_account_register_submit %}
-              <button
-                type="submit"
-                class="btn btn-primary btn-lg">
-                {{ 'account.registerSubmit' | trans | sw_sanitize }}
-              </button>
-            {% endblock %}
-          </div>
-        {% endblock %}
-      </form>
+                {% block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            size: 'lg',
+                            label: 'account.registerSubmit'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endblock %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
     {% endblock %}
-  </div>
-{% endblock %}
+</div>

@@ -1,98 +1,164 @@
-{% sw_extends '@Storefront/storefront/component/address/address-form.html.twig' %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['countryState', 'street', 'additional1', 'additional2', 'city', 'zipcode', 'country', 'state', 'phone']) %}
 
-{% deprecated 'ViewsTheme:Address:Form is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
-{% props
-    cva = {},
-%}
-
-{% do vi_define_cva({
-    company: { base: '' },
-    countryState: { base: 'country-and-state-form-elements' },
-}|replace_recursive(cva)) %}
-
-{% do vi_define_attrs(['company', 'countryState']) %}
-
-{% block component_address_form_company %}
-  {% if showFormCompany %}
-    {% if config('core.loginRegistration.showAccountTypeSelection') %}
-      {% set accountTypeRequired = true %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% if data and data.id|default(null) %}
+        <input type="hidden" name="{{ prefix }}[id]" value="{{ data.id }}">
     {% endif %}
 
-    {% if config('core.loginRegistration.showAccountTypeSelection') or prefix == 'address' or prefix == 'shippingAddress' or hasSelectedBusiness %}
-      <div {{ vi_attrs('company') }} class="{{ vi_class('company') }}">
-        {% block component_address_form_company_fields %}
-          {% block component_address_form_company_name %}
-            {%
-              sw_include '@Storefront/storefront/component/address/field/address-company-name-field.html.twig' with {
-                additionalClass: 'field-company-name'
-              }
-            %}
-          {% endblock %}
+    <twig:ViewsTheme:Address:CountryState
+        class="{{ vi_class('countryState') }}"
+        {{ ...vi_attrs('countryState').defaults({
+            countries: countryFlags,
+            countrySelectId: countrySelectId,
+            stateSelectId: stateSelectId,
+            zipInputId: zipInputId,
+            vatInputId: vatInputId,
+        }).all() }}
+    >
+        <twig:block name="content">
+            <twig:ViewsTheme:Grid columns="6" gap="3">
+                <twig:block name="content">
+                {% vi_block street %}
+                    <twig:ViewsTheme:Form:Input
+                        class="{{ vi_class('street') }}"
+                        {{ ...vi_attrs('street').defaults({
+                            id: fields.street.id,
+                            name: fields.street.name,
+                            value: fields.street.value,
+                            violationPath: fields.street.violationPath,
+                            formViolations: formViolations,
+                            validationRules: 'required',
+                            autocomplete: fields.street.autocomplete,
+                            label: 'address.streetLabel'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
 
-          {% block component_address_form_company_department %}
-            {%
-              sw_include '@Storefront/storefront/component/address/field/address-company-department-field.html.twig' with {
-                additionalClass: 'field-company-department'
-              }
-            %}
-          {% endblock %}
-        {% endblock %}
-      </div>
-    {% endif %}
-  {% endif %}
-{% endblock %}
+                {% vi_block additional1 %}
+                    {% if showAdditional1 %}
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('additional1') }}"
+                            {{ ...vi_attrs('additional1').defaults({
+                                id: fields.additionalAddressLine1.id,
+                                name: fields.additionalAddressLine1.name,
+                                value: fields.additionalAddressLine1.value,
+                                violationPath: fields.additionalAddressLine1.violationPath,
+                                formViolations: formViolations,
+                                validationRules: additional1Required ? 'required' : null,
+                                autocomplete: fields.additionalAddressLine1.autocomplete,
+                                label: 'address.additionalField1Label'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% endif %}
+                {% endvi_block %}
 
-{% block component_address_form_address_fields %}
-  {%
-    set options = {
-        scopeElementSelector,
-        prefix,
-    }
-  %}
+                {% vi_block additional2 %}
+                    {% if showAdditional2 %}
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('additional2') }}"
+                            {{ ...vi_attrs('additional2').defaults({
+                                id: fields.additionalAddressLine2.id,
+                                name: fields.additionalAddressLine2.name,
+                                value: fields.additionalAddressLine2.value,
+                                violationPath: fields.additionalAddressLine2.violationPath,
+                                formViolations: formViolations,
+                                validationRules: additional2Required ? 'required' : null,
+                                autocomplete: fields.additionalAddressLine2.autocomplete,
+                                label: 'address.additionalField2Label'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% endif %}
+                {% endvi_block %}
 
-  {% set arrangement = config('core.loginRegistration.addressInputFieldArrangement') %}
+                {% vi_block arrangement %}
+                    {% for part in arrangement %}
+                        {% if part == 'city' %}
+                            <twig:ViewsTheme:Form:Input
+                                class="{{ vi_class('city') }}"
+                                {{ ...vi_attrs('city').defaults({
+                                    id: fields.city.id,
+                                    name: fields.city.name,
+                                    value: fields.city.value,
+                                    violationPath: fields.city.violationPath,
+                                    formViolations: formViolations,
+                                    validationRules: 'required',
+                                    autocomplete: fields.city.autocomplete,
+                                    label: 'address.cityLabel'|trans|sw_sanitize,
+                                }).all() }}
+                            />
+                        {% elseif part == 'zip' %}
+                            <twig:ViewsTheme:Form:Input
+                                class="{{ vi_class('zipcode') }}"
+                                {{ ...vi_attrs('zipcode').defaults({
+                                    id: fields.zipcode.id,
+                                    name: fields.zipcode.name,
+                                    value: fields.zipcode.value,
+                                    violationPath: fields.zipcode.violationPath,
+                                    formViolations: formViolations,
+                                    autocomplete: fields.zipcode.autocomplete,
+                                    label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                                }).all() }}
+                            />
+                        {% elseif part == 'state' %}
+                            <twig:ViewsTheme:Form:Select
+                                class="{{ vi_class('state') }}"
+                                {{ ...vi_attrs('state').defaults({
+                                    id: fields.countryState.id,
+                                    name: fields.countryState.name,
+                                    options: [{ value: '', label: 'address.countryStatePlaceholder'|trans|sw_sanitize }],
+                                    value: fields.countryState.value,
+                                    violationPath: fields.countryState.violationPath,
+                                    formViolations: formViolations,
+                                    autocomplete: fields.countryState.autocomplete,
+                                    label: 'address.countryStateLabel'|trans|sw_sanitize,
+                                    'data-country-state-host': stateSelectId,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    {% endfor %}
+                {% endvi_block %}
 
-  {# @deprecated tag:v6.8.0 - Only condition will be removed #}
-  {% if feature('v6.8.0.0') %}
-    <div
-      {{ vi_attrs('countryState') }}
-      class="{{ vi_class('countryState') }}"
-      data-country-state-select="true"
-      data-country-state-select-options="{{ options|json_encode }}">
-      {% block component_address_form_country_field %}
-        {%
-          sw_include '@Storefront/storefront/component/address/field/address-country-field.html.twig' with {
-              additionalClass: 'col-md'
-          }
-        %}
-      {% endblock %}
-    </div>
-  {% endif %}
+                {% vi_block country %}
+                    <twig:ViewsTheme:Form:Select
+                        class="{{ vi_class('country') }}"
+                        {{ ...vi_attrs('country').defaults({
+                            id: fields.country.id,
+                            name: fields.country.name,
+                            options: countryOptions,
+                            value: countryId,
+                            violationPath: fields.country.violationPath,
+                            formViolations: formViolations,
+                            validationRules: 'required',
+                            autocomplete: fields.country.autocomplete,
+                            label: 'address.countryLabel'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
 
-  {% block component_address_form_street -%}
-    {%
-      sw_include '@Storefront/storefront/component/address/field/address-street-field.html.twig' with {
-          additionalClass: 'field-street'
-      }
-    %}
-  {% endblock %}
-
-  {% block component_address_form_zipcode_city %}
-    {% block component_address_form_zipcode_field %}
-      {%
-        sw_include '@Storefront/storefront/component/address/field/address-zipcode-field.html.twig' with {
-          additionalClass: 'field-city'
-        }
-      %}
-    {% endblock %}
-
-    {% block component_address_form_city_field %}
-      {%
-        sw_include '@Storefront/storefront/component/address/field/address-city-field.html.twig' with {
-          additionalClass: 'field-zipcode'
-        }
-      %}
-    {% endblock %}
-  {% endblock %}
-{% endblock %}
+                {% vi_block phone %}
+                    {% if showPhone %}
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('phone') }}"
+                            {{ ...vi_attrs('phone').defaults({
+                                id: fields.phoneNumber.id,
+                                name: fields.phoneNumber.name,
+                                value: fields.phoneNumber.value,
+                                violationPath: fields.phoneNumber.violationPath,
+                                formViolations: formViolations,
+                                validationRules: phoneRequired ? 'required' : null,
+                                autocomplete: fields.phoneNumber.autocomplete,
+                                type: 'tel',
+                                label: 'address.phoneNumberLabel'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% endif %}
+                {% endvi_block %}
+                </twig:block>
+            </twig:ViewsTheme:Grid>
+        </twig:block>
+    </twig:ViewsTheme:Address:CountryState>
+</div>

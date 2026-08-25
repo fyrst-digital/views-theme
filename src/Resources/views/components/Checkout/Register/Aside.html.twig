@@ -1,0 +1,42 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'summary', 'items']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <h2
+            {{ vi_attrs('heading') }}
+            class="{{ vi_class('heading') }}"
+        >
+            {{ 'checkout.cartHeader'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block summary %}
+        <twig:ViewsTheme:Cart:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                summary: page.cart,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block items %}
+        <twig:ViewsTheme:Cart:Items
+            class="{{ vi_class('items') }}"
+            {{ ...vi_attrs('items').defaults({
+                cart: page.cart,
+                layout: 'stacked',
+                showRemoveButton: false,
+                showQuantitySelect: false,
+            }).all() }}
+        />
+    {% endblock %}
+</aside>

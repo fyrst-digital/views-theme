@@ -7,22 +7,21 @@
     errorSnippet = null,
     waitTime = null,
     layout = 'row',
+    loginId = 'vi-login-' ~ random(),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['description', 'username', 'password']) %}
 
-{% set loginId = 'vi-login-' ~ random() %}
-
-<form
-    {{ attributes.defaults({
+<twig:ViewsTheme:Form:Handler
+    class="{{ vi_class('root', { layout: layout }) }}"
+    {{ ...attributes.defaults({
         action: path(loginRoute),
         method: 'post',
-        'data-form-handler': 'true',
-    }) }}
-    class="{{ vi_class('root', { layout: layout }) }}"
+    }).all() }}
 >
+    <twig:block name="content">
     {% block redirect %}
         <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
         <input
@@ -102,4 +101,5 @@
     {% block actions %}
         <twig:ViewsTheme:Account:Login:Actions />
     {% endblock %}
-</form>
+    </twig:block>
+</twig:ViewsTheme:Form:Handler>

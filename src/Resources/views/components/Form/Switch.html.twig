@@ -56,7 +56,7 @@
                 value: value is not empty ? value : false,
                 checked: checked is same as(true) ? true : false,
                 disabled: disabled is same as(true) ? true : false,
-                'data-validation': validationRules is not empty ? validationRules : false,
+                required: isRequired ? true : false,
                 'aria-required': isRequired ? 'true' : false,
                 'aria-invalid': isInvalid ? 'true' : false,
                 'aria-describedby': description is not empty or isInvalid ? ariaDescribedBy : false,

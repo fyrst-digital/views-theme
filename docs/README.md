@@ -15,8 +15,8 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Configuration](configuration.md) | Plugin config, `theme.json`, design tokens |
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
-| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, wishlist, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
+| [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, wishlist, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
 
 ## Conventions
 
@@ -32,6 +32,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Overview](twig/overview.md)
 - [`vi_define_cva` / `vi_class`](twig/vi-cva.md)
 - [`vi_define_attrs` / `vi_attrs`](twig/vi-attrs.md)
+- [`{% vi_block %}`](twig/vi-block.md)
 - [`vi_icon`](twig/vi-icon.md)
 - [`vi_define_classes`](twig/vi-define-classes.md) (removed)
 - [`vi_attr_classes`](twig/vi-attr-classes.md) (removed)
@@ -46,6 +47,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Navigation bar](features/navigation-bar.md)
 - [Cart drawer](features/cart-drawer.md)
 - [Cart page](features/cart-page.md)
+- [Checkout register](features/checkout-register.md)
 - [Wishlist](features/wishlist.md)
 - [Account action](features/account-action.md)
 - [Language switch](features/language-switch.md)
@@ -69,7 +71,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 Families that exist in code but are only covered lightly (or not at all) under `features/`:
 
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
-- **Account / Address / Order** — register, address book, order history (beyond [account-action](features/account-action.md))
+- **Account / Address / Order** — address-book **page** owner and order history (register/address forms: [checkout-register](features/checkout-register.md); header login: [account-action](features/account-action.md))
 - **Cookie** — banner / configuration UX
 - **Checkout extras** — ConfirmTos, UserComment (delivery date is documented)
 - **Page layout** — Logo, Footer, `meta.html.twig` + `CartContextSubscriber` / `cartCount`

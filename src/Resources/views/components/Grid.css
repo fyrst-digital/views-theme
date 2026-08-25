@@ -1,3 +1,7 @@
 .vi-grid {
-    grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-col-count, 12), minmax(0, 1fr)));
+    grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-cols, 12), minmax(0, 1fr)));
+
+    &[data-grid-gap-mode='token'] {
+        gap: var(--vi-grid-gap, var(--bs-gap, 0));
+    }
 }
