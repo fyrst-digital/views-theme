@@ -8,6 +8,7 @@ use Fyrst\ViewsTheme\Service\ComponentData;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\Country\CountryEntity;
+use Symfony\Component\HttpFoundation\Request;
 
 final class ComponentDataTest extends TestCase
 {
@@ -69,5 +70,39 @@ final class ComponentDataTest extends TestCase
     {
         self::assertNull(ComponentData::pageCountries(null));
         self::assertNull(ComponentData::pageSalutations(new \stdClass()));
+    }
+
+    public function testIsEmpty(): void
+    {
+        self::assertTrue(ComponentData::isEmpty(null));
+        self::assertTrue(ComponentData::isEmpty([]));
+        self::assertTrue(ComponentData::isEmpty(new DataBag()));
+        self::assertFalse(ComponentData::isEmpty(['email' => 'a@b.c']));
+        self::assertFalse(ComponentData::isEmpty(new DataBag(['email' => 'a@b.c'])));
+        self::assertFalse(ComponentData::isEmpty(new \stdClass()));
+    }
+
+    public function testGetBoolean(): void
+    {
+        self::assertTrue(ComponentData::getBoolean(['createCustomerAccount' => 'true'], 'createCustomerAccount'));
+        self::assertTrue(ComponentData::getBoolean(['createCustomerAccount' => '1'], 'createCustomerAccount'));
+        self::assertTrue(ComponentData::getBoolean(['createCustomerAccount' => true], 'createCustomerAccount'));
+        self::assertFalse(ComponentData::getBoolean(['createCustomerAccount' => '0'], 'createCustomerAccount'));
+        self::assertFalse(ComponentData::getBoolean(['email' => 'a@b.c'], 'createCustomerAccount'));
+        self::assertFalse(ComponentData::getBoolean(new DataBag(['email' => 'a@b.c']), 'createCustomerAccount'));
+        self::assertFalse(ComponentData::getBoolean(null, 'createCustomerAccount'));
+    }
+
+    public function testFormViolations(): void
+    {
+        $current = new \stdClass();
+        $fromRequest = new \stdClass();
+        $request = new Request();
+        $request->attributes->set('formViolations', $fromRequest);
+
+        self::assertSame($current, ComponentData::formViolations($current, $request));
+        self::assertSame($fromRequest, ComponentData::formViolations(null, $request));
+        self::assertNull(ComponentData::formViolations(null, new Request()));
+        self::assertNull(ComponentData::formViolations(null, null));
     }
 }
