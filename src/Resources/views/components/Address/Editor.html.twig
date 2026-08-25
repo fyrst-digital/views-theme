@@ -1,0 +1,114 @@
+{% props
+    action = null,
+    address = null,
+    postedData = null,
+    data = postedData ?? address,
+    page = null,
+    formViolations = null,
+    typePrefix = '',
+    formId = 'vi-address-editor',
+    preventNative = false,
+    showActions = true,
+    showNoShippingPostfix = true,
+    disableNonShippableCountries = false,
+    vatInputId = null,
+    accountType = null,
+    backHref = null,
+    submitLabel = 'account.addressSaveChange'|trans|sw_sanitize,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['fields', 'personal', 'form', 'hint', 'actions', 'back', 'submit']) %}
+
+<twig:ViewsTheme:Form:Handler
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        id: formId,
+        action: action,
+        method: 'post',
+        preventNative: preventNative,
+    }).all() }}
+>
+    <twig:block name="content">
+        {% if data.id|default(null) %}
+            <input type="hidden" name="address[id]" value="{{ data.id }}">
+        {% endif %}
+        {% block hidden %}{% endblock %}
+
+        {% block fields %}
+            <div
+                {{ vi_attrs('fields') }}
+                class="{{ vi_class('fields') }}"
+            >
+                <twig:ViewsTheme:Address:Personal
+                    class="{{ vi_class('personal') }}"
+                    {{ ...vi_attrs('personal').defaults({
+                        data: data,
+                        prefix: 'address',
+                        idPrefix: typePrefix,
+                        page: page,
+                        formViolations: formViolations,
+                        accountType: accountType,
+                    }).all() }}
+                />
+                <twig:ViewsTheme:Address:Form
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        data: data,
+                        prefix: 'address',
+                        idPrefix: typePrefix,
+                        page: page,
+                        formViolations: formViolations,
+                        showNoShippingPostfix: showNoShippingPostfix,
+                        disableNonShippableCountries: disableNonShippableCountries,
+                        vatInputId: vatInputId ?? (typePrefix ~ 'address-vatIds'),
+                    }).all() }}
+                />
+            </div>
+        {% endblock %}
+
+        {% block hint %}
+            <p
+                {{ vi_attrs('hint') }}
+                class="{{ vi_class('hint') }}"
+            >
+                {{ 'general.requiredFields'|trans|sw_sanitize }}
+            </p>
+        {% endblock %}
+
+        {% block actions %}
+            {% if showActions %}
+                <div
+                    {{ vi_attrs('actions') }}
+                    class="{{ vi_class('actions') }}"
+                >
+                    {% vi_block back %}
+                        {% if backHref %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('back') }}"
+                                {{ ...vi_attrs('back').defaults({
+                                    type: 'link',
+                                    href: backHref,
+                                    color: 'secondary',
+                                    label: 'general.back'|trans|sw_sanitize,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    {% endvi_block %}
+
+                    {% vi_block submit %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('submit') }}"
+                            {{ ...vi_attrs('submit').defaults({
+                                type: 'submit',
+                                color: 'primary',
+                                label: submitLabel,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
+                </div>
+            {% endif %}
+        {% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Form:Handler>

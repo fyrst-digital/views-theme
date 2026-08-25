@@ -1,0 +1,56 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel', 'view']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:Manager',
+        'data-component-options': {
+            managerUrl: managerUrl,
+            editorUrl: editorUrl,
+            switchUrl: switchUrl,
+            defaultUrl: defaultUrl,
+            tab: tab,
+            hideShipping: hideShipping,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <twig:ViewsTheme:Modal
+            id="vi-address-manager"
+            label="{{ 'account.addressModalTitle'|trans|striptags }}"
+        >
+            <twig:block name="panel">
+                <twig:ViewsTheme:Modal:Panel
+                    {{ ...vi_attrs('panel').defaults({}).all() }}
+                    body:class="overflow-hidden"
+                >
+                    <twig:block name="header"></twig:block>
+                    <twig:block name="body">
+                        <twig:ViewsTheme:Address:Manager:View
+                            class="{{ vi_class('view') }}"
+                            {{ ...vi_attrs('view').defaults({
+                                mode: 'list',
+                                title: 'account.addressModalTitle'|trans|sw_sanitize,
+                                page: page,
+                                tab: tab,
+                                hideShipping: hideShipping,
+                                shippingCurrent: shippingCurrent,
+                                shippingAvailable: shippingAvailable,
+                                billingCurrent: billingCurrent,
+                                billingAvailable: billingAvailable,
+                                activeShippingId: activeShippingId,
+                                activeBillingId: activeBillingId,
+                                defaultShippingId: defaultShippingId,
+                                defaultBillingId: defaultBillingId,
+                                redirectTo: redirectTo,
+                                switchUrl: switchUrl,
+                            }).all() }}
+                        />
+                    </twig:block>
+                    <twig:block name="footer"></twig:block>
+                </twig:ViewsTheme:Modal:Panel>
+            </twig:block>
+        </twig:ViewsTheme:Modal>
+    {% endblock %}
+</div>

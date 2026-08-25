@@ -78,6 +78,15 @@
  * @typedef {object} HttpFetchOptions
  * @property {AbortSignal} [signal]
  * @property {Record<string, string>} [headers]
+ * @property {string} [method]
+ * @property {BodyInit|null} [body]
+ * @property {RequestRedirect} [redirect]
+ */
+
+/**
+ * @typedef {object} HttpTextResult
+ * @property {number} status
+ * @property {string} text
  */
 
 /**

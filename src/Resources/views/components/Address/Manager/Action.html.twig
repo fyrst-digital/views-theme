@@ -1,0 +1,34 @@
+{% props
+    tab = 'shipping',
+    hideShipping = false,
+    href = null,
+    label = null,
+    title = null,
+    color = 'secondary',
+    managerUrl = path('frontend.views-theme.address.manager'),
+    editorUrl = path('frontend.views-theme.address.editor'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: href ? 'link' : 'button',
+        href: href,
+        color: color,
+        label: label,
+        title: title ?? label,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-address-manager',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Address:Manager:Action',
+        'data-component-options': {
+            managerUrl: managerUrl,
+            editorUrl: editorUrl,
+            tab: tab,
+            hideShipping: hideShipping,
+        }|json_encode,
+    }).all() }}
+/>

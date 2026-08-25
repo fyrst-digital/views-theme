@@ -1,0 +1,35 @@
+{% props
+    id = 'vi-modal',
+    label = null,
+    title = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel']) %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': label,
+        'aria-hidden': 'true',
+        inert: true,
+        'data-open': 'false',
+        'data-component': 'ViewsTheme:Modal',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block backdrop %}
+        <twig:ViewsTheme:Backdrop componentName="ViewsTheme:Modal" />
+    {% endblock %}
+
+    {% block panel %}
+        <twig:ViewsTheme:Modal:Panel
+            {{ ...vi_attrs('panel').defaults({
+                title: title,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

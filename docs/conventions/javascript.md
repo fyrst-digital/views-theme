@@ -29,7 +29,7 @@ Storefront app root **must** have `package.json` with `vite` + the local modules
 views/components/**/*.js          # ShopwareComponent entries (data-component)
         │ import '@views-theme/modules/…'
 app/storefront/src/modules/
-  shared/     http · dom · component · object-option · history · form
+  shared/     http · dom · component · object-option · history · form · focus-trap
   listing/    Product:Listing domain only
   review/     Review:Panel domain only
   lazy-shell.js · body-lock.js · serial-queue.js
@@ -63,12 +63,13 @@ app/storefront/src/modules/
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / CountryState) |
+| `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
 | `review/apply.js` | façade for review controls / Pagination → Panel |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
-| `body-lock.js` | ref-counted body scroll lock (Drawer + Overlay) |
+| `body-lock.js` | ref-counted body scroll lock (Drawer, Overlay, Modal, Gallery Fullscreen) |
 | `serial-queue.js` | Cart + Wishlist |
 | `types.js` | Shared JSDoc `@typedef`s (empty runtime export) |
 | `shopware-globals.d.ts` | Ambient `ShopwareComponent` / `window.Shopware` for IDE |
@@ -128,6 +129,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 - `ViewsTheme:Drawer` (e.g. Navigation drawer, Cart drawer, Filter drawer)
 - `ViewsTheme:Search:Overlay`
 - `ViewsTheme:Gallery:Fullscreen`
+- `ViewsTheme:Modal` (e.g. Address Manager)
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
@@ -231,6 +233,13 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
 | Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
 | Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
+| Address manager | `ViewsTheme:Address:Manager` | `Address/Manager.js` |
+| Address manager action | `ViewsTheme:Address:Manager:Action` | `Address/Manager/Action.js` |
+| Address manager view / list / item | `ViewsTheme:Address:Manager:View` / `List` / `Item` | `Address/Manager/View.js` etc. |
+| Address manager status / create / edit / default / back / dismiss | `ViewsTheme:Address:Manager:*` | `Address/Manager/*.js` |
+| Modal | `ViewsTheme:Modal` | `Modal.js` |
+| Modal panel | `ViewsTheme:Modal:Panel` | `Modal/Panel.js` |
+| Modal close | `ViewsTheme:Modal:Close` | `Modal/Close.js` |
 | Checkout method form | `ViewsTheme:Checkout:Method:Form` | `Checkout/Method/Form.js` |
 | Checkout confirm comment | `ViewsTheme:Checkout:Confirm:Comment` | `Checkout/Confirm/Comment.js` |
 
@@ -274,15 +283,37 @@ See [Preferred delivery date](../features/delivery-date.md).
 
 ### Checkout confirm
 
-No page-owner `data-component`. Comment persist and method configure are nested owners.
+No page-owner `data-component`. Comment persist, method configure, and address change are nested owners.
 
 | Hook | Attribute |
 |------|-----------|
 | Comment persist | `data-component="ViewsTheme:Checkout:Confirm:Comment"` |
 | Method configure | `data-component="ViewsTheme:Checkout:Method:Form"` |
 | Place-order form | `data-component="ViewsTheme:Form:Handler"` (`#confirmOrderForm`; associated `form=` fields included) |
+| Address change | `data-component="ViewsTheme:Address:Manager:Action"` |
 
-See [Checkout confirm](../features/checkout-confirm.md).
+See [Checkout confirm](../features/checkout-confirm.md) · [Address manager](../features/address-manager.md).
+
+### Address manager
+
+Lazy-loaded centered `Modal` from confirm change buttons. **Manager** owns list/editor navigation; **Action** owns shell lifecycle.
+
+| Hook | Attribute |
+|------|-----------|
+| Action | `data-component="ViewsTheme:Address:Manager:Action"` |
+| Manager (mount root) | `data-component="ViewsTheme:Address:Manager"` |
+| Modal | `data-component="ViewsTheme:Modal"` / `#vi-address-manager` |
+| View island | `data-component="ViewsTheme:Address:Manager:View"` |
+| List / item | `data-component="ViewsTheme:Address:Manager:List"` / `:Item` |
+| Editor form | `data-component="ViewsTheme:Form:Handler"` (`#vi-address-editor`; `preventNative`) |
+
+- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Modal:Close` **unmount** manager root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- **Multi-instance ownership:** shipping + billing Actions. Only the Action that mounted handles Close (`payload.el` inside `_managerEl`). Opening while another shell is live: close existing first, then mount
+- Open/Close payload: `{ el }` via `emitQueued`
+- Inner list ↔ editor swaps the View island only (Modal stays). Successful switch / editor save: **204** → `location.reload()`
+- Search: List filters `input[type="search"]` against item text. Tab trap: `shared/focus-trap.js`
+
+See [Address manager](../features/address-manager.md).
 
 ### Search overlay
 

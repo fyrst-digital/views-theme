@@ -1,0 +1,21 @@
+{% props
+    addressId,
+    type = 'shipping',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Address:Manager:Edit',
+        'data-component-options': {
+            addressId: addressId,
+            type: type,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {{ 'global.default.edit'|trans|sw_sanitize }}
+</button>

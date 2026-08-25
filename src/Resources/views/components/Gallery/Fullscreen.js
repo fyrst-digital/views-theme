@@ -1,5 +1,6 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
 
 /**
  * Fullscreen gallery dialog shell.
@@ -121,41 +122,7 @@ export default class GalleryFullscreen extends ShopwareComponent {
         }
 
         if (event.key === 'Tab') {
-            this._trapFocus(event)
-        }
-    }
-
-    /**
-     * @param {KeyboardEvent} event
-     */
-    _trapFocus(event) {
-        const fh = window.focusHandler
-        if (!fh?.getFocusableElements || !fh?.setFocus) {
-            return
-        }
-
-        const focusables = Array.from(fh.getFocusableElements(this.el))
-
-        if (!focusables.length) {
-            event.preventDefault()
-            return
-        }
-
-        const first = focusables[0]
-        const last = focusables[focusables.length - 1]
-        const active = document.activeElement
-
-        if (event.shiftKey) {
-            if (active === first || !this.el.contains(active)) {
-                event.preventDefault()
-                fh.setFocus(last, { focusVisible: true })
-            }
-            return
-        }
-
-        if (active === last || !this.el.contains(active)) {
-            event.preventDefault()
-            fh.setFocus(first, { focusVisible: true })
+            trapFocus(event, this.el)
         }
     }
 
