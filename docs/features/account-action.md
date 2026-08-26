@@ -57,7 +57,7 @@ Both shims emit Twig `{% deprecated %}` (`package="fyrst/views-theme"`, `version
 
 `Account:LoginCard` is gone — callers use `Account:Login`. Thin bridge: `storefront/component/account/login.html.twig`.
 
-Register / address forms: [checkout-register.md](checkout-register.md).
+Account pages (overview, profile, addressbook, orders): [account.md](account.md). Register / address forms: [checkout-register.md](checkout-register.md).
 
 ## Wire-up
 

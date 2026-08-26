@@ -1,0 +1,52 @@
+{% props
+    title,
+    action,
+    data = null,
+    page = null,
+    formViolations = __context.formViolations|default(null),
+    accountType = null,
+    backHref = path('frontend.account.address.page'),
+    vatInputId = 'address-vatIds',
+    showNoShippingPostfix = true,
+    redirectTo = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'editor']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: title,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block editor %}
+        <twig:ViewsTheme:Address:Editor
+            class="{{ vi_class('editor') }}"
+            {{ ...vi_attrs('editor').defaults({
+                action: action,
+                data: data,
+                page: page,
+                formViolations: formViolations,
+                accountType: accountType,
+                backHref: backHref,
+                vatInputId: vatInputId,
+                showNoShippingPostfix: showNoShippingPostfix,
+            }).all() }}
+        >
+            <twig:block name="hidden">
+                {% if redirectTo %}
+                    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+                {% endif %}
+            </twig:block>
+        </twig:ViewsTheme:Address:Editor>
+    {% endblock %}
+</div>

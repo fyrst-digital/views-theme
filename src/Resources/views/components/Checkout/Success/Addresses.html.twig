@@ -1,8 +1,11 @@
-<twig:ViewsTheme:Address:List
+{% props
+    page = null,
+    cva = {},
+%}
+
+<twig:ViewsTheme:Order:Addresses
     {{ ...attributes.defaults({
-        billingAddress: billingAddress,
-        shippingAddress: shippingAddress,
-        hideShippingAddress: hideShippingAddress,
+        page: page,
         cva: cva,
     }).all() }}
 />

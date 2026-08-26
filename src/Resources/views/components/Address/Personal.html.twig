@@ -58,8 +58,10 @@
                             {% endvi_block %}
                         </twig:block>
                     </twig:ViewsTheme:Form:Toggle>
-                {% elseif companyAlways %}
-                    <input type="hidden" name="{{ fields.accountType.name }}" value="{{ businessType }}">
+                {% elseif showCompany %}
+                    {% if companyAlways %}
+                        <input type="hidden" name="{{ fields.accountType.name }}" value="{{ businessType }}">
+                    {% endif %}
                     <twig:ViewsTheme:Address:PersonalCompany
                         class="{{ vi_class('company') }}"
                         {{ ...vi_attrs('company').defaults({

@@ -14,7 +14,9 @@
 {% do vi_define_attrs(['body', 'badge', 'actions']) %}
 
 <{{ tag|raw }}
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Address:Item',
+    }) }}
     class="{{ vi_class('root') }}"
 >
     {% block body %}

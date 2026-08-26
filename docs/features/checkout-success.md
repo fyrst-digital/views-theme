@@ -6,7 +6,7 @@ UX tags are **`Checkout:Success`** (branch / theme name). Shopware’s route and
 
 Unlike [cart page](cart-page.md), **`Checkout:Success` has no `data-component` / no island JS / no `/vi/…`**. Recap is read-only: order DTO (`page.order`), not the cart.
 
-Does **not** own account edit-order / complete-payment. Theme `storefront/page/account/order/index.html.twig` extends checkout `_page.html.twig` and keeps core chrome — see [checkout confirm](checkout-confirm.md#edit-order-isolation).
+Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) — see [checkout confirm](checkout-confirm.md#edit-order-isolation).
 
 ## Ownership
 
@@ -16,7 +16,7 @@ Does **not** own account edit-order / complete-payment. Theme `storefront/page/a
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
-| `Checkout:Success:Addresses` | Class VM adapter: order addresses → [`Address:List`](address.md). No `Address:Manager:Action` |
+| `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
 | `Checkout:Success:Payment` / `:Shipping` | Class VM. One selected `Checkout:Method` (`interactive=false`). Shipping omitted when the order has no delivery |
 | `Checkout:Method` | Radio primitive; `interactive=false` drops the input and uses a `div` instead of `label` |
 | `Cart:Items` | Grid, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
@@ -125,11 +125,12 @@ Order number uses `checkout.finishInfoOrdernumber` + `page.order.orderNumber`. H
 
 ## Files
 
-`components/Checkout/Success.*` · `components/Checkout/Success/{Header,Addresses,Payment,Shipping,Comment,DeliveryDate,Aside}.*` · `storefront/page/checkout/finish/index.html.twig` · `src/Subscriber/CheckoutFinishPageSubscriber.php`
+`components/Checkout/Success.*` · `components/Checkout/Success/{Header,Addresses,Payment,Shipping,Comment,DeliveryDate,Aside}.*` · `components/Order/Addresses.*` · `storefront/page/checkout/finish/index.html.twig` · `src/Subscriber/CheckoutFinishPageSubscriber.php`
 
 ## Related
 
 - [Address](address.md)
+- [Account pages](account.md)
 - [Checkout confirm](checkout-confirm.md)
 - [Checkout register](checkout-register.md)
 - [Cart page](cart-page.md)

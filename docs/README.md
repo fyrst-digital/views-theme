@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb |
 
 ## Conventions
 
@@ -53,6 +53,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Address](features/address.md)
 - [Address manager](features/address-manager.md)
 - [Wishlist](features/wishlist.md)
+- [Account pages](features/account.md)
 - [Account action](features/account-action.md)
 - [Language switch](features/language-switch.md)
 - [Currency switch](features/currency-switch.md)
@@ -75,7 +76,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 Families that exist in code but are only covered lightly (or not at all) under `features/`:
 
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
-- **Account / Order** — address-book **listing** page owner and order history (display primitives: [address](features/address.md); register/address forms: [checkout-register](features/checkout-register.md); confirm picker + editor: [address manager](features/address-manager.md); header login: [account-action](features/account-action.md))
+- **Account / Order** — owned under [account pages](features/account.md) (display primitives: [address](features/address.md); register/address forms: [checkout-register](features/checkout-register.md); confirm picker + editor: [address manager](features/address-manager.md); header login: [account-action](features/account-action.md))
 - **Cookie** — banner / configuration UX
 - **Page layout** — Logo, Footer, `meta.html.twig` + `CartContextSubscriber` / `cartCount`
 - **Offcanvas** (vs Drawer), **ScrollUp**

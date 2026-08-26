@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/page/account/convert.html.twig' %}
+
+{% block page_account %}
+    <twig:ViewsTheme:Account:Convert :formViolations="formViolations|default(null)" />
+{% endblock %}

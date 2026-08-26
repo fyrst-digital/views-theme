@@ -1,0 +1,68 @@
+{% props
+    order,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'list', 'item', 'link', 'date']) %}
+
+{% if order.documents|length %}
+    <section
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <h3
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
+            >
+                {{ 'account.orderDocumentsAriaLabel'|trans|sw_sanitize }}
+            </h3>
+        {% endblock %}
+
+        {% block list %}
+            <ul
+                {{ vi_attrs('list') }}
+                class="{{ vi_class('list') }}"
+            >
+                {% for document in order.documents %}
+                    {% set documentMediaFiles = [document.documentMediaFile, document.documentA11yMediaFile] %}
+                    <li
+                        {{ vi_attrs('item') }}
+                        class="{{ vi_class('item') }}"
+                    >
+                        {% for media in documentMediaFiles|filter(media => media is not null) %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('link') }}"
+                                {{ ...vi_attrs('link').defaults({
+                                    type: 'link',
+                                    href: path('frontend.account.order.single.document', {
+                                        documentId: document.id,
+                                        deepLinkCode: document.deepLinkCode,
+                                        fileType: media.fileExtension,
+                                    }),
+                                    target: '_blank',
+                                    color: 'link',
+                                    size: 'sm',
+                                    icon: 'file',
+                                    label: (document.config.filenamePrefix|default(''))
+                                        ~ (document.config.documentNumber|default(''))
+                                        ~ '_'
+                                        ~ document.createdAt|format_date(pattern='Y-MM-dd')
+                                        ~ '.'
+                                        ~ media.fileExtension,
+                                }).all() }}
+                            />
+                        {% endfor %}
+                        <span
+                            {{ vi_attrs('date') }}
+                            class="{{ vi_class('date') }}"
+                        >
+                            {{ document.createdAt|format_datetime('medium', 'short', locale=app.request.locale) }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    </section>
+{% endif %}

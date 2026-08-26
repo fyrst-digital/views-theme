@@ -54,6 +54,9 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 | `errorRoute` | checkout register / account register | Hidden input |
 | `data` / `page` | | Prefill + countries / salutations |
 | `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesces the Shopware request attribute when omitted. `Checkout:Register` reads ambient `__context.formViolations` and passes it; account register bridge passes `:formViolations`. Forwarded to Personal / Form / Credentials / `Privacy:Note`. |
+| `requestedGroupId` | `null` | Hidden input — customer-group register |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Personal` |
+| `formAction` | `frontend.account.register.save` | Leftover `component/account/register.html.twig` includes |
 
 Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
 
@@ -78,7 +81,7 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 ## Address fields
 
-`Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials` (email always visible; password gated when `guestSelectable`).
+`Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials` (email always visible; password gated when `guestSelectable`). Profile passes `showCompanyFields: true` so company/VAT stay visible when the shop hides the account-type select.
 
 Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
 
@@ -90,13 +93,15 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 | Bridge | Mount |
 |--------|--------|
-| `storefront/page/account/register/index.html.twig` | `Account:Login` + `Account:Register` |
-| `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Address:Editor` |
+| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Account:Login` + `Account:Register` |
+| `storefront/component/account/register.html.twig` | `Account:Register` |
+| `storefront/component/account/customer-group-register.html.twig` | `Account:Register` + `requestedGroupId` |
+| `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Addressbook:Form` → `Address:Editor` |
 | `storefront/page/account/addressbook/address-item.html.twig` | `Address:Item` |
 | `storefront/page/account/addressbook/address-actions.html.twig` | `Address:ItemActions` |
 | `storefront/component/account/login.html.twig` | `Account:Login` |
 
-`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** page owner is out of scope — listing rows use [`Address:Item`](address.md) (`Address` for lines). See [address manager](address-manager.md).
+`Address:Editor` composes Personal + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps Personal + Form inside `Account:Register` (not Editor). Address-book **listing** is [`Account:Addressbook`](account.md) — listing rows use [`Address:Item`](address.md). See [address manager](address-manager.md).
 
 ## Files
 
@@ -110,6 +115,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 - [Checkout success](checkout-success.md)
 - [Cart page](cart-page.md)
 - [Form input](form-input.md)
+- [Account pages](account.md)
 - [Account action](account-action.md)
 - [Grid](grid.md)
 - [JavaScript](../conventions/javascript.md)

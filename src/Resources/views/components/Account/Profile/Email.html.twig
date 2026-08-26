@@ -1,0 +1,106 @@
+{% props
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'form', 'email', 'confirm', 'note', 'password', 'hint', 'submit']) %}
+
+<section
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h3
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'account.profileMailTitle'|trans|sw_sanitize }}
+        </h3>
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                id: 'profileMailForm',
+                action: path('frontend.account.profile.email.save'),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <twig:ViewsTheme:Grid gap="3">
+                    <twig:block name="content">
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('email') }}"
+                            {{ ...vi_attrs('email').defaults({
+                                type: 'email',
+                                id: 'personalMail',
+                                name: 'email[email]',
+                                autocomplete: 'section-personal email',
+                                violationPath: '/email',
+                                formViolations: formViolations,
+                                validationRules: 'required,email',
+                                label: 'account.personalMailLabel'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('confirm') }}"
+                            {{ ...vi_attrs('confirm').defaults({
+                                type: 'email',
+                                id: 'personalMailConfirmation',
+                                name: 'email[emailConfirmation]',
+                                autocomplete: 'section-personal email',
+                                violationPath: '/email',
+                                formViolations: formViolations,
+                                validationRules: 'required',
+                                confirmFor: 'personalMail',
+                                label: 'account.personalMailConfirmationLabel'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    </twig:block>
+                </twig:ViewsTheme:Grid>
+
+                <p
+                    {{ vi_attrs('note') }}
+                    class="{{ vi_class('note') }}"
+                >
+                    {{ 'account.profileConfirmPassword'|trans|sw_sanitize }}
+                </p>
+
+                <twig:ViewsTheme:Form:Input
+                    class="{{ vi_class('password') }}"
+                    {{ ...vi_attrs('password').defaults({
+                        type: 'password',
+                        id: 'personalMailPasswordCurrent',
+                        name: 'email[password]',
+                        autocomplete: 'current-password',
+                        violationPath: '/password',
+                        formViolations: formViolations,
+                        validationRules: 'required',
+                        label: 'account.personalPasswordLabel'|trans|sw_sanitize,
+                    }).all() }}
+                />
+
+                <p
+                    {{ vi_attrs('hint') }}
+                    class="{{ vi_class('hint') }}"
+                >
+                    {{ 'general.requiredFields'|trans|sw_sanitize }}
+                </p>
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            label: 'account.profileSaveChanges'|trans|sw_sanitize,
+                            title: 'account.profileSaveChanges'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</section>

@@ -1,0 +1,11 @@
+.vi-account-order-edit__body {
+    grid-template-columns: var(--vi-account-order-edit-cols, minmax(0, 1fr));
+
+    @media (min-width: 1260px) {
+        --vi-account-order-edit-cols: minmax(0, 1fr) var(--vi-account-order-edit-aside, 360px);
+    }
+}
+
+.vi-account-order-edit-aside {
+    top: var(--vi-top, 24px);
+}

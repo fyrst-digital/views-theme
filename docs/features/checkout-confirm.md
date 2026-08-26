@@ -4,7 +4,7 @@ Theme-owned `/checkout/confirm` (`frontend.checkout.confirm.page`). Guest and em
 
 Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items use the cart **grid** layout, read-only — qty stepper / remove stay on the cart page.
 
-Does **not** own account edit-order / complete-payment. Theme `storefront/page/account/order/index.html.twig` extends checkout `_page.html.twig` (not confirm) and keeps core chrome.
+Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
 ## Ownership
 
@@ -63,7 +63,7 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 | Core (forbidden) | Theme owner |
 |------------------|-------------|
 | `FormHandler` / `data-form-handler` / `data-form-submit-loader` | `Form:Handler` on `#confirmOrderForm` |
-| `FormAutoSubmit` / `data-form-auto-submit` | `Checkout:Method:Form` — radio `change` → `form.submit()` |
+| `FormAutoSubmit` / `data-form-auto-submit` | `Checkout:Method:Form` — radio `change` → `requestSubmit()` |
 | `FormPreserver` / `CheckoutCustomerStorage` | `Checkout:Confirm:Comment` only — localStorage keyed by customer id. **Never** persist `tos` / `revocation` |
 | `FormAddHistory` / `data-form-add-history` | Drop |
 | `AddressManager` / `data-address-manager` | `Address:Manager:Action` — [address manager](address-manager.md) |
@@ -100,6 +100,8 @@ Nests: `shippingChange`, `billingChange`. Card nests (`grid`, `shipping`, `billi
 
 `Checkout:Method:Form` POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping is gated with `State::IS_PHYSICAL` (same as `Cart:ShippingCalculation`).
 
+`Checkout:Confirm:Payment` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect.
+
 ## Checkout:Confirm:Tos
 
 Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto-confirm copy.
@@ -126,7 +128,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Edit-order isolation
 
-`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm` or `Checkout:Success`. Theme stub `storefront/page/account/order/index.html.twig` extends `@Storefront/storefront/page/checkout/_page.html.twig` and keeps core complete-payment includes (order header, address, payment/shipping, line-item table, update-order form, cancel modal). Redesign is a later issue.
+`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm` or `Checkout:Success`. Theme `storefront/page/account/order/index.html.twig` extends checkout `_page.html.twig` and mounts [`Account:Order:Edit`](account.md). Payment change reuses `Checkout:Confirm:Payment` with the edit-order action; shipping is read-only `Checkout:Success:Shipping`.
 
 ## Files
 
@@ -135,8 +137,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 ## Out of scope
 
 - Footer / `footer-minimal`
-- Account edit-order redesign (isolation stub only)
-- Addressbook listing page / account overview / edit-order address chrome
+- Addressbook listing / account overview — [account pages](account.md)
 - Qty / remove / `Cart:Changed` / `/vi/confirm`
 - PayPal `page_checkout_confirm_form_submit`
 - 6.8 auto-confirm TOS

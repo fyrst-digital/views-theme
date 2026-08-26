@@ -1,0 +1,64 @@
+{% props
+    order,
+    modalId = 'vi-order-cancel-' ~ order.id,
+    redirectTo = 'frontend.account.order.page',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['modal', 'panel', 'text', 'question', 'form', 'submit']) %}
+
+<twig:ViewsTheme:Modal
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        id: modalId,
+        title: 'account.editOrderCancelOrderModalHeader'|trans|sw_sanitize,
+    }).all() }}
+>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Modal:Panel
+            class="{{ vi_class('panel') }}"
+            {{ ...vi_attrs('panel').defaults({
+                title: 'account.editOrderCancelOrderModalHeader'|trans|sw_sanitize,
+            }).all() }}
+        >
+            <twig:block name="content">
+                <p
+                    {{ vi_attrs('text') }}
+                    class="{{ vi_class('text') }}"
+                >
+                    {{ 'account.editOrderCancelOrderModalBodyText'|trans|sw_sanitize }}
+                </p>
+                <p
+                    {{ vi_attrs('question') }}
+                    class="{{ vi_class('question') }}"
+                >
+                    {{ 'account.editOrderCancelOrderModalBodyQuestion'|trans|sw_sanitize }}
+                </p>
+            </twig:block>
+            <twig:block name="actions">
+                <twig:ViewsTheme:Form:Handler
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        action: path('frontend.account.order.cancel'),
+                        method: 'post',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <input type="hidden" name="deepLinkCode" value="{{ order.deepLinkCode }}">
+                        <input type="hidden" name="orderId" value="{{ order.id }}">
+                        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('submit') }}"
+                            {{ ...vi_attrs('submit').defaults({
+                                type: 'submit',
+                                color: 'primary',
+                                label: 'account.editOrderCancelOrderModalFooterButton'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    </twig:block>
+                </twig:ViewsTheme:Form:Handler>
+            </twig:block>
+        </twig:ViewsTheme:Modal:Panel>
+    </twig:block>
+</twig:ViewsTheme:Modal>

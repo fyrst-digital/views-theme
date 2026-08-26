@@ -1,19 +1,18 @@
-{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail-list.html.twig' %}
-
-{% deprecated 'ViewsTheme:Order:ItemDetailsList is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
 {% props
+    order,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-order-line-item' },
-}|replace_recursive(cva)) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['item']) %}
 
-{% block page_account_order_item_detail_line_item %}
-    <twig:ViewsTheme:LineItem
-        :lineItem="lineItem"
-        :showRemoveButton="false"
-        class="{{ vi_class('root') }}"
-    />
-{% endblock %}
+<twig:ViewsTheme:Cart:Items
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        cart: order,
+        lineItems: order.nestedLineItems,
+        layout: 'grid',
+        showRemoveButton: false,
+        showQuantitySelect: false,
+    }).all() }}
+/>

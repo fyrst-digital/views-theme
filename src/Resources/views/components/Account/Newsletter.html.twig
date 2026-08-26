@@ -1,0 +1,77 @@
+{% props
+    newsletterAccountPagelet = null,
+    cva = {},
+%}
+
+{% set subscribe = constant('Shopware\\Core\\Content\\Newsletter\\SalesChannel\\NewsletterSubscribeRoute::OPTION_SUBSCRIBE') %}
+{% set statusDirect = constant('Shopware\\Core\\Content\\Newsletter\\SalesChannel\\NewsletterSubscribeRoute::STATUS_DIRECT') %}
+{% set statusOptIn = constant('Shopware\\Core\\Content\\Newsletter\\SalesChannel\\NewsletterSubscribeRoute::STATUS_OPT_IN') %}
+{% set statusNotSet = constant('Shopware\\Core\\Content\\Newsletter\\SalesChannel\\NewsletterSubscribeRoute::STATUS_NOT_SET') %}
+{% set newsletterStatus = newsletterAccountPagelet.newsletterStatus|default(null) %}
+{% set subscribed = newsletterStatus is same as(statusDirect)
+    or newsletterStatus is same as(statusOptIn)
+    or newsletterStatus is same as(statusNotSet) %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'messages', 'form', 'switch']) %}
+
+<section
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Account:Newsletter',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h2
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'account.newsletterTitle'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block messages %}
+        {% if newsletterAccountPagelet and newsletterAccountPagelet.messages|length > 0 %}
+            <div
+                {{ vi_attrs('messages') }}
+                class="{{ vi_class('messages') }}"
+            >
+                {% for message in newsletterAccountPagelet.messages %}
+                    <twig:ViewsTheme:Alert
+                        type="{{ message.type }}"
+                        content="{{ message.text }}"
+                        announceOnLoad
+                    />
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                action: path('frontend.account.newsletter'),
+                method: 'post',
+                name: 'newsletterRegister',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% vi_block switch %}
+                    <twig:ViewsTheme:Form:Switch
+                        class="{{ vi_class('switch') }}"
+                        {{ ...vi_attrs('switch').defaults({
+                            id: 'newsletterRegister',
+                            name: 'option',
+                            value: subscribe,
+                            checked: subscribed,
+                            label: 'account.newsletterSettings'|trans({
+                                '%shopname%': config('core.basicInformation.shopName'),
+                            })|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</section>

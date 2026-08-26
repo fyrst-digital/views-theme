@@ -1,0 +1,13 @@
+{% sw_extends '@Storefront/storefront/page/account/addressbook/default-address-actions.html.twig' %}
+
+{% block page_account_default_address_actions %}
+    <twig:ViewsTheme:Button
+        type="link"
+        href="{{ path('frontend.account.address.edit.page', { addressId: address.id }) }}"
+        color="link"
+        size="sm"
+        icon="pencil-simple-line"
+        label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+        title="{{ 'account.addressesContentItemActionEdit'|trans|striptags }}"
+    />
+{% endblock %}

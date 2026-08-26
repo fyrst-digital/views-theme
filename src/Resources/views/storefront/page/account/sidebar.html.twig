@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
+
+{% block page_account_sidebar_inner %}
+    {% if headerWidget %}
+        <twig:ViewsTheme:Account:Menu />
+    {% else %}
+        <twig:ViewsTheme:Account:Sidebar />
+    {% endif %}
+{% endblock %}

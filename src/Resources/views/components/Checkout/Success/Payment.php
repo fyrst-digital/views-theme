@@ -7,7 +7,6 @@ namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Success;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Feature;
-use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPage;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
@@ -18,6 +17,8 @@ use Symfony\UX\TwigComponent\Attribute\PostMount;
 class Payment
 {
     public mixed $page = null;
+
+    public mixed $order = null;
 
     public mixed $method = null;
 
@@ -66,11 +67,17 @@ class Payment
 
     private function order(): ?OrderEntity
     {
-        if (!$this->page instanceof CheckoutFinishPage) {
-            return null;
+        if ($this->order instanceof OrderEntity) {
+            return $this->order;
         }
 
-        return $this->page->getOrder();
+        if (\is_object($this->page) && method_exists($this->page, 'getOrder')) {
+            $resolved = $this->page->getOrder();
+
+            return $resolved instanceof OrderEntity ? $resolved : null;
+        }
+
+        return null;
     }
 
     private function translatedString(PaymentMethodEntity $method, string $field): ?string

@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/page/account/order/cancel-order-modal.html.twig' %}
+
+{% block page_checkout_aside_cancel_order_modal %}
+    <twig:ViewsTheme:Order:Cancel :order="order|default(page.order)" />
+{% endblock %}

@@ -1,0 +1,7 @@
+.vi-account-page {
+    grid-template-columns: var(--vi-account-page-cols, minmax(0, 1fr));
+
+    @media (min-width: 1024px) {
+        --vi-account-page-cols: var(--vi-account-sidebar, 240px) minmax(0, 1fr);
+    }
+}

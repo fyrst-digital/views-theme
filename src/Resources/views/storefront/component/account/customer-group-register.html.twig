@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/component/account/customer-group-register.html.twig' %}
+
+{% block component_account_register %}
+    <twig:ViewsTheme:Account:Register
+        :page="page"
+        :data="data|default(null)"
+        :formViolations="formViolations|default(null)"
+        :requestedGroupId="page.group.id"
+        :onlyCompanyRegistration="page.group.translated.registrationOnlyCompanyRegistration|default(false)"
+        :cardTitle="page.group.translated.registrationTitle|default(false)"
+    />
+{% endblock %}

@@ -1,18 +1,18 @@
 {% sw_extends '@Storefront/storefront/page/account/addressbook/create.html.twig' %}
 
-{% block page_account_main_content %}
-    <div class="vi-account-address-form">
-        <h1>{{ 'account.addressCreateWelcome'|trans|sw_sanitize }}</h1>
-
-        <twig:ViewsTheme:Address:Editor
-            :action="path('frontend.account.address.create')"
-            :data="data.get('address')"
-            :page="page"
-            :formViolations="formViolations|default(null)"
-            :accountType="data.get('address').get('accountType')"
-            backHref="{{ path('frontend.account.address.page') }}"
-            vatInputId="address-vatIds"
-            :showNoShippingPostfix="false"
-        />
-    </div>
+{% block page_account %}
+    <twig:ViewsTheme:Account:Page>
+        <twig:block name="content">
+            <twig:ViewsTheme:Account:Addressbook:Form
+                title="{{ 'account.addressCreateWelcome'|trans|sw_sanitize }}"
+                :action="path('frontend.account.address.create')"
+                :data="data.get('address')"
+                :page="page"
+                :formViolations="formViolations|default(null)"
+                :accountType="data.get('address').get('accountType')"
+                :showNoShippingPostfix="false"
+                vatInputId="address-vatIds"
+            />
+        </twig:block>
+    </twig:ViewsTheme:Account:Page>
 {% endblock %}

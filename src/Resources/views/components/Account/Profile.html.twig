@@ -1,0 +1,142 @@
+{% props
+    page,
+    formViolations = __context.formViolations|default(null),
+    emailFormViolation = __context.emailFormViolation|default(false),
+    passwordFormViolation = __context.passwordFormViolation|default(false),
+    customer = context.customer,
+    cva = {},
+%}
+
+{% set showEmail = emailFormViolation or (formViolations and formViolations.getViolations('/email') is not empty) %}
+{% set showPassword = passwordFormViolation or (
+    formViolations and (
+        formViolations.getViolations('/newPassword') is not empty
+        or formViolations.getViolations('/password') is not empty
+    )
+) %}
+{% set allowDelete = config('core.loginRegistration.allowCustomerDeletion') %}
+{% set emailHeaderId = 'vi-profile-email-header' %}
+{% set emailPanelId = 'vi-profile-email-panel' %}
+{% set passwordHeaderId = 'vi-profile-password-header' %}
+{% set passwordPanelId = 'vi-profile-password-panel' %}
+{% set accordionActive = showEmail ? emailHeaderId : (showPassword ? passwordHeaderId : null) %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'personal', 'credentials', 'changes', 'email', 'password', 'delete']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.profileTitle'|trans|sw_sanitize,
+                intro: 'account.profileText'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block personal %}
+        <twig:ViewsTheme:Account:Profile:Personal
+            class="{{ vi_class('personal') }}"
+            {{ ...vi_attrs('personal').defaults({
+                page: page,
+                customer: customer,
+                formViolations: formViolations,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block credentials %}
+        <twig:ViewsTheme:Account:Profile:Credentials
+            class="{{ vi_class('credentials') }}"
+            {{ ...vi_attrs('credentials').defaults({
+                customer: customer,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block changes %}
+        <twig:ViewsTheme:Accordion
+            class="{{ vi_class('changes') }}"
+            {{ ...vi_attrs('changes').defaults({
+                active: accordionActive,
+                multiple: false,
+                collapsible: true,
+            }).all() }}
+        >
+            <twig:block name="items">
+                <twig:ViewsTheme:Accordion:Item>
+                    <twig:block name="header">
+                        <twig:ViewsTheme:Accordion:Header
+                            id="{{ emailHeaderId }}"
+                            panel="{{ emailPanelId }}"
+                            :active="showEmail"
+                        >
+                            <twig:block name="content">
+                                {{ 'account.profileChangeEmail'|trans|sw_sanitize }}
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Header>
+                    </twig:block>
+                    <twig:block name="panel">
+                        <twig:ViewsTheme:Accordion:Panel
+                            id="{{ emailPanelId }}"
+                            header="{{ emailHeaderId }}"
+                            :active="showEmail"
+                        >
+                            <twig:block name="content">
+                                <twig:ViewsTheme:Account:Profile:Email
+                                    class="{{ vi_class('email') }}"
+                                    {{ ...vi_attrs('email').defaults({
+                                        formViolations: formViolations,
+                                    }).all() }}
+                                />
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Panel>
+                    </twig:block>
+                </twig:ViewsTheme:Accordion:Item>
+
+                <twig:ViewsTheme:Accordion:Item>
+                    <twig:block name="header">
+                        <twig:ViewsTheme:Accordion:Header
+                            id="{{ passwordHeaderId }}"
+                            panel="{{ passwordPanelId }}"
+                            :active="showPassword"
+                        >
+                            <twig:block name="content">
+                                {{ 'account.profileChangePassword'|trans|sw_sanitize }}
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Header>
+                    </twig:block>
+                    <twig:block name="panel">
+                        <twig:ViewsTheme:Accordion:Panel
+                            id="{{ passwordPanelId }}"
+                            header="{{ passwordHeaderId }}"
+                            :active="showPassword"
+                        >
+                            <twig:block name="content">
+                                <twig:ViewsTheme:Account:Profile:Password
+                                    class="{{ vi_class('password') }}"
+                                    {{ ...vi_attrs('password').defaults({
+                                        formViolations: formViolations,
+                                    }).all() }}
+                                />
+                            </twig:block>
+                        </twig:ViewsTheme:Accordion:Panel>
+                    </twig:block>
+                </twig:ViewsTheme:Accordion:Item>
+            </twig:block>
+        </twig:ViewsTheme:Accordion>
+    {% endblock %}
+
+    {% block delete %}
+        {% if allowDelete %}
+            <twig:ViewsTheme:Account:Profile:Delete
+                class="{{ vi_class('delete') }}"
+                {{ ...vi_attrs('delete').all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</div>

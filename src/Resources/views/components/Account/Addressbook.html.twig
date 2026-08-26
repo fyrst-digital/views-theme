@@ -1,0 +1,140 @@
+{% props
+    page,
+    customer = context.customer,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'defaults', 'toolbar', 'search', 'create', 'list', 'item', 'empty', 'notFound']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Account:Addressbook',
+        'data-component-options': {
+            itemComponent: 'ViewsTheme:Address:Item',
+            statusComponent: 'ViewsTheme:Address:Manager:Status',
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.addressModalTitle'|trans|sw_sanitize,
+                intro: 'account.addressText'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block defaults %}
+        <twig:ViewsTheme:Address:List
+            class="{{ vi_class('defaults') }}"
+            {{ ...vi_attrs('defaults').defaults({
+                billingAddress: customer.defaultBillingAddress,
+                shippingAddress: customer.defaultShippingAddress,
+                shippingFirst: false,
+                showShippingWarning: true,
+                shippingTitle: 'account.overviewShippingHeader'|trans|sw_sanitize,
+                billingTitle: 'account.overviewBillingHeader'|trans|sw_sanitize,
+                equalText: 'account.overviewAddressEqual'|trans|sw_sanitize,
+            }).all() }}
+        >
+            <twig:block name="billingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultBillingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+            <twig:block name="shippingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultShippingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+        </twig:ViewsTheme:Address:List>
+    {% endblock %}
+
+    {% block toolbar %}
+        <div
+            {{ vi_attrs('toolbar') }}
+            class="{{ vi_class('toolbar') }}"
+        >
+            {% block search %}
+                <twig:ViewsTheme:Form:Input
+                    class="{{ vi_class('search') }}"
+                    {{ ...vi_attrs('search').defaults({
+                        type: 'search',
+                        id: 'vi-account-address-search',
+                        name: 'search',
+                        autocomplete: 'off',
+                        placeholder: 'account.addressSearchPlaceholder'|trans|sw_sanitize,
+                        'input:aria-label': 'account.addressSearchPlaceholder'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block create %}
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('create') }}"
+                    {{ ...vi_attrs('create').defaults({
+                        type: 'link',
+                        href: path('frontend.account.address.create.page'),
+                        color: 'outline-primary',
+                        icon: 'plus',
+                        label: 'account.addressCreateBtn'|trans|sw_sanitize,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block list %}
+        <twig:ViewsTheme:Grid
+            class="{{ vi_class('list') }}"
+            {{ ...vi_attrs('list').defaults({
+                gap: '4',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% for address in page.addresses %}
+                    <twig:ViewsTheme:Address:Item
+                        class="{{ vi_class('item') }}"
+                        {{ ...vi_attrs('item').defaults({
+                            address: address,
+                            defaultShipping: customer.defaultShippingAddress.id == address.id,
+                            defaultBilling: customer.defaultBillingAddress.id == address.id,
+                            tag: 'div',
+                        }).all() }}
+                    />
+                {% endfor %}
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    {% endblock %}
+
+    {% block empty %}
+        <twig:ViewsTheme:Address:Manager:Status
+            class="{{ vi_class('empty') }}"
+            {{ ...vi_attrs('empty').defaults({
+                kind: 'empty',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block notFound %}
+        <twig:ViewsTheme:Address:Manager:Status
+            class="{{ vi_class('notFound') }}"
+            {{ ...vi_attrs('notFound').defaults({
+                kind: 'notFound',
+            }).all() }}
+        />
+    {% endblock %}
+</div>

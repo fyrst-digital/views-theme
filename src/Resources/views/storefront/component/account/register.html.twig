@@ -1,0 +1,18 @@
+{% sw_extends '@Storefront/storefront/component/account/register.html.twig' %}
+
+{% block component_account_register %}
+    <twig:ViewsTheme:Account:Register
+        :page="page|default(null)"
+        :data="data|default(null)"
+        :formViolations="formViolations|default(null)"
+        :redirectTo="redirectTo|default(null)"
+        :redirectParameters="redirectParameters|default(null)"
+        :errorRoute="errorRoute|default(null)"
+        :errorParameters="errorParameters|default(null)"
+        :cardTitle="cardTitle|default(null)"
+        :formAction="formAction|default(null)"
+        :guestSelectable="guestRegisterable|default(false)"
+        :requestedGroupId="requestedGroupId|default(null)"
+        :onlyCompanyRegistration="onlyCompanyRegistration|default(false)"
+    />
+{% endblock %}

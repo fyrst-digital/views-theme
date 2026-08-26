@@ -1,0 +1,58 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'empty', 'list', 'item', 'pagination']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.ordersTitle'|trans|sw_sanitize,
+                intro: 'account.ordersWelcome'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block body %}
+        {% if page.orders.total == 0 %}
+            <twig:ViewsTheme:Alert
+                class="{{ vi_class('empty') }}"
+                {{ ...vi_attrs('empty').defaults({
+                    type: 'warning',
+                    content: 'account.ordersInfoEmpty'|trans|sw_sanitize,
+                }).all() }}
+            />
+        {% else %}
+            <div
+                {{ vi_attrs('list') }}
+                class="{{ vi_class('list') }}"
+            >
+                {% for order in page.orders.entities %}
+                    <twig:ViewsTheme:Order:Item
+                        class="{{ vi_class('item') }}"
+                        {{ ...vi_attrs('item').defaults({
+                            order: order,
+                        }).all() }}
+                    />
+                {% endfor %}
+            </div>
+
+            {% block pagination %}
+                <twig:ViewsTheme:Pagination
+                    class="{{ vi_class('pagination') }}"
+                    {{ ...vi_attrs('pagination').defaults({
+                        entities: page.orders,
+                        preserveQuery: true,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+</div>

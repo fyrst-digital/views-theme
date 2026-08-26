@@ -1,0 +1,186 @@
+# Account pages
+
+Theme-owned customer account area. Storefront templates are thin bridges: they `sw_extend` core and mount `<twig:ViewsTheme:…>` composers. UI lives under `components/Account/` and `components/Order/`.
+
+Header login / register dropdown stays on [account action](account-action.md). Address **forms** stay on [`Address:Editor`](address-manager.md). Address **display** stays on [`Address:List` / `Address:Item`](address.md).
+
+Unlike [cart page](cart-page.md), logged-in account pages have **no island refresh / no `/vi/…`**. Interactive bits are local: newsletter change-submit, addressbook search, profile accordion, order details accordion, delete/cancel `Modal`.
+
+## Ownership
+
+| Piece | Responsibility |
+|-------|----------------|
+| Storefront `_page` | Logout fallback: empty `Account:Page` (no nested `page_account_main_content`) |
+| Logged-in page bridges | `page_account` → `Account:Page` + composer in the `content` slot |
+| Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
+| `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
+| `Account:Sidebar` | Greeting + `Account:Actions` (no logout in the nav list) + logout footer |
+| `Account:Heading` | Shared h1 + intro |
+| `Account:Overview` | Alerts, profile card, newsletter, default addresses, newest order |
+| `Account:PersonalCard` | Name / company / email + optional profile edit |
+| `Account:Newsletter` | `Form:Switch` + change → submit `frontend.account.newsletter` |
+| `Account:Profile` | Personal form, credentials, email/password accordion, delete |
+| `Account:Addressbook` | Default pair + search + `Address:Item` grid |
+| `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |
+| `Account:Orders` | Order list + `Pagination` (GET `?p=`) |
+| `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion |
+| `Order:ItemDetails` / `:Documents` | Line items (`Cart:Items`), documents, totals |
+| `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
+| `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Shared with [success](checkout-success.md) |
+| `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
+| `Account:Register:Page` | Login + register grid on `/account/register` |
+| Storefront `component/account/register.html.twig` | `Account:Register` (plugin / leftover includes) |
+| `Account:Recover` / `:ResetPassword` | Password recover / reset |
+| `Account:GuestAuth` | Guest order login (email + zip) |
+| `Account:Convert` | Guest → customer password |
+| `Account:CustomerGroupRegister` | `Account:Register` + `requestedGroupId` |
+| `Modal:Open` | Opens a `Modal` by `modalId` (profile delete, order cancel) |
+
+Do **not** use core `data-form-handler` / `data-form-auto-submit` / `data-form-ajax-submit` / `data-order-detail-loader` / Bootstrap dropdown or collapse on these pages.
+
+## Composition
+
+```
+page/account/index.html.twig            page_account → Account:Page → Overview
+page/account/profile/index.html.twig    page_account → Account:Page → Profile
+page/account/addressbook/*.html.twig    page_account → Account:Page → Addressbook / Form
+page/account/order-history/index.html.twig  page_account → Account:Page → Orders
+page/account/_page.html.twig            page_account → Account:Page (logout, empty main)
+
+Account:Page
+├─ Account:Sidebar → Account:Actions (header greeting, footer logout)
+└─ main → content slot (composer mounted by the page bridge)
+```
+
+Do **not** nest `{% block page_account_main_content %}` inside `Account:Page`’s content slot. Child page templates cannot fill a Twig inheritance block that lives inside a UX component. Each logged-in page overrides `page_account` and mounts the composer as **direct** slot content (same as checkout `page_checkout` / convert). Keep `sw_extends` of the matching core page — do not extend `_page` from children.
+
+Standalone (full header, no sidebar):
+
+```
+Account:Register:Page          (base_content)
+Account:Recover / ResetPassword
+Account:GuestAuth
+Account:CustomerGroupRegister
+Account:Convert                (overrides page_account — no sidebar)
+```
+
+Edit-order (checkout `_page`, minimal chrome):
+
+```
+page/account/order/index.html.twig
+├─ base_esi_header → Page:Header:Minimal
+├─ page_checkout → Account:Order:Edit
+│    ├─ alerts
+│    ├─ Account:Heading
+│    ├─ Order:Addresses
+│    ├─ Checkout:Confirm:Payment   (POST edit-order.change-payment-method)
+│    ├─ Checkout:Success:Shipping  (read-only, :order)
+│    ├─ Cart:Items grid
+│    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
+└─ base_esi_footer → footer-minimal
+```
+
+Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
+
+Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
+
+## Scripts (theme-owned)
+
+| Core (forbidden) | Theme owner |
+|------------------|--------------|
+| `FormHandler` / `data-form-handler` | `Form:Handler` |
+| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `requestSubmit()` |
+| `FormAjaxSubmit` + pagination | `Pagination` GET `?p=` (no listing owner on the page → native href) |
+| Bootstrap collapse (profile / order details) | `Accordion` |
+| Bootstrap dropdown (order actions) | `Dropdown` |
+| Bootstrap modal (delete / cancel) | `Modal` + `Modal:Open` |
+| Address manager listing widget | `Account:Addressbook` + `Address:Item` |
+| `data-order-detail-loader` | Drop — details are SSR in `Order:ItemDetails` |
+
+`Account:Addressbook` search filters `[data-component="ViewsTheme:Address:Item"]` client-side (same pattern as `Address:Manager:List`). The field uses nest `input:aria-label` so the name lands on the `<input>`, not the `Form:Input` wrapper. Empty / no-results use `Address:Manager:Status`.
+
+## Account:Actions active state
+
+Optional action key `activePrefix` marks the item active when `activeRoute` starts with that prefix. Address uses `frontend.account.address` so create/edit stay highlighted. Exact `route` match is the default.
+
+## Account:Register extras
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `requestedGroupId` | `null` | Hidden input — customer-group register |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Personal` |
+| `formAction` | `frontend.account.register.save` | Override when a leftover include passes `formAction` |
+
+Profile personal form passes `showCompanyFields: true` into `Address:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
+
+## Order:Item
+
+Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOrderTransaction` / `primaryOrderDelivery`.
+
+| Derived | Role |
+|---------|------|
+| `isPaymentNeeded` | Failed / reminded / unconfirmed / cancelled payment and order not cancelled |
+| `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
+| `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
+
+Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `Cart:Items` + `Order:Documents` + totals.
+
+## Storefront bridges
+
+| File | Mount |
+|------|--------|
+| `page/account/_page.html.twig` | `Account:Page` (logout, empty main) |
+| `page/account/sidebar.html.twig` | `Account:Sidebar` / `Account:Menu` |
+| `page/account/index.html.twig` | `Account:Page` + `Account:Overview` |
+| `page/account/address.html.twig` | `Address:List` (overview include) |
+| `page/account/newsletter.html.twig` | `Account:Newsletter` |
+| `page/account/profile/index.html.twig` | `Account:Page` + `Account:Profile` |
+| `page/account/addressbook/index.html.twig` | `Account:Page` + `Account:Addressbook` |
+| `page/account/addressbook/address-manager.html.twig` | `Account:Addressbook` |
+| `page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Page` + `Account:Addressbook:Form` |
+| `page/account/order-history/index.html.twig` | `Account:Page` + `Account:Orders` |
+| `page/account/order-history/order-item.html.twig` | `Order:Item` |
+| `page/account/order-history/order-detail.html.twig` | `Order:ItemDetails` |
+| `page/account/order-history/order-detail-list.html.twig` | `Order:ItemDetailsList` |
+| `page/account/order-history/order-detail-document.html.twig` | `Order:Documents` |
+| `page/account/order/index.html.twig` | `Account:Order:Edit` |
+| `page/account/order/header.html.twig` | `Page:Header:Minimal` |
+| `page/account/order/address.html.twig` | `Order:Addresses` |
+| `page/account/order/confirm-payment.html.twig` | `Checkout:Confirm:Payment` (edit-order action) |
+| `page/account/order/confirm-shipping.html.twig` | `Checkout:Success:Shipping` |
+| `page/account/order/cancel-order-modal.html.twig` | `Order:Cancel` |
+| `page/account/register/index.html.twig` | `Account:Register:Page` |
+| `page/account/profile/recover-password.html.twig` | `Account:Recover` |
+| `page/account/profile/reset-password.html.twig` | `Account:ResetPassword` |
+| `page/account/guest-auth.html.twig` | `Account:GuestAuth` |
+| `page/account/convert.html.twig` | `Account:Convert` |
+| `page/account/customer-group-register/index.html.twig` | `Account:CustomerGroupRegister` |
+| `component/account/login.html.twig` | `Account:Login` |
+| `component/account/register.html.twig` | `Account:Register` |
+| `component/account/customer-group-register.html.twig` | `Account:Register` + group extras |
+
+Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Item`; `address-actions.html.twig` → `Address:ItemActions`; `default-address-actions.html.twig` → edit `Button`. Logout stays on theme `_page` (`Account:Page` with empty main).
+
+## Files
+
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
+
+## Out of scope
+
+- Footer / header chrome on logged-in account pages (full storefront header)
+- Redesigning `Page:Header:Minimal` for edit-order guest back-to-order
+- Core plugin unregister
+- Payment-method listing as its own account route (profile + edit-order cover it)
+
+## Related
+
+- [Account action](account-action.md)
+- [Address](address.md)
+- [Address manager](address-manager.md)
+- [Checkout register](checkout-register.md)
+- [Checkout confirm](checkout-confirm.md)
+- [Checkout success](checkout-success.md)
+- [Form input](form-input.md)
+- [Accordion](accordion.md)
+- [Pagination](pagination.md)
+- [JavaScript](../conventions/javascript.md)

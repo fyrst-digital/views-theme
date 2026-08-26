@@ -1,0 +1,90 @@
+{% props
+    redirectTo,
+    redirectParameters = {},
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['form', 'title', 'info', 'fields', 'email', 'zipcode', 'submit']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                action: path(redirectTo, redirectParameters),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% block title %}
+                    <h1
+                        {{ vi_attrs('title') }}
+                        class="{{ vi_class('title') }}"
+                    >
+                        {{ 'account.orderGuestLoginTitle'|trans|sw_sanitize }}
+                    </h1>
+                {% endblock %}
+
+                <p
+                    {{ vi_attrs('info') }}
+                    class="{{ vi_class('info') }}"
+                >
+                    {{ 'account.orderGuestLoginDescription'|trans|sw_sanitize }}
+                </p>
+
+                <twig:ViewsTheme:Grid
+                    class="{{ vi_class('fields') }}"
+                    {{ ...vi_attrs('fields').defaults({
+                        gap: '3',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('email') }}"
+                            {{ ...vi_attrs('email').defaults({
+                                type: 'email',
+                                id: 'mail',
+                                name: 'email',
+                                autocomplete: 'section-personal email',
+                                violationPath: '/email',
+                                formViolations: formViolations,
+                                validationRules: 'required,email',
+                                label: 'account.profileCurrentMail'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                        <twig:ViewsTheme:Form:Input
+                            class="{{ vi_class('zipcode') }}"
+                            {{ ...vi_attrs('zipcode').defaults({
+                                type: 'text',
+                                id: 'zipcode',
+                                name: 'zipcode',
+                                autocomplete: 'postal-code',
+                                violationPath: '/zipcode',
+                                formViolations: formViolations,
+                                validationRules: 'required',
+                                label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    </twig:block>
+                </twig:ViewsTheme:Grid>
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            label: 'account.registerSubmit'|trans|sw_sanitize,
+                            title: 'account.registerSubmit'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</div>

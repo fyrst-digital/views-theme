@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/page/account/order/confirm-shipping.html.twig' %}
+
+{% block page_checkout_confirm_shipping_form %}
+    <twig:ViewsTheme:Checkout:Success:Shipping :order="page.order" />
+{% endblock %}

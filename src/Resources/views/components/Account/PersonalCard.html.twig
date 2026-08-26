@@ -1,61 +1,93 @@
 {% props
+    customer = context.customer,
     editable = false,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'vi-account-personal-card card account-card-personal' },
-    body: { base: 'vi-account-personal-card__body card-body' },
-    title: { base: 'vi-account-personal-card__title card-title' },
-    actions: { base: 'vi-account-personal-card__actions card-actions' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['actions', 'body', 'title']) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'body', 'name', 'company', 'email', 'actions', 'edit']) %}
 
-<div
+<section
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    <div
-        {{ vi_attrs('body') }}
-        class="{{ vi_class('body') }}"
-    >
-        {% block title %}
-            <h4
-                {{ vi_attrs('title') }}
-                class="{{ vi_class('title') }}"
-            >
-                {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
-            </h4>
-        {% endblock %}
+    {% block title %}
+        <h2
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
 
-        {% block profile %}
-            <div>
-                {% if context.customer.salutation
-                    and context.customer.salutation.salutationKey != 'not_specified'
-                %}
-                    {{ context.customer.salutation.translated.displayName }}
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block profile %}
+                <p
+                    {{ vi_attrs('name') }}
+                    class="{{ vi_class('name') }}"
+                >
+                    {% if customer.salutation and customer.salutation.salutationKey != 'not_specified' %}
+                        {{ customer.salutation.translated.displayName }}
+                    {% endif %}
+                    {% if customer.title %}
+                        {{ customer.title }}<br>
+                    {% endif %}
+                    {{ customer.firstName }}
+                    {{ customer.lastName }}
+                </p>
+            {% endblock %}
+
+            {% block company %}
+                {% set billing = customer.defaultBillingAddress %}
+                {% if customer.company %}
+                    <p
+                        {{ vi_attrs('company') }}
+                        class="{{ vi_class('company') }}"
+                    >
+                        {{ customer.company }}
+                        {% if billing.department %}
+                            <br>{{ billing.department }}
+                        {% endif %}
+                    </p>
                 {% endif %}
-                {% if context.customer.title %}
-                    {{ context.customer.title }}<br>
+            {% endblock %}
+
+            {% block email %}
+                <p
+                    {{ vi_attrs('email') }}
+                    class="{{ vi_class('email') }}"
+                >
+                    {{ customer.email|decodeIdnEmail }}
+                </p>
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block actions %}
+        <div
+            {{ vi_attrs('actions') }}
+            class="{{ vi_class('actions') }}"
+        >
+            {% vi_block edit %}
+                {% if editable %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('edit') }}"
+                        {{ ...vi_attrs('edit').defaults({
+                            type: 'link',
+                            href: path('frontend.account.profile.page'),
+                            color: 'link',
+                            size: 'sm',
+                            icon: 'pencil-simple-line',
+                            label: 'account.profileLink'|trans|sw_sanitize,
+                            title: 'account.profileLink'|trans|striptags,
+                        }).all() }}
+                    />
                 {% endif %}
-                {{ context.customer.firstName }}
-                {{ context.customer.lastName }}
-            </div>
-        {% endblock %}
-
-        {% block company %}{% endblock %}
-
-        {% block email %}
-            <div>{{ context.customer.email }}</div>
-        {% endblock %}
-
-        {% block actions %}
-            <div
-                {{ vi_attrs('actions') }}
-                class="{{ vi_class('actions') }}"
-            >
-                {% block actions_content %}{% endblock %}
-            </div>
-        {% endblock %}
-    </div>
-</div>
+            {% endvi_block %}
+        </div>
+    {% endblock %}
+</section>

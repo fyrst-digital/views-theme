@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/page/account/addressbook/index.html.twig' %}
+
+{% block page_account %}
+    <twig:ViewsTheme:Account:Page>
+        <twig:block name="content">
+            <twig:ViewsTheme:Account:Addressbook :page="page" />
+        </twig:block>
+    </twig:ViewsTheme:Account:Page>
+{% endblock %}

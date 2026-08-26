@@ -17,7 +17,7 @@
         <twig:ViewsTheme:Form:Handler
             class="{{ vi_class('form') }}"
             {{ ...vi_attrs('form').defaults({
-                action: path('frontend.account.register.save'),
+                action: formAction|default(path('frontend.account.register.save')),
                 method: 'post',
             }).all() }}
         >
@@ -38,6 +38,9 @@
                 {% if not guestSelectable %}
                     <input type="hidden" name="createCustomerAccount" value="1">
                 {% endif %}
+                {% if requestedGroupId %}
+                    <input type="hidden" name="requestedGroupId" value="{{ requestedGroupId }}">
+                {% endif %}
 
                 {% block personal %}
                     <twig:ViewsTheme:Address:Personal
@@ -49,6 +52,7 @@
                             prefix: 'billingAddress',
                             accountType: accountType,
                             showBirthdayField: showBirthdayField,
+                            onlyCompanyRegistration: onlyCompanyRegistration,
                             showVat: true,
                             formViolations: formViolations,
                         }).all() }}

@@ -1,0 +1,81 @@
+{% props
+    page,
+    formId = 'confirmOrderForm',
+    allowOrderCancellation = false,
+    paymentMethodInvalid = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'summary', 'form', 'submit', 'cancel']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        <h2
+            {{ vi_attrs('heading') }}
+            class="{{ vi_class('heading') }}"
+        >
+            {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block summary %}
+        <twig:ViewsTheme:Cart:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                summary: page.order,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                id: formId,
+                action: path('frontend.account.edit-order.update-order', { orderId: page.order.id }),
+                method: 'post',
+            }).all() }}
+        >
+            <twig:block name="content">
+                <input type="hidden" name="paymentMethodId" value="{{ context.paymentMethod.id }}">
+
+                {% vi_block submit %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('submit') }}"
+                        {{ ...vi_attrs('submit').defaults({
+                            type: 'submit',
+                            color: 'primary',
+                            size: 'lg',
+                            full: true,
+                            label: 'account.editOrderUpdateButton'|trans|sw_sanitize,
+                            title: 'account.editOrderUpdateButton'|trans|striptags,
+                            disabled: page.paymentChangeable == false or paymentMethodInvalid ? true : false,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+
+    {% block cancel %}
+        {% if allowOrderCancellation %}
+            <twig:ViewsTheme:Modal:Open
+                class="{{ vi_class('cancel') }}"
+                {{ ...vi_attrs('cancel').defaults({
+                    modalId: 'vi-order-cancel-' ~ page.order.id,
+                    color: 'secondary',
+                    full: true,
+                    label: 'account.editOrderCancelOrderButton'|trans|sw_sanitize,
+                }).all() }}
+            />
+            <twig:ViewsTheme:Order:Cancel
+                :order="page.order"
+                redirectTo="frontend.account.order.page"
+            />
+        {% endif %}
+    {% endblock %}
+</aside>

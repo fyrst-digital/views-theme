@@ -42,6 +42,8 @@ class Personal
 
     public bool $showVat = true;
 
+    public bool $showCompanyFields = false;
+
     /**
      * @var array<string, mixed>
      */
@@ -110,7 +112,7 @@ class Personal
 
         $this->showAccountType = !$this->hideCustomerTypeSelect && ($showAccountTypeConfig || $this->onlyCompanyRegistration);
         $this->companyAlways = $this->onlyCompanyRegistration;
-        $this->showCompany = $this->showAccountType || $this->companyAlways;
+        $this->showCompany = $this->showAccountType || $this->companyAlways || $this->showCompanyFields;
 
         $resolvedType = $this->resolveAccountType();
         $this->accountTypeValue = $resolvedType;

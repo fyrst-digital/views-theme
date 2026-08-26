@@ -1,0 +1,20 @@
+{% props
+    modal = 'ViewsTheme:Modal',
+    modalId = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        color: 'link',
+        'data-component': 'ViewsTheme:Modal:Open',
+        'data-component-options': {
+            modalComponentName: modal,
+            modalId: modalId,
+        }|json_encode,
+    }).all() }}
+/>

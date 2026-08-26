@@ -1,0 +1,119 @@
+{% props
+    page,
+    customer = context.customer,
+    cva = {},
+%}
+
+{% set ableToShip = customer.defaultShippingAddress.country.shippingAvailable|default(true) %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['alerts', 'heading', 'profile', 'newsletter', 'addresses', 'order']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block alerts %}
+        <div
+            {{ vi_attrs('alerts') }}
+            class="{{ vi_class('alerts') }}"
+        >
+            {% if not ableToShip %}
+                <twig:ViewsTheme:Alert
+                    type="warning"
+                    content="{{ 'account.overviewNotAbleToShip'|trans|sw_sanitize }}"
+                    announceOnLoad
+                />
+            {% endif %}
+
+            {% if page.customer.requestedGroup %}
+                <twig:ViewsTheme:Alert
+                    type="info"
+                    content="{{ 'account.overviewCustomerGroupRequest'|trans({
+                        '%group%': page.customer.requestedGroup.translated.name,
+                    })|sw_sanitize }}"
+                    announceOnLoad
+                />
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block heading %}
+        <twig:ViewsTheme:Account:Heading
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                title: 'account.overviewTitle'|trans|sw_sanitize,
+                intro: 'account.overviewInfo'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block profile %}
+        <twig:ViewsTheme:Account:PersonalCard
+            class="{{ vi_class('profile') }}"
+            {{ ...vi_attrs('profile').defaults({
+                customer: customer,
+                editable: true,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block newsletter %}
+        <twig:ViewsTheme:Account:Newsletter
+            class="{{ vi_class('newsletter') }}"
+            {{ ...vi_attrs('newsletter').defaults({
+                newsletterAccountPagelet: page.newsletterAccountPagelet,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block addresses %}
+        <twig:ViewsTheme:Address:List
+            class="{{ vi_class('addresses') }}"
+            {{ ...vi_attrs('addresses').defaults({
+                billingAddress: customer.defaultBillingAddress,
+                shippingAddress: customer.defaultShippingAddress,
+                shippingFirst: false,
+                showShippingWarning: true,
+                shippingTitle: 'account.overviewShippingHeader'|trans|sw_sanitize,
+                billingTitle: 'account.overviewBillingHeader'|trans|sw_sanitize,
+                equalText: 'account.overviewAddressEqual'|trans|sw_sanitize,
+            }).all() }}
+        >
+            <twig:block name="billingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultBillingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+            <twig:block name="shippingActions">
+                <twig:ViewsTheme:Button
+                    type="link"
+                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultShippingAddress.id }) }}"
+                    color="link"
+                    size="sm"
+                    icon="pencil-simple-line"
+                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
+                />
+            </twig:block>
+        </twig:ViewsTheme:Address:List>
+    {% endblock %}
+
+    {% block newestOrder %}
+        {% if page.newestOrder %}
+            <section
+                {{ vi_attrs('order') }}
+                class="{{ vi_class('order') }}"
+            >
+                <h2 class="{{ vi_class('orderTitle') }}">
+                    {{ 'account.overviewNewestOrderHeader'|trans|sw_sanitize }}
+                </h2>
+                <twig:ViewsTheme:Order:Item :order="page.newestOrder" />
+            </section>
+        {% endif %}
+    {% endblock %}
+</div>

@@ -1,82 +1,90 @@
-{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
-
-{% deprecated 'ViewsTheme:Order:ItemDetails is a legacy core sw_extends shell and is deprecated. Rewrite as pure UX (optional thin storefront bridge). See docs/conventions/components.md#extends-shells.' package="fyrst/views-theme" version="1.0.0" %}
-
 {% props
+    order,
     cva = {},
 %}
 
-{% do vi_define_cva({
-    body: { base: 'order-detail-content-body' },
-    footer: { base: 'order-item-detail-footer' },
-    summaryList: { base: 'order-item-summary-list cart-summary-list' },
-}|replace_recursive(cva)) %}
+{% set taxFree = order.isTaxFree|default(order.taxStatus is same as(constant('Shopware\\Core\\Checkout\\Cart\\Price\\Struct\\CartPrice::TAX_STATE_FREE'))) %}
+{% set totalLabel = taxFree ? 'account.orderItemNetTotal' : 'account.orderItemTotal' %}
+{% set totalValue = taxFree ? order.amountNet : order.amountTotal %}
 
-{% do vi_define_attrs(['body', 'footer', 'summaryList']) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['documents', 'items', 'comment', 'info', 'summary']) %}
 
-{% block page_account_order_documents_table %}
-{% endblock %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block documents %}
+        <twig:ViewsTheme:Order:Documents
+            class="{{ vi_class('documents') }}"
+            {{ ...vi_attrs('documents').defaults({
+                order: order,
+            }).all() }}
+        />
+    {% endblock %}
 
-{% block page_account_order_item_detail_table_header %}
-{% endblock %}
+    {% block items %}
+        <twig:ViewsTheme:Order:ItemDetailsList
+            class="{{ vi_class('items') }}"
+            {{ ...vi_attrs('items').defaults({
+                order: order,
+            }).all() }}
+        />
+    {% endblock %}
 
-{% block page_account_order_item_detail_table_body_customer_comment %}
-{% endblock %}
+    {% block comment %}
+        {% if order.customerComment %}
+            <div
+                {{ vi_attrs('comment') }}
+                class="{{ vi_class('comment') }}"
+            >
+                <h3 class="{{ vi_class('commentTitle') }}">
+                    {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
+                </h3>
+                <p class="{{ vi_class('commentBody') }}">{{ order.customerComment|sw_sanitize|nl2br }}</p>
+            </div>
+        {% endif %}
+    {% endblock %}
 
-{% block page_account_order_item_detail_table_body %}
-    <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-        {% component 'ViewsTheme:Order:ItemDetailsList' %}{% endcomponent %}
-    </div>
-{% endblock %}
+    {% block footer %}
+        <div
+            {{ vi_attrs('info') }}
+            class="{{ vi_class('info') }}"
+        >
+            <twig:ViewsTheme:Order:SummaryItem
+                label="{{ 'account.orderItemDate'|trans|sw_sanitize }}"
+                value="{{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}"
+            />
+            <twig:ViewsTheme:Order:SummaryItem
+                label="{{ 'account.orderItemNumber'|trans|sw_sanitize }}"
+                value="{{ order.orderNumber }}"
+            />
+        </div>
 
-{% block page_account_order_item_detail_table_footer %}
+        <div
+            {{ vi_attrs('summary') }}
+            class="{{ vi_class('summary') }}"
+        >
+            {% if order.deliveries|length > 0 or order.primaryOrderDelivery %}
+                <twig:ViewsTheme:Cart:Summary:Item
+                    label="{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}"
+                    value="{{ order.shippingTotal|currency(order.currency.isoCode) }}"
+                />
+            {% endif %}
 
-    {% block page_account_order_item_detail_table_labels_summary %}
-        <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+            {% if not taxFree %}
+                {% for calculatedTax in order.price.calculatedTaxes %}
+                    <twig:ViewsTheme:Cart:Summary:Item
+                        label="{{ 'checkout.summaryTax'|trans({ '%rate%': calculatedTax.taxRate })|sw_sanitize }}"
+                        value="{{ calculatedTax.tax|currency(order.currency.isoCode) }}"
+                    />
+                {% endfor %}
+            {% endif %}
 
-            {% block page_account_order_item_detail_summary %}
-                <div {{ vi_attrs('summaryList') }} class="{{ vi_class('summaryList') }}">
-                    {% block page_account_order_item_detail_shipping_costs %}
-                        {% if order.deliveries|length > 0 %}
-                            <twig:ViewsTheme:Cart:Summary:Item
-                                label="{{ 'account.orderItemShippingcosts'|trans|sw_sanitize }}"
-                                value="{{ order.shippingTotal|currency(order.currency.isoCode) }}"
-                                class="summary-item-shipping"
-                            />
-                        {% endif %}
-                    {% endblock %}
-
-                    {% block page_account_order_item_detail_amount %}
-                        {% set totalAmountLabel = 'account.orderItemTotal'|trans|sw_sanitize %}
-                        {% set totalAmountValue = order.amountTotal|currency(order.currency.isoCode) %}
-
-                        {% if order.isTaxFree %}
-                            {% set totalAmountLabel = 'account.orderItemNetTotal'|trans|sw_sanitize %}
-                            {% set totalAmountValue = order.amountNet|currency(order.currency.isoCode) %}
-                        {% endif %}
-
-                        <twig:ViewsTheme:Cart:Summary:Item
-                            label="{{ totalAmountLabel }}"
-                            value="{{ totalAmountValue }}"
-                            class="summary-item-grand-total"
-                        />
-                    {% endblock %}
-
-                    {% block page_account_order_item_detail_vat %}
-                        {% if not order.isTaxFree %}
-                            {% for calculatedTax in order.price.calculatedTaxes %}
-                                <twig:ViewsTheme:Cart:Summary:Item
-                                    label="{{ 'checkout.summaryTax'|trans({
-                                        '%rate%': calculatedTax.taxRate
-                                    })|sw_sanitize }}"
-                                    value="{{ calculatedTax.tax|currency(order.currency.isoCode) }}"
-                                    class="summary-item-tax-total"
-                                />
-                            {% endfor %}
-                        {% endif %}
-                    {% endblock %}
-                </div>
-            {% endblock %}
+            <twig:ViewsTheme:Cart:Summary:Item
+                label="{{ totalLabel|trans|sw_sanitize }}"
+                value="{{ totalValue|currency(order.currency.isoCode) }}"
+            />
         </div>
     {% endblock %}
-{% endblock %}
+</div>

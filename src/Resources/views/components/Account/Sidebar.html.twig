@@ -1,0 +1,75 @@
+{% props
+    activeRoute = app.request.attributes.get('_route'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['nav', 'greeting', 'logout']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block nav %}
+        <twig:ViewsTheme:Account:Actions
+            class="{{ vi_class('nav') }}"
+            {{ ...vi_attrs('nav').defaults({
+                activeRoute: activeRoute,
+                actions: {
+                    home: {
+                        route: 'frontend.account.home.page',
+                        label: 'account.overviewLink'|trans|striptags,
+                        icon: 'squares-four',
+                    },
+                    profile: {
+                        route: 'frontend.account.profile.page',
+                        label: 'account.profileLink'|trans|sw_sanitize,
+                        icon: 'pencil-simple-line',
+                    },
+                    address: {
+                        route: 'frontend.account.address.page',
+                        activePrefix: 'frontend.account.address',
+                        label: 'account.addressLink'|trans|sw_sanitize,
+                        icon: 'address-book',
+                    },
+                    orders: {
+                        route: 'frontend.account.order.page',
+                        label: 'account.ordersLink'|trans|sw_sanitize,
+                        icon: 'package',
+                    },
+                },
+            }).all() }}
+        >
+            <twig:block name="header">
+                {% block greeting %}
+                    <p
+                        {{ vi_attrs('greeting') }}
+                        class="{{ vi_class('greeting') }}"
+                    >
+                        {{ 'account.greetings'|trans|sw_sanitize }}
+                        {{ context.customer.title }}
+                        {{ context.customer.firstName }}
+                        {{ context.customer.lastName }}
+                    </p>
+                {% endblock %}
+            </twig:block>
+            <twig:block name="footer">
+                {% block logout %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('logout') }}"
+                        {{ ...vi_attrs('logout').defaults({
+                            type: 'link',
+                            href: path('frontend.account.logout.page'),
+                            color: 'none',
+                            size: 'sm',
+                            justify: 'start',
+                            icon: 'arrow-line-right',
+                            label: 'account.logout'|trans|sw_sanitize,
+                            title: 'account.logout'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endblock %}
+            </twig:block>
+        </twig:ViewsTheme:Account:Actions>
+    {% endblock %}
+</aside>
