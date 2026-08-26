@@ -1,59 +1,78 @@
 {% props
     navigation,
+    collapsible = null,
+    collapseAt = 'md',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['headlineLink', 'linkList', 'linkItem', 'link']) %}
+{% do vi_define_attrs(['column', 'headlineLink', 'linkList', 'linkItem', 'link']) %}
 
-<twig:ViewsTheme:Page:Footer:Column
+<twig:ViewsTheme:Grid
     class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
-        collapsible: navigation.children|default([])|length > 0,
+        role: 'list',
+        gap: '6',
+        columns: '6',
     }).all() }}
 >
-    <twig:block name="headline">
-        {% if navigation.category.type == 'folder' %}
-            {{ navigation.category.translated.name }}
-        {% else %}
-            <a
-                {{ vi_attrs('headlineLink').defaults({
-                    href: category_url(navigation.category),
-                    title: navigation.category.translated.name,
-                    target: category_linknewtab(navigation.category) ? '_blank' : null,
-                }) }}
-                class="{{ vi_class('headlineLink') }}"
-            >
-                {{ navigation.category.translated.name }}
-            </a>
-        {% endif %}
-    </twig:block>
-
     <twig:block name="content">
-        {% if navigation.children|default([])|length > 0 %}
-            <ul {{ vi_attrs('linkList') }} class="{{ vi_class('linkList') }}">
-                {% for treeItem in navigation.children %}
-                    {% set category = treeItem.category %}
-                    {% set categoryName = category.translated.name %}
+        {% for root in navigation.tree %}
+            <twig:ViewsTheme:Page:Footer:Column
+                class="{{ vi_class('column') }}"
+                {{ ...vi_attrs('column').defaults({
+                    collapsible: collapsible is not null ? collapsible : root.children|default([])|length > 0,
+                    collapseAt: collapseAt,
+                    cva: {
+                        root: { base: 'vi-footer-column g-col-6 g-col-md-3' },
+                    },
+                }).all() }}
+            >
+                <twig:block name="headline">
+                    {% if root.category.type == 'folder' %}
+                        {{ root.category.translated.name }}
+                    {% else %}
+                        <a
+                            {{ vi_attrs('headlineLink').defaults({
+                                href: category_url(root.category),
+                                title: root.category.translated.name,
+                                target: category_linknewtab(root.category) ? '_blank' : null,
+                            }) }}
+                            class="{{ vi_class('headlineLink') }}"
+                        >
+                            {{ root.category.translated.name }}
+                        </a>
+                    {% endif %}
+                </twig:block>
 
-                    <li {{ vi_attrs('linkItem') }} class="{{ vi_class('linkItem') }}">
-                        {% if category.type == 'folder' %}
-                            <div>{{ categoryName }}</div>
-                        {% else %}
-                            <a
-                                {{ vi_attrs('link').defaults({
-                                    href: category_url(category),
-                                    title: categoryName,
-                                    target: category_linknewtab(category) ? '_blank' : null,
-                                }) }}
-                                class="{{ vi_class('link') }}"
-                            >
-                                {{ categoryName }}
-                            </a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+                <twig:block name="content">
+                    {% if root.children|default([])|length > 0 %}
+                        <ul {{ vi_attrs('linkList') }} class="{{ vi_class('linkList') }}">
+                            {% for treeItem in root.children %}
+                                {% set category = treeItem.category %}
+                                {% set categoryName = category.translated.name %}
+
+                                <li {{ vi_attrs('linkItem') }} class="{{ vi_class('linkItem') }}">
+                                    {% if category.type == 'folder' %}
+                                        <div>{{ categoryName }}</div>
+                                    {% else %}
+                                        <a
+                                            {{ vi_attrs('link').defaults({
+                                                href: category_url(category),
+                                                title: categoryName,
+                                                target: category_linknewtab(category) ? '_blank' : null,
+                                            }) }}
+                                            class="{{ vi_class('link') }}"
+                                        >
+                                            {{ categoryName }}
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Page:Footer:Column>
+        {% endfor %}
     </twig:block>
-</twig:ViewsTheme:Page:Footer:Column>
+</twig:ViewsTheme:Grid>

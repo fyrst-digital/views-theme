@@ -12,8 +12,9 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` (path plugins such as PayPal extend) |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline column, nav columns, logos, bottom |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: revocation CTA + `Bottom` only |
-| `Page:Footer:Column` | Headline + body; optional mobile collapse via `collapsible` (default `false`) |
-| `Page:Footer:Column:Navigation` | Root-host of Column; category headline + child links; `collapsible` when it has children |
+| `Page:Footer:Column` | Headline + body; optional collapse via `collapsible` (default `false`); `collapseAt` (`sm`–`xxl`, default `md`) |
+| `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open |
+| `Page:Footer:Column:Navigation` | Root-host of Grid; tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Logos` | Payment / shipping media + PayPal installment mount |
 | `Page:Footer:Bottom` | Service menu, VAT notice, copyright (`brand` prop → snippet `%brand%`) |
 | `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
@@ -29,9 +30,10 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (role=list, columns=8; items g-col-8 g-col-md-4, 2-up from md)
-          │    ├─ Page:Footer:Column          hotline / contact / revocation
-          │    └─ Page:Footer:Column:Navigation × N
+          ├─ Grid (columns=8; layout only)
+          │    ├─ Page:Footer:Column:Hotline      root-host of Column
+          │    └─ Page:Footer:Column:Navigation   Grid (role=list, columns=8)
+          │         └─ Page:Footer:Column × N
           ├─ Page:Footer:Logos
           └─ Page:Footer:Bottom
 
@@ -41,9 +43,13 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
      └─ Page:Footer:Bottom
 ```
 
-Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in when it has child links: mobile toggle via `aria-expanded` (`Column.js`); columns start collapsed; `md` / 768px always open (`d-md-none` on the caret). Pass `collapsible=false` on Navigation to opt out.
+Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. From `collapseAt` up (default `md`) content stays open and the caret is `d-{collapseAt}-none`. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseAt` (`sm` | `md` | `lg` | `xl` | `xxl`).
 
-Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link.
+Main skips the Navigation mount when `footer.navigation.tree` is empty (same as Logos / Bottom `{% if footer %}`). Do not wrap Navigation’s own template in that gate.
+
+Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid is layout only (no `role=list`); list semantics live on Navigation’s Grid + Column `role=listitem`.
+
+Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`.
 
 ## Class components
 
@@ -90,9 +96,9 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]` (`md+` always open); inner `__body` holds padding — same split as Accordion:Panel |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseAt` up (`data-collapse-at` + `@variant` in `components.css`) always open; inner `__body` holds padding — same split as Accordion:Panel |
 
-Main / Minimal / Bottom / Logos have **no** `data-component`. Hotline Column (no `collapsible`) has none either; Navigation Columns do when they have children.
+Main / Minimal / Bottom / Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
 
 ## Out of scope
 
@@ -102,7 +108,7 @@ Main / Minimal / Bottom / Logos have **no** `data-component`. Hotline Column (no
 
 ## Files
 
-`components/Page/Footer/{Main,Minimal,Column,Bottom,Logos,Revocation}.*` · `components/Page/Footer/Column/Navigation.*` · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
+`components/Page/Footer/{Main,Minimal,Column,Bottom,Logos,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation}.*` · `app/storefront/src/css/components.css` (`collapseAt` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
 
 ## Related
 
