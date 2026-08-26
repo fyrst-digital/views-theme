@@ -98,6 +98,11 @@
   @media (width >= 1600px) {
     --vi-product-basis: 320px;
   }
+  &.grid-size__md {
+    @media (width >= 768px) {
+      --vi-grid-gap: var(--spacing-8, 40px);
+    }
+  }
 }
 .vi-product-buy-container {
   @media (width >= 520px) {

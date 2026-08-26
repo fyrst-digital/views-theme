@@ -105,6 +105,12 @@
   @variant xxl {
     --vi-product-basis: 320px;
   }
+
+  &.grid-size__md {
+    @variant md {
+      --vi-grid-gap: var(--spacing-8, 40px);
+    }
+  }
 }
 
 .vi-product-buy-container {

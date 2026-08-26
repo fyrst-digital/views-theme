@@ -6,7 +6,7 @@
     class="{{ vi_class('root') }}"
 >
     {% block fields %}
-        <twig:ViewsTheme:Grid columns="6" gap="3">
+        <twig:ViewsTheme:Grid columns="6" gap="sm">
 
             <twig:block name="content">
             {% vi_block prepend %}{% endvi_block %}
@@ -21,7 +21,7 @@
                         }).all() }}
                     >
                         <twig:block name="control">
-                            <twig:ViewsTheme:Grid columns="6" gap="3">
+                            <twig:ViewsTheme:Grid columns="6" gap="sm">
                                 <twig:block name="content">
                                 <twig:ViewsTheme:Form:Select
                                     class="{{ vi_class('accountTypeSelect') }}"

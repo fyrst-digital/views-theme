@@ -33,6 +33,7 @@
             class="{{ vi_class('grid', {size: size}) }}"
             {{ ...vi_attrs('grid').defaults({
                 role: hasResults ? 'list' : null,
+                gap: 'md',
             }).all() }}
         >
             <twig:block name="content">

@@ -6,7 +6,7 @@ Generic CSS grid layout shell. Owns container chrome (`grid`) plus optional **ga
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Grid` | `display: grid`; optional `--vi-grid-gap` / `--vi-grid-cols` |
+| `Grid` | `display: grid`; always `--vi-grid-gap`; optional `--vi-grid-cols` |
 | Caller | Content; item column classes when needed |
 
 No PHP/JS / `data-component`.
@@ -15,7 +15,7 @@ No PHP/JS / `data-component`.
 
 ```twig
 {# Default 12-col BS grid; items use g-col-* #}
-<twig:ViewsTheme:Grid role="list" gap="4">
+<twig:ViewsTheme:Grid role="list" gap="md">
     <twig:block name="content">
         {% for product in products %}
             <twig:ViewsTheme:Product:Box class="g-col-6 g-col-lg-4" :product="product" />
@@ -24,7 +24,12 @@ No PHP/JS / `data-component`.
 </twig:ViewsTheme:Grid>
 
 {# Address / register fields — 6-col base #}
-<twig:ViewsTheme:Grid columns="6" gap="3">
+<twig:ViewsTheme:Grid columns="6" gap="sm">
+    …
+</twig:ViewsTheme:Grid>
+
+{# Token only — no CVA gap class #}
+<twig:ViewsTheme:Grid :gap="false">
     …
 </twig:ViewsTheme:Grid>
 ```
@@ -34,7 +39,7 @@ No PHP/JS / `data-component`.
 | Prop | Default | Notes |
 |------|---------|--------|
 | `role` | `null` | Root ARIA role |
-| `gap` | `null` | `'0'`…`'10'` → Bootstrap `gap-*`; other string → `--vi-grid-gap` + `data-grid-gap-mode="token"` |
+| `gap` | `false` | `false` → no CVA class (`gap: var(--vi-grid-gap, …)`); `'sm'` / `'md'` / `'lg'` → `gap-2` / `gap-4` / `gap-6` |
 | `columns` | `null` | Scalar only → `--vi-grid-cols: N` (no breakpoint maps) |
 | `cva` | `{}` | Root override |
 
@@ -43,17 +48,18 @@ No PHP/JS / `data-component`.
 ```css
 .vi-grid {
   grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-cols, 12), minmax(0, 1fr)));
+  gap: var(--vi-grid-gap, var(--bs-gap, 0));
 
-  &[data-grid-gap-mode='token'] {
-    gap: var(--vi-grid-gap, var(--bs-gap, 0));
-  }
+  &.gap-2 { --vi-grid-gap: var(--spacing-2, 8px); }
+  &.gap-4 { --vi-grid-gap: var(--spacing-4, 16px); }
+  &.gap-6 { --vi-grid-gap: var(--spacing-6, 24px); }
 }
 ```
 
 | Token | Role |
 |-------|------|
 | `--vi-grid-cols` | Track **count** (from `columns` prop; default `12`) |
-| `--vi-grid-gap` | Token gap when `gap` is not `0`–`5` |
+| `--vi-grid-gap` | Always consumed. CVA `sm` / `md` / `lg` assign it (`8px` / `16px` / `24px`). Theme/host may assign when `gap` is `false` |
 | `--vi-grid-columns` | Optional **full** `grid-template-columns` override (listing auto-fill, Review panel/matrix) |
 
 Theme may assign `--vi-grid-cols` / `--vi-grid-gap` / `--vi-grid-columns` on a host without props. **No media queries in Grid.css.**
@@ -72,11 +78,11 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 
 | Caller | Notes |
 |--------|--------|
-| `Product:Listing:Results` | Items grid; density via Results `size` → item CVA `g-col-*`; host may set `--vi-grid-columns` |
+| `Product:Listing:Results` | Items grid (`gap="md"`); `size=md` assigns `--vi-grid-gap` at `md` via theme CSS; density via Results `size` → item CVA `g-col-*`; host may set `--vi-grid-columns` |
 | `Account:Register` / `Address:*` | Field layout, 6-col base |
 | `Address:List` | Shipping + billing cards (`g-col-12 g-col-md-6`) |
-| `Page:Footer:Main` | Outer columns Grid (`columns="8"`) around `Column:Hotline` + `Column:Navigation` |
-| `Page:Footer:Column:Navigation` | Inner Grid (`role=list`, `columns="8"`, `gap="6"`) around the nav tree loop |
+| `Page:Footer:Main` | Outer columns Grid (`columns="8"`, `gap="lg"`) around `Column:Hotline` + `Column:Navigation` |
+| `Page:Footer:Column:Navigation` | Inner Grid (`role=list`, `columns="8"`, `gap="lg"`) around the nav tree loop |
 
 ## Files
 
