@@ -45,4 +45,38 @@ final class AccountBridgeOwnershipTest extends TestCase
         self::assertStringNotContainsString('account-aside', $source);
         self::assertStringNotContainsString('js-form-field-toggle-guest-mode', $source);
     }
+
+    /**
+     * @return iterable<string, array{0: string}>
+     */
+    public static function loggedInPageLayoutProvider(): iterable
+    {
+        $root = dirname(__DIR__, 5) . '/src/Resources/views/storefront/page/account';
+
+        yield 'page/account/index.html.twig' => [$root . '/index.html.twig'];
+        yield 'page/account/profile/index.html.twig' => [$root . '/profile/index.html.twig'];
+        yield 'page/account/addressbook/index.html.twig' => [$root . '/addressbook/index.html.twig'];
+        yield 'page/account/addressbook/create.html.twig' => [$root . '/addressbook/create.html.twig'];
+        yield 'page/account/addressbook/edit.html.twig' => [$root . '/addressbook/edit.html.twig'];
+        yield 'page/account/order-history/index.html.twig' => [$root . '/order-history/index.html.twig'];
+    }
+
+    #[DataProvider('loggedInPageLayoutProvider')]
+    public function testLoggedInPageMountsAccountPage(string $path): void
+    {
+        $source = (string) file_get_contents($path);
+
+        self::assertStringContainsString("{% block page_account %}", $source);
+        self::assertStringContainsString('<twig:ViewsTheme:Account:Page>', $source);
+        self::assertStringNotContainsString('page_account_main_content', $source);
+    }
+
+    public function testAccountPageShellDoesNotNestMainContentBlock(): void
+    {
+        $path = dirname(__DIR__, 5) . '/src/Resources/views/storefront/page/account/_page.html.twig';
+        $source = (string) file_get_contents($path);
+
+        self::assertStringContainsString('<twig:ViewsTheme:Account:Page />', $source);
+        self::assertStringNotContainsString('page_account_main_content', $source);
+    }
 }

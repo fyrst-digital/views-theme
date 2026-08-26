@@ -63,7 +63,7 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 | Core (forbidden) | Theme owner |
 |------------------|-------------|
 | `FormHandler` / `data-form-handler` / `data-form-submit-loader` | `Form:Handler` on `#confirmOrderForm` |
-| `FormAutoSubmit` / `data-form-auto-submit` | `Checkout:Method:Form` — radio `change` → `form.submit()` |
+| `FormAutoSubmit` / `data-form-auto-submit` | `Checkout:Method:Form` — radio `change` → `requestSubmit()` |
 | `FormPreserver` / `CheckoutCustomerStorage` | `Checkout:Confirm:Comment` only — localStorage keyed by customer id. **Never** persist `tos` / `revocation` |
 | `FormAddHistory` / `data-form-add-history` | Drop |
 | `AddressManager` / `data-address-manager` | `Address:Manager:Action` — [address manager](address-manager.md) |

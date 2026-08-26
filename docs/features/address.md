@@ -22,7 +22,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 Address                          (core address.html.twig)
 Address:List
 ├─ Grid
-│    ├─ shipping card → Address  (+ shippingActions nest)
+│    ├─ shipping card → Address or equal text  (+ shippingActions nest)
 │    └─ billing card → Address or equal text  (+ billingActions nest)
 Checkout:Confirm:Addresses       (root-host)
 └─ Address:List
@@ -46,7 +46,7 @@ Anonymous. Props:
 
 ## Address:List
 
-Anonymous. Shipping card is omitted when `hideShippingAddress`. Billing shows `equalText` when both ids match **and** shipping is visible.
+Anonymous. Shipping card is omitted when `hideShippingAddress`. When both ids match and shipping is visible, `equalText` goes on the **visually second** card: billing when `shippingFirst` (checkout), shipping when `shippingFirst` is false (account billing-first). The first card always shows the live address.
 
 | Prop | Default | Notes |
 |------|---------|--------|

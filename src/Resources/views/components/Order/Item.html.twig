@@ -61,72 +61,75 @@
             {% endblock %}
 
             {% block menu %}
-                <twig:ViewsTheme:Dropdown
-                    class="{{ vi_class('menu') }}"
-                    {{ ...vi_attrs('menu').defaults({
-                        id: menuId,
-                        placement: 'bottom-end',
-                        'toggle:icon': 'dots-three',
-                        'toggle:label': false,
-                        'toggle:size': 'sm',
-                        'toggle:color': 'light',
-                        'toggle:title': 'account.orderActions'|trans|striptags,
-                        'toggle:aria-label': 'account.orderActions'|trans|striptags,
-                    }).all() }}
-                >
-                    <twig:block name="content">
-                        {% if allowChangePayment %}
-                            <twig:ViewsTheme:Button
-                                type="link"
-                                href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}"
-                                color="none"
-                                size="sm"
-                                justify="start"
-                                icon="{{ isPaymentNeeded ? 'check' : 'pencil-simple-line' }}"
-                                label="{{ (isPaymentNeeded ? 'account.orderStatusActionCompletePayment' : 'account.orderContextMenuChangePayment')|trans|sw_sanitize }}"
-                            />
-                        {% endif %}
-
-                        <twig:ViewsTheme:Form:Handler
-                            action="{{ path('frontend.checkout.line-item.add') }}"
-                            method="post"
-                        >
-                            <twig:block name="content">
-                                <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                {% for lineItem in order.lineItems %}
-                                    {% if lineItem.type == productLineItemType %}
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
-                                        <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
-                                    {% endif %}
-                                {% endfor %}
+                <div class="{{ vi_class('menu') }}">
+                    <twig:ViewsTheme:Dropdown
+                        {{ ...vi_attrs('menu').defaults({
+                            id: menuId,
+                            placement: 'bottom-end',
+                            'toggle:icon': 'dots-three',
+                            'toggle:label': false,
+                            'toggle:size': 'sm',
+                            'toggle:color': 'light',
+                            'toggle:title': 'account.orderActions'|trans|striptags,
+                            'toggle:aria-label': 'account.orderActions'|trans|striptags,
+                        }).all() }}
+                    >
+                        <twig:block name="content">
+                            {% if allowChangePayment %}
                                 <twig:ViewsTheme:Button
-                                    type="submit"
+                                    type="link"
+                                    href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}"
                                     color="none"
                                     size="sm"
                                     justify="start"
-                                    icon="arrows-clockwise"
-                                    label="{{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}"
+                                    icon="{{ isPaymentNeeded ? 'check' : 'pencil-simple-line' }}"
+                                    label="{{ (isPaymentNeeded ? 'account.orderStatusActionCompletePayment' : 'account.orderContextMenuChangePayment')|trans|sw_sanitize }}"
                                 />
-                            </twig:block>
-                        </twig:ViewsTheme:Form:Handler>
+                            {% endif %}
 
-                        {% if allowOrderCancellation %}
-                            <twig:ViewsTheme:Modal:Open
-                                modalId="vi-order-cancel-{{ order.id }}"
-                                color="none"
-                                size="sm"
-                                justify="start"
-                                icon="x"
-                                label="{{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}"
-                            />
-                            <twig:ViewsTheme:Order:Cancel :order="order" />
-                        {% endif %}
-                    </twig:block>
-                </twig:ViewsTheme:Dropdown>
+                            <twig:ViewsTheme:Form:Handler
+                                action="{{ path('frontend.checkout.line-item.add') }}"
+                                method="post"
+                            >
+                                <twig:block name="content">
+                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                    {% for lineItem in order.lineItems %}
+                                        {% if lineItem.type == productLineItemType %}
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
+                                        {% endif %}
+                                    {% endfor %}
+                                    <twig:ViewsTheme:Button
+                                        type="submit"
+                                        color="none"
+                                        size="sm"
+                                        justify="start"
+                                        icon="arrows-clockwise"
+                                        label="{{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}"
+                                    />
+                                </twig:block>
+                            </twig:ViewsTheme:Form:Handler>
+
+                            {% if allowOrderCancellation %}
+                                <twig:ViewsTheme:Modal:Open
+                                    modalId="vi-order-cancel-{{ order.id }}"
+                                    color="none"
+                                    size="sm"
+                                    justify="start"
+                                    icon="x"
+                                    label="{{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}"
+                                />
+                            {% endif %}
+                        </twig:block>
+                    </twig:ViewsTheme:Dropdown>
+                    {% if allowOrderCancellation %}
+                        <twig:ViewsTheme:Order:Cancel :order="order" />
+                    {% endif %}
+                </div>
             {% endblock %}
         </div>
     {% endblock %}

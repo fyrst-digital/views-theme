@@ -26,6 +26,6 @@ export default class AccountNewsletter extends ShopwareComponent {
         }
 
         const form = field.form || this.el.querySelector('form')
-        form?.submit()
+        form?.requestSubmit()
     }
 }

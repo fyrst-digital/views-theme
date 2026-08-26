@@ -37,10 +37,16 @@
                             </h2>
 
                             <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                                <twig:ViewsTheme:Address
-                                    :address="shippingAddress"
-                                    :showShippingWarning="showShippingWarning"
-                                />
+                                {% if addressesEqual and not shippingFirst %}
+                                    <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
+                                        {{ equalText }}
+                                    </p>
+                                {% else %}
+                                    <twig:ViewsTheme:Address
+                                        :address="shippingAddress"
+                                        :showShippingWarning="showShippingWarning"
+                                    />
+                                {% endif %}
                             </div>
 
                             {% vi_block shippingActions %}{% endvi_block %}
@@ -58,7 +64,7 @@
                         </h2>
 
                         <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                            {% if addressesEqual and not hideShippingAddress %}
+                            {% if addressesEqual and not hideShippingAddress and shippingFirst %}
                                 <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
                                     {{ equalText }}
                                 </p>

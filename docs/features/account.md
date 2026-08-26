@@ -10,7 +10,8 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 
 | Piece | Responsibility |
 |-------|----------------|
-| Storefront `_page` | `page_account` → `Account:Page` (sidebar + main slot) |
+| Storefront `_page` | Logout fallback: empty `Account:Page` (no nested `page_account_main_content`) |
+| Logged-in page bridges | `page_account` → `Account:Page` + composer in the `content` slot |
 | Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
 | `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
 | `Account:Sidebar` | Greeting + `Account:Actions` (no logout in the nav list) + logout footer |
@@ -40,15 +41,18 @@ Do **not** use core `data-form-handler` / `data-form-auto-submit` / `data-form-a
 ## Composition
 
 ```
-page/account/_page.html.twig
-└─ page_account → Account:Page
-     ├─ Account:Sidebar → Account:Actions (header greeting, footer logout)
-     └─ main → page_account_main_content
-          ├─ Account:Overview
-          ├─ Account:Profile
-          ├─ Account:Addressbook / Addressbook:Form
-          └─ Account:Orders
+page/account/index.html.twig            page_account → Account:Page → Overview
+page/account/profile/index.html.twig    page_account → Account:Page → Profile
+page/account/addressbook/*.html.twig    page_account → Account:Page → Addressbook / Form
+page/account/order-history/index.html.twig  page_account → Account:Page → Orders
+page/account/_page.html.twig            page_account → Account:Page (logout, empty main)
+
+Account:Page
+├─ Account:Sidebar → Account:Actions (header greeting, footer logout)
+└─ main → content slot (composer mounted by the page bridge)
 ```
+
+Do **not** nest `{% block page_account_main_content %}` inside `Account:Page`’s content slot. Child page templates cannot fill a Twig inheritance block that lives inside a UX component. Each logged-in page overrides `page_account` and mounts the composer as **direct** slot content (same as checkout `page_checkout` / convert). Keep `sw_extends` of the matching core page — do not extend `_page` from children.
 
 Standalone (full header, no sidebar):
 
@@ -85,7 +89,7 @@ Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edi
 | Core (forbidden) | Theme owner |
 |------------------|--------------|
 | `FormHandler` / `data-form-handler` | `Form:Handler` |
-| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `form.submit()` |
+| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `requestSubmit()` |
 | `FormAjaxSubmit` + pagination | `Pagination` GET `?p=` (no listing owner on the page → native href) |
 | Bootstrap collapse (profile / order details) | `Accordion` |
 | Bootstrap dropdown (order actions) | `Dropdown` |
@@ -93,7 +97,7 @@ Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edi
 | Address manager listing widget | `Account:Addressbook` + `Address:Item` |
 | `data-order-detail-loader` | Drop — details are SSR in `Order:ItemDetails` |
 
-`Account:Addressbook` search filters `[data-component="ViewsTheme:Address:Item"]` client-side (same pattern as `Address:Manager:List`). Empty / no-results use `Address:Manager:Status`.
+`Account:Addressbook` search filters `[data-component="ViewsTheme:Address:Item"]` client-side (same pattern as `Address:Manager:List`). The field uses nest `input:aria-label` so the name lands on the `<input>`, not the `Form:Input` wrapper. Empty / no-results use `Address:Manager:Status`.
 
 ## Account:Actions active state
 
@@ -119,22 +123,22 @@ Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOr
 | `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
 | `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
 
-Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Order:Cancel`). Details: `Accordion` → `Order:ItemDetails` → `Cart:Items` + `Order:Documents` + totals.
+Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `Cart:Items` + `Order:Documents` + totals.
 
 ## Storefront bridges
 
 | File | Mount |
 |------|--------|
-| `page/account/_page.html.twig` | `Account:Page` |
+| `page/account/_page.html.twig` | `Account:Page` (logout, empty main) |
 | `page/account/sidebar.html.twig` | `Account:Sidebar` / `Account:Menu` |
-| `page/account/index.html.twig` | `Account:Overview` |
+| `page/account/index.html.twig` | `Account:Page` + `Account:Overview` |
 | `page/account/address.html.twig` | `Address:List` (overview include) |
 | `page/account/newsletter.html.twig` | `Account:Newsletter` |
-| `page/account/profile/index.html.twig` | `Account:Profile` |
-| `page/account/addressbook/index.html.twig` | `Account:Addressbook` |
+| `page/account/profile/index.html.twig` | `Account:Page` + `Account:Profile` |
+| `page/account/addressbook/index.html.twig` | `Account:Page` + `Account:Addressbook` |
 | `page/account/addressbook/address-manager.html.twig` | `Account:Addressbook` |
-| `page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Addressbook:Form` |
-| `page/account/order-history/index.html.twig` | `Account:Orders` |
+| `page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Page` + `Account:Addressbook:Form` |
+| `page/account/order-history/index.html.twig` | `Account:Page` + `Account:Orders` |
 | `page/account/order-history/order-item.html.twig` | `Order:Item` |
 | `page/account/order-history/order-detail.html.twig` | `Order:ItemDetails` |
 | `page/account/order-history/order-detail-list.html.twig` | `Order:ItemDetailsList` |
@@ -155,7 +159,7 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | `component/account/register.html.twig` | `Account:Register` |
 | `component/account/customer-group-register.html.twig` | `Account:Register` + group extras |
 
-Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Item`; `address-actions.html.twig` → `Address:ItemActions`; `default-address-actions.html.twig` → edit `Button`. Logout stays on theme `_page` (empty main).
+Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Item`; `address-actions.html.twig` → `Address:ItemActions`; `default-address-actions.html.twig` → edit `Button`. Logout stays on theme `_page` (`Account:Page` with empty main).
 
 ## Files
 

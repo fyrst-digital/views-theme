@@ -25,6 +25,6 @@ export default class CheckoutMethodForm extends ShopwareComponent {
             return
         }
 
-        this.el.submit()
+        this.el.requestSubmit()
     }
 }
