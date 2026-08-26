@@ -77,7 +77,7 @@ page/account/order/index.html.twig
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
 │    ├─ Cart:Items grid
 │    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
-└─ base_esi_footer → footer-minimal
+└─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
 Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
@@ -167,7 +167,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 
 ## Out of scope
 
-- Footer / header chrome on logged-in account pages (full storefront header)
+- Header chrome on logged-in account pages (full storefront header)
 - Redesigning `Page:Header:Minimal` for edit-order guest back-to-order
 - Core plugin unregister
 - Payment-method listing as its own account route (profile + edit-order cover it)
@@ -180,6 +180,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 - [Checkout register](checkout-register.md)
 - [Checkout confirm](checkout-confirm.md)
 - [Checkout success](checkout-success.md)
+- [Footer](footer.md)
 - [Form input](form-input.md)
 - [Accordion](accordion.md)
 - [Pagination](pagination.md)

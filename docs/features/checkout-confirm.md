@@ -22,9 +22,9 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Confirm:Comment` | `Form:Textarea` + comment-only localStorage persist |
 | `Checkout:DeliveryDateSelection` | Remount next to comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
-| Footer | Core `footer-minimal` via untouched `base_esi_footer` |
+| Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`. Success also uses `Page:Header:Minimal` — [checkout-success](checkout-success.md).
+Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefront/layout/footer/footer-minimal.html.twig`. Success also uses `Page:Header:Minimal` — [checkout-success](checkout-success.md). Footer: [footer](footer.md).
 
 ## Composition
 
@@ -51,7 +51,7 @@ page/checkout/confirm/index.html.twig
 │         ├─ Cart:Summary
 │         ├─ Checkout:Confirm:Tos          (tos + revocation)
 │         └─ Form:Handler#confirmOrderForm → hash + Button submit
-└─ base_esi_footer → core footer-minimal (untouched)
+└─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
 Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
@@ -136,7 +136,6 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Out of scope
 
-- Footer / `footer-minimal`
 - Addressbook listing / account overview — [account pages](account.md)
 - Qty / remove / `Cart:Changed` / `/vi/confirm`
 - PayPal `page_checkout_confirm_form_submit`
@@ -152,4 +151,5 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 - [Cart page](cart-page.md)
 - [Preferred delivery date](delivery-date.md)
 - [Form input](form-input.md)
+- [Footer](footer.md)
 - [JavaScript](../conventions/javascript.md)

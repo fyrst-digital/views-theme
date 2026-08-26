@@ -1,39 +1,53 @@
 {% props
+    collapsible = true,
+    id = 'vi-footer-column-' ~ random(),
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'footer-column' },
-    headline: { base: 'footer-column-headline footer-headline' },
-    content: { base: 'footer-column-content-container' },
-}|replace_recursive(cva)) %}
-{% do vi_define_attrs(['content', 'headline']) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['headline', 'title', 'toggle', 'content']) %}
 
-{% block component_footer_column %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
+{% set titleId = id ~ '-title' %}
+{% set contentId = id ~ '-content' %}
 
-        {% block component_footer_column_inner %}
+<div
+    {{ attributes.defaults({
+        role: 'listitem',
+        'data-component': collapsible ? 'ViewsTheme:Page:Footer:Column' : false,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <div {{ vi_attrs('headline') }} class="{{ vi_class('headline') }}">
+        <div
+            {{ vi_attrs('title').defaults({
+                id: titleId,
+            }) }}
+            class="{{ vi_class('title') }}"
+        >
+            {% block headline %}{% endblock %}
+        </div>
 
-            {% block component_footer_column_headline %}
-                <div
-                    {{ vi_attrs('headline').defaults({
-                        role: 'listitem',
-                    }) }}
-                    class="{{ vi_class('headline') }}"
-                >
-
-                    {% block component_footer_column_headline_title %}
-                    {% endblock %}
-                </div>
-            {% endblock %}
-
-            {% block component_footer_column_content_container %}
-                <div {{ vi_attrs('content') }} class="{{ vi_class('content') }}">
-
-                    {% block component_footer_column_content %}
-                    {% endblock %}
-                </div>
-            {% endblock %}
-        {% endblock %}
+        {% if collapsible %}
+            <button
+                {{ vi_attrs('toggle').defaults({
+                    type: 'button',
+                    'aria-expanded': 'false',
+                    'aria-controls': contentId,
+                    'aria-labelledby': titleId,
+                }) }}
+                class="{{ vi_class('toggle') }}"
+            >
+                {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
+            </button>
+        {% endif %}
     </div>
-{% endblock %}
+
+    <div
+        {{ vi_attrs('content').defaults({
+            id: contentId,
+        }) }}
+        class="{{ vi_class('content') }}"
+    >
+        {% block content %}{% endblock %}
+    </div>
+</div>

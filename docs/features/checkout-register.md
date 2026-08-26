@@ -15,9 +15,9 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
 | `Account:Register` | Register form (class VM, `guestSelectable`) |
 | `Privacy:Note` | Register footer privacy copy (+ optional `acceptedDataProtection` checkbox) |
-| Footer | Core `footer-minimal` via untouched `base_esi_footer` |
+| Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`. Success uses `Page:Header:Minimal` — [checkout-success](checkout-success.md). Confirm uses `Page:Header:Minimal` — [checkout-confirm](checkout-confirm.md).
+Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefront/layout/footer/footer-minimal.html.twig`. Success uses `Page:Header:Minimal` — [checkout-success](checkout-success.md). Confirm uses `Page:Header:Minimal` — [checkout-confirm](checkout-confirm.md). Footer: [footer](footer.md).
 
 ## Composition
 
@@ -35,7 +35,7 @@ page/checkout/address/index.html.twig
 │    └─ Checkout:Register:Aside
 │         ├─ Cart:Summary
 │         └─ Cart:Items stacked, showRemoveButton=false, showQuantitySelect=false
-└─ base_esi_footer → core footer-minimal (untouched)
+└─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
 Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-register-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
@@ -118,4 +118,5 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 - [Account pages](account.md)
 - [Account action](account-action.md)
 - [Grid](grid.md)
+- [Footer](footer.md)
 - [JavaScript](../conventions/javascript.md)

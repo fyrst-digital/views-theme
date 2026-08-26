@@ -1,0 +1,85 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['columns', 'column', 'logos', 'bottom', 'revocation']) %}
+
+<div
+    {{ attributes.without('data-component-template') }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <div class="{{ vi_class('container') }}">
+            {% block columns %}
+                <twig:ViewsTheme:Grid
+                    class="{{ vi_class('columns') }}"
+                    {{ ...vi_attrs('columns').defaults({
+                        role: 'list',
+                        gap: '6',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        {% block hotline %}
+                            <twig:ViewsTheme:Page:Footer:Column
+                                class="{{ vi_class('column') }}"
+                                {{ ...vi_attrs('column').all() }}
+                            >
+                                <twig:block name="headline">
+                                    {{ 'footer.serviceHotlineHeadline'|trans|sw_sanitize }}
+                                </twig:block>
+                                <twig:block name="content">
+                                    <p class="{{ vi_class('hotline') }}">
+                                        {{ 'footer.serviceHotline'|trans|sw_sanitize }}
+                                    </p>
+                                    <div class="{{ vi_class('contact') }}">
+                                        {{ 'footer.serviceContactTextPage'|trans({
+                                            '%url%': contactUrl,
+                                        })|raw }}
+                                    </div>
+                                    <twig:ViewsTheme:Page:Footer:Revocation
+                                        class="{{ vi_class('revocation') }}"
+                                        {{ ...vi_attrs('revocation').defaults({
+                                            url: revocationUrl,
+                                            visible: showRevocation,
+                                        }).all() }}
+                                    />
+                                </twig:block>
+                            </twig:ViewsTheme:Page:Footer:Column>
+                        {% endblock %}
+
+                        {% block navigation %}
+                            {% if footer and footer.navigation %}
+                                {% for root in footer.navigation.tree %}
+                                    <twig:ViewsTheme:Page:Footer:Column:Navigation
+                                        class="{{ vi_class('column') }}"
+                                        :navigation="root"
+                                    />
+                                {% endfor %}
+                            {% endif %}
+                        {% endblock %}
+                    </twig:block>
+                </twig:ViewsTheme:Grid>
+            {% endblock %}
+
+            {% block logos %}
+                {% if footer %}
+                    <twig:ViewsTheme:Page:Footer:Logos
+                        class="{{ vi_class('logos') }}"
+                        {{ ...vi_attrs('logos').defaults({
+                            footer: footer,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
+        </div>
+
+        {% block bottom %}
+            {% if footer %}
+                <twig:ViewsTheme:Page:Footer:Bottom
+                    class="{{ vi_class('bottom') }}"
+                    {{ ...vi_attrs('bottom').defaults({
+                        serviceMenu: footer.serviceMenu,
+                        shippingUrl: shippingUrl,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</div>

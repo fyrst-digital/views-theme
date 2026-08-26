@@ -67,5 +67,6 @@ Full index: [docs/README.md](docs/README.md).
 | Sorting | [docs/features/sorting.md](docs/features/sorting.md) |
 | Breadcrumb | [docs/features/breadcrumb.md](docs/features/breadcrumb.md) |
 | Gallery (PDP image gallery) | [docs/features/gallery.md](docs/features/gallery.md) |
+| Footer | [docs/features/footer.md](docs/features/footer.md) |
 | Plugin / theme / design tokens | [docs/configuration.md](docs/configuration.md) |
 | Architecture | [docs/architecture.md](docs/architecture.md) |

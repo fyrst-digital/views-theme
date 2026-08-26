@@ -23,9 +23,9 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Success:Comment` | Read-only `page.order.customerComment` (no localStorage, no textarea) |
 | `Checkout:Success:DeliveryDate` | Read-only preferred date from the order custom field ([delivery-date](delivery-date.md)) |
 | `Checkout:Success:Aside` | Sticky summary. `Cart:Summary` with `summary: page.order`. No TOS / place-order |
-| Footer | Core `footer-minimal` via untouched `base_esi_footer` |
+| Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig`.
+Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefront/layout/footer/footer-minimal.html.twig`. Footer: [footer](footer.md).
 
 ## Composition
 
@@ -55,7 +55,7 @@ page/checkout/finish/index.html.twig
 │    │    └─ Checkout:Success:DeliveryDate (if custom field set)
 │    └─ Checkout:Success:Aside
 │         └─ Cart:Summary (page.order)
-└─ base_esi_footer → core footer-minimal (untouched)
+└─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
 Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-success-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
@@ -116,7 +116,6 @@ Order number uses `checkout.finishInfoOrdernumber` + `page.order.orderNumber`. H
 
 ## Out of scope
 
-- Footer / `footer-minimal`
 - Account edit-order redesign (isolation stub only)
 - PayPal PUI (`finish-details` block overrides do not apply once `page_checkout` is replaced)
 - `paymentFailed` UI (core redirect)
@@ -135,4 +134,5 @@ Order number uses `checkout.finishInfoOrdernumber` + `page.order.orderNumber`. H
 - [Checkout register](checkout-register.md)
 - [Cart page](cart-page.md)
 - [Preferred delivery date](delivery-date.md)
+- [Footer](footer.md)
 - [JavaScript](../conventions/javascript.md)
