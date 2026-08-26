@@ -127,40 +127,36 @@
   }
 }
 
-.vi-footer-column--collapsible[data-collapse-at='sm'] {
-  @variant sm {
-    --vi-footer-column-border: 0;
-    --vi-footer-column-content-h: auto;
-    --vi-footer-column-overflow: visible;
+@custom-variant collapse-until {
+  &[data-collapse-until='sm'] {
+    @media (width >= theme(--breakpoint-sm)) {
+      @slot;
+    }
+  }
+  &[data-collapse-until='md'] {
+    @media (width >= theme(--breakpoint-md)) {
+      @slot;
+    }
+  }
+  &[data-collapse-until='lg'] {
+    @media (width >= theme(--breakpoint-lg)) {
+      @slot;
+    }
+  }
+  &[data-collapse-until='xl'] {
+    @media (width >= theme(--breakpoint-xl)) {
+      @slot;
+    }
+  }
+  &[data-collapse-until='xxl'] {
+    @media (width >= theme(--breakpoint-xxl)) {
+      @slot;
+    }
   }
 }
 
-.vi-footer-column--collapsible[data-collapse-at='md'] {
-  @variant md {
-    --vi-footer-column-border: 0;
-    --vi-footer-column-content-h: auto;
-    --vi-footer-column-overflow: visible;
-  }
-}
-
-.vi-footer-column--collapsible[data-collapse-at='lg'] {
-  @variant lg {
-    --vi-footer-column-border: 0;
-    --vi-footer-column-content-h: auto;
-    --vi-footer-column-overflow: visible;
-  }
-}
-
-.vi-footer-column--collapsible[data-collapse-at='xl'] {
-  @variant xl {
-    --vi-footer-column-border: 0;
-    --vi-footer-column-content-h: auto;
-    --vi-footer-column-overflow: visible;
-  }
-}
-
-.vi-footer-column--collapsible[data-collapse-at='xxl'] {
-  @variant xxl {
+.vi-footer-column--collapsible {
+  @variant collapse-until {
     --vi-footer-column-border: 0;
     --vi-footer-column-content-h: auto;
     --vi-footer-column-overflow: visible;

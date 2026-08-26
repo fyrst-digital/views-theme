@@ -1,6 +1,6 @@
 {% props
     collapsible = false,
-    collapseAt = 'md',
+    collapseUntil = 'md',
     id = null,
     cva = {},
 %}
@@ -16,7 +16,7 @@
     {{ attributes.defaults({
         role: 'listitem',
         'data-component': collapsible ? 'ViewsTheme:Page:Footer:Column' : false,
-        'data-collapse-at': collapsible ? collapseAt : false,
+        'data-collapse-until': collapsible ? collapseUntil : false,
     }) }}
     class="{{ vi_class('root', { collapsible: collapsible }) }}"
 >
@@ -38,7 +38,7 @@
                     'aria-controls': contentId,
                     'aria-labelledby': titleId,
                 }) }}
-                class="{{ vi_class('toggle', { collapseAt: collapseAt }) }}"
+                class="{{ vi_class('toggle', { collapseUntil: collapseUntil }) }}"
             >
                 {{ vi_icon('caret-down', { class: vi_class('caret') }) }}
             </button>
@@ -51,7 +51,7 @@
         }) }}
         class="{{ vi_class('content') }}"
     >
-        {% if collapsible %}<div class="{{ vi_class('body', { collapseAt: collapseAt }) }}">{% endif %}
+        {% if collapsible %}<div class="{{ vi_class('body', { collapseUntil: collapseUntil }) }}">{% endif %}
             {% block content %}{% endblock %}
         {% if collapsible %}</div>{% endif %}
     </div>

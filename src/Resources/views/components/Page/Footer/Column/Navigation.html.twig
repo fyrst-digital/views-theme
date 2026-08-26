@@ -1,7 +1,7 @@
 {% props
     navigation,
     collapsible = null,
-    collapseAt = 'md',
+    collapseUntil = 'md',
     cva = {},
 %}
 
@@ -22,7 +22,7 @@
                 class="{{ vi_class('column') }}"
                 {{ ...vi_attrs('column').defaults({
                     collapsible: collapsible is not null ? collapsible : root.children|default([])|length > 0,
-                    collapseAt: collapseAt,
+                    collapseUntil: collapseUntil,
                     cva: {
                         root: { base: 'vi-footer-column g-col-6 g-col-md-3' },
                     },

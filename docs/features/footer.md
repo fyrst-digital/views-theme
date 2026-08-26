@@ -12,7 +12,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` (path plugins such as PayPal extend) |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline column, nav columns, logos, bottom |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: revocation CTA + `Bottom` only |
-| `Page:Footer:Column` | Headline + body; optional collapse via `collapsible` (default `false`); `collapseAt` (`sm`–`xxl`, default `md`) |
+| `Page:Footer:Column` | Headline + body; optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
 | `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open |
 | `Page:Footer:Column:Navigation` | Root-host of Grid; tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Logos` | Payment / shipping media + PayPal installment mount |
@@ -43,7 +43,7 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
      └─ Page:Footer:Bottom
 ```
 
-Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. From `collapseAt` up (default `md`) content stays open and the caret is `d-{collapseAt}-none`. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseAt` (`sm` | `md` | `lg` | `xl` | `xxl`).
+Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open and the caret is `d-{collapseUntil}-none`. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`).
 
 Main skips the Navigation mount when `footer.navigation.tree` is empty (same as Logos / Bottom `{% if footer %}`). Do not wrap Navigation’s own template in that gate.
 
@@ -96,7 +96,7 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseAt` up (`data-collapse-at` + `@variant` in `components.css`) always open; inner `__body` holds padding — same split as Accordion:Panel |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `@variant collapse-until` in `components.css`) always open; inner `__body` holds padding — same split as Accordion:Panel |
 
 Main / Minimal / Bottom / Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
 
@@ -108,7 +108,7 @@ Main / Minimal / Bottom / Logos / Column:Hotline have **no** `data-component`. N
 
 ## Files
 
-`components/Page/Footer/{Main,Minimal,Column,Bottom,Logos,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation}.*` · `app/storefront/src/css/components.css` (`collapseAt` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
+`components/Page/Footer/{Main,Minimal,Column,Bottom,Logos,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation}.*` · `app/storefront/src/css/components.css` (`@custom-variant collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
 
 ## Related
 
