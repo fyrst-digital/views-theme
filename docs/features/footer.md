@@ -12,10 +12,10 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` (path plugins such as PayPal extend) |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline column, nav columns, logos, bottom |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: revocation CTA + `Bottom` only |
-| `Page:Footer:Column` | Headline + body; mobile toggle via `aria-expanded` (`Column.js`) |
-| `Page:Footer:Column:Navigation` | Root-host of Column; category headline + child links |
+| `Page:Footer:Column` | Headline + body; optional mobile collapse via `collapsible` (default `false`) |
+| `Page:Footer:Column:Navigation` | Root-host of Column; category headline + child links; `collapsible` when it has children |
 | `Page:Footer:Logos` | Payment / shipping media + PayPal installment mount |
-| `Page:Footer:Bottom` | Service menu, VAT notice, copyright |
+| `Page:Footer:Bottom` | Service menu, VAT notice, copyright (`brand` prop → snippet `%brand%`) |
 | `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
 | `FooterCmsUrlResolver` | Contact / revocation / shipping CMS URLs from service menu or nav `seoUrl`, else `frontend.cms.page.full` |
 
@@ -29,7 +29,7 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (role=list)
+          ├─ Grid (role=list, columns=8; items g-col-8 g-col-md-4, 2-up from md)
           │    ├─ Page:Footer:Column          hotline / contact / revocation
           │    └─ Page:Footer:Column:Navigation × N
           ├─ Page:Footer:Logos
@@ -41,7 +41,9 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
      └─ Page:Footer:Bottom
 ```
 
-Desktop (`md` / 768px): columns always open, toggle hidden (`d-md-none`). Mobile: columns start collapsed; `Column.js` flips `aria-expanded` only (no `classList`, no Bootstrap collapse plugin). Do **not** wrap columns in `Accordion` — the desktop headline can be a category link.
+Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in when it has child links: mobile toggle via `aria-expanded` (`Column.js`); columns start collapsed; `md` / 768px always open (`d-md-none` on the caret). Pass `collapsible=false` on Navigation to opt out.
+
+Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link.
 
 ## Class components
 
@@ -74,7 +76,7 @@ Replacing core `layout/footer/footer.html.twig` would skip SwagPayPal’s `layou
 
 ## Snippets
 
-Reuse core `footer.*` keys. No new snippets. No Shopware copyright icon.
+Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyright is theme-owned: `viewsTheme.copyright` with `%brand%` from Bottom’s `brand` prop (default fyrst.dev `<a>`). Override via `:brand` on Bottom or Main/Minimal nest `bottom:brand`.
 
 | Key | Where |
 |-----|--------|
@@ -82,15 +84,15 @@ Reuse core `footer.*` keys. No new snippets. No Shopware copyright icon.
 | `footer.serviceContactTextPage` | Contact CMS link (`%url%`) |
 | `footer.serviceRevocationRequestTextPage` | Revocation CTA (`%url%`) |
 | `footer.includeVatTextPage` / `footer.excludeVatTextPage` | VAT (`%url%`, `%star%`) |
-| `footer.copyrightInfo` | Bottom |
+| `viewsTheme.copyright` | Bottom (`%brand%` = `brand` prop) |
 
 ## Scripts
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Click `button[aria-expanded]` → toggle `aria-expanded`. Content visibility is CSS (`block-size` + `[aria-expanded]`; `md+` always open) |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]` (`md+` always open); inner `__body` holds padding — same split as Accordion:Panel |
 
-Main / Minimal / Bottom / Logos have **no** `data-component`.
+Main / Minimal / Bottom / Logos have **no** `data-component`. Hotline Column (no `collapsible`) has none either; Navigation Columns do when they have children.
 
 ## Out of scope
 

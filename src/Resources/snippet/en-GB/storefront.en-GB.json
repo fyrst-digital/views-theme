@@ -23,7 +23,8 @@
             "fullscreenClose": "Close fullscreen gallery",
             "fullscreenAriaLabel": "Fullscreen product gallery",
             "dotsAriaLabel": "Gallery slide navigation"
-        }
+        },
+        "copyright": "Theme made with ❤️ by %brand%"
     },
 
     "variantsGrid": {

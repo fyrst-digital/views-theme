@@ -2,6 +2,7 @@
     serviceMenu = [],
     shippingUrl = '#',
     showVatNotice = true,
+    brand = '<a href="https://fyrst.dev" target="_blank" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>',
     cva = {},
 %}
 
@@ -48,7 +49,7 @@
 
             {% block copyright %}
                 <div {{ vi_attrs('copyright') }} class="{{ vi_class('copyright') }}">
-                    {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
+                    {{ 'viewsTheme.copyright'|trans({ '%brand%': brand })|raw }}
                 </div>
             {% endblock %}
         </div>

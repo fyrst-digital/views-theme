@@ -1,26 +1,27 @@
 {% props
-    collapsible = true,
-    id = 'vi-footer-column-' ~ random(),
+    collapsible = false,
+    id = null,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['headline', 'title', 'toggle', 'content']) %}
 
-{% set titleId = id ~ '-title' %}
-{% set contentId = id ~ '-content' %}
+{% set columnId = collapsible ? (id ? id : 'vi-footer-column-' ~ random()) : null %}
+{% set titleId = columnId ? columnId ~ '-title' : null %}
+{% set contentId = columnId ? columnId ~ '-content' : null %}
 
 <div
     {{ attributes.defaults({
         role: 'listitem',
         'data-component': collapsible ? 'ViewsTheme:Page:Footer:Column' : false,
     }) }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { collapsible: collapsible }) }}"
 >
-    <div {{ vi_attrs('headline') }} class="{{ vi_class('headline') }}">
+    <div {{ vi_attrs('headline') }} class="{{ vi_class('headline', { collapsible: collapsible }) }}">
         <div
             {{ vi_attrs('title').defaults({
-                id: titleId,
+                id: titleId ?? false,
             }) }}
             class="{{ vi_class('title') }}"
         >
@@ -44,10 +45,12 @@
 
     <div
         {{ vi_attrs('content').defaults({
-            id: contentId,
+            id: contentId ?? false,
         }) }}
         class="{{ vi_class('content') }}"
     >
-        {% block content %}{% endblock %}
+        {% if collapsible %}<div class="{{ vi_class('body') }}">{% endif %}
+            {% block content %}{% endblock %}
+        {% if collapsible %}</div>{% endif %}
     </div>
 </div>
