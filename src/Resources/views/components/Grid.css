@@ -1,16 +1,7 @@
 .vi-grid {
     grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-cols, 12), minmax(0, 1fr)));
-    gap: var(--vi-grid-gap, var(--bs-gap, 0));
 
-    &.gap-2 {
-        --vi-grid-gap: var(--spacing-2, 8px);
-    }
-
-    &.gap-4 {
-        --vi-grid-gap: var(--spacing-4, 16px);
-    }
-
-    &.gap-6 {
-        --vi-grid-gap: var(--spacing-6, 24px);
+    &.css-gap {
+        gap: var(--vi-grid-gap, var(--spacing-0, 0));
     }
 }
