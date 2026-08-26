@@ -116,6 +116,12 @@
     --vi-grid-gap: var(--spacing-10);
   }
 }
+.vi-footer-column__navigation {
+  flex-basis: var(--vi-column-basis, 100%);
+  @media (width >= 768px) {
+    --vi-column-basis: 180px;
+  }
+}
 .vi-footer-column--collapsible {
   &[data-collapse-until='sm'] {
     @media (width >= 520px) {

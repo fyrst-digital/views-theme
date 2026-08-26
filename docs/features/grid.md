@@ -81,7 +81,6 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 | `Account:Register` / `Address:*` | Field layout, 6-col base |
 | `Address:List` | Shipping + billing cards (`g-col-12 g-col-md-6`) |
 | `Page:Footer:Main` | Outer columns Grid (`columns="8"`, `gap="lg"`) around `Column:Hotline` + `Column:Navigation` |
-| `Page:Footer:Column:Navigation` | Inner Grid (`role=list`, `columns="8"`, `gap="lg"`) around the nav tree loop |
 
 ## Files
 

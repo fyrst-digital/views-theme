@@ -14,7 +14,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: revocation CTA + `Bottom` only |
 | `Page:Footer:Column` | Headline + body; optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
 | `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open |
-| `Page:Footer:Column:Navigation` | Root-host of Grid; tree loop of N Columns; `collapsible` when a root has children |
+| `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`); tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Logos` | Payment / shipping media + PayPal installment mount |
 | `Page:Footer:Bottom` | Service menu, VAT notice, copyright (`brand` prop → snippet `%brand%`) |
 | `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
@@ -32,7 +32,7 @@ layout/footer.html.twig                    (ESI frontend.footer)
      └─ Page:Footer:Main
           ├─ Grid (columns=8; layout only)
           │    ├─ Page:Footer:Column:Hotline      root-host of Column
-          │    └─ Page:Footer:Column:Navigation   Grid (role=list, columns=8)
+          │    └─ Page:Footer:Column:Navigation   flex div (role=list, d-flex gap-6)
           │         └─ Page:Footer:Column × N
           ├─ Page:Footer:Logos
           └─ Page:Footer:Bottom
@@ -47,7 +47,7 @@ Hotline Column stays always-open (`collapsible` default `false`). Navigation opt
 
 Main skips the Navigation mount when `footer.navigation.tree` is empty (same as Logos / Bottom `{% if footer %}`). Do not wrap Navigation’s own template in that gate.
 
-Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid is layout only (no `role=list`); list semantics live on Navigation’s Grid + Column `role=listitem`.
+Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid is layout only (no `role=list`); list semantics live on Navigation’s flex root + Column `role=listitem`.
 
 Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`.
 

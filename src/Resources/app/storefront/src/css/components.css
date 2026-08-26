@@ -127,6 +127,14 @@
   }
 }
 
+.vi-footer-column__navigation {
+  flex-basis: var(--vi-column-basis, 100%);
+
+  @variant md {
+    --vi-column-basis: 180px;
+  }
+}
+
 @custom-variant collapse-until {
   &[data-collapse-until='sm'] {
     @media (width >= theme(--breakpoint-sm)) {
