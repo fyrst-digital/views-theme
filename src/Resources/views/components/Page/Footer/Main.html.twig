@@ -1,0 +1,69 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['columns', 'hotline', 'navigation', 'logos', 'bottom']) %}
+
+<div
+    {{ attributes.without('data-component-template') }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        <div class="{{ vi_class('container') }}">
+            {% block columns %}
+                <twig:ViewsTheme:Grid
+                    class="{{ vi_class('columns') }}"
+                    {{ ...vi_attrs('columns').defaults({
+                        gap: false,
+                        columns: '8',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        {% block hotline %}
+                            <twig:ViewsTheme:Page:Footer:Column:Hotline
+                                class="{{ vi_class('column') }}"
+                                {{ ...vi_attrs('hotline').defaults({
+                                    contactUrl: contactUrl,
+                                    revocationUrl: revocationUrl,
+                                    showRevocation: showRevocation,
+                                }).all() }}
+                            />
+                        {% endblock %}
+
+                        {% block navigation %}
+                            {% if footer and footer.navigation and footer.navigation.tree|default([])|length > 0 %}
+                                <twig:ViewsTheme:Page:Footer:Column:Navigation
+                                    class="{{ vi_class('column') }}"
+                                    {{ ...vi_attrs('navigation').defaults({
+                                        navigation: footer.navigation,
+                                    }).all() }}
+                                />
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block logos %}
+                            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
+                                <twig:ViewsTheme:Page:Footer:Column:Logos
+                                    class="{{ vi_class('column') }}"
+                                    {{ ...vi_attrs('logos').defaults({
+                                        paymentLogos: paymentLogos,
+                                        shippingLogos: shippingLogos,
+                                    }).all() }}
+                                />
+                            {% endif %}
+                        {% endblock %}
+                    </twig:block>
+                </twig:ViewsTheme:Grid>
+            {% endblock %}
+        </div>
+
+        {% block bottom %}
+            {% if footer %}
+                <twig:ViewsTheme:Page:Footer:Bottom
+                    class="{{ vi_class('bottom') }}"
+                    {{ ...vi_attrs('bottom').defaults({
+                        serviceMenu: footer.serviceMenu,
+                        shippingUrl: shippingUrl,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</div>

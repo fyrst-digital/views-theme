@@ -1,0 +1,4 @@
+.vi-footer-main {
+  border-top: var(--vi-footer-main-border, 1px solid var(--border-color));
+  background-color: var(--vi-footer-main-bg, var(--light));
+}

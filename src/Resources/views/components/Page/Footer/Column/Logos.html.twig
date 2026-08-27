@@ -1,0 +1,73 @@
+{% props
+    paymentLogos = [],
+    shippingLogos = [],
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['column', 'items']) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'list',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if paymentLogos|length > 0 %}
+        <twig:ViewsTheme:Page:Footer:Column
+            class="{{ vi_class('column') }}"
+            {{ ...vi_attrs('column').defaults({
+                role: 'listitem',
+            }).all() }}
+        >
+            <twig:block name="headline">
+                {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
+            </twig:block>
+
+            <twig:block name="content">
+                <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
+                    {%- for item in paymentLogos -%}
+                        {% sw_thumbnails 'footer-payment-image-thumbnails' with {
+                            media: item.media,
+                            sizes: { default: '100px' },
+                            attributes: {
+                                class: vi_class('image'),
+                                alt: item.alt,
+                                title: item.title,
+                            },
+                        } %}
+                    {%- endfor -%}
+                </div>
+            </twig:block>
+        </twig:ViewsTheme:Page:Footer:Column>
+    {% endif %}
+
+    {% if shippingLogos|length > 0 %}
+        <twig:ViewsTheme:Page:Footer:Column
+            class="{{ vi_class('column') }}"
+            {{ ...vi_attrs('column').defaults({
+                role: 'listitem',
+            }).all() }}
+        >
+            <twig:block name="headline">
+                {{ 'checkout.shippingMethod'|trans|sw_sanitize }}
+            </twig:block>
+
+            <twig:block name="content">
+                <div {{ vi_attrs('items') }} class="{{ vi_class('items') }}">
+                    {%- for item in shippingLogos -%}
+                        {% sw_thumbnails 'footer-shipping-image-thumbnails' with {
+                            media: item.media,
+                            sizes: { default: '100px' },
+                            attributes: {
+                                class: vi_class('image'),
+                                alt: item.alt,
+                                title: item.title,
+                            },
+                        } %}
+                    {%- endfor -%}
+                </div>
+            </twig:block>
+        </twig:ViewsTheme:Page:Footer:Column>
+    {% endif %}
+</div>

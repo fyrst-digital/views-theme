@@ -1,0 +1,18 @@
+{% props
+    url = '#',
+    visible = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% if visible %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {{ 'footer.serviceRevocationRequestTextPage'|trans({
+            '%url%': url,
+        })|raw }}
+    </div>
+{% endif %}

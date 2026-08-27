@@ -41,7 +41,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
-- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), checkout cart page → [Cart page](features/cart-page.md), checkout finish page → [Checkout success](features/checkout-success.md).
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), checkout cart page → [Cart page](features/cart-page.md), checkout finish page → [Checkout success](features/checkout-success.md), footer layout → [Footer](features/footer.md).
 
 ### Storefront JS
 
@@ -73,6 +73,7 @@ src/
 | `ProductDetailUrlBuilder` | Listing / PDP product URLs |
 | `ProductPriceResolver` | Price view-model DTO |
 | `ThemeParametersResolver` | Resolve active `theme.json` → Twig `themeParameters` (icons, etc.; not CSS assignment) |
+| `FooterCmsUrlResolver` | Footer contact / revocation / shipping CMS URLs from service menu or nav `seoUrl` |
 
 ### Structs (`src/Struct/`)
 
@@ -199,5 +200,6 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 - [Cart drawer](features/cart-drawer.md)
 - [Cart page](features/cart-page.md)
 - [Checkout confirm](features/checkout-confirm.md)
+- [Footer](features/footer.md)
 - [Address manager](features/address-manager.md)
 - [Filters](features/filters.md)

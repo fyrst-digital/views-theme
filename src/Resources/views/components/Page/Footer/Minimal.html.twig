@@ -1,0 +1,31 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['revocation', 'bottom']) %}
+
+<footer
+    {{ attributes.without('data-component-template') }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% block revocation %}
+            <twig:ViewsTheme:Page:Footer:Revocation
+                class="{{ vi_class('revocation') }}"
+                {{ ...vi_attrs('revocation').defaults({
+                    url: revocationUrl,
+                    visible: showRevocation,
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block bottom %}
+            {% if footer %}
+                <twig:ViewsTheme:Page:Footer:Bottom
+                    class="{{ vi_class('bottom') }}"
+                    {{ ...vi_attrs('bottom').defaults({
+                        serviceMenu: footer.serviceMenu,
+                        shippingUrl: shippingUrl,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</footer>

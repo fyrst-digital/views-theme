@@ -3,7 +3,7 @@
 Forward a caller `<twig:block>` into a **nested** `<twig:…>` host (e.g. Grid). A `{% block foo %}` inside that host belongs to the inner component — callers of the outer one cannot fill it.
 
 ```twig
-<twig:ViewsTheme:Grid columns="6" gap="3">
+<twig:ViewsTheme:Grid columns="6" gap="sm">
     <twig:block name="content">
         {% vi_block prepend %}{% endvi_block %}
         {% vi_block accountType %}

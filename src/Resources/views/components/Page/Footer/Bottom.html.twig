@@ -1,67 +1,58 @@
 {% props
+    serviceMenu = [],
+    shippingUrl = '#',
     showVatNotice = true,
+    brand = '<a href="https://fyrst.dev" target="_blank" rel="noopener noreferrer" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-
 {% do vi_define_attrs(['container', 'serviceList', 'serviceItem', 'serviceLink', 'vat', 'copyright']) %}
 
-{% block component_footer_bottom %}
-    <div {{ attributes }} class="{{ vi_class('root') }}">
-    
-    {% block component_footer_bottom_container %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block container %}
         <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
-
-            {% block component_footer_bottom_service_list %}
-                {% if page.header.serviceMenu %}
+            {% block services %}
+                {% if serviceMenu is not empty %}
                     <ul {{ vi_attrs('serviceList') }} class="{{ vi_class('serviceList') }}">
-                        {% for serviceMenuItem in page.header.serviceMenu %}
-                            {% block component_footer_bottom_service_item %}
-                                <li {{ vi_attrs('serviceItem') }} class="{{ vi_class('serviceItem') }}">
-                                    {% block component_footer_bottom_service_link %}
-                                        <a
-                                            {{ vi_attrs('serviceLink').defaults({
-                                                href: category_url(serviceMenuItem),
-                                                title: serviceMenuItem.translated.name,
-                                                target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
-                                            }) }}
-                                            class="{{ vi_class('serviceLink') }}"
-                                        >
-                                            {{ serviceMenuItem.translated.name }}
-                                        </a>
-                                    {% endblock %}
-                                </li>
-                            {% endblock %}
+                        {% for serviceMenuItem in serviceMenu %}
+                            <li {{ vi_attrs('serviceItem') }} class="{{ vi_class('serviceItem') }}">
+                                <a
+                                    {{ vi_attrs('serviceLink').defaults({
+                                        href: category_url(serviceMenuItem),
+                                        title: serviceMenuItem.translated.name,
+                                        target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
+                                        rel: category_linknewtab(serviceMenuItem) ? 'noopener noreferrer' : null,
+                                    }) }}
+                                    class="{{ vi_class('serviceLink') }}"
+                                >
+                                    {{ serviceMenuItem.translated.name }}
+                                </a>
+                            </li>
                         {% endfor %}
                     </ul>
                 {% endif %}
             {% endblock %}
 
-            {% block component_footer_bottom_vat_notice %}
-                {% if showVatNotice is same as(true) %}
+            {% block vat %}
+                {% if showVatNotice %}
                     <div {{ vi_attrs('vat') }} class="{{ vi_class('vat') }}">
-                        {% if context.taxState == 'gross' %}
-                            {{ 'footer.includeVatText'|trans({
-                                '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
-                            })|raw }}
-                        {% else %}
-                            {{ 'footer.excludeVatText'|trans({
-                                '%url%': path('frontend.cms.page', { id: config('core.basicInformation.shippingPaymentInfoPage') })
-                            })|raw }}
-                        {% endif %}
+                        {{ (context.taxState == 'gross' ? 'footer.includeVatTextPage' : 'footer.excludeVatTextPage')|trans({
+                            '%url%': shippingUrl,
+                            '%star%': '',
+                        })|raw }}
                     </div>
                 {% endif %}
             {% endblock %}
 
-            {% block component_footer_bottom_copyright %}
+            {% block copyright %}
                 <div {{ vi_attrs('copyright') }} class="{{ vi_class('copyright') }}">
-                    {{ 'footer.copyrightInfo'|trans|sw_sanitize }}
+                    {{ 'viewsTheme.copyright'|trans({ '%brand%': brand })|raw }}
                 </div>
             {% endblock %}
-
         </div>
     {% endblock %}
-
-    </div>
-{% endblock %}
+</div>

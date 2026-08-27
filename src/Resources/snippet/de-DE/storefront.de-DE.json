@@ -23,7 +23,8 @@
             "fullscreenClose": "Vollbildgalerie schließen",
             "fullscreenAriaLabel": "Vollbild-Produktgalerie",
             "dotsAriaLabel": "Galerienavigation"
-        }
+        },
+        "copyright": "Theme erstellt mit ❤️ von %brand%"
     },
 
     "variantsGrid": {

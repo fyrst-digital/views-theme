@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`. (`Tabs` / `Tabs:List` / `Tab` / `Panel` and `Accordion` / `Item` / `Header` / `Panel` are anonymous UX + JS — not class-backed.)
 
 ## Props / CVA / attributes
 
@@ -396,7 +396,7 @@ Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twi
 A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
 
 ```twig
-<twig:ViewsTheme:Grid columns="6" gap="3">
+<twig:ViewsTheme:Grid columns="6" gap="sm">
     <twig:block name="content">
         {% vi_block prepend %}{% endvi_block %}
         {% vi_block accountType %}
@@ -476,7 +476,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
-| Page:Header:* (+ Cart JS), Page:Footer:* | UX + `vi_cva` |
+| Page:Header:* (+ Cart JS), Page:Footer:* (Main/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |

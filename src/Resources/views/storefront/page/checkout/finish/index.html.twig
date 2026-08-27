@@ -7,3 +7,7 @@
 {% block page_checkout %}
     <twig:ViewsTheme:Checkout:Success :page="page" />
 {% endblock %}
+
+{% block base_esi_footer %}
+    <twig:ViewsTheme:Page:Footer:Minimal :footer="footer" />
+{% endblock %}

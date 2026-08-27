@@ -130,6 +130,7 @@ In component CSS:
 |------|-----|
 | Token as a property value | `var(--tw-color-brand-primary)`, `var(--tw-spacing)`, … (prefix applied in output) |
 | Responsive rule at a theme breakpoint | `@variant lg { … }` (compiles to `@media (width >= 1024px)`) |
+| From `data-collapse-until` up | `@variant collapse-until { … }` (custom variant in `components.css`) |
 | Breakpoint length in `@media` | `theme(--breakpoint-lg)` (build-time) — **not** `var(--breakpoint-*)` (invalid in media queries) |
 | `@apply` | Prefixed names: `@apply tw:flex tw:gap-2` |
 

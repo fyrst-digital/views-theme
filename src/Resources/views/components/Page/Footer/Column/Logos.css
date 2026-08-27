@@ -1,0 +1,4 @@
+.vi-footer-logo__image {
+  max-height: var(--vi-footer-logo-h, 35px);
+  max-width: var(--vi-footer-logo-w, 100px);
+}

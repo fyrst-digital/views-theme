@@ -1,0 +1,45 @@
+{
+    root: {
+        base: 'vi-footer-column g-col-8',
+        variants: {
+            collapsible: {
+                true: 'vi-footer-column--collapsible',
+            },
+        },
+    },
+    headline: {
+        base: 'vi-footer-column__headline',
+        variants: {
+            collapsible: {
+                true: 'd-flex justify-content-between align-items-center gap-2',
+            },
+        },
+    },
+    title: { base: 'vi-footer-column__title fw-semibold' },
+    toggle: {
+        base: 'vi-footer-column__toggle border-0 bg-transparent p-2',
+        variants: {
+            collapseUntil: {
+                sm: 'd-sm-none',
+                md: 'd-md-none',
+                lg: 'd-lg-none',
+                xl: 'd-xl-none',
+                xxl: 'd-xxl-none',
+            },
+        },
+    },
+    caret: { base: 'vi-footer-column__caret icon-size-2 flex-shrink-0' },
+    content: { base: 'vi-footer-column__content' },
+    body: {
+        base: 'vi-footer-column__body pb-4',
+        variants: {
+            collapseUntil: {
+                sm: 'pb-sm-0',
+                md: 'pb-md-0',
+                lg: 'pb-lg-0',
+                xl: 'pb-xl-0',
+                xxl: 'pb-xxl-0',
+            },
+        },
+    },
+}
