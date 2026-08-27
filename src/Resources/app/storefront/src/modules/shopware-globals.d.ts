@@ -25,6 +25,8 @@ interface ShopwareGlobal {
 
 interface Window {
     Shopware: ShopwareGlobal
+    /** Theme viewport px map (`theme_config('breakpoint.*')`) — keys `xs`–`xxl`. */
+    breakpoints?: Record<string, number>
     focusHandler: {
         getFocusableElements(root: Element): HTMLElement[]
         setFocus(el: Element, options?: { focusVisible?: boolean }): void

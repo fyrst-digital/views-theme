@@ -50,7 +50,7 @@ No PHP/JS / `data-component`.
   grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-cols, 12), minmax(0, 1fr)));
 
   &.css-gap {
-    gap: var(--vi-grid-gap, var(--bs-gap, 0));
+    gap: var(--vi-grid-gap, var(--spacing-0, 0));
   }
 }
 ```
@@ -80,7 +80,7 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 | `Product:Listing:Results` | Items grid (`gap="md"`; `size=md` adds `gap-md-8`); density via Results `size` → item CVA `g-col-*`; host may set `--vi-grid-columns` |
 | `Account:Register` / `Address:*` | Field layout, 6-col base |
 | `Address:List` | Shipping + billing cards (`g-col-12 g-col-md-6`) |
-| `Page:Footer:Main` | Outer columns Grid (`columns="8"`) around `Column:Hotline` + `Column:Navigation` + `Column:Logos` (`g-col-8`) |
+| `Page:Footer:Main` | Outer columns Grid (`columns="8"`, `gap: false` / `--vi-grid-gap`) around `Column:Hotline` + `Column:Navigation` + `Column:Logos` (`g-col-8`) |
 
 ## Files
 

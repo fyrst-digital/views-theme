@@ -2,7 +2,7 @@
     serviceMenu = [],
     shippingUrl = '#',
     showVatNotice = true,
-    brand = '<a href="https://fyrst.dev" target="_blank" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>',
+    brand = '<a href="https://fyrst.dev" target="_blank" rel="noopener noreferrer" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>',
     cva = {},
 %}
 
@@ -25,6 +25,7 @@
                                         href: category_url(serviceMenuItem),
                                         title: serviceMenuItem.translated.name,
                                         target: category_linknewtab(serviceMenuItem) ? '_blank' : null,
+                                        rel: category_linknewtab(serviceMenuItem) ? 'noopener noreferrer' : null,
                                     }) }}
                                     class="{{ vi_class('serviceLink') }}"
                                 >

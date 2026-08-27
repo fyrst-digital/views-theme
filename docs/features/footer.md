@@ -8,7 +8,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 
 | Piece | Responsibility |
 |-------|----------------|
-| ESI bridge | `storefront/layout/footer.html.twig` → `<footer>` + inner include |
+| ESI bridge | `storefront/layout/footer.html.twig` → `<footer class="footer-main">` + inner include |
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: revocation CTA + `Bottom` only |
@@ -30,7 +30,7 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (columns=8; layout only)
+          ├─ Grid (columns=8; gap=false / --vi-grid-gap)
           │    ├─ Page:Footer:Column:Hotline      root-host of Column
           │    ├─ Page:Footer:Column:Navigation   flex div (role=list, d-flex gap-6)
           │    │    └─ Page:Footer:Column × N
@@ -45,11 +45,11 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
      └─ Page:Footer:Bottom
 ```
 
-Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open and the caret is `d-{collapseUntil}-none`. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
+Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open, the caret is `d-{collapseUntil}-none`, and `inert` stays off even if `aria-expanded` is false. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
 
 Main skips the Navigation mount when `footer.navigation.tree` is empty. Skip `Column:Logos` when both `paymentLogos` and `shippingLogos` are empty. Bottom still `{% if footer %}`. Do not wrap Navigation’s or Logos’ own templates in those gates. Logos still mounts a Column only when that list is non-empty.
 
-Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid is layout only (no `role=list`); list semantics live on Navigation’s and Logos’ flex roots + Column `role=listitem`.
+Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid has no `role=list`; list semantics live on Navigation’s and Logos’ flex roots + their Column `role=listitem` (hosts pass it; Column does not default it).
 
 Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`.
 
@@ -98,7 +98,7 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded`. Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `@variant collapse-until` in `components.css`) always open; inner `__body` holds padding — same split as Accordion:Panel |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `@variant collapse-until` in `components.css`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
 
 Main / Minimal / Bottom / Column:Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
 

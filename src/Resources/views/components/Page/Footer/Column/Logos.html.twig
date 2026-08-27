@@ -16,7 +16,9 @@
     {% if paymentLogos|length > 0 %}
         <twig:ViewsTheme:Page:Footer:Column
             class="{{ vi_class('column') }}"
-            {{ ...vi_attrs('column').all() }}
+            {{ ...vi_attrs('column').defaults({
+                role: 'listitem',
+            }).all() }}
         >
             <twig:block name="headline">
                 {{ 'checkout.paymentMethod'|trans|sw_sanitize }}
@@ -43,7 +45,9 @@
     {% if shippingLogos|length > 0 %}
         <twig:ViewsTheme:Page:Footer:Column
             class="{{ vi_class('column') }}"
-            {{ ...vi_attrs('column').all() }}
+            {{ ...vi_attrs('column').defaults({
+                role: 'listitem',
+            }).all() }}
         >
             <twig:block name="headline">
                 {{ 'checkout.shippingMethod'|trans|sw_sanitize }}

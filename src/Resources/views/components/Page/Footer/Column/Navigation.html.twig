@@ -18,6 +18,7 @@
         <twig:ViewsTheme:Page:Footer:Column
             class="{{ vi_class('column') }}"
             {{ ...vi_attrs('column').defaults({
+                role: 'listitem',
                 collapsible: collapsible is not null ? collapsible : root.children|default([])|length > 0,
                 collapseUntil: collapseUntil,
             }).all() }}
@@ -31,6 +32,7 @@
                             href: category_url(root.category),
                             title: root.category.translated.name,
                             target: category_linknewtab(root.category) ? '_blank' : null,
+                            rel: category_linknewtab(root.category) ? 'noopener noreferrer' : null,
                         }) }}
                         class="{{ vi_class('headlineLink') }}"
                     >
@@ -55,6 +57,7 @@
                                             href: category_url(category),
                                             title: categoryName,
                                             target: category_linknewtab(category) ? '_blank' : null,
+                                            rel: category_linknewtab(category) ? 'noopener noreferrer' : null,
                                         }) }}
                                         class="{{ vi_class('link') }}"
                                     >

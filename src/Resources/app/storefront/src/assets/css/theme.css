@@ -117,9 +117,9 @@
   }
 }
 .vi-footer-column__navigation {
-  flex-basis: var(--vi-column-basis, 100%);
+  flex-basis: var(--vi-footer-column-basis, 100%);
   @media (width >= 768px) {
-    --vi-column-basis: 180px;
+    --vi-footer-column-basis: 180px;
   }
 }
 .vi-footer-column--collapsible {
