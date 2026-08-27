@@ -37,19 +37,20 @@
                                 />
                             {% endif %}
                         {% endblock %}
+
+                        {% block logos %}
+                            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
+                                <twig:ViewsTheme:Page:Footer:Column:Logos
+                                    class="{{ vi_class('column') }}"
+                                    {{ ...vi_attrs('logos').defaults({
+                                        paymentLogos: paymentLogos,
+                                        shippingLogos: shippingLogos,
+                                    }).all() }}
+                                />
+                            {% endif %}
+                        {% endblock %}
                     </twig:block>
                 </twig:ViewsTheme:Grid>
-            {% endblock %}
-
-            {% block logos %}
-                {% if footer %}
-                    <twig:ViewsTheme:Page:Footer:Logos
-                        class="{{ vi_class('logos') }}"
-                        {{ ...vi_attrs('logos').defaults({
-                            footer: footer,
-                        }).all() }}
-                    />
-                {% endif %}
             {% endblock %}
         </div>
 
