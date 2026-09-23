@@ -87,6 +87,9 @@ ensure_shopware_cli() {
 }
 
 install_script_fallback() {
+  if [[ "$LIB_DIR" == "$SCRIPT_FALLBACK_DIR" ]]; then
+    return 0
+  fi
   mkdir -p "$SCRIPT_FALLBACK_DIR"
   cp "$LIB_DIR/lib.sh" "$SCRIPT_FALLBACK_DIR/lib.sh"
   cp "$LIB_DIR/cloud-install.sh" "$SCRIPT_FALLBACK_DIR/cloud-install.sh"
