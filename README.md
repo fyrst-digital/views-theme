@@ -16,6 +16,11 @@ bin/console plugin:install --activate ViewsTheme
 
 Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getting-started.md).
 
+## Changelog
+
+- [English](CHANGELOG.md)
+- [Deutsch](CHANGELOG_de-DE.md)
+
 ## Documentation
 
 | Topic | Link |

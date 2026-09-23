@@ -7,6 +7,7 @@ ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as 
 | Property | Value |
 |----------|-------|
 | Technical name | `ViewsTheme` |
+| Version | `1.0.0` (`composer.json`) |
 | Composer package | `fyrst/views-theme` |
 | PHP namespace | `Fyrst\ViewsTheme` |
 | Plugin class | `Fyrst\ViewsTheme\ViewsTheme` |
