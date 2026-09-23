@@ -5,8 +5,6 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 ROOT="$(plugin_root)"
 
-# Stop the Docker shop before MariaDB so port 8000 and the old project are gone.
-remove_docker_shop
 ensure_mariadb
 ensure_shopware_cli
 install_script_fallback

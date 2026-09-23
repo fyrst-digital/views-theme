@@ -101,24 +101,6 @@ FLUSH PRIVILEGES;
 SQL
 }
 
-shop_is_docker() {
-  [[ -f "$SHOP_ROOT/compose.yaml" ]] && return 0
-  [[ -f "$SHOP_ROOT/.shopware-project.yml" ]] && grep -q 'type: docker' "$SHOP_ROOT/.shopware-project.yml"
-}
-
-remove_docker_shop() {
-  if [[ ! -d "$SHOP_ROOT" ]]; then
-    return 0
-  fi
-  if ! shop_is_docker; then
-    return 0
-  fi
-  if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
-    (cd "$SHOP_ROOT" && docker compose down) || true
-  fi
-  rm -rf "$SHOP_ROOT"
-}
-
 write_plugin_link() {
   local root="$1"
   mkdir -p "$SHOP_ROOT/custom/static-plugins"
