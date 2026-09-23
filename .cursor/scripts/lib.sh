@@ -26,9 +26,12 @@ plugin_root() {
 }
 
 ensure_docker() {
-  if ! command -v dockerd >/dev/null 2>&1; then
+  if ! command -v dockerd >/dev/null 2>&1 || ! docker compose version >/dev/null 2>&1; then
     sudo DEBIAN_FRONTEND=noninteractive apt-get update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io fuse-overlayfs iptables
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      -o Dpkg::Options::=--force-confdef \
+      -o Dpkg::Options::=--force-confold \
+      docker.io docker-compose-v2 fuse-overlayfs iptables
   fi
 
   sudo mkdir -p /etc/docker
@@ -56,8 +59,7 @@ EOF
   fi
 
   if ! pgrep -x dockerd >/dev/null 2>&1; then
-    sudo mkdir -p /var/log
-    sudo dockerd >/var/log/dockerd.log 2>&1 &
+    sudo dockerd >/tmp/dockerd.log 2>&1 &
   fi
 
   local _attempt
@@ -70,12 +72,12 @@ EOF
   done
 
   echo "dockerd did not become ready" >&2
-  sudo tail -n 80 /var/log/dockerd.log >&2 || true
+  sudo tail -n 80 /tmp/dockerd.log >&2 || true
   return 1
 }
 
 ensure_shopware_cli() {
-  if command -v shopware-cli >/dev/null 2>&1 && shopware-cli version 2>/dev/null | grep -q "$SHOPWARE_CLI_VERSION"; then
+  if command -v shopware-cli >/dev/null 2>&1 && shopware-cli --version 2>/dev/null | grep -q "$SHOPWARE_CLI_VERSION"; then
     return 0
   fi
   local deb="/tmp/shopware-cli_${SHOPWARE_CLI_VERSION}_linux_amd64.deb"
