@@ -19,6 +19,10 @@ bin/console plugin:refresh
 bin/console plugin:update ViewsTheme
 ```
 
+## Cloud Agent
+
+Cursor Cloud Agents create this shop with `shopware-cli` at `/home/ubuntu/shopware` on host MariaDB and PHP, and link this repository at `custom/static-plugins/ViewsTheme`. Storefront: http://127.0.0.1:8000. Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`). From the shop directory, `shopware-cli project console` runs `bin/console`.
+
 ## Theme assignment
 
 Assign **ViewsTheme** to the sales channel in the administration (Sales Channel → Theme), or via CLI if you use theme assignment tooling in your project.

@@ -1,0 +1,11 @@
+{
+  "name": "ViewsTheme",
+  "install": "if [ -x .cursor/scripts/cloud-install.sh ]; then .cursor/scripts/cloud-install.sh; elif [ -x \"$HOME/.local/share/views-theme/cloud-install.sh\" ]; then \"$HOME/.local/share/views-theme/cloud-install.sh\"; else echo 'ViewsTheme cloud install script is not in this revision.'; fi",
+  "start": "if [ -x .cursor/scripts/cloud-start.sh ]; then .cursor/scripts/cloud-start.sh; elif [ -x \"$HOME/.local/share/views-theme/cloud-start.sh\" ]; then \"$HOME/.local/share/views-theme/cloud-start.sh\"; else echo 'ViewsTheme cloud start script is missing.' >&2; exit 1; fi",
+  "ports": [
+    {
+      "name": "storefront",
+      "port": 8000
+    }
+  ]
+}

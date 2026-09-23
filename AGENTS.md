@@ -11,6 +11,16 @@ Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce
 
 Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
+## Cloud Agent shop
+
+Cloud Agents boot a Shopware 6.7 app at `/home/ubuntu/shopware` (host MariaDB and PHP; `shopware-cli` creates the project and runs console commands). This checkout is linked at `custom/static-plugins/ViewsTheme`.
+
+- Storefront: http://127.0.0.1:8000
+- Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`)
+- Console, from `/home/ubuntu/shopware`: `shopware-cli project console <command>`
+
+Feature work still must not run theme or asset builds. See [agent workflow](docs/conventions/agent-workflow.md).
+
 ## Before coding
 
 1. Open [docs/conventions/hard-rules.md](docs/conventions/hard-rules.md) and follow the linked topic docs.
