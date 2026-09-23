@@ -68,14 +68,14 @@ ensure_mariadb() {
     if [[ ! -d /var/lib/mysql/mysql ]]; then
       sudo mariadb-install-db --user=mysql --datadir=/var/lib/mysql
     fi
-    # A container mariadbd matches `pgrep` but does not own the host socket.
-    if [[ ! -S /run/mysqld/mysqld.sock ]]; then
-      sudo -u mysql mariadbd \
-        --datadir=/var/lib/mysql \
-        --bind-address=127.0.0.1 \
-        --socket=/run/mysqld/mysqld.sock \
-        >/tmp/mariadbd.log 2>&1 &
-    fi
+    # Snapshots keep the socket file and drop the server process.
+    sudo rm -f /run/mysqld/mysqld.sock /run/mysqld/mysqld.pid
+    sudo -u mysql mariadbd \
+      --datadir=/var/lib/mysql \
+      --bind-address=127.0.0.1 \
+      --socket=/run/mysqld/mysqld.sock \
+      --pid-file=/run/mysqld/mysqld.pid \
+      >/tmp/mariadbd.log 2>&1 &
     local _attempt
     for _attempt in $(seq 1 60); do
       if mariadb_ready; then
