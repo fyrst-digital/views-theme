@@ -22,7 +22,13 @@ Full index: [docs/README.md](docs/README.md).
 
 | Agent | Path | Trigger |
 |-------|------|---------|
-| **Shopware Developer** | [`.opencode/agents/shopware-developer.md`](.opencode/agents/shopware-developer.md) | Theme scaffolding, Twig, JS plugins, SCSS, CMS, services, migrations |
+| **Shopware Developer** | [`.cursor/agents/shopware-developer.md`](.cursor/agents/shopware-developer.md) | Theme scaffolding, Twig, JS plugins, SCSS, CMS, services, migrations |
+
+## Commands
+
+| Command | Path | Trigger |
+|---------|------|---------|
+| **`/implement`** | [`.cursor/commands/implement.md`](.cursor/commands/implement.md) | Implement an agreed plan or a goal typed after the command |
 
 ## Quick reference (docs)
 
