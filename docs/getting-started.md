@@ -21,7 +21,7 @@ bin/console plugin:update ViewsTheme
 
 ## Cloud Agent
 
-Cursor Cloud Agents create this shop with `shopware-cli` (Docker and MariaDB) at `/home/ubuntu/shopware` and mount this repository at `custom/static-plugins/ViewsTheme`. Storefront: http://127.0.0.1:8000. Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`). From the shop directory, `shopware-cli project console` runs `bin/console`.
+Cursor Cloud Agents create this shop with `shopware-cli` at `/home/ubuntu/shopware` on host MariaDB and PHP, and link this repository at `custom/static-plugins/ViewsTheme`. Storefront: http://127.0.0.1:8000. Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`). From the shop directory, `shopware-cli project console` runs `bin/console`.
 
 ## Theme assignment
 

@@ -6,14 +6,6 @@
     {
       "name": "storefront",
       "port": 8000
-    },
-    {
-      "name": "adminer",
-      "port": 9080
-    },
-    {
-      "name": "mailpit",
-      "port": 8025
     }
   ]
 }

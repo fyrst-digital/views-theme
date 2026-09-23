@@ -7,6 +7,9 @@ SHOPWARE_CLI_VERSION="${SHOPWARE_CLI_VERSION:-0.18.4}"
 SHOPWARE_PHP_VERSION="${SHOPWARE_PHP_VERSION:-8.3}"
 STOREFRONT_URL="${STOREFRONT_URL:-http://127.0.0.1:8000}"
 SCRIPT_FALLBACK_DIR="${SCRIPT_FALLBACK_DIR:-/home/ubuntu/.local/share/views-theme}"
+DB_NAME="${DB_NAME:-shopware}"
+DB_USER="${DB_USER:-shopware}"
+DB_PASSWORD="${DB_PASSWORD:-shopware}"
 
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -22,57 +25,6 @@ plugin_root() {
     return 0
   fi
   echo "ViewsTheme checkout not found" >&2
-  return 1
-}
-
-ensure_docker() {
-  if ! command -v dockerd >/dev/null 2>&1 || ! docker compose version >/dev/null 2>&1; then
-    sudo DEBIAN_FRONTEND=noninteractive apt-get update
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      -o Dpkg::Options::=--force-confdef \
-      -o Dpkg::Options::=--force-confold \
-      docker.io docker-compose-v2 fuse-overlayfs iptables
-  fi
-
-  sudo mkdir -p /etc/docker
-  if [[ ! -f /etc/docker/daemon.json ]]; then
-    sudo tee /etc/docker/daemon.json >/dev/null <<'EOF'
-{
-  "storage-driver": "fuse-overlayfs",
-  "iptables": true
-}
-EOF
-  fi
-
-  if [[ -x /usr/sbin/iptables-legacy ]]; then
-    sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-    sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-  fi
-
-  if ! id -nG ubuntu | grep -qw docker; then
-    sudo usermod -aG docker ubuntu || true
-  fi
-
-  if sudo docker info >/dev/null 2>&1; then
-    sudo chmod 666 /var/run/docker.sock || true
-    return 0
-  fi
-
-  if ! pgrep -x dockerd >/dev/null 2>&1; then
-    sudo dockerd >/tmp/dockerd.log 2>&1 &
-  fi
-
-  local _attempt
-  for _attempt in $(seq 1 60); do
-    if sudo docker info >/dev/null 2>&1; then
-      sudo chmod 666 /var/run/docker.sock || true
-      return 0
-    fi
-    sleep 1
-  done
-
-  echo "dockerd did not become ready" >&2
-  sudo tail -n 80 /tmp/dockerd.log >&2 || true
   return 1
 }
 
@@ -97,7 +49,77 @@ install_script_fallback() {
   chmod +x "$SCRIPT_FALLBACK_DIR/cloud-install.sh" "$SCRIPT_FALLBACK_DIR/cloud-start.sh"
 }
 
-write_plugin_mount() {
+mariadb_ready() {
+  sudo mariadb -N -e 'SELECT 1' >/dev/null 2>&1
+}
+
+ensure_mariadb() {
+  if ! command -v mariadbd >/dev/null 2>&1; then
+    sudo DEBIAN_FRONTEND=noninteractive apt-get update
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      -o Dpkg::Options::=--force-confdef \
+      -o Dpkg::Options::=--force-confold \
+      mariadb-server
+  fi
+
+  sudo install -d -o mysql -g mysql /run/mysqld
+
+  if ! mariadb_ready; then
+    if [[ ! -d /var/lib/mysql/mysql ]]; then
+      sudo mariadb-install-db --user=mysql --datadir=/var/lib/mysql
+    fi
+    # A container mariadbd matches `pgrep` but does not own the host socket.
+    if [[ ! -S /run/mysqld/mysqld.sock ]]; then
+      sudo -u mysql mariadbd \
+        --datadir=/var/lib/mysql \
+        --bind-address=127.0.0.1 \
+        --socket=/run/mysqld/mysqld.sock \
+        >/tmp/mariadbd.log 2>&1 &
+    fi
+    local _attempt
+    for _attempt in $(seq 1 60); do
+      if mariadb_ready; then
+        break
+      fi
+      sleep 1
+    done
+  fi
+
+  if ! mariadb_ready; then
+    echo "MariaDB did not become ready" >&2
+    sudo tail -n 80 /tmp/mariadbd.log >&2 || true
+    return 1
+  fi
+
+  sudo mariadb <<SQL
+CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS '${DB_USER}'@'127.0.0.1' IDENTIFIED BY '${DB_PASSWORD}';
+CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';
+FLUSH PRIVILEGES;
+SQL
+}
+
+shop_is_docker() {
+  [[ -f "$SHOP_ROOT/compose.yaml" ]] && return 0
+  [[ -f "$SHOP_ROOT/.shopware-project.yml" ]] && grep -q 'type: docker' "$SHOP_ROOT/.shopware-project.yml"
+}
+
+remove_docker_shop() {
+  if [[ ! -d "$SHOP_ROOT" ]]; then
+    return 0
+  fi
+  if ! shop_is_docker; then
+    return 0
+  fi
+  if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+    (cd "$SHOP_ROOT" && docker compose down) || true
+  fi
+  rm -rf "$SHOP_ROOT"
+}
+
+write_plugin_link() {
   local root="$1"
   mkdir -p "$SHOP_ROOT/custom/static-plugins"
   local dest="$SHOP_ROOT/custom/static-plugins/ViewsTheme"
@@ -105,18 +127,41 @@ write_plugin_mount() {
     rm -rf "$dest"
   fi
   ln -sfn "$root" "$dest"
+}
 
-  cat >"$SHOP_ROOT/compose.override.yaml" <<EOF
-# Managed by ViewsTheme Cloud Agent scripts.
-services:
-  web:
-    volumes:
-      - ${root}:/var/www/html/custom/static-plugins/ViewsTheme
+write_env_local() {
+  cat >"$SHOP_ROOT/.env.local" <<EOF
+APP_URL=${STOREFRONT_URL}
+DATABASE_URL=mysql://${DB_USER}:${DB_PASSWORD}@127.0.0.1:3306/${DB_NAME}
+EOF
+}
+
+write_php_router() {
+  cat >"$SHOP_ROOT/dev-router.php" <<'EOF'
+<?php
+
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$file = __DIR__ . '/public' . $path;
+if ($path !== '/' && is_file($file)) {
+    return false;
+}
+
+require __DIR__ . '/public/index.php';
 EOF
 }
 
 shop() {
   (cd "$SHOP_ROOT" && "$@")
+}
+
+ensure_storefront() {
+  local code
+  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 "$STOREFRONT_URL" || true)"
+  if [[ "$code" =~ ^[23] ]]; then
+    return 0
+  fi
+  write_php_router
+  php -S 127.0.0.1:8000 -t "$SHOP_ROOT/public" "$SHOP_ROOT/dev-router.php" >/tmp/shopware-php.log 2>&1 &
 }
 
 wait_for_storefront() {
@@ -130,7 +175,6 @@ wait_for_storefront() {
     sleep 2
   done
   echo "storefront did not become ready at $STOREFRONT_URL" >&2
-  shop shopware-cli project dev status || true
-  shop docker compose ps || true
+  tail -n 40 /tmp/shopware-php.log >&2 || true
   return 1
 }

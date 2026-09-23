@@ -5,7 +5,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 ROOT="$(plugin_root)"
 
-ensure_docker
+ensure_mariadb
 ensure_shopware_cli
 
 if [[ ! -f "$SHOP_ROOT/composer.json" ]]; then
@@ -13,6 +13,7 @@ if [[ ! -f "$SHOP_ROOT/composer.json" ]]; then
   exit 1
 fi
 
-write_plugin_mount "$ROOT"
-shop shopware-cli project dev start
+write_plugin_link "$ROOT"
+write_env_local
+ensure_storefront
 wait_for_storefront

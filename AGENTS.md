@@ -13,7 +13,7 @@ Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 
 ## Cloud Agent shop
 
-Cloud Agents boot a Shopware 6.7 app at `/home/ubuntu/shopware` (MariaDB via `shopware-cli` Docker). This checkout is mounted at `custom/static-plugins/ViewsTheme`.
+Cloud Agents boot a Shopware 6.7 app at `/home/ubuntu/shopware` (host MariaDB and PHP; `shopware-cli` creates the project and runs console commands). This checkout is linked at `custom/static-plugins/ViewsTheme`.
 
 - Storefront: http://127.0.0.1:8000
 - Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`)

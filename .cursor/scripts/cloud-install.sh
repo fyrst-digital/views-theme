@@ -5,7 +5,9 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 ROOT="$(plugin_root)"
 
-ensure_docker
+# Stop the Docker shop before MariaDB so port 8000 and the old project are gone.
+remove_docker_shop
+ensure_mariadb
 ensure_shopware_cli
 install_script_fallback
 
@@ -16,24 +18,27 @@ fi
 if [[ ! -f "$SHOP_ROOT/composer.json" ]]; then
   mkdir -p "$(dirname "$SHOP_ROOT")"
   shopware-cli --no-interaction project create "$SHOP_ROOT" "$SHOPWARE_VERSION" \
-    --docker \
     --php-version "$SHOPWARE_PHP_VERSION" \
     --with-elasticsearch=false
 fi
 
-write_plugin_mount "$ROOT"
+write_plugin_link "$ROOT"
+write_env_local
 
-shop shopware-cli project dev start
-shop shopware-cli project dev install \
-  --locale en-GB \
-  --currency EUR \
-  --admin-username admin \
-  --admin-password shopware
-
-if ! shop docker compose exec -T web composer show twig/html-extra >/dev/null 2>&1; then
-  shop docker compose exec -T web composer config repositories.views-theme \
+if ! shop composer show fyrst/views-theme >/dev/null 2>&1; then
+  shop composer config repositories.views-theme \
     '{"type":"path","url":"custom/static-plugins/ViewsTheme","options":{"symlink":true}}'
-  shop docker compose exec -T web composer require fyrst/views-theme:@dev --no-interaction
+  shop composer require fyrst/views-theme:@dev --no-interaction --no-scripts
+fi
+
+if ! shop shopware-cli project console system:is-installed; then
+  shop shopware-cli project console system:install \
+    --basic-setup \
+    --create-database \
+    --skip-first-run-wizard \
+    --shop-locale=en-GB \
+    --shop-currency=EUR \
+    --no-interaction
 fi
 
 shop shopware-cli project console plugin:refresh
@@ -54,10 +59,8 @@ print("missing")
 }
 
 if [[ "$(plugin_state name)" == "missing" ]]; then
-  shop docker compose exec -T web composer config repositories.views-theme \
-    '{"type":"path","url":"custom/static-plugins/ViewsTheme","options":{"symlink":true}}'
-  shop docker compose exec -T web composer require fyrst/views-theme:@dev --no-interaction
-  shop shopware-cli project console plugin:refresh
+  echo "ViewsTheme was not discovered" >&2
+  exit 1
 fi
 
 if [[ "$(plugin_state installedAt)" != "yes" || "$(plugin_state active)" != "yes" ]]; then
