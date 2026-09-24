@@ -26,6 +26,9 @@ class ViUtilities extends AbstractExtension
 
     private const META_CLASSES = 'vi_classes';
 
+    /** HTML template that executed `vi_define_cva` on this mounted component. */
+    private const META_TEMPLATE = 'vi_template';
+
     private const CTX_ATTRS = '__vi_attrs';
 
     private const CTX_CLASSES = '__vi_classes';
@@ -196,12 +199,17 @@ class ViUtilities extends AbstractExtension
     /**
      * Apply an exported CVA slot (stack / context). Variants at the use site.
      *
+     * Stack resolution starts at the component whose HTML template contains the
+     * `vi_class()` call, then walks ancestors only (first slot wins). Deeper
+     * mounts are not searched. Falls back to nearest-wins when the lexical
+     * template matches no mounted component. Context fallback is unchanged.
+     *
      * @param array<string, mixed> $context
      * @param array<string, mixed> $variants
      */
     public function class(array $context, string $slot, array $variants = []): string
     {
-        $cvaSlot = $this->resolveFromStack(self::META_CLASSES, $slot);
+        $cvaSlot = $this->resolveClassFromStack($slot);
         if (!$cvaSlot instanceof ViCvaSlot) {
             $cvaSlot = $this->resolveFromContextMaps($context, [self::CTX_CLASSES], $slot);
         }
@@ -369,6 +377,12 @@ class ViUtilities extends AbstractExtension
         $merged = array_merge($prev, $exported);
         $context[self::CTX_CLASSES] = $merged;
         $this->storeOnCurrentComponent(self::META_CLASSES, $merged, true);
+
+        // Lexical owner for vi_class: HTML template executing defineCva (not host of a block).
+        $htmlTemplate = $this->resolveExecutingHtmlTemplate();
+        if ($htmlTemplate !== null) {
+            $this->storeTemplateOnCurrentComponent($htmlTemplate);
+        }
     }
 
     /**
@@ -389,6 +403,68 @@ class ViUtilities extends AbstractExtension
         }
 
         $mounted->addExtraMetadata($key, $value);
+    }
+
+    private function storeTemplateOnCurrentComponent(string $template): void
+    {
+        $mounted = $this->componentStack?->getCurrentComponent();
+        if ($mounted === null) {
+            return;
+        }
+
+        $mounted->addExtraMetadata(self::META_TEMPLATE, $template);
+    }
+
+    /**
+     * Lexical-first CVA lookup: start at the mounted component whose template
+     * matches the call site, then walk ancestors only. If no owner matches,
+     * fall back to nearest-wins (`resolveFromStack`).
+     */
+    private function resolveClassFromStack(string $slot): mixed
+    {
+        if ($this->componentStack === null) {
+            return null;
+        }
+
+        $lexicalTemplate = $this->resolveExecutingHtmlTemplate();
+        if ($lexicalTemplate === null) {
+            return $this->resolveFromStack(self::META_CLASSES, $slot);
+        }
+
+        $foundOwner = false;
+
+        foreach ($this->componentStack as $mounted) {
+            if (!$foundOwner) {
+                if (!$mounted->hasExtraMetadata(self::META_TEMPLATE)
+                    || $mounted->getExtraMetadata(self::META_TEMPLATE) !== $lexicalTemplate
+                ) {
+                    continue;
+                }
+                $foundOwner = true;
+            }
+
+            if (!$mounted->hasExtraMetadata(self::META_CLASSES)) {
+                continue;
+            }
+
+            $map = $mounted->getExtraMetadata(self::META_CLASSES);
+            if (!\is_array($map)) {
+                continue;
+            }
+
+            $value = $map[$slot] ?? null;
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        if ($foundOwner) {
+            // Owner found: deeper mounts are not searched.
+            return null;
+        }
+
+        // Template matched no mounted component → nearest-wins.
+        return $this->resolveFromStack(self::META_CLASSES, $slot);
     }
 
     private function resolveFromStack(string $metaKey, string $slot): mixed
@@ -498,6 +574,15 @@ class ViUtilities extends AbstractExtension
             }
         }
 
+        return $this->resolveExecutingHtmlTemplate();
+    }
+
+    /**
+     * First HTML Twig template on the call stack (skips `.cva.twig` and string templates).
+     * Embedded `twig:block` templates keep the host file name.
+     */
+    private function resolveExecutingHtmlTemplate(): ?string
+    {
         foreach (debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT) as $frame) {
             $object = $frame['object'] ?? null;
             if (!$object instanceof Template) {

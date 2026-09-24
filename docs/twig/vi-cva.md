@@ -50,9 +50,11 @@ Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name)
 | `['root', 'toggle']` | Export only those names (safer across nested hosts) |
 | `{ classes: […], file?: '…' }` | Options bag |
 
-Exported slots are stored on the UX **component stack** (and context fallback). `vi_class` walks **current → parents** (nearest wins).
+Exported slots are stored on the UX **component stack** (and context fallback).
 
-**Same-name rule:** if parent and child both export `toggle`, the nearer frame wins. Export only slots needed for nested `<twig:block>` use when names collide with a host (e.g. `Dropdown`).
+**Lexical slot wins:** `vi_class` starts at the mounted component whose HTML template contains the call, then walks **only toward ancestors**. The first exported slot of that name wins. Components mounted further inside are not searched. If the lexical template matches no mounted component, resolution falls back to nearest-wins (innermost first). Context / `outerScope` fallback (no stack) stays first-match from the current scope outward.
+
+`vi_attrs` is unchanged: nearest-wins via the stack.
 
 **Export list must cover every `vi_class('slot')` in the template.** A narrow list that omits `root` / layout slots yields empty class strings and broken layout. Prefer omit the list (export all) unless you need clash control.
 
