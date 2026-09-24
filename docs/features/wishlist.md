@@ -15,7 +15,7 @@ Theme-owned wishlist: product toggle, header/nav badge, guest localStorage and l
 
 - Owner mounts once in `Page:Header:Actions` when `core.cart.wishlistEnabled` (next to `Cart`)
 - Header: `Wishlist:Action` (`:label="false"`)
-- Nav drawer title: `Wishlist:Action` with drawer-scoped `badgeId` / `liveId`
+- Nav drawer title (`Navigation:Drawer:Header`): `Wishlist:Action` with drawer-scoped `badgeId` / `liveId`
 - Listing box: `Product:Action:Wishlist` on Cover `append`, `appearance="circle"`
 - PDP: `BuyContainer` → `Product:Actions` → `Product:Action:Wishlist` (`showText`, `size: sm`)
 

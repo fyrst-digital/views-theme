@@ -4,7 +4,6 @@
     currencies = null,
     menuUrl = path('frontend.views-theme.navigation.drawer.menu'),
     label = 'general.menuLink'|trans|striptags,
-    wishlist = config('core.cart.wishlistEnabled'),
     cva = {},
 %}
 
@@ -26,27 +25,7 @@
             }).all() }}
         >
             <twig:block name="header">
-                <twig:ViewsTheme:Drawer:Header>
-                    <twig:block name="title">
-                        <div class="{{ vi_class('title') }}">
-                            {% if wishlist %}
-                                <twig:ViewsTheme:Wishlist:Action
-                                    class="position-relative"
-                                    label:class="fs-6"
-                                    badgeId="vi-navigation-drawer-wishlist-basket"
-                                    liveId="vi-navigation-drawer-wishlist-live"
-                                    aria-labelledby="vi-navigation-drawer-wishlist-live"
-                                />
-                            {% endif %}
-
-                            <twig:ViewsTheme:Account:Action
-                                class="mt-2 p-0 vi-account__dropdown"
-                                placement="bottom-center"
-                                toggle:label:class="fs-6"
-                            />
-                        </div>
-                    </twig:block>
-                </twig:ViewsTheme:Drawer:Header>
+                <twig:ViewsTheme:Navigation:Drawer:Header />
             </twig:block>
             <twig:ViewsTheme:Navigation:Drawer:Menu
                 :navigation="navigation"

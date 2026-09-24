@@ -74,7 +74,7 @@ Account pages (overview, profile, addressbook, orders): [account.md](account.md)
 
 Below `lg`, `d-none d-lg-contents` hides the host; `--lg-up` force-dismisses an open panel (same CSS cascade — no corner jump).
 
-`Navigation:Drawer` title (mobile entry; default label snippet):
+`Navigation:Drawer:Header` title (mobile entry; default label snippet):
 
 ```twig
 <twig:ViewsTheme:Account:Action
