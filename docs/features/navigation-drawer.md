@@ -11,7 +11,8 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Drawer:Action` | Lazy fetch/mount; toggle open/close. Public `open()` / `close()` (`callMethod`). Composes `ViewsTheme:Button` (`color="none"`, `icon="list"`) |
-| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header`; Header `title` hosts `Wishlist:Action` + `Account:Action`; footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
+| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header` (`Navigation:Drawer:Header`); footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
+| `Navigation:Drawer:Header` | Root-host wrapper of `Drawer:Header` (no extra node, no JS). Title hosts `Wishlist:Action` + `Account:Action`; root class `vi-navigation-drawer-header` |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
@@ -39,7 +40,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 
 ### Header actions in the drawer title
 
-`Navigation:Drawer` overrides Panel `header` → `Drawer:Header` → `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
+`Navigation:Drawer` overrides Panel `header` with `Navigation:Drawer:Header`, which wraps `Drawer:Header` and fills `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
 `Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. Wishlist is a root-host leaf (`:label="false"`); Account toggle chrome is nest `toggle:label` (`:toggle:label="false"`). Drawer uses defaults; header hides labels.
 
@@ -50,7 +51,7 @@ Wishlist uses drawer-scoped **props** (`badgeId` / `liveId`) so it can coexist w
 | Badge | `badgeId` | `wishlist-basket` | `vi-navigation-drawer-wishlist-basket` |
 | Live region | `liveId` | `wishlist-basket-live-area` | `vi-navigation-drawer-wishlist-live` |
 
-Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer` title (mobile entry).
+Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer:Header` title (mobile entry).
 
 ## How it works
 
@@ -159,6 +160,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Panel / Header / Close | `src/Resources/views/components/Drawer/{Panel,Header,Close}.*` |
 | Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
+| Drawer header | `src/Resources/views/components/Navigation/Drawer/Header.*` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
 | Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
 | Scroll area (menu scrollport) | `src/Resources/views/components/Scroll/Area.*` |

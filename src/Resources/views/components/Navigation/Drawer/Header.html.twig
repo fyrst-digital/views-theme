@@ -1,0 +1,39 @@
+{% props
+    wishlist = config('core.cart.wishlistEnabled'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Drawer:Header
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({}).all() }}
+>
+    <twig:block name="title">
+        <div class="{{ vi_class('title') }}">
+            {% vi_block action_prepend %}{% endvi_block %}
+
+            {% vi_block action_wishlist %}
+                {% if wishlist %}
+                    <twig:ViewsTheme:Wishlist:Action
+                        class="position-relative"
+                        label:class="fs-6"
+                        badgeId="vi-navigation-drawer-wishlist-basket"
+                        liveId="vi-navigation-drawer-wishlist-live"
+                        aria-labelledby="vi-navigation-drawer-wishlist-live"
+                    />
+                {% endif %}
+            {% endvi_block %}
+
+            {% vi_block action_account %}
+                <twig:ViewsTheme:Account:Action
+                    class="mt-2 p-0 vi-account__dropdown"
+                    placement="bottom-center"
+                    toggle:label:class="fs-6"
+                />
+            {% endvi_block %}
+
+            {% vi_block action_append %}{% endvi_block %}
+        </div>
+    </twig:block>
+</twig:ViewsTheme:Drawer:Header>
