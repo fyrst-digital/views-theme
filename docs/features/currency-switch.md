@@ -12,7 +12,8 @@ layout_top_bar (desktop lg+)
             └─ Currency:Menu → POST form + option submit buttons
 
 Navigation:Drawer footer (mobile)
-  └─ Currency:Action (placement=top-start)
+  └─ Navigation:Drawer:Footer
+       └─ Currency:Action (placement=top-start)
 ```
 
 | Component | Path | Role |
@@ -95,7 +96,7 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 
 Optional stable `id="vi-header-currency"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
-Navigation drawer footer — currencies passed from `NavigationDrawerController` (via `HeaderPageletLoader`):
+Navigation drawer footer — `Navigation:Drawer` forwards currencies from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders:
 
 ```twig
 <twig:ViewsTheme:Currency:Action

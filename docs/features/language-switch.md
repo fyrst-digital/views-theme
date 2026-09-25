@@ -12,7 +12,8 @@ layout_top_bar (desktop lg+)
             └─ Language:Menu → POST form + option submit buttons
 
 Navigation:Drawer footer (mobile)
-  └─ Language:Action (placement=top-start)
+  └─ Navigation:Drawer:Footer
+       └─ Language:Action (placement=top-start)
 ```
 
 | Component | Path | Role |
@@ -101,7 +102,7 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 
 Optional stable `id="vi-header-language"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
-Navigation drawer footer — languages passed from `NavigationDrawerController` (via `HeaderPageletLoader`):
+Navigation drawer footer — `Navigation:Drawer` forwards languages from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders:
 
 ```twig
 <twig:ViewsTheme:Language:Action

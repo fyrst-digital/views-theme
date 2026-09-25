@@ -11,8 +11,9 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Drawer:Action` | Lazy fetch/mount; toggle open/close. Public `open()` / `close()` (`callMethod`). Composes `ViewsTheme:Button` (`color="none"`, `icon="list"`) |
-| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header` (`Navigation:Drawer:Header`); footer hosts `Language:Action` + `Currency:Action`; Menu is Panel body |
+| `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header` (`Navigation:Drawer:Header`) and `footer` (`Navigation:Drawer:Footer`); Menu is Panel body |
 | `Navigation:Drawer:Header` | Root-host wrapper of `Drawer:Header` (no extra node, no JS). Title hosts `Wishlist:Action` + `Account:Action`; root class `vi-navigation-drawer-header` |
+| `Navigation:Drawer:Footer` | Presentational chrome (no JS). Hosts `Language:Action` + `Currency:Action` when either collection has more than one item; root class `vi-navigation-drawer-footer` |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
@@ -30,7 +31,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
-- Drawer footer hosts `Language:Action` + `Currency:Action` (`placement="top-start"`); languages/currencies loaded via `HeaderPageletLoader` in the drawer controller
+- `Navigation:Drawer:Footer` hosts `Language:Action` + `Currency:Action` (`placement="top-start"`) when either collection has more than one item; languages/currencies loaded via `HeaderPageletLoader` in the drawer controller and forwarded from `Navigation:Drawer`
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"`; use the drawer actions instead
 - Header instances pass `:label="false"` on Wishlist and `:toggle:label="false"` on Account (icon-only); drawer keeps default label snippets
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
@@ -161,6 +162,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Drawer header | `src/Resources/views/components/Navigation/Drawer/Header.*` |
+| Drawer footer | `src/Resources/views/components/Navigation/Drawer/Footer.*` |
 | Action | `src/Resources/views/components/Navigation/Drawer/Action.*` |
 | Menu (+ drill orchestration / level motion) | `src/Resources/views/components/Navigation/Drawer/Menu.*` |
 | Scroll area (menu scrollport) | `src/Resources/views/components/Scroll/Area.*` |

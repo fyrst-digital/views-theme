@@ -1,0 +1,34 @@
+{% props
+    languages = null,
+    currencies = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% set languageCount = languages and languages.count is defined ? languages.count : (languages|default([])|length) %}
+{% set currencyCount = currencies and currencies.count is defined ? currencies.count : (currencies|default([])|length) %}
+
+{% vi_block container %}
+    {% if languageCount > 1 or currencyCount > 1 %}
+        <div
+            {{ attributes }}
+            class="{{ vi_class('root') }}"
+        >
+            {% vi_block action_prepend %}{% endvi_block %}
+            {% vi_block action_language %}
+                <twig:ViewsTheme:Language:Action
+                    :languages="languages"
+                    placement="top-start"
+                />
+            {% endvi_block %}
+            {% vi_block action_currency %}
+                <twig:ViewsTheme:Currency:Action
+                    :currencies="currencies"
+                    placement="top-start"
+                />
+            {% endvi_block %}
+            {% vi_block action_append %}{% endvi_block %}
+        </div>
+    {% endif %}
+{% endvi_block %}
