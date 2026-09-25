@@ -31,7 +31,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock
 - Open/close motion: panel slides from `side`, backdrop fades (`--vi-drawer-duration`, default 250ms); `prefers-reduced-motion: reduce` skips transitions
 - Drawer header title hosts `Wishlist:Action` (when enabled) + `Account:Action` with default visible labels; close stays on the right
-- `Navigation:Drawer:Footer` hosts `Language:Action` + `Currency:Action` (`placement="top-start"`) when either collection has more than one item; languages/currencies loaded via `HeaderPageletLoader` in the drawer controller and forwarded from `Navigation:Drawer`
+- `Navigation:Drawer:Footer` hosts `Language:Action` + `Currency:Action` (`placement="top-start"`) when either collection has more than one item; languages/currencies loaded via `HeaderPageletLoader` in the drawer controller and forwarded from `Navigation:Drawer`. Chrome is Footer CVA slots `language` / `currency` (empty bases). Override via Footer `:cva` or `language:class` / `currency:class`; forward each action’s CVA with `language:cva` / `currency:cva`; placement via `language:placement` / `currency:placement`. `Navigation:Drawer` still mounts Footer with languages and currencies only
 - Below `lg`, header wishlist is `d-none d-lg-inline-flex`; header account uses Dropdown `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"`; use the drawer actions instead
 - Header instances pass `:label="false"` on Wishlist and `:toggle:label="false"` on Account (icon-only); drawer keeps default label snippets
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
@@ -44,6 +44,8 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 `Navigation:Drawer` overrides Panel `header` with `Navigation:Drawer:Header`, which wraps `Drawer:Header` and fills `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
 `Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. Wishlist is a root-host leaf (`:label="false"`); Account toggle chrome is nest `toggle:label` (`:toggle:label="false"`). Drawer uses defaults; header hides labels.
+
+Drawer chrome for those actions lives on `Navigation:Drawer:Header` CVA (`wishlist`, `wishlistLabel`, `account`, `accountLabel`). A caller overrides it with `:cva` or `wishlist:class` / `account:class`. Child CVA forwards through the nests: `wishlist:cva` and `account:cva` (deep-merged by each child). Drawer classes stay extras on top of the child’s own bases. `Navigation:Drawer` still mounts Header with no extra props; override on a `Navigation:Drawer:Header` call or a `header` block override.
 
 Wishlist uses drawer-scoped **props** (`badgeId` / `liveId`) so it can coexist with the header instance:
 

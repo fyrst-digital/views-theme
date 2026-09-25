@@ -96,14 +96,19 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 
 Optional stable `id="vi-header-currency"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
-Navigation drawer footer — `Navigation:Drawer` forwards currencies from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders:
+Navigation drawer footer — `Navigation:Drawer` forwards currencies from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders. Classes come from Footer CVA slot `currency`; currencies and `placement="top-start"` are the `currency` nest defaults:
 
 ```twig
 <twig:ViewsTheme:Currency:Action
-    :currencies="currencies"
-    placement="top-start"
+    class="{{ vi_class('currency') }}"
+    {{ ...vi_attrs('currency').defaults({
+        currencies: currencies,
+        placement: 'top-start',
+    }).all() }}
 />
 ```
+
+Override on the Footer call: `:cva="{ currency: { base: '…' } }"` or `currency:class`. Forward `Currency:Action`’s own CVA with `currency:cva="{ … }"` (footer slot classes stay extras on the action root). Placement override: `currency:placement`.
 
 ## Related
 

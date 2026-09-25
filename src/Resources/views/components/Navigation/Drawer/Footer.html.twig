@@ -5,6 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['language', 'currency']) %}
 
 {% set languageCount = languages and languages.count is defined ? languages.count : (languages|default([])|length) %}
 {% set currencyCount = currencies and currencies.count is defined ? currencies.count : (currencies|default([])|length) %}
@@ -18,14 +19,20 @@
             {% vi_block action_prepend %}{% endvi_block %}
             {% vi_block action_language %}
                 <twig:ViewsTheme:Language:Action
-                    :languages="languages"
-                    placement="top-start"
+                    class="{{ vi_class('language') }}"
+                    {{ ...vi_attrs('language').defaults({
+                        languages: languages,
+                        placement: 'top-start',
+                    }).all() }}
                 />
             {% endvi_block %}
             {% vi_block action_currency %}
                 <twig:ViewsTheme:Currency:Action
-                    :currencies="currencies"
-                    placement="top-start"
+                    class="{{ vi_class('currency') }}"
+                    {{ ...vi_attrs('currency').defaults({
+                        currencies: currencies,
+                        placement: 'top-start',
+                    }).all() }}
                 />
             {% endvi_block %}
             {% vi_block action_append %}{% endvi_block %}

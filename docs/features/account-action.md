@@ -74,15 +74,19 @@ Account pages (overview, profile, addressbook, orders): [account.md](account.md)
 
 Below `lg`, `d-none d-lg-contents` hides the host; `--lg-up` force-dismisses an open panel (same CSS cascade — no corner jump).
 
-`Navigation:Drawer:Header` title (mobile entry; default label snippet):
+`Navigation:Drawer:Header` title (mobile entry; default label snippet). Classes come from Header CVA slots `account` / `accountLabel`; placement is the `account` nest default:
 
 ```twig
 <twig:ViewsTheme:Account:Action
-    class="mt-2 p-0 vi-account__dropdown"
-    placement="bottom-center"
-    toggle:label:class="fs-6"
+    class="{{ vi_class('account') }}"
+    toggle:label:class="{{ vi_class('accountLabel') }}"
+    {{ ...vi_attrs('account').defaults({
+        placement: 'bottom-center',
+    }).all() }}
 />
 ```
+
+Override on the Header call: `:cva="{ account: { base: '…' }, accountLabel: { base: '…' } }"` or `account:class`. Forward Account:Action’s own CVA with `account:cva="{ … }"` (drawer chrome stays extras). Same pattern for wishlist (`wishlist` / `wishlistLabel`, `wishlist:cva`).
 
 See [Navigation drawer](navigation-drawer.md) and [UX components — Attributes](../conventions/ux-components.md#attributes).
 

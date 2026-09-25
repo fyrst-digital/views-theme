@@ -102,14 +102,19 @@ Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block 
 
 Optional stable `id="vi-header-language"`. Toggle is always `Button` `size="sm"` `color="none"`.
 
-Navigation drawer footer — `Navigation:Drawer` forwards languages from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders:
+Navigation drawer footer — `Navigation:Drawer` forwards languages from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders. Classes come from Footer CVA slot `language`; languages and `placement="top-start"` are the `language` nest defaults:
 
 ```twig
 <twig:ViewsTheme:Language:Action
-    :languages="languages"
-    placement="top-start"
+    class="{{ vi_class('language') }}"
+    {{ ...vi_attrs('language').defaults({
+        languages: languages,
+        placement: 'top-start',
+    }).all() }}
 />
 ```
+
+Override on the Footer call: `:cva="{ language: { base: '…' } }"` or `language:class`. Forward `Language:Action`’s own CVA with `language:cva="{ … }"` (footer slot classes stay extras on the action root). Placement override: `language:placement`.
 
 ## Related
 
