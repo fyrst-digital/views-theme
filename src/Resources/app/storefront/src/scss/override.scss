@@ -118,6 +118,10 @@ $utilities: (
     property: cursor,
     values: pointer default text
   ),
+  "appearance": (
+    property: appearance,
+    values: none
+  ),
   "overflow": (
     property: overflow,
     values: auto hidden visible scroll clip,

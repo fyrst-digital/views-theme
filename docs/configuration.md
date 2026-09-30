@@ -60,6 +60,8 @@ Authoritative field defaults: `theme.json` / theme fields table below.
 
 Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
+**Appearance utility** (Bootstrap `$utilities`): `.appearance-none` is the theme Bootstrap class for `appearance: none`.
+
 ### Inheritance and assets
 
 | Key | Value |
