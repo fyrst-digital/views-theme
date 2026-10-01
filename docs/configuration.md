@@ -68,9 +68,9 @@ The count is `$grid-columns` in `scss/override.scss` (default `12`). The same va
 
 | Class | Declaration |
 |-------|-------------|
-| `.columns-1` … `.columns-12` | `grid-template-columns: repeat(N, minmax(0, 1fr))` |
+| `.grid-columns-1` … `.grid-columns-12` | `grid-template-columns: repeat(N, minmax(0, 1fr))` |
 
-Responsive: `.columns-{breakpoint}-{n}` (e.g. `columns-2 columns-lg-4`). Suggest results use `columns-4`.
+Responsive: `.grid-columns-{breakpoint}-{n}` (e.g. `grid-columns-2 grid-columns-lg-4`). Suggest results use `grid-columns-4`.
 
 ### Inheritance and assets
 

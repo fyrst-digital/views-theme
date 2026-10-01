@@ -73,7 +73,7 @@ $icon-sizes: (
   6: 40px,
 );
 
-// Track count utilities (`.columns-*`). Also Bootstrap's flex-grid column count.
+// Track count utilities (`.grid-columns-*`). Also Bootstrap's flex-grid column count.
 $grid-columns: 12 !default;
 
 $grid-column-counts: ();
@@ -142,9 +142,9 @@ $utilities: (
     property: overflow-y,
     values: auto hidden visible scroll clip,
   ),
-  "columns": (
+  "grid-columns": (
     property: grid-template-columns,
-    class: columns,
+    class: grid-columns,
     responsive: true,
     values: $grid-column-counts
   ),
