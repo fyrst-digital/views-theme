@@ -73,12 +73,12 @@ $icon-sizes: (
   6: 40px,
 );
 
-// Track count for `.grid` (`--columns`). Also Bootstrap's flex-grid column count.
+// Track count utilities (`.columns-*`). Also Bootstrap's flex-grid column count.
 $grid-columns: 12 !default;
 
 $grid-column-counts: ();
 @for $i from 1 through $grid-columns {
-  $grid-column-counts: map-merge($grid-column-counts, ($i: $i));
+  $grid-column-counts: map-merge($grid-column-counts, ($i: unquote("repeat(#{$i}, minmax(0, 1fr))")));
 }
 
 // BUtilities overrides
@@ -143,7 +143,7 @@ $utilities: (
     values: auto hidden visible scroll clip,
   ),
   "columns": (
-    property: --#{$prefix}columns,
+    property: grid-template-columns,
     class: columns,
     responsive: true,
     values: $grid-column-counts

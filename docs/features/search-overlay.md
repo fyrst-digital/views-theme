@@ -25,7 +25,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Suggest is inserted as the **next sibling after the bar form**.
 - Flex scroll chain: panel (`min-h-0` + column flex) → Suggest (`flex-1 min-h-0`) → Results/`Scroll:Area` (`flex-1 min-h-0`) so long result lists scroll inside the panel.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (list price via shared Price / `ProductPriceResolver`).
-- Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`. Results is a `.grid` with `columns-4` (sets `--columns`).
+- Suggest subcomponents (Heading, Results, Item, Summary, Empty) live nested under `Search/Suggest/`. Results is a `.grid` with `columns-4` (`repeat(4, minmax(0, 1fr))`).
 - Product results compose `ViewsTheme:Scroll:Area` (body → default `content` block). Fade styles live in co-located `Scroll/Area.css` (`.vi-scroll-area`, `var(--vi-fade, 40px)`); base overflow is `overflow-auto`; JS toggles `data-scroll-up` / `data-scroll-down` so vertical edge fades only when that edge can scroll.
 
 ## How it works
