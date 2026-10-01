@@ -67,9 +67,6 @@
     --badge-min-w: 20px;
   }
 }
-.vi-search-suggest__results {
-  --columns: 4;
-}
 .vi-account__dropdown {
   --vi-max-w: min(100vw - 40px, 280px);
 }
