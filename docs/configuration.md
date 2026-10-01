@@ -62,6 +62,16 @@ Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
 **Appearance utility** (Bootstrap `$utilities`): `.appearance-none` is the theme Bootstrap class for `appearance: none`.
 
+**Column count utility** (Bootstrap `$utilities`, `grid-template-columns`):
+
+The count is `$grid-columns` in `scss/override.scss` (default `12`). The same variable is Bootstrap’s flex-grid column count.
+
+| Class | Declaration |
+|-------|-------------|
+| `.grid-columns-1` … `.grid-columns-12` | `grid-template-columns: repeat(N, minmax(0, 1fr))` |
+
+Responsive: `.grid-columns-{breakpoint}-{n}` (e.g. `grid-columns-2 grid-columns-lg-4`). Suggest results use `grid-columns-4`.
+
 ### Inheritance and assets
 
 | Key | Value |
