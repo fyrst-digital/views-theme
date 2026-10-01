@@ -2,8 +2,6 @@
 
 Generic CSS grid layout shell. Owns container chrome (`grid`) plus optional **gap** / **columns** CSS tokens. Children own their own spans (`g-col-*`).
 
-Spans are responsive Bootstrap utilities from `$grid-columns` (default `12`) in `scss/override.scss`: `.g-col-1` … `.g-col-12` and `.g-col-{sm|md|lg|xl|xxl}-*`. See [Configuration — grid column utility](../configuration.md).
-
 ## Ownership
 
 | Piece | Responsibility |

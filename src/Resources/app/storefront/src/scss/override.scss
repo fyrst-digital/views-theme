@@ -73,14 +73,6 @@ $icon-sizes: (
   6: 40px,
 );
 
-// CSS grid column spans (.g-col-*). Also Bootstrap's flex-grid column count.
-$grid-columns: 12 !default;
-
-$grid-column-spans: ();
-@for $i from 1 through $grid-columns {
-  $grid-column-spans: map-merge($grid-column-spans, ($i: unquote("auto / span #{$i}")));
-}
-
 // BUtilities overrides
 $utilities: (
   "width": (
@@ -141,12 +133,6 @@ $utilities: (
   "overflow-y": (
     property: overflow-y,
     values: auto hidden visible scroll clip,
-  ),
-  "grid-column": (
-    property: grid-column,
-    class: g-col,
-    responsive: true,
-    values: $grid-column-spans
   ),
 );
 

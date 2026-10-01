@@ -53,7 +53,7 @@ SoT: `src/Resources/app/storefront/src/scss/override.scss` (`$grid-breakpoints`)
 | `xl` | **1260px** |
 | `xxl` | 1600px |
 
-Desktop storefront chrome uses **`xl`**, not `1280px`. Display utilities include `contents` (`d-contents`, `d-xl-contents`). Spacers `0–10` (`gap-6` = 24px). Position is responsive (`position-xl-sticky`). CSS grid column spans are responsive utilities (`g-col-*`, `g-col-xl-*`) generated from `$grid-columns` (default `12`).
+Desktop storefront chrome uses **`xl`**, not `1280px`. Display utilities include `contents` (`d-contents`, `d-xl-contents`). Spacers `0–10` (`gap-6` = 24px). Position is responsive (`position-xl-sticky`).
 
 ### Variants vs tokens
 
