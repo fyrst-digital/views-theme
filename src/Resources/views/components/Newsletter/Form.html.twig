@@ -1,5 +1,6 @@
 {% props
     id = 'vi-newsletter-' ~ random(),
+    privacyNote = true,
     cva = {},
 %}
 
@@ -70,13 +71,14 @@
                 } %}
 
                 {% vi_block privacy %}
-                    <twig:ViewsTheme:Privacy:Note
-                        class="{{ vi_class('privacy') }}"
-                        {{ ...vi_attrs('privacy').defaults({
-                            id: privacyId,
-                            requireCheckbox: true,
-                        }).all() }}
-                    />
+                    {% if privacyNote %}
+                        <twig:ViewsTheme:Privacy:Note
+                            class="{{ vi_class('privacy') }}"
+                            {{ ...vi_attrs('privacy').defaults({
+                                id: privacyId,
+                            }).all() }}
+                        />
+                    {% endif %}
                 {% endvi_block %}
             </twig:block>
         </twig:ViewsTheme:Form:Handler>

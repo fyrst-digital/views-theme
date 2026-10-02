@@ -77,6 +77,8 @@ Anonymous UX. Replaces core `privacy-notice.html.twig` on theme-owned register. 
 | `id` / `name` | `acceptedDataProtection` | RegisterRoute `NotBlank` when required |
 | `formViolations` | `__context` default; `Account:Register` passes explicitly | Path `/acceptedDataProtection`. Nested UX isolates page scope, so register must forward the prop. |
 
+The notice is one `text` slot (`{% block text %}`). That element is a `label` with `for` set to the checkbox id when `requireCheckbox` is true; otherwise it is a `div`. With the checkbox, the label sits inside the control flex row so `col` grows beside the input. Feedback stays after the control. Both modes use `vi_attrs('text')` and `vi_class('text', { checkbox: requireCheckbox })`. CVA `text` base is `vi-privacy-note__text mb-0`; `checkbox: true` adds `form-check-label col cursor-pointer`. Callers style the notice with `text:class`.
+
 Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Product:Price:Tax`. Required-fields hint stays on `Account:Register` footer.
 
 ## Address fields

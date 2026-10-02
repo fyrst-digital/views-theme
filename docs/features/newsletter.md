@@ -13,7 +13,7 @@ Logged-in account opt-in stays [`Account:Newsletter`](account.md) (`frontend.acc
 | `Newsletter:Form:Messages:Sample` | Hidden `<template>` per alert type, cloned by Messages |
 | `Form:Handler` | Constraint validation + submit loading (`preventNative`) |
 | `Form:Input:Group` | Email field; submit `Button` in `append` |
-| `Privacy:Note` | Required consent checkbox (unique id; `requireCheckbox` forced on) |
+| `Privacy:Note` | Required consent checkbox (unique id; `requireCheckbox` forced on). Rendered only when `privacyNote` is true (default) |
 | Core captcha include | `storefront/component/captcha/base.html.twig` |
 
 Do **not** mount core `data-form-cms-handler` / `data-form-ajax-submit` / `FormCmsHandler`.
@@ -29,8 +29,10 @@ Newsletter:Form
      ├─ Form:Input:Group (email)
      │    └─ Button (append)
      ├─ core captcha
-     └─ Privacy:Note
+     └─ Privacy:Note  (when privacyNote, default true)
 ```
+
+`privacyNote` (default `true`) gates the `Privacy:Note` call inside `{% vi_block privacy %}`. `:privacyNote="false"` skips the component. The `privacy` nest, `privacyId`, and CVA stay in place.
 
 Nests: `messages`, `form`, `email`, `privacy`, `submit`.
 
