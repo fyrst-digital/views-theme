@@ -1,0 +1,16 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Newsletter:Form:Messages',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% for type in ['success', 'info', 'warning', 'danger'] %}
+        <twig:ViewsTheme:Newsletter:Form:Messages:Sample type="{{ type }}" />
+    {% endfor %}
+</div>

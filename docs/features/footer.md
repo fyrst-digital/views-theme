@@ -2,7 +2,7 @@
 
 Theme-owned page footer. Complete chrome is ESI (`frontend.footer`); checkout and edit-order mount a **Minimal** variant inline — the same split as [`Page:Header:Main`](../conventions/ux-components.md) / [`Page:Header:Minimal`](checkout-success.md).
 
-Content comes from the core `FooterPagelet` (footer category tree, service menu, payment/shipping methods). No `theme.json` footer fields. No newsletter.
+Content comes from the core `FooterPagelet` (footer category tree, service menu, payment/shipping methods). No `theme.json` footer fields. No newsletter block. Public subscribe is [`Newsletter:Form`](newsletter.md), not mounted here.
 
 ## Ownership
 

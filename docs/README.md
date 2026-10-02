@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, language/currency switch, form input, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb, gallery, footer |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, language/currency switch, form input, newsletter, product box, buy container, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb, gallery, footer |
 
 ## Conventions
 
@@ -58,6 +58,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Language switch](features/language-switch.md)
 - [Currency switch](features/currency-switch.md)
 - [Form input](features/form-input.md)
+- [Newsletter](features/newsletter.md)
 - [Product box](features/product-box.md)
 - [Buy container](features/buy-container.md)
 - [Product listing](features/product-listing.md)
