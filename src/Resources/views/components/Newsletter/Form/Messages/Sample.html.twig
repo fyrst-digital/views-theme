@@ -1,0 +1,31 @@
+{% props
+    type = 'info',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['text', 'list']) %}
+
+<template
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Newsletter:Form:Messages:Sample',
+        'data-component-options': { type: type }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <twig:ViewsTheme:Alert type="{{ type }}">
+        <twig:block name="content">
+            <p
+                {{ vi_attrs('text') }}
+                class="{{ vi_class('text') }}"
+            ></p>
+            <ul
+                {{ vi_attrs('list') }}
+                class="{{ vi_class('list') }}"
+                hidden
+            >
+                <li></li>
+            </ul>
+        </twig:block>
+    </twig:ViewsTheme:Alert>
+</template>

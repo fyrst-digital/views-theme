@@ -494,3 +494,4 @@ Do **not** mount core `FormHandler` / `FormValidation` / `data-form-handler` / `
 - [Account action](account-action.md) (login in header menu)
 - [Cart drawer](cart-drawer.md) (promotion form, shipping calculation)
 - [Filters](filters.md) (`Filter:Boolean`, `Filter:Range`)
+- [Newsletter](newsletter.md) (`Newsletter:Form` posts through `Form:Handler`)

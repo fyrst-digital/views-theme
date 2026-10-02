@@ -232,6 +232,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Form slider | `ViewsTheme:Form:Slider` | `Form/Slider.js` |
 | Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
 | Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
+| Newsletter form / messages / sample | `ViewsTheme:Newsletter:Form` / `Form:Messages` / `Form:Messages:Sample` | `Newsletter/Form.js`, `Newsletter/Form/Messages.js`, `Newsletter/Form/Messages/Sample.js` |
 | Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
 | Address manager | `ViewsTheme:Address:Manager` | `Address/Manager.js` |
 | Address manager action | `ViewsTheme:Address:Manager:Action` | `Address/Manager/Action.js` |

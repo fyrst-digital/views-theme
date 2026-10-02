@@ -12,7 +12,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['title', 'text', 'control', 'checkbox', 'label', 'feedback']) %}
+{% do vi_define_attrs(['title', 'text', 'control', 'checkbox', 'feedback']) %}
 
 {% set isInvalid = formViolations and formViolations.getViolations(violationPath) is not empty %}
 {% set feedbackId = id ~ '-feedback' %}
@@ -52,14 +52,19 @@
                     }) }}
                     class="{{ vi_class('checkbox', { invalid: isInvalid }) }}"
                 >
-                <label
-                    {{ vi_attrs('label').defaults({
-                        for: id,
-                    }) }}
-                    class="{{ vi_class('label') }}"
-                >
-                    {{ notice|raw }}
-                </label>
+        {% endif %}
+
+        {% block text %}
+            {% set textTag = requireCheckbox ? 'label' : 'div' %}
+            <{{ textTag|raw }}
+                {{ vi_attrs('text').defaults(requireCheckbox ? { for: id } : {}) }}
+                class="{{ vi_class('text', { checkbox: requireCheckbox }) }}"
+            >
+                {{ notice|raw }}
+            </{{ textTag|raw }}>
+        {% endblock %}
+
+        {% if requireCheckbox %}
             </div>
             <div
                 {{ vi_attrs('feedback').defaults({
@@ -73,10 +78,6 @@
                         violationPath: violationPath,
                     } %}
                 {% endif %}
-            </div>
-        {% else %}
-            <div {{ vi_attrs('text') }} class="{{ vi_class('text') }}">
-                {{ notice|raw }}
             </div>
         {% endif %}
     {% endblock %}

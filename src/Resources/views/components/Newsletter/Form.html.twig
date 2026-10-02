@@ -1,0 +1,86 @@
+{% props
+    id = 'vi-newsletter-' ~ random(),
+    privacyNote = true,
+    cva = {},
+%}
+
+{% set subscribe = constant('Shopware\\Storefront\\Controller\\FormController::SUBSCRIBE') %}
+{% set emailId = id ~ '-email' %}
+{% set privacyId = id ~ '-privacy' %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['messages', 'form', 'email', 'privacy', 'submit']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Newsletter:Form',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block messages %}
+        <twig:ViewsTheme:Newsletter:Form:Messages
+            class="{{ vi_class('messages') }}"
+            {{ ...vi_attrs('messages') }}
+        />
+    {% endblock %}
+
+    {% block form %}
+        <twig:ViewsTheme:Form:Handler
+            class="{{ vi_class('form') }}"
+            {{ ...vi_attrs('form').defaults({
+                id: id,
+                action: path('frontend.form.newsletter.register.handle'),
+                method: 'post',
+                preventNative: true,
+                'aria-label': 'newsletter.headline'|trans|striptags,
+            }).all() }}
+        >
+            <twig:block name="content">
+                {{ sw_csrf('frontend.form.newsletter.register.handle') }}
+                <input type="hidden" name="option" value="{{ subscribe }}">
+
+                {% vi_block email %}
+                    <twig:ViewsTheme:Form:Input:Group
+                        class="{{ vi_class('email') }}"
+                        {{ ...vi_attrs('email').defaults({
+                            id: emailId,
+                            name: 'email',
+                            type: 'email',
+                            label: 'newsletter.labelMail'|trans|sw_sanitize,
+                            placeholder: 'newsletter.placeholderMail'|trans|striptags,
+                            autocomplete: 'email',
+                            validationRules: 'required',
+                        }).all() }}
+                    >
+                        <twig:block name="append">
+                            {% vi_block submit %}
+                                <twig:ViewsTheme:Button
+                                    class="{{ vi_class('submit') }}"
+                                    {{ ...vi_attrs('submit').defaults({
+                                        type: 'submit',
+                                        label: 'newsletter.formSubmit'|trans|sw_sanitize,
+                                    }).all() }}
+                                />
+                            {% endvi_block %}
+                        </twig:block>
+                    </twig:ViewsTheme:Form:Input:Group>
+                {% endvi_block %}
+
+                {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' with {
+                    formId: id,
+                } %}
+
+                {% vi_block privacy %}
+                    {% if privacyNote %}
+                        <twig:ViewsTheme:Privacy:Note
+                            class="{{ vi_class('privacy') }}"
+                            {{ ...vi_attrs('privacy').defaults({
+                                id: privacyId,
+                            }).all() }}
+                        />
+                    {% endif %}
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    {% endblock %}
+</div>

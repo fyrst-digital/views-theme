@@ -18,7 +18,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Account:Heading` | Shared h1 + intro |
 | `Account:Overview` | Alerts, profile card, newsletter, default addresses, newest order |
 | `Account:PersonalCard` | Name / company / email + optional profile edit |
-| `Account:Newsletter` | `Form:Switch` + change → submit `frontend.account.newsletter` |
+| `Account:Newsletter` | `Form:Switch` + change → submit `frontend.account.newsletter`. Public guest subscribe is [`Newsletter:Form`](newsletter.md) |
 | `Account:Profile` | Personal form, credentials, email/password accordion, delete |
 | `Account:Addressbook` | Default pair + search + `Address:Item` grid |
 | `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |

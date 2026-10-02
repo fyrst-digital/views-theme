@@ -71,6 +71,7 @@ Full index: [docs/README.md](docs/README.md).
 | Language switch | [docs/features/language-switch.md](docs/features/language-switch.md) |
 | Currency switch | [docs/features/currency-switch.md](docs/features/currency-switch.md) |
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
+| Newsletter | [docs/features/newsletter.md](docs/features/newsletter.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
 | Buy container / PDP buy-box | [docs/features/buy-container.md](docs/features/buy-container.md) |
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
