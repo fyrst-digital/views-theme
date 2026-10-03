@@ -199,18 +199,21 @@ class ViUtilities extends AbstractExtension
     /**
      * Apply an exported CVA slot (stack / context). Variants at the use site.
      *
-     * Stack resolution starts at the component whose HTML template contains the
-     * `vi_class()` call, then walks ancestors only (first slot wins). Deeper
-     * mounts are not searched. Falls back to nearest-wins when the lexical
-     * template matches no mounted component. Context fallback is unchanged.
+     * Uses only slots exported by the mounted component whose HTML template
+     * contains the call. A slot that owner did not export is empty. Deeper
+     * mounts stay invisible. When the lexical template matches no mounted
+     * component, falls back to nearest-wins, then context / outerScope.
+     * With no component stack, context / outerScope is the only lookup.
      *
      * @param array<string, mixed> $context
      * @param array<string, mixed> $variants
      */
     public function class(array $context, string $slot, array $variants = []): string
     {
-        $cvaSlot = $this->resolveClassFromStack($slot);
-        if (!$cvaSlot instanceof ViCvaSlot) {
+        $lookup = $this->resolveClassFromStack($slot);
+        $cvaSlot = $lookup['slot'];
+
+        if (!$lookup['ownerFound'] && !$cvaSlot instanceof ViCvaSlot) {
             $cvaSlot = $this->resolveFromContextMaps($context, [self::CTX_CLASSES], $slot);
         }
 
@@ -250,6 +253,7 @@ class ViUtilities extends AbstractExtension
         array $config,
         ?string $templateRef,
     ): array {
+        $config = $this->coerceSlotOverrides($config);
         $cvaTemplate = null;
 
         if ($templateRef !== null && $templateRef !== '') {
@@ -281,6 +285,32 @@ class ViUtilities extends AbstractExtension
 
         // Inline full config (former vi_cva({…}))
         return $config;
+    }
+
+    /**
+     * String slot overrides become `{ base: '…' }` so they deep-merge.
+     * Other non-array values are dropped and cannot replace a default slot hash.
+     *
+     * @param array<string, mixed> $config
+     *
+     * @return array<string, mixed>
+     */
+    private function coerceSlotOverrides(array $config): array
+    {
+        $normalized = [];
+
+        foreach ($config as $slot => $value) {
+            if (\is_string($value)) {
+                $normalized[$slot] = ['base' => $value];
+                continue;
+            }
+
+            if (\is_array($value)) {
+                $normalized[$slot] = $value;
+            }
+        }
+
+        return $normalized;
     }
 
     /**
@@ -369,14 +399,28 @@ class ViUtilities extends AbstractExtension
             }
         }
 
-        // Merge so sw_extends children can add slots without wiping the parent template
-        $prev = $context[self::CTX_CLASSES] ?? [];
-        if (!\is_array($prev)) {
+        $mounted = $this->componentStack?->getCurrentComponent();
+
+        if ($mounted === null) {
+            // Includes and sw_extends outside a UX component share context.
+            $prev = $context[self::CTX_CLASSES] ?? [];
+            if (!\is_array($prev)) {
+                $prev = [];
+            }
+        } else {
+            // Same mount only. Inherited host context must not seed this component.
             $prev = [];
+            if ($mounted->hasExtraMetadata(self::META_CLASSES)) {
+                $existing = $mounted->getExtraMetadata(self::META_CLASSES);
+                if (\is_array($existing)) {
+                    $prev = $existing;
+                }
+            }
         }
+
         $merged = array_merge($prev, $exported);
         $context[self::CTX_CLASSES] = $merged;
-        $this->storeOnCurrentComponent(self::META_CLASSES, $merged, true);
+        $this->storeOnCurrentComponent(self::META_CLASSES, $merged);
 
         // Lexical owner for vi_class: HTML template executing defineCva (not host of a block).
         $htmlTemplate = $this->resolveExecutingHtmlTemplate();
@@ -416,55 +460,44 @@ class ViUtilities extends AbstractExtension
     }
 
     /**
-     * Lexical-first CVA lookup: start at the mounted component whose template
-     * matches the call site, then walk ancestors only. If no owner matches,
-     * fall back to nearest-wins (`resolveFromStack`).
+     * Lexical owner only. A missing slot does not continue to ancestors.
+     * If no owner matches, fall back to nearest-wins (`resolveFromStack`).
+     *
+     * @return array{ownerFound: bool, slot: mixed}
      */
-    private function resolveClassFromStack(string $slot): mixed
+    private function resolveClassFromStack(string $slot): array
     {
         if ($this->componentStack === null) {
-            return null;
+            return ['ownerFound' => false, 'slot' => null];
         }
 
         $lexicalTemplate = $this->resolveExecutingHtmlTemplate();
         if ($lexicalTemplate === null) {
-            return $this->resolveFromStack(self::META_CLASSES, $slot);
+            return [
+                'ownerFound' => false,
+                'slot' => $this->resolveFromStack(self::META_CLASSES, $slot),
+            ];
         }
-
-        $foundOwner = false;
 
         foreach ($this->componentStack as $mounted) {
-            if (!$foundOwner) {
-                if (!$mounted->hasExtraMetadata(self::META_TEMPLATE)
-                    || $mounted->getExtraMetadata(self::META_TEMPLATE) !== $lexicalTemplate
-                ) {
-                    continue;
-                }
-                $foundOwner = true;
-            }
-
-            if (!$mounted->hasExtraMetadata(self::META_CLASSES)) {
+            if (!$mounted->hasExtraMetadata(self::META_TEMPLATE)
+                || $mounted->getExtraMetadata(self::META_TEMPLATE) !== $lexicalTemplate
+            ) {
                 continue;
             }
 
-            $map = $mounted->getExtraMetadata(self::META_CLASSES);
-            if (!\is_array($map)) {
-                continue;
-            }
+            $map = $mounted->hasExtraMetadata(self::META_CLASSES)
+                ? $mounted->getExtraMetadata(self::META_CLASSES)
+                : null;
+            $value = \is_array($map) ? ($map[$slot] ?? null) : null;
 
-            $value = $map[$slot] ?? null;
-            if ($value !== null) {
-                return $value;
-            }
+            return ['ownerFound' => true, 'slot' => $value];
         }
 
-        if ($foundOwner) {
-            // Owner found: deeper mounts are not searched.
-            return null;
-        }
-
-        // Template matched no mounted component → nearest-wins.
-        return $this->resolveFromStack(self::META_CLASSES, $slot);
+        return [
+            'ownerFound' => false,
+            'slot' => $this->resolveFromStack(self::META_CLASSES, $slot),
+        ];
     }
 
     private function resolveFromStack(string $metaKey, string $slot): mixed

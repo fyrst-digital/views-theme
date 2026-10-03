@@ -57,6 +57,33 @@ TWIG,
         self::assertSame('base-override', $html);
     }
 
+    public function testStringSlotOverrideReplacesBaseAndKeepsVariants(): void
+    {
+        $twig = $this->createTwig([
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root", { size: size }) }}',
+            'comp.cva.twig' => <<<'TWIG'
+{
+    root: {
+        base: 'base-a',
+        variants: {
+            size: { sm: 'is-sm' },
+        },
+    },
+}
+TWIG,
+        ]);
+
+        $html = $twig->render('comp.html.twig', [
+            'cva' => [
+                'root' => 'd-flex gap-2',
+            ],
+            'size' => 'sm',
+            'attributes' => new ComponentAttributes([], $twig->getRuntime(EscaperRuntime::class)),
+        ]);
+
+        self::assertSame('d-flex gap-2 is-sm', $html);
+    }
+
     public function testDynamicExpressionsUseComponentContext(): void
     {
         $twig = $this->createTwig([
