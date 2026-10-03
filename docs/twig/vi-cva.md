@@ -42,6 +42,8 @@ Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name)
 2. Else 1st arg is a **full inline** slot config map (small components).
 3. Optional explicit file via 2nd-arg options `{ file: 'Alert' }` or string path.
 
+A string slot override (`root: 'd-flex gap-2'`) is coerced to `{ base: '…' }` before the deep merge, so it replaces `base` and leaves `variants` and other keys. Other non-array overrides are ignored and do not delete the default slot.
+
 ## Class export (2nd arg)
 
 | 2nd arg | Behavior |
@@ -52,7 +54,9 @@ Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name)
 
 Exported slots are stored on the UX **component stack** (and context fallback).
 
-**Lexical slot wins:** `vi_class` starts at the mounted component whose HTML template contains the call, then walks **only toward ancestors**. The first exported slot of that name wins. Components mounted further inside are not searched. If the lexical template matches no mounted component, resolution falls back to nearest-wins (innermost first). Context / `outerScope` fallback (no stack) stays first-match from the current scope outward.
+**Lexical owner only:** `vi_class` uses slots exported by the mounted component whose HTML template contains the call. A slot that owner did not export is `''`. Ancestor mounts are not searched. Deeper mounts stay invisible, so a call written in the outer template still resolves that template’s slot while an inner component is mounted. If the lexical template matches no mounted component, resolution falls back to nearest-wins (innermost first), then context / `outerScope`. With no component stack, context / `outerScope` stays first-match from the current scope outward.
+
+A later `vi_define_cva` on the same mounted component adds slots. Slots stored for a different mount are not copied onto the nested component. Outside a component (includes, `sw_extends` with no UX mount), exports still merge through context.
 
 `vi_attrs` is unchanged: nearest-wins via the stack.
 
