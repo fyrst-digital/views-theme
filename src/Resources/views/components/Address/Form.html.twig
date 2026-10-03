@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['countryState', 'street', 'additional1', 'additional2', 'city', 'zipcode', 'country', 'state', 'phone']) %}
+{% do vi_define_attrs(['grid', 'countryState', 'street', 'additional1', 'additional2', 'city', 'zipcode', 'country', 'state', 'phone']) %}
 
 <div
     {{ attributes }}
@@ -20,7 +20,12 @@
         }).all() }}
     >
         <twig:block name="content">
-            <twig:ViewsTheme:Grid columns="6" gap="sm">
+            <twig:ViewsTheme:Grid
+                {{ ...vi_attrs('grid').defaults({
+                    columns: 6,
+                    gap: 'sm',
+                }).all() }}
+            >
                 <twig:block name="content">
                 {% vi_block street %}
                     <twig:ViewsTheme:Form:Input

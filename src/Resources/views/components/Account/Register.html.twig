@@ -162,9 +162,9 @@
                                 formViolations: formViolations,
                             }).all() }}
                         />
-                        <p class="{{ vi_class('requiredHint') }}">
+                        <div class="{{ vi_class('requiredHint') }}">
                             {{ 'general.requiredFields'|trans|sw_sanitize }}
-                        </p>
+                        </div>
                     </div>
                 {% endblock %}
 

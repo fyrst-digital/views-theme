@@ -1,12 +1,17 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['accountType', 'accountTypeSelect', 'salutation', 'title', 'firstName', 'lastName', 'birthday', 'company']) %}
+{% do vi_define_attrs(['grid', 'accountType', 'accountTypeSelect', 'salutation', 'title', 'firstName', 'lastName', 'birthday', 'company']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block fields %}
-        <twig:ViewsTheme:Grid columns="6" gap="sm">
+        <twig:ViewsTheme:Grid
+            {{ ...vi_attrs('grid').defaults({
+                columns: 6,
+                gap: 'sm',
+            }).all() }}
+        >
 
             <twig:block name="content">
             {% vi_block prepend %}{% endvi_block %}
@@ -21,7 +26,12 @@
                         }).all() }}
                     >
                         <twig:block name="control">
-                            <twig:ViewsTheme:Grid columns="6" gap="sm">
+                            <twig:ViewsTheme:Grid
+                                {{ ...vi_attrs('grid').defaults({
+                                    columns: 6,
+                                    gap: 'sm',
+                                }).all() }}
+                            >
                                 <twig:block name="content">
                                 <twig:ViewsTheme:Form:Select
                                     class="{{ vi_class('accountTypeSelect') }}"
