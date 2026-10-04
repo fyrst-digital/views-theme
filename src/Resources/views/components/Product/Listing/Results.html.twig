@@ -38,9 +38,9 @@
         >
             <twig:block name="content">
                 {% if hasResults %}
-                    {% block items %}
+                    {% vi_block items %}
                         {% for product in searchResult %}
-                            {% block item %}
+                            {% vi_block item %}
                                 <twig:ViewsTheme:Product:Box
                                     class="{{ vi_class('item', { size: size }) }}"
                                     {{ ...vi_attrs('item').defaults({
@@ -50,9 +50,9 @@
                                         role: 'listitem',
                                     }).all() }}
                                 />
-                            {% endblock %}
+                            {% endvi_block %}
                         {% endfor %}
-                    {% endblock %}
+                    {% endvi_block %}
                 {% else %}
                     {% block empty %}
                         <twig:ViewsTheme:Product:Listing:Empty

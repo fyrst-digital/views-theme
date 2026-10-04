@@ -109,6 +109,15 @@ $utilities: (
     class: d,
     values: inline inline-block block grid inline-grid table table-row table-cell flex inline-flex contents none
   ),
+  "font-family": (
+    property: font-family,
+    class: font,
+    values: (
+      base: var(--#{$prefix}body-font-family),
+      headline: var(--#{$prefix}heading-font-family),
+      monospace: var(--#{$prefix}font-monospace),
+    )
+  ),
   "font-size": (
     rfs: true,
     property: font-size,
@@ -156,6 +165,8 @@ $utilities: (
 }
 
 :root {
+  --#{$prefix}heading-font-family: #{inspect($sw-font-family-headline)};
+
   @each $key, $value in $spacers {
     --#{$prefix}spacing-#{$key}: #{$value};
   }
