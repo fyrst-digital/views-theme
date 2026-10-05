@@ -1,5 +1,6 @@
 import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
 import { createListingFetch } from '@views-theme/modules/listing/fetch.js'
+import { attach, commit, detach } from '@views-theme/modules/listing/store.js'
 import { applyAvailability, applyFilterOptionsPayload, controlFilterKey } from '@views-theme/modules/listing/filter-options.js'
 import { createHistoryController } from '@views-theme/modules/listing/history.js'
 import { buildRequestParams } from '@views-theme/modules/listing/params.js'
@@ -70,6 +71,7 @@ export default class ProductListing extends ShopwareComponent {
             window.addEventListener('popstate', this._onPopstate)
         }
 
+        attach(this)
         this.syncControls()
         requestAnimationFrame(() => {
             this.syncControls()
@@ -82,6 +84,7 @@ export default class ProductListing extends ShopwareComponent {
         this._fetch.abortAll()
         this._registry.clear()
         this._queued = null
+        detach(this)
     }
 
     /** Re-scan control components (e.g. after Filter:Drawer mount/unmount). */
@@ -100,6 +103,7 @@ export default class ProductListing extends ShopwareComponent {
     syncControls() {
         this.refreshControls()
         this.hydrateFromUrl()
+        commit({ labels: this.getActiveLabels() })
         window.Shopware.emitQueued(this.options.syncedEvent, { source: this.el })
     }
 
@@ -307,6 +311,7 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         this._busy = true
+        commit({ busy: true })
         this.el.setAttribute('aria-busy', 'true')
         window.Shopware.emitQueued(this.options.loadingEvent, { busy: true, source: this.el })
 
@@ -318,6 +323,7 @@ export default class ProductListing extends ShopwareComponent {
             }
         } finally {
             this._busy = false
+            commit({ busy: false })
             this.el.removeAttribute('aria-busy')
             window.Shopware.emitQueued(this.options.loadingEvent, { busy: false, source: this.el })
         }
@@ -391,6 +397,11 @@ export default class ProductListing extends ShopwareComponent {
                 /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
                 this.el,
             )
+
+            commit({
+                params: requestParams,
+                labels: this.getActiveLabels(),
+            })
 
             window.Shopware.emitQueued(this.options.changedEvent, {
                 ok: true,

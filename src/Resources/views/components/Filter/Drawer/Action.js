@@ -1,4 +1,4 @@
-import { syncListingControls } from '@views-theme/modules/listing/apply.js'
+import { syncControls, syncFilterOptions } from '@views-theme/modules/listing/store.js'
 import {
     abortRequest,
     beginRequest,
@@ -18,7 +18,6 @@ export default class FilterDrawerAction extends ShopwareComponent {
         drawerUrl: null,
         drawerComponentName: 'ViewsTheme:Drawer',
         drawerSelector: '#vi-filter-drawer',
-        listingComponent: 'ViewsTheme:Product:Listing',
         openEvent: 'ViewsTheme:Drawer:Open',
         closeEvent: 'ViewsTheme:Drawer:Close',
         showActive: true,
@@ -186,20 +185,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
     }
 
     async _syncListingControls() {
-        syncListingControls(this.options.listingComponent)
-
-        const listingEl = document.querySelector(
-            `[data-component="${this.options.listingComponent}"]`,
-        )
-        const listing = getInstanceByElement(this.options.listingComponent, listingEl)
-        if (!listing) {
-            return
-        }
-
-        if (typeof listing.syncFilterOptions === 'function') {
-            await listing.syncFilterOptions()
-        } else if (typeof listing.syncAvailability === 'function') {
-            await listing.syncAvailability()
-        }
+        syncControls()
+        await syncFilterOptions()
     }
 }

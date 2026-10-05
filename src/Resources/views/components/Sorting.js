@@ -1,4 +1,4 @@
-import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { apply } from '@views-theme/modules/listing/store.js'
 
 /**
  * Listing control: sort order select.
@@ -6,11 +6,6 @@ import { applyListing } from '@views-theme/modules/listing/apply.js'
  * @extends {ShopwareComponent}
  */
 export default class Sorting extends ShopwareComponent {
-    static options = {
-        listingComponent: 'ViewsTheme:Product:Listing',
-        listingSelector: '[data-component="ViewsTheme:Product:Listing"]',
-    }
-
     init() {
         this._select = this.el.querySelector('select')
         this._onChange = this._onChange.bind(this)
@@ -55,13 +50,6 @@ export default class Sorting extends ShopwareComponent {
     }
 
     _onChange() {
-        if (!document.querySelector(this.options.listingSelector)) {
-            return
-        }
-
-        applyListing(
-            { order: this._select.value },
-            { listingComponent: this.options.listingComponent },
-        )
+        apply({ order: this._select.value })
     }
 }

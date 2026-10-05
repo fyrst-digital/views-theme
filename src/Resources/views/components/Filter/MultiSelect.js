@@ -1,4 +1,4 @@
-import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { apply } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 
 /**
@@ -9,7 +9,6 @@ export default class FilterMultiSelect extends ShopwareComponent {
         name: null,
         propertyName: null,
         filterKey: null,
-        listingComponent: 'ViewsTheme:Product:Listing',
         groupComponent: 'ViewsTheme:Filter:Group',
     }
 
@@ -200,7 +199,7 @@ export default class FilterMultiSelect extends ShopwareComponent {
     _onChange() {
         this._syncCount()
         this._closeGroup()
-        applyListing({}, { listingComponent: this.options.listingComponent })
+        apply({})
     }
 
     _checked() {

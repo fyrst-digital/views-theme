@@ -40,7 +40,7 @@ app/storefront/src/modules/
 | Component entry | `@views-theme/modules/*` |
 | `Product/Listing.js` | any `@views-theme/modules/listing/*` |
 | `Review/Panel.js` | any `@views-theme/modules/review/*` |
-| Filters / Pagination / Sorting | `@views-theme/modules/listing/apply.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
+| Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
 | Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
 | `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` — **not** `review/*` |
 | `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` |
@@ -65,7 +65,7 @@ app/storefront/src/modules/
 | `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / CountryState) |
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
-| `listing/apply.js` | **only** listing import allowed from filters / Pagination / Sorting |
+| `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
 | `review/apply.js` | façade for review controls / Pagination → Panel |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |

@@ -1,4 +1,4 @@
-import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { apply } from '@views-theme/modules/listing/store.js'
 import { applyReview } from '@views-theme/modules/review/apply.js'
 
 /**
@@ -10,7 +10,7 @@ export default class PaginationItem extends ShopwareComponent {
     static options = {
         page: 1,
         listingComponent: 'ViewsTheme:Product:Listing',
-        listingSelector: '[data-component="ViewsTheme:Product:Listing"]',
+        listingSelector: '[data-component="ViewsTheme:Review:Panel"]',
     }
 
     init() {
@@ -28,15 +28,15 @@ export default class PaginationItem extends ShopwareComponent {
             return
         }
 
-        if (!document.querySelector(this.options.listingSelector)) {
-            return
-        }
-
-        event.preventDefault()
         const page = Number(this.options.page || 1)
         const owner = this.options.listingComponent || 'ViewsTheme:Product:Listing'
 
         if (owner === 'ViewsTheme:Review:Panel') {
+            if (!document.querySelector(this.options.listingSelector)) {
+                return
+            }
+
+            event.preventDefault()
             applyReview(
                 { p: page },
                 {
@@ -47,12 +47,7 @@ export default class PaginationItem extends ShopwareComponent {
             return
         }
 
-        applyListing(
-            { p: page },
-            {
-                listingComponent: owner,
-                callOptions: { resetPage: false },
-            },
-        )
+        event.preventDefault()
+        apply({ p: page }, { resetPage: false })
     }
 }

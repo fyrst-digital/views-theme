@@ -104,12 +104,6 @@
  */
 
 /**
- * @typedef {object} ApplyListingOptions
- * @property {string} [listingComponent]
- * @property {{ pushHistory?: boolean, resetPage?: boolean }} [callOptions]
- */
-
-/**
  * @template TJob
  * @typedef {object} SerialQueueOptions
  * @property {(job: TJob) => string|null|undefined} [coalesceKey]

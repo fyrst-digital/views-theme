@@ -1,4 +1,4 @@
-import { resetListing } from '@views-theme/modules/listing/apply.js'
+import { resetFilters } from '@views-theme/modules/listing/store.js'
 
 /**
  * Placement-independent filter reset. `keys` null clears every facet.
@@ -8,7 +8,6 @@ import { resetListing } from '@views-theme/modules/listing/apply.js'
 export default class FilterReset extends ShopwareComponent {
     static options = {
         keys: null,
-        listingComponent: 'ViewsTheme:Product:Listing',
     }
 
     init() {
@@ -25,6 +24,6 @@ export default class FilterReset extends ShopwareComponent {
      */
     _onClick(event) {
         event.preventDefault()
-        resetListing(this.options.listingComponent, this.options.keys ?? null)
+        resetFilters(this.options.keys ?? null)
     }
 }

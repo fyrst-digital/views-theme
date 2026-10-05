@@ -59,7 +59,7 @@ Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` �
 | `fetch.js` | Results HTML + filter-options + aggregations XHR (abort/seq) |
 | `filter-options.js` | Apply options payload / availability onto controls |
 | `results-dom.js` | Results island swap, wait Pagination/Sorting mount, scroll, aria-live |
-| `apply.js` | Façade for controls: `applyListing` / `syncListingControls` / `resetListing` / `resetListingOption` |
+| `store.js` | Client session. Controls `apply` / `resetFilters` / `resetOption` / `syncControls` / `syncFilterOptions` and `subscribe`. Listing `attach` / `detach` / `commit` |
 
 Domain stays isolated from `review/*` — [javascript.md](../conventions/javascript.md).
 
@@ -67,18 +67,20 @@ Domain stays isolated from `review/*` — [javascript.md](../conventions/javascr
 |-----|------|
 | `refreshControls()` | Discover controls in listing el + active `Filter:Panel` |
 | `hydrateFromUrl()` | `setFromUrl` on every registered control from `location.search` |
-| `syncControls()` | `refreshControls` + `hydrateFromUrl` + emit `ControlsSynced` (selection only) |
+| `syncControls()` | `refreshControls` + `hydrateFromUrl` + commit `labels` + emit `ControlsSynced` (selection only) |
 | `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability`; abort + seq guard |
 | `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback); same options abort/seq |
 | `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → after Results swap, await Pagination/Sorting mount, `refreshControls`, push history, hydrate controls from **request params** (not stale URL), then options; options abort does not fail Results apply |
 | `reset` / `resetFilters` / `resetAll` | `reset(id)` clears one option. `resetFilters(keys)` clears facets by `controlFilterKey` (`null` = all) then apply. `resetAll()` is `resetFilters(null)` |
-| `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
+| `getActiveLabels()` | De-duped chip labels. Listing commits them into the store; `Filter:Active:List` subscribes |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 | Active panels | Drawer open via `Drawer.isOpen()` on `#vi-filter-drawer` — never CSS classes |
 
-Controls (filters, pagination, sorting) call Listing only via `@views-theme/modules/listing/apply.js` façades (`applyListing`, `syncListingControls`, `resetListing`, `resetListingOption`) — not raw `callMethod(…, 'apply')` and not other `listing/*` internals. `resetListing(component, keys)` resets facets (`keys` omitted = all). `resetListingOption(component, id)` removes one active chip.
+Controls (filters, pagination, sorting, reset, active chips, filter drawer) talk to `@views-theme/modules/listing/store.js` only — not raw `callMethod`, not a `listingComponent` name, and not other `listing/*` internals. `apply(patch, callOptions)` sends `{ p: 1, ...patch }` with `resetPage: false` unless `callOptions` overrides it. `resetFilters(keys)` clears facets (`keys` omitted = all). `resetOption(id)` removes one chip. The store no-ops when no listing is attached. Review pagination still uses `review/apply.js`.
 
-Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
+The URL stays the shareable selection. The store snapshot is `{ attached, busy, params, labels }`. Listing commits `labels` from `syncControls`, `busy` around the apply queue, and `params` + `labels` after a successful apply. A failed apply does not replace labels.
+
+Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`. They are notifications after a commit. Actions do not use them to find the listing.
 
 **Catalog vs availability:** Panel SSR = full catalog + SSR availability mark. Live updates = batch `/filter-options` (server-sorted available-first HTML). See [filters.md](filters.md#catalog-vs-availability-critical).
 

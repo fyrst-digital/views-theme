@@ -1,4 +1,4 @@
-import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { apply } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 
 /**
@@ -13,7 +13,6 @@ export default class FilterRange extends ShopwareComponent {
         step: 1,
         unit: '',
         filterKey: 'price',
-        listingComponent: 'ViewsTheme:Product:Listing',
         groupComponent: 'ViewsTheme:Filter:Group',
         sliderComponent: 'ViewsTheme:Form:Slider',
         debounce: 500,
@@ -146,7 +145,7 @@ export default class FilterRange extends ShopwareComponent {
             this._timer = null
         }
         this._closeGroup()
-        applyListing({}, { listingComponent: this.options.listingComponent })
+        apply({})
     }
 
     _syncSliderFromFields({ silent = true } = {}) {

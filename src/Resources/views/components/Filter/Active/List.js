@@ -1,43 +1,34 @@
-import { resetListingOption } from '@views-theme/modules/listing/apply.js'
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { resetOption, subscribe } from '@views-theme/modules/listing/store.js'
 
 /**
+ * Paints removable active chips into the shell's flex row.
+ *
  * @extends {ShopwareComponent}
  */
-export default class FilterActive extends ShopwareComponent {
+export default class FilterActiveList extends ShopwareComponent {
     static options = {
-        listingComponent: 'ViewsTheme:Product:Listing',
-        changedEvent: 'ViewsTheme:Listing:Changed',
-        syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
-        resetComponent: 'ViewsTheme:Filter:Reset',
         removeLabel: 'Remove filter',
     }
 
     init() {
-        this._chipTemplate = this.el.querySelector('[data-active-chip-template]')
-        this._onChanged = this._onChanged.bind(this)
+        this._chipTemplate = this.el.querySelector(':scope > template')
+        this._onSnapshot = this._onSnapshot.bind(this)
         this._onClick = this._onClick.bind(this)
-        window.Shopware.on(this.options.changedEvent, this._onChanged)
-        window.Shopware.on(this.options.syncedEvent, this._onChanged)
+        this._unsubscribe = subscribe(this._onSnapshot)
         this.el.addEventListener('click', this._onClick)
-        this._render()
-        // Listing may hydrate after Active mounts (DOM order / drawer mount).
-        requestAnimationFrame(() => {
-            this._render()
-        })
     }
 
     destroy() {
-        window.Shopware.off(this.options.changedEvent, this._onChanged)
-        window.Shopware.off(this.options.syncedEvent, this._onChanged)
+        this._unsubscribe?.()
+        this._unsubscribe = null
         this.el.removeEventListener('click', this._onClick)
     }
 
-    _onChanged(payload) {
-        if (payload && payload.ok === false) {
-            return
-        }
-        this._render()
+    /**
+     * @param {import('@views-theme/modules/listing/store.js').ListingSnapshot} snapshot
+     */
+    _onSnapshot(snapshot) {
+        this._render(snapshot?.labels || [])
     }
 
     _onClick(event) {
@@ -52,55 +43,45 @@ export default class FilterActive extends ShopwareComponent {
 
         const id = target.getAttribute('data-filter-id')
         if (id) {
-            resetListingOption(this.options.listingComponent, id)
+            resetOption(id)
         }
     }
 
-    /**
-     * callMethod discards return values — resolve Listing and call getActiveLabels directly.
-     */
-    _listing() {
-        const el = document.querySelector(
-            `[data-component="${this.options.listingComponent}"]`,
-        )
-        return getInstanceByElement(this.options.listingComponent, el)
-    }
-
-    _resetEl() {
-        return this.el.querySelector(
-            `:scope > [data-component="${this.options.resetComponent}"]`,
-        )
-    }
-
     _clearLive() {
-        const resetName = this.options.resetComponent
         this.el.querySelectorAll(':scope > :not(template)').forEach((node) => {
-            if (node.getAttribute('data-component') === resetName) {
-                return
-            }
             node.remove()
         })
     }
 
-    _render() {
+    /**
+     * Hide the list and the Active shell so the reset button follows the chips.
+     */
+    _setOpen(open) {
+        this.el.hidden = !open
+        const shell = this.el.parentElement
+        if (shell) {
+            shell.hidden = !open
+        }
+    }
+
+    /**
+     * @param {import('@views-theme/modules/types.js').ListingLabel[]} labels
+     */
+    _render(labels) {
         if (!this._chipTemplate) {
+            this._setOpen(false)
             return
         }
 
         this._clearLive()
 
-        const listing = this._listing()
-        const labels = typeof listing?.getActiveLabels === 'function'
-            ? (listing.getActiveLabels() || [])
-            : []
         if (!labels.length) {
-            this.el.hidden = true
+            this._setOpen(false)
             return
         }
 
-        this.el.hidden = false
+        this._setOpen(true)
 
-        const reset = this._resetEl()
         labels.forEach((item) => {
             const node = this._chipTemplate.content.cloneNode(true)
             const button = node.querySelector('[data-filter-id]')
@@ -117,11 +98,7 @@ export default class FilterActive extends ShopwareComponent {
                 labelEl.textContent = item.label
             }
             this._paintSwatch(swatch, item)
-            if (reset) {
-                this.el.insertBefore(node, reset)
-            } else {
-                this.el.appendChild(node)
-            }
+            this.el.appendChild(node)
         })
     }
 
