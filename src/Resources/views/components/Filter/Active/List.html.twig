@@ -17,5 +17,13 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block content %}{% endblock %}
+    {% block content %}
+        {% block chip %}
+            <template>
+                <twig:ViewsTheme:Filter:Active:Chip
+                    {{ ...vi_attrs('chip').all() }}
+                />
+            </template>
+        {% endblock %}
+    {% endblock %}
 </div>

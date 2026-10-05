@@ -11,28 +11,27 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    <twig:ViewsTheme:Filter:Active:List
-        removeLabel="{{ 'listing.filterRemoveAriaLabel'|trans|sw_sanitize }}"
-    >
-        <twig:block name="content">
-            {% vi_block chip %}
-                <template>
-                    <twig:ViewsTheme:Filter:Active:Chip
-                        {{ ...vi_attrs('chip').all() }}
-                    />
-                </template>
-            {% endvi_block %}
-        </twig:block>
-    </twig:ViewsTheme:Filter:Active:List>
+    {% block content %}
 
-    {% block reset %}
-        <twig:ViewsTheme:Filter:Reset
-            class="{{ vi_class('reset') }}"
-            {{ ...vi_attrs('reset').defaults({
-                color: 'link',
-                size: 'sm',
-                label: 'listing.filterPanelResetAll'|trans|sw_sanitize,
-            }).all() }}
-        />
+        {% block prepend %}{% endblock %}
+
+        {% block list %}
+            <twig:ViewsTheme:Filter:Active:List
+                removeLabel="{{ 'listing.filterRemoveAriaLabel'|trans|sw_sanitize }}"
+            />
+        {% endblock %}
+
+        {% block reset %}
+            <twig:ViewsTheme:Filter:Reset
+                class="{{ vi_class('reset') }}"
+                {{ ...vi_attrs('reset').defaults({
+                    color: 'link',
+                    size: 'sm',
+                    label: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block append %}{% endblock %}
     {% endblock %}
 </div>
