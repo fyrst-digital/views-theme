@@ -16,6 +16,11 @@
   }
 }
 
+.btn-sm {
+  --#{$prefix}btn-padding-x: var(--#{$prefix}spacing-4);
+  --#{$prefix}btn-padding-y: var(--#{$prefix}spacing-1);
+}
+
 .btn-white {
   @include button-variant(
     $white,
