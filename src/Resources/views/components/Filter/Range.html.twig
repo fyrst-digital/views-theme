@@ -7,6 +7,7 @@
     step = 1,
     unit = context.currency.symbol|default(''),
     layout = 'bar',
+    filterKey = 'price',
     id = 'vi-filter-range-' ~ random(),
     cva = {},
 %}
@@ -23,6 +24,7 @@
     max: boundMax,
     step: step,
     unit: unit,
+    filterKey: filterKey,
     listingComponent: 'ViewsTheme:Product:Listing',
     sliderComponent: 'ViewsTheme:Form:Slider',
     debounce: 500,
@@ -32,6 +34,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Filter:Range',
         'data-component-options': options|json_encode,
+        'data-filter-key': filterKey,
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
@@ -104,7 +107,9 @@
             </div>
             <twig:ViewsTheme:Filter:Group:Footer
                 class="{{ vi_class('footer') }}"
-                {{ ...vi_attrs('footer').all() }}
+                {{ ...vi_attrs('footer').defaults({
+                    keys: filterKey,
+                }).all() }}
             />
         </twig:ViewsTheme:Filter:Group:Collapse>
     </twig:ViewsTheme:Filter:Group>

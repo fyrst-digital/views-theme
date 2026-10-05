@@ -1,4 +1,4 @@
-.vi-filter-active__swatch {
+.vi-filter-active-chip__swatch {
   width: var(--vi-swatch, 16px);
   height: var(--vi-swatch, 16px);
   background-size: cover;

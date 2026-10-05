@@ -1,0 +1,28 @@
+{% props
+    keys = null,
+    label = null,
+    icon = null,
+    color = 'link',
+    size = 'sm',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% set options = {
+    keys: keys,
+    listingComponent: 'ViewsTheme:Product:Listing',
+} %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        icon: icon ?: false,
+        label: label,
+        color: color,
+        size: size,
+        'data-component': 'ViewsTheme:Filter:Reset',
+        'data-component-options': options|json_encode,
+    }).all() }}
+/>

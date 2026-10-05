@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Service;
 
 use Fyrst\ViewsTheme\Struct\FilterFacet;
+use Fyrst\ViewsTheme\Struct\FilterFacetType;
 use Shopware\Core\Content\Property\PropertyGroupEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\EntityResult;
@@ -77,7 +78,7 @@ final class FilterFacetResolver
             'name' => 'manufacturer',
             'displayName' => $this->trans('listing.filterManufacturerDisplayName'),
             'elements' => $elements,
-        ]);
+        ], FilterFacetType::MULTI_SELECT);
     }
 
     /**
@@ -107,7 +108,7 @@ final class FilterFacetResolver
                 'elements' => $property->getOptions() ?? [],
                 // Stable group id for batch/SSR filterKey (not translated label).
                 'propertyName' => $groupId,
-            ]);
+            ], FilterFacetType::MULTI_SELECT);
         }
 
         return $facets;
@@ -129,7 +130,7 @@ final class FilterFacetResolver
             'maxKey' => 'max-price',
             'min' => 0,
             'max' => $result->getMax(),
-        ]);
+        ], FilterFacetType::RANGE);
     }
 
     private function ratingFacet(mixed $result): ?FilterFacet
@@ -146,7 +147,7 @@ final class FilterFacetResolver
         return new FilterFacet(FilterComponents::RATING, [
             'displayName' => $this->trans('listing.filterRatingDisplayName'),
             'name' => 'rating',
-        ]);
+        ], FilterFacetType::RATING);
     }
 
     private function shippingFreeFacet(mixed $result): ?FilterFacet
@@ -163,7 +164,7 @@ final class FilterFacetResolver
         return new FilterFacet(FilterComponents::BOOLEAN, [
             'name' => 'shipping-free',
             'displayName' => $this->trans('listing.filterFreeShippingDisplayName'),
-        ]);
+        ], FilterFacetType::BOOLEAN);
     }
 
     private function trans(string $id): string

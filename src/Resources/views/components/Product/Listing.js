@@ -1,6 +1,6 @@
 import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
 import { createListingFetch } from '@views-theme/modules/listing/fetch.js'
-import { applyAvailability, applyFilterOptionsPayload } from '@views-theme/modules/listing/filter-options.js'
+import { applyAvailability, applyFilterOptionsPayload, controlFilterKey } from '@views-theme/modules/listing/filter-options.js'
 import { createHistoryController } from '@views-theme/modules/listing/history.js'
 import { buildRequestParams } from '@views-theme/modules/listing/params.js'
 import {
@@ -185,14 +185,28 @@ export default class ProductListing extends ShopwareComponent {
         this.apply({ p: 1 }, { resetPage: false })
     }
 
-    resetAll() {
+    /**
+     * Clear facets by filter key. Omitted keys clear every control.
+     *
+     * @param {string|string[]|null} [keys]
+     */
+    resetFilters(keys = null) {
         this.refreshControls()
+        const wanted = filterKeySet(keys)
         this._registry.forEach((control) => {
-            if (typeof control.resetAll === 'function') {
-                control.resetAll()
+            if (typeof control.resetAll !== 'function') {
+                return
             }
+            if (wanted && !wanted.has(controlFilterKey(control) || '')) {
+                return
+            }
+            control.resetAll()
         })
         this.apply({ p: 1 }, { resetPage: false })
+    }
+
+    resetAll() {
+        this.resetFilters(null)
     }
 
     /**
@@ -405,4 +419,25 @@ export default class ProductListing extends ShopwareComponent {
         this.syncControls()
         this._enqueue(this._registry.collectValues(), false)
     }
+}
+
+/**
+ * @param {string|string[]|null|undefined} keys
+ * @returns {Set<string>|null} null means every control
+ */
+function filterKeySet(keys) {
+    if (keys == null || keys === '') {
+        return null
+    }
+
+    const list = Array.isArray(keys) ? keys : [keys]
+    /** @type {Set<string>} */
+    const wanted = new Set()
+    list.forEach((key) => {
+        if (key != null && String(key) !== '') {
+            wanted.add(String(key))
+        }
+    })
+
+    return wanted
 }

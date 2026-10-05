@@ -27,13 +27,24 @@ export function syncListingControls(listingComponent = 'ViewsTheme:Product:Listi
 }
 
 /**
+ * Reset facets by filter key, or every facet when keys is omitted.
+ *
  * @param {string} [listingComponent]
- * @param {string} [id]
+ * @param {string|string[]|null} [keys]
  */
-export function resetListing(listingComponent = 'ViewsTheme:Product:Listing', id) {
-    if (id !== undefined && id !== null && id !== '') {
-        window.Shopware.callMethod(listingComponent, 'reset', id)
+export function resetListing(listingComponent = 'ViewsTheme:Product:Listing', keys = null) {
+    window.Shopware.callMethod(listingComponent, 'resetFilters', keys ?? null)
+}
+
+/**
+ * Clear one selected option (active chip).
+ *
+ * @param {string} [listingComponent]
+ * @param {string} id
+ */
+export function resetListingOption(listingComponent = 'ViewsTheme:Product:Listing', id) {
+    if (id === undefined || id === null || id === '') {
         return
     }
-    window.Shopware.callMethod(listingComponent, 'resetAll')
+    window.Shopware.callMethod(listingComponent, 'reset', id)
 }

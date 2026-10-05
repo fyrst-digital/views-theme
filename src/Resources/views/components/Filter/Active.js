@@ -1,4 +1,4 @@
-import { resetListing } from '@views-theme/modules/listing/apply.js'
+import { resetListingOption } from '@views-theme/modules/listing/apply.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 
 /**
@@ -9,13 +9,12 @@ export default class FilterActive extends ShopwareComponent {
         listingComponent: 'ViewsTheme:Product:Listing',
         changedEvent: 'ViewsTheme:Listing:Changed',
         syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
-        resetAllLabel: 'Reset all',
+        resetComponent: 'ViewsTheme:Filter:Reset',
         removeLabel: 'Remove filter',
     }
 
     init() {
         this._chipTemplate = this.el.querySelector('[data-active-chip-template]')
-        this._resetTemplate = this.el.querySelector('[data-active-reset-template]')
         this._onChanged = this._onChanged.bind(this)
         this._onClick = this._onClick.bind(this)
         window.Shopware.on(this.options.changedEvent, this._onChanged)
@@ -43,7 +42,7 @@ export default class FilterActive extends ShopwareComponent {
 
     _onClick(event) {
         const target = event.target instanceof Element
-            ? event.target.closest('[data-filter-id], [data-reset-all]')
+            ? event.target.closest('[data-filter-id]')
             : null
         if (!target || !this.el.contains(target)) {
             return
@@ -51,14 +50,9 @@ export default class FilterActive extends ShopwareComponent {
 
         event.preventDefault()
 
-        if (target.hasAttribute('data-reset-all')) {
-            resetListing(this.options.listingComponent)
-            return
-        }
-
         const id = target.getAttribute('data-filter-id')
         if (id) {
-            resetListing(this.options.listingComponent, id)
+            resetListingOption(this.options.listingComponent, id)
         }
     }
 
@@ -72,8 +66,18 @@ export default class FilterActive extends ShopwareComponent {
         return getInstanceByElement(this.options.listingComponent, el)
     }
 
+    _resetEl() {
+        return this.el.querySelector(
+            `:scope > [data-component="${this.options.resetComponent}"]`,
+        )
+    }
+
     _clearLive() {
+        const resetName = this.options.resetComponent
         this.el.querySelectorAll(':scope > :not(template)').forEach((node) => {
+            if (node.getAttribute('data-component') === resetName) {
+                return
+            }
             node.remove()
         })
     }
@@ -96,6 +100,7 @@ export default class FilterActive extends ShopwareComponent {
 
         this.el.hidden = false
 
+        const reset = this._resetEl()
         labels.forEach((item) => {
             const node = this._chipTemplate.content.cloneNode(true)
             const button = node.querySelector('[data-filter-id]')
@@ -112,12 +117,12 @@ export default class FilterActive extends ShopwareComponent {
                 labelEl.textContent = item.label
             }
             this._paintSwatch(swatch, item)
-            this.el.appendChild(node)
+            if (reset) {
+                this.el.insertBefore(node, reset)
+            } else {
+                this.el.appendChild(node)
+            }
         })
-
-        if (this._resetTemplate) {
-            this.el.appendChild(this._resetTemplate.content.cloneNode(true))
-        }
     }
 
     /**

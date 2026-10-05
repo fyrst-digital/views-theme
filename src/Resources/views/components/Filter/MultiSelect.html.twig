@@ -61,7 +61,9 @@
             />
             <twig:ViewsTheme:Filter:Group:Footer
                 class="{{ vi_class('footer') }}"
-                {{ ...vi_attrs('footer').all() }}
+                {{ ...vi_attrs('footer').defaults({
+                    keys: filterKey,
+                }).all() }}
             />
         </twig:ViewsTheme:Filter:Group:Collapse>
     </twig:ViewsTheme:Filter:Group>

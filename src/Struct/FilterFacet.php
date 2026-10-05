@@ -7,17 +7,24 @@ namespace Fyrst\ViewsTheme\Struct;
 use Fyrst\ViewsTheme\Service\FilterComponents;
 
 /**
- * One renderable filter control for Filter:Panel (component name + props for component()).
+ * One renderable filter control for Filter:Panel.
+ *
+ * `component` is the UX tag for `component()`. `type` is the stable kind
+ * (`FilterFacetType`) consumers branch on.
  */
 final readonly class FilterFacet
 {
+    public string $type;
+
     /**
      * @param array<string, mixed> $props
      */
     public function __construct(
         public string $component,
         public array $props = [],
+        ?string $type = null,
     ) {
+        $this->type = $type ?? FilterFacetType::fromComponent($component);
     }
 
     /**
@@ -50,6 +57,12 @@ final readonly class FilterFacet
             $name = (string) ($props['name'] ?? 'rating');
 
             return $name !== '' ? $name : null;
+        }
+
+        if ($this->component === FilterComponents::RANGE) {
+            $key = (string) ($props['filterKey'] ?? 'price');
+
+            return $key !== '' ? $key : null;
         }
 
         return null;

@@ -19,11 +19,13 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; count SoT = `options.count`; `setCount` paints (Group delegates) |
 | `Filter:Group:Collapse` | **Body shell** (popover/accordion root only). Facets compose controls + Footer as direct children; shared `id` with Group |
-| `Filter:Group:Footer` | Reset chrome: `ViewsTheme:Button` (`color=link` `size=sm`, `data-filter-reset`); composed by facets inside Collapse |
+| `Filter:Group:Footer` | Footer chrome; composes `Filter:Reset` with the facet key (`color=link` `size=sm`, icon `arrow-counter-clockwise`) |
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`); root `mw-100` |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`). Range: number fields + `Form:Slider` (`mode=range`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
-| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS); composes `ViewsTheme:Button` (`chip` `color=none` `size=sm`, `reset` `color=link` `size=sm`); blocks `chip` / `reset`, forwarded slots `swatch` / `label`; swatch from `getLabels` `previewImageUrl` / `previewHex` |
+| `Filter:Reset` | Placement-independent reset. Root is `ViewsTheme:Button`. `keys` omitted/`null` clears every facet; a string or list clears those filter keys. Calls `resetListing` → `Listing.resetFilters`. No parent lookup |
+| `Filter:Active:Chip` | Removable active chip. Root is `ViewsTheme:Button` (`color=none` `size=sm`). Slots `swatch` / `label` (`data-active-chip-swatch` / `data-active-chip-label`). No JS. Active clones it from a `<template>` and paints id, label, and swatch |
+| `Filter:Active` | Remove chips via that template (no class strings in JS); forwards the `chip` attr bag; one mounted `Filter:Reset` (no `keys`, `color=link` `size=sm`); swatch from `getLabels` `previewImageUrl` / `previewHex` |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
@@ -31,17 +33,17 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 
 `Filter:Panel.php` `#[PostMount]` uses `FilterFacetPipeline::resolveWithAvailability(...)` → `list<FilterFacet>`.
 
-Each facet is `{ component, props }` rendered with `{{ component(facet.component, facet.props|merge({ layout: layout })) }}` — no aggregation `if`s in Twig. `layout` is presentation (Panel-owned), not resolver data. `FilterFacet::key()` is the batch options key SoT.
+Each facet is `{ component, type, props }` rendered with `{{ component(facet.component, facet.props|merge({ layout: layout })) }}` — no aggregation `if`s in Twig. `component` is the UX tag. `type` (`FilterFacetType`: `multi-select`, `boolean`, `rating`, `range`) is the stable kind; consumers branch on `facet.type`, not the component name. `layout` is presentation (Panel-owned), not resolver data. `FilterFacet::key()` is the batch options key SoT.
 
-| Aggregation key | Gate | Component |
-|-----------------|------|-----------|
-| `manufacturer` | entities not empty | `ViewsTheme:Filter:MultiSelect` (`name=manufacturer`, sorted by name) |
-| `properties` | entities not empty | `MultiSelect` × group (`name=properties`) |
-| `price` | min/max not null | `ViewsTheme:Filter:Range` |
-| `rating` | max > 0 | `ViewsTheme:Filter:Rating` |
-| `shipping-free` | max > 0 | `ViewsTheme:Filter:Boolean` |
+| Aggregation key | Gate | Type | Component |
+|-----------------|------|------|-----------|
+| `manufacturer` | entities not empty | `multi-select` | `ViewsTheme:Filter:MultiSelect` (`name=manufacturer`, sorted by name) |
+| `properties` | entities not empty | `multi-select` | `MultiSelect` × group (`name=properties`) |
+| `price` | min/max not null | `range` | `ViewsTheme:Filter:Range` (`filterKey=price`; batch options still skip Range) |
+| `rating` | max > 0 | `rating` | `ViewsTheme:Filter:Rating` |
+| `shipping-free` | max > 0 | `boolean` | `ViewsTheme:Filter:Boolean` |
 
-**Add a built-in facet:** extend `FilterFacetResolver` (visibility + props). New control **type** also needs a UX component and a name on `Product:Listing` JS `controlComponents`.
+**Add a built-in facet:** extend `FilterFacetResolver` (visibility, `type`, props). A new kind also needs a `FilterFacetType` constant, a UX component, and a name on `Product:Listing` JS `controlComponents`.
 
 ## Shared state
 
@@ -93,7 +95,7 @@ Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. O
 | `getParamKeys()` | Query keys this control owns (even when empty) |
 | `getLabels()` | `[{ id, label, previewHex?, previewImageUrl? }]` — Active chips paint image-over-hex swatch when present |
 | `setFromUrl(params)` | Hydrate from query (init / popstate / drawer open) |
-| `reset(id)` / `resetAll()` | Clear |
+| `reset(id)` / `resetAll()` | Clear one option / clear this control. Listing `reset(id)` and `resetFilters(keys)` call these, then `apply`. `keys` null matches every control; `resetAll()` on Listing is `resetFilters(null)` |
 | `replaceOptions(html)` | MultiSelect: swap `[data-filter-options]` list from batch |
 | `applyOptionsMeta(meta)` | Toggle disabled/count (and Boolean/Rating state) from batch meta |
 | `applyAvailability(aggregations)` | Fallback when batch URL missing |
@@ -167,7 +169,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM (`cursor-default` — shell only; pointer on switch/label) + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
-| Body footer | `Filter:Group:Footer` **Reset** → facet `data-filter-reset` → control `resetAll` + Listing `apply` |
+| Body footer | `Filter:Group:Footer` composes `Filter:Reset` with the facet key → `resetListing` → `Listing.resetFilters` → that control’s `resetAll` + `apply`. Group closes on `ViewsTheme:Listing:Loading` |
 | Active chips | Below bar (`Filter:Active`) when `showActive` |
 | On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |
 
@@ -197,7 +199,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | `--vi-chip-active-border` / `--vi-chip-active-bg` / `--vi-chip-disabled-opacity` | Option chips |
 | `--vi-swatch` / `--vi-swatch-radius` / `--vi-swatch-border` | Color preview swatch |
 
-Co-located: `Group.css` (popover/anchor + body max-height under `[popover]`), `Panel.css` (availability pending), `Chip.css` (option chips), `Boolean.css` (checked border token).
+Co-located: `Group.css` (popover/anchor + body max-height under `[popover]`), `Panel.css` (availability pending), `Chip.css` (option chips), `Active/Chip.css` (removable chip swatch), `Boolean.css` (checked border token).
 
 ## Layout placement
 
@@ -261,12 +263,14 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Panel (class + Twig + busy CSS) | `components/Filter/Panel.{php,html.twig,js,cva.twig,css}` |
 | Group disclosure host + popover CSS | `components/Filter/Group.{js,html.twig,cva.twig,css}` (CSS targets Collapse root `.vi-filter-group-body`) |
 | Form SCSS | `app/storefront/src/scss/_form.scss` |
-| Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php` |
+| Facet resolver / DTO | `src/Service/FilterFacetResolver.php`, `src/Struct/FilterFacet.php`, `src/Struct/FilterFacetType.php` |
 | Reduced aggs loader | `src/Service/FilterAggregationLoader.php` |
 | SSR/client availability mark | `src/Service/FilterAvailabilityApplier.php` |
 | Batch options payload | `src/Service/FilterOptionsPayloadBuilder.php` |
 | MultiSelect options fragment | `components/Filter/MultiSelect/Options.*` |
 | Toggle / Count / Collapse / Footer | `components/Filter/Group/{Toggle,Count,Collapse,Footer}.*` |
+| Reset action | `components/Filter/Reset.*` — shared per-facet and reset-all button |
+| Active chip | `components/Filter/Active/Chip.*` — removable chip. Option chip stays `components/Filter/Chip.*` |
 | Chip / Facets / Active | `components/Filter/{Chip,MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Range slider primitive | `components/Form/Slider.*` — [form-input.md](form-input.md#formslider) |
 | Controller | `src/Controller/FilterDrawerController.php` |

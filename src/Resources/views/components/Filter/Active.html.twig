@@ -3,13 +3,13 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['chip', 'swatch', 'reset']) %}
+{% do vi_define_attrs(['chip', 'reset']) %}
 
 {% set options = {
     listingComponent: 'ViewsTheme:Product:Listing',
     changedEvent: 'ViewsTheme:Listing:Changed',
     syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
-    resetAllLabel: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+    resetComponent: 'ViewsTheme:Filter:Reset',
     removeLabel: 'listing.filterRemoveAriaLabel'|trans|sw_sanitize,
 } %}
 
@@ -23,53 +23,20 @@
 >
     {% block chip %}
         <template data-active-chip-template>
-            <twig:ViewsTheme:Button
-                class="{{ vi_class('chip') }}"
-                {{ ...vi_attrs('chip').defaults({
-                    type: 'button',
-                    color: 'none',
-                    size: 'sm',
-                    title: false,
-                    'data-filter-id': '',
-                }).all() }}
-            >
-                <twig:block name="prepend">
-                    {% vi_block swatch %}
-                        <span
-                            {{ vi_attrs('swatch').defaults({
-                                'data-active-chip-swatch': true,
-                                hidden: true,
-                                'aria-hidden': 'true',
-                            }) }}
-                            class="{{ vi_class('swatch') }}"
-                        ></span>
-                    {% endvi_block %}
-                </twig:block>
-
-                <twig:block name="label">
-                    {% vi_block label %}
-                        <span
-                            data-active-chip-label
-                            class="{{ vi_class('label') }}"
-                        ></span>
-                    {% endvi_block %}
-                </twig:block>
-            </twig:ViewsTheme:Button>
+            <twig:ViewsTheme:Filter:Active:Chip
+                {{ ...vi_attrs('chip').all() }}
+            />
         </template>
     {% endblock %}
 
     {% block reset %}
-        <template data-active-reset-template>
-            <twig:ViewsTheme:Button
-                class="{{ vi_class('reset') }}"
-                {{ ...vi_attrs('reset').defaults({
-                    type: 'button',
-                    color: 'link',
-                    size: 'sm',
-                    label: options.resetAllLabel,
-                    'data-reset-all': true,
-                }).all() }}
-            />
-        </template>
+        <twig:ViewsTheme:Filter:Reset
+            class="{{ vi_class('reset') }}"
+            {{ ...vi_attrs('reset').defaults({
+                color: 'link',
+                size: 'sm',
+                label: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+            }).all() }}
+        />
     {% endblock %}
 </div>
