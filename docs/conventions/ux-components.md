@@ -224,7 +224,7 @@ Stringifies the bag to HTML. Non-class attrs go through `vi_attrs('slot')` / `.d
 | Own root / slot classes | `class="{{ vi_class('root') }}"` / `class="{{ vi_class('root', { size }) }}"` |
 | Child root classes | `class="{{ vi_class('…') }}"` on the `<twig:…>` tag |
 | Child nested classes | `toggle:class="{{ vi_class('toggle') }}"` (etc.) |
-| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_define_cva` → included in `vi_class` |
+| Caller extras | `class="…"` / `slot:class="…"` → CVA via `vi_define_cva` → included in `vi_class`, unless that slot’s caller `base` replaces them ([class consumption](../twig/vi-cva.md#class-consumption)) |
 
 After `vi_define_cva`, root `class` and nested `slot:class` are **stripped into CVA slots and removed** from the bag. Re-emit with `class="{{ vi_class('slot') }}"` / `slot:class="…"`, not via defaults. Root-host children: `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({…}).all() }}` (no `class` in defaults).
 

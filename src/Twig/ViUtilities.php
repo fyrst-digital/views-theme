@@ -97,7 +97,9 @@ class ViUtilities extends AbstractExtension
      *
      * Config (1st arg):
      * - Sibling `Name.cva.twig` when present: load file, deep-merge 1st arg as overrides (`cva` prop).
-     * - Else treat 1st arg as a full inline slot config map.
+     *   A caller `base` on a slot (including `''`, and a string override coerced to `base`) is the
+     *   entire class list for that slot: attribute extras are stripped and not appended.
+     * - Else treat 1st arg as a full inline slot config map. Its `base` does not drop extras.
      *
      * 2nd arg (optional):
      * - `list<string>` — slot names to export for `vi_class` (omit = export all).
@@ -139,8 +141,8 @@ class ViUtilities extends AbstractExtension
             }
         }
 
-        $slotConfig = $this->resolveSlotConfig($env, $context, $config, $templateRef);
-        $map = $this->buildCvaMap($env, $context, $slotConfig, $attributes);
+        $resolved = $this->resolveSlotConfig($env, $context, $config, $templateRef);
+        $map = $this->buildCvaMap($env, $context, $resolved['slots'], $attributes, $resolved['caller']);
         $this->exportClassSlots($context, $map, $exportSlots);
 
         return '';
@@ -242,10 +244,10 @@ class ViUtilities extends AbstractExtension
     }
 
     /**
-     * @param array<string, mixed>                $context
-     * @param array<string, mixed>                $config
+     * @param array<string, mixed> $context
+     * @param array<string, mixed> $config
      *
-     * @return array<string, array<string, mixed>>
+     * @return array{slots: array<string, array<string, mixed>>, caller: array<string, mixed>}
      */
     private function resolveSlotConfig(
         Environment $env,
@@ -274,7 +276,10 @@ class ViUtilities extends AbstractExtension
         if ($cvaTemplate !== null) {
             $defaults = $this->evaluateCvaFile($env, $context, $cvaTemplate);
 
-            return $config === [] ? $defaults : array_replace_recursive($defaults, $config);
+            return [
+                'slots' => $config === [] ? $defaults : array_replace_recursive($defaults, $config),
+                'caller' => $config,
+            ];
         }
 
         if ($config === []) {
@@ -283,8 +288,11 @@ class ViUtilities extends AbstractExtension
             );
         }
 
-        // Inline full config (former vi_cva({…}))
-        return $config;
+        // Inline full config (former vi_cva({…})). Not an override, so extras still append.
+        return [
+            'slots' => $config,
+            'caller' => [],
+        ];
     }
 
     /**
@@ -314,8 +322,21 @@ class ViUtilities extends AbstractExtension
     }
 
     /**
+     * A file-merged caller `base` (including `''`) is the whole class list for that slot.
+     *
+     * @param array<string, mixed> $callerConfig
+     */
+    private function callerReplacesBase(array $callerConfig, string $slotName): bool
+    {
+        $slot = $callerConfig[$slotName] ?? null;
+
+        return \is_array($slot) && \array_key_exists('base', $slot);
+    }
+
+    /**
      * @param array<string, mixed>                $context
      * @param array<string, array<string, mixed>> $classes
+     * @param array<string, mixed>                $callerConfig Coerced overrides when a `.cva.twig` was loaded; empty for inline maps
      *
      * @return array<string, ViCvaSlot>
      */
@@ -324,6 +345,7 @@ class ViUtilities extends AbstractExtension
         array &$context,
         array $classes,
         ?ComponentAttributes $attributes = null,
+        array $callerConfig = [],
     ): array {
         $attributes ??= $context['attributes'] ?? null;
 
@@ -365,9 +387,12 @@ class ViUtilities extends AbstractExtension
                 $config['defaultVariants'] ?? [],
             );
 
-            $extraClass = $slotName === 'root'
-                ? $attributes->render('class')
-                : ($nestedExtras[$slotName] ?? null);
+            $extraClass = null;
+            if (!$this->callerReplacesBase($callerConfig, $slotName)) {
+                $extraClass = $slotName === 'root'
+                    ? $attributes->render('class')
+                    : ($nestedExtras[$slotName] ?? null);
+            }
 
             $map[$slotName] = new ViCvaSlot($cva, $extraClass);
         }

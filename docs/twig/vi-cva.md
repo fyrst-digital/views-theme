@@ -21,7 +21,7 @@ Nest attribute bags stay separate: [`vi_define_attrs` / `vi_attrs`](vi-attrs.md)
 | Call | Role |
 |------|------|
 | `vi_define_cva(…)` | Load/bind CVA, strip root `class` + nested `slot:class` into slots, export for `vi_class` (returns `''`) |
-| `vi_class('slot')` | Exported slot → `apply()` (base + variants + caller extras; tokens unique) |
+| `vi_class('slot')` | Exported slot → `apply()` (base + variants; caller extras unless that slot’s caller `base` replaces them; tokens unique) |
 | `vi_class('slot', { … })` | → `apply(variants)` |
 
 ### Class consumption
@@ -30,6 +30,8 @@ After `vi_define_cva`:
 
 - Caller root `class="…"` → folded into the `root` slot as extras, then **removed** from `attributes` (not only marked rendered).
 - Nested `slot:class` → folded into that slot, key stripped from the bag.
+- **Caller `base` replaces extras on that slot.** When the override merged over a sibling `.cva.twig` contains `base` for a slot (`array_key_exists`, so `base: ''` counts; a string slot override counts because it is coerced to `{ base }`), that string is the entire class list. `class` / `slot:class` for that slot are still stripped from the bag and are not appended. Slots without a caller `base` still append extras. `variants`, `compoundVariants`, and `defaultVariants` still deep-merge.
+- An inline slot map (no `.cva.twig`, including one pre-merged with `|replace_recursive(cva)`) is the component definition. Its `base` does not drop extras.
 - Re-emit with `class="{{ vi_class('…') }}"` / `slot:class="…"`. Do **not** put `class` back via `.defaults({ class: … })` or by relying on a stale bag.
 
 Bare `{{ ...attributes.all() }}` after define is safe for class (key is gone). Prefer root-host shape: `class="{{ vi_class('root') }}"` + `{{ ...attributes.defaults({…}).all() }}`.
@@ -42,7 +44,7 @@ Aliases `vi_cva` / `vi_cva_from_file` call `vi_define_cva` (prefer the new name)
 2. Else 1st arg is a **full inline** slot config map (small components).
 3. Optional explicit file via 2nd-arg options `{ file: 'Alert' }` or string path.
 
-A string slot override (`root: 'd-flex gap-2'`) is coerced to `{ base: '…' }` before the deep merge, so it replaces `base` and leaves `variants` and other keys. Other non-array overrides are ignored and do not delete the default slot.
+A string slot override (`root: 'd-flex gap-2'`) is coerced to `{ base: '…' }` before the deep merge, so it replaces `base` and leaves `variants` and other keys. That coerced `base` also drops `class` / `slot:class` extras for the slot. Other non-array overrides are ignored and do not delete the default slot.
 
 ## Class export (2nd arg)
 
