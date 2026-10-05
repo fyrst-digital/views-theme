@@ -3,13 +3,13 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['chip', 'swatch', 'label', 'reset']) %}
+{% do vi_define_attrs(['chip', 'reset']) %}
 
 {% set options = {
     listingComponent: 'ViewsTheme:Product:Listing',
     changedEvent: 'ViewsTheme:Listing:Changed',
     syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
-    resetAllLabel: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+    resetComponent: 'ViewsTheme:Filter:Reset',
     removeLabel: 'listing.filterRemoveAriaLabel'|trans|sw_sanitize,
 } %}
 
@@ -21,29 +21,22 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    <template data-active-chip-template>
-        <button
-            type="button"
-            data-filter-id=""
-            class="{{ vi_class('chip') }}"
-        >
-            <span
-                data-active-chip-swatch
-                hidden
-                class="{{ vi_class('swatch') }}"
-                aria-hidden="true"
-            ></span>
-            <span data-active-chip-label class="{{ vi_class('label') }}"></span>
-        </button>
-    </template>
+    {% block chip %}
+        <template data-active-chip-template>
+            <twig:ViewsTheme:Filter:Active:Chip
+                {{ ...vi_attrs('chip').all() }}
+            />
+        </template>
+    {% endblock %}
 
-    <template data-active-reset-template>
-        <button
-            type="button"
-            data-reset-all
+    {% block reset %}
+        <twig:ViewsTheme:Filter:Reset
             class="{{ vi_class('reset') }}"
-        >
-            {{ options.resetAllLabel }}
-        </button>
-    </template>
+            {{ ...vi_attrs('reset').defaults({
+                color: 'link',
+                size: 'sm',
+                label: 'listing.filterPanelResetAll'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
 </div>

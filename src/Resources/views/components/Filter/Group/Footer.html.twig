@@ -1,4 +1,5 @@
 {% props
+    keys = null,
     cva = {},
 %}
 
@@ -10,15 +11,14 @@
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        <twig:ViewsTheme:Button
+        <twig:ViewsTheme:Filter:Reset
             class="{{ vi_class('reset') }}"
             {{ ...vi_attrs('reset').defaults({
-                type: 'button',
+                keys: keys,
                 icon: 'arrow-counter-clockwise',
                 label: 'viewsTheme.filter.reset'|trans|sw_sanitize,
                 color: 'link',
                 size: 'sm',
-                'data-filter-reset': true,
             }).all() }}
         />
     {% endblock %}

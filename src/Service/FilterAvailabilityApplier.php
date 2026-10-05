@@ -68,7 +68,7 @@ final class FilterAvailabilityApplier
                 $props['selectedIds'] = $selected;
                 $props['disabled'] = $unavailable;
                 unset($props['hidden']);
-                $out[] = new FilterFacet($component, $props);
+                $out[] = new FilterFacet($component, $props, $facet->type);
                 continue;
             }
 
@@ -80,7 +80,7 @@ final class FilterAvailabilityApplier
                 $props['disabled'] = !$available;
                 $props['checked'] = $selected;
                 unset($props['hidden']);
-                $out[] = new FilterFacet($component, $props);
+                $out[] = new FilterFacet($component, $props, $facet->type);
                 continue;
             }
 
@@ -93,7 +93,7 @@ final class FilterAvailabilityApplier
                 $props['allowedMax'] = $ratingMax;
                 $props['selectedValue'] = $selected;
                 unset($props['hidden']);
-                $out[] = new FilterFacet($component, $props);
+                $out[] = new FilterFacet($component, $props, $facet->type);
                 continue;
             }
 

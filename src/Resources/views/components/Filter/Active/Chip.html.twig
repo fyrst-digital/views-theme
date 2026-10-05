@@ -1,0 +1,39 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['swatch', 'label']) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        color: 'none',
+        size: 'sm',
+        title: false,
+        'data-filter-id': '',
+    }).all() }}
+>
+    <twig:block name="prepend">
+        {% vi_block swatch %}
+            <span
+                {{ vi_attrs('swatch').defaults({
+                    'data-active-chip-swatch': true,
+                    hidden: true,
+                    'aria-hidden': 'true',
+                }) }}
+                class="{{ vi_class('swatch') }}"
+            ></span>
+        {% endvi_block %}
+    </twig:block>
+
+    <twig:block name="label">
+        {% vi_block label %}
+            <span
+                data-active-chip-label
+                class="{{ vi_class('label') }}"
+            ></span>
+        {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Button>

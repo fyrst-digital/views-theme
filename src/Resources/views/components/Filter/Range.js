@@ -12,6 +12,7 @@ export default class FilterRange extends ShopwareComponent {
         max: 100,
         step: 1,
         unit: '',
+        filterKey: 'price',
         listingComponent: 'ViewsTheme:Product:Listing',
         groupComponent: 'ViewsTheme:Filter:Group',
         sliderComponent: 'ViewsTheme:Form:Slider',
@@ -26,12 +27,10 @@ export default class FilterRange extends ShopwareComponent {
         this._onFieldInput = this._onFieldInput.bind(this)
         this._onSliderInput = this._onSliderInput.bind(this)
         this._onSliderChange = this._onSliderChange.bind(this)
-        this._onClick = this._onClick.bind(this)
         this._min?.addEventListener('input', this._onFieldInput)
         this._max?.addEventListener('input', this._onFieldInput)
         this.el.addEventListener('input', this._onSliderInput)
         this.el.addEventListener('change', this._onSliderChange)
-        this.el.addEventListener('click', this._onClick)
         this._syncSliderFromFields({ silent: true })
     }
 
@@ -40,7 +39,6 @@ export default class FilterRange extends ShopwareComponent {
         this._max?.removeEventListener('input', this._onFieldInput)
         this.el.removeEventListener('input', this._onSliderInput)
         this.el.removeEventListener('change', this._onSliderChange)
-        this.el.removeEventListener('click', this._onClick)
         if (this._timer) {
             window.clearTimeout(this._timer)
         }
@@ -101,20 +99,6 @@ export default class FilterRange extends ShopwareComponent {
             this._max.value = params?.[this.options.maxKey] || ''
         }
         this._syncSliderFromFields({ silent: true })
-    }
-
-    _onClick(event) {
-        const reset = event.target instanceof Element
-            ? event.target.closest('[data-filter-reset]')
-            : null
-        if (!reset || !this.el.contains(reset)) {
-            return
-        }
-
-        event.preventDefault()
-        this.resetAll()
-        this._closeGroup()
-        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _onFieldInput() {

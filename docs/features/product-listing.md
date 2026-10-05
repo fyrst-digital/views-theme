@@ -59,7 +59,7 @@ Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` �
 | `fetch.js` | Results HTML + filter-options + aggregations XHR (abort/seq) |
 | `filter-options.js` | Apply options payload / availability onto controls |
 | `results-dom.js` | Results island swap, wait Pagination/Sorting mount, scroll, aria-live |
-| `apply.js` | Façade for controls: `applyListing` / `syncListingControls` / `resetListing` |
+| `apply.js` | Façade for controls: `applyListing` / `syncListingControls` / `resetListing` / `resetListingOption` |
 
 Domain stays isolated from `review/*` — [javascript.md](../conventions/javascript.md).
 
@@ -71,12 +71,12 @@ Domain stays isolated from `review/*` — [javascript.md](../conventions/javascr
 | `syncFilterOptions(params?, { built })` | Batch option HTML + meta (preferred); falls back to `syncAvailability`; abort + seq guard |
 | `syncAvailability(params?, { built })` | Reduced aggs JSON → `applyAvailability` (fallback); same options abort/seq |
 | `apply(patch, { pushHistory, resetPage })` | Results ∥ filter-options → after Results swap, await Pagination/Sorting mount, `refreshControls`, push history, hydrate controls from **request params** (not stale URL), then options; options abort does not fail Results apply |
-| `reset` / `resetAll` | Delegate to controls then apply |
+| `reset` / `resetFilters` / `resetAll` | `reset(id)` clears one option. `resetFilters(keys)` clears facets by `controlFilterKey` (`null` = all) then apply. `resetAll()` is `resetFilters(null)` |
 | `getActiveLabels()` | For `Filter:Active` chips (de-duped by id) |
 | History keys | From control `getParamKeys()` + `baseParams` (not a hard-coded facet list) |
 | Active panels | Drawer open via `Drawer.isOpen()` on `#vi-filter-drawer` — never CSS classes |
 
-Controls (filters, pagination, sorting) call Listing only via `@views-theme/modules/listing/apply.js` façades (`applyListing`, `syncListingControls`, `resetListing`) — not raw `callMethod(…, 'apply')` and not other `listing/*` internals.
+Controls (filters, pagination, sorting) call Listing only via `@views-theme/modules/listing/apply.js` façades (`applyListing`, `syncListingControls`, `resetListing`, `resetListingOption`) — not raw `callMethod(…, 'apply')` and not other `listing/*` internals. `resetListing(component, keys)` resets facets (`keys` omitted = all). `resetListingOption(component, id)` removes one active chip.
 
 Events: `ViewsTheme:Listing:Changed`, `ViewsTheme:Listing:ControlsSynced`, `ViewsTheme:Listing:AvailabilitySynced`, `ViewsTheme:Listing:Loading`.
 

@@ -7,6 +7,7 @@ namespace Fyrst\ViewsTheme\Tests\Unit\Service;
 use Fyrst\ViewsTheme\Service\FilterAvailabilityApplier;
 use Fyrst\ViewsTheme\Service\FilterComponents;
 use Fyrst\ViewsTheme\Struct\FilterFacet;
+use Fyrst\ViewsTheme\Struct\FilterFacetType;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
@@ -43,6 +44,7 @@ final class FilterAvailabilityApplierTest extends TestCase
         $out = $this->applier->apply($facets, $reduced, ['manufacturer' => []]);
         $props = $out[0]->props;
 
+        self::assertSame(FilterFacetType::MULTI_SELECT, $out[0]->type);
         self::assertSame(['m1', 'm3'], $props['allowedIds']);
         self::assertFalse($props['disabled']);
         self::assertSame(['m1', 'm3', 'm2'], array_column($props['elements'], 'id'));

@@ -13,9 +13,7 @@ export default class FilterRating extends ShopwareComponent {
 
     init() {
         this._onChange = this._onChange.bind(this)
-        this._onClick = this._onClick.bind(this)
         this.el.addEventListener('change', this._onChange)
-        this.el.addEventListener('click', this._onClick)
         if (this.options.name) {
             this.el.setAttribute('data-filter-key', this.options.name)
         }
@@ -23,7 +21,6 @@ export default class FilterRating extends ShopwareComponent {
 
     destroy() {
         this.el.removeEventListener('change', this._onChange)
-        this.el.removeEventListener('click', this._onClick)
     }
 
     getValues() {
@@ -141,20 +138,6 @@ export default class FilterRating extends ShopwareComponent {
             this._closeGroup()
         }
         this._group()?.setDisabled?.(unavailable)
-    }
-
-    _onClick(event) {
-        const reset = event.target instanceof Element
-            ? event.target.closest('[data-filter-reset]')
-            : null
-        if (!reset || !this.el.contains(reset)) {
-            return
-        }
-
-        event.preventDefault()
-        this.resetAll()
-        this._closeGroup()
-        applyListing({}, { listingComponent: this.options.listingComponent })
     }
 
     _selected() {
