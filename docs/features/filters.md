@@ -23,7 +23,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`); root `mw-100` |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`). Range: number fields + `Form:Slider` (`mode=range`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
-| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS); swatch from `getLabels` `previewImageUrl` / `previewHex` |
+| `Filter:Active` | Remove chips via Twig CVA `<template>` clones (no class strings in JS); composes `ViewsTheme:Button` (`chip` `color=none` `size=sm`, `reset` `color=link` `size=sm`); blocks `chip` / `reset`, forwarded slots `swatch` / `label`; swatch from `getLabels` `previewImageUrl` / `previewHex` |
 | `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 

@@ -3,7 +3,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['chip', 'swatch', 'label', 'reset']) %}
+{% do vi_define_attrs(['chip', 'swatch', 'reset']) %}
 
 {% set options = {
     listingComponent: 'ViewsTheme:Product:Listing',
@@ -21,29 +21,55 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    <template data-active-chip-template>
-        <button
-            type="button"
-            data-filter-id=""
-            class="{{ vi_class('chip') }}"
-        >
-            <span
-                data-active-chip-swatch
-                hidden
-                class="{{ vi_class('swatch') }}"
-                aria-hidden="true"
-            ></span>
-            <span data-active-chip-label class="{{ vi_class('label') }}"></span>
-        </button>
-    </template>
+    {% block chip %}
+        <template data-active-chip-template>
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('chip') }}"
+                {{ ...vi_attrs('chip').defaults({
+                    type: 'button',
+                    color: 'none',
+                    size: 'sm',
+                    title: false,
+                    'data-filter-id': '',
+                }).all() }}
+            >
+                <twig:block name="prepend">
+                    {% vi_block swatch %}
+                        <span
+                            {{ vi_attrs('swatch').defaults({
+                                'data-active-chip-swatch': true,
+                                hidden: true,
+                                'aria-hidden': 'true',
+                            }) }}
+                            class="{{ vi_class('swatch') }}"
+                        ></span>
+                    {% endvi_block %}
+                </twig:block>
 
-    <template data-active-reset-template>
-        <button
-            type="button"
-            data-reset-all
-            class="{{ vi_class('reset') }}"
-        >
-            {{ options.resetAllLabel }}
-        </button>
-    </template>
+                <twig:block name="label">
+                    {% vi_block label %}
+                        <span
+                            data-active-chip-label
+                            class="{{ vi_class('label') }}"
+                        ></span>
+                    {% endvi_block %}
+                </twig:block>
+            </twig:ViewsTheme:Button>
+        </template>
+    {% endblock %}
+
+    {% block reset %}
+        <template data-active-reset-template>
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('reset') }}"
+                {{ ...vi_attrs('reset').defaults({
+                    type: 'button',
+                    color: 'link',
+                    size: 'sm',
+                    label: options.resetAllLabel,
+                    'data-reset-all': true,
+                }).all() }}
+            />
+        </template>
+    {% endblock %}
 </div>
