@@ -133,6 +133,98 @@ TWIG,
         self::assertSame('root-base root-extra|icon-base icon-extra', $html);
     }
 
+    public function testCallerBaseReplacesRootClassExtra(): void
+    {
+        $twig = $this->createTwig([
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root") }}',
+            'comp.cva.twig' => "{ root: { base: 'root-base' } }",
+        ]);
+
+        $render = function (array $cva) use ($twig): string {
+            return $twig->render('comp.html.twig', [
+                'cva' => $cva,
+                'attributes' => new ComponentAttributes([
+                    'class' => 'root-extra',
+                ], $twig->getRuntime(EscaperRuntime::class)),
+            ]);
+        };
+
+        self::assertSame('meddl', $render(['root' => ['base' => 'meddl']]));
+        self::assertSame('', $render(['root' => ['base' => '']]));
+    }
+
+    public function testCallerBaseReplacesNestedExtraAndKeepsUntouchedSlot(): void
+    {
+        $twig = $this->createTwig([
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root") }}|{{ vi_class("icon") }}',
+            'comp.cva.twig' => "{ root: { base: 'root-base' }, icon: { base: 'icon-base' } }",
+        ]);
+
+        $html = $twig->render('comp.html.twig', [
+            'cva' => [
+                'icon' => ['base' => 'icon-override'],
+            ],
+            'attributes' => new ComponentAttributes([
+                'class' => 'root-extra',
+                'icon:class' => 'icon-extra',
+            ], $twig->getRuntime(EscaperRuntime::class)),
+        ]);
+
+        self::assertSame('root-base root-extra|icon-override', $html);
+    }
+
+    public function testVariantsOnlyOverrideStillAppendsExtras(): void
+    {
+        $twig = $this->createTwig([
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root", { size: size }) }}',
+            'comp.cva.twig' => <<<'TWIG'
+{
+    root: {
+        base: 'root-base',
+        variants: {
+            size: { sm: 'is-sm' },
+        },
+    },
+}
+TWIG,
+        ]);
+
+        $html = $twig->render('comp.html.twig', [
+            'cva' => [
+                'root' => [
+                    'variants' => [
+                        'size' => ['lg' => 'is-lg'],
+                    ],
+                ],
+            ],
+            'size' => 'lg',
+            'attributes' => new ComponentAttributes([
+                'class' => 'root-extra',
+            ], $twig->getRuntime(EscaperRuntime::class)),
+        ]);
+
+        self::assertSame('root-base is-lg root-extra', $html);
+    }
+
+    public function testStringSlotOverrideReplacesClassExtra(): void
+    {
+        $twig = $this->createTwig([
+            'comp.html.twig' => '{% do vi_define_cva(cva, "comp.html.twig") %}{{ vi_class("root") }}',
+            'comp.cva.twig' => "{ root: { base: 'root-base' } }",
+        ]);
+
+        $html = $twig->render('comp.html.twig', [
+            'cva' => [
+                'root' => 'meddl',
+            ],
+            'attributes' => new ComponentAttributes([
+                'class' => 'root-extra',
+            ], $twig->getRuntime(EscaperRuntime::class)),
+        ]);
+
+        self::assertSame('meddl', $html);
+    }
+
     public function testMissingCvaFileThrows(): void
     {
         $twig = $this->createTwig([
