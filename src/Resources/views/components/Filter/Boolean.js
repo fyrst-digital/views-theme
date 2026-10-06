@@ -1,4 +1,4 @@
-import { applyListing } from '@views-theme/modules/listing/apply.js'
+import { apply } from '@views-theme/modules/listing/store.js'
 
 /**
  * @extends {ShopwareComponent}
@@ -7,7 +7,6 @@ export default class FilterBoolean extends ShopwareComponent {
     static options = {
         name: null,
         displayName: null,
-        listingComponent: 'ViewsTheme:Product:Listing',
     }
 
     init() {
@@ -123,6 +122,6 @@ export default class FilterBoolean extends ShopwareComponent {
     }
 
     _onChange() {
-        applyListing({}, { listingComponent: this.options.listingComponent })
+        apply({})
     }
 }

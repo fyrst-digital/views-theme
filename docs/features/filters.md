@@ -23,10 +23,11 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Chip` | Option chip (`<label>` root / btn face); hidden checkbox/radio + optional swatch (`previewImageUrl` preferred over `previewHex`); `size` CVA (`sm` default, `md`); root `mw-100` |
 | `Filter:MultiSelect` / `Range` / `Rating` | Facet control roots + contract; compose Group → Collapse → controls + Footer (shared `id`). Range: number fields + `Form:Slider` (`mode=range`) |
 | `Filter:Boolean` | Inline bar chip + `Form:Switch` (no Group) |
-| `Filter:Reset` | Placement-independent reset. Root is `ViewsTheme:Button`. `keys` omitted/`null` clears every facet; a string or list clears those filter keys. Calls `resetListing` → `Listing.resetFilters`. No parent lookup |
-| `Filter:Active:Chip` | Removable active chip. Root is `ViewsTheme:Button` (`color=none` `size=sm`). Slots `swatch` / `label` (`data-active-chip-swatch` / `data-active-chip-label`). No JS. Active clones it from a `<template>` and paints id, label, and swatch |
-| `Filter:Active` | Remove chips via that template (no class strings in JS); forwards the `chip` attr bag; one mounted `Filter:Reset` (no `keys`, `color=link` `size=sm`); swatch from `getLabels` `previewImageUrl` / `previewHex` |
-| `Product:Listing` | Owner: control registry, apply/history; URL is filter SoT; `syncControls()` after drawer mount |
+| `Filter:Reset` | Placement-independent reset. Root is `ViewsTheme:Button`. `keys` omitted/`null` clears every facet; a string or list clears those filter keys. Dispatches `resetFilters` on the listing store. No parent lookup |
+| `Filter:Active:Chip` | Removable active chip. Root is `ViewsTheme:Button` (`color=none` `size=sm`). Slots `swatch` / `label` (`data-active-chip-swatch` / `data-active-chip-label`). No JS. List clones it from a `<template>` and paints id, label, and swatch |
+| `Filter:Active:List` | Chip painter. Subscribes to the listing store and paints `labels`. Chip click dispatches `resetOption`. Root `d-contents` so chips share the shell flex row. Clears only its own non-`template` children. Toggles `hidden` on itself and the parent shell when `labels` is empty |
+| `Filter:Active` | Presentational flex shell (no JS). Forwards the `chip` attr bag into the list template; one mounted `Filter:Reset` (no `keys`, `color=link` `size=sm`) as a sibling of the list. Starts `hidden` |
+| `Product:Listing` | Executor for the listing store: control registry, apply/history, commits `labels` / `params` / `busy`. URL is the shareable selection. Drawer calls `syncControls` then `syncFilterOptions` on the store |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
 ## Facet resolution (server)
@@ -49,7 +50,8 @@ Each facet is `{ component, type, props }` rendered with `{{ component(facet.com
 
 | Piece | Role |
 |-------|------|
-| URL query | Selection SoT (shareable, history) |
+| URL query | Shareable selection (history) |
+| Listing store | Client session (`attached`, `busy`, `params`, `labels`). Filters, reset, chips, sort, and page dispatch here |
 | **Catalog** | Full facet + option lists in the Panel DOM (SSR without `reduce-aggregations`) |
 | **Availability** | Which facets show / options enable — reduced aggregations JSON only |
 | `Product:Listing` | Discover controls, hydrate, `syncAvailability`, apply/history, Results XHR |
@@ -57,7 +59,7 @@ Each facet is `{ component, type, props }` rendered with `{{ component(facet.com
 | Desktop `Filter:Panel` | Always-mounted (bridge: `class="d-none d-lg-block"`; `layout` from CMS `viewsTheme.value.filterLayout`, default `bar`; `showActive` from CMS) |
 | `Filter:Drawer` | Disposable mobile view (refetch each open; Panel `layout=stacked` forced; `showActive` from CMS; **full catalog** SSR) |
 
-No always-mounted `ViewsTheme:Filter` mutation store (filters are URL-driven, not session POSTs like cart).
+The listing store is the client session for actions and derived labels. It does not replace the URL, and it is not a cart-style POST session.
 
 ### Catalog vs availability (critical)
 
@@ -154,7 +156,7 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | `Filter:Group` | Real box filling the facet; owns toggle; body is Collapse in content |
 | `Filter:Group:Collapse` | Popover/accordion body shell (`vi-filter-group-body`); facets put controls + Footer as direct children |
 | Empty facets | Stay in the bar; Group toggle + options `disabled` (not `hidden`) |
-| No `d-contents` | Do not use contents on filter bar hosts or Group |
+| No `d-contents` | Do not use contents on filter bar hosts or Group. `Filter:Active:List` is the exception: `d-contents` so chips and the reset button share the active-row flex. It is not a bar host or Group |
 
 ### Layout & chrome
 
@@ -169,8 +171,8 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM (`cursor-default` — shell only; pointer on switch/label) + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
-| Body footer | `Filter:Group:Footer` composes `Filter:Reset` with the facet key → `resetListing` → `Listing.resetFilters` → that control’s `resetAll` + `apply`. Group closes on `ViewsTheme:Listing:Loading` |
-| Active chips | Below bar (`Filter:Active`) when `showActive` |
+| Body footer | `Filter:Group:Footer` composes `Filter:Reset` with the facet key → store `resetFilters` → that control’s `resetAll` + `apply`. Group closes on `ViewsTheme:Listing:Loading` |
+| Active chips | Below bar (`Filter:Active` shell + `Filter:Active:List`) when `showActive`. List hides the shell, so reset-all hides with the chips |
 | On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |
 
 `layout=stacked` (mobile `Filter:Drawer`):
@@ -271,6 +273,7 @@ Derived from controls + listing `baseParams` (`p`, `order`, `manufacturer`, `pro
 | Toggle / Count / Collapse / Footer | `components/Filter/Group/{Toggle,Count,Collapse,Footer}.*` |
 | Reset action | `components/Filter/Reset.*` — shared per-facet and reset-all button |
 | Active chip | `components/Filter/Active/Chip.*` — removable chip. Option chip stays `components/Filter/Chip.*` |
+| Active list | `components/Filter/Active/List.*` — paints chips; shell is `components/Filter/Active.html.twig` (no JS) |
 | Chip / Facets / Active | `components/Filter/{Chip,MultiSelect,Boolean,Range,Rating,Active}.*` |
 | Range slider primitive | `components/Form/Slider.*` — [form-input.md](form-input.md#formslider) |
 | Controller | `src/Controller/FilterDrawerController.php` |

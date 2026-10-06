@@ -1,0 +1,29 @@
+{% props
+    removeLabel = 'Remove filter',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% set options = {
+    removeLabel: removeLabel,
+} %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Filter:Active:List',
+        'data-component-options': options|json_encode,
+        hidden: true,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% block chip %}
+            <template>
+                <twig:ViewsTheme:Filter:Active:Chip
+                    {{ ...vi_attrs('chip').all() }}
+                />
+            </template>
+        {% endblock %}
+    {% endblock %}
+</div>
