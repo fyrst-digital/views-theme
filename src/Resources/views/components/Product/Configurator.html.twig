@@ -1,0 +1,32 @@
+{% do vi_define_cva(cva, ['root', 'group']) %}
+{% do vi_define_attrs(['group']) %}
+
+{% if visible %}
+    <form
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Product:Configurator',
+            'data-component-options': {
+                configuratorId: configuratorId,
+                switchUrl: switchUrl,
+                selected: selected,
+            }|json_encode,
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block groups %}
+            {% for group in configuratorSettings %}
+                {% block group %}
+                    <twig:ViewsTheme:Product:Configurator:Group
+                        class="{{ vi_class('group') }}"
+                        {{ ...vi_attrs('group').defaults({
+                            group: group,
+                            product: product,
+                            elementId: elementId,
+                            configuratorId: configuratorId,
+                        }).all() }}
+                    />
+                {% endblock %}
+            {% endfor %}
+        {% endblock %}
+    </form>
+{% endif %}

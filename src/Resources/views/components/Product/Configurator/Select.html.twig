@@ -1,0 +1,50 @@
+{% do vi_define_cva(cva, ['root', 'label', 'control']) %}
+{% do vi_define_attrs(['label', 'control']) %}
+
+{% if groupId %}
+    <div
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Product:Configurator:Select',
+            'data-component-options': {
+                configuratorId: configuratorId,
+                groupId: groupId,
+                focusId: controlId,
+            }|json_encode,
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block label %}
+            <label
+                {{ vi_attrs('label').defaults({
+                    for: controlId,
+                }) }}
+                class="{{ vi_class('label') }}"
+            >
+                {{ 'component.product.configurator.legend'|trans({
+                    '%group_name%': groupName,
+                    '%hidden_cls%': 'visually-hidden',
+                })|sw_sanitize }}
+            </label>
+        {% endblock %}
+
+        {% block control %}
+            <select
+                {{ vi_attrs('control').defaults({
+                    name: groupId,
+                    id: controlId,
+                }) }}
+                class="{{ vi_class('control') }}"
+            >
+                {% for choice in choices %}
+                    <option
+                        value="{{ choice.value }}"
+                        {% if choice.selected %}selected="selected"{% endif %}
+                        {% if not choice.combinable %}title="{{ 'detail.unavailableTooltip'|trans|striptags }}"{% endif %}
+                    >
+                        {{ choice.name }}{% if not choice.combinable %} ({{ 'detail.unavailable'|trans|sw_sanitize }}){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        {% endblock %}
+    </div>
+{% endif %}

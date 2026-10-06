@@ -61,9 +61,14 @@
 
     {% block configurator %}
         {% if showConfiguratorBlock %}
-            <div {{ vi_attrs('configurator') }} class="{{ vi_class('configurator') }}">
-                {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' %}
-            </div>
+            <twig:ViewsTheme:Product:Configurator
+                class="{{ vi_class('configurator') }}"
+                {{ ...vi_attrs('configurator').defaults({
+                    product: product,
+                    configuratorSettings: configuratorSettings,
+                    elementId: elementId,
+                }).all() }}
+            />
         {% endif %}
     {% endblock %}
 

@@ -9,7 +9,7 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/component/buy-widget/buy-widget.html.twig` — thin `sw_extends`; mounts `Product:BuyContainer` |
-| `Product:BuyContainer` | Class-backed buy shell: gates + composition; root keeps BuyBoxPlugin class |
+| `Product:BuyContainer` | Class-backed buy shell: gates + composition. Root keeps the magnifier class |
 | `Product:Header` | Manufacturer + name + SKU + Rating (in container when `showHeader`) |
 | `Product:Manufacturer` | Brand name text only; self-gated |
 | `Product:SKU` | Product number + label; self-gated |
@@ -20,8 +20,9 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 | `Product:Actions` | Secondary actions shell (wishlist, …) |
 | `Product:Action:Wishlist` | Wishlist toggle (via Actions) |
 | `VariantsGrid:Container` | Multi-variant grid when config + extension present |
+| `Product:Configurator` | Variant groups when not using the variants grid. See [Configurator](configurator.md) |
 | `ProductPageSubscriber` | Attaches `page.extensions.viewsTheme.variantsGrid` on PDP |
-| Core delivery / configurator | Included until theme-owned replacements exist |
+| Core delivery | Included until a theme-owned replacement exists |
 
 CMS outer shell (`cms-element-buy-box`, `data-buy-box`) stays **core**. Do not override the element unless the outer wrapper must change.
 
@@ -30,7 +31,7 @@ CMS outer shell (`cms-element-buy-box`, `data-buy-box`) stays **core**. Do not o
 Every core call site that includes `buy-widget.html.twig` picks up the theme shell:
 
 - CMS buy-box element (gallery-buybox block)
-- Variant switch XHR (`frontend.cms.buybox.switch` → re-renders buy-widget only)
+- A configurator change leaves this page for the variant detail URL (`frontend.detail.switch`). The theme does not call `frontend.cms.buybox.switch`
 - Any other buy-widget include
 
 ```twig
@@ -58,16 +59,16 @@ Every core call site that includes `buy-widget.html.twig` picks up the theme she
 
 This is an intentional **new** `views/storefront/` bridge (same role as product card → [Product box](product-box.md)). Do not add further storefront buy-widget files; extend UX under `components/Product/BuyContainer*`.
 
-### BuyBoxPlugin
+### Buy widget root
 
-Root must keep the core replace selector:
+Root keeps the core buy-widget class. The magnifier plugin uses `js-magnifier-zoom-image-container` on the same node (`BuyContainer.cva.twig`).
 
 ```html
 class="… product-detail-buy"           {# no elementId #}
 class="… product-detail-buy-{elementId}" {# CMS buy-box #}
 ```
 
-Derived as `rootElementClass` on the class component. Outer CMS element keeps `data-buy-box` + options.
+`rootElementClass` is derived on the class component. The magnifier plugin selects `js-magnifier-zoom-image-container`. A configurator change navigates to the variant detail page. The outer CMS element keeps `data-buy-box`.
 
 ## Composition
 
@@ -85,7 +86,7 @@ Product:BuyContainer (class VM)
 │    ├─ Product:Price
 │    └─ Product:Price:Tax (when showTaxNote)
 ├─ delivery → core delivery-information include
-├─ configurator → core configurator (when parent + settings and not variants grid)
+├─ configurator → Product:Configurator (when parent + settings and not variants grid)
 ├─ buy
 │    ├─ VariantsGrid:Container  XOR
 │    └─ Product:Action:Buy
@@ -100,9 +101,9 @@ Product:BuyContainer (class VM)
 | Prop / field | Default | Notes |
 |--------------|---------|--------|
 | `product` | required | `SalesChannelProductEntity` |
-| `configuratorSettings` | `null` | Core buy-box / variant switch payload |
+| `configuratorSettings` | `null` | Grouped property settings for `Product:Configurator` |
 | `totalReviews` | `0` | Forwarded to Header → `Product:Rating` |
-| `elementId` | `null` | CMS element id → BuyBoxPlugin root class suffix |
+| `elementId` | `null` | CMS element id → root class suffix and configurator id |
 | `pageType` | `null` | Ambient CMS page type (reserved) |
 | `variantsGrid` | `null` | From `page.extensions.viewsTheme.variantsGrid` (bridge) |
 | `showHeader` | `true` | Mount `Product:Header` (incl. rating) — future CMS toggle |
@@ -113,7 +114,7 @@ Product:BuyContainer (class VM)
 | `showActions` | `true` | Mount `Product:Actions` |
 | `showReviews` | `true` | Forwarded to Header → `Product:Rating` |
 | `showDelivery` | `true` | Core delivery include |
-| `showConfigurator` | `true` | Core configurator when applicable |
+| `showConfigurator` | `true` | `Product:Configurator` when applicable |
 | `cva` | `{}` | Multi-slot via `BuyContainer.cva.twig` |
 
 ### Derived (BuyContainer VM)
@@ -127,7 +128,7 @@ Product:BuyContainer (class VM)
 | `showConfiguratorBlock` | `showConfigurator` ∧ parent ∧ settings ∧ not grid |
 | Prices XOR (Twig) | `showPrice` = single/empty `calculatedPrices`; `showTieredPrices` = `count > 1` — caller props are not passed through |
 
-Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
+Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `configurator:…` (see [Configurator](configurator.md)), `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
 
 ### `Product:Header` (anonymous)
 
@@ -210,7 +211,7 @@ Nests: `rating` (`Review:Rating`), `label`. Override via `header:rating:…`.
 
 When `ViewsTheme.config.variantsGridActive` and `variantsGrid.variants` is non-empty:
 
-1. Core configurator is **not** mounted
+1. `Product:Configurator` is **not** mounted
 2. Single `Product:Action:Buy` is **not** mounted
 3. `VariantsGrid:Container` is mounted instead
 
@@ -229,7 +230,7 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 ## Future (out of scope)
 
 - CMS buy-box config toggle for `showHeader` (and other show* flags)
-- Theme-owned delivery / configurator components
+- Theme-owned delivery component
 - Variants grid → `ViewsTheme:Cart:Add` bus (still core AddToCart path)
 - `Box:Footer` adopting `Product:Prices`
 - Manufacturer logo / CMS manufacturer-logo element
@@ -246,5 +247,6 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 | Prices stack | `src/Resources/views/components/Product/Prices.*` |
 | Rating summary | `src/Resources/views/components/Product/Rating.*` |
 | Secondary actions | `src/Resources/views/components/Product/Actions.*` |
+| Configurator | `src/Resources/views/components/Product/Configurator.*` — [Configurator](configurator.md) |
 | Buy action | `src/Resources/views/components/Product/Action/Buy.*` |
 | Variants data | `src/Subscriber/ProductPageSubscriber.php` |

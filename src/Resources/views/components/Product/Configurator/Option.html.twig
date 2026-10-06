@@ -1,0 +1,72 @@
+{% do vi_define_cva(cva, ['root', 'input', 'label', 'media', 'name']) %}
+{% do vi_define_attrs(['input', 'label', 'media', 'name']) %}
+
+{% if optionId %}
+    <div
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Product:Configurator:Option',
+            'data-component-options': {
+                configuratorId: configuratorId,
+                groupId: groupId,
+                optionId: optionId,
+                focusId: identifier,
+            }|json_encode,
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block input %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'radio',
+                    name: groupId,
+                    value: optionId,
+                    id: identifier,
+                    checked: active ? true : false,
+                    'aria-labelledby': identifier ~ '-label',
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+        {% endblock %}
+
+        {% block label %}
+            <label
+                {{ vi_attrs('label').defaults({
+                    for: identifier,
+                    id: identifier ~ '-label',
+                    title: name,
+                    'data-display': displayType,
+                    style: (displayType == 'color' and colorHex) ? '--vi-product-configurator-option-bg: ' ~ colorHex : false,
+                }) }}
+                class="{{ vi_class('label', { combinable: combinable ? 'yes' : 'no' }) }}"
+            >
+                {% if displayType == 'media' and media %}
+                    {% block media %}
+                        {% sw_thumbnails 'configurator-option-img-thumbnails' with {
+                            media: media,
+                            sizes: {
+                                default: '52px'
+                            },
+                            attributes: {
+                                class: vi_class('media'),
+                                role: 'presentation',
+                            }
+                        } %}
+                    {% endblock %}
+                {% endif %}
+
+                {% block name %}
+                    <span
+                        {{ vi_attrs('name') }}
+                        class="{{ vi_class('name', { hidden: hideName ? 'yes' : 'no' }) }}"
+                    >
+                        {{ name }}
+                    </span>
+                {% endblock %}
+
+                {% if not combinable %}
+                    <small class="visually-hidden">({{ 'detail.unavailableTooltip'|trans|sw_sanitize }})</small>
+                {% endif %}
+            </label>
+        {% endblock %}
+    </div>
+{% endif %}

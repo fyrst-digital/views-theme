@@ -1,0 +1,62 @@
+{% props
+    group,
+    product = null,
+    elementId = null,
+    configuratorId = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root', 'legend', 'options', 'option', 'select']) %}
+{% do vi_define_attrs(['legend', 'options', 'option', 'select']) %}
+
+{% if group.displayType == 'select' %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block select %}
+            <twig:ViewsTheme:Product:Configurator:Select
+                class="{{ vi_class('select') }}"
+                {{ ...vi_attrs('select').defaults({
+                    group: group,
+                    product: product,
+                    elementId: elementId,
+                    configuratorId: configuratorId,
+                }).all() }}
+            />
+        {% endblock %}
+    </div>
+{% else %}
+    <fieldset
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block legend %}
+            <legend {{ vi_attrs('legend') }} class="{{ vi_class('legend') }}">
+                {{ 'component.product.configurator.legend'|trans({
+                    '%group_name%': group.translated.name,
+                    '%hidden_cls%': 'visually-hidden',
+                })|sw_sanitize }}
+            </legend>
+        {% endblock %}
+
+        {% block options %}
+            <div {{ vi_attrs('options') }} class="{{ vi_class('options') }}">
+                {% for option in group.options %}
+                    {% block option %}
+                        <twig:ViewsTheme:Product:Configurator:Option
+                            class="{{ vi_class('option') }}"
+                            {{ ...vi_attrs('option').defaults({
+                                option: option,
+                                group: group,
+                                product: product,
+                                elementId: elementId,
+                                configuratorId: configuratorId,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </fieldset>
+{% endif %}
