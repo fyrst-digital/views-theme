@@ -1,17 +1,9 @@
 {% do vi_define_cva(cva, ['root', 'input', 'label', 'media', 'name']) %}
 {% do vi_define_attrs(['input', 'label', 'media', 'name']) %}
 
-{% if optionId %}
+{% if optionId and face %}
     <div
-        {{ attributes.defaults({
-            'data-component': 'ViewsTheme:Product:Configurator:Option',
-            'data-component-options': {
-                configuratorId: configuratorId,
-                groupId: groupId,
-                optionId: optionId,
-                focusId: identifier,
-            }|json_encode,
-        }) }}
+        {{ attributes }}
         class="{{ vi_class('root') }}"
     >
         {% block input %}
@@ -29,44 +21,51 @@
         {% endblock %}
 
         {% block label %}
-            <label
-                {{ vi_attrs('label').defaults({
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('label', { combinable: combinable ? 'yes' : 'no', kind: face.kind }) }}"
+                {{ ...vi_attrs('label').defaults({
+                    tag: 'label',
+                    color: 'outline-secondary',
+                    title: face.name,
                     for: identifier,
                     id: identifier ~ '-label',
-                    title: name,
-                    'data-display': displayType,
-                    style: (displayType == 'color' and colorHex) ? '--vi-product-configurator-option-bg: ' ~ colorHex : false,
-                }) }}
-                class="{{ vi_class('label', { combinable: combinable ? 'yes' : 'no' }) }}"
+                    style: face.colorHex ? '--vi-product-configurator-option-bg: ' ~ face.colorHex : false,
+                }).all() }}
             >
-                {% if displayType == 'media' and media %}
-                    {% block media %}
-                        {% sw_thumbnails 'configurator-option-img-thumbnails' with {
-                            media: media,
-                            sizes: {
-                                default: '52px'
-                            },
-                            attributes: {
-                                class: vi_class('media'),
-                                role: 'presentation',
-                            }
-                        } %}
+                <twig:block name="prepend">
+                    {% if face.media %}
+                        {% block media %}
+                            {% sw_thumbnails 'configurator-option-img-thumbnails' with {
+                                media: face.media,
+                                sizes: {
+                                    default: '52px'
+                                },
+                                attributes: {
+                                    class: vi_class('media'),
+                                    role: 'presentation',
+                                }
+                            } %}
+                        {% endblock %}
+                    {% endif %}
+                </twig:block>
+
+                <twig:block name="label">
+                    {% block name %}
+                        <span
+                            {{ vi_attrs('name') }}
+                            class="{{ vi_class('name', { hidden: face.hidesName() ? 'yes' : 'no' }) }}"
+                        >
+                            {{ face.name }}
+                        </span>
                     {% endblock %}
-                {% endif %}
+                </twig:block>
 
-                {% block name %}
-                    <span
-                        {{ vi_attrs('name') }}
-                        class="{{ vi_class('name', { hidden: hideName ? 'yes' : 'no' }) }}"
-                    >
-                        {{ name }}
-                    </span>
-                {% endblock %}
-
-                {% if not combinable %}
-                    <small class="visually-hidden">({{ 'detail.unavailableTooltip'|trans|sw_sanitize }})</small>
-                {% endif %}
-            </label>
+                <twig:block name="append">
+                    {% if not combinable %}
+                        <small class="visually-hidden">({{ 'detail.unavailableTooltip'|trans|sw_sanitize }})</small>
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Button>
         {% endblock %}
     </div>
 {% endif %}

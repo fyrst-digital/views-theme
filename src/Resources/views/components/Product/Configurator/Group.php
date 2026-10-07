@@ -8,14 +8,15 @@ use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Content\Property\PropertyGroupEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Configurator:Select — dropdown choices for one group.
+ * View-model for Product:Configurator:Group — one fieldset, either a select or radios.
  */
 #[AsTwigComponent]
-class Select
+class Group
 {
     public mixed $group = null;
 
@@ -34,12 +35,19 @@ class Select
 
     public string $groupName = '';
 
+    public bool $select = false;
+
     public string $controlId = '';
 
     /**
-     * @var list<array{value: string, name: string, selected: bool, combinable: bool}>
+     * @var list<array{value: string, label: string, selected: bool, title?: string}>
      */
     public array $choices = [];
+
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $data
@@ -53,7 +61,12 @@ class Select
 
         $this->groupId = $this->group->getId();
         $this->groupName = $this->translatedName($this->group);
+        $this->select = $this->group->getDisplayType() === 'select';
         $this->controlId = $this->controlId($this->groupId, $this->elementId);
+
+        if (!$this->select) {
+            return;
+        }
 
         $optionIds = [];
         if ($this->product instanceof SalesChannelProductEntity) {
@@ -70,12 +83,19 @@ class Select
                 continue;
             }
 
-            $this->choices[] = [
+            $label = $this->translatedName($option);
+            $choice = [
                 'value' => $option->getId(),
-                'name' => $this->translatedName($option),
+                'label' => $label,
                 'selected' => \in_array($option->getId(), $optionIds, true),
-                'combinable' => $option->getCombinable(),
             ];
+
+            if (!$option->getCombinable()) {
+                $choice['label'] = $label . ' (' . $this->translator->trans('detail.unavailable') . ')';
+                $choice['title'] = trim(strip_tags($this->translator->trans('detail.unavailableTooltip')));
+            }
+
+            $this->choices[] = $choice;
         }
     }
 

@@ -1,62 +1,55 @@
-{% props
-    group,
-    product = null,
-    elementId = null,
-    configuratorId = null,
-    cva = {},
-%}
+{% do vi_define_cva(cva, ['root', 'legend', 'options', 'option', 'control']) %}
+{% do vi_define_attrs(['legend', 'options', 'option', 'control']) %}
 
-{% do vi_define_cva(cva, ['root', 'legend', 'options', 'option', 'select']) %}
-{% do vi_define_attrs(['legend', 'options', 'option', 'select']) %}
-
-{% if group.displayType == 'select' %}
-    <div
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
-    >
-        {% block select %}
-            <twig:ViewsTheme:Product:Configurator:Select
-                class="{{ vi_class('select') }}"
-                {{ ...vi_attrs('select').defaults({
-                    group: group,
-                    product: product,
-                    elementId: elementId,
-                    configuratorId: configuratorId,
-                }).all() }}
-            />
-        {% endblock %}
-    </div>
-{% else %}
+{% if groupId %}
     <fieldset
-        {{ attributes }}
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Product:Configurator:Group',
+            'data-component-options': {
+                configuratorId: configuratorId,
+            }|json_encode,
+        }) }}
         class="{{ vi_class('root') }}"
     >
         {% block legend %}
-            <legend {{ vi_attrs('legend') }} class="{{ vi_class('legend') }}">
-                {{ 'component.product.configurator.legend'|trans({
-                    '%group_name%': group.translated.name,
-                    '%hidden_cls%': 'visually-hidden',
-                })|sw_sanitize }}
-            </legend>
+            <twig:ViewsTheme:Product:Configurator:GroupLabel
+                class="{{ vi_class('legend') }}"
+                {{ ...vi_attrs('legend').defaults({
+                    name: groupName,
+                }).all() }}
+            />
         {% endblock %}
 
-        {% block options %}
-            <div {{ vi_attrs('options') }} class="{{ vi_class('options') }}">
-                {% for option in group.options %}
-                    {% block option %}
-                        <twig:ViewsTheme:Product:Configurator:Option
-                            class="{{ vi_class('option') }}"
-                            {{ ...vi_attrs('option').defaults({
-                                option: option,
-                                group: group,
-                                product: product,
-                                elementId: elementId,
-                                configuratorId: configuratorId,
-                            }).all() }}
-                        />
-                    {% endblock %}
-                {% endfor %}
-            </div>
-        {% endblock %}
+        {% if select %}
+            {% block control %}
+                <twig:ViewsTheme:Form:Select
+                    select:class="{{ vi_class('control') }}"
+                    {{ ...vi_attrs('control').defaults({
+                        id: controlId,
+                        name: groupId,
+                        options: choices,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% else %}
+            {% block options %}
+                <div {{ vi_attrs('options') }} class="{{ vi_class('options') }}">
+                    {% for option in group.options %}
+                        {% block option %}
+                            <twig:ViewsTheme:Product:Configurator:Option
+                                class="{{ vi_class('option') }}"
+                                {{ ...vi_attrs('option').defaults({
+                                    option: option,
+                                    group: group,
+                                    product: product,
+                                    elementId: elementId,
+                                    configuratorId: configuratorId,
+                                }).all() }}
+                            />
+                        {% endblock %}
+                    {% endfor %}
+                </div>
+            {% endblock %}
+        {% endif %}
     </fieldset>
 {% endif %}

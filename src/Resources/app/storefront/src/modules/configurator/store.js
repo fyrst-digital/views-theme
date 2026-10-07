@@ -1,7 +1,7 @@
 /**
  * Client sessions for product configurators.
  *
- * Option and Select dispatch here. Product:Configurator is the only executor.
+ * Group dispatches here. Product:Configurator is the only executor.
  * Sessions are keyed by configurator id so several CMS buy boxes can coexist.
  *
  * @module @views-theme/modules/configurator/store
@@ -14,7 +14,6 @@
 
 /**
  * @typedef {object} ConfiguratorSnapshot
- * @property {boolean} attached
  * @property {boolean} busy
  * @property {Record<string, string>} options
  * @property {string|null} switched
@@ -32,7 +31,6 @@
  * @typedef {object} ConfiguratorSession
  * @property {ConfiguratorExecutor|null} executor
  * @property {ConfiguratorSnapshot} snapshot
- * @property {Set<(snapshot: ConfiguratorSnapshot) => void>} listeners
  */
 
 /** @type {Map<string, ConfiguratorSession>} */
@@ -43,7 +41,6 @@ const sessions = new Map()
  */
 function blankSnapshot() {
     return {
-        attached: false,
         busy: false,
         options: {},
         switched: null,
@@ -61,22 +58,11 @@ function session(id) {
         current = {
             executor: null,
             snapshot: blankSnapshot(),
-            listeners: new Set(),
         }
         sessions.set(id, current)
     }
 
     return current
-}
-
-/**
- * @param {ConfiguratorSession} current
- */
-function publish(current) {
-    const snapshot = current.snapshot
-    current.listeners.forEach((fn) => {
-        fn(snapshot)
-    })
 }
 
 /**
@@ -89,28 +75,11 @@ export function getSnapshot(id) {
 
 /**
  * @param {string} id
- * @param {(snapshot: ConfiguratorSnapshot) => void} fn
- * @returns {() => void}
- */
-export function subscribe(id, fn) {
-    const current = session(id)
-    current.listeners.add(fn)
-    fn(current.snapshot)
-
-    return () => {
-        current.listeners.delete(fn)
-    }
-}
-
-/**
- * @param {string} id
  * @param {ConfiguratorExecutor} next
  */
 export function attach(id, next) {
     const current = session(id)
     current.executor = next
-    current.snapshot = { ...current.snapshot, attached: true }
-    publish(current)
 }
 
 /**
@@ -125,7 +94,6 @@ export function detach(id, executor) {
 
     current.executor = null
     current.snapshot = blankSnapshot()
-    publish(current)
 }
 
 /**
@@ -137,9 +105,7 @@ export function commit(id, partial) {
     current.snapshot = {
         ...current.snapshot,
         ...partial,
-        attached: current.executor !== null,
     }
-    publish(current)
 }
 
 /**
@@ -166,8 +132,6 @@ export function apply(id, patch) {
         },
         switched: groupId,
         focusId: patch.focusId || current.snapshot.focusId,
-        attached: true,
     }
-    publish(current)
     current.executor.switch()
 }

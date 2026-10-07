@@ -41,7 +41,7 @@ app/storefront/src/modules/
 | Component entry | `@views-theme/modules/*` |
 | `Product/Listing.js` | any `@views-theme/modules/listing/*` |
 | `Product/Configurator.js` | `@views-theme/modules/configurator/*`, `shared/http.js` |
-| `Product/Configurator/Option.js`, `Select.js` | `@views-theme/modules/configurator/store.js` only |
+| `Product/Configurator/Group.js` | `@views-theme/modules/configurator/store.js` only |
 | `Review/Panel.js` | any `@views-theme/modules/review/*` |
 | Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
 | Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
@@ -70,7 +70,7 @@ app/storefront/src/modules/
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
-| `configurator/store.js` | Sessions keyed by configurator id. Option/Select call `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
+| `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
 | `review/apply.js` | façade for review controls / Pagination → Panel |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
@@ -230,7 +230,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Sorting | `ViewsTheme:Sorting` | `Sorting.js` |
 | Product buy | `ViewsTheme:Product:Action:Buy` | `Product/Action/Buy.js` |
 | Product configurator | `ViewsTheme:Product:Configurator` | `Product/Configurator.js` — store executor |
-| Product configurator option / select | `ViewsTheme:Product:Configurator:Option` / `:Select` | `Product/Configurator/Option.js`, `Select.js` — `configurator/store.js` only |
+| Product configurator group | `ViewsTheme:Product:Configurator:Group` | `Product/Configurator/Group.js` — `configurator/store.js` only |
 | Filter drawer action | `ViewsTheme:Filter:Drawer:Action` | `Filter/Drawer/Action.js` |
 | Filter panel | `ViewsTheme:Filter:Panel` | `Filter/Panel.js` |
 | Filter group / toggle / count | `ViewsTheme:Filter:Group` / `Group:Toggle` / `Group:Count` | `Filter/Group.js` etc. |

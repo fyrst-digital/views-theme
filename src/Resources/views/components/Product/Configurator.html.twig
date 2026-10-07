@@ -14,7 +14,7 @@
         class="{{ vi_class('root') }}"
     >
         {% block groups %}
-            {% for group in configuratorSettings %}
+            {% for group in groups %}
                 {% block group %}
                     <twig:ViewsTheme:Product:Configurator:Group
                         class="{{ vi_class('group') }}"

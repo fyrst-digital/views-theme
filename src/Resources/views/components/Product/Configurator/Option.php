@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Product\Configurator;
 
-use Shopware\Core\Content\Media\MediaEntity;
+use Fyrst\ViewsTheme\Struct\ConfiguratorOptionFace;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Content\Property\PropertyGroupEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Configurator:Option — display type, media, and selection.
+ * View-model for Product:Configurator:Option — radio shell. The label face is text, color, or media.
  */
 #[AsTwigComponent]
 class Option
@@ -43,15 +42,7 @@ class Option
 
     public bool $combinable = true;
 
-    public string $displayType = 'text';
-
-    public mixed $media = null;
-
-    public ?string $colorHex = null;
-
-    public string $name = '';
-
-    public bool $hideName = false;
+    public ?ConfiguratorOptionFace $face = null;
 
     /**
      * @param array<string, mixed> $data
@@ -66,26 +57,9 @@ class Option
         $this->optionId = $this->option->getId();
         $this->groupId = $this->group->getId();
         $this->identifier = $this->identifier($this->groupId, $this->optionId, $this->elementId);
-        $this->name = $this->translatedName($this->option);
         $this->combinable = $this->option->getCombinable();
         $this->active = \in_array($this->optionId, $this->optionIds(), true);
-
-        $settingMedia = $this->option->getConfiguratorSetting()?->getMedia();
-        if ($settingMedia instanceof MediaEntity) {
-            $this->displayType = 'media';
-            $this->media = $settingMedia;
-        } else {
-            $this->displayType = $this->group->getDisplayType();
-            $media = $this->option->getMedia();
-            $this->media = $media instanceof MediaEntity ? $media : null;
-        }
-
-        $colorHex = $this->option->getColorHexCode();
-        $this->colorHex = \is_string($colorHex) && $colorHex !== '' ? $colorHex : null;
-
-        $hasMedia = $this->displayType === 'media' && $this->media instanceof MediaEntity;
-        $hasColor = $this->displayType === 'color' && $this->colorHex !== null;
-        $this->hideName = $hasMedia || $hasColor;
+        $this->face = ConfiguratorOptionFace::from($this->option, $this->group);
     }
 
     /**
@@ -108,17 +82,5 @@ class Option
         }
 
         return implode('-', $parts);
-    }
-
-    private function translatedName(Entity $entity): string
-    {
-        $translated = $entity->getTranslation('name');
-        if (\is_string($translated) && $translated !== '') {
-            return $translated;
-        }
-
-        $name = $entity->get('name');
-
-        return \is_string($name) ? $name : '';
     }
 }

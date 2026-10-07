@@ -76,6 +76,7 @@
                         <option
                             value="{{ option.value }}"
                             {% if option.disabled|default(false) %}disabled="disabled"{% endif %}
+                            {% if option.title|default(false) %}title="{{ option.title|e('html_attr') }}"{% endif %}
                             {% if value is not null
                                 ? option.value == value
                                 : option.selected|default(false)

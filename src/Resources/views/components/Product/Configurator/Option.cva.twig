@@ -2,11 +2,16 @@
     root: { base: 'vi-product-configurator-option d-inline-flex' },
     input: { base: 'vi-product-configurator-option__input btn-check' },
     label: {
-        base: 'vi-product-configurator-option__label btn btn-outline-secondary d-inline-flex justify-content-center align-items-center fw-normal',
+        base: 'vi-product-configurator-option__label d-inline-flex align-items-center justify-content-center',
         variants: {
             combinable: {
                 yes: '',
                 no: 'text-decoration-line-through',
+            },
+            kind: {
+                text: '',
+                color: 'vi-product-configurator-option--color',
+                media: 'vi-product-configurator-option--media',
             },
         },
     },

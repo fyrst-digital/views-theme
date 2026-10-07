@@ -82,6 +82,7 @@ src/
 |--------|------|
 | `ListingScope` | Category vs search listing scope |
 | `FilterFacet` | Facet DTO for filters |
+| `ConfiguratorOptionFace` | Option label kind (`text`, `color`, `media`) plus name, hex, and media |
 | `ProductPriceData` | Price view-model |
 | `VariantsGridPagination` | Variants grid pagination state |
 

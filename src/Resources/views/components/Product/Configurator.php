@@ -13,7 +13,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Product:Configurator — switch target and selected seed; Twig composes groups.
+ * View-model for Product:Configurator — switch target and selected seed.
  */
 #[AsTwigComponent]
 class Configurator
@@ -33,8 +33,6 @@ class Configurator
 
     public string $configuratorId = '';
 
-    public string $parentId = '';
-
     /**
      * Current variant selection, group id => option id. Client store seed.
      *
@@ -43,6 +41,11 @@ class Configurator
     public array $selected = [];
 
     public ?string $switchUrl = null;
+
+    /**
+     * @var list<PropertyGroupEntity>
+     */
+    public array $groups = [];
 
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
@@ -66,15 +69,15 @@ class Configurator
             return;
         }
 
-        $groups = $this->groups();
-        if ($groups === []) {
+        $groupEntities = $this->groupEntities();
+        if ($groupEntities === []) {
             return;
         }
 
         $this->visible = true;
-        $this->parentId = $parentId;
         $this->configuratorId = $elementId ?? $parentId;
-        $this->selected = $this->selectedOptions($groups, $this->product->getOptionIds() ?? []);
+        $this->selected = $this->selectedOptions($groupEntities, $this->product->getOptionIds() ?? []);
+        $this->groups = $groupEntities;
         $this->switchUrl = $this->urlGenerator->generate(
             'frontend.detail.switch',
             ['productId' => $parentId],
@@ -84,7 +87,7 @@ class Configurator
     /**
      * @return list<PropertyGroupEntity>
      */
-    private function groups(): array
+    private function groupEntities(): array
     {
         $settings = $this->configuratorSettings;
         if ($settings instanceof PropertyGroupCollection) {

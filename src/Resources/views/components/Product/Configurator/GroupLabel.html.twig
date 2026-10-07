@@ -1,0 +1,16 @@
+{% props
+    name = '',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root']) %}
+
+<legend
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {{ 'component.product.configurator.legend'|trans({
+        '%group_name%': name,
+        '%hidden_cls%': 'visually-hidden',
+    })|sw_sanitize }}
+</legend>
