@@ -32,6 +32,7 @@ app/storefront/src/modules/
   shared/     http · dom · component · object-option · history · form · focus-trap
   listing/    Product:Listing domain only
   review/     Review:Panel domain only
+  configurator/  Product:Configurator sessions only
   lazy-shell.js · body-lock.js · serial-queue.js
 ```
 
@@ -39,15 +40,18 @@ app/storefront/src/modules/
 |-------|------------|
 | Component entry | `@views-theme/modules/*` |
 | `Product/Listing.js` | any `@views-theme/modules/listing/*` |
+| `Product/Configurator.js` | `@views-theme/modules/configurator/*`, `shared/http.js` |
+| `Product/Configurator/Group.js` | `@views-theme/modules/configurator/store.js` only |
 | `Review/Panel.js` | any `@views-theme/modules/review/*` |
 | Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
 | Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
-| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` — **not** `review/*` |
-| `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` |
+| `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` — **not** `review/*` or `configurator/*` |
+| `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` or `configurator/*` |
+| `@views-theme/modules/configurator/*` | `@views-theme/modules/shared/*` — **not** `listing/*` or `review/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review internals |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals |
 
-**URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third owner needs it.
+**URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third URL owner needs it. Configurator sessions (`configurator/store.js`) are a separate selection store, not a URL owner.
 
 | Shared | Domain-local (keep in `listing/*` / `review/*`) |
 |--------|--------------------------------------------------|
@@ -66,6 +70,7 @@ app/storefront/src/modules/
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
+| `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
 | `review/apply.js` | façade for review controls / Pagination → Panel |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
@@ -224,6 +229,8 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Product listing results | `ViewsTheme:Product:Listing:Results` | `Product/Listing/Results.js` |
 | Sorting | `ViewsTheme:Sorting` | `Sorting.js` |
 | Product buy | `ViewsTheme:Product:Action:Buy` | `Product/Action/Buy.js` |
+| Product configurator | `ViewsTheme:Product:Configurator` | `Product/Configurator.js` — store executor |
+| Product configurator group | `ViewsTheme:Product:Configurator:Group` | `Product/Configurator/Group.js` — `configurator/store.js` only |
 | Filter drawer action | `ViewsTheme:Filter:Drawer:Action` | `Filter/Drawer/Action.js` |
 | Filter panel | `ViewsTheme:Filter:Panel` | `Filter/Panel.js` |
 | Filter group / toggle / count | `ViewsTheme:Filter:Group` / `Group:Toggle` / `Group:Count` | `Filter/Group.js` etc. |

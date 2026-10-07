@@ -1,0 +1,7 @@
+.btn.vi-product-configurator-option--color,
+.btn.vi-product-configurator-option--media {
+    aspect-ratio: 1;
+    width: var(--vi-product-configurator-option-size, 60px);
+    padding: var(--vi-product-configurator-option-pad, 2px);
+    background-clip: content-box;
+}

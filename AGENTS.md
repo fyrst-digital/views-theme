@@ -74,6 +74,7 @@ Full index: [docs/README.md](docs/README.md).
 | Newsletter | [docs/features/newsletter.md](docs/features/newsletter.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
 | Buy container / PDP buy-box | [docs/features/buy-container.md](docs/features/buy-container.md) |
+| Product configurator | [docs/features/configurator.md](docs/features/configurator.md) |
 | Product listing | [docs/features/product-listing.md](docs/features/product-listing.md) |
 | Product reviews | [docs/features/review.md](docs/features/review.md) |
 | Tabs | [docs/features/tabs.md](docs/features/tabs.md) |

@@ -1,0 +1,71 @@
+{% do vi_define_cva(cva, ['root', 'input', 'label', 'media', 'name']) %}
+{% do vi_define_attrs(['input', 'label', 'media', 'name']) %}
+
+{% if optionId and face %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block input %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'radio',
+                    name: groupId,
+                    value: optionId,
+                    id: identifier,
+                    checked: active ? true : false,
+                    'aria-labelledby': identifier ~ '-label',
+                }) }}
+                class="{{ vi_class('input') }}"
+            >
+        {% endblock %}
+
+        {% block label %}
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('label', { combinable: combinable ? 'yes' : 'no', kind: face.kind }) }}"
+                {{ ...vi_attrs('label').defaults({
+                    tag: 'label',
+                    color: 'outline-secondary',
+                    title: face.name,
+                    for: identifier,
+                    id: identifier ~ '-label',
+                    style: face.colorHex ? '--vi-product-configurator-option-bg: ' ~ face.colorHex : false,
+                }).all() }}
+            >
+                <twig:block name="prepend">
+                    {% if face.media %}
+                        {% block media %}
+                            {% sw_thumbnails 'configurator-option-img-thumbnails' with {
+                                media: face.media,
+                                sizes: {
+                                    default: '52px'
+                                },
+                                attributes: {
+                                    class: vi_class('media'),
+                                    role: 'presentation',
+                                }
+                            } %}
+                        {% endblock %}
+                    {% endif %}
+                </twig:block>
+
+                <twig:block name="label">
+                    {% block name %}
+                        <span
+                            {{ vi_attrs('name') }}
+                            class="{{ vi_class('name', { hidden: face.hidesName() ? 'yes' : 'no' }) }}"
+                        >
+                            {{ face.name }}
+                        </span>
+                    {% endblock %}
+                </twig:block>
+
+                <twig:block name="append">
+                    {% if not combinable %}
+                        <small class="visually-hidden">({{ 'detail.unavailableTooltip'|trans|sw_sanitize }})</small>
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Button>
+        {% endblock %}
+    </div>
+{% endif %}

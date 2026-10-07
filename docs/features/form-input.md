@@ -255,7 +255,7 @@ Select field: optional label + `<select>` + description / feedback. Does **not**
 | `id` | `null` | Required at call site |
 | `name` | `null` | Required at call site |
 | `label` | `null` | Label text (HTML allowed; prefer sanitized) |
-| `options` | `[]` | Iterable of `{ value, label, disabled?, selected? }` |
+| `options` | `[]` | Iterable of `{ value, label, disabled?, selected?, title? }` |
 | `value` | `null` | Selected value (preferred over per-option `selected`) |
 | `size` | `null` | `sm` / `md` / `lg` → `form-select-*` |
 | `layout` | `'stacked'` | `'bar'` \| `'stacked'` → root CVA only |
@@ -276,6 +276,7 @@ Select field: optional label + `<select>` + description / feedback. Does **not**
 | `label` | yes | Option text |
 | `disabled` | no | Default `false` |
 | `selected` | no | Used only when `value` prop is `null` |
+| `title` | no | `<option title>` when set |
 
 ### Classes / slots
 
