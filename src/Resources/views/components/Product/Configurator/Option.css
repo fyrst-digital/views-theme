@@ -1,23 +1,7 @@
-.vi-product-configurator-option__label.btn {
-    border-width: var(--vi-product-configurator-option-border, 1px);
-}
-
-.vi-product-configurator-option__input:checked + .vi-product-configurator-option__label {
-    --vi-product-configurator-option-border: 2px;
-    --bs-btn-border-width: 2px;
-}
-
 .btn.vi-product-configurator-option--color,
 .btn.vi-product-configurator-option--media {
-    min-width: var(--vi-product-configurator-option-size, 60px);
-    height: var(--vi-product-configurator-option-size, 60px);
+    aspect-ratio: 1;
+    width: var(--vi-product-configurator-option-size, 60px);
     padding: var(--vi-product-configurator-option-pad, 2px);
     background-clip: content-box;
-}
-
-.btn.vi-product-configurator-option--color {
-    background-color: var(--vi-product-configurator-option-bg, transparent);
-    --bs-btn-bg: var(--vi-product-configurator-option-bg, transparent);
-    --bs-btn-hover-bg: var(--vi-product-configurator-option-bg, transparent);
-    --bs-btn-active-bg: var(--vi-product-configurator-option-bg, transparent);
 }
