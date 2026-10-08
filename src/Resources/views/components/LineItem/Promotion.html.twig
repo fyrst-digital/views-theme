@@ -46,17 +46,16 @@
                     </span>
                 </div>
             </div>
-        </twig:ViewsTheme:LineItem:Content>
-    {% endblock %}
 
-    {% block price %}
-        <div class="{{ vi_class('footer', { layout: layout }) }}">
             <twig:ViewsTheme:LineItem:Price
                 class="{{ vi_class('price') }}"
                 {{ ...vi_attrs('price').defaults({
                     lineItem: lineItem,
                 }).all() }}
             />
-        </div>
+        </twig:ViewsTheme:LineItem:Content>
+    {% endblock %}
+
+    {% block price %}
     {% endblock %}
 </{{ tag|raw }}>

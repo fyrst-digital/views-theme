@@ -44,7 +44,7 @@ Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
 | `stacked` (default) | Drawer `Cart:Items` | Cover + info / footer areas |
 | `grid` | Cart page + confirm `Cart:Items` | Desktop (`xl`): one grid; header + `LineItem` + footer `d-contents`. Cells: cover · info · qty · remove · unit · total. Confirm omits remove (`data-show-remove="false"`) and drops that track. Mobile: cover · info, then footer flex row (qty · remove · total; unit `d-none d-xl-block`) |
 
-`layout` is forwarded `Cart:Items` → `LineItem` → Product / Promotion / Container / Generic. Cart:Items passes `tag="div"` (no `<ul>` / `<li>`).
+`layout` is forwarded `Cart:Items` → `LineItem` (`typeProps`) → Product / Promotion / Container / Generic. `LineItem` is a class component: it resolves the leaf with `component()` (product, then the discount heuristic, then container, else generic). Cart:Items passes `tag="div"` (no `<ul>` / `<li>`).
 
 `showQuantitySelect` (default `true`) is forwarded `Cart:Items` → `LineItem` → Footer → `LineItem:Quantity`. Checkout register aside and confirm set `:showQuantitySelect="false"` (qty text, no stepper).
 
