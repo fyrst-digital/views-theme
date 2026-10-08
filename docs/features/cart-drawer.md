@@ -122,7 +122,7 @@ LineItem:Product
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Type router → Product / Promotion / Container / Generic; props `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md) / [confirm](checkout-confirm.md)) forwarded to leaf root |
+| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md) / [confirm](checkout-confirm.md)) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name |

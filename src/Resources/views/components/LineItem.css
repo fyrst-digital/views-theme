@@ -36,4 +36,5 @@
 
 .vi-line-item__image {
   width: var(--vi-image-max-w, 80px);
+  aspect-ratio: var(--vi-image-ar, auto);
 }

@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 

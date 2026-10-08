@@ -12,7 +12,7 @@
 
 {% do vi_define_cva({
     root: { base: 'vi-line-item--container' },
-}|replace_recursive(cva)) %}
+}) %}
 
 {% block content %}
     <twig:ViewsTheme:LineItem:Product
@@ -24,6 +24,7 @@
         :deliveries="deliveries"
         :tag="tag"
         :layout="layout"
+        :cva="cva"
         class="{{ vi_class('root') }}"
         {{ ...attributes }}
     />
