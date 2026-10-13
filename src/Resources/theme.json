@@ -19,6 +19,7 @@
         "type": "color",
         "value": "#F87060",
         "editable": true,
+        "css": true,
         "block": "colors",
         "order": 100
       },
@@ -26,6 +27,7 @@
         "type": "color",
         "value": "#71816D",
         "editable": true,
+        "css": true,
         "block": "colors",
         "order": 100
       },
@@ -33,6 +35,7 @@
         "type": "color",
         "value": "#faf5ee",
         "editable": true,
+        "css": true,
         "block": "colors",
         "order": 100
       },
@@ -40,6 +43,7 @@
         "type": "color",
         "value": "#2E282A",
         "editable": true,
+        "css": true,
         "block": "colors",
         "order": 100
       },

@@ -25,6 +25,15 @@
             <argument type="service" id="Shopware\Storefront\Theme\StorefrontPluginRegistry"/>
             <argument type="service" id="theme.repository"/>
         </service>
+        <service id="Fyrst\ViewsTheme\Service\ThemeCssVariables">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
+            <argument type="service" id="Shopware\Storefront\Theme\ThemeConfigValueAccessor"/>
+            <argument type="service" id="request_stack"/>
+        </service>
+        <service id="Fyrst\ViewsTheme\Twig\ThemeCssVariablesExtension">
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeCssVariables"/>
+            <tag name="twig.extension"/>
+        </service>
 
         <service id="Fyrst\ViewsTheme\Subscriber\ThemeConfigSubscriber">
             <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>

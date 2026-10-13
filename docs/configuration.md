@@ -144,7 +144,7 @@ npm run watch:css    # rebuild on source edit
 
 Theme CSS variables are also prefixed in the build (`--tw-breakpoint-lg`, `--tw-color-brand-primary`, …). Class scanning is **explicit only** (`source(none)`): `@source` covers Twig under `views/` and storefront JS/TS — not docs or the rest of the repo.
 
-`@theme` breakpoints and spacing match `scss/override.scss` (`sm` 520px … `xxl` 1600px, `--spacing: 4px`). Brand colors reference Shopware runtime vars (`--sw-color-brand-*`).
+`@theme` breakpoints and spacing match `scss/override.scss` (`sm` 520px … `xxl` 1600px, `--spacing: 4px`). Brand colors reference the opt-in custom properties (`--sw-color-brand-*`).
 
 In component CSS:
 
@@ -162,10 +162,10 @@ In component CSS:
 
 | Field | Type | Default / notes |
 |-------|------|-----------------|
-| `sw-color-brand-primary` | color | `#F87060` |
-| `sw-color-brand-secondary` | color | `#71816D` |
-| `sw-color-brand-light` | color | `#faf5ee` |
-| `sw-color-brand-dark` | color | `#2E282A` |
+| `sw-color-brand-primary` | color | `#F87060`. `css: true` → `--sw-color-brand-primary` |
+| `sw-color-brand-secondary` | color | `#71816D`. `css: true` → `--sw-color-brand-secondary` |
+| `sw-color-brand-light` | color | `#faf5ee`. `css: true` → `--sw-color-brand-light` |
+| `sw-color-brand-dark` | color | `#2E282A`. `css: true` → `--sw-color-brand-dark` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
 | `sw-font-family-headline` | text | `'Figtree', sans-serif` |
 | `sw-text-color` | color | `#2E282A` |
@@ -175,6 +175,8 @@ In component CSS:
 | `sw-logo-mobile` | media | `Page:Logo` mobile `<source>` when set and ≠ desktop |
 | `sw-logo-share` | media | |
 | `sw-logo-favicon` | media | |
+
+`css` on a theme field opts that field into a `:root` custom property in the document head (`--{field-name}`). It is independent of `scss`: omitted or `false` prints nothing, and `scss: false` still only skips the compiled SCSS variable. `layout_head_theme_css_vars` renders `views_theme_css_vars()` and does not emit Shopware’s `scss`-based set. The four brand colors above set `css: true`.
 
 Form controls use a global last-resort focus outline in `scss/_form.scss` (transparent outline by default, primary on `:focus`). Prefer component-level CSS when possible.
 
