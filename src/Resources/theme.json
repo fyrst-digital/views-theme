@@ -29,13 +29,6 @@
         "block": "colors",
         "order": 100
       },
-      "sw-color-brand-tertiary": {
-        "type": "color",
-        "value": "#A393BF",
-        "editable": true,
-        "block": "colors",
-        "order": 100
-      },
       "sw-color-brand-light": {
         "type": "color",
         "value": "#faf5ee",

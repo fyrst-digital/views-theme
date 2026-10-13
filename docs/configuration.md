@@ -40,7 +40,7 @@ Path: `src/Resources/theme.json`.
 | Style | Modern Minimal |
 | Font | Figtree (`sw-font-family-base`) |
 | Primary accent | `#F87060` (`sw-color-brand-primary`) |
-| Secondary / tertiary | `#71816D` / `#A393BF` |
+| Secondary | `#71816D` (`sw-color-brand-secondary`) |
 | Light / dark | `#faf5ee` / `#2E282A` |
 | Base grid | 8px (SCSS spacing scale) |
 | Icon sizes | `$icon-sizes` in `scss/override.scss`: 1→12px … 6→40px |
@@ -164,7 +164,6 @@ In component CSS:
 |-------|------|-----------------|
 | `sw-color-brand-primary` | color | `#F87060` |
 | `sw-color-brand-secondary` | color | `#71816D` |
-| `sw-color-brand-tertiary` | color | `#A393BF` |
 | `sw-color-brand-light` | color | `#faf5ee` |
 | `sw-color-brand-dark` | color | `#2E282A` |
 | `sw-font-family-base` | text | `'Figtree', sans-serif` |
