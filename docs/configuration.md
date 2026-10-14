@@ -160,23 +160,21 @@ In component CSS:
 
 ### Theme fields (admin)
 
-| Field | Type | Default / notes |
-|-------|------|-----------------|
-| `sw-color-brand-primary` | color | `#F87060`. `css: true` → `--sw-color-brand-primary` |
-| `sw-color-brand-secondary` | color | `#71816D`. `css: true` → `--sw-color-brand-secondary` |
-| `sw-color-brand-light` | color | `#faf5ee`. `css: true` → `--sw-color-brand-light` |
-| `sw-color-brand-dark` | color | `#2E282A`. `css: true` → `--sw-color-brand-dark` |
-| `sw-font-family-base` | text | `'Figtree', sans-serif` |
-| `sw-font-family-headline` | text | `'Figtree', sans-serif` |
-| `sw-text-color` | color | `#2E282A` |
-| `sw-headline-color` | color | `#2E282A` |
-| `sw-logo-desktop` | media | Consumed by class `Page:Logo` as default `<img>` (`logoPath`); falls back to `bundles/viewstheme/img/views-logo.svg` |
-| `sw-logo-tablet` | media | `Page:Logo` tablet `<source>` when set and ≠ desktop |
-| `sw-logo-mobile` | media | `Page:Logo` mobile `<source>` when set and ≠ desktop |
-| `sw-logo-share` | media | |
-| `sw-logo-favicon` | media | |
+Views fields sit on their own theme-manager tabs. Storefront defaults stay on **General** (`tab` omitted). Each Views field uses `block: "default"` so the tab has no extra card title. Tab labels: admin snippets `sw-theme.ViewsTheme.{tab}.label`, with `config.tabs` in `theme.json` as the fallback (en-GB / de-DE).
 
-`css` on a theme field opts that field into a `:root` custom property in the document head (`--{field-name}`). It is independent of `scss`: omitted or `false` prints nothing, and `scss: false` still only skips the compiled SCSS variable. `layout_head_theme_css_vars` renders `views_theme_css_vars()` and does not emit Shopware’s `scss`-based set. The four brand colors above set `css: true`.
+| Tab | Field | Type | Default / notes |
+|-----|-------|------|-----------------|
+| Colors (`colors`) | `vi-primary` | color | `#F87060`. `custom.css: true` → `--vi-primary` |
+| Colors | `vi-secondary` | color | `#71816D`. `custom.css: true` → `--vi-secondary` |
+| Colors | `vi-light` | color | `#faf5ee`. `custom.css: true` → `--vi-light` |
+| Colors | `vi-dark` | color | `#2E282A`. `custom.css: true` → `--vi-dark` |
+| Colors | `vi-text-color` | color | `#2E282A`. `custom.css: true` → `--vi-text-color` |
+| Colors | `vi-headline-color` | color | `#2E282A`. `custom.css: true` → `--vi-headline-color` |
+| Typography (`typography`) | `vi-font-family-base` | text | `'Figtree', sans-serif`. `custom.css: true` → `--vi-font-family-base` |
+| Typography | `vi-font-family-headline` | text | `'Figtree', sans-serif`. `custom.css: true` → `--vi-font-family-headline` |
+| Media (`media`) | `vi-logo` | media | `custom.css: true` → `--vi-logo`. `fullWidth: true` |
+
+`custom.css` on a theme field opts that field into a `:root` custom property in the document head (`--{field-name}`). It is independent of `scss`: omitted or `false` prints nothing, and `scss: false` still only skips the compiled SCSS variable. A top-level `css` key is invalid: the theme manager only accepts known field setters, and `custom` is the extension bag (`setCustom`). `layout_head_theme_css_vars` renders `views_theme_css_vars()` and does not emit Shopware’s `scss`-based set. Every field in the table sets `custom.css: true`.
 
 Form controls use a global last-resort focus outline in `scss/_form.scss` (transparent outline by default, primary on `:focus`). Prefer component-level CSS when possible.
 

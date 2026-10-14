@@ -26,7 +26,7 @@ class ThemeCssVariables
     }
 
     /**
-     * Theme fields with `"css": true` as custom properties. `scss` is not consulted.
+     * Theme fields with `custom.css: true` as custom properties. `scss` is not consulted.
      *
      * @return array<string, string|int>
      */
@@ -51,7 +51,9 @@ class ThemeCssVariables
         $variables = [];
 
         foreach ($fields as $key => $data) {
-            if (!is_string($key) || !is_array($data) || ($data['css'] ?? false) !== true || !isset($data['type']) || !is_string($data['type'])) {
+            $custom = is_array($data) ? ($data['custom'] ?? null) : null;
+            $css = is_array($custom) ? ($custom['css'] ?? false) : false;
+            if (!is_string($key) || !is_array($data) || $css !== true || !isset($data['type']) || !is_string($data['type'])) {
                 continue;
             }
 

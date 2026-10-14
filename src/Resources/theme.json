@@ -14,104 +14,117 @@
     "mode": "css"
   },
   "config": {
+    "tabs": {
+      "colors": {
+        "label": {
+          "en-GB": "Colors",
+          "de-DE": "Farben"
+        }
+      },
+      "typography": {
+        "label": {
+          "en-GB": "Typography",
+          "de-DE": "Typografie"
+        }
+      },
+      "media": {
+        "label": {
+          "en-GB": "Media",
+          "de-DE": "Medien"
+        }
+      }
+    },
     "fields": {
-      "sw-color-brand-primary": {
+      "vi-primary": {
         "type": "color",
         "value": "#F87060",
         "editable": true,
-        "css": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 100
       },
-      "sw-color-brand-secondary": {
+      "vi-secondary": {
         "type": "color",
         "value": "#71816D",
         "editable": true,
-        "css": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 100
       },
-      "sw-color-brand-light": {
+      "vi-light": {
         "type": "color",
         "value": "#faf5ee",
         "editable": true,
-        "css": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 100
       },
-      "sw-color-brand-dark": {
+      "vi-dark": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "css": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 100
       },
-      "sw-text-color": {
+      "vi-text-color": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 200
       },
-      "sw-headline-color": {
+      "vi-headline-color": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "block": "colors",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "colors",
+        "block": "default",
         "order": 400
       },
-      "sw-font-family-base": {
+      "vi-font-family-base": {
         "type": "text",
         "value": "'Figtree', sans-serif",
         "editable": true,
-        "block": "typography",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "typography",
+        "block": "default",
         "order": 100
       },
-      "sw-font-family-headline": {
+      "vi-font-family-headline": {
         "type": "text",
         "value": "'Figtree', sans-serif",
         "editable": true,
-        "block": "typography",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "typography",
+        "block": "default",
         "order": 100
       },
-      "sw-logo-desktop": {
+      "vi-logo": {
         "type": "media",
         "value": "",
         "editable": true,
-        "block": "media",
+        "custom": { "css": true },
+        "scss": false,
+        "tab": "media",
+        "block": "default",
         "order": 100,
         "fullWidth": true
-      },
-      "sw-logo-tablet": {
-        "type": "media",
-        "value": "",
-        "editable": true,
-        "block": "media",
-        "order": 200,
-        "fullWidth": true
-      },
-      "sw-logo-mobile": {
-        "type": "media",
-        "value": "",
-        "editable": true,
-        "block": "media",
-        "order": 300,
-        "fullWidth": true
-      },
-      "sw-logo-share": {
-        "type": "media",
-        "value": "",
-        "editable": true,
-        "block": "media",
-        "order": 400
-      },
-      "sw-logo-favicon": {
-        "type": "media",
-        "value": "",
-        "editable": true,
-        "block": "media",
-        "order": 500
       }
     }
   }
