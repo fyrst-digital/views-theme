@@ -19,12 +19,13 @@ ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as 
 src/
   ViewsTheme.php
   Controller/
+    Dev/                      # controllers loaded only when APP_ENV=dev
   Service/
   Struct/
   Subscriber/
   Twig/                       # ViIcon, ViUtilities (vi_define_cva / vi_class / vi_define_attrs / vi_attrs / vi_block / vi_merge_deep), ViCvaSlot, ViBlock*
   Resources/
-    config/
+    config/                   # services.xml always; routes_dev.xml via Bundle::configureRoutes and services_dev.xml via ViewsTheme::build() when APP_ENV=dev
     theme.json
     snippet/
     public/
@@ -43,6 +44,7 @@ src/
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
 - **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), checkout cart page → [Cart page](features/cart-page.md), checkout finish page → [Checkout success](features/checkout-success.md), footer layout → [Footer](features/footer.md).
+- **Dev showcase pages** (`APP_ENV=dev` only): `storefront/page/showcase/*.html.twig` mount existing `<twig:ViewsTheme:…>` tags in the page template. No showcase UX component. See [Component showcase](features/component-showcase.md).
 
 ### Storefront JS
 
@@ -142,6 +144,9 @@ Examples:
 | `frontend.views-theme.address.editor` | `/vi/address/editor` (GET) |
 | `frontend.views-theme.address.editor.save` | `/vi/address/editor` (POST) |
 | `frontend.views-theme.address.switch` | `/vi/address/switch` |
+| `frontend.views-theme.components.forms` | `/vi/components/forms` (`APP_ENV=dev` only) |
+
+`routes.xml` excludes `Controller/Dev/`. `routes_dev.xml` imports that directory and is loaded only when the kernel environment is `dev`. `ViewsTheme::build()` loads `services_dev.xml` in that same environment, so the controller service is absent otherwise.
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
