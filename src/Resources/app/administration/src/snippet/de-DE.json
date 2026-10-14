@@ -1,4 +1,17 @@
 {
+  "sw-theme": {
+    "ViewsTheme": {
+      "colors": {
+        "label": "Farben"
+      },
+      "typography": {
+        "label": "Typografie"
+      },
+      "media": {
+        "label": "Medien"
+      }
+    }
+  },
   "viewsTheme": {
     "sw-cms": {
       "elements": {
