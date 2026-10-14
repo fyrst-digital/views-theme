@@ -4,16 +4,16 @@ $prefix: '';
 // Custom spacing scale — must be defined before Bootstrap is imported
 $spacers: (
   0: 0,
-  1: 4px,
-  2: 8px,
-  3: 12px,
-  4: 16px,
-  5: 20px,
-  6: 24px,
-  7: 32px,
-  8: 40px,
-  9: 64px,
-  10: 80px,
+  1: $spacing-2xs,
+  2: $spacing-xs,
+  3: $spacing-sm,
+  4: $spacing-md,
+  5: $spacing-lg,
+  6: $spacing-xl,
+  7: $spacing-2xl,
+  8: $spacing-3xl,
+  9: $spacing-4xl,
+  10: $spacing-5xl,
 );
 
 $grid-breakpoints: (
@@ -36,25 +36,6 @@ $container-max-widths: (
 
 $container-padding-x: 30px;
 
-$border-radius: 6px;
-$border-radius-sm: 0.25rem;
-$border-radius-lg: 0.5rem;
-$border-radius-xl: 1rem;
-$border-radius-xxl: 2rem;
-$border-radius-pill: 50rem;
-
-$light: $sw-color-brand-light;
-$dark: $sw-color-brand-dark;
-
-$border-color: #d4d4d4;
-
-$h1-font-size: 36px !default;
-$h2-font-size: 28px !default;
-$h3-font-size: 24px !default;
-$h4-font-size: 20px !default;
-$h5-font-size: 16px !default;
-$h6-font-size: 14px !default;
-
 $font-sizes: (
   1: $h1-font-size,
   2: $h2-font-size,
@@ -65,17 +46,15 @@ $font-sizes: (
 );
 
 $icon-sizes: (
-  1: 12px,
-  2: 16px,
-  3: 20px,
-  4: 24px,
-  5: 32px,
-  6: 40px,
+  1: $icon-size-sm,
+  2: $icon-size-md,
+  3: $icon-size-lg,
+  4: $icon-size-xl,
+  5: $icon-size-2xl,
+  6: $icon-size-3xl,
 );
 
 // Track count utilities (`.grid-columns-*`). Also Bootstrap's flex-grid column count.
-$grid-columns: 12 !default;
-
 $grid-column-counts: ();
 @for $i from 1 through $grid-columns {
   $grid-column-counts: map-merge($grid-column-counts, ($i: unquote("repeat(#{$i}, minmax(0, 1fr))")));
@@ -172,5 +151,8 @@ $utilities: (
   }
   @each $key, $value in $font-sizes {
     --#{$prefix}font-size-#{$key}: #{$value};
+  }
+  @each $key, $value in $icon-sizes {
+    --#{$prefix}icon-size-#{$key}: #{$value};
   }
 }

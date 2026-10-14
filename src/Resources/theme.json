@@ -35,87 +35,138 @@
       }
     },
     "fields": {
-      "vi-primary": {
+      "primary": {
         "type": "color",
         "value": "#F87060",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 100
       },
-      "vi-secondary": {
+      "secondary": {
         "type": "color",
         "value": "#71816D",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 100
       },
-      "vi-light": {
+      "light": {
         "type": "color",
         "value": "#faf5ee",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 100
       },
-      "vi-dark": {
+      "dark": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 100
       },
-      "vi-text-color": {
+      "success": {
+        "type": "color",
+        "value": "#4F8F64",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 100
+      },
+      "info": {
+        "type": "color",
+        "value": "#567896",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 100
+      },
+      "danger": {
+        "type": "color",
+        "value": "#C24E46",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 100
+      },
+      "warning": {
+        "type": "color",
+        "value": "#C9923A",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 100
+      },
+      "body-color": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 200
       },
-      "vi-headline-color": {
+      "headline-color": {
         "type": "color",
         "value": "#2E282A",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "colors",
         "block": "default",
         "order": 400
       },
-      "vi-font-family-base": {
+      "border-color": {
+        "type": "color",
+        "value": "#E5DBD0",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 400
+      },
+      "header-bg": {
+        "type": "color",
+        "value": "transparent",
+        "editable": true,
+        "custom": { "css": true },
+        "tab": "colors",
+        "block": "default",
+        "order": 400
+      },
+      "page-bg": {
+        "type": "color",
+        "value": "#FFFFFF",
+        "editable": true,
+        "custom": { "css": true },
+        "tab": "colors",
+        "block": "default",
+        "order": 400
+      },
+      "footer-bg": {
+        "type": "color",
+        "value": "transparent",
+        "editable": true,
+        "custom": { "css": true },
+        "tab": "colors",
+        "block": "default",
+        "order": 400
+      },
+      "font-family-base": {
         "type": "text",
         "value": "'Figtree', sans-serif",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "typography",
         "block": "default",
         "order": 100
       },
-      "vi-font-family-headline": {
+      "headings-font-family": {
         "type": "text",
         "value": "'Figtree', sans-serif",
         "editable": true,
-        "custom": { "css": true },
-        "scss": false,
         "tab": "typography",
         "block": "default",
         "order": 100
       },
-      "vi-logo": {
+      "page-logo": {
         "type": "media",
         "value": "",
         "editable": true,
@@ -125,6 +176,186 @@
         "block": "default",
         "order": 100,
         "fullWidth": true
+      },
+      "border-radius": {
+        "type": "text",
+        "value": "6px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-sm": {
+        "type": "text",
+        "value": "3px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-lg": {
+        "type": "text",
+        "value": "8px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-xl": {
+        "type": "text",
+        "value": "12px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-xxl": {
+        "type": "text",
+        "value": "16px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-2xl": {
+        "type": "text",
+        "value": "20px",
+        "editable": false,
+        "order": 100
+      },
+      "border-radius-pill": {
+        "type": "text",
+        "value": "50px",
+        "editable": false,
+        "order": 100
+      },
+      "h1-font-size": {
+        "type": "text",
+        "value": "36px",
+        "editable": false,
+        "order": 100
+      },
+      "h2-font-size": {
+        "type": "text",
+        "value": "28px",
+        "editable": false,
+        "order": 100
+      },
+      "h3-font-size": {
+        "type": "text",
+        "value": "24px",
+        "editable": false,
+        "order": 100
+      },
+      "h4-font-size": {
+        "type": "text",
+        "value": "20px",
+        "editable": false,
+        "order": 100
+      },
+      "h5-font-size": {
+        "type": "text",
+        "value": "16px",
+        "editable": false,
+        "order": 100
+      },
+      "h6-font-size": {
+        "type": "text",
+        "value": "14px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-2xs": {
+        "type": "text",
+        "value": "4px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-xs": {
+        "type": "text",
+        "value": "8px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-sm": {
+        "type": "text",
+        "value": "12px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-md": {
+        "type": "text",
+        "value": "16px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-lg": {
+        "type": "text",
+        "value": "20px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-xl": {
+        "type": "text",
+        "value": "24px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-2xl": {
+        "type": "text",
+        "value": "32px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-3xl": {
+        "type": "text",
+        "value": "40px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-4xl": {
+        "type": "text",
+        "value": "64px",
+        "editable": false,
+        "order": 100
+      },
+      "spacing-5xl": {
+        "type": "text",
+        "value": "80px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-sm": {
+        "type": "text",
+        "value": "12px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-md": {
+        "type": "text",
+        "value": "16px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-lg": {
+        "type": "text",
+        "value": "20px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-xl": {
+        "type": "text",
+        "value": "24px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-2xl": {
+        "type": "text",
+        "value": "32px",
+        "editable": false,
+        "order": 100
+      },
+      "icon-size-3xl": {
+        "type": "text",
+        "value": "40px",
+        "editable": false,
+        "order": 100
+      },
+      "grid-columns": {
+        "type": "number",
+        "value": "12",
+        "editable": false,
+        "order": 100
       }
     }
   }
