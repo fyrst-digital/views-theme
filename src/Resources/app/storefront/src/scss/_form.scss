@@ -1,50 +1,158 @@
-.form-control {
-  border-color: var(--input-border-color, var(--#{$prefix}border-color));
-  // padding-inline: var(--input-padding-inline, var(--#{$prefix}spacing-4));
-  // padding-block: var(--input-padding-block, var(--#{$prefix}spacing-2));
-  outline: 2px solid var(--input-outline-color, transparent) !important;
-  outline-offset: var(--input-outline-offset, 2px) !important;
-  
-  &:focus {
-    --input-outline-color: var(--input-focus-outline-color);
-    background-color: var(--input-focus-bg-color, var(--input-bg-color));
+// What Bootstrap variables cannot express. Chrome lives in override.scss.
 
-    &.is-invalid {
-      box-shadow: none !important;
+.form-group {
+  row-gap: var(--vi-form-gap, 6px);
+
+  &:has(input:disabled, textarea:disabled, select:disabled) {
+    > .form-label,
+    .form-required-label {
+      color: #66605d;
     }
   }
+
+  &:has(.is-invalid) {
+    > .form-text,
+    > .form-field-feedback {
+      color: var(--form-invalid-color);
+    }
+  }
+
+  &:has(.is-valid) > .form-text {
+    color: var(--form-valid-color);
+  }
+
+  > .form-field-feedback:empty {
+    display: none;
+  }
 }
 
-.form-select {
-  border-color: var(--input-border-color, var(--#{$prefix}border-color));
+.form-required-label {
+  color: var(--primary);
 }
 
-.input-group-sm {
-  --icon-size: 16px;
+.form-control:focus,
+.form-select:focus,
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus,
+.form-control.is-valid:focus,
+.form-select.is-valid:focus,
+.was-validated .form-control:invalid:focus,
+.was-validated .form-select:invalid:focus,
+.was-validated .form-control:valid:focus,
+.was-validated .form-select:valid:focus {
+  box-shadow: none;
 }
 
+.form-control:focus:not(.is-invalid):not(.is-valid):not(:disabled),
+.form-select:focus:not(.is-invalid):not(.is-valid):not(:disabled) {
+  border-width: 1.5px;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid,
 .was-validated .form-control:invalid,
-.form-control.is-invalid {
-  --input-focus-outline-color: var(--danger);
+.was-validated .form-select:invalid {
+  background-color: #f6e2dc;
 }
 
-// Theme form controls: flex-friendly (no BS float / negative margin layout)
-.form-check {
-  min-height: auto;
-  .form-check-input {
-    float: none;
+.form-control.is-valid {
+  background-color: #dcebde;
+}
+
+.was-validated input.form-control:valid:not(.is-valid) {
+  background-image: none;
+}
+
+input.form-control.is-valid {
+  background-image: escape-svg($form-feedback-icon-valid);
+  background-repeat: no-repeat;
+  background-position: right map-get($spacers, 3) center;
+  background-size: 16px 16px;
+}
+
+textarea.form-control {
+  min-height: var(--vi-form-area-h, 112px);
+  padding: var(--spacing-4);
+  background-image: none;
+
+  &.is-invalid,
+  &.is-valid,
+  .was-validated &:invalid,
+  .was-validated &:valid {
+    padding: var(--spacing-4);
+    background-image: none;
+  }
+}
+
+.form-select.is-placeholder {
+  color: #66605d;
+}
+
+.form-select.is-invalid,
+.was-validated .form-select:invalid,
+.form-select:disabled {
+  --form-select-bg-icon: none;
+}
+
+.input-group {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  border: 1px solid #e5dbd0;
+  border-radius: 8px;
+
+  > .form-control,
+  > .input-group-text,
+  > .btn {
     margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  > .form-control:focus,
+  > .form-control:focus:not(.is-invalid):not(.is-valid):not(:disabled),
+  > .form-control.is-invalid,
+  > .form-control.is-valid {
+    border: 0;
+    box-shadow: none;
+  }
+
+  &:focus-within:not(:has(.is-invalid)):not(:has(.is-valid)):not(:has(input:disabled, textarea:disabled, select:disabled)) {
+    border-width: 1.5px;
+    border-color: var(--primary);
+  }
+
+  &:has(.is-invalid) {
+    border-color: var(--form-invalid-border-color);
+  }
+
+  &:has(.is-valid) {
+    border-color: var(--form-valid-border-color);
+  }
+
+  > .btn {
+    height: auto;
+    align-self: stretch;
+    --btn-padding-y: 0;
+    --btn-padding-x: var(--spacing-4);
+  }
+
+  &:has(input:disabled, textarea:disabled, select:disabled) > .btn {
+    --btn-bg: #e5dbd0;
+    --btn-hover-bg: #e5dbd0;
+    --btn-active-bg: #e5dbd0;
+    --btn-color: #66605d;
+    --btn-border-color: transparent;
+    --btn-hover-border-color: transparent;
   }
 }
 
-.form-switch {
-  padding-left: 0;
-
-  .form-check-input {
-    margin-left: 0;
-  }
+.was-validated .input-group > .form-control:invalid {
+  border: 0;
+  box-shadow: none;
 }
 
-.form-text {
-  font-size: var(--form-text-fs, var(--font-size-6))
+.form-check .form-check-input,
+.form-switch .form-check-input {
+  float: none;
+  margin: 0;
 }

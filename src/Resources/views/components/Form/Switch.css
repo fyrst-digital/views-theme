@@ -1,11 +1,42 @@
-/* Label opacity tracks input:disabled (SSR + JS toggle) — no baked CVA class. */
-.form-switch:has(.form-check-input:disabled) .form-check-label {
-  opacity: var(--vi-disabled-opacity, 0.5);
+.vi-form-switch.form-switch .vi-form-switch__input {
+  appearance: none;
+  width: var(--vi-switch-w, 32px);
+  height: var(--vi-switch-h, 20px);
+  margin: 0;
+  border: 0;
+  border-radius: var(--vi-switch-radius, 12px);
+  background-color: var(--vi-form-line, #e5dbd0);
+  background-image: radial-gradient(circle, var(--body-color) 6px, transparent 6px);
+  background-repeat: no-repeat;
+  background-position: left var(--vi-switch-inset, 4px) center;
+  background-size: var(--vi-switch-knob, 12px) var(--vi-switch-knob, 12px);
+  cursor: pointer;
+  transition: none;
+
+  &:checked {
+    background-color: var(--primary);
+    background-image: radial-gradient(circle, var(--white, #fff) 6px, transparent 6px);
+    background-position: right var(--vi-switch-inset, 4px) center;
+    border-color: transparent;
+  }
+
+  &:focus,
+  &:focus-visible {
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: var(--vi-switch-disabled, 0.5);
+    cursor: not-allowed;
+  }
 }
 
-/* Beat cursor-pointer utilities on input/label when disabled. */
-.form-switch:has(.form-check-input:disabled),
-.form-switch:has(.form-check-input:disabled) .form-check-label,
-.form-switch:has(.form-check-input:disabled) .form-check-input {
+.vi-form-switch:has(.vi-form-switch__input:disabled),
+.vi-form-switch:has(.vi-form-switch__input:disabled) .vi-form-switch__label,
+.vi-form-switch:has(.vi-form-switch__input:disabled) .vi-form-switch__input {
   cursor: not-allowed;
+}
+
+.vi-form-switch:has(.vi-form-switch__input:disabled) .vi-form-switch__label {
+  color: var(--vi-form-muted, #66605d);
 }

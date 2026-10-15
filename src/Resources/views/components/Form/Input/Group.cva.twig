@@ -1,16 +1,9 @@
 {
-    root: { base: 'form-group' },
-    label: { base: 'form-label' },
+    root: { base: 'form-group d-flex flex-column' },
+    label: { base: 'form-label d-inline-flex align-items-center gap-1 mb-0' },
     required: { base: 'form-required-label' },
-    group: {
-        base: 'd-flex flex-wrap flex-row',
-        variants: {
-            size: {
-                md: 'gap-2'
-            }
-        }
-    },
-    input: { base: 'col' },
+    group: { base: 'input-group' },
+    input: { base: 'col min-w-0' },
     description: { base: 'form-text' },
     feedback: { base: 'form-field-feedback' },
 }

@@ -25,6 +25,7 @@
 {% set descriptionId = id ~ '-description' %}
 {% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
 {% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% set isPlaceholder = value is empty %}
 {% do vi_define_cva(cva) %}
 
 {% do vi_define_attrs(['label', 'required', 'select', 'description', 'feedback']) %}
@@ -66,9 +67,10 @@
                 disabled: disabled is same as(true) ? true : false,
                 required: isRequired ? true : false,
                 'aria-required': isRequired ? 'true' : false,
+                'aria-invalid': isInvalid ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}
-            class="{{ vi_class('select', { invalid: isInvalid, size: size, layout: layout }) }}"
+            class="{{ vi_class('select', { invalid: isInvalid, placeholder: isPlaceholder, size: size, layout: layout }) }}"
         >
             {% block options %}
                 {% if options|length > 0 %}

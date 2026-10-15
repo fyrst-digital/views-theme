@@ -1,0 +1,20 @@
+.vi-form-selection {
+  padding: var(--vi-form-selection-py, 12px) var(--vi-form-selection-px, 14px);
+  border: 1px solid var(--vi-form-line, #e5dbd0);
+  border-radius: var(--vi-form-selection-radius, 10px);
+  background-color: var(--white, #fff);
+  cursor: pointer;
+
+  &:has(input:checked) {
+    border-color: var(--primary);
+    background-color: var(--vi-form-coral-soft, #f8ebe6);
+  }
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+}
+
+.vi-form-selection__price {
+  color: var(--body-color);
+}

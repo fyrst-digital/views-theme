@@ -1,0 +1,31 @@
+{
+    root: {
+        base: 'vi-form-radio d-inline-flex align-items-center gap-3',
+        variants: {
+            embedded: {
+                true: 'flex-fill min-w-0',
+            },
+        },
+    },
+    box: { base: 'vi-form-radio__box position-relative flex-shrink-0' },
+    input: {
+        base: 'form-check-input vi-form-radio__input appearance-none m-0',
+        variants: {
+            invalid: {
+                true: 'is-invalid',
+            },
+        },
+    },
+    copy: { base: 'vi-form-radio__copy d-flex flex-column min-w-0' },
+    label: {
+        base: 'd-block',
+        variants: {
+            described: {
+                true: 'fs-5 fw-semibold',
+                false: 'fs-6 fw-normal',
+            },
+        },
+    },
+    description: { base: 'vi-form-radio__description d-block fs-6' },
+    feedback: { base: 'vi-form-radio__hint' },
+}

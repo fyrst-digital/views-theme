@@ -1,0 +1,65 @@
+{% props
+    type = 'radio',
+    id = 'vi-form-selection-' ~ random(),
+    name = null,
+    label = null,
+    description = null,
+    price = null,
+    value = '1',
+    checked = false,
+    disabled = false,
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['price']) %}
+
+<label
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% if type is same as('checkbox') %}
+        <twig:ViewsTheme:Form:Checkbox
+            :embedded="true"
+            id="{{ id }}"
+            name="{{ name }}"
+            label="{{ label }}"
+            description="{{ description }}"
+            value="{{ value }}"
+            :checked="checked"
+            :disabled="disabled"
+            validationRules="{{ validationRules }}"
+            violationPath="{{ violationPath }}"
+            :error="error"
+            :formViolations="formViolations"
+        />
+    {% else %}
+        <twig:ViewsTheme:Form:Radio
+            :embedded="true"
+            id="{{ id }}"
+            name="{{ name }}"
+            label="{{ label }}"
+            description="{{ description }}"
+            value="{{ value }}"
+            :checked="checked"
+            :disabled="disabled"
+            validationRules="{{ validationRules }}"
+            violationPath="{{ violationPath }}"
+            :error="error"
+            :formViolations="formViolations"
+        />
+    {% endif %}
+
+    {% if price is not empty %}
+        <span
+            {{ vi_attrs('price') }}
+            class="{{ vi_class('price') }}"
+        >
+            {{ price }}
+        </span>
+    {% endif %}
+</label>

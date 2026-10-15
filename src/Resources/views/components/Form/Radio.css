@@ -1,0 +1,86 @@
+.vi-form-radio {
+  cursor: pointer;
+
+  &:has(:disabled) {
+    cursor: not-allowed;
+  }
+}
+
+.vi-form-radio__box {
+  width: var(--vi-check-size, 18px);
+  height: var(--vi-check-size, 18px);
+  border-radius: 50%;
+  background-color: var(--vi-form-line, #e5dbd0);
+  box-shadow: inset 0 0 0 1px var(--vi-form-line, #e5dbd0);
+}
+
+.vi-form-radio:has(:checked) .vi-form-radio__box {
+  background-color: var(--primary);
+  box-shadow: inset 0 0 0 1.5px var(--primary);
+}
+
+.vi-form-radio:has(:disabled) .vi-form-radio__box {
+  background-color: var(--light);
+  box-shadow: inset 0 0 0 1.5px var(--vi-form-line, #e5dbd0);
+}
+
+.vi-form-radio:has(.is-invalid:not(:checked)) .vi-form-radio__box {
+  background-color: var(--white, #fff);
+  box-shadow: inset 0 0 0 1.5px var(--vi-form-danger, #c24e46);
+}
+
+.vi-form-radio .form-check-input[type="radio"] {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Ccircle cx='9' cy='9' r='3.5' fill='%23000'/%3E%3C/svg%3E");
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+  background-color: var(--white, #fff);
+  background-image: none;
+  box-shadow: none;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  cursor: pointer;
+
+  &:checked {
+    background-color: var(--white, #fff);
+    background-image: none;
+    border-color: transparent;
+  }
+
+  &:focus,
+  &:focus-visible {
+    box-shadow: none;
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.vi-form-radio:has(:disabled) .form-check-input[type="radio"],
+.vi-form-radio:has(.is-invalid:not(:checked)) .form-check-input[type="radio"] {
+  background-color: transparent;
+}
+
+.vi-form-radio:has(:disabled) .vi-form-radio__copy {
+  color: var(--vi-form-muted, #66605d);
+}
+
+.vi-form-radio__hint {
+  color: var(--vi-form-danger, #c24e46);
+  font-size: var(--vi-form-hint-size, 12px);
+}

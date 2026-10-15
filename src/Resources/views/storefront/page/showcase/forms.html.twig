@@ -110,7 +110,18 @@
                         name="invalid"
                         label="Invalid"
                         value="Not accepted"
+                        description="Enter a valid email address."
                         :error="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        id="showcase-success"
+                        name="success"
+                        label="Success"
+                        value="lena@views.studio"
+                        description="Email looks good."
+                        :success="true"
                     />
                 </section>
 
@@ -127,7 +138,7 @@
                             <span class="input-group-text">@</span>
                         </twig:block>
                         <twig:block name="append">
-                            <twig:ViewsTheme:Button type="button" color="secondary" label="Apply" />
+                            <twig:ViewsTheme:Button type="button" color="primary" label="Apply" />
                         </twig:block>
                     </twig:ViewsTheme:Form:Input:Group>
                 </section>
@@ -165,6 +176,120 @@
                         value="name"
                         :options="sortOptions"
                     />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Checkbox</h2>
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox"
+                        name="remember"
+                        label="Keep me signed in"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-checked"
+                        name="rememberChecked"
+                        label="Keep me signed in"
+                        :checked="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-disabled"
+                        name="rememberDisabled"
+                        label="Keep me signed in"
+                        :disabled="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-error"
+                        name="terms"
+                        description="I agree to the terms and conditions and the privacy policy."
+                        :error="true"
+                    >
+                        <twig:block name="feedback">Please accept to continue.</twig:block>
+                    </twig:ViewsTheme:Form:Checkbox>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Radio</h2>
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio"
+                        name="delivery"
+                        value="standard"
+                        label="Standard delivery"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio-selected"
+                        name="delivery"
+                        value="express"
+                        label="Express delivery"
+                        :checked="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio-disabled"
+                        name="deliveryDisabled"
+                        value="pickup"
+                        label="Pickup"
+                        :disabled="true"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Selection</h2>
+
+                    <div class="d-flex flex-column gap-2 mb-4">
+                        <twig:ViewsTheme:Form:Selection
+                            type="radio"
+                            id="showcase-selection-radio-default"
+                            name="shipping"
+                            value="standard"
+                            label="Default"
+                            description="Supporting detail description with a long text which goes to a second line"
+                            price="€0.00"
+                        />
+                        <twig:ViewsTheme:Form:Selection
+                            type="radio"
+                            id="showcase-selection-radio-selected"
+                            name="shipping"
+                            value="express"
+                            label="Select"
+                            description="Supporting Detail"
+                            price="€0.00"
+                            :checked="true"
+                        />
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <twig:ViewsTheme:Form:Selection
+                            type="checkbox"
+                            id="showcase-selection-checkbox"
+                            name="gift"
+                            value="1"
+                            label="Default"
+                            description="Supporting detail description with a long text which goes to a second line"
+                            price="€0.00"
+                            class="mb-2"
+                        />
+                        <twig:ViewsTheme:Form:Selection
+                            type="checkbox"
+                            id="showcase-selection-checkbox-selected"
+                            name="insurance"
+                            value="1"
+                            label="Select"
+                            description="Supporting Detail"
+                            price="€0.00"
+                            :checked="true"
+                        />
+                    </div>
                 </section>
 
                 <section class="mb-5">

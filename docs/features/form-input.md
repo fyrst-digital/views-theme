@@ -4,11 +4,14 @@ Reusable form field primitives owned by the theme:
 
 | Component | Role |
 |-----------|------|
-| `ViewsTheme:Form:Input` | Stacked text field (`form-group` + control) |
-| `ViewsTheme:Form:Input:Group` | Field with Bootstrap `input-group` (prepend / control / append); control is `Form:Input` |
-| `ViewsTheme:Form:Textarea` | Stacked textarea (`form-group` + control); same violation/description API as Input |
-| `ViewsTheme:Form:Select` | Select field (`form-group` + `<select>`); `layout` stacked (default) or bar |
-| `ViewsTheme:Form:Switch` | Bootstrap switch (`form-check form-switch` + `role="switch"`) |
+| `ViewsTheme:Form:Input` | Stacked text field (`.form-group` + `.form-control`). Optional `success` chrome |
+| `ViewsTheme:Form:Input:Group` | Joined shell (prepend / plain `Form:Input` / append). Height follows the field padding |
+| `ViewsTheme:Form:Textarea` | Stacked textarea; same violation/description API as Input |
+| `ViewsTheme:Form:Select` | Select field; `layout` stacked (default) or bar. Caret is the `.form-select` background image |
+| `ViewsTheme:Form:Checkbox` | 18px checkbox row (optional title + description) |
+| `ViewsTheme:Form:Radio` | 18px radio row (same copy API as Checkbox) |
+| `ViewsTheme:Form:Selection` | Card around Checkbox or Radio (`type` `radio` \| `checkbox`) |
+| `ViewsTheme:Form:Switch` | 32×20 switch (`form-check form-switch` + `role="switch"`) |
 | `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
 | `ViewsTheme:Form:Birthday` | Label + 3× `Form:Select` (day / month / year) |
 | `ViewsTheme:Form:Toggle` | Show/hide field group from a switch or select (`data-component`) |
@@ -51,6 +54,8 @@ Reusable form field primitives owned by the theme:
 | `confirmMessage` | `null` | Mismatch message (`data-confirm-message`) |
 | `violationPath` | `null` | Server violation key (e.g. `'/email'`) |
 | `error` | `false` | Force invalid styling without violations |
+| `success` | `false` | Force success chrome (`is-valid`). Ignored when the field is invalid |
+| `plain` | `false` | Render only the `<input>`. `Form:Input:Group` sets this |
 | `formViolations` | `__context.formViolations\|default(null)` | Ambient outer-scope default in `{% props %}` |
 | `cva` | `{}` | Slot class overrides |
 
@@ -58,12 +63,14 @@ Reusable form field primitives owned by the theme:
 
 | Slot | Default base | Caller override |
 |------|--------------|-----------------|
-| root | `form-group` | `class="…"` |
-| label | `form-label` | `label:class` |
-| required | `form-required-label` | `required:class` |
-| input | `form-control` (+ size / `is-invalid`) | `input:class` |
-| description | `form-text` | `description:class` |
+| root | `form-group d-flex flex-column` | `class="…"` |
+| label | `form-label` + inline flex, gap 4px | `label:class` |
+| required | `form-required-label` (color `--primary`) | `required:class` |
+| input | `form-control` (+ size / `is-invalid` / `is-valid`) | `input:class` |
+| description | `form-text` (12px ash; danger when invalid, success when valid) | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
+
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, caret, and the invalid icon is Bootstrap variables in `scss/override.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-icon-invalid`, `$form-select-indicator`). `scss/_form.scss` keeps the input-group shell, the 1.5px focus width, the soft invalid/valid fills, and the check icon on `.is-valid` only.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 
@@ -133,10 +140,10 @@ Stacked textarea: optional label + `<textarea>` + description / feedback. Same v
 
 | Slot | Default base | Caller override |
 |------|--------------|-----------------|
-| root | `form-group` | `class="…"` |
-| label | `form-label` | `label:class` |
+| root | `form-group d-flex flex-column` | `class="…"` |
+| label | `form-label` + inline flex, gap 4px | `label:class` |
 | required | `form-required-label` | `required:class` |
-| textarea | `form-control` (+ size / `is-invalid`) | `textarea:class` |
+| textarea | `form-control` (112px min height, `--spacing-4` padding; + size / `is-invalid`) | `textarea:class` |
 | description | `form-text` | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
@@ -146,7 +153,7 @@ Nested attrs: `label:*`, `textarea:*`, `description:*`, `feedback:*`.
 
 ## Form:Input:Group
 
-Bootstrap **input-group** shell: optional label + group (prepend / control / append) + description / feedback. Control is nested `Form:Input` (`label` / `description` / feedback chrome suppressed; root `d-contents` so the control participates in the input-group flex row). Does **not** own `<form>` or JS.
+Joined field shell: optional label + one bordered `.input-group` (prepend / plain `Form:Input` / append) + description / feedback. The shell has no fixed height; it wraps the nested control’s padding. The nested input is `plain` (no own border, label, or status icons). Focus, error, and disabled paint the **outer** shell; the append button stays flush (no radius, stretches with the field). Disabled append fill is linen with ash text. Does **not** own `<form>` or JS.
 
 ### Usage
 
@@ -167,7 +174,7 @@ Bootstrap **input-group** shell: optional label + group (prepend / control / app
 
 ### Props
 
-Same field props as `Form:Input` (intentional **facade**: flat control props forward into nest `input` so callers can use `placeholder` / `field:placeholder` without `input:placeholder`). `size` applies to the **group** slot (`input-group-*`) and is also forwarded to the nested control. See [no parallel chrome props](../conventions/ux-components.md#no-parallel-chrome-props-leaf-api) — Group is the documented exception.
+Same field props as `Form:Input` (intentional **facade**: flat control props forward into nest `input` so callers can use `placeholder` / `field:placeholder` without `input:placeholder`). `size` is forwarded to the nested control (`form-control-sm` / `form-control-lg` change `padding-block`). The `.input-group` shell wraps that padding. See [no parallel chrome props](../conventions/ux-components.md#no-parallel-chrome-props-leaf-api) — Group is the documented exception.
 
 ### Classes / slots
 
@@ -176,7 +183,7 @@ Same field props as `Form:Input` (intentional **facade**: flat control props for
 | root | `form-group` | `class="…"` |
 | label | `form-label` | `label:class` |
 | required | `form-required-label` | `required:class` |
-| group | `input-group` (+ size) | `group:class` |
+| group | `input-group` (shell wraps the field padding) | `group:class` |
 | input | (forwarded to nested `Form:Input` `input:class`) | `input:class` |
 | description | `form-text` | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
@@ -186,9 +193,9 @@ Same field props as `Form:Input` (intentional **facade**: flat control props for
 | Block | Default |
 |-------|---------|
 | `label` | Optional label (+ required marker) |
-| `group` | `div.input-group` wrapping prepend / input / append |
+| `group` | Bordered shell wrapping prepend / input / append |
 | `prepend` | Empty — put leading addons / buttons here |
-| `input` | Nested `Form:Input` (control only) |
+| `input` | Nested plain `Form:Input` |
 | `append` | Empty — put trailing addons / `Button` here |
 | `description` / `feedback` | Same idea as `Form:Input` |
 
@@ -282,10 +289,10 @@ Select field: optional label + `<select>` + description / feedback. Does **not**
 
 | Slot | Default base | Caller override |
 |------|--------------|-----------------|
-| root | `form-group` (+ layout: `bar` → `d-inline-flex align-items-center gap-2 m-0`) | `class="…"` |
+| root | `form-group d-flex flex-wrap` (+ layout: `stacked` column, `bar` row + `gap-2`) | `class="…"` |
 | label | `form-label` (+ size `sm → fs-6`) | `label:class` |
 | required | `form-required-label` | `required:class` |
-| select | `form-select cursor-pointer` (+ size / `is-invalid`) | `select:class` |
+| select | `form-select appearance-none` (+ size / `is-invalid` / empty → `is-placeholder` / `bar` → `col`). Caret is the `.form-select` background image (`caret-down`) | `select:class` |
 | description | `form-text` | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
@@ -313,9 +320,45 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 
 ---
 
+## Form:Checkbox
+
+18px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a `--svg` mask on `.form-check-input` (a heavier check than `check-bold`). Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
+
+`label` is 14px when it is the only line. When `description` is set, `label` is 16px / 600 and `description` is 14px. `embedded` renders a `div` instead of a `label` so `Form:Selection` can own the card label.
+
+## Form:Radio
+
+Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle mask on `.form-check-input`, centered in the 18px box. Unchecked fill is linen; checked fill is `--primary`. Disabled hides the dot.
+
+## Form:Selection
+
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`, `embedded`). The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: coral-soft fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12px 14px. Optional `price` is trailing 16px / 600.
+
+```twig
+<twig:ViewsTheme:Form:Selection
+    type="radio"
+    id="shipping-standard"
+    name="shipping"
+    value="standard"
+    label="Standard"
+    description="Delivered in 3–5 days"
+    price="€0.00"
+/>
+```
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `type` | `'radio'` | `'radio'` \| `'checkbox'` |
+| `id` | `vi-form-selection-{random}` | Forwarded to the inner control |
+| `name` / `value` | `null` / `'1'` | Native grouping for radios |
+| `label` / `description` | `null` | Title and supporting line |
+| `price` | `null` | Trailing text; omitted when empty |
+| `checked` / `disabled` | `false` | |
+| `validationRules` / `violationPath` / `error` / `formViolations` | same as Checkbox | |
+
 ## Form:Switch
 
-Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
+32×20 switch (`form-check form-switch` + `role="switch"`). Track is linen with an ink knob when off, `--primary` with a white knob when on. Disabled track opacity is 0.5 and the label is ash. Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
 
 ### Usage
 
@@ -353,7 +396,7 @@ Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Prese
 
 | Slot | Default base | Caller override |
 |------|--------------|-----------------|
-| root | `form-check form-switch` | `class="…"` (e.g. `d-inline-flex gap-2 m-0 p-0`) |
+| root | `vi-form-switch form-check form-switch d-inline-flex align-items-center gap-3 m-0 p-0` | `class="…"` |
 | input | `form-check-input cursor-pointer` (+ `is-invalid`) | `input:class` |
 | label | `form-check-label cursor-pointer` | `label:class` |
 | description | `form-text` | `description:class` |
@@ -361,7 +404,7 @@ Bootstrap **switch** control (`form-check form-switch` + `role="switch"`). Prese
 
 Nested attrs: `input:*`, `label:*`, `description:*`, `feedback:*`.
 
-Co-located `Switch.css`: label opacity + `cursor: not-allowed` on root/label/input when `:disabled`. Dense bar layout is caller utilities. Theme BS form-check/switch float & negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
+Co-located `Switch.css`: track, knob, and disabled label color. Theme BS form-check/switch float and negative-margin neutralize: `app/storefront/src/scss/_form.scss`.
 
 ### Call sites
 

@@ -74,6 +74,10 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
   bold: {
     ph: [
       "address-book-bold",
+      {
+        icon: "warning-circle-bold",
+        class: "alert-bold",
+      },
       "arrows-in-cardinal-bold",
       "arrows-out-bold",
       "arrow-counter-clockwise-bold",
@@ -92,6 +96,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "caret-down-bold",
       "caret-up-bold",
       "check-bold",
+      "check-circle-bold",
       "chart-line-up-bold",
       "circle-bold",
       "circle-fill",
