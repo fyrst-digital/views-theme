@@ -704,7 +704,24 @@
                       "type": "ref",
                       "ref": "Snm7X",
                       "name": "Summary",
-                      "width": "fill_container"
+                      "width": "fill_container",
+                      "descendants": {
+                        "oHrNx": {
+                          "id": "MoD9S",
+                          "type": "ref",
+                          "ref": "FWi6h",
+                          "name": "Place Order",
+                          "width": "fill_container",
+                          "descendants": {
+                            "SuGJX": {
+                              "enabled": false
+                            },
+                            "j3AH6": {
+                              "content": "Place order"
+                            }
+                          }
+                        }
+                      }
                     }
                   ]
                 }
@@ -1386,7 +1403,24 @@
                   "type": "ref",
                   "ref": "Snm7X",
                   "name": "Summary",
-                  "width": "fill_container"
+                  "width": "fill_container",
+                  "descendants": {
+                    "oHrNx": {
+                      "id": "WDptF",
+                      "type": "ref",
+                      "ref": "FWi6h",
+                      "name": "Place Order",
+                      "width": "fill_container",
+                      "descendants": {
+                        "SuGJX": {
+                          "enabled": false
+                        },
+                        "j3AH6": {
+                          "content": "Place order"
+                        }
+                      }
+                    }
+                  }
                 }
               ]
             },
@@ -19525,10 +19559,10 @@
                                       "type": "frame",
                                       "id": "SkuFR",
                                       "x": 0,
-                                      "y": 59,
+                                      "y": 63,
                                       "name": "Select Slot",
                                       "enabled": false,
-                                      "width": "fill_container(440)",
+                                      "width": "fill_container(364.5)",
                                       "layout": "vertical",
                                       "children": [
                                         {
@@ -21802,27 +21836,19 @@
                               ]
                             },
                             {
-                              "type": "frame",
-                              "id": "x4DQQl",
+                              "id": "oHrNx",
+                              "type": "ref",
+                              "ref": "FWi6h",
                               "name": "Place Order",
                               "width": "fill_container",
-                              "height": 52,
-                              "fill": "$coral",
-                              "cornerRadius": 8,
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "GEyrQ",
-                                  "name": "Place Order Label",
-                                  "fill": "$ink",
-                                  "content": "Place order",
-                                  "fontFamily": "$font",
-                                  "fontSize": 16,
-                                  "fontWeight": "600"
+                              "descendants": {
+                                "SuGJX": {
+                                  "enabled": false
+                                },
+                                "j3AH6": {
+                                  "content": "Place order"
                                 }
-                              ]
+                              }
                             },
                             {
                               "type": "frame",

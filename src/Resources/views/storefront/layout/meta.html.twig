@@ -1,5 +1,18 @@
 {% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
 
+{% block layout_head_theme_css_vars %}
+  {%- set themeCssVars = views_theme_css_vars() -%}
+  {%- if themeCssVars is not empty -%}
+    <style>
+      :root {
+      {%- for key, value in themeCssVars -%}
+        --{{ key|raw }}: {{ value|raw }};
+      {%- endfor -%}
+      }
+    </style>
+  {%- endif -%}
+{% endblock %}
+
 {% block layout_head_stylesheet %}
   {{ parent() }}
 
