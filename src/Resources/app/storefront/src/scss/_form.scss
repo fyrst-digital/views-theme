@@ -1,4 +1,4 @@
-// Host leftovers. Padding, type, radius, border, and icons live in override.scss.
+// Host leftovers. Padding, type, radius, border, focus inset, and status-icon geometry live in overrides/_form.scss.
 
 .form-group {
   row-gap: var(--vi-form-gap, 6px);
@@ -8,23 +8,43 @@
   color: var(--primary);
 }
 
-.form-control,
 .form-select {
-  box-shadow: none;
-}
-
-.form-select {
-  --form-select-bg-icon: none;
-
   &.is-placeholder {
-    color: #66605d;
+    color: $muted;
+  }
+
+  &:is(.is-valid, .is-invalid),
+  .was-validated &:is(:valid, :invalid) {
+    --form-select-bg-icon: none;
   }
 }
 
-textarea.form-control {
-  min-height: var(--vi-form-area-h, 112px);
-  padding: var(--spacing-4);
-  background-image: none;
+.form-control {
+  @at-root textarea#{&} {
+    min-height: var(--vi-form-area-h, 112px);
+    padding: var(--spacing-4) var(--spacing-5);
+
+    &:is(.is-valid, .is-invalid),
+    .was-validated &:is(:valid, :invalid) {
+      padding-right: var(--spacing-5);
+      background-image: none;
+    }
+  }
+
+  &.is-valid,
+  .was-validated &:valid {
+    --control-focus-shadow-color: rgba(from var(--success) r g b / 30%);
+  }
+
+  &.is-invalid,
+  .was-validated &:invalid {
+    --control-focus-shadow-color: rgba(from var(--danger) r g b / 30%);
+  }
+
+  &:is(.is-valid, .is-invalid):focus,
+  .was-validated &:is(:valid, :invalid):focus {
+    box-shadow: $input-focus-box-shadow;
+  }
 }
 
 .input-group {
@@ -41,7 +61,16 @@ textarea.form-control {
 
   > .btn {
     --btn-padding-y: 0;
-    --btn-padding-x: var(--spacing-4);
+    --btn-padding-x: var(--spacing-5);
+  }
+
+  &:focus-within {
+    border-color: var(--primary);
+    box-shadow: $input-focus-box-shadow;
+  }
+
+  > .form-control:focus {
+    box-shadow: none;
   }
 }
 

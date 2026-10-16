@@ -8,8 +8,8 @@ Reusable form field primitives owned by the theme:
 | `ViewsTheme:Form:Input:Group` | Joined shell (prepend / plain `Form:Input` / append). Height follows the field padding |
 | `ViewsTheme:Form:Textarea` | Stacked textarea; same violation/description API as Input |
 | `ViewsTheme:Form:Select` | Select field; `layout` stacked (default) or bar. Caret is the `.form-select` background image |
-| `ViewsTheme:Form:Checkbox` | 18px checkbox row (optional title + description) |
-| `ViewsTheme:Form:Radio` | 18px radio row (same copy API as Checkbox) |
+| `ViewsTheme:Form:Checkbox` | 20px checkbox row (optional title + description) |
+| `ViewsTheme:Form:Radio` | 20px radio row (same copy API as Checkbox) |
 | `ViewsTheme:Form:Selection` | Card around Checkbox or Radio (`type` `radio` \| `checkbox`) |
 | `ViewsTheme:Form:Switch` | 32×20 switch (`form-check form-switch` + `role="switch"`) |
 | `ViewsTheme:Form:Slider` | Single- or dual-thumb range slider (native `<input type="range">`) |
@@ -70,7 +70,9 @@ Reusable form field primitives owned by the theme:
 | description | `form-text` (12px ash; danger when invalid, success when valid) | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
-Chrome for padding, type, radius, border, placeholder, disabled, label, hint, caret, and status icons is Bootstrap variables in `scss/override.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-indicator`). `scss/_form.scss` only sets host leftovers: `.form-group` row-gap, the required asterisk, `box-shadow: none` and `--form-select-bg-icon: none` on the controls, the textarea floor, the input-group shell, and the form-check float reset.
+Default control padding is 12×20 (`--spacing-3` / `--spacing-5`), type is 16px / line-height 1.5, radius is 8. `sm` stays 8×12 and 14px (review sort). `lg` is 16×20 and 16px. Focus adds an inward 0.5px stroke on the 1px border. A valid or invalid input shows a 16px status icon 20px from the trailing edge. Selects keep only the caret at that same inset.
+
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, and the form-check float reset.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 
@@ -143,7 +145,7 @@ Stacked textarea: optional label + `<textarea>` + description / feedback. Same v
 | root | `form-group d-flex flex-column` | `class="…"` |
 | label | `form-label` + inline flex, gap 4px | `label:class` |
 | required | `form-required-label` | `required:class` |
-| textarea | `form-control` (112px min height, `--spacing-4` padding; + size / `is-invalid`) | `textarea:class` |
+| textarea | `form-control` (112px min height, 16×20 padding; + size / `is-invalid`) | `textarea:class` |
 | description | `form-text` | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
@@ -322,17 +324,17 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 
 ## Form:Checkbox
 
-18px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a `--svg` mask on `.form-check-input` (a heavier check than `check-bold`), drawn on a 16px viewBox and centered in the 18px box. Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
+20px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a stroked `--svg` mask on `.form-check-input` (16 viewBox, `fill: none`, `stroke-width: 2.25`, round cap and join) with `mask-size: 100%`. Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
 
-`label` is 14px when it is the only line. When `description` is set, `label` is 16px / 600 and `description` is 14px. `tag` defaults to `label`.
+`label` and `description` are both 16px and use the body line-height. A single-line `label` is regular; when `description` is set, `label` is 600 and `description` stays regular. `tag` defaults to `label`.
 
 ## Form:Radio
 
-Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle mask on `.form-check-input`, centered in the 18px box. Unchecked fill is linen; checked fill is `--primary`. Disabled hides the dot.
+Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle mask on `.form-check-input`, centered in the 20px box. Unchecked fill is linen; checked fill is `--primary`. Disabled hides the dot.
 
 ## Form:Selection
 
-Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12px 14px. Optional `price` is trailing 16px / 600.
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `price` is trailing 16px / 600.
 
 ```twig
 <twig:ViewsTheme:Form:Selection
@@ -382,7 +384,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
 |------|---------|--------|
 | `id` | `vi-form-switch-{random}` | Label `for` target |
 | `name` | `null` | Omitted when empty |
-| `label` | `null` | Beside the track |
+| `label` | `null` | Beside the track (16px) |
 | `value` | `'1'` | Checkbox value when on |
 | `checked` | `false` | |
 | `disabled` | `false` | Use `false` not `null` in defaults |

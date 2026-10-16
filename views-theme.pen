@@ -3254,7 +3254,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Add a note for the warehouse (optional)",
-                                  "lineHeight": 1.45,
+                                  "lineHeight": 1.5,
                                   "fontFamily": "$font",
                                   "fontSize": "$font-size-md",
                                   "fontWeight": "normal"
@@ -3338,7 +3338,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Please leave it with the neighbor.",
-                                  "lineHeight": 1.45,
+                                  "lineHeight": 1.5,
                                   "fontFamily": "$font",
                                   "fontSize": "$font-size-md",
                                   "fontWeight": "normal"
@@ -3422,7 +3422,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Hi",
-                                  "lineHeight": 1.45,
+                                  "lineHeight": 1.5,
                                   "fontFamily": "$font",
                                   "fontSize": "$font-size-md",
                                   "fontWeight": "normal"
@@ -3519,7 +3519,7 @@
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
                                   "content": "Leave at the side door.",
-                                  "lineHeight": 1.45,
+                                  "lineHeight": 1.5,
                                   "fontFamily": "$font",
                                   "fontSize": "$font-size-md",
                                   "fontWeight": "normal"
@@ -4133,7 +4133,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4144,7 +4144,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Keep me signed in",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4221,7 +4221,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4232,7 +4232,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Keep me signed in",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4300,7 +4300,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4311,7 +4311,7 @@
                                       "name": "Description",
                                       "fill": "$ash",
                                       "content": "Keep me signed in",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4379,7 +4379,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4390,7 +4390,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "I agree to the terms and conditions and the privacy policy.",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4401,7 +4401,7 @@
                                       "name": "Hint",
                                       "fill": "$danger",
                                       "content": "Please accept to continue.",
-                                      "lineHeight": 1.4,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": 12,
                                       "fontWeight": "normal"
@@ -4500,7 +4500,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4511,7 +4511,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Standard delivery",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4589,7 +4589,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4600,7 +4600,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Standard delivery",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4668,7 +4668,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4679,7 +4679,7 @@
                                       "name": "Description",
                                       "fill": "$ash",
                                       "content": "Standard delivery",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4774,7 +4774,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4785,7 +4785,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Email me when it ships",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4860,7 +4860,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4871,7 +4871,7 @@
                                       "name": "Description",
                                       "fill": "$ink",
                                       "content": "Email me when it ships",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -4946,7 +4946,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -4957,7 +4957,7 @@
                                       "name": "Description",
                                       "fill": "$ash",
                                       "content": "Email me when it ships",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -5012,7 +5012,7 @@
                                       "enabled": false,
                                       "fill": "$ink",
                                       "content": "Select",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "600"
@@ -5023,7 +5023,7 @@
                                       "name": "Description",
                                       "fill": "$ash",
                                       "content": "Email me when it ships",
-                                      "lineHeight": 1.45,
+                                      "lineHeight": 1.5,
                                       "fontFamily": "$font",
                                       "fontSize": "$font-size-md",
                                       "fontWeight": "normal"
@@ -5555,7 +5555,7 @@
                           "reusable": true,
                           "width": "fill_container",
                           "fill": "$coral-pale",
-                          "cornerRadius": 10,
+                          "cornerRadius": "$border-radius-lg",
                           "stroke": "$coral",
                           "strokeWidth": 1,
                           "strokeAlignment": "inner",
@@ -5607,7 +5607,7 @@
                           "reusable": true,
                           "width": "fill_container",
                           "fill": "$white",
-                          "cornerRadius": 10,
+                          "cornerRadius": "$border-radius-lg",
                           "stroke": "$linen",
                           "strokeWidth": 1,
                           "strokeAlignment": "inner",
@@ -5680,7 +5680,7 @@
                           "reusable": true,
                           "width": "fill_container",
                           "fill": "$coral-pale",
-                          "cornerRadius": 10,
+                          "cornerRadius": "$border-radius-lg",
                           "stroke": "$coral",
                           "strokeWidth": 1,
                           "strokeAlignment": "inner",
@@ -5732,7 +5732,7 @@
                           "reusable": true,
                           "width": "fill_container",
                           "fill": "$white",
-                          "cornerRadius": 10,
+                          "cornerRadius": "$border-radius-lg",
                           "stroke": "$linen",
                           "strokeWidth": 1,
                           "strokeAlignment": "inner",
@@ -26595,6 +26595,10 @@
     "font-size-3xl": {
       "type": "number",
       "value": 36
+    },
+    "border-radius-lg": {
+      "type": "number",
+      "value": 8
     }
   },
   "fileToken": "d78127f9-f636-4b14-81d3-3075425235f3"

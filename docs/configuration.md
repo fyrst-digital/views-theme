@@ -178,7 +178,7 @@ Views fields sit on their own theme-manager tabs. Storefront defaults stay on **
 
 `custom.css` on a theme field opts that field into a `:root` custom property in the document head (`--{field-name}`). It is independent of `scss`: omitted or `false` prints nothing, and `scss: false` still only skips the compiled SCSS variable. A top-level `css` key is invalid: the theme manager only accepts known field setters, and `custom` is the extension bag (`setCustom`). `layout_head_theme_css_vars` renders `views_theme_css_vars()` and does not emit Shopware’s `scss`-based set. Every field in the table sets `custom.css: true`.
 
-Form controls use a global last-resort focus outline in `scss/_form.scss` (transparent outline by default, primary on `:focus`). Prefer component-level CSS when possible.
+Form control focus is the inset stroke from `$input-focus-box-shadow` and `$form-select-focus-box-shadow` in `scss/overrides/_form.scss`. The input-group shell paints that same inset on `:focus-within` in `scss/_form.scss`.
 
 ### Icons
 

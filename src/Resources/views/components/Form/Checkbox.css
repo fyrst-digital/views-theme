@@ -7,8 +7,8 @@
 }
 
 .vi-form-checkbox__box {
-  width: var(--vi-check-size, 18px);
-  height: var(--vi-check-size, 18px);
+  width: var(--vi-check-size, 20px);
+  height: var(--vi-check-size, 20px);
   border-radius: var(--vi-check-radius, 4px);
   background-color: var(--vi-form-line, #e5dbd0);
   box-shadow: inset 0 0 0 1px var(--vi-form-line, #e5dbd0);
@@ -30,7 +30,7 @@
 }
 
 .vi-form-checkbox .form-check-input[type="checkbox"] {
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' d='M4.25 8.5 6.75 11 11.75 5.5'/%3E%3C/svg%3E");
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4.25 8.5 6.75 11 11.75 5.5'/%3E%3C/svg%3E");
   position: absolute;
   inset: 0;
   display: block;
