@@ -12,12 +12,9 @@ Components use **[`vi_define_cva` / `vi_class`](../twig/vi-cva.md)** + attribute
 | Nested slot extras | `slot:class="…"` |
 | Composition | `{% do vi_define_cva(cva) %}` then `vi_class('root', { … })` ([vi-cva](../twig/vi-cva.md)) |
 
-Root BEM: `vi-*` prefix + utilities in slot `base`.
+Root BEM: `vi-*` prefix + Bootstrap utilities in slot `base` (`d-flex`, `gap-2`, `p-3`, …).
 
-- **Bootstrap** utilities: `d-flex`, `gap-2`, `p-3`, … (existing CVA)
-- **Tailwind** utilities: always `tw:`-prefixed (`tw:flex`, `tw:lg:gap-4`) so they never collide with Bootstrap
-
-Prefer one system per property on a node (do not mix e.g. `gap-2` and `tw:gap-4` on the same element). Global component overrides/tokens: Tailwind-built `assets/css/theme.css` (source: `app/storefront/src/css/`). See [Configuration — Tailwind CSS](../configuration.md#tailwind-css-themecss).
+Global component overrides/tokens: [`scss/_theme.scss`](../../src/Resources/app/storefront/src/scss/_theme.scss), imported last from `base.scss`. See [Configuration — Theme SCSS overrides](../configuration.md#theme-scss-overrides).
 
 Always call `vi_define_cva` **before** rendering `attributes` / `attributes.defaults()`.
 
@@ -110,14 +107,13 @@ root: { base: 'vi-line-item__unit-price d-none d-xl-block' }
 
 ### Bootstrap names only
 
-This theme’s utilities are Bootstrap (see `override.scss`). Do **not** invent Tailwind aliases in CVA.
+This theme’s utilities are Bootstrap (see `override.scss`).
 
 | Use | Not |
 |-----|-----|
 | `flex-shrink-0` | `shrink-0` |
 | `d-block` | `block` |
 | `width` / `height: var(--vi-image-size, 80px)` | `w-20` `h-20` |
-| `tw:…` only when Tailwind is required | unprefixed Tailwind |
 
 ## Length units (critical)
 
@@ -127,7 +123,7 @@ Theme-owned **component CSS** and **token fallbacks / theme assigns** use **`px`
 |----|--------|
 | `px`, `%`, `vh` / `vw`, unitless `line-height`, `calc()` of those | `rem`, `em` for sizes, gaps, radii, offsets, token fallbacks |
 
-Bootstrap **utility classes** are fine (their internal scale is Bootstrap’s). Do not author new `rem`/`em` lengths in `components/**/*.css` or when assigning `--vi-*` in theme CSS.
+Bootstrap **utility classes** are fine (their internal scale is Bootstrap’s). Do not author new `rem`/`em` lengths in `components/**/*.css` or when assigning `--vi-*` in `_theme.scss`.
 
 ```css
 /* ✅ */
@@ -141,13 +137,13 @@ max-width: var(--vi-max-w, min(100vw - 1.5rem, 22rem));
 
 ## CSS custom properties (critical)
 
-Co-located component CSS (`components/**/*.css`) and theme CSS have **different** jobs for custom properties.
+Co-located component CSS (`components/**/*.css`) and theme SCSS have **different** jobs for custom properties.
 
 | Layer | Role |
 |-------|------|
 | **Component CSS** | Structure **CVA cannot own** ([above](#cva-vs-component-css-critical)): **init** each varying prop once as `prop: var(--vi-*, fallback)`. Variants/states **assign** `--vi-*` only — never re-declare the property with a new fallback. Nest variants on the host (`&[aria-*]`, `&:last-child`, `&[data-*]`). No Bootstrap/Shopware override dumps |
 | **SCSS** (`app/storefront/src/scss/`) | Bootstrap / Shopware quirks and theme layout overrides (e.g. `_form.scss`) |
-| **Theme CSS** (`app/storefront/src/css/components.css` → `theme.css`) | **Assign** tokens to override component defaults from outside |
+| **Theme assigns** (`app/storefront/src/scss/_theme.scss`) | **Assign** tokens to override component defaults from outside |
 
 ### Init once, assign on variants
 
@@ -197,9 +193,9 @@ Defaults live only as the second argument to `var()` on the base rule. Do **not*
 
 Reference: `Dropdown.css` uses `max-width: var(--vi-max-w, min(100vw - 24px, 352px))`. Gallery host (`Gallery.css`) is the SoT for orientation + mode token assigns.
 
-### Theme CSS — assign to override
+### Theme assigns
 
-Theme (and other callers) may set tokens on a host/class so component rules pick them up:
+`_theme.scss` (and other callers) may set tokens on a host/class so component rules pick them up:
 
 ```css
 /* ✅ theme override (px) */

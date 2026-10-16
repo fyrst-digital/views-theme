@@ -145,8 +145,6 @@ bin/console theme:refresh
 bin/build-storefront.sh
 make build-storefront
 composer build:js:storefront
-npm run build:css
-npm run watch:css
 ```
 
 ## References

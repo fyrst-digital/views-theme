@@ -1,3 +1,17 @@
+// Global token assigns. Breakpoints come from $grid-breakpoints via Bootstrap mixins.
+
+@mixin vi-collapse-until {
+  @each $name, $width in $grid-breakpoints {
+    @if $width > 0 {
+      &[data-collapse-until='#{$name}'] {
+        @include media-breakpoint-up($name) {
+          @content;
+        }
+      }
+    }
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
@@ -16,7 +30,7 @@
   --btn-color: var(--white);
 }
 
-[class*="btn-outline"] {
+[class*='btn-outline'] {
   text-decoration-line: underline !important;
 }
 
@@ -59,13 +73,14 @@
 .vi-currency-action {
   --vi-max-w: min(100vw - 40px, 256px);
 }
+
 .vi-language-action__toggle,
 .vi-currency-action__toggle {
-    --btn-gap: var(--spacing-2);
-    --btn-font-weight: 500;
+  --btn-gap: var(--spacing-2);
+  --btn-font-weight: 500;
 }
 
-.vi-language-menu__option, 
+.vi-language-menu__option,
 .vi-currency-menu__option {
   --dropdown-link-active-bg: var(--light);
   --dropdown-link-hover-bg: var(--light);
@@ -76,7 +91,7 @@
 }
 
 .vi-navigation-drawer-menu {
-    --vi-menu-duration: 300ms;
+  --vi-menu-duration: 300ms;
 }
 
 .vi-cart-drawer {
@@ -86,19 +101,19 @@
 .vi-product-listing-results__grid {
   --vi-grid-columns: repeat(auto-fill, minmax(min(100%, var(--vi-product-basis, 220px)), 1fr));
 
-  @variant xxl {
+  @include media-breakpoint-up(xxl) {
     --vi-product-basis: 320px;
   }
 }
 
 .vi-product-buy-container {
-  @variant sm {
+  @include media-breakpoint-up(sm) {
     --vi-quantity-input-max-w: 200px;
   }
 }
 
 .vi-review-panel {
-  @variant lg {
+  @include media-breakpoint-up(lg) {
     --vi-grid-columns: auto minmax(0, 1fr);
     --vi-sidebar-w: 360px;
   }
@@ -106,7 +121,8 @@
 
 .vi-footer-main {
   --vi-grid-gap: var(--spacing-6);
-  @variant lg {
+
+  @include media-breakpoint-up(lg) {
     --vi-grid-gap: var(--spacing-10);
   }
 }
@@ -114,41 +130,13 @@
 .vi-footer-column__navigation {
   flex-basis: var(--vi-footer-column-basis, 100%);
 
-  @variant md {
+  @include media-breakpoint-up(md) {
     --vi-footer-column-basis: 180px;
   }
 }
 
-@custom-variant collapse-until {
-  &[data-collapse-until='sm'] {
-    @media (width >= theme(--breakpoint-sm)) {
-      @slot;
-    }
-  }
-  &[data-collapse-until='md'] {
-    @media (width >= theme(--breakpoint-md)) {
-      @slot;
-    }
-  }
-  &[data-collapse-until='lg'] {
-    @media (width >= theme(--breakpoint-lg)) {
-      @slot;
-    }
-  }
-  &[data-collapse-until='xl'] {
-    @media (width >= theme(--breakpoint-xl)) {
-      @slot;
-    }
-  }
-  &[data-collapse-until='xxl'] {
-    @media (width >= theme(--breakpoint-xxl)) {
-      @slot;
-    }
-  }
-}
-
 .vi-footer-column--collapsible {
-  @variant collapse-until {
+  @include vi-collapse-until {
     --vi-footer-column-border: 0;
     --vi-footer-column-content-h: auto;
     --vi-footer-column-overflow: visible;

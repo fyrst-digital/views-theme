@@ -38,3 +38,5 @@
     var(--focus-outline-color, var(--primary));
   outline-offset: var(--focus-outline-offset, -2px);
 }
+
+@import 'theme';
