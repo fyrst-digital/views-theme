@@ -69,6 +69,7 @@
                 disabled: disabled is same as(true) ? true : false,
                 required: isRequired ? true : false,
                 'aria-required': isRequired ? 'true' : false,
+                'aria-invalid': isInvalid ? 'true' : false,
                 'aria-describedby': ariaDescribedBy,
             }) }}
             class="{{ vi_class('textarea', { invalid: isInvalid, size: size }) }}"

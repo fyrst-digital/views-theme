@@ -1,0 +1,86 @@
+.vi-form-checkbox {
+  cursor: pointer;
+
+  &:has(:disabled) {
+    cursor: not-allowed;
+  }
+}
+
+.vi-form-checkbox__box {
+  width: var(--vi-check-size, 20px);
+  height: var(--vi-check-size, 20px);
+  border-radius: var(--vi-check-radius, 4px);
+  background-color: var(--vi-form-line, #e5dbd0);
+  box-shadow: inset 0 0 0 1px var(--vi-form-line, #e5dbd0);
+}
+
+.vi-form-checkbox:has(:checked) .vi-form-checkbox__box {
+  background-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.vi-form-checkbox:has(:disabled) .vi-form-checkbox__box {
+  background-color: var(--light);
+  box-shadow: inset 0 0 0 1.5px var(--vi-form-line, #e5dbd0);
+}
+
+.vi-form-checkbox:has(.is-invalid:not(:checked)) .vi-form-checkbox__box {
+  background-color: var(--white, #fff);
+  box-shadow: inset 0 0 0 1.5px var(--vi-form-danger, #c24e46);
+}
+
+.vi-form-checkbox .form-check-input[type="checkbox"] {
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4.25 8.5 6.75 11 11.75 5.5'/%3E%3C/svg%3E");
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+  background-color: var(--white, #fff);
+  background-image: none;
+  box-shadow: none;
+  mask-image: var(--svg);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 100%;
+  cursor: pointer;
+
+  &:checked {
+    background-color: var(--white, #fff);
+    background-image: none;
+    border-color: transparent;
+  }
+
+  &:focus,
+  &:focus-visible {
+    box-shadow: none;
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.vi-form-checkbox:has(:disabled) .form-check-input[type="checkbox"],
+.vi-form-checkbox:has(.is-invalid:not(:checked)) .form-check-input[type="checkbox"] {
+  background-color: transparent;
+}
+
+.vi-form-checkbox:has(:disabled) .vi-form-checkbox__copy {
+  color: var(--vi-form-muted, #66605d);
+}
+
+.vi-form-checkbox__hint {
+  color: var(--vi-form-danger, #c24e46);
+  font-size: var(--vi-form-hint-size, 12px);
+
+  &:empty {
+    display: none;
+  }
+}

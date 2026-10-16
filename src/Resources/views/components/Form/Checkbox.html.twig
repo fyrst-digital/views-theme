@@ -1,0 +1,97 @@
+{% props
+    id = 'vi-form-checkbox-' ~ random(),
+    name = null,
+    label = null,
+    description = null,
+    value = '1',
+    checked = false,
+    disabled = false,
+    tag = 'label',
+    validationRules = null,
+    violationPath = null,
+    error = false,
+    formViolations = __context.formViolations|default(null),
+    cva = {},
+%}
+
+{% set isInvalid = error is not empty or (
+    violationPath is not empty
+    and formViolations
+    and formViolations.getViolations(violationPath) is not empty
+) %}
+{% set feedbackId = id ~ '-feedback' %}
+{% set descriptionId = id ~ '-description' %}
+{% set isRequired = validationRules is not empty and 'required' in validationRules %}
+{% set described = description is not empty %}
+{% set describedBy = described ? descriptionId ~ (isInvalid ? ' ' ~ feedbackId : '') : (isInvalid ? feedbackId : '') %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input', 'label', 'description', 'feedback']) %}
+
+<{{ tag|raw }}
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    <span class="{{ vi_class('box') }}">
+        {% block input %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: 'checkbox',
+                    id: id,
+                    name: name is not empty ? name : false,
+                    value: value is not empty ? value : false,
+                    checked: checked is same as(true) ? true : false,
+                    disabled: disabled is same as(true) ? true : false,
+                    required: isRequired ? true : false,
+                    'aria-required': isRequired ? 'true' : false,
+                    'aria-invalid': isInvalid ? 'true' : false,
+                    'aria-describedby': describedBy is not empty ? describedBy : false,
+                }) }}
+                class="{{ vi_class('input', { invalid: isInvalid }) }}"
+            >
+        {% endblock %}
+    </span>
+
+    {% block copy %}
+        {% if label is not empty or described or isInvalid %}
+            <span class="{{ vi_class('copy') }}">
+                {% if label is not empty %}
+                    <span
+                        {{ vi_attrs('label') }}
+                        class="{{ vi_class('label', { described: described }) }}"
+                    >
+                        {{ label|raw }}
+                    </span>
+                {% endif %}
+
+                {% if described %}
+                    <span
+                        {{ vi_attrs('description').defaults({
+                            id: descriptionId,
+                        }) }}
+                        class="{{ vi_class('description') }}"
+                    >
+                        {{ description }}
+                    </span>
+                {% endif %}
+
+                {% if isInvalid %}
+                    <span
+                        {{ vi_attrs('feedback').defaults({
+                            id: feedbackId,
+                        }) }}
+                        class="{{ vi_class('feedback') }}"
+                    >
+                        {%- block feedback -%}
+                            {%- if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty -%}
+                                {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                                    formViolations: formViolations,
+                                    violationPath: violationPath,
+                                } %}
+                            {%- endif -%}
+                        {%- endblock -%}
+                    </span>
+                {% endif %}
+            </span>
+        {% endif %}
+    {% endblock %}
+</{{ tag|raw }}>

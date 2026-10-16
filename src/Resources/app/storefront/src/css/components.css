@@ -32,18 +32,6 @@
   }
 }
 
-.btn-sm {
-  --btn-padding-x: var(--spacing-2);
-  --btn-padding-y: var(--spacing-1);
-  --btn-font-size: 14px;
-}
-
-.btn-lg {
-  --btn-padding-x: var(--spacing-4);
-  --btn-padding-y: var(--spacing-3);
-  --btn-font-size: 20px;
-}
-
 .header-main {
   --vi-logo-w: 80px;
 }

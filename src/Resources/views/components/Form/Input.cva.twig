@@ -1,6 +1,6 @@
 {
-    root: { base: 'form-group' },
-    label: { base: 'form-label' },
+    root: { base: 'form-group d-flex flex-column' },
+    label: { base: 'form-label d-inline-flex align-items-center gap-1 mb-0' },
     required: { base: 'form-required-label' },
     input: {
         base: 'form-control',
@@ -8,13 +8,16 @@
             invalid: {
                 true: 'is-invalid',
             },
+            valid: {
+                true: 'is-valid',
+            },
             size: {
                 sm: 'form-control-sm',
-                md: 'py-2 px-4',
+                md: '',
                 lg: 'form-control-lg',
             },
         },
     },
-    description: { base: 'form-text d-block mt-1' },
+    description: { base: 'form-text d-block' },
     feedback: { base: 'form-field-feedback' },
 }

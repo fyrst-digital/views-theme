@@ -1,0 +1,20 @@
+// Horizontal padding is 20px (--spacing-5), not var(--spacing-5).
+// Bootstrap multiplies $btn-padding-x* by .75 for .dropdown-toggle-split.
+$btn-padding-y: var(--spacing-3);
+$btn-padding-x: 20px;
+$btn-font-size: var(--font-size-5);
+$btn-line-height: 1.5;
+$btn-border-radius: var(--border-radius-lg);
+$btn-disabled-opacity: .5;
+
+$btn-padding-y-sm: var(--spacing-2);
+$btn-padding-x-sm: 20px;
+$btn-font-size-sm: var(--font-size-6);
+$btn-line-height-sm: 1.25;
+$btn-border-radius-sm: var(--border-radius-lg);
+
+$btn-padding-y-lg: var(--spacing-3);
+$btn-padding-x-lg: 20px;
+$btn-font-size-lg: var(--font-size-4);
+$btn-line-height-lg: 1.5;
+$btn-border-radius-lg: var(--border-radius-lg);

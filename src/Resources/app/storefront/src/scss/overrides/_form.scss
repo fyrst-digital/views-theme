@@ -1,0 +1,64 @@
+$input-padding-y: var(--spacing-3);
+$input-padding-x: var(--spacing-5);
+$input-padding-y-sm: var(--spacing-2);
+$input-padding-x-sm: var(--spacing-3);
+$input-padding-y-lg: var(--spacing-4);
+$input-padding-x-lg: var(--spacing-5);
+$input-font-size: var(--font-size-5);
+$input-font-size-sm: var(--font-size-6);
+$input-font-size-lg: var(--font-size-5);
+$input-color: var(--body-color);
+$input-bg: var(--white);
+$input-border-color: var(--border-color);
+$input-border-radius: var(--border-radius-3);
+$input-border-radius-sm: var(--border-radius-2);
+$input-border-radius-lg: var(--border-radius-4);
+$input-box-shadow: none;
+$input-focus-box-shadow: var(--control-focus-shadow, 0 0 0 4px var(--control-focus-shadow-color, rgba(from var(--primary) r g b / 30%)));
+$input-focus-border-color: var(--primary);
+$input-focus-bg: var(--white);
+$input-placeholder-color: $muted;
+$input-disabled-color: $muted;
+$input-disabled-bg: var(--light);
+$input-disabled-border-color: var(--border-color);
+
+$input-height-inner: calc(var(--spacing-5) + 8px + var(--icon-size-2));
+$input-height-inner-half: var(--icon-size-2);
+$input-height-inner-quarter: var(--spacing-5);
+$input-height: auto;
+$input-height-sm: auto;
+$input-height-lg: auto;
+
+$form-floating-padding-x: 0;
+$form-range-thumb-focus-box-shadow: none;
+
+$form-label-margin-bottom: 0;
+$form-label-font-size: var(--font-size-6);
+$form-label-font-weight: 600;
+$form-label-color: var(--body-color);
+
+$form-text-margin-top: 0;
+$form-text-font-size: var(--icon-size-1);
+$form-text-color: $muted;
+
+$form-feedback-margin-top: 0;
+$form-feedback-font-size: var(--icon-size-1);
+$form-feedback-invalid-color: var(--danger);
+$form-feedback-valid-color: var(--success);
+$form-feedback-icon-invalid: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'><path fill='var(--danger)' d='M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84a84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16a16 16 0 0 1 16 16'/></svg>");
+$form-feedback-icon-valid: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'><path fill='#{$success}' d='M176.49 95.51a12 12 0 0 1 0 17l-56 56a12 12 0 0 1-17 0l-24-24a12 12 0 1 1 17-17L112 143l47.51-47.52a12 12 0 0 1 16.98.03M236 128A108 108 0 1 1 128 20a108.12 108.12 0 0 1 108 108m-24 0a84 84 0 1 0-84 84a84.09 84.09 0 0 0 84-84'/></svg>");
+
+$form-select-indicator: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'%3E%3Cpath fill='%2366605d' d='m216.49 104.49l-80 80a12 12 0 0 1-17 0l-80-80a12 12 0 0 1 17-17L128 159l71.51-71.52a12 12 0 0 1 17 17Z'/%3E%3C/svg%3E");
+$form-select-bg-size: var(--icon-size-2) var(--icon-size-2);
+$form-select-indicator-padding: calc(var(--spacing-5) + 8px + var(--icon-size-2));
+$form-select-feedback-icon-padding-end: $form-select-indicator-padding;
+$form-select-box-shadow: none;
+$form-select-focus-box-shadow: $input-focus-box-shadow;
+$form-select-disabled-color: $muted;
+
+$input-group-addon-color: $muted;
+$input-group-addon-bg: transparent;
+
+$form-check-min-height: 0;
+$form-check-padding-start: 0;
+$form-switch-padding-start: 0;

@@ -1,0 +1,21 @@
+.vi-form-selection {
+  padding: var(--vi-selection-py, var(--spacing-3)) var(--vi-selection-px, var(--spacing-4));
+  border: 1px solid var(--vi-selection-line, var(--border-color));
+  border-radius: var(--vi-selection-radius, var(--border-radius-3));
+  background-color: var(--vi-selection-bg, var(--white));
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+  &:hover {
+    --vi-selection-line: var(--vi-selection-hover-line, var(--primary));
+  }
+
+  &:has(input:checked) {
+    --vi-selection-line: var(--vi-selection-active-line, var(--primary));
+    --vi-selection-bg: var(--vi-selection-active-bg, var(--primary-pale));
+  }
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+}
