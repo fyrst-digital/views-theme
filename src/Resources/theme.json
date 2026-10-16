@@ -67,6 +67,14 @@
         "block": "default",
         "order": 100
       },
+      "muted": {
+        "type": "color",
+        "value": "#66605D",
+        "editable": true,
+        "tab": "colors",
+        "block": "default",
+        "order": 100
+      },
       "success": {
         "type": "color",
         "value": "#4F8F64",

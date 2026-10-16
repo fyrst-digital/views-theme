@@ -8,25 +8,28 @@
             },
         },
     },
-    label: { 
-        base: 'form-label',
+    label: {
+        base: 'form-label d-inline-flex align-items-center gap-1 mb-0',
         variants: {
             size: {
                 sm: 'fs-6',
             },
             layout: {
                 bar: 'm-0',
-            }
-        } 
+            },
+        },
     },
-    required: { 
-        base: 'form-required-label' 
+    required: {
+        base: 'form-required-label',
     },
     select: {
-        base: 'form-select cursor-pointer',
+        base: 'form-select appearance-none cursor-pointer',
         variants: {
             invalid: {
                 true: 'is-invalid',
+            },
+            placeholder: {
+                true: 'is-placeholder',
             },
             size: {
                 sm: 'form-select-sm',
@@ -34,14 +37,15 @@
                 lg: 'form-select-lg',
             },
             layout: {
+                stacked: '',
                 bar: 'col',
-            }
+            },
         },
     },
-    description: { 
-        base: 'form-text' 
+    description: {
+        base: 'form-text',
     },
-    feedback: { 
-        base: 'form-field-feedback' 
+    feedback: {
+        base: 'form-field-feedback',
     },
 }

@@ -1,0 +1,398 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_esi_header %}{% endblock %}
+
+{% block base_esi_footer %}{% endblock %}
+
+{% block base_content %}
+    {% set colorOptions = [
+        { value: '', label: 'Choose', disabled: true },
+        { value: 'red', label: 'Red' },
+        { value: 'blue', label: 'Blue' },
+        { value: 'green', label: 'Green' },
+    ] %}
+    {% set sortOptions = [
+        { value: 'name', label: 'Name' },
+        { value: 'price', label: 'Price' },
+    ] %}
+
+    <div class="container py-4">
+        <h1 class="mb-4">Forms</h1>
+
+        <twig:ViewsTheme:Form:Handler
+            method="get"
+            action="{{ path('frontend.views-theme.components.forms') }}"
+        >
+            <twig:block name="content">
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Input</h2>
+
+                    <twig:ViewsTheme:Form:Input
+                        id="showcase-text"
+                        name="text"
+                        label="Text"
+                        placeholder="Plain text"
+                        description="Optional help under the field."
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        type="email"
+                        id="showcase-email"
+                        name="email"
+                        label="Email"
+                        autocomplete="email"
+                        validationRules="required,email"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        type="password"
+                        id="showcase-password"
+                        name="password"
+                        label="Password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        validationRules="required"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        type="password"
+                        id="showcase-password-confirm"
+                        name="passwordConfirmation"
+                        label="Confirm password"
+                        autocomplete="new-password"
+                        validationRules="required"
+                        confirmFor="showcase-password"
+                        confirmMessage="Passwords must match."
+                        class="mb-3"
+                    />
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-4">
+                            <twig:ViewsTheme:Form:Input
+                                id="showcase-size-sm"
+                                name="sizeSm"
+                                label="Small"
+                                size="sm"
+                            />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <twig:ViewsTheme:Form:Input
+                                id="showcase-size-md"
+                                name="sizeMd"
+                                label="Medium"
+                                size="md"
+                            />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <twig:ViewsTheme:Form:Input
+                                id="showcase-size-lg"
+                                name="sizeLg"
+                                label="Large"
+                                size="lg"
+                            />
+                        </div>
+                    </div>
+
+                    <twig:ViewsTheme:Form:Input
+                        id="showcase-disabled"
+                        name="disabled"
+                        label="Disabled"
+                        value="Cannot edit"
+                        :disabled="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        id="showcase-invalid"
+                        name="invalid"
+                        label="Invalid"
+                        value="Not accepted"
+                        description="Enter a valid email address."
+                        :error="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Input
+                        id="showcase-success"
+                        name="success"
+                        label="Success"
+                        value="lena@views.studio"
+                        description="Email looks good."
+                        :success="true"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Input group</h2>
+
+                    <twig:ViewsTheme:Form:Input:Group
+                        id="showcase-group"
+                        name="code"
+                        label="Code"
+                        placeholder="Enter a code"
+                    >
+                        <twig:block name="prepend">
+                            <span class="input-group-text">@</span>
+                        </twig:block>
+                        <twig:block name="append">
+                            <twig:ViewsTheme:Button type="button" color="primary" label="Apply" />
+                        </twig:block>
+                    </twig:ViewsTheme:Form:Input:Group>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Textarea</h2>
+
+                    <twig:ViewsTheme:Form:Textarea
+                        id="showcase-textarea"
+                        name="message"
+                        label="Message"
+                        placeholder="Write something"
+                        :rows="4"
+                        description="Same violation API as Input."
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Select</h2>
+
+                    <twig:ViewsTheme:Form:Select
+                        id="showcase-select"
+                        name="color"
+                        label="Color"
+                        value="blue"
+                        class="mb-3"
+                        :options="colorOptions"
+                    />
+
+                    <twig:ViewsTheme:Form:Select
+                        layout="bar"
+                        id="showcase-select-bar"
+                        name="sort"
+                        label="Sort"
+                        value="name"
+                        :options="sortOptions"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Checkbox</h2>
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox"
+                        name="remember"
+                        label="Keep me signed in"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-checked"
+                        name="rememberChecked"
+                        label="Keep me signed in"
+                        :checked="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-disabled"
+                        name="rememberDisabled"
+                        label="Keep me signed in"
+                        :disabled="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Checkbox
+                        id="showcase-checkbox-error"
+                        name="terms"
+                        description="I agree to the terms and conditions and the privacy policy."
+                        :error="true"
+                    >
+                        <twig:block name="feedback">Please accept to continue.</twig:block>
+                    </twig:ViewsTheme:Form:Checkbox>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Radio</h2>
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio"
+                        name="delivery"
+                        value="standard"
+                        label="Standard delivery"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio-selected"
+                        name="delivery"
+                        value="express"
+                        label="Express delivery"
+                        :checked="true"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Radio
+                        id="showcase-radio-disabled"
+                        name="deliveryDisabled"
+                        value="pickup"
+                        label="Pickup"
+                        :disabled="true"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Selection</h2>
+
+                    <div class="d-flex flex-column gap-2 mb-4">
+                        <twig:ViewsTheme:Form:Selection
+                            type="radio"
+                            id="showcase-selection-radio-default"
+                            name="shipping"
+                            value="standard"
+                            label="Default"
+                            description="Supporting detail description with a long text which goes to a second line"
+                            price="€0.00"
+                        />
+                        <twig:ViewsTheme:Form:Selection
+                            type="radio"
+                            id="showcase-selection-radio-selected"
+                            name="shipping"
+                            value="express"
+                            label="Select"
+                            description="Supporting Detail"
+                            price="€0.00"
+                            :checked="true"
+                        />
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <twig:ViewsTheme:Form:Selection
+                            type="checkbox"
+                            id="showcase-selection-checkbox"
+                            name="gift"
+                            value="1"
+                            label="Default"
+                            description="Supporting detail description with a long text which goes to a second line"
+                            price="€0.00"
+                            class="mb-2"
+                        />
+                        <twig:ViewsTheme:Form:Selection
+                            type="checkbox"
+                            id="showcase-selection-checkbox-selected"
+                            name="insurance"
+                            value="1"
+                            label="Select"
+                            description="Supporting Detail"
+                            price="€0.00"
+                            :checked="true"
+                        />
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Switch</h2>
+
+                    <twig:ViewsTheme:Form:Switch
+                        id="showcase-switch"
+                        name="newsletter"
+                        label="Subscribe"
+                        value="1"
+                        class="mb-3"
+                    />
+
+                    <twig:ViewsTheme:Form:Switch
+                        id="showcase-switch-reverse"
+                        name="shippingFree"
+                        label="Free shipping"
+                        value="1"
+                        :reverse="true"
+                        class="d-inline-flex align-items-center gap-2 m-0 p-0"
+                        input:class="flex-shrink-0"
+                        label:class="m-0"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Slider</h2>
+
+                    <p class="form-label mb-2">Single</p>
+                    <twig:ViewsTheme:Form:Slider
+                        mode="single"
+                        id="showcase-slider"
+                        name="opacity"
+                        :min="0"
+                        :max="100"
+                        :value="40"
+                        ariaLabel="Opacity"
+                        class="mb-4"
+                    />
+
+                    <p class="form-label mb-2">Range</p>
+                    <twig:ViewsTheme:Form:Slider
+                        mode="range"
+                        id="showcase-slider-range"
+                        :min="0"
+                        :max="1200"
+                        :step="1"
+                        :start="100"
+                        :end="800"
+                        minName="priceMin"
+                        maxName="priceMax"
+                        ariaLabelMin="Price min"
+                        ariaLabelMax="Price max"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Birthday</h2>
+
+                    <twig:ViewsTheme:Form:Birthday
+                        id="showcase-birthday"
+                        label="Birthday"
+                    />
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Toggle</h2>
+
+                    <twig:ViewsTheme:Form:Toggle id="showcase-toggle" value="1">
+                        <twig:block name="control">
+                            <twig:ViewsTheme:Form:Switch
+                                id="showcase-toggle-switch"
+                                name="reveal"
+                                value="1"
+                                label="Show note"
+                            />
+                        </twig:block>
+                        <twig:block name="content">
+                            <twig:ViewsTheme:Form:Textarea
+                                id="showcase-note"
+                                name="note"
+                                label="Note"
+                                validationRules="required"
+                                class="mt-3"
+                            />
+                        </twig:block>
+                    </twig:ViewsTheme:Form:Toggle>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="h4 mb-3">Quantity</h2>
+
+                    <twig:ViewsTheme:QuantityInput
+                        inputName="quantity"
+                        :quantity="1"
+                        :minQuantity="1"
+                        :maxQuantity="10"
+                    />
+                </section>
+
+                <twig:ViewsTheme:Button type="submit" label="Submit" />
+                <twig:ViewsTheme:Button type="submit" label="Submit" icon="check" />
+            </twig:block>
+        </twig:ViewsTheme:Form:Handler>
+    </div>
+{% endblock %}

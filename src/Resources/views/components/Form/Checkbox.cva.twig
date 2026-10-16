@@ -1,0 +1,26 @@
+{
+    root: {
+        base: 'vi-form-checkbox d-inline-flex align-items-center gap-3',
+    },
+    box: { base: 'vi-form-checkbox__box position-relative flex-shrink-0' },
+    input: {
+        base: 'form-check-input vi-form-checkbox__input appearance-none m-0',
+        variants: {
+            invalid: {
+                true: 'is-invalid',
+            },
+        },
+    },
+    copy: { base: 'vi-form-checkbox__copy d-flex flex-column min-w-0' },
+    label: {
+        base: 'd-block',
+        variants: {
+            described: {
+                true: 'fs-5 fw-semibold',
+                false: 'fs-5 fw-normal',
+            },
+        },
+    },
+    description: { base: 'vi-form-checkbox__description d-block fs-5' },
+    feedback: { base: 'vi-form-checkbox__hint' },
+}

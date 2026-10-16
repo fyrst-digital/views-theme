@@ -1,6 +1,6 @@
 {
     root: {
-        base: 'btn',
+        base: 'btn align-items-center d-inline-flex',
         variants: {
             color: {
                 none: '',
@@ -16,8 +16,8 @@
             },
             size: {
                 sm: 'btn-sm gap-2',
-                md: 'btn-md gap-4',
-                lg: 'btn-lg gap-4',
+                md: 'btn-md gap-2',
+                lg: 'btn-lg gap-2',
             },
             justify: {
                 start: 'justify-content-start',
@@ -42,16 +42,9 @@
         }, {
             square: [true],
             size: ['lg'],
-            class: 'p-4',
+            class: 'p-3',
         }],
     },
-    icon: {
-        base: '',
-        variants: {
-            size: {
-                sm: 'icon-size-2',
-            },
-        },
-    },
+    icon: { base: '' },
     label: { base: '' },
 }

@@ -16,6 +16,8 @@
     confirmMessage = null,
     violationPath = null,
     error = false,
+    success = false,
+    plain = false,
     formViolations = __context.formViolations|default(null),
     cva = {},
 %}
@@ -25,6 +27,7 @@
     and formViolations
     and formViolations.getViolations(violationPath) is not empty
 ) %}
+{% set isValid = success is same as(true) and not isInvalid %}
 {% set feedbackId = id ~ '-feedback' %}
 {% set descriptionId = id ~ '-description' %}
 {% set ariaDescribedBy = description is not empty ? descriptionId ~ ' ' ~ feedbackId : feedbackId %}
@@ -33,84 +36,108 @@
 
 {% do vi_define_attrs(['label', 'required', 'input', 'description', 'feedback']) %}
 
-<div
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
->
-    {% block label %}
-        {% if label %}
-            <label
-                {{ vi_attrs('label').defaults({
-                    for: id,
+{% if plain %}
+    <input
+        {{ vi_attrs('input').defaults({
+            type: type,
+            id: id,
+            name: name,
+            value: value is not empty ? value : false,
+            placeholder: placeholder is not empty ? placeholder : false,
+            autocomplete: autocomplete is not empty ? autocomplete : false,
+            minlength: minlength is not empty ? minlength : false,
+            maxlength: maxlength is not empty ? maxlength : false,
+            disabled: disabled is same as(true) ? true : false,
+            required: isRequired ? true : false,
+            'data-confirm-for': confirmFor is not empty ? confirmFor : false,
+            'data-confirm-message': confirmMessage is not empty ? confirmMessage : false,
+            'aria-required': isRequired ? 'true' : false,
+            'aria-invalid': isInvalid ? 'true' : false,
+            'aria-describedby': ariaDescribedBy,
+        }) }}
+        class="{{ vi_class('input', { invalid: isInvalid, valid: isValid, size: size }) }}"
+    >
+{% else %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block label %}
+            {% if label %}
+                <label
+                    {{ vi_attrs('label').defaults({
+                        for: id,
+                    }) }}
+                    class="{{ vi_class('label') }}"
+                >
+                    {{ label|raw }}
+
+                    {% if isRequired %}
+                        <span
+                            {{ vi_attrs('required').defaults({
+                                'aria-hidden': 'true',
+                            }) }}
+                            class="{{ vi_class('required') }}"
+                        >
+                            {{ 'general.required'|trans|sw_sanitize }}
+                        </span>
+                    {% endif %}
+                </label>
+            {% endif %}
+        {% endblock %}
+
+        {% block input %}
+            <input
+                {{ vi_attrs('input').defaults({
+                    type: type,
+                    id: id,
+                    name: name,
+                    value: value is not empty ? value : false,
+                    placeholder: placeholder is not empty ? placeholder : false,
+                    autocomplete: autocomplete is not empty ? autocomplete : false,
+                    minlength: minlength is not empty ? minlength : false,
+                    maxlength: maxlength is not empty ? maxlength : false,
+                    disabled: disabled is same as(true) ? true : false,
+                    required: isRequired ? true : false,
+                    'data-confirm-for': confirmFor is not empty ? confirmFor : false,
+                    'data-confirm-message': confirmMessage is not empty ? confirmMessage : false,
+                    'aria-required': isRequired ? 'true' : false,
+                    'aria-invalid': isInvalid ? 'true' : false,
+                    'aria-describedby': ariaDescribedBy,
                 }) }}
-                class="{{ vi_class('label') }}"
+                class="{{ vi_class('input', { invalid: isInvalid, valid: isValid, size: size }) }}"
             >
-                {{ label|raw }}
+        {% endblock %}
 
-                {% if isRequired %}
-                    <span
-                        {{ vi_attrs('required').defaults({
-                            'aria-hidden': 'true',
-                        }) }}
-                        class="{{ vi_class('required') }}"
-                    >
-                        {{ 'general.required'|trans|sw_sanitize }}
-                    </span>
-                {% endif %}
-            </label>
-        {% endif %}
-    {% endblock %}
+        {% block description %}
+            {% if description is not empty %}
+                <small
+                    {{ vi_attrs('description').defaults({
+                        id: descriptionId,
+                    }) }}
+                    class="{{ vi_class('description') }}"
+                >
+                    {{ description }}
+                </small>
+            {% endif %}
+        {% endblock %}
 
-    {% block input %}
-        <input
-            {{ vi_attrs('input').defaults({
-                type: type,
-                id: id,
-                name: name,
-                value: value is not empty ? value : false,
-                placeholder: placeholder is not empty ? placeholder : false,
-                autocomplete: autocomplete is not empty ? autocomplete : false,
-                minlength: minlength is not empty ? minlength : false,
-                maxlength: maxlength is not empty ? maxlength : false,
-                disabled: disabled is same as(true) ? true : false,
-                required: isRequired ? true : false,
-                'data-confirm-for': confirmFor is not empty ? confirmFor : false,
-                'data-confirm-message': confirmMessage is not empty ? confirmMessage : false,
-                'aria-required': isRequired ? 'true' : false,
-                'aria-describedby': ariaDescribedBy,
-            }) }}
-            class="{{ vi_class('input', { invalid: isInvalid, size: size }) }}"
-        >
-    {% endblock %}
-
-    {% block description %}
-        {% if description is not empty %}
-            <small
-                {{ vi_attrs('description').defaults({
-                    id: descriptionId,
+        {% block feedback %}
+            <div
+                {{ vi_attrs('feedback').defaults({
+                    id: feedbackId,
                 }) }}
-                class="{{ vi_class('description') }}"
+                class="{{ vi_class('feedback') }}"
             >
-                {{ description }}
-            </small>
-        {% endif %}
-    {% endblock %}
-
-    {% block feedback %}
-        <div
-            {{ vi_attrs('feedback').defaults({
-                id: feedbackId,
-            }) }}
-            class="{{ vi_class('feedback') }}"
-        >
-            {% block feedback_violations %}
-                {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}
-                    {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
-                        formViolations: formViolations,
-                        violationPath: violationPath,
-                    } %}
-                {% endif %}
-            {% endblock %}
-        </div>
-    {% endblock %}
-</div>
+                {% block feedback_violations %}
+                    {% if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty %}
+                        {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                            formViolations: formViolations,
+                            violationPath: violationPath,
+                        } %}
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endif %}
