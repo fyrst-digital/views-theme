@@ -1,63 +1,73 @@
-/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */
-@layer theme {
-  :root, :host {
-    --tw-font-sans: "Figtree", sans-serif;
-    --tw-spacing: 4px;
-    --tw-breakpoint-sm: 520px;
-    --tw-breakpoint-md: 768px;
-    --tw-breakpoint-lg: 1024px;
-    --tw-breakpoint-xl: 1260px;
-    --tw-breakpoint-xxl: 1600px;
-    --tw-color-brand-primary: var(--sw-color-brand-primary);
-    --tw-color-brand-secondary: var(--sw-color-brand-secondary);
-    --tw-color-brand-light: var(--sw-color-brand-light);
-    --tw-color-brand-dark: var(--sw-color-brand-dark);
+// Global token assigns. Breakpoints come from $grid-breakpoints via Bootstrap mixins.
+
+@mixin vi-collapse-until {
+  @each $name, $width in $grid-breakpoints {
+    @if $width > 0 {
+      &[data-collapse-until='#{$name}'] {
+        @include media-breakpoint-up($name) {
+          @content;
+        }
+      }
+    }
   }
 }
+
 * {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
 }
+
 .btn {
   --btn-disabled-border-color: var(--border-color);
   --btn-disabled-bg: var(--light);
 }
+
 .btn-primary {
   --btn-color: var(--body-color);
 }
+
 .btn-secondary {
   --btn-color: var(--white);
 }
-[class*="btn-outline"] {
+
+[class*='btn-outline'] {
   text-decoration-line: underline !important;
 }
+
 .btn-outline-primary {
   --btn-color: var(--body-color);
 }
+
 .btn-link {
   --btn-font-weight: 500;
+
   &:hover {
     --btn-decoration-color-opacity: 50%;
   }
 }
+
 .btn-sm {
   --btn-padding-x: var(--spacing-2);
   --btn-padding-y: var(--spacing-1);
   --btn-font-size: 14px;
 }
+
 .btn-lg {
   --btn-padding-x: var(--spacing-4);
   --btn-padding-y: var(--spacing-3);
   --btn-font-size: 20px;
 }
+
 .header-main {
   --vi-logo-w: 80px;
 }
+
 .header-action {
   --btn-border-radius: var(--border-radius-pill);
   --btn-hover-bg: var(--sw-color-brand-light);
   --btn-active-bg: var(--btn-hover-bg);
   --btn-active-border-color: transparent;
+
   .badge {
     --badge-position: absolute;
     --badge-padding-x: 4px;
@@ -66,92 +76,81 @@
     --badge-min-w: 20px;
   }
 }
+
 .vi-account__dropdown {
   --vi-max-w: min(100vw - 40px, 280px);
 }
-.vi-language-action, .vi-currency-action {
+
+.vi-language-action,
+.vi-currency-action {
   --vi-max-w: min(100vw - 40px, 256px);
 }
-.vi-language-action__toggle, .vi-currency-action__toggle {
+
+.vi-language-action__toggle,
+.vi-currency-action__toggle {
   --btn-gap: var(--spacing-2);
   --btn-font-weight: 500;
 }
-.vi-language-menu__option, .vi-currency-menu__option {
+
+.vi-language-menu__option,
+.vi-currency-menu__option {
   --dropdown-link-active-bg: var(--light);
   --dropdown-link-hover-bg: var(--light);
 }
+
 .vi-account-actions__action {
   --btn-hover-bg: var(--light);
 }
+
 .vi-navigation-drawer-menu {
   --vi-menu-duration: 300ms;
 }
+
 .vi-cart-drawer {
   --vi-drawer-width: min(420px, 100vw);
 }
+
 .vi-product-listing-results__grid {
   --vi-grid-columns: repeat(auto-fill, minmax(min(100%, var(--vi-product-basis, 220px)), 1fr));
-  @media (width >= 1600px) {
+
+  @include media-breakpoint-up(xxl) {
     --vi-product-basis: 320px;
   }
 }
+
 .vi-product-buy-container {
-  @media (width >= 520px) {
+  @include media-breakpoint-up(sm) {
     --vi-quantity-input-max-w: 200px;
   }
 }
+
 .vi-review-panel {
-  @media (width >= 1024px) {
+  @include media-breakpoint-up(lg) {
     --vi-grid-columns: auto minmax(0, 1fr);
     --vi-sidebar-w: 360px;
   }
 }
+
 .vi-footer-main {
   --vi-grid-gap: var(--spacing-6);
-  @media (width >= 1024px) {
+
+  @include media-breakpoint-up(lg) {
     --vi-grid-gap: var(--spacing-10);
   }
 }
+
 .vi-footer-column__navigation {
   flex-basis: var(--vi-footer-column-basis, 100%);
-  @media (width >= 768px) {
+
+  @include media-breakpoint-up(md) {
     --vi-footer-column-basis: 180px;
   }
 }
+
 .vi-footer-column--collapsible {
-  &[data-collapse-until='sm'] {
-    @media (width >= 520px) {
-      --vi-footer-column-border: 0;
-      --vi-footer-column-content-h: auto;
-      --vi-footer-column-overflow: visible;
-    }
-  }
-  &[data-collapse-until='md'] {
-    @media (width >= 768px) {
-      --vi-footer-column-border: 0;
-      --vi-footer-column-content-h: auto;
-      --vi-footer-column-overflow: visible;
-    }
-  }
-  &[data-collapse-until='lg'] {
-    @media (width >= 1024px) {
-      --vi-footer-column-border: 0;
-      --vi-footer-column-content-h: auto;
-      --vi-footer-column-overflow: visible;
-    }
-  }
-  &[data-collapse-until='xl'] {
-    @media (width >= 1260px) {
-      --vi-footer-column-border: 0;
-      --vi-footer-column-content-h: auto;
-      --vi-footer-column-overflow: visible;
-    }
-  }
-  &[data-collapse-until='xxl'] {
-    @media (width >= 1600px) {
-      --vi-footer-column-border: 0;
-      --vi-footer-column-content-h: auto;
-      --vi-footer-column-overflow: visible;
-    }
+  @include vi-collapse-until {
+    --vi-footer-column-border: 0;
+    --vi-footer-column-content-h: auto;
+    --vi-footer-column-overflow: visible;
   }
 }

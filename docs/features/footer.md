@@ -98,7 +98,7 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `@variant collapse-until` in `components.css`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `vi-collapse-until` in `scss/_theme.scss`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
 
 Main / Minimal / Bottom / Column:Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
 
@@ -111,7 +111,7 @@ Main / Minimal / Bottom / Column:Logos / Column:Hotline have **no** `data-compon
 
 ## Files
 
-`components/Page/Footer/{Main,Minimal,Column,Bottom,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation,Logos}.*` · `app/storefront/src/css/components.css` (`@custom-variant collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
+`components/Page/Footer/{Main,Minimal,Column,Bottom,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation,Logos}.*` · `app/storefront/src/scss/_theme.scss` (`vi-collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
 
 ## Related
 

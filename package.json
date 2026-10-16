@@ -5,8 +5,6 @@
   "scripts": {
     "build:icons": "node build.icons.mts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/css/main.css -o ./src/Resources/app/storefront/src/assets/css/theme.css",
-    "watch:css": "npx @tailwindcss/cli -i ./src/Resources/app/storefront/src/css/main.css -o ./src/Resources/app/storefront/src/assets/css/theme.css --watch",
     "format": "prettier --write \"src/**/*.{js,ts,html,css,scss,json,md,twig}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,html,css,scss,json,md,twig}\""
   },
@@ -22,9 +20,7 @@
   },
   "homepage": "https://github.com/fyrst-digital/views-theme#readme",
   "dependencies": {
-    "@iconify/utils": "^3.1.4",
-    "@tailwindcss/cli": "^4.2.4",
-    "tailwindcss": "^4.2.4"
+    "@iconify/utils": "^3.1.4"
   },
   "devDependencies": {
     "@destination/prettier-plugin-twig": "^2.0.0",

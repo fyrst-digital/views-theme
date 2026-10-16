@@ -24,7 +24,7 @@ Agents must **never** run asset, theme, or JS compile/watch commands. The human 
 - `bin/console theme:compile` / `theme:refresh` (when used as a rebuild)
 - `bin/build-storefront.sh`, `make build-storefront`, `bin/build-js.sh`
 - `composer build:js:storefront` / any `composer build:*` storefront asset target
-- `npm run build`, `npm run build:css`, `npm run watch`, `npm run watch:css` (and equivalents)
+- `npm run build`, `npm run watch` (and equivalents)
 - Any other storefront/theme asset pipeline that compiles or watches CSS/JS
 
 ### Allowed CLI (examples)

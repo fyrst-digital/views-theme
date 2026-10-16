@@ -34,11 +34,6 @@
           href="{{ themeAssetCssBase ? themeAssetCssBase ~ '/icons/' ~ themeParameters.icons.pack ~ '.css' : asset('assets/css/icons/' ~ themeParameters.icons.pack ~ '.css', 'theme') }}">
       {% endif %}
     {% endblock %}
-    {% block views_theme_theme_stylesheet %}
-      <link
-        rel="stylesheet"
-        href="{{ themeAssetCssBase ? themeAssetCssBase ~ '/theme.css' : asset('assets/css/theme.css', 'theme') }}">
-    {% endblock %}
   {% endblock %}
 {% endblock %}
 
