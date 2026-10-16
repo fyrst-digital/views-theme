@@ -13,110 +13,11 @@
       "layout": "vertical",
       "children": [
         {
-          "type": "frame",
-          "id": "dq9ia",
+          "id": "ts578",
+          "type": "ref",
+          "ref": "dq9ia",
           "name": "Header",
-          "width": "fill_container",
-          "height": 76,
-          "fill": "$white",
-          "stroke": "$linen",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "strokeAlignment": "inner",
-          "padding": [
-            0,
-            160
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "lYlTe",
-              "name": "Brand",
-              "gap": 10,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "rectangle",
-                  "cornerRadius": 2,
-                  "id": "XHJpY",
-                  "name": "Mark",
-                  "fill": "$coral",
-                  "width": 10,
-                  "height": 10
-                },
-                {
-                  "type": "text",
-                  "id": "Nvpbz",
-                  "name": "Wordmark",
-                  "fill": "$ink",
-                  "content": "views",
-                  "fontFamily": "$font",
-                  "fontSize": 22,
-                  "fontWeight": "600",
-                  "letterSpacing": -0.4
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "ebKRM",
-              "name": "Header Actions",
-              "gap": 28,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "q6aMT",
-                  "name": "Support",
-                  "fill": "$ash",
-                  "content": "Mon–Fri 9–18   ·   +49 30 1208 4410",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "u142r",
-                  "name": "Back Button",
-                  "cornerRadius": 6,
-                  "stroke": "$ink",
-                  "strokeWidth": 1,
-                  "strokeAlignment": "inner",
-                  "gap": 8,
-                  "padding": [
-                    10,
-                    14
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "Q02lF",
-                      "name": "Back Icon",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "arrow-left",
-                      "library": "lucide",
-                      "fill": "$ink"
-                    },
-                    {
-                      "type": "text",
-                      "id": "tRdkI",
-                      "name": "Back Label",
-                      "fill": "$ink",
-                      "content": "Back to shop",
-                      "fontFamily": "$font",
-                      "fontSize": 14,
-                      "fontWeight": "500"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -812,88 +713,11 @@
           "layout": "vertical",
           "children": [
             {
-              "type": "frame",
-              "id": "lABbU",
+              "id": "BN843",
+              "type": "ref",
+              "ref": "lABbU",
               "name": "Header",
-              "width": "fill_container",
-              "height": 60,
-              "fill": "$white",
-              "stroke": "$linen",
-              "strokeWidth": {
-                "bottom": 1
-              },
-              "padding": [
-                0,
-                16
-              ],
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "V4kR2",
-                  "name": "Brand",
-                  "gap": 8,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": 2,
-                      "id": "JKj0R",
-                      "name": "Mark",
-                      "fill": "$coral",
-                      "width": 10,
-                      "height": 10
-                    },
-                    {
-                      "type": "text",
-                      "id": "uZ6Tn",
-                      "name": "Wordmark",
-                      "fill": "$ink",
-                      "content": "views",
-                      "fontFamily": "$font",
-                      "fontSize": 20,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "bO3wz",
-                  "name": "Back to shop",
-                  "cornerRadius": 6,
-                  "stroke": "$ink",
-                  "strokeWidth": 1,
-                  "gap": 6,
-                  "padding": [
-                    8,
-                    10
-                  ],
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "boxN9",
-                      "name": "Back Icon",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "arrow-left",
-                      "library": "lucide",
-                      "fill": "$ink"
-                    },
-                    {
-                      "type": "text",
-                      "id": "HJ0tf",
-                      "name": "Back Label",
-                      "fill": "$ink",
-                      "content": "Back to shop",
-                      "fontFamily": "$font",
-                      "fontSize": 13,
-                      "fontWeight": "500"
-                    }
-                  ]
-                }
-              ]
+              "width": "fill_container"
             },
             {
               "type": "frame",
@@ -26004,6 +25828,324 @@
                                   "fontWeight": "normal"
                                 }
                               ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PypDC",
+          "name": "Layout",
+          "width": 1800,
+          "fill": "$white",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            48,
+            48,
+            56,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ZekUj",
+              "name": "Masthead",
+              "width": "fill_container",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sC1zW",
+                  "name": "Title",
+                  "fill": "$ink",
+                  "content": "Layout",
+                  "fontFamily": "$font",
+                  "fontSize": 36,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nayeX",
+              "name": "Logo",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "E9gBbT",
+                  "name": "Heading",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IyyUn",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Logo",
+                      "fontFamily": "$font",
+                      "fontSize": 22,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "KeFsH",
+                      "name": "Rule",
+                      "fill": "$linen",
+                      "width": "fill_container",
+                      "height": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lYlTe",
+                  "name": "Layout/Logo",
+                  "reusable": true,
+                  "gap": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "t51UZ",
+                      "name": "Mark",
+                      "clip": true,
+                      "width": 20,
+                      "height": 20,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "path",
+                          "id": "Y79aiz",
+                          "x": 1,
+                          "y": 1,
+                          "name": "Triangle",
+                          "geometry": "M1.75 3.25l14.5 0-7.25 12.5z",
+                          "viewBox": [
+                            0,
+                            0,
+                            18,
+                            18
+                          ],
+                          "fill": "#00000000",
+                          "width": 18,
+                          "height": 18,
+                          "stroke": "$coral",
+                          "strokeWidth": 5.25,
+                          "strokeLinejoin": "round",
+                          "strokeLinecap": "round"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Nvpbz",
+                      "name": "Wordmark",
+                      "fill": "$ink",
+                      "content": "views",
+                      "fontFamily": "$font",
+                      "fontSize": 22,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.4
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "itqGs",
+              "name": "Header / Minimal",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Mrjc2",
+                  "name": "Heading",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wsup1",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Header / Minimal",
+                      "fontFamily": "$font",
+                      "fontSize": 22,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "vNj7b",
+                      "name": "Rule",
+                      "fill": "$linen",
+                      "width": "fill_container",
+                      "height": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ADvvt",
+                  "name": "Variants",
+                  "width": "fill_container",
+                  "gap": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "OQA2I",
+                      "name": "Desktop",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NzAuC",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Desktop",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "dq9ia",
+                          "name": "Layout/Header/Minimal/Desktop",
+                          "reusable": true,
+                          "width": "fill_container",
+                          "height": 76,
+                          "fill": "$white",
+                          "stroke": "$linen",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            0,
+                            160
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "WJQ6t",
+                              "type": "ref",
+                              "ref": "lYlTe",
+                              "name": "Logo"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ebKRM",
+                              "name": "Header Actions",
+                              "gap": 28,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "q6aMT",
+                                  "name": "Support",
+                                  "fill": "$ash",
+                                  "content": "Mon–Fri 9–18   ·   +49 30 1208 4410",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "id": "j1G5Ip",
+                                  "type": "ref",
+                                  "ref": "d50IFp",
+                                  "name": "Back to shop",
+                                  "descendants": {
+                                    "e6Zd6": {
+                                      "icon": "arrow-left"
+                                    },
+                                    "Ho4Io": {
+                                      "content": "Back to shop"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yhEct",
+                      "name": "Mobile",
+                      "width": 375,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dWffa",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Mobile",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lABbU",
+                          "name": "Layout/Header/Minimal/Mobile",
+                          "reusable": true,
+                          "width": "fill_container",
+                          "height": 60,
+                          "fill": "$white",
+                          "stroke": "$linen",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "padding": [
+                            0,
+                            16
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "Kixvf",
+                              "type": "ref",
+                              "ref": "lYlTe",
+                              "name": "Logo"
+                            },
+                            {
+                              "id": "BThVX",
+                              "type": "ref",
+                              "ref": "d50IFp",
+                              "name": "Back to shop",
+                              "descendants": {
+                                "e6Zd6": {
+                                  "icon": "arrow-left"
+                                },
+                                "Ho4Io": {
+                                  "content": "Back to shop"
+                                }
+                              }
                             }
                           ]
                         }
