@@ -22,37 +22,26 @@
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% if type is same as('checkbox') %}
-        <twig:ViewsTheme:Form:Checkbox
-            :embedded="true"
-            id="{{ id }}"
-            name="{{ name }}"
-            label="{{ label }}"
-            description="{{ description }}"
-            value="{{ value }}"
-            :checked="checked"
-            :disabled="disabled"
-            validationRules="{{ validationRules }}"
-            violationPath="{{ violationPath }}"
-            :error="error"
-            :formViolations="formViolations"
-        />
-    {% else %}
-        <twig:ViewsTheme:Form:Radio
-            :embedded="true"
-            id="{{ id }}"
-            name="{{ name }}"
-            label="{{ label }}"
-            description="{{ description }}"
-            value="{{ value }}"
-            :checked="checked"
-            :disabled="disabled"
-            validationRules="{{ validationRules }}"
-            violationPath="{{ violationPath }}"
-            :error="error"
-            :formViolations="formViolations"
-        />
-    {% endif %}
+    {% set control = {
+        radio: 'ViewsTheme:Form:Radio',
+        checkbox: 'ViewsTheme:Form:Checkbox',
+    }[type]|default('ViewsTheme:Form:Radio') %}
+
+    {{ component(control, {
+        tag: 'div',
+        class: 'flex-fill min-w-0',
+        id: id,
+        name: name,
+        label: label,
+        description: description,
+        value: value,
+        checked: checked,
+        disabled: disabled,
+        validationRules: validationRules,
+        violationPath: violationPath,
+        error: error,
+        formViolations: formViolations,
+    }) }}
 
     {% if price is not empty %}
         <span

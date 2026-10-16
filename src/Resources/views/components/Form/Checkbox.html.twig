@@ -6,7 +6,7 @@
     value = '1',
     checked = false,
     disabled = false,
-    embedded = false,
+    tag = 'label',
     validationRules = null,
     violationPath = null,
     error = false,
@@ -27,10 +27,9 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['input', 'label', 'description', 'feedback']) %}
 
-{% set tag = embedded ? 'div' : 'label' %}
-<{{ tag }}
+<{{ tag|raw }}
     {{ attributes }}
-    class="{{ vi_class('root', { embedded: embedded }) }}"
+    class="{{ vi_class('root') }}"
 >
     <span class="{{ vi_class('box') }}">
         {% block input %}
@@ -95,4 +94,4 @@
             </span>
         {% endif %}
     {% endblock %}
-</{{ tag }}>
+</{{ tag|raw }}>

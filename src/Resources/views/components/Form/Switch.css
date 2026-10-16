@@ -1,22 +1,56 @@
-.vi-form-switch.form-switch .vi-form-switch__input {
-  appearance: none;
+.vi-form-switch__track {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
   width: var(--vi-switch-w, 32px);
   height: var(--vi-switch-h, 20px);
-  margin: 0;
-  border: 0;
   border-radius: var(--vi-switch-radius, 12px);
   background-color: var(--vi-form-line, #e5dbd0);
-  background-image: radial-gradient(circle, var(--body-color) 6px, transparent 6px);
-  background-repeat: no-repeat;
-  background-position: left var(--vi-switch-inset, 4px) center;
-  background-size: var(--vi-switch-knob, 12px) var(--vi-switch-knob, 12px);
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: var(--vi-switch-inset, 4px);
+    translate: 0 -50%;
+    width: var(--vi-switch-knob, 12px);
+    height: var(--vi-switch-knob, 12px);
+    border-radius: 50%;
+    background: var(--body-color);
+    pointer-events: none;
+  }
+}
+
+.vi-form-switch:has(:checked) .vi-form-switch__track {
+  background-color: var(--primary);
+
+  &::after {
+    background: var(--white, #fff);
+    left: calc(100% - var(--vi-switch-knob, 12px) - var(--vi-switch-inset, 4px));
+  }
+}
+
+.vi-form-switch:has(.vi-form-switch__input:disabled) .vi-form-switch__track {
+  opacity: var(--vi-switch-disabled, 0.5);
+}
+
+.vi-form-switch.form-switch .vi-form-switch__input {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
   cursor: pointer;
   transition: none;
 
   &:checked {
-    background-color: var(--primary);
-    background-image: radial-gradient(circle, var(--white, #fff) 6px, transparent 6px);
-    background-position: right var(--vi-switch-inset, 4px) center;
+    background-color: transparent;
+    background-image: none;
     border-color: transparent;
   }
 
@@ -26,7 +60,6 @@
   }
 
   &:disabled {
-    opacity: var(--vi-switch-disabled, 0.5);
     cursor: not-allowed;
   }
 }

@@ -30,7 +30,7 @@
 }
 
 .vi-form-checkbox .form-check-input[type="checkbox"] {
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2.75' stroke-linecap='round' stroke-linejoin='round' d='M3.75 9.25 7.25 12.75 14.25 5.25'/%3E%3C/svg%3E");
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' d='M4.25 8.5 6.75 11 11.75 5.5'/%3E%3C/svg%3E");
   position: absolute;
   inset: 0;
   display: block;
@@ -44,14 +44,10 @@
   background-color: var(--white, #fff);
   background-image: none;
   box-shadow: none;
-  -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-position: center;
   mask-position: center;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  mask-size: 100%;
   cursor: pointer;
 
   &:checked {

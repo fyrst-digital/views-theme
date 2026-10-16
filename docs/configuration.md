@@ -47,6 +47,8 @@ Path: `src/Resources/theme.json`.
 
 Authoritative field defaults: `theme.json` / theme fields table below.
 
+**Pale colors.** `scss/override.scss` emits `--{name}-pale` on `:root` for each `$theme-colors` key (`--primary-pale`, `--secondary-pale`, `--success-pale`, `--info-pale`, `--warning-pale`, `--danger-pale`, `--light-pale`, `--dark-pale`). Each token is `oklab(from var(--{name}) …)` with the same channel scale (`l * 1.34373`, `a * 0.07784`, `b * 0.12895`). `$prefix` is empty, so the names match Bootstrap’s `--primary` and the rest. The map is declared in that file, ahead of Bootstrap’s `!default`, with the same eight keys.
+
 **Icon size utility** (Bootstrap `$utilities`, sets `--icon-size` for `.icon`):
 
 | Class | Size |

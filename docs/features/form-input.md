@@ -70,7 +70,7 @@ Reusable form field primitives owned by the theme:
 | description | `form-text` (12px ash; danger when invalid, success when valid) | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
-Chrome for padding, type, radius, border, placeholder, disabled, label, hint, caret, and the invalid icon is Bootstrap variables in `scss/override.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-icon-invalid`, `$form-select-indicator`). `scss/_form.scss` keeps the input-group shell, the 1.5px focus width, the soft invalid/valid fills, and the check icon on `.is-valid` only.
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, caret, and status icons is Bootstrap variables in `scss/override.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-indicator`). `scss/_form.scss` only sets host leftovers: `.form-group` row-gap, the required asterisk, `box-shadow: none` and `--form-select-bg-icon: none` on the controls, the textarea floor, the input-group shell, and the form-check float reset.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 
@@ -322,9 +322,9 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 
 ## Form:Checkbox
 
-18px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a `--svg` mask on `.form-check-input` (a heavier check than `check-bold`). Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
+18px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a `--svg` mask on `.form-check-input` (a heavier check than `check-bold`), drawn on a 16px viewBox and centered in the 18px box. Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
 
-`label` is 14px when it is the only line. When `description` is set, `label` is 16px / 600 and `description` is 14px. `embedded` renders a `div` instead of a `label` so `Form:Selection` can own the card label.
+`label` is 14px when it is the only line. When `description` is set, `label` is 16px / 600 and `description` is 14px. `tag` defaults to `label`.
 
 ## Form:Radio
 
@@ -332,7 +332,7 @@ Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle 
 
 ## Form:Selection
 
-Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`, `embedded`). The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: coral-soft fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12px 14px. Optional `price` is trailing 16px / 600.
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12px 14px. Optional `price` is trailing 16px / 600.
 
 ```twig
 <twig:ViewsTheme:Form:Selection
@@ -358,7 +358,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`, 
 
 ## Form:Switch
 
-32×20 switch (`form-check form-switch` + `role="switch"`). Track is linen with an ink knob when off, `--primary` with a white knob when on. Disabled track opacity is 0.5 and the label is ash. Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
+32×20 switch (`form-check form-switch` + `role="switch"`). Track is linen with an ink knob when off, `--primary` with a white knob when on. The knob is a rounded disc on the track, not a gradient. Disabled track opacity is 0.5 and the label is ash. Presentational only (no `data-component` / JS). Dense bar layout is **caller-owned** via root `class` / nest attrs — no layout prop.
 
 ### Usage
 
