@@ -3,7 +3,7 @@
     "pencil": {
       "type": "stdio",
       "command": "${userHome}/.pencil/mcp/cursor/out/mcp-server-linux-x64",
-      "args": ["--app", "cursor", "--agent", "cursorIDE"]
+      "args": ["--app", "desktop", "--agent", "cursorIDE"]
     }
   }
 }
