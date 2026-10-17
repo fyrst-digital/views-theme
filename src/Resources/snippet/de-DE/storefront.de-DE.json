@@ -31,7 +31,12 @@
             "confirmAddressEqualTitle": "Wie die Lieferung",
             "confirmAddressEqualText": "Rechnungen werden an die Lieferadresse gesendet."
         },
-        "copyright": "Theme erstellt mit ❤️ von %brand%"
+        "copyright": "Theme erstellt mit ❤️ von %brand%",
+        "lineItems": {
+            "product": "Produkt",
+            "quantity": "Anz.",
+            "total": "Preis"
+        }
     },
 
     "variantsGrid": {

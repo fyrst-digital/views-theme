@@ -31,7 +31,12 @@
             "confirmAddressEqualTitle": "Same as delivery",
             "confirmAddressEqualText": "Invoices are sent to the delivery address."
         },
-        "copyright": "Theme made with ❤️ by %brand%"
+        "copyright": "Theme made with ❤️ by %brand%",
+        "lineItems": {
+            "product": "Product",
+            "quantity": "Qty",
+            "total": "Price"
+        }
     },
 
     "variantsGrid": {

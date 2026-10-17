@@ -14,11 +14,11 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` stays `all`, so support shows at every width |
-| `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
+| `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, line-item table, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
 | `Checkout:Success:Payment` / `:Shipping` | Class VM. One checked, nameless `Form:Selection`. Shipping omitted when the order has no delivery |
-| `Cart:Items` | Grid, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
+| `LineItems:Table` | Read-only table, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
 | `Checkout:Success:Comment` | Read-only `page.order.customerComment` (no localStorage, no textarea) |
 | `Checkout:Success:DeliveryDate` | Read-only preferred date from the order custom field ([delivery-date](delivery-date.md)) |
 | `Checkout:Success:Aside` | Sticky summary. `Cart:Summary` with `summary: page.order`. No TOS / place-order |
@@ -48,7 +48,7 @@ page/checkout/finish/index.html.twig
 │    │    └─ billing card (or checkout.addressEqualText)
 │    ├─ Checkout:Success:Payment
 │    ├─ Checkout:Success:Shipping          (if order delivery + shipping method)
-│    ├─ Cart:Items grid, nestedLineItems, showRemoveButton=false, showQuantitySelect=false
+│    ├─ LineItems:Table, nestedLineItems, showRemoveButton=false, showQuantitySelect=false
 │    ├─ additional
 │    │    ├─ Checkout:Success:Comment      (if order.customerComment)
 │    │    └─ Checkout:Success:DeliveryDate (if custom field set)
@@ -61,7 +61,7 @@ Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-success-cols`). Asi
 
 ## Scripts
 
-No owner JS. `Checkout:Success` has **no** `data-component`. `Cart:Items` / `Cart:Heading` island hooks are unused here (no `Cart:Page` swap).
+No owner JS. `Checkout:Success` has **no** `data-component`. `LineItems:Table` / `Cart:Heading` island hooks are unused here (no `Cart:Page` swap).
 
 `Checkout:Success:Payment` and `Checkout:Success:Shipping` are display recaps: one checked `Form:Selection` with no `name`. Do **not** mount `Checkout:Method:Form`.
 
@@ -96,11 +96,11 @@ Shipping renders nothing when `visible` is false (no delivery / no method).
 
 Finish rows are `Form:Selection` (`type="radio"`, `checked`, no `name`). Description is plain text truncated at 75 characters (same as confirm). Shipping passes `price` from that delivery’s `shippingCosts.totalPrice` (order currency when loaded). Payment omits `price`.
 
-## Cart:Items on the order
+## Line items on the order
 
-Optional `lineItems` (default `cart.lineItems`) so finish can pass `page.order.nestedLineItems` without flattening children. `cart` is still `page.order` for `deliveries` / empty checks.
+`LineItems:Table` `lineItems` (default `cart.lineItems`) so finish can pass `page.order.nestedLineItems` without flattening children. `cart` is still `page.order` for `deliveries` / empty checks.
 
-Qty / remove stay off — order line items are not cart `LineItem` mutators.
+Qty / remove stay off — order line items are not cart `LineItem` mutators. The returns note is not part of this table.
 
 ## Checkout:Success:Header
 

@@ -428,10 +428,11 @@ Storefront cart page owner. **Cart** owns mutations; **Page** owns island refres
 | Hook | Attribute |
 |------|-----------|
 | Page owner | `data-component="ViewsTheme:Cart:Page"` |
-| Flashes / Heading / Items | `data-component="ViewsTheme:Cart:…"` |
+| Flashes / Heading | `data-component="ViewsTheme:Cart:…"` |
+| Items | `data-component="ViewsTheme:LineItems:Table"` |
 | Aside | `data-component="ViewsTheme:Cart:Page:Aside"` |
 
-- Page on `Changed`: re-fetch `/vi/cart/page` → swap Flashes / Heading / Items / Aside (Aside omitted when empty). Same fetch/swap pattern as drawer Body.
+- Page on `Changed`: re-fetch `/vi/cart/page` → swap Flashes / Heading / LineItems:Table / Aside (Aside omitted when empty). Same fetch/swap pattern as drawer Body.
 - No full-page reload
 
 See [Cart page](../features/cart-page.md).
