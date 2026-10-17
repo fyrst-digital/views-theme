@@ -1,0 +1,9 @@
+.vi-checkout-confirm-shipping__title {
+  font-size: var(--vi-checkout-shipping-title, 15px);
+}
+
+@media (min-width: 1260px) {
+  .vi-checkout-confirm-shipping__title {
+    --vi-checkout-shipping-title: 16px;
+  }
+}

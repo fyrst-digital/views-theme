@@ -17,8 +17,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
-| `Checkout:Success:Payment` / `:Shipping` | Class VM. One selected `Checkout:Method` (`interactive=false`). Shipping omitted when the order has no delivery |
-| `Checkout:Method` | Radio primitive; `interactive=false` drops the input and uses a `div` instead of `label` |
+| `Checkout:Success:Payment` / `:Shipping` | Class VM. One checked, nameless `Form:Selection`. Shipping omitted when the order has no delivery |
 | `Cart:Items` | Grid, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
 | `Checkout:Success:Comment` | Read-only `page.order.customerComment` (no localStorage, no textarea) |
 | `Checkout:Success:DeliveryDate` | Read-only preferred date from the order custom field ([delivery-date](delivery-date.md)) |
@@ -64,7 +63,7 @@ Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-success-cols`). Asi
 
 No owner JS. `Checkout:Success` has **no** `data-component`. `Cart:Items` / `Cart:Heading` island hooks are unused here (no `Cart:Page` swap).
 
-`Checkout:Method` on this page is display-only (`interactive=false`). Do **not** mount `Checkout:Method:Form`.
+`Checkout:Success:Payment` and `Checkout:Success:Shipping` are display recaps: one checked `Form:Selection` with no `name`. Do **not** mount `Checkout:Method:Form`.
 
 ## Checkout:Success:Addresses
 
@@ -95,7 +94,7 @@ Class VMs. One method row each — not the confirm radio lists (`page.paymentMet
 
 Shipping renders nothing when `visible` is false (no delivery / no method).
 
-`Checkout:Method` props: `interactive=false`, `selectedMethodId` = `methodId`, description truncated at 75 chars (same as confirm).
+Finish rows are `Form:Selection` (`type="radio"`, `checked`, no `name`). Description is plain text truncated at 75 characters (same as confirm). Shipping passes `price` from that delivery’s `shippingCosts.totalPrice` (order currency when loaded). Payment omits `price`.
 
 ## Cart:Items on the order
 

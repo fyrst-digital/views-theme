@@ -1,0 +1,9 @@
+.vi-checkout-confirm-payment__title {
+  font-size: var(--vi-checkout-payment-title, 15px);
+}
+
+@media (min-width: 1260px) {
+  .vi-checkout-confirm-payment__title {
+    --vi-checkout-payment-title: 16px;
+  }
+}

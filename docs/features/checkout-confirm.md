@@ -6,6 +6,8 @@ Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` /
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
+Does **not** mount `Stepper`. Shopware has no checkout stepper and no delivery step.
+
 ## Ownership
 
 | Piece | Responsibility |
@@ -15,8 +17,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
-| `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
-| `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
+| `Checkout:Confirm:Payment` / `:Shipping` | Icon + label, then `Form:Selection` radios inside `Checkout:Method:Form` |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
 | `Checkout:Confirm:Comment` | `Form:Textarea` + comment-only localStorage persist |
@@ -85,22 +86,15 @@ Change buttons are `Address:Manager:Action` in `shippingActions` / `billingActio
 
 Nests: `shippingChange`, `billingChange`. Card nests (`grid`, `shipping`, `billing`, `title`, `body`, `equal`) are on `Address:List`.
 
-## Checkout:Method / Method:Form
+## Payment and shipping
 
-`Checkout:Method` is the radio row (replaces leftover `MethodOption`).
+`Checkout:Confirm:Payment` and `Checkout:Confirm:Shipping` are each a card: 16px icon plus label, then [`Form:Selection`](form-input.md#formselection) rows (`type="radio"`). Payment uses `credit-card`; shipping uses `truck`. Chrome is white, a 1px linen border, and 12px radius. Padding is 16px, 20px from `xl`. The label is 15px / 600, 16px from `xl`. Space between the label and the rows is 8px, 16px from `xl`. Rows are 16px apart. The radio is `Form:Selection`.
 
-| Prop | Default | Notes |
-|------|---------|--------|
-| `methodType` | `'payment'` | Builds `name` (`paymentMethodId` / `shippingMethodId`) and input id |
-| `methodId` | required | Radio value |
-| `selectedMethodId` | `null` | |
-| `disabled` | `false` | |
-| `interactive` | `true` | `false` → no radio, `div` chrome (success recap) |
-| `media` / `name` / `description` | | Description only passed for the selected method |
+Description is the selected method’s plain text (tags stripped), truncated at 75 characters. `price` is set only on the selected shipping row, from that cart delivery’s `shippingCosts.totalPrice`. Payment rows and unselected shipping rows omit `price`.
 
-`Checkout:Method:Form` POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping is gated with `State::IS_PHYSICAL` (same as `Cart:ShippingCalculation`).
+`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
 
-`Checkout:Confirm:Payment` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect.
+`Checkout:Confirm:Payment` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect. Edit-order shipping stays read-only [`Checkout:Success:Shipping`](checkout-success.md).
 
 ## Checkout:Confirm:Tos
 
@@ -132,7 +126,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment}.*` · `components/Checkout/Method.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment}.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 
