@@ -81,6 +81,7 @@ Full index: [docs/README.md](docs/README.md).
 | Tabs | [docs/features/tabs.md](docs/features/tabs.md) |
 | Accordion | [docs/features/accordion.md](docs/features/accordion.md) |
 | Grid | [docs/features/grid.md](docs/features/grid.md) |
+| Stepper | [docs/features/stepper.md](docs/features/stepper.md) |
 | Filters | [docs/features/filters.md](docs/features/filters.md) |
 | Pagination | [docs/features/pagination.md](docs/features/pagination.md) |
 | Sorting | [docs/features/sorting.md](docs/features/sorting.md) |

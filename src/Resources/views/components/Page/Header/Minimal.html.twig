@@ -1,4 +1,5 @@
 {% props
+    supportDisplay = 'all',
     cva = {},
 %}
 
@@ -19,7 +20,7 @@
     {% block support %}
         <div
             {{ vi_attrs('support') }}
-            class="{{ vi_class('support') }}"
+            class="{{ vi_class('support', { supportDisplay: supportDisplay }) }}"
         >
             {{ 'header.supportInfo'|trans|sw_sanitize }}
         </div>
@@ -31,7 +32,9 @@
             {{ ...vi_attrs('back').defaults({
                 type: 'link',
                 href: path('frontend.home.page'),
-                color: 'secondary',
+                color: 'light',
+                size: 'sm',
+                icon: 'arrow-left',
                 label: 'checkout.finishButtonBackToShop'|trans|striptags,
                 title: 'checkout.finishButtonBackToShop'|trans|striptags,
             }).all() }}

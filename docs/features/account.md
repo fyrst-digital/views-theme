@@ -24,7 +24,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |
 | `Account:Orders` | Order list + `Pagination` (GET `?p=`) |
 | `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion |
-| `Order:ItemDetails` / `:Documents` | Line items (`Cart:Items`), documents, totals |
+| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Shared with [success](checkout-success.md) |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
@@ -75,7 +75,7 @@ page/account/order/index.html.twig
 │    ├─ Order:Addresses
 │    ├─ Checkout:Confirm:Payment   (POST edit-order.change-payment-method)
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
-│    ├─ Cart:Items grid
+│    ├─ LineItems:Table (read-only, nestedLineItems)
 │    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
@@ -83,6 +83,8 @@ page/account/order/index.html.twig
 Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
+
+`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `header.supportInfo` shows at every width. The footer is [`Page:Footer:Minimal`](footer.md) (copyright, service menu, VAT; no revocation CTA).
 
 ## Scripts (theme-owned)
 
@@ -123,7 +125,7 @@ Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOr
 | `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
 | `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
 
-Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `Cart:Items` + `Order:Documents` + totals.
+Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
 
 ## Storefront bridges
 

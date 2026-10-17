@@ -2,7 +2,9 @@
 
 Theme-owned `/checkout/confirm` (`frontend.checkout.confirm.page`). Guest and empty-cart redirects stay in core `CheckoutController`.
 
-Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items use the cart **grid** layout, read-only — qty stepper / remove stay on the cart page.
+Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items are a read-only `LineItems:Table` — qty stepper / remove stay on the cart page. Confirm does not use `Cart:Heading`.
+
+`Stepper` is not mounted on confirm, cart, register, success, or edit-order. The pen’s Cart / Details / Delivery / Review row is an example only: Shopware has no stepper and no delivery step.
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
@@ -11,16 +13,16 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
-| `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
-| `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
-| `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
-| `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
-| `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, payment then shipping, items, closing stack (`Additions` then `Aside`). No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
+| `Checkout:Confirm:Payment` / `:Shipping` | Icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping renders only for a physical line item |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
-| `Checkout:Confirm:Comment` | `Form:Textarea` + comment-only localStorage persist |
-| `Checkout:DeliveryDateSelection` | Remount next to comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
+| `Checkout:Confirm:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
+| `Checkout:Confirm:Comment` | Inside Additions. `Form:Textarea` + comment-only localStorage persist |
+| `Checkout:DeliveryDateSelection` | Inside Additions, next to the comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
 | Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
@@ -30,33 +32,66 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/confirm/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal supportDisplay="desktop"   (inline, no ESI)
 │    ├─ Page:Logo
-│    ├─ header.supportInfo
+│    ├─ header.supportInfo            (hidden below xl on confirm)
 │    └─ Button (frontend.home.page)
-├─ page_checkout → Checkout:Confirm        (no data-component)
+├─ page_checkout → Checkout:Confirm        (no data-component, no Stepper)
 │    ├─ Cart:Flashes
 │    ├─ formViolations → Alert
-│    ├─ Cart:Heading (h1, checkout.confirmHeader + count)
-│    ├─ Checkout:Confirm:Addresses → Address:List
-│    │    ├─ shipping card (unless hideShippingAddress) → Address:Manager:Action
-│    │    └─ billing card (or checkout.addressEqualText) → Address:Manager:Action
-│    ├─ Checkout:Confirm:Payment
-│    ├─ Checkout:Confirm:Shipping          (if physical line item)
-│    ├─ Cart:Items grid, showRemoveButton=false, showQuantitySelect=false
-│    ├─ additional
-│    │    ├─ Checkout:Confirm:Comment      (if core.cart.showCustomerComment)
-│    │    └─ Checkout:DeliveryDateSelection
-│    └─ Checkout:Confirm:Aside
-│         ├─ Cart:Summary
-│         ├─ Checkout:Confirm:Tos          (tos + revocation)
-│         └─ Form:Handler#confirmOrderForm → hash + Button submit
+│    ├─ title
+│    │    ├─ h1 checkout.confirmHeader
+│    │    ├─ header.supportInfo            (below xl only)
+│    │    └─ meta: email · checkout.itemCounter · arrival
+│    ├─ main
+│    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses
+│    │    │    (not Address:List; change is Address:Manager:Action)
+│    │    ├─ checkout.confirmMethods
+│    │    │    ├─ Checkout:Confirm:Payment
+│    │    │    └─ Checkout:Confirm:Shipping          (if physical line item)
+│    │    └─ checkout.confirmItems
+│    │         ├─ LineItems:Table   (cart=page.cart, showRemoveButton=false, showQuantitySelect=false)
+│    │         └─ checkout.confirmReturns
+│    └─ close (aside column from xl, stack after main below xl)
+│         ├─ Checkout:Confirm:Additions
+│         │    ├─ Checkout:Confirm:Comment           (if core.cart.showCustomerComment)
+│         │    └─ Checkout:DeliveryDateSelection
+│         └─ Checkout:Confirm:Aside
+│              ├─ Cart:Summary                       (as-is; row tweaks scoped on this aside)
+│              ├─ arrival range                     (first delivery deliveryDate; omit if none)
+│              ├─ Checkout:Confirm:Tos               (tos + revocation)
+│              ├─ Form:Handler#confirmOrderForm → hash + Button submit (`blockResubmit`)
+│              └─ secure note                       (`checkout.confirmSecureNote`)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
+Desktop (`xl` / 1260px): the title spans the row, then main and a 400px closing column (`--vi-checkout-confirm-aside`, column gap 56px). Title-to-columns gap is 36px. Main section gap is 40px. Root padding is 40px / 64px. The aside stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+
+Mobile: title, addresses, payment and delivery, and items stack with a 28px gap (padding 24px / 32px). `Additions` then `Aside` follow as the closing stack (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront container, shared with the minimal header (pen page inset 160px / 16px).
+
+`Stepper` is not mounted. `Cart:Items` stays the stacked list for the cart drawer and the register aside. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
 
 TOS lives **in the aside** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
+
+## Title
+
+`checkout.confirmHeader` is the h1 (30px, 600; from `xl` 36px, 600, letter-spacing `-0.7px`). The meta line under it is the customer email, `checkout.itemCounter` with `page.cart.lineItems|length`, and an arrival range. A middot separates the segments. Meta type is 14px below `xl` and 16px from `xl`.
+
+Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — the dates Shopware already stores on the delivery, not the preferred-delivery-date field. Same month renders as a day plus the later day and month (`checkout.confirmArrival`, pen shape “Arrives 16–20 October”). The arrival segment is omitted when the cart has no delivery.
+
+Below `xl`, `header.supportInfo` sits between the heading and the meta. Confirm passes `supportDisplay="desktop"` so the header hides that same snippet under the desktop breakpoint. Register, success, and edit-order do not pass it, so their header keeps support at every width.
+
+Section titles on the page (`checkout.confirmAddresses`, `checkout.confirmMethods`, `checkout.confirmItems`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
+
+## Checkout:Confirm:Aside
+
+Summary card for confirm only. Chrome (coral accent, linen border, 12px radius, 28px padding) is on this aside. `Cart:Summary` is nested as-is. Row size, the divider before the grand total, and muted labels are scoped under `.vi-checkout-confirm-aside` so the cart page summary does not change.
+
+Arrival is the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. The block is omitted when the cart has no delivery. This is not the preferred-delivery-date field and not the title’s `checkout.confirmArrival` line.
+
+Place order stays `Form:Handler` `#confirmOrderForm` (`frontend.checkout.finish.order`), the cart hash, and `disabled` when `page.cart.errors.blockResubmit`.
+
+Secure note: `checkout.confirmSecureNote`.
 
 ## Scripts (theme-owned — no core form plugins)
 
@@ -72,7 +107,9 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 
 ## Checkout:Confirm:Addresses
 
-Thin adapter. Card chrome lives on [`Address:List`](address.md) (`showShippingWarning=true`). This tag keeps customer defaults and change buttons.
+One panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
+
+Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `xl`: stacked, change in the column head, billing’s divider on top. Shipping is omitted when `hideShippingAddress`; the divider goes with it.
 
 | Prop | Default | Notes |
 |------|---------|--------|
@@ -80,27 +117,31 @@ Thin adapter. Card chrome lives on [`Address:List`](address.md) (`showShippingWa
 | `billingAddress` | `context.customer.activeBillingAddress` | |
 | `shippingAddress` | `context.customer.activeShippingAddress` | |
 | `hideShippingAddress` | `page.hideShippingAddress` | Digital-only |
+| `addressesEqual` | billing id === shipping id | |
+| `showShippingWarning` | `true` | Shipping column only (`address.countryNoShippingAlert`) |
+| `shippingTitle` / `billingTitle` | `viewsTheme.checkout.confirmShippingTitle` / `confirmBillingTitle` | |
+| `equalTitle` / `equalText` | `viewsTheme.checkout.confirmAddressEqualTitle` / `confirmAddressEqualText` | Same as delivery; invoices go to the delivery address. Not `checkout.addressEqualText` |
+| `changeLabel` | `viewsTheme.checkout.confirmAddressChange` | Visible label |
 
-Change buttons are `Address:Manager:Action` in `shippingActions` / `billingActions` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. See [address manager](address-manager.md).
+When the ids match and shipping is visible, billing shows `equalTitle` and `equalText`. Shipping still shows the address.
 
-Nests: `shippingChange`, `billingChange`. Card nests (`grid`, `shipping`, `billing`, `title`, `body`, `equal`) are on `Address:List`.
+Lines are the country address format (same renderer as [`Address`](address.md)). The first line uses the pen name style; later lines are the ash body. Additional street lines stay separate.
 
-## Checkout:Method / Method:Form
+Change stays `Address:Manager:Action` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. Visible label is `changeLabel`. `title` and `aria-label` stay `account.overviewChangeShipping` / `overviewChangeBilling`. See [address manager](address-manager.md).
 
-`Checkout:Method` is the radio row (replaces leftover `MethodOption`).
+Nests: `shipping`, `billing`, `shippingChange`, `billingChange`. Shared chrome (`head`, `label`, `lines`, `name`, `line`, `change`) is CVA.
 
-| Prop | Default | Notes |
-|------|---------|--------|
-| `methodType` | `'payment'` | Builds `name` (`paymentMethodId` / `shippingMethodId`) and input id |
-| `methodId` | required | Radio value |
-| `selectedMethodId` | `null` | |
-| `disabled` | `false` | |
-| `interactive` | `true` | `false` → no radio, `div` chrome (success recap) |
-| `media` / `name` / `description` | | Description only passed for the selected method |
+Pen metrics: white card, 12px radius, 1px linen border. Column padding 16px, 24px from `xl`. Column gap 10px, 14px from `xl`. Line gap 2px. Title and name 15px, 16px from `xl`, semibold, ink. Body 14px ash, line-height 1.4 below `xl`. Change is 14px semibold ink with a 1px ink bottom rule.
 
-`Checkout:Method:Form` POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping is gated with `State::IS_PHYSICAL` (same as `Cart:ShippingCalculation`).
+## Payment and shipping
 
-`Checkout:Confirm:Payment` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect.
+`Checkout:Confirm:Payment` and `Checkout:Confirm:Shipping` are each a card: 16px icon plus label, then [`Form:Selection`](form-input.md#formselection) rows (`type="radio"`). Payment uses `credit-card`; shipping uses `truck`. Chrome is white, a 1px linen border, and 12px radius. Padding is 16px, 20px from `xl`. The label is 15px / 600, 16px from `xl`. Space between the label and the rows is 8px, 16px from `xl`. Rows are 16px apart. The radio is `Form:Selection`.
+
+Description is the selected method’s plain text (tags stripped), truncated at 75 characters. `price` is set only on the selected shipping row, from that cart delivery’s `shippingCosts.totalPrice`. Payment rows and unselected shipping rows omit `price`.
+
+`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
+
+`Checkout:Confirm:Payment` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect. Edit-order shipping stays read-only [`Checkout:Success:Shipping`](checkout-success.md).
 
 ## Checkout:Confirm:Tos
 
@@ -114,6 +155,21 @@ Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto
 | `page` | ambient | `page.showRevocation` gates the revocation checkbox |
 
 Snippets: `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
+
+## Checkout:Confirm:Additions
+
+Pen component `Checkout/Before you order`. White card, 1px linen border, 12px radius, 20px padding, 16px gap between the title and the fields and between the fields. Title snippet `checkout.beforeYouOrderHeader` (20px / 600, ink).
+
+Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card chrome stays on this box. Comment localStorage and the delivery-date subscriber stay on those components.
+
+Renders nothing when the customer comment is disabled and the delivery-date extension is inactive. No `data-component`.
+
+The confirm layout mounts this tag in the aside above the summary. On mobile it sits in the closing stack.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `page` | ambient | Delivery-date extension gates the box with the comment config |
+| `showComment` | `core.cart.showCustomerComment` | |
 
 ## Checkout:Confirm:Comment
 
@@ -132,7 +188,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment}.*` · `components/Checkout/Method.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment,Additions}.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 

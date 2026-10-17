@@ -487,11 +487,11 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
-| LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
+| LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid/table), LineItems:Table (island identity), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address / Address:List | Anonymous UX + `vi_cva`; formatted lines + shipping/billing pair — [address.md](../features/address.md) |
-| Checkout:Confirm (+ Addresses / Payment / Shipping / Tos / Comment / Aside) + Checkout:Method / Method:Form | Anonymous UX; confirm page composer; Confirm:Addresses adapts Address:List — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm (+ Addresses / Payment / Shipping / Tos / Comment / Additions / Aside) + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Success (+ Addresses / Payment / Shipping / Header / Comment / DeliveryDate / Aside) | Success:Addresses class VM adapts Address:List — [checkout-success.md](../features/checkout-success.md) |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |

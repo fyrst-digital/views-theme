@@ -125,12 +125,11 @@
                     {% endblock %}
 
                     {% block items %}
-                        <twig:ViewsTheme:Cart:Items
+                        <twig:ViewsTheme:LineItems:Table
                             class="{{ vi_class('items') }}"
                             {{ ...vi_attrs('items').defaults({
                                 cart: page.order,
                                 lineItems: page.order.nestedLineItems,
-                                layout: 'grid',
                                 showRemoveButton: false,
                                 showQuantitySelect: false,
                             }).all() }}

@@ -1,13 +1,14 @@
 {% props
     lineItem,
     deliveries = null,
+    layout = 'stacked',
     cva = {},
 %}
 
 {% set options = lineItem.payload.options ?? [] %}
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['variations', 'features', 'deliveryDate']) %}
+{% do vi_define_attrs(['variations', 'meta', 'features', 'deliveryDate']) %}
 
 <div
     {{ attributes }}
@@ -15,12 +16,24 @@
 >
     {% block variations %}
         {% if options is not empty %}
-            <twig:ViewsTheme:Product:Variations
-                class="{{ vi_class('variations') }}"
-                {{ ...vi_attrs('variations').defaults({
-                    variations: options,
-                }).all() }}
-            />
+            {% if layout is same as('table') %}
+                <div
+                    {{ vi_attrs('meta') }}
+                    class="{{ vi_class('meta') }}"
+                >
+                    {% for variation in options %}
+                        {% if not loop.first %}<span aria-hidden="true"> · </span>{% endif %}
+                        {{ variation.option }}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <twig:ViewsTheme:Product:Variations
+                    class="{{ vi_class('variations') }}"
+                    {{ ...vi_attrs('variations').defaults({
+                        variations: options,
+                    }).all() }}
+                />
+            {% endif %}
         {% endif %}
     {% endblock %}
 

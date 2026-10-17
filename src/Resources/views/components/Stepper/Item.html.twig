@@ -1,0 +1,59 @@
+{% props
+    label = '',
+    url = null,
+    icon = null,
+    active = false,
+    number = 1,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['body', 'mark', 'label']) %}
+
+{% set linked = url is not empty %}
+
+<li
+    {{ attributes.defaults({
+        'aria-current': active ? 'step' : false,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% if linked %}
+            <a
+                {{ vi_attrs('body').defaults({
+                    href: url,
+                }) }}
+                class="{{ vi_class('body', { active: active }) }}"
+            >
+                {% block mark %}
+                    <span
+                        {{ vi_attrs('mark') }}
+                        class="{{ vi_class('mark') }}"
+                    >
+                        {% if icon %}
+                            {{ vi_icon(icon, { class: vi_class('icon') }) }}
+                        {% else %}
+                            {{ number }}
+                        {% endif %}
+                    </span>
+                {% endblock %}
+
+                {% block label %}
+                    <span
+                        {{ vi_attrs('label') }}
+                        class="{{ vi_class('label', { active: active }) }}"
+                    >{{ label }}</span>
+                {% endblock %}
+            </a>
+        {% else %}
+            <span
+                {{ vi_attrs('body') }}
+                class="{{ vi_class('body', { active: active }) }}"
+            >
+                {{ block('mark') }}
+                {{ block('label') }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</li>
