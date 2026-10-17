@@ -5,67 +5,109 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['heading', 'summary', 'tos', 'form', 'submit']) %}
+{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
+
+{% set deliveries = page.cart.deliveries|default(null) %}
+{% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
 
 <aside
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% block heading %}
-        <h2
-            {{ vi_attrs('heading') }}
-            class="{{ vi_class('heading') }}"
+    {% block accent %}
+        <div
+            {{ vi_attrs('accent') }}
+            class="{{ vi_class('accent') }}"
+        ></div>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
         >
-            {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
-        </h2>
-    {% endblock %}
+            {% block heading %}
+                <h2
+                    {{ vi_attrs('heading') }}
+                    class="{{ vi_class('heading') }}"
+                >
+                    {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+                </h2>
+            {% endblock %}
 
-    {% block summary %}
-        <twig:ViewsTheme:Cart:Summary
-            class="{{ vi_class('summary') }}"
-            {{ ...vi_attrs('summary').defaults({
-                summary: page.cart,
-            }).all() }}
-        />
-    {% endblock %}
+            {% block summary %}
+                <twig:ViewsTheme:Cart:Summary
+                    class="{{ vi_class('summary') }}"
+                    {{ ...vi_attrs('summary').defaults({
+                        summary: page.cart,
+                    }).all() }}
+                />
+            {% endblock %}
 
-    {% block tos %}
-        <twig:ViewsTheme:Checkout:Confirm:Tos
-            class="{{ vi_class('tos') }}"
-            {{ ...vi_attrs('tos').defaults({
-                formId: formId,
-                page: page,
-            }).all() }}
-        />
-    {% endblock %}
+            {% block arrival %}
+                {% if arrivalDelivery and arrivalDelivery.deliveryDate %}
+                    <div
+                        {{ vi_attrs('arrival') }}
+                        class="{{ vi_class('arrival') }}"
+                    >
+                        {{ vi_icon('truck', { class: vi_class('arrivalIcon') }) }}
+                        {{ 'checkout.lineItemDeliveryDate'|trans({
+                            '%earliest%': arrivalDelivery.deliveryDate.earliest|format_date('medium', locale=app.request.locale),
+                            '%latest%': arrivalDelivery.deliveryDate.latest|format_date('medium', locale=app.request.locale),
+                        })|sw_sanitize }}
+                    </div>
+                {% endif %}
+            {% endblock %}
 
-    {% block form %}
-        <twig:ViewsTheme:Form:Handler
-            class="{{ vi_class('form') }}"
-            {{ ...vi_attrs('form').defaults({
-                id: formId,
-                action: path('frontend.checkout.finish.order'),
-                method: 'post',
-            }).all() }}
-        >
-            <twig:block name="content">
-                <input type="hidden" name="hash" value="{{ page.cart.hash }}">
+            {% block tos %}
+                <twig:ViewsTheme:Checkout:Confirm:Tos
+                    class="{{ vi_class('tos') }}"
+                    {{ ...vi_attrs('tos').defaults({
+                        formId: formId,
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
 
-                {% vi_block submit %}
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('submit') }}"
-                        {{ ...vi_attrs('submit').defaults({
-                            type: 'submit',
-                            color: 'primary',
-                            size: 'lg',
-                            full: true,
-                            label: 'checkout.confirmSubmit'|trans|sw_sanitize,
-                            title: 'checkout.confirmSubmit'|trans|striptags,
-                            disabled: page.cart.errors.blockResubmit ? true : false,
-                        }).all() }}
-                    />
-                {% endvi_block %}
-            </twig:block>
-        </twig:ViewsTheme:Form:Handler>
+            {% block form %}
+                <twig:ViewsTheme:Form:Handler
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        id: formId,
+                        action: path('frontend.checkout.finish.order'),
+                        method: 'post',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <input type="hidden" name="hash" value="{{ page.cart.hash }}">
+
+                        {% vi_block submit %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('submit') }}"
+                                {{ ...vi_attrs('submit').defaults({
+                                    type: 'submit',
+                                    color: 'primary',
+                                    size: 'md',
+                                    full: true,
+                                    label: 'checkout.confirmSubmit'|trans|sw_sanitize,
+                                    title: 'checkout.confirmSubmit'|trans|striptags,
+                                    disabled: page.cart.errors.blockResubmit ? true : false,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Form:Handler>
+            {% endblock %}
+
+            {% block secure %}
+                <div
+                    {{ vi_attrs('secure') }}
+                    class="{{ vi_class('secure') }}"
+                >
+                    {{ vi_icon('lock', { class: vi_class('secureIcon') }) }}
+                    {{ 'checkout.confirmSecureNote'|trans|sw_sanitize }}
+                </div>
+            {% endblock %}
+        </div>
     {% endblock %}
 </aside>
