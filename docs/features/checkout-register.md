@@ -9,7 +9,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/address/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Register` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` stays `all`, so support shows at every width |
 | `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside. Ambient `__context.formViolations` (and `data` / login errors) forwarded into `Account:Register` |
 | `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
 | `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |

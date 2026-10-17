@@ -13,7 +13,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` stays `all`, so support shows at every width |
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |

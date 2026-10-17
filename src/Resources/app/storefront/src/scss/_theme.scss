@@ -142,3 +142,11 @@
     --vi-footer-column-overflow: visible;
   }
 }
+
+.vi-header-minimal__support {
+  --vi-header-minimal-color: #{$muted};
+}
+
+.vi-footer-minimal {
+  --vi-footer-minimal-color: #{$muted};
+}
