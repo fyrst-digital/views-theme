@@ -55,6 +55,11 @@
         "preferredDeliveryDateHeader": "Preferred delivery date",
         "preferredDeliveryDateLabel": "Choose a preferred delivery date",
         "preferredDeliveryDateHelpText": "Pick a date within the allowed window. This is a preference, not a guarantee.",
-        "confirmSecureNote": "Encrypted checkout"
+        "confirmSecureNote": "Encrypted checkout",
+        "confirmAddresses": "Addresses",
+        "confirmMethods": "Payment and Delivery",
+        "confirmItems": "Your items",
+        "confirmArrival": "Arrives %earliest%–%latest%",
+        "confirmReturns": "Free returns within 30 days. Quantity changes stay in the cart."
     }
 }
