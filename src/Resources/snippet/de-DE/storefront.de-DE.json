@@ -24,6 +24,13 @@
             "fullscreenAriaLabel": "Vollbild-Produktgalerie",
             "dotsAriaLabel": "Galerienavigation"
         },
+        "checkout": {
+            "confirmShippingTitle": "Versand",
+            "confirmBillingTitle": "Rechnung",
+            "confirmAddressChange": "Ändern",
+            "confirmAddressEqualTitle": "Wie die Lieferung",
+            "confirmAddressEqualText": "Rechnungen werden an die Lieferadresse gesendet."
+        },
         "copyright": "Theme erstellt mit ❤️ von %brand%"
     },
 

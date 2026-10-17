@@ -6,6 +6,8 @@ Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` /
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
+The pen stepper is not mounted on confirm. Shopware has no stepper and no delivery step.
+
 ## Ownership
 
 | Piece | Responsibility |
@@ -14,7 +16,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
 | `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
-| `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
+| `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
 | `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
@@ -38,9 +40,9 @@ page/checkout/confirm/index.html.twig
 │    ├─ Cart:Flashes
 │    ├─ formViolations → Alert
 │    ├─ Cart:Heading (h1, checkout.confirmHeader + count)
-│    ├─ Checkout:Confirm:Addresses → Address:List
-│    │    ├─ shipping card (unless hideShippingAddress) → Address:Manager:Action
-│    │    └─ billing card (or checkout.addressEqualText) → Address:Manager:Action
+│    ├─ Checkout:Confirm:Addresses
+│    │    ├─ shipping column (unless hideShippingAddress) → Address:Manager:Action
+│    │    └─ billing column (or equal-address snippets) → Address:Manager:Action
 │    ├─ Checkout:Confirm:Payment
 │    ├─ Checkout:Confirm:Shipping          (if physical line item)
 │    ├─ Cart:Items grid, showRemoveButton=false, showQuantitySelect=false
@@ -72,7 +74,9 @@ TOS lives **in the aside** with submit (not top of main). Associated fields (`to
 
 ## Checkout:Confirm:Addresses
 
-Thin adapter. Card chrome lives on [`Address:List`](address.md) (`showShippingWarning=true`). This tag keeps customer defaults and change buttons.
+One panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
+
+Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `xl`: stacked, change in the column head, billing’s divider on top. Shipping is omitted when `hideShippingAddress`; the divider goes with it.
 
 | Prop | Default | Notes |
 |------|---------|--------|
@@ -80,10 +84,21 @@ Thin adapter. Card chrome lives on [`Address:List`](address.md) (`showShippingWa
 | `billingAddress` | `context.customer.activeBillingAddress` | |
 | `shippingAddress` | `context.customer.activeShippingAddress` | |
 | `hideShippingAddress` | `page.hideShippingAddress` | Digital-only |
+| `addressesEqual` | billing id === shipping id | |
+| `showShippingWarning` | `true` | Shipping column only (`address.countryNoShippingAlert`) |
+| `shippingTitle` / `billingTitle` | `viewsTheme.checkout.confirmShippingTitle` / `confirmBillingTitle` | |
+| `equalTitle` / `equalText` | `viewsTheme.checkout.confirmAddressEqualTitle` / `confirmAddressEqualText` | Same as delivery; invoices go to the delivery address. Not `checkout.addressEqualText` |
+| `changeLabel` | `viewsTheme.checkout.confirmAddressChange` | Visible label |
 
-Change buttons are `Address:Manager:Action` in `shippingActions` / `billingActions` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. See [address manager](address-manager.md).
+When the ids match and shipping is visible, billing shows `equalTitle` and `equalText`. Shipping still shows the address.
 
-Nests: `shippingChange`, `billingChange`. Card nests (`grid`, `shipping`, `billing`, `title`, `body`, `equal`) are on `Address:List`.
+Lines are the country address format (same renderer as [`Address`](address.md)). The first line uses the pen name style; later lines are the ash body. Additional street lines stay separate.
+
+Change stays `Address:Manager:Action` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. Visible label is `changeLabel`. `title` and `aria-label` stay `account.overviewChangeShipping` / `overviewChangeBilling`. See [address manager](address-manager.md).
+
+Nests: `shipping`, `billing`, `shippingChange`, `billingChange`. Shared chrome (`head`, `label`, `lines`, `name`, `line`, `change`) is CVA.
+
+Pen metrics: white card, 12px radius, 1px linen border. Column padding 16px, 24px from `xl`. Column gap 10px, 14px from `xl`. Line gap 2px. Title and name 15px, 16px from `xl`, semibold, ink. Body 14px ash, line-height 1.4 below `xl`. Change is 14px semibold ink with a 1px ink bottom rule.
 
 ## Checkout:Method / Method:Form
 
