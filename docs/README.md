@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, language/currency switch, form input, component showcase, newsletter, product box, buy container, product configurator, product listing, reviews, tabs, accordion, pagination, sorting, filters, breadcrumb, gallery, footer |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, language/currency switch, form input, component showcase, newsletter, product box, buy container, product configurator, product listing, reviews, tabs, accordion, stepper, pagination, sorting, filters, breadcrumb, gallery, footer |
 
 ## Conventions
 
@@ -68,6 +68,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Tabs](features/tabs.md)
 - [Accordion](features/accordion.md)
 - [Grid](features/grid.md)
+- [Stepper](features/stepper.md)
 - [Pagination](features/pagination.md)
 - [Sorting](features/sorting.md)
 - [Filters](features/filters.md)
