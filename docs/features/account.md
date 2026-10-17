@@ -73,7 +73,7 @@ page/account/order/index.html.twig
 │    ├─ alerts
 │    ├─ Account:Heading
 │    ├─ Order:Addresses
-│    ├─ Checkout:Confirm:Payment   (POST edit-order.change-payment-method)
+│    ├─ Payment:Selection          (POST edit-order.change-payment-method)
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
 │    ├─ LineItems:Table (read-only, nestedLineItems)
 │    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
@@ -148,7 +148,7 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | `page/account/order/index.html.twig` | `Account:Order:Edit` |
 | `page/account/order/header.html.twig` | `Page:Header:Minimal` |
 | `page/account/order/address.html.twig` | `Order:Addresses` |
-| `page/account/order/confirm-payment.html.twig` | `Checkout:Confirm:Payment` (edit-order action) |
+| `page/account/order/confirm-payment.html.twig` | `Payment:Selection` (edit-order action) |
 | `page/account/order/confirm-shipping.html.twig` | `Checkout:Success:Shipping` |
 | `page/account/order/cancel-order-modal.html.twig` | `Order:Cancel` |
 | `page/account/register/index.html.twig` | `Account:Register:Page` |

@@ -25,7 +25,7 @@
             class="{{ vi_class('panel') }}"
         >
             {% block payment %}
-                <twig:ViewsTheme:Checkout:Confirm:Payment
+                <twig:ViewsTheme:Payment:Selection
                     class="{{ vi_class('payment') }}"
                     :framed="false"
                     {{ ...vi_attrs('payment').defaults({
@@ -39,7 +39,7 @@
             {% endblock %}
 
             {% block shipping %}
-                <twig:ViewsTheme:Checkout:Confirm:Shipping
+                <twig:ViewsTheme:Shipping:Selection
                     class="{{ vi_class('shipping') }}"
                     {{ ...vi_attrs('shipping').defaults({
                         page: page,
