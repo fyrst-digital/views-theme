@@ -3,24 +3,31 @@
     selectedId = context.paymentMethod.id,
     action = path('frontend.checkout.configure'),
     redirectTo = 'frontend.checkout.confirm.page',
+    framed = true,
     cva = {},
 %}
+
+{% set titleId = 'vi-checkout-confirm-payment-' ~ random() %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['title', 'form', 'method']) %}
 
 <fieldset
-    {{ attributes }}
-    class="{{ vi_class('root') }}"
+    {{ attributes.defaults({
+        'aria-labelledby': titleId,
+    }) }}
+    class="{{ vi_class('root', { framed: framed }) }}"
 >
     {% block title %}
-        <legend
-            {{ vi_attrs('title') }}
+        <div
+            {{ vi_attrs('title').defaults({
+                id: titleId,
+            }) }}
             class="{{ vi_class('title') }}"
         >
             {{ vi_icon('credit-card', { class: vi_class('icon') }) -}}
             {{- 'checkout.confirmPaymentMethod'|trans|sw_sanitize }}
-        </legend>
+        </div>
     {% endblock %}
 
     {% block form %}

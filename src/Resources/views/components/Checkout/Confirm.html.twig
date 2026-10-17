@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'violations', 'details', 'title', 'heading', 'support', 'meta', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'methodsTitle', 'methodList', 'payment', 'shipping', 'itemsSection', 'itemsTitle', 'items', 'returns', 'close', 'additions', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'violations', 'details', 'title', 'heading', 'support', 'meta', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'close', 'additions', 'aside']) %}
 
 {% set productsQuantity = page.cart.lineItems|length %}
 {% set customerEmail = context.customer ? context.customer.email|decodeIdnEmail : '' %}
@@ -141,42 +141,12 @@
                     {% endblock %}
 
                     {% block methods %}
-                        <section
-                            {{ vi_attrs('methods') }}
+                        <twig:ViewsTheme:Checkout:Confirm:Methods
                             class="{{ vi_class('methods') }}"
-                        >
-                            {% block methods_title %}
-                                <h2
-                                    {{ vi_attrs('methodsTitle') }}
-                                    class="{{ vi_class('sectionTitle') }}"
-                                >
-                                    {{ 'checkout.confirmMethods'|trans|sw_sanitize }}
-                                </h2>
-                            {% endblock %}
-
-                            <div
-                                {{ vi_attrs('methodList') }}
-                                class="{{ vi_class('methodList') }}"
-                            >
-                                {% block payment %}
-                                    <twig:ViewsTheme:Checkout:Confirm:Payment
-                                        class="{{ vi_class('payment') }}"
-                                        {{ ...vi_attrs('payment').defaults({
-                                            page: page,
-                                        }).all() }}
-                                    />
-                                {% endblock %}
-
-                                {% block shipping %}
-                                    <twig:ViewsTheme:Checkout:Confirm:Shipping
-                                        class="{{ vi_class('shipping') }}"
-                                        {{ ...vi_attrs('shipping').defaults({
-                                            page: page,
-                                        }).all() }}
-                                    />
-                                {% endblock %}
-                            </div>
-                        </section>
+                            {{ ...vi_attrs('methods').defaults({
+                                page: page,
+                            }).all() }}
+                        />
                     {% endblock %}
 
                     {% block items %}

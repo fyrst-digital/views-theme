@@ -150,3 +150,16 @@
 .vi-footer-minimal {
   --vi-footer-minimal-color: #{$muted};
 }
+
+.vi-checkout-confirm-methods__panel {
+  @include media-breakpoint-up(lg) {
+    --vi-methods-cols: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+
+.vi-methods-divider {
+  @include media-breakpoint-up(lg) {
+    --vi-methods-divide-y: auto;
+    --vi-methods-divide-x: 1px;
+  }
+}

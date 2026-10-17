@@ -1,0 +1,31 @@
+.vi-checkout-confirm-methods__panel {
+  grid-template-columns: var(--vi-methods-cols, repeat(1, minmax(0, 1fr)));
+  grid-template-rows: var(--vi-methods-rows, auto);
+}
+
+/* .vi-checkout-confirm-methods__payment,
+.vi-checkout-confirm-methods__shipping {
+  flex: var(--vi-checkout-methods-col, 1 1 auto);
+
+  @media (min-width: 1260px) {
+    --vi-checkout-methods-col: 1 1 0px;
+  }
+} */
+
+.vi-methods-divider {
+  height: var(--vi-methods-divide-y, 1px);
+  width: var(--vi-methods-divide-x, auto);
+  background-color: var(--vi-methods-divide-color, var(--border-color));
+}
+
+/* .vi-checkout-confirm-methods__shipping {
+  padding-top: var(--vi-checkout-methods-pt, 14px);
+  border-top: var(--vi-checkout-methods-divide-y, 1px solid var(--bs-border-color, #e5dbd0));
+  border-left: var(--vi-checkout-methods-divide-x, 0);
+
+  @media (min-width: 1260px) {
+    --vi-checkout-methods-pt: 20px;
+    --vi-checkout-methods-divide-y: 0;
+    --vi-checkout-methods-divide-x: 1px solid var(--bs-border-color, #e5dbd0);
+  }
+} */

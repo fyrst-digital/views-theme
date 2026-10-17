@@ -14,10 +14,11 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
-| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, payment then shipping, items, closing stack (`Additions` then `Aside`). No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, methods, items, closing stack (`Additions` then `Aside`). No page JS. Does not mount `Stepper` or `Cart:Heading` |
 | `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
-| `Checkout:Confirm:Payment` / `:Shipping` | Icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping renders only for a physical line item |
+| `Checkout:Confirm:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
+| `Checkout:Confirm:Payment` / `:Shipping` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping renders only for a physical line item. Payment `framed` defaults to true for edit-order |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
 | `Checkout:Confirm:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
@@ -46,8 +47,9 @@ page/checkout/confirm/index.html.twig
 │    ├─ main
 │    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses
 │    │    │    (not Address:List; change is Address:Manager:Action)
-│    │    ├─ checkout.confirmMethods
-│    │    │    ├─ Checkout:Confirm:Payment
+│    │    ├─ Checkout:Confirm:Methods
+│    │    │    ├─ h2 checkout.confirmMethods
+│    │    │    ├─ Checkout:Confirm:Payment           (framed=false)
 │    │    │    └─ Checkout:Confirm:Shipping          (if physical line item)
 │    │    └─ checkout.confirmItems
 │    │         ├─ LineItems:Table   (cart=page.cart, showRemoveButton=false, showQuantitySelect=false)
@@ -81,7 +83,7 @@ Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — 
 
 Below `xl`, `header.supportInfo` sits between the heading and the meta. Confirm passes `supportDisplay="desktop"` so the header hides that same snippet under the desktop breakpoint. Register, success, and edit-order do not pass it, so their header keeps support at every width.
 
-Section titles on the page (`checkout.confirmAddresses`, `checkout.confirmMethods`, `checkout.confirmItems`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
+Section titles (`checkout.confirmAddresses`, `checkout.confirmItems`, and `checkout.confirmMethods` on `Checkout:Confirm:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
 ## Checkout:Confirm:Aside
 
@@ -135,7 +137,13 @@ Pen metrics: white card, 12px radius, 1px linen border. Column padding 16px, 24p
 
 ## Payment and shipping
 
-`Checkout:Confirm:Payment` and `Checkout:Confirm:Shipping` are each a card: 16px icon plus label, then [`Form:Selection`](form-input.md#formselection) rows (`type="radio"`). Payment uses `credit-card`; shipping uses `truck`. Chrome is white, a 1px linen border, and 12px radius. Padding is 16px, 20px from `xl`. The label is 15px / 600, 16px from `xl`. Space between the label and the rows is 8px, 16px from `xl`. Rows are 16px apart. The radio is `Form:Selection`.
+`Checkout:Confirm:Methods` owns the section. The title is `checkout.confirmMethods` (20px / 600). The gap under it is 12px, 24px from `xl`. Under the title is one card: white, a 1px linen border, and 12px radius. No `data-component`.
+
+From `xl` the card is a row of equal columns (`flex: 1 1 0`). Below `xl` the columns stack. One linen rule sits on the shipping column: its top edge below `xl`, its left edge from `xl`. That rule runs the full card height from `xl`. Shipping’s top padding is 14px below `xl` and 20px from `xl`; the other sides are 16px below `xl`. Payment padding is 16px, 20px from `xl`. A digital-only cart omits shipping, and payment fills the card.
+
+`Checkout:Confirm:Payment` and `Checkout:Confirm:Shipping` are those columns: a 16px icon plus label in a `<div>`, then [`Form:Selection`](form-input.md#formselection) rows (`type="radio"`). The `<fieldset>` is named with `aria-labelledby` on that div. Payment uses `credit-card`; shipping uses `truck`. The label is 15px / 600, 16px from `xl`. Space between the label and the rows is 8px, 16px from `xl`. Rows are 16px apart. The radio is `Form:Selection`.
+
+Payment `framed` defaults to `true`, which adds the standalone card (white, 1px linen, 12px radius) used on edit-order. Methods passes `framed` false so the shared card owns that chrome.
 
 Description is the selected method’s plain text (tags stripped), truncated at 75 characters. `price` is set only on the selected shipping row, from that cart delivery’s `shippingCosts.totalPrice`. Payment rows and unselected shipping rows omit `price`.
 
@@ -188,7 +196,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment,Additions}.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Methods,Payment,Shipping,Tos,Comment,Additions}.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 
