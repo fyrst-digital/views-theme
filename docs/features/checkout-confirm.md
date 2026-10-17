@@ -4,6 +4,8 @@ Theme-owned `/checkout/confirm` (`frontend.checkout.confirm.page`). Guest and em
 
 Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items use the cart **grid** layout, read-only — qty stepper / remove stay on the cart page.
 
+No stepper is mounted. Shopware has no stepper and no delivery step; the pen’s Cart / Details / Delivery / Review row is an example only.
+
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
 The pen stepper is not mounted on confirm. Shopware has no stepper and no delivery step.
@@ -15,7 +17,7 @@ The pen stepper is not mounted on confirm. Shopware has no stepper and no delive
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all` (support at every width); `desktop` hides it below `xl`. This page does not pass `desktop` |
 | `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
-| `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
 | `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
@@ -49,16 +51,28 @@ page/checkout/confirm/index.html.twig
 │    ├─ additional
 │    │    ├─ Checkout:Confirm:Comment      (if core.cart.showCustomerComment)
 │    │    └─ Checkout:DeliveryDateSelection
-│    └─ Checkout:Confirm:Aside
-│         ├─ Cart:Summary
+│    └─ Checkout:Confirm:Aside             (sticky card)
+│         ├─ Cart:Summary                  (as-is; row tweaks scoped on this aside)
+│         ├─ arrival range                 (first delivery `deliveryDate`; omit if none)
 │         ├─ Checkout:Confirm:Tos          (tos + revocation)
-│         └─ Form:Handler#confirmOrderForm → hash + Button submit
+│         ├─ Form:Handler#confirmOrderForm → hash + Button submit (`blockResubmit`)
+│         └─ secure note                   (`checkout.confirmSecureNote`)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
 Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
 
 TOS lives **in the aside** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
+
+## Checkout:Confirm:Aside
+
+Summary card for confirm only. Chrome (coral accent, linen border, 12px radius, 28px padding) is on this aside. `Cart:Summary` is nested as-is. Row size, the divider before the grand total, and muted labels are scoped under `.vi-checkout-confirm-aside` so the cart page summary does not change.
+
+Arrival is the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. The block is omitted when the cart has no delivery. This is not the preferred-delivery-date field.
+
+Place order stays `Form:Handler` `#confirmOrderForm` (`frontend.checkout.finish.order`), the cart hash, and `disabled` when `page.cart.errors.blockResubmit`.
+
+Secure note: `checkout.confirmSecureNote`.
 
 ## Scripts (theme-owned — no core form plugins)
 

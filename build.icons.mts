@@ -110,6 +110,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "heart-fill",
       "info-bold",
       "list-bold",
+      "lock-bold",
       "magnifying-glass-bold",
       "minus-bold",
       "number-circle-one-bold",

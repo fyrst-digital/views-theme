@@ -48,6 +48,7 @@
     "checkout": {
         "preferredDeliveryDateHeader": "Wunschlieferdatum",
         "preferredDeliveryDateLabel": "Wunschlieferdatum auswählen",
-        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie."
+        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie.",
+        "confirmSecureNote": "Verschlüsselter Checkout"
     }
 }
