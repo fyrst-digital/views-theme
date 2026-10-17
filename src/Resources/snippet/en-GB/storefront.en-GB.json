@@ -24,7 +24,12 @@
             "fullscreenAriaLabel": "Fullscreen product gallery",
             "dotsAriaLabel": "Gallery slide navigation"
         },
-        "copyright": "Theme made with ❤️ by %brand%"
+        "copyright": "Theme made with ❤️ by %brand%",
+        "lineItems": {
+            "product": "Product",
+            "quantity": "Qty",
+            "total": "Price"
+        }
     },
 
     "variantsGrid": {

@@ -24,7 +24,12 @@
             "fullscreenAriaLabel": "Vollbild-Produktgalerie",
             "dotsAriaLabel": "Galerienavigation"
         },
-        "copyright": "Theme erstellt mit ❤️ von %brand%"
+        "copyright": "Theme erstellt mit ❤️ von %brand%",
+        "lineItems": {
+            "product": "Produkt",
+            "quantity": "Anz.",
+            "total": "Preis"
+        }
     },
 
     "variantsGrid": {
