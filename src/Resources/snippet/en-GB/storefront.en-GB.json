@@ -24,6 +24,13 @@
             "fullscreenAriaLabel": "Fullscreen product gallery",
             "dotsAriaLabel": "Gallery slide navigation"
         },
+        "checkout": {
+            "confirmShippingTitle": "Shipping",
+            "confirmBillingTitle": "Billing",
+            "confirmAddressChange": "Change",
+            "confirmAddressEqualTitle": "Same as delivery",
+            "confirmAddressEqualText": "Invoices are sent to the delivery address."
+        },
         "copyright": "Theme made with ❤️ by %brand%"
     },
 

@@ -3,46 +3,115 @@
     billingAddress = context.customer.activeBillingAddress,
     shippingAddress = context.customer.activeShippingAddress,
     hideShippingAddress = page.hideShippingAddress,
+    addressesEqual = billingAddress and shippingAddress and billingAddress.id is same as(shippingAddress.id),
+    showShippingWarning = true,
+    shippingTitle = 'viewsTheme.checkout.confirmShippingTitle'|trans|sw_sanitize,
+    billingTitle = 'viewsTheme.checkout.confirmBillingTitle'|trans|sw_sanitize,
+    equalTitle = 'viewsTheme.checkout.confirmAddressEqualTitle'|trans|sw_sanitize,
+    equalText = 'viewsTheme.checkout.confirmAddressEqualText'|trans|sw_sanitize,
+    changeLabel = 'viewsTheme.checkout.confirmAddressChange'|trans|sw_sanitize,
     cva = {},
 %}
 
+{% set cards = [] %}
+{% if not hideShippingAddress %}
+    {% set cards = cards|merge([{
+        nest: 'shipping',
+        changeNest: 'shippingChange',
+        title: shippingTitle,
+        address: shippingAddress,
+        equal: false,
+        warn: showShippingWarning,
+        tab: 'shipping',
+        changeTitle: 'account.overviewChangeShipping'|trans|striptags,
+        divided: false,
+    }]) %}
+{% endif %}
+{% set cards = cards|merge([{
+    nest: 'billing',
+    changeNest: 'billingChange',
+    title: billingTitle,
+    address: billingAddress,
+        equal: (addressesEqual and not hideShippingAddress),
+    warn: false,
+    tab: 'billing',
+    changeTitle: 'account.overviewChangeBilling'|trans|striptags,
+    divided: not hideShippingAddress,
+}]) %}
+
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['shippingChange', 'billingChange']) %}
+{% do vi_define_attrs(['shipping', 'billing', 'shippingChange', 'billingChange']) %}
 
-<twig:ViewsTheme:Address:List
+<div
+    {{ attributes }}
     class="{{ vi_class('root') }}"
-    {{ ...attributes.defaults({
-        billingAddress: billingAddress,
-        shippingAddress: shippingAddress,
-        hideShippingAddress: hideShippingAddress,
-        showShippingWarning: true,
-    }).all() }}
 >
-    <twig:block name="shippingActions">
-        <twig:ViewsTheme:Address:Manager:Action
-            class="{{ vi_class('change') }}"
-            {{ ...vi_attrs('shippingChange').defaults({
-                tab: 'shipping',
-                hideShipping: hideShippingAddress,
-                href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
-                color: 'secondary',
-                label: 'account.overviewChangeShipping'|trans|sw_sanitize,
-                title: 'account.overviewChangeShipping'|trans|striptags,
-            }).all() }}
-        />
-    </twig:block>
+    {% block content %}
+        {% for card in cards %}
+            <section
+                class="{{ vi_class('column') }}"
+                {{ vi_attrs(card.nest).defaults({
+                    'data-divided': card.divided ? 'true' : false,
+                }) }}
+            >
+                <div class="{{ vi_class('head') }}">
+                    <h2 class="{{ vi_class('label') }}">
+                        {{ card.title }}
+                    </h2>
 
-    <twig:block name="billingActions">
-        <twig:ViewsTheme:Address:Manager:Action
-            class="{{ vi_class('change') }}"
-            {{ ...vi_attrs('billingChange').defaults({
-                tab: 'billing',
-                hideShipping: hideShippingAddress,
-                href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
-                color: 'secondary',
-                label: 'account.overviewChangeBilling'|trans|sw_sanitize,
-                title: 'account.overviewChangeBilling'|trans|striptags,
-            }).all() }}
-        />
-    </twig:block>
-</twig:ViewsTheme:Address:List>
+                    <twig:ViewsTheme:Address:Manager:Action
+                        class="{{ vi_class('change') }}"
+                        {{ ...vi_attrs(card.changeNest).defaults({
+                            tab: card.tab,
+                            hideShipping: hideShippingAddress,
+                            href: card.address ? path('frontend.account.address.edit.page', { addressId: card.address.id }) : null,
+                            color: 'none',
+                            label: changeLabel,
+                            title: card.changeTitle,
+                            'aria-label': card.changeTitle,
+                        }).all() }}
+                    />
+                </div>
+
+                {% if card.warn and card.address and card.address.country and not card.address.country.shippingAvailable %}
+                    {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                        type: 'warning',
+                        content: 'address.countryNoShippingAlert'|trans|sw_sanitize,
+                    } %}
+                {% endif %}
+
+                <div class="{{ vi_class('lines') }}">
+                    {% if card.equal %}
+                        <p class="{{ vi_class('name') }}">
+                            {{ equalTitle }}
+                        </p>
+                        <p class="{{ vi_class('line') }}">
+                            {{ equalText }}
+                        </p>
+                    {% elseif card.address %}
+                        {% set formatted %}
+                            {% if card.address.country and card.address.country.translated.addressFormat is defined %}
+                                {% sw_include '@Framework/snippets/render.html.twig' with {
+                                    format: card.address.country.translated.addressFormat,
+                                    address: card.address,
+                                } %}
+                            {% endif %}
+                        {% endset %}
+
+                        {% set addressLines = [] %}
+                        {% for addressLine in formatted|replace({'<br/>': '<br>', '<br />': '<br>'})|split('<br>') %}
+                            {% set addressLine = addressLine|trim %}
+                            {% if addressLine is not empty %}
+                                {% set addressLines = addressLines|merge([addressLine]) %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for addressLine in addressLines %}
+                            <p class="{{ vi_class(loop.first ? 'name' : 'line') }}">{{ addressLine|raw }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+        {% endfor %}
+    {% endblock %}
+</div>
