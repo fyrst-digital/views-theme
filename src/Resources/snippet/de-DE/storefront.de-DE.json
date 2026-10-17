@@ -46,6 +46,7 @@
         }
     },
     "checkout": {
+        "beforeYouOrderHeader": "Bevor Sie bestellen",
         "preferredDeliveryDateHeader": "Wunschlieferdatum",
         "preferredDeliveryDateLabel": "Wunschlieferdatum auswählen",
         "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie.",
