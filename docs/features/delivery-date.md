@@ -26,7 +26,7 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside `Checkout:Confirm` additional (next to the customer comment). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md).
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Confirm:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. The confirm layout mounts Additions in the aside above the summary (closing stack on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
 
 Conventions:
 
@@ -72,6 +72,7 @@ Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min`
 | Confirm page subscriber | `src/Subscriber/CheckoutConfirmPageSubscriber.php` |
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
 | Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
+| Additions box | `src/Resources/views/components/Checkout/Confirm/Additions.html.twig` |
 | Success display | `src/Resources/views/components/Checkout/Success/DeliveryDate.html.twig` |
 | JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |
 

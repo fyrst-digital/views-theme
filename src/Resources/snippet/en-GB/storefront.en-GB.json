@@ -39,6 +39,7 @@
         }
     },
     "checkout": {
+        "beforeYouOrderHeader": "Before you order",
         "preferredDeliveryDateHeader": "Preferred delivery date",
         "preferredDeliveryDateLabel": "Choose a preferred delivery date",
         "preferredDeliveryDateHelpText": "Pick a date within the allowed window. This is a preference, not a guarantee."

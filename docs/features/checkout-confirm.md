@@ -6,21 +6,24 @@ Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` /
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
+Stepper is not mounted on confirm, cart, register, success, or edit-order. The pen’s Cart / Details / Delivery / Review row is an example only: Shopware has no stepper and no delivery step.
+
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
-| `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
+| `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, additions, aside |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
 | `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
 | `Checkout:Method` | Payment/shipping radio primitive (`interactive=false` on [success](checkout-success.md)) |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
-| `Checkout:Confirm:Comment` | `Form:Textarea` + comment-only localStorage persist |
-| `Checkout:DeliveryDateSelection` | Remount next to comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
+| `Checkout:Confirm:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
+| `Checkout:Confirm:Comment` | Inside Additions. `Form:Textarea` + comment-only localStorage persist |
+| `Checkout:DeliveryDateSelection` | Inside Additions, next to the comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
 | Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
@@ -44,7 +47,7 @@ page/checkout/confirm/index.html.twig
 │    ├─ Checkout:Confirm:Payment
 │    ├─ Checkout:Confirm:Shipping          (if physical line item)
 │    ├─ Cart:Items grid, showRemoveButton=false, showQuantitySelect=false
-│    ├─ additional
+│    ├─ Checkout:Confirm:Additions        (aside, above the summary; mobile closing stack)
 │    │    ├─ Checkout:Confirm:Comment      (if core.cart.showCustomerComment)
 │    │    └─ Checkout:DeliveryDateSelection
 │    └─ Checkout:Confirm:Aside
@@ -54,7 +57,7 @@ page/checkout/confirm/index.html.twig
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
+Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). `Checkout:Confirm:Additions` sits in that aside above the summary. Mobile: stack, with Additions in the closing stack.
 
 TOS lives **in the aside** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
 
@@ -115,6 +118,21 @@ Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto
 
 Snippets: `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
 
+## Checkout:Confirm:Additions
+
+Pen component `Checkout/Before you order`. White card, 1px linen border, 12px radius, 20px padding, 16px gap between the title and the fields and between the fields. Title snippet `checkout.beforeYouOrderHeader` (20px / 600, ink).
+
+Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card chrome stays on this box. Comment localStorage and the delivery-date subscriber stay on those components.
+
+Renders nothing when the customer comment is disabled and the delivery-date extension is inactive. No `data-component`.
+
+The confirm layout mounts this tag in the aside above the summary. On mobile it sits in the closing stack.
+
+| Prop | Default | Notes |
+|------|---------|--------|
+| `page` | ambient | Delivery-date extension gates the box with the comment config |
+| `showComment` | `core.cart.showCustomerComment` | |
+
 ## Checkout:Confirm:Comment
 
 Shown when `core.cart.showCustomerComment`. `Form:Textarea` name/id = `OrderService::CUSTOMER_COMMENT_KEY`.
@@ -132,7 +150,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment}.*` · `components/Checkout/Method.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Payment,Shipping,Tos,Comment,Additions}.*` · `components/Checkout/Method.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 
