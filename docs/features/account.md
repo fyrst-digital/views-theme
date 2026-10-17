@@ -84,6 +84,8 @@ Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 
+`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `header.supportInfo` shows at every width. The footer is [`Page:Footer:Minimal`](footer.md) (copyright, service menu, VAT; no revocation CTA).
+
 ## Scripts (theme-owned)
 
 | Core (forbidden) | Theme owner |

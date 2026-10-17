@@ -1,28 +1,26 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['revocation', 'bottom']) %}
+{% do vi_define_attrs(['bottom']) %}
 
 <footer
     {{ attributes.without('data-component-template') }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        {% block revocation %}
-            <twig:ViewsTheme:Page:Footer:Revocation
-                class="{{ vi_class('revocation') }}"
-                {{ ...vi_attrs('revocation').defaults({
-                    url: revocationUrl,
-                    visible: showRevocation,
-                }).all() }}
-            />
-        {% endblock %}
-
         {% block bottom %}
             {% if footer %}
                 <twig:ViewsTheme:Page:Footer:Bottom
-                    class="{{ vi_class('bottom') }}"
                     {{ ...vi_attrs('bottom').defaults({
                         serviceMenu: footer.serviceMenu,
                         shippingUrl: shippingUrl,
+                        cva: {
+                            root: { base: 'vi-footer-bottom' },
+                            container: { base: 'vi-footer-bottom__container d-flex flex-column flex-xl-row flex-wrap align-items-xl-center justify-content-xl-between gap-3' },
+                            serviceList: { base: 'vi-footer-bottom__services list-unstyled d-flex flex-wrap align-items-center gap-6 mb-0' },
+                            serviceItem: { base: 'vi-footer-bottom__service' },
+                            serviceLink: { base: 'vi-footer-bottom__service-link fw-normal text-decoration-none' },
+                            vat: { base: 'vi-footer-bottom__vat mb-0 w-100' },
+                            copyright: { base: 'vi-footer-bottom__copyright mb-0 order-first' },
+                        },
                     }).all() }}
                 />
             {% endif %}
