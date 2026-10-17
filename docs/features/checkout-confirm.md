@@ -2,7 +2,7 @@
 
 Theme-owned `/checkout/confirm` (`frontend.checkout.confirm.page`). Guest and empty-cart redirects stay in core `CheckoutController`.
 
-Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items use the cart **grid** layout, read-only — qty stepper / remove stay on the cart page.
+Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items are a read-only `LineItems:Table` — qty stepper / remove stay on the cart page. `Stepper` is not mounted.
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
@@ -11,8 +11,8 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
-| `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home. Confirm passes `supportDisplay="desktop"` so support is hidden below `xl` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, payment then shipping, items, closing stack (`Additions` then `Aside`). No page JS |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
 | `Checkout:Confirm:Payment` / `:Shipping` | Method lists via `Checkout:Method` + `Checkout:Method:Form` |
@@ -30,33 +30,53 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/confirm/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal supportDisplay="desktop"   (inline, no ESI)
 │    ├─ Page:Logo
-│    ├─ header.supportInfo
+│    ├─ header.supportInfo            (hidden below xl on confirm)
 │    └─ Button (frontend.home.page)
-├─ page_checkout → Checkout:Confirm        (no data-component)
+├─ page_checkout → Checkout:Confirm        (no data-component, no Stepper)
 │    ├─ Cart:Flashes
 │    ├─ formViolations → Alert
-│    ├─ Cart:Heading (h1, checkout.confirmHeader + count)
-│    ├─ Checkout:Confirm:Addresses → Address:List
-│    │    ├─ shipping card (unless hideShippingAddress) → Address:Manager:Action
-│    │    └─ billing card (or checkout.addressEqualText) → Address:Manager:Action
-│    ├─ Checkout:Confirm:Payment
-│    ├─ Checkout:Confirm:Shipping          (if physical line item)
-│    ├─ Cart:Items grid, showRemoveButton=false, showQuantitySelect=false
-│    ├─ additional
-│    │    ├─ Checkout:Confirm:Comment      (if core.cart.showCustomerComment)
-│    │    └─ Checkout:DeliveryDateSelection
-│    └─ Checkout:Confirm:Aside
-│         ├─ Cart:Summary
-│         ├─ Checkout:Confirm:Tos          (tos + revocation)
-│         └─ Form:Handler#confirmOrderForm → hash + Button submit
+│    ├─ title
+│    │    ├─ h1 checkout.confirmHeader
+│    │    ├─ header.supportInfo            (below xl only)
+│    │    └─ meta: email · checkout.itemCounter · arrival
+│    ├─ main
+│    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses → Address:List
+│    │    ├─ checkout.confirmMethods
+│    │    │    ├─ Checkout:Confirm:Payment
+│    │    │    └─ Checkout:Confirm:Shipping          (if physical line item)
+│    │    └─ checkout.confirmItems
+│    │         ├─ LineItems:Table   (cart=page.cart, showRemoveButton=false, showQuantitySelect=false)
+│    │         └─ checkout.confirmReturns
+│    └─ close (aside column from xl, stack after main below xl)
+│         ├─ Checkout:Confirm:Additions
+│         │    ├─ Checkout:Confirm:Comment           (if core.cart.showCustomerComment)
+│         │    └─ Checkout:DeliveryDateSelection
+│         └─ Checkout:Confirm:Aside
+│              ├─ Cart:Summary
+│              ├─ Checkout:Confirm:Tos               (tos + revocation)
+│              └─ Form:Handler#confirmOrderForm → hash + Button submit
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-confirm-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
+Desktop (`xl` / 1260px): the title spans the row, then main and a 400px closing column (`--vi-checkout-confirm-aside`, column gap 56px). Title-to-columns gap is 36px. Main section gap is 40px. Root padding is 40px / 64px. The aside stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+
+Mobile: title, addresses, payment and delivery, and items stack with a 28px gap (padding 24px / 32px). `Additions` then `Aside` follow as the closing stack (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront container, shared with the minimal header (pen page inset 160px / 16px).
+
+`Stepper` is not mounted. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
 
 TOS lives **in the aside** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
+
+## Title
+
+`checkout.confirmHeader` is the h1 (30px, 600; from `xl` 36px, 600, letter-spacing `-0.7px`). The meta line under it is the customer email, `checkout.itemCounter` with `page.cart.lineItems|length`, and an arrival range. A middot separates the segments. Meta type is 14px below `xl` and 16px from `xl`.
+
+Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — the dates Shopware already stores on the delivery, not the preferred-delivery-date field. Same month renders as a day plus the later day and month (`checkout.confirmArrival`, pen shape “Arrives 16–20 October”). The arrival segment is omitted when the cart has no delivery.
+
+Below `xl`, `header.supportInfo` sits between the heading and the meta. Confirm passes `supportDisplay="desktop"` so the header hides that same snippet under the desktop breakpoint. Register, success, and edit-order do not pass it, so their header keeps support at every width.
+
+Section titles on the page (`checkout.confirmAddresses`, `checkout.confirmMethods`, `checkout.confirmItems`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
 ## Scripts (theme-owned — no core form plugins)
 

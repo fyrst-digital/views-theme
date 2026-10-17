@@ -41,6 +41,11 @@
     "checkout": {
         "preferredDeliveryDateHeader": "Wunschlieferdatum",
         "preferredDeliveryDateLabel": "Wunschlieferdatum auswählen",
-        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie."
+        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie.",
+        "confirmAddresses": "Adressen",
+        "confirmMethods": "Zahlung und Lieferung",
+        "confirmItems": "Ihre Artikel",
+        "confirmArrival": "Lieferung %earliest%–%latest%",
+        "confirmReturns": "Kostenlose Rückgabe innerhalb von 30 Tagen. Mengenänderungen bleiben im Warenkorb."
     }
 }
