@@ -18,7 +18,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
-| `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping renders only for a physical line item. Payment `framed` defaults to true for edit-order |
+| `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping is a class view-model and renders only for a physical line item. Payment `framed` defaults to true for edit-order |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
 | `Checkout:Confirm:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
@@ -50,7 +50,7 @@ page/checkout/confirm/index.html.twig
 │    │    ├─ Checkout:Methods
 │    │    │    ├─ h2 checkout.confirmMethods
 │    │    │    ├─ Payment:Selection                  (framed=false)
-│    │    │    └─ Shipping:Selection                 (if physical line item)
+│    │    │    └─ Shipping:Selection                 (class VM; if physical line item)
 │    │    └─ checkout.confirmItems
 │    │         ├─ LineItems:Table   (cart=page.cart, showRemoveButton=false, showQuantitySelect=false)
 │    │         └─ checkout.confirmReturns
@@ -145,7 +145,7 @@ From `xl` the card is a row of equal columns (`flex: 1 1 0`). Below `xl` the col
 
 Payment `framed` defaults to `true`, which adds the standalone card (white, 1px linen, 12px radius) used on edit-order. Methods passes `framed` false so the shared card owns that chrome.
 
-Description is every method’s plain text (tags stripped), truncated at 75 characters. Every shipping row passes the quoted amount as `trailing`. The selected row uses that cart delivery’s `shippingCosts.totalPrice`. Other rows are quoted for the current cart (price matrix, weight or volume, and tax) on `page.extensions.viewsTheme.shippingPrices`. Payment rows omit `trailing`.
+Description is every method’s plain text (tags stripped), truncated at 75 characters. `Shipping:Selection` builds those rows in `Selection.php`: the quote comes from `page.extensions.viewsTheme.shippingPrices`, and a missing quote on the selected method uses that cart delivery’s `shippingCosts.totalPrice`. `trailing` is set there too. A total of `0` is `viewsTheme.checkout.shippingFree` (`Free` / `Gratis`). Any other amount is formatted with `CurrencyFormatter` for the current currency and language. A missing quote leaves `trailing` empty. The template only passes each row into `Form:Selection`. Payment rows omit `trailing`.
 
 `Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
 

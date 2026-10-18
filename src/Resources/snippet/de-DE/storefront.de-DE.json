@@ -29,7 +29,8 @@
             "confirmBillingTitle": "Rechnung",
             "confirmAddressChange": "Ändern",
             "confirmAddressEqualTitle": "Wie die Lieferung",
-            "confirmAddressEqualText": "Rechnungen werden an die Lieferadresse gesendet."
+            "confirmAddressEqualText": "Rechnungen werden an die Lieferadresse gesendet.",
+            "shippingFree": "Gratis"
         },
         "copyright": "Theme erstellt mit ❤️ von %brand%",
         "lineItems": {
