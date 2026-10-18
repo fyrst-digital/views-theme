@@ -145,7 +145,7 @@ From `xl` the card is a row of equal columns (`flex: 1 1 0`). Below `xl` the col
 
 Payment `framed` defaults to `true`, which adds the standalone card (white, 1px linen, 12px radius) used on edit-order. Methods passes `framed` false so the shared card owns that chrome.
 
-Description is the selected method’s plain text (tags stripped), truncated at 75 characters. `price` is set only on the selected shipping row, from that cart delivery’s `shippingCosts.totalPrice`. Payment rows and unselected shipping rows omit `price`.
+Description is every method’s plain text (tags stripped), truncated at 75 characters. Every shipping row passes the quoted amount as `trailing`. The selected row uses that cart delivery’s `shippingCosts.totalPrice`. Other rows are quoted for the current cart (price matrix, weight or volume, and tax) on `page.extensions.viewsTheme.shippingPrices`. Payment rows omit `trailing`.
 
 `Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
 

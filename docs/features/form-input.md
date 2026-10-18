@@ -326,7 +326,7 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 
 20px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a stroked `--svg` mask on `.form-check-input` (16 viewBox, `fill: none`, `stroke-width: 2.25`, round cap and join) with `mask-size: 100%`. Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
 
-`label` and `description` are both 16px and use the body line-height. A single-line `label` is regular; when `description` is set, `label` is 600 and `description` stays regular. `tag` defaults to `label`.
+`label` and `description` are both 16px and use the body line-height. `label` has no weight utility. `description` stays regular. `tag` defaults to `label`.
 
 ## Form:Radio
 
@@ -334,7 +334,7 @@ Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle 
 
 ## Form:Selection
 
-Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `price` is trailing 16px / 600.
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The remaining attribute map is merged into that mount, so caller nests (`label:*`, `description:*`, `input:*`, `feedback:*`, and any other) reach the inner control. Title weight is caller-owned. `Payment:Selection` and `Shipping:Selection` pass `label:class="fw-semibold"`. The description stays regular. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `trailing` is 16px / 600.
 
 ```twig
 <twig:ViewsTheme:Form:Selection
@@ -344,7 +344,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
     value="standard"
     label="Standard"
     description="Delivered in 3–5 days"
-    price="€0.00"
+    trailing="€0.00"
 />
 ```
 
@@ -354,7 +354,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
 | `id` | `vi-form-selection-{random}` | Forwarded to the inner control |
 | `name` / `value` | `null` / `'1'` | Native grouping for radios |
 | `label` / `description` | `null` | Title and supporting line |
-| `price` | `null` | Trailing text; omitted when empty |
+| `trailing` | `null` | Trailing text; omitted when empty |
 | `checked` / `disabled` | `false` | |
 | `validationRules` / `violationPath` / `error` / `formViolations` | same as Checkbox | |
 

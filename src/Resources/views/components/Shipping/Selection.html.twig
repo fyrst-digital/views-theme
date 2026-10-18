@@ -42,7 +42,7 @@
                 <twig:block name="content">
                     {% for shipping in page.shippingMethods %}
                         {% set description = null %}
-                        {% if shipping.translated.description and shipping.id is same as(selectedId) %}
+                        {% if shipping.translated.description %}
                             {% set plain = shipping.translated.description|striptags|trim %}
                             {% if plain %}
                                 {% set description = plain|length > 75 ? plain[:75] ~ ' ...' : plain %}
@@ -50,7 +50,12 @@
                         {% endif %}
 
                         {% set price = null %}
-                        {% if shipping.id is same as(selectedId) and page.cart.deliveries is defined %}
+                        {% set viewsTheme = page.extensions.viewsTheme|default(null) %}
+                        {% set quotes = viewsTheme ? viewsTheme.shippingPrices|default(null) : null %}
+                        {% set amount = quotes ? quotes.get(shipping.id) : null %}
+                        {% if amount is not null %}
+                            {% set price = amount|currency %}
+                        {% elseif shipping.id is same as(selectedId) and page.cart.deliveries is defined %}
                             {% set matchedDelivery = page.cart.deliveries|filter(delivery => delivery.shippingMethod.id|default(null) is same as(shipping.id))|first %}
                             {% if matchedDelivery and matchedDelivery.shippingCosts %}
                                 {% set amount = matchedDelivery.shippingCosts.totalPrice %}
@@ -66,8 +71,9 @@
                             name="shippingMethodId"
                             value="{{ shipping.id }}"
                             label="{{ shipping.translated.name }}"
+                            label:class="fw-semibold"
                             :description="description"
-                            :price="price"
+                            :trailing="price"
                             :checked="shipping.id is same as(selectedId)"
                             class="{{ vi_class('method') }}"
                             {{ ...vi_attrs('method').all() }}

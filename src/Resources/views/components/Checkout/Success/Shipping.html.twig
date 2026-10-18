@@ -27,7 +27,7 @@
                 id="{{ 'shippingMethod' ~ methodId }}"
                 label="{{ name }}"
                 :description="description"
-                :price="formattedPrice"
+                :trailing="formattedPrice"
                 :checked="true"
                 class="{{ vi_class('method') }}"
                 {{ ...vi_attrs('method').all() }}

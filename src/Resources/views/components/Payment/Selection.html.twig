@@ -42,7 +42,7 @@
             <twig:block name="content">
                 {% for payment in page.paymentMethods %}
                     {% set description = null %}
-                    {% if payment.translated.description and payment.id is same as(selectedId) %}
+                    {% if payment.translated.description %}
                         {% set plain = payment.translated.description|striptags|trim %}
                         {% if plain %}
                             {% set description = plain|length > 75 ? plain[:75] ~ ' ...' : plain %}
@@ -55,6 +55,7 @@
                         name="paymentMethodId"
                         value="{{ payment.id }}"
                         label="{{ payment.translated.name }}"
+                        label:class="fw-semibold"
                         :description="description"
                         :checked="payment.id is same as(selectedId)"
                         class="{{ vi_class('method') }}"
