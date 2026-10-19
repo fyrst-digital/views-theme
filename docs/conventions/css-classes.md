@@ -107,7 +107,7 @@ root: { base: 'vi-line-item__unit-price d-none d-xl-block' }
 
 ### Bootstrap names only
 
-This theme’s utilities are Bootstrap (see `override.scss`).
+This theme’s utilities are Bootstrap (see `scss/overrides/_utilities.scss`, imported from `override.scss`).
 
 | Use | Not |
 |-----|-----|

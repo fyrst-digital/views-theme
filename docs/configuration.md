@@ -64,6 +64,8 @@ Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
 **Appearance utility** (Bootstrap `$utilities`): `.appearance-none` is the theme Bootstrap class for `appearance: none`.
 
+**Text muted utility** (Bootstrap color utility): `.text-muted` sets `color` to the theme field `muted` (`$muted`, `#66605D`). `scss/_utilities.scss` merges that value into the color utility and generates the group again, after Storefront. Not responsive. `.text-opacity-*` does not tint it.
+
 **Font family utility** (Bootstrap `$utilities`):
 
 | Class | Declaration | Source |
@@ -76,7 +78,7 @@ Not responsive. Use these in CVA / `class` the same way as `.icon-size-*`.
 
 **Column count utility** (Bootstrap `$utilities`, `grid-template-columns`):
 
-The count is `$grid-columns` in `scss/override.scss` (default `12`). The same variable is Bootstrap’s flex-grid column count.
+The count is `$grid-columns` in `scss/overrides/_utilities.scss` (default `12`). The same variable is Bootstrap’s flex-grid column count.
 
 | Class | Declaration |
 |-------|-------------|
