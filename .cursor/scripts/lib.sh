@@ -309,6 +309,26 @@ ensure_php() {
     php8.3-zip
 }
 
+ensure_composer() {
+  if command -v composer >/dev/null 2>&1; then
+    return 0
+  fi
+
+  local setup signature actual
+  setup="$(mktemp)"
+  curl -fsSL -o "$setup" https://getcomposer.org/installer
+  signature="$(curl -fsSL https://composer.github.io/installer.sig)"
+  actual="$(php8.3 -r "echo hash_file('sha384', '${setup}');")"
+  if [[ "$signature" != "$actual" ]]; then
+    rm -f "$setup"
+    echo "Composer installer checksum mismatch" >&2
+    return 1
+  fi
+
+  sudo php8.3 "$setup" --install-dir=/usr/local/bin --filename=composer --quiet
+  rm -f "$setup"
+}
+
 ensure_mariadb() {
   if ! command -v mariadbd >/dev/null 2>&1; then
     sudo DEBIAN_FRONTEND=noninteractive apt-get update
@@ -399,7 +419,11 @@ ensure_storefront() {
     return 0
   fi
   write_php_router
-  php -S 127.0.0.1:8000 -t "$SHOP_ROOT/public" "$SHOP_ROOT/dev-router.php" >/tmp/shopware-php.log 2>&1 &
+  local php_bin="php"
+  if ! command -v php >/dev/null 2>&1; then
+    php_bin="php8.3"
+  fi
+  "$php_bin" -S 127.0.0.1:8000 -t "$SHOP_ROOT/public" "$SHOP_ROOT/dev-router.php" >/tmp/shopware-php.log 2>&1 &
 }
 
 wait_for_storefront() {

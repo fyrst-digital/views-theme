@@ -12,6 +12,7 @@ ROOT="$(plugin_root)"
 
 ensure_mariadb
 ensure_php
+ensure_composer
 ensure_shopware_cli
 install_script_fallback
 
