@@ -75,6 +75,7 @@ src/
 | `VariantsLoader` | Variants grid data for PDP extension |
 | `ProductDetailUrlBuilder` | Listing / PDP product URLs |
 | `ProductPriceResolver` | Price view-model DTO |
+| `ShippingMethodPriceResolver` | Confirm shipping quotes: cart delivery total when present, otherwise `DeliveryCalculator` on a scratch cart |
 | `ThemeParametersResolver` | Resolve active `theme.json` → Twig `themeParameters` (icons, etc.; not CSS assignment) |
 | `FooterCmsUrlResolver` | Footer contact / revocation / shipping CMS URLs from service menu or nav `seoUrl` |
 
@@ -93,7 +94,7 @@ src/
 | Subscriber | Event / role |
 |------------|----------------|
 | `ProductPageSubscriber` | `ProductPageLoadedEvent` → `page.extensions.viewsTheme.variantsGrid` |
-| `CheckoutConfirmPageSubscriber` | `CheckoutConfirmPageLoadedEvent` → `deliveryDate` extension |
+| `CheckoutConfirmPageSubscriber` | `CheckoutConfirmPageLoadedEvent` → `deliveryDate` and `shippingPrices` extensions |
 | `CheckoutFinishPageSubscriber` | `CheckoutFinishPageOrderCriteriaEvent` → payment/shipping method `media` + `orderCustomer` |
 | `CheckoutOrderPlacedSubscriber` | `CheckoutOrderPlacedEvent` → persist preferred delivery date |
 | `CartContextSubscriber` | `StorefrontRenderEvent` → cart on SCC / `window.cartCount` |
@@ -106,6 +107,7 @@ src/
 |-----|------------|---------|
 | `variantsGrid` | `ProductPageSubscriber` | Variants grid payload on PDP |
 | `deliveryDate` | `CheckoutConfirmPageSubscriber` | Preferred delivery date field config |
+| `shippingPrices` | `CheckoutConfirmPageSubscriber` | Method id → shipping total for confirm selection rows |
 
 ## Storefront routes
 

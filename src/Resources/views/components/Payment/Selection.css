@@ -1,0 +1,9 @@
+.vi-payment-selection__title {
+  font-size: var(--vi-payment-selection-title, 15px);
+}
+
+@media (min-width: 1260px) {
+  .vi-payment-selection__title {
+    --vi-payment-selection-title: 16px;
+  }
+}

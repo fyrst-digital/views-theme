@@ -88,7 +88,7 @@ Desktop chrome starts at theme **`xl` (1260px)**. Below `xl` the mobile frame ap
 | Active | Mark fill `--dark`, glyph `--white`, label `--body-color`, label weight 600 | same |
 | Connector | One track through the mark centers, 1px, top 10px | 1px rules between steps |
 
-Inactive ash has no Bootstrap color utility, so it is a token fallback. 6px gap and 11px type have no utility, so they stay in component CSS. Breakpoint chrome that has a utility (`gap-xl-3`, `flex-xl-row`, `d-xl-none`, `d-xl-block`, `fw-medium` / `fw-semibold`) is CVA.
+Inactive ash is `.text-muted` (theme `$muted`). The mark glyph and label stay on component tokens. 6px gap and 11px type have no utility, so they stay in component CSS. Breakpoint chrome that has a utility (`gap-xl-3`, `flex-xl-row`, `d-xl-none`, `d-xl-block`, `fw-medium` / `fw-semibold`) is CVA.
 
 The mobile track runs from the center of the first mark to the center of the last (`--vi-stepper-count` on the track). Marks sit above it.
 

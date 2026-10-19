@@ -4,7 +4,7 @@
     name = null,
     label = null,
     description = null,
-    price = null,
+    trailing = null,
     value = '1',
     checked = false,
     disabled = false,
@@ -16,7 +16,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['price']) %}
+{% do vi_define_attrs(['trailing']) %}
 
 <label
     {{ attributes }}
@@ -27,7 +27,7 @@
         checkbox: 'ViewsTheme:Form:Checkbox',
     }[type]|default('ViewsTheme:Form:Radio') %}
 
-    {{ component(control, {
+    {{ component(control, attributes.all()|merge({
         tag: 'div',
         class: 'flex-fill min-w-0',
         id: id,
@@ -41,14 +41,14 @@
         violationPath: violationPath,
         error: error,
         formViolations: formViolations,
-    }) }}
+    })) }}
 
-    {% if price is not empty %}
+    {% if trailing is not empty %}
         <span
-            {{ vi_attrs('price') }}
-            class="{{ vi_class('price') }}"
+            {{ vi_attrs('trailing') }}
+            class="{{ vi_class('trailing') }}"
         >
-            {{ price }}
+            {{ trailing }}
         </span>
     {% endif %}
 </label>

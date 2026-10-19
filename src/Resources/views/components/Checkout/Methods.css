@@ -1,0 +1,10 @@
+.vi-checkout-methods__panel {
+  grid-template-columns: var(--vi-checkout-methods-cols, repeat(1, minmax(0, 1fr)));
+  grid-template-rows: var(--vi-checkout-methods-rows, auto);
+}
+
+.vi-checkout-methods__divider {
+  height: var(--vi-checkout-methods-divide-y, 1px);
+  width: var(--vi-checkout-methods-divide-x, auto);
+  background-color: var(--vi-checkout-methods-divide-color, var(--border-color));
+}

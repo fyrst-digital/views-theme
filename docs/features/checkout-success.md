@@ -96,7 +96,7 @@ Class VMs. One method row each — not the confirm radio lists (`page.paymentMet
 
 Shipping renders nothing when `visible` is false (no delivery / no method).
 
-Finish rows are `Form:Selection` (`type="radio"`, `checked`, no `name`). Description is plain text truncated at 75 characters (same as confirm). Shipping passes `price` from that delivery’s `shippingCosts.totalPrice` (order currency when loaded). Payment omits `price`.
+Finish rows are `Form:Selection` (`type="radio"`, `checked`, no `name`). Description is plain text truncated at 75 characters (same as confirm). Shipping passes `trailing` from that delivery’s `shippingCosts.totalPrice` (order currency when loaded). Payment omits `trailing`.
 
 ## Line items on the order
 
