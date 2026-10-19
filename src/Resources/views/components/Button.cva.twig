@@ -1,6 +1,6 @@
 {
     root: {
-        base: 'btn align-items-center d-inline-flex',
+        base: 'align-items-center d-inline-flex',
         variants: {
             color: {
                 none: '',
@@ -29,6 +29,10 @@
             },
             full: {
                 true: 'w-100'
+            },
+            link: {
+                true: 'p-0 fw-medium link-offset-2 link-underline-opacity-25 link-underline-opacity-50-hover',
+                false: 'btn',
             }
         },
         compoundVariants: [{
@@ -43,8 +47,20 @@
             square: [true],
             size: ['lg'],
             class: 'p-3',
+        }, {
+            square: [true],
+            link: [true],
+            class: 'p-0',
+        }, {
+            link: [true],
+            color: ['none'],
+            class: 'link-dark link-underline-dark',
+        }, {
+            link: [true],
+            size: ['sm'],
+            class: 'fs-6',
         }],
     },
-    icon: { base: '' },
-    label: { base: '' },
+    icon: { base: 'btn-icon' },
+    label: { base: 'btn-label' },
 }
