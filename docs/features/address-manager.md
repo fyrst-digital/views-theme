@@ -26,7 +26,7 @@ Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** p
 Confirm change:
 
 ```
-Checkout:Confirm:Addresses → Address:List
+Checkout:Confirm:Addresses   (class VM)
     └─ Address:Manager:Action   (shipping and/or billing)
 ```
 

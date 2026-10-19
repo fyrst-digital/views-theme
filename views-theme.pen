@@ -5,7 +5,7 @@
       "type": "frame",
       "id": "TifQP",
       "x": 0,
-      "y": 0,
+      "y": 670,
       "name": "Desktop / Checkout: confirm order",
       "clip": true,
       "width": 1920,
@@ -698,7 +698,7 @@
       "type": "frame",
       "id": "zm5cu",
       "x": 2180,
-      "y": 0,
+      "y": 670,
       "name": "Mobile / Checkout: confirm order",
       "clip": true,
       "width": 375,
@@ -23232,6 +23232,1069 @@
                                       "fontWeight": "normal"
                                     }
                                   ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YHPNy",
+              "name": "Address manager",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fjoT6",
+                  "name": "Heading",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MrZy4",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Address manager",
+                      "fontFamily": "$font",
+                      "fontSize": 22,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "tJX8p",
+                      "name": "Rule",
+                      "fill": "$linen",
+                      "width": "fill_container",
+                      "height": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y7uIq",
+                  "name": "Variants",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 40,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YXdLI",
+                      "name": "List",
+                      "width": 720,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "XQyyn",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "List",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Tnovh",
+                          "name": "Address/Manager/List",
+                          "reusable": true,
+                          "clip": true,
+                          "width": 720,
+                          "fill": "$white",
+                          "cornerRadius": 16,
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#2E282A1A",
+                            "offset": {
+                              "x": 0,
+                              "y": 12
+                            },
+                            "blur": 32
+                          },
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "DElFf",
+                              "name": "Header",
+                              "width": "fill_container",
+                              "stroke": "$linen",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": "$spacing-sm",
+                              "padding": "$spacing-md",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Q1MO5n",
+                                  "name": "Title",
+                                  "fill": "$ink",
+                                  "content": "Addresses",
+                                  "fontFamily": "$font",
+                                  "fontSize": "$font-size-lg",
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "GhEFu",
+                                  "name": "Close",
+                                  "width": 32,
+                                  "height": 32,
+                                  "cornerRadius": 8,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "v9B2iw",
+                                      "name": "Icon",
+                                      "width": 16,
+                                      "height": 16,
+                                      "icon": "x",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "H6Eow0",
+                              "name": "Body",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "qZDty",
+                                  "name": "Tabs",
+                                  "width": "fill_container",
+                                  "stroke": "$linen",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "strokeAlignment": "inner",
+                                  "gap": "$spacing-lg",
+                                  "padding": [
+                                    4,
+                                    16,
+                                    0,
+                                    16
+                                  ],
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "SCvBC",
+                                      "name": "Shipping Tab",
+                                      "stroke": "$ink",
+                                      "strokeWidth": {
+                                        "bottom": 2
+                                      },
+                                      "strokeAlignment": "inner",
+                                      "layout": "vertical",
+                                      "padding": [
+                                        12,
+                                        4
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "OKDmD",
+                                          "name": "Label",
+                                          "fill": "$ink",
+                                          "content": "Shipping address",
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-sm",
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "u4VwbQ",
+                                      "name": "Billing Tab",
+                                      "layout": "vertical",
+                                      "padding": [
+                                        12,
+                                        4
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "riJ1T",
+                                          "name": "Label",
+                                          "fill": "$ash",
+                                          "content": "Billing address",
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-sm",
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xJvI7",
+                                  "name": "Pane",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "gap": "$spacing-md",
+                                  "padding": "$spacing-md",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "t8nLe",
+                                      "name": "Current Title",
+                                      "fill": "$ink",
+                                      "content": "Current shipping address",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-md",
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "sPjRu",
+                                      "name": "Address/Manager/Item",
+                                      "reusable": true,
+                                      "width": "fill_container",
+                                      "gap": "$spacing-xs",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "LFzH0",
+                                          "name": "Card",
+                                          "width": "fill_container",
+                                          "fill": "$white",
+                                          "cornerRadius": "$border-radius-lg",
+                                          "stroke": "$ink",
+                                          "strokeWidth": 1,
+                                          "strokeAlignment": "inner",
+                                          "gap": "$spacing-sm",
+                                          "padding": "$spacing-sm",
+                                          "children": [
+                                            {
+                                              "type": "frame",
+                                              "id": "k0IBw",
+                                              "name": "Radio",
+                                              "width": 20,
+                                              "height": 20,
+                                              "fill": "$coral",
+                                              "cornerRadius": 10,
+                                              "stroke": "$coral",
+                                              "strokeWidth": 1.5,
+                                              "strokeAlignment": "inner",
+                                              "justifyContent": "center",
+                                              "alignItems": "center",
+                                              "children": [
+                                                {
+                                                  "type": "ellipse",
+                                                  "id": "BQNwS",
+                                                  "name": "Dot",
+                                                  "fill": "$white",
+                                                  "width": 8,
+                                                  "height": 8
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "sqYxd",
+                                              "name": "Body",
+                                              "width": "fill_container",
+                                              "layout": "vertical",
+                                              "gap": "$spacing-xs",
+                                              "children": [
+                                                {
+                                                  "type": "frame",
+                                                  "id": "By99y",
+                                                  "name": "Lines",
+                                                  "width": "fill_container",
+                                                  "layout": "vertical",
+                                                  "gap": 2,
+                                                  "children": [
+                                                    {
+                                                      "type": "text",
+                                                      "id": "zTQn5",
+                                                      "name": "Name",
+                                                      "fill": "$ink",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Lena Hoffmann",
+                                                      "fontFamily": "$font",
+                                                      "fontSize": "$font-size-md",
+                                                      "fontWeight": "600"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "knDPy",
+                                                      "name": "Street",
+                                                      "fill": "$ash",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Auguststraße 24",
+                                                      "fontFamily": "$font",
+                                                      "fontSize": "$font-size-sm",
+                                                      "fontWeight": "normal"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "ubYzw",
+                                                      "name": "City",
+                                                      "fill": "$ash",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "10117 Berlin",
+                                                      "fontFamily": "$font",
+                                                      "fontSize": "$font-size-sm",
+                                                      "fontWeight": "normal"
+                                                    },
+                                                    {
+                                                      "type": "text",
+                                                      "id": "JzEYo",
+                                                      "name": "Country",
+                                                      "fill": "$ash",
+                                                      "textGrowth": "fixed-width",
+                                                      "width": "fill_container",
+                                                      "content": "Germany",
+                                                      "fontFamily": "$font",
+                                                      "fontSize": "$font-size-sm",
+                                                      "fontWeight": "normal"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "frame",
+                                                  "id": "uo0kq",
+                                                  "name": "Badge",
+                                                  "fill": "$sage-pale",
+                                                  "cornerRadius": 99,
+                                                  "stroke": "$linen",
+                                                  "strokeWidth": 1,
+                                                  "strokeAlignment": "inner",
+                                                  "padding": [
+                                                    2,
+                                                    8
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "type": "text",
+                                                      "id": "qavu3",
+                                                      "name": "Label",
+                                                      "fill": "$ink",
+                                                      "content": "Default",
+                                                      "fontFamily": "$font",
+                                                      "fontSize": 12,
+                                                      "fontWeight": "600"
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "uJYh0",
+                                          "name": "Menu",
+                                          "width": 32,
+                                          "height": 32,
+                                          "cornerRadius": 8,
+                                          "justifyContent": "center",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon",
+                                              "id": "R9GkN",
+                                              "name": "Icon",
+                                              "width": 16,
+                                              "height": 16,
+                                              "icon": "chevron-down",
+                                              "library": "lucide",
+                                              "fill": "$ash"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "m6CICb",
+                                      "name": "Available",
+                                      "width": "fill_container",
+                                      "layout": "vertical",
+                                      "gap": "$spacing-sm",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "vfYN9",
+                                          "name": "Toolbar",
+                                          "width": "fill_container",
+                                          "gap": "$spacing-sm",
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "id": "VaXEx",
+                                              "type": "ref",
+                                              "ref": "b5WQYy",
+                                              "name": "Search",
+                                              "width": "fill_container",
+                                              "descendants": {
+                                                "lcQcy": {
+                                                  "enabled": false
+                                                },
+                                                "OuyIP": {
+                                                  "content": "Search addresses"
+                                                },
+                                                "xJrtM": {
+                                                  "enabled": false,
+                                                  "textGrowth": "auto",
+                                                  "width": 80
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "id": "Z81n6",
+                                              "type": "ref",
+                                              "ref": "DzIeP",
+                                              "name": "Add address",
+                                              "descendants": {
+                                                "IxKrC": {
+                                                  "icon": "plus"
+                                                },
+                                                "dNNK6": {
+                                                  "content": "Add address"
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "E75qTM",
+                                          "name": "Items",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": "$spacing-sm",
+                                          "children": [
+                                            {
+                                              "id": "SyQbg",
+                                              "type": "ref",
+                                              "ref": "sPjRu",
+                                              "name": "Jonas Berger",
+                                              "width": "fill_container",
+                                              "alignItems": "center",
+                                              "descendants": {
+                                                "LFzH0": {
+                                                  "stroke": "$linen"
+                                                },
+                                                "k0IBw": {
+                                                  "fill": "$linen",
+                                                  "stroke": "$line",
+                                                  "strokeWidth": 1
+                                                },
+                                                "zTQn5": {
+                                                  "content": "Jonas Berger"
+                                                },
+                                                "knDPy": {
+                                                  "content": "Kastanienallee 12"
+                                                },
+                                                "ubYzw": {
+                                                  "content": "10435 Berlin"
+                                                },
+                                                "uo0kq": {
+                                                  "enabled": false
+                                                }
+                                              }
+                                            },
+                                            {
+                                              "id": "ErOS7",
+                                              "type": "ref",
+                                              "ref": "sPjRu",
+                                              "name": "Mara Klein",
+                                              "width": "fill_container",
+                                              "alignItems": "start",
+                                              "descendants": {
+                                                "LFzH0": {
+                                                  "stroke": "$linen"
+                                                },
+                                                "k0IBw": {
+                                                  "fill": "$linen",
+                                                  "stroke": "$line",
+                                                  "strokeWidth": 1
+                                                },
+                                                "zTQn5": {
+                                                  "content": "Mara Klein"
+                                                },
+                                                "knDPy": {
+                                                  "content": "Schönhauser Allee 80"
+                                                },
+                                                "ubYzw": {
+                                                  "content": "10439 Berlin"
+                                                },
+                                                "uo0kq": {
+                                                  "enabled": false
+                                                },
+                                                "uJYh0": {
+                                                  "type": "frame",
+                                                  "id": "h4AT6",
+                                                  "name": "Menu Open",
+                                                  "layout": "vertical",
+                                                  "gap": 4,
+                                                  "alignItems": "end",
+                                                  "children": [
+                                                    {
+                                                      "type": "frame",
+                                                      "id": "Ae1aN",
+                                                      "name": "Toggle",
+                                                      "width": 32,
+                                                      "height": 32,
+                                                      "fill": "$ivory",
+                                                      "cornerRadius": 8,
+                                                      "justifyContent": "center",
+                                                      "alignItems": "center",
+                                                      "children": [
+                                                        {
+                                                          "type": "icon",
+                                                          "id": "P4ulUT",
+                                                          "name": "Icon",
+                                                          "width": 16,
+                                                          "height": 16,
+                                                          "icon": "chevron-down",
+                                                          "library": "lucide",
+                                                          "fill": "$ink"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "type": "frame",
+                                                      "id": "BLLQZ",
+                                                      "name": "Menu Panel",
+                                                      "width": 228,
+                                                      "fill": "$white",
+                                                      "cornerRadius": 8,
+                                                      "stroke": "$linen",
+                                                      "strokeWidth": 1,
+                                                      "strokeAlignment": "inner",
+                                                      "effect": {
+                                                        "type": "shadow",
+                                                        "shadowType": "outer",
+                                                        "color": "#2E282A14",
+                                                        "offset": {
+                                                          "x": 0,
+                                                          "y": 4
+                                                        },
+                                                        "blur": 12
+                                                      },
+                                                      "layout": "vertical",
+                                                      "padding": 4,
+                                                      "children": [
+                                                        {
+                                                          "type": "frame",
+                                                          "id": "u54xE",
+                                                          "name": "Edit",
+                                                          "width": "fill_container",
+                                                          "cornerRadius": 6,
+                                                          "gap": 8,
+                                                          "padding": [
+                                                            8,
+                                                            10
+                                                          ],
+                                                          "alignItems": "center",
+                                                          "children": [
+                                                            {
+                                                              "type": "icon",
+                                                              "id": "z0xZbz",
+                                                              "name": "Icon",
+                                                              "width": 16,
+                                                              "height": 16,
+                                                              "icon": "pencil",
+                                                              "library": "lucide",
+                                                              "fill": "$ink"
+                                                            },
+                                                            {
+                                                              "type": "text",
+                                                              "id": "BdbMx",
+                                                              "name": "Label",
+                                                              "fill": "$ink",
+                                                              "content": "Edit",
+                                                              "fontFamily": "$font",
+                                                              "fontSize": "$font-size-sm",
+                                                              "fontWeight": "normal"
+                                                            }
+                                                          ]
+                                                        },
+                                                        {
+                                                          "type": "frame",
+                                                          "id": "D0a09j",
+                                                          "name": "Set as default shipping",
+                                                          "width": "fill_container",
+                                                          "cornerRadius": 6,
+                                                          "gap": 8,
+                                                          "padding": [
+                                                            8,
+                                                            10
+                                                          ],
+                                                          "alignItems": "center",
+                                                          "children": [
+                                                            {
+                                                              "type": "icon",
+                                                              "id": "AGEK2",
+                                                              "name": "Icon",
+                                                              "width": 16,
+                                                              "height": 16,
+                                                              "icon": "check",
+                                                              "library": "lucide",
+                                                              "fill": "$ink"
+                                                            },
+                                                            {
+                                                              "type": "text",
+                                                              "id": "n3Zbx",
+                                                              "name": "Label",
+                                                              "fill": "$ink",
+                                                              "content": "Set as default shipping",
+                                                              "fontFamily": "$font",
+                                                              "fontSize": "$font-size-sm",
+                                                              "fontWeight": "normal"
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "BeRt1",
+                              "name": "Footer",
+                              "width": "fill_container",
+                              "stroke": "$linen",
+                              "strokeWidth": {
+                                "top": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": "$spacing-sm",
+                              "padding": "$spacing-md",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "id": "fhcpn",
+                                  "type": "ref",
+                                  "ref": "DzIeP",
+                                  "name": "Close",
+                                  "descendants": {
+                                    "IxKrC": {
+                                      "enabled": false
+                                    },
+                                    "dNNK6": {
+                                      "content": "Close"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "jWdA0",
+                                  "type": "ref",
+                                  "ref": "swDlW",
+                                  "name": "Change address",
+                                  "descendants": {
+                                    "hWhUd": {
+                                      "enabled": false
+                                    },
+                                    "D5ADn": {
+                                      "content": "Change address"
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zdQ9M",
+                      "name": "Editor",
+                      "width": 720,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DyyN0",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Add address",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iu9RQ",
+                          "name": "Address/Manager/Editor",
+                          "reusable": true,
+                          "clip": true,
+                          "width": 720,
+                          "fill": "$white",
+                          "cornerRadius": 16,
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#2E282A1A",
+                            "offset": {
+                              "x": 0,
+                              "y": 12
+                            },
+                            "blur": 32
+                          },
+                          "layout": "vertical",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "xJHQr",
+                              "name": "Header",
+                              "width": "fill_container",
+                              "stroke": "$linen",
+                              "strokeWidth": {
+                                "bottom": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": "$spacing-sm",
+                              "padding": "$spacing-md",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "eeYce",
+                                  "name": "Titles",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "r1hBV",
+                                      "name": "Title",
+                                      "fill": "$ink",
+                                      "content": "Add address",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-lg",
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "d6dfG",
+                                      "name": "Subtitle",
+                                      "fill": "$ash",
+                                      "content": "Shipping address",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-sm",
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "aGi6f",
+                                  "name": "Close",
+                                  "width": 32,
+                                  "height": 32,
+                                  "cornerRadius": 8,
+                                  "justifyContent": "center",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "odu08",
+                                      "name": "Icon",
+                                      "width": 16,
+                                      "height": 16,
+                                      "icon": "x",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "lFChv",
+                              "name": "Form",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": "$spacing-md",
+                              "padding": "$spacing-md",
+                              "children": [
+                                {
+                                  "id": "piugh",
+                                  "type": "ref",
+                                  "ref": "LIIKj",
+                                  "name": "Salutation",
+                                  "width": "fill_container",
+                                  "descendants": {
+                                    "VD4vY": {
+                                      "content": "Salutation"
+                                    },
+                                    "m6Sgcr": {
+                                      "content": "Please select"
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Hacnr",
+                                  "name": "Name",
+                                  "width": "fill_container",
+                                  "gap": "$spacing-sm",
+                                  "children": [
+                                    {
+                                      "id": "OE1Tx",
+                                      "type": "ref",
+                                      "ref": "b5WQYy",
+                                      "name": "First name",
+                                      "width": "fill_container",
+                                      "descendants": {
+                                        "R8UUZW": {
+                                          "content": "First name"
+                                        },
+                                        "WByZx": {
+                                          "enabled": true
+                                        },
+                                        "OuyIP": {
+                                          "content": "Jane"
+                                        },
+                                        "xJrtM": {
+                                          "textGrowth": "auto",
+                                          "width": 80,
+                                          "enabled": false
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "id": "Zg88a",
+                                      "type": "ref",
+                                      "ref": "b5WQYy",
+                                      "name": "Last name",
+                                      "width": "fill_container",
+                                      "descendants": {
+                                        "R8UUZW": {
+                                          "content": "Last name"
+                                        },
+                                        "WByZx": {
+                                          "enabled": true
+                                        },
+                                        "OuyIP": {
+                                          "content": "Doe"
+                                        },
+                                        "xJrtM": {
+                                          "textGrowth": "auto",
+                                          "width": 80,
+                                          "enabled": false
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "pqOVf",
+                                  "type": "ref",
+                                  "ref": "b5WQYy",
+                                  "name": "Street",
+                                  "width": "fill_container",
+                                  "descendants": {
+                                    "R8UUZW": {
+                                      "content": "Street"
+                                    },
+                                    "WByZx": {
+                                      "enabled": true
+                                    },
+                                    "OuyIP": {
+                                      "content": "Street and number"
+                                    },
+                                    "xJrtM": {
+                                      "textGrowth": "auto",
+                                      "width": 80,
+                                      "enabled": false
+                                    }
+                                  }
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "g6pUT",
+                                  "name": "Place",
+                                  "width": "fill_container",
+                                  "gap": "$spacing-sm",
+                                  "children": [
+                                    {
+                                      "id": "qbb3M",
+                                      "type": "ref",
+                                      "ref": "b5WQYy",
+                                      "name": "Postal code",
+                                      "width": 180,
+                                      "descendants": {
+                                        "R8UUZW": {
+                                          "content": "Postal code"
+                                        },
+                                        "WByZx": {
+                                          "enabled": true
+                                        },
+                                        "OuyIP": {
+                                          "content": "10115"
+                                        },
+                                        "xJrtM": {
+                                          "textGrowth": "auto",
+                                          "width": 80,
+                                          "enabled": false
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "id": "LrNnt",
+                                      "type": "ref",
+                                      "ref": "b5WQYy",
+                                      "name": "City",
+                                      "width": "fill_container",
+                                      "descendants": {
+                                        "R8UUZW": {
+                                          "content": "City"
+                                        },
+                                        "WByZx": {
+                                          "enabled": true
+                                        },
+                                        "OuyIP": {
+                                          "content": "Berlin"
+                                        },
+                                        "xJrtM": {
+                                          "textGrowth": "auto",
+                                          "width": 80,
+                                          "enabled": false
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "id": "cx10p",
+                                  "type": "ref",
+                                  "ref": "NF6Ny",
+                                  "name": "Country",
+                                  "width": "fill_container",
+                                  "descendants": {
+                                    "PnafU": {
+                                      "content": "Country"
+                                    },
+                                    "GrIiP": {
+                                      "content": "Germany"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "pQ3VO",
+                                  "type": "ref",
+                                  "ref": "b5WQYy",
+                                  "name": "Phone",
+                                  "width": "fill_container",
+                                  "descendants": {
+                                    "R8UUZW": {
+                                      "content": "Phone"
+                                    },
+                                    "WByZx": {
+                                      "enabled": false
+                                    },
+                                    "OuyIP": {
+                                      "content": "Optional"
+                                    },
+                                    "xJrtM": {
+                                      "textGrowth": "auto",
+                                      "width": 80,
+                                      "enabled": false
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "yaiwe",
+                              "name": "Footer",
+                              "width": "fill_container",
+                              "stroke": "$linen",
+                              "strokeWidth": {
+                                "top": 1
+                              },
+                              "strokeAlignment": "inner",
+                              "gap": "$spacing-sm",
+                              "padding": "$spacing-md",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "id": "EofOv",
+                                  "type": "ref",
+                                  "ref": "DzIeP",
+                                  "name": "Back",
+                                  "descendants": {
+                                    "IxKrC": {
+                                      "enabled": false
+                                    },
+                                    "dNNK6": {
+                                      "content": "Back"
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "CTiSB",
+                                  "type": "ref",
+                                  "ref": "swDlW",
+                                  "name": "Save",
+                                  "descendants": {
+                                    "hWhUd": {
+                                      "enabled": false
+                                    },
+                                    "D5ADn": {
+                                      "content": "Save address"
+                                    }
+                                  }
                                 }
                               ]
                             }

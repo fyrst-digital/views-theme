@@ -10,7 +10,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 |-------|----------------|
 | `Address` | Formatted lines. Wraps core `address.html.twig` so plugin overrides of that include still apply |
 | `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
-| `Checkout:Confirm:Addresses` | Adapter: customer `active*` addresses + `Address:Manager:Action` in the action slots |
+| `Checkout:Confirm:Addresses` | Class VM for the confirm panel: customer `active*` addresses, country-format lines, `Address:Manager:Action`. Not `Address:List` |
 | `Checkout:Success:Addresses` | Class VM adapter: order addresses (6.7 vs 6.8 delivery) → `Address:List`, no change actions |
 | `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is [`Account:Addressbook`](account.md) |
 | `Address:Manager:*` | Picker modal — [address manager](address-manager.md) |
@@ -24,10 +24,9 @@ Address:List
 ├─ Grid
 │    ├─ shipping card → Address or equal text  (+ shippingActions nest)
 │    └─ billing card → Address or equal text  (+ billingActions nest)
-Checkout:Confirm:Addresses       (root-host)
-└─ Address:List
-     ├─ shippingActions → Address:Manager:Action
-     └─ billingActions → Address:Manager:Action
+Checkout:Confirm:Addresses       (class VM; not Address:List)
+├─ shipping column → lines + Address:Manager:Action
+└─ billing column → lines or equal copy + Address:Manager:Action
 Checkout:Success:Addresses       (class VM, root-host)
 └─ Address:List             (no action nests)
 Address:Item / Address:Manager:Item
@@ -64,7 +63,7 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 ## Adapters
 
-`Checkout:Confirm:Addresses` keeps customer defaults (`activeBillingAddress` / `activeShippingAddress`, `page.hideShippingAddress`) and fills the action slots with `Address:Manager:Action` (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). Nests: `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
+`Checkout:Confirm:Addresses` is a class view-model. `#[PostMount]` resolves customer `activeBillingAddress` / `activeShippingAddress` and `page.hideShippingAddress`, builds the card list, and formats lines through the country address-format snippet renderer. The template puts `Address:Manager:Action` on each column (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). Nests: `shipping`, `billing`, `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
 
 `Order:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`). `Checkout:Success:Addresses` is a shim. No manager. See [checkout success](checkout-success.md) and [account pages](account.md).
 
