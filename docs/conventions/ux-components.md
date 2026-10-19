@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Confirm:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 
@@ -491,7 +491,8 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address / Address:List | Anonymous UX + `vi_cva`; formatted lines + shipping/billing pair — [address.md](../features/address.md) |
-| Checkout:Confirm (+ Addresses / Tos / Comment / Additions / Aside) + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm (+ Tos / Comment / Additions / Aside) + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm:Addresses (class-backed) | UX + `vi_cva`; cards and country-format lines in `Addresses.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Success (+ Addresses / Payment / Shipping / Header / Comment / DeliveryDate / Aside) | Success:Addresses class VM adapts Address:List — [checkout-success.md](../features/checkout-success.md) |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |

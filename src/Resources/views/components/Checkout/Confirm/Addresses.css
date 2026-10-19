@@ -39,24 +39,3 @@
     --vi-checkout-addresses-leading: normal;
   }
 }
-
-.btn.vi-checkout-confirm-addresses__change,
-.btn.vi-checkout-confirm-addresses__change:hover,
-.btn.vi-checkout-confirm-addresses__change:focus,
-.btn.vi-checkout-confirm-addresses__change:active {
-  --bs-btn-padding-y: 0px;
-  --bs-btn-padding-x: 0px;
-  --bs-btn-bg: transparent;
-  --bs-btn-hover-bg: transparent;
-  --bs-btn-active-bg: transparent;
-  --bs-btn-border-width: 0px;
-  --bs-btn-border-radius: 0px;
-  padding: 0;
-  background-color: transparent;
-  border: 0;
-  border-bottom: var(--vi-checkout-addresses-link, 1px solid var(--bs-body-color, #2e282a));
-  border-radius: 0;
-  box-shadow: none;
-  color: var(--bs-body-color, #2e282a);
-  text-decoration: none;
-}

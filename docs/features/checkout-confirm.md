@@ -16,7 +16,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
 | `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, methods, items, closing stack (`Additions` then `Aside`). No page JS. Does not mount `Stepper` or `Cart:Heading` |
 | `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
-| `Checkout:Confirm:Addresses` | Confirm address panel. Country address-format lines + `Address:Manager:Action`. Not [`Address:List`](address.md) |
+| `Checkout:Confirm:Addresses` | Confirm address panel. Class view-model builds the cards and country-format lines; Twig composes the columns and `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
 | `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping is a class view-model and renders only for a physical line item. Payment `framed` defaults to true for edit-order |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
@@ -111,14 +111,16 @@ Secure note: `checkout.confirmSecureNote`.
 
 One panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
 
+Class view-model (`Addresses.php`). `#[PostMount]` resolves the defaults below and builds `cards` (shipping, then billing). The template only composes CVA, attributes, the warning, and `Address:Manager:Action`.
+
 Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `xl`: stacked, change in the column head, billing’s divider on top. Shipping is omitted when `hideShippingAddress`; the divider goes with it.
 
 | Prop | Default | Notes |
 |------|---------|--------|
 | `page` | required | |
-| `billingAddress` | `context.customer.activeBillingAddress` | |
-| `shippingAddress` | `context.customer.activeShippingAddress` | |
-| `hideShippingAddress` | `page.hideShippingAddress` | Digital-only |
+| `billingAddress` | customer `activeBillingAddress` | |
+| `shippingAddress` | customer `activeShippingAddress` | |
+| `hideShippingAddress` | `CheckoutConfirmPage::isHideShippingAddress()` | Digital-only |
 | `addressesEqual` | billing id === shipping id | |
 | `showShippingWarning` | `true` | Shipping column only (`address.countryNoShippingAlert`) |
 | `shippingTitle` / `billingTitle` | `viewsTheme.checkout.confirmShippingTitle` / `confirmBillingTitle` | |
@@ -127,7 +129,7 @@ Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `
 
 When the ids match and shipping is visible, billing shows `equalTitle` and `equalText`. Shipping still shows the address.
 
-Lines are the country address format (same renderer as [`Address`](address.md)). The first line uses the pen name style; later lines are the ash body. Additional street lines stay separate.
+Lines come from the country address format (same renderer as [`Address`](address.md)). `Addresses.php` renders `@Framework/snippets/render.html.twig` with the country’s translated `addressFormat`, then splits `<br>`, `<br/>`, and `<br />`. The template prints those lines. The first line uses the pen name style; later lines are the ash body. Additional street lines stay separate. A missing country or format yields no lines.
 
 Change stays `Address:Manager:Action` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. Visible label is `changeLabel`. `title` and `aria-label` stay `account.overviewChangeShipping` / `overviewChangeBilling`. See [address manager](address-manager.md).
 
