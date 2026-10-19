@@ -6,6 +6,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 ROOT="$(plugin_root)"
 
 ensure_mariadb
+ensure_php
 ensure_shopware_cli
 
 if [[ ! -f "$SHOP_ROOT/composer.json" ]]; then

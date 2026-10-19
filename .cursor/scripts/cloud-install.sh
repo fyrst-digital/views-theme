@@ -11,6 +11,7 @@ export COMPOSER_NO_SECURITY_BLOCKING=1
 ROOT="$(plugin_root)"
 
 ensure_mariadb
+ensure_php
 ensure_shopware_cli
 install_script_fallback
 

@@ -283,6 +283,32 @@ mariadb_ready() {
   sudo mariadb -N -e 'SELECT 1' >/dev/null 2>&1
 }
 
+ensure_php() {
+  if command -v php8.3 >/dev/null 2>&1 \
+    && php8.3 -m | grep -qx 'pdo_mysql' \
+    && php8.3 -m | grep -qx 'gd' \
+    && php8.3 -m | grep -qx 'intl' \
+    && php8.3 -m | grep -qx 'zip'; then
+    return 0
+  fi
+
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    -o Dpkg::Options::=--force-confdef \
+    -o Dpkg::Options::=--force-confold \
+    php8.3-cli \
+    php8.3-bcmath \
+    php8.3-curl \
+    php8.3-gd \
+    php8.3-intl \
+    php8.3-mbstring \
+    php8.3-mysql \
+    php8.3-opcache \
+    php8.3-readline \
+    php8.3-xml \
+    php8.3-zip
+}
+
 ensure_mariadb() {
   if ! command -v mariadbd >/dev/null 2>&1; then
     sudo DEBIAN_FRONTEND=noninteractive apt-get update
