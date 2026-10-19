@@ -2,7 +2,6 @@
 # Shared helpers for the ViewsTheme Cloud Agent shop.
 
 SHOP_ROOT="${SHOP_ROOT:-/home/ubuntu/shopware}"
-SHOPWARE_VERSION="${SHOPWARE_VERSION:-6.7.14.1}"
 SHOPWARE_CLI_VERSION="${SHOPWARE_CLI_VERSION:-0.18.4}"
 SHOPWARE_PHP_VERSION="${SHOPWARE_PHP_VERSION:-8.3}"
 STOREFRONT_URL="${STOREFRONT_URL:-http://127.0.0.1:8000}"
@@ -12,6 +11,237 @@ DB_USER="${DB_USER:-shopware}"
 DB_PASSWORD="${DB_PASSWORD:-shopware}"
 
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Minimum Shopware release that satisfies shopware/core and shopware/storefront
+# in the plugin composer.json. Printed as four numeric parts (6.7.11.0).
+required_shopware_version() {
+  local composer_json="$1/composer.json"
+  if [[ ! -f "$composer_json" ]]; then
+    echo "Plugin composer.json not found at ${composer_json}" >&2
+    return 1
+  fi
+  python3 - "$composer_json" <<'PY'
+import itertools
+import json
+import re
+import sys
+
+TOKEN = re.compile(r"(>=|<=|!=|>|<|\^|~|=)?\s*(v?\d+(?:\.(?:\d+|\*))+(?:\.(?:\d+|\*))?|v?\d+(?:\.\*)?)")
+STABILITY = ("@stable", "@RC", "@rc", "@beta", "@alpha", "@dev")
+
+def fail(message):
+    print(message, file=sys.stderr)
+    raise SystemExit(1)
+
+def parse_version(raw):
+    text = raw.strip()
+    if text[:1] in ("v", "V"):
+        text = text[1:]
+    text = text.split("-", 1)[0]
+    parts = []
+    for piece in text.split("."):
+        if piece == "*":
+            parts.append(0)
+        elif piece.isdigit():
+            parts.append(int(piece))
+        else:
+            fail(f"unsupported Shopware version token: {raw}")
+    if len(parts) > 4:
+        fail(f"unsupported Shopware version token: {raw}")
+    while len(parts) < 4:
+        parts.append(0)
+    return tuple(parts)
+
+def explicit_length(raw):
+    text = raw.strip()
+    if text[:1] in ("v", "V"):
+        text = text[1:]
+    text = text.split("-", 1)[0].rstrip(".")
+    if not text:
+        return 0
+    return len([piece for piece in text.split(".") if piece != "*"])
+
+def caret_upper(bound):
+    parts = list(bound)
+    if parts[0] > 0:
+        return (parts[0] + 1, 0, 0, 0)
+    if parts[1] > 0:
+        return (0, parts[1] + 1, 0, 0)
+    return (0, 0, parts[2] + 1, 0)
+
+def tilde_upper(bound, raw):
+    parts = list(bound)
+    index = max(explicit_length(raw) - 2, 0)
+    parts[index] += 1
+    for cursor in range(index + 1, 4):
+        parts[cursor] = 0
+    return tuple(parts)
+
+def wildcard_match(version, raw):
+    text = raw.strip()
+    if text[:1] in ("v", "V"):
+        text = text[1:]
+    text = text.split("-", 1)[0]
+    for index, piece in enumerate(text.split(".")):
+        if piece == "*":
+            return True
+        if version[index] != int(piece):
+            return False
+    return True
+
+def tokens(expr):
+    found = list(TOKEN.finditer(expr))
+    if not found:
+        fail(f"unsupported Shopware constraint: {expr}")
+    leftover = TOKEN.sub("", expr)
+    for flag in STABILITY:
+        leftover = leftover.replace(flag, "")
+    if re.sub(r"[\s,]+", "", leftover):
+        fail(f"unsupported Shopware constraint: {expr}")
+    return found
+
+def and_lower(expr):
+    floors = []
+    for match in tokens(expr):
+        op = match.group(1) or "="
+        raw = match.group(2)
+        bound = parse_version(raw)
+        if op in ("<", "<=", "!="):
+            continue
+        if op == ">":
+            parts = list(bound)
+            parts[-1] += 1
+            floors.append(tuple(parts))
+        else:
+            floors.append(bound)
+    if not floors:
+        return (0, 0, 0, 0)
+    return max(floors)
+
+def satisfies_and(version, expr):
+    for match in tokens(expr):
+        op = match.group(1) or "="
+        raw = match.group(2)
+        if "*" in raw:
+            if not wildcard_match(version, raw):
+                return False
+            continue
+        bound = parse_version(raw)
+        if op == "=":
+            if version != bound:
+                return False
+        elif op == ">=":
+            if version < bound:
+                return False
+        elif op == ">":
+            if version <= bound:
+                return False
+        elif op == "<":
+            if version >= bound:
+                return False
+        elif op == "<=":
+            if version > bound:
+                return False
+        elif op == "!=":
+            if version == bound:
+                return False
+        elif op == "^":
+            if version < bound or version >= caret_upper(bound):
+                return False
+        elif op == "~":
+            if version < bound or version >= tilde_upper(bound, raw):
+                return False
+        else:
+            fail(f"unsupported Shopware operator: {op}")
+    return True
+
+def alternatives(constraint):
+    parts = [part.strip() for part in re.split(r"\s*\|\|\s*", constraint.strip()) if part.strip()]
+    if not parts:
+        fail(f"unsupported Shopware constraint: {constraint}")
+    return parts
+
+data = json.loads(open(sys.argv[1], encoding="utf-8").read())
+require = data.get("require") or {}
+constraints = []
+for name in ("shopware/core", "shopware/storefront"):
+    value = require.get(name)
+    if not isinstance(value, str) or not value.strip():
+        fail(f"{name} constraint is missing from {sys.argv[1]}")
+    constraints.append(value.strip())
+
+candidates = []
+for combo in itertools.product(*(alternatives(item) for item in constraints)):
+    floor = (0, 0, 0, 0)
+    for expr in combo:
+        floor = max(floor, and_lower(expr))
+    if all(satisfies_and(floor, expr) for expr in combo):
+        candidates.append(floor)
+
+if not candidates:
+    fail("no Shopware release satisfies " + " and ".join(constraints))
+
+print(".".join(str(part) for part in min(candidates)))
+PY
+}
+
+installed_shopware_version() {
+  local lock="$1"
+  if [[ ! -f "$lock" ]]; then
+    echo "Shopware composer.lock not found at ${lock}" >&2
+    return 1
+  fi
+  python3 - "$lock" <<'PY'
+import json
+import sys
+
+lock = json.load(open(sys.argv[1], encoding="utf-8"))
+for package in lock.get("packages", []):
+    if package.get("name") != "shopware/core":
+        continue
+    parts = str(package.get("version", "")).lstrip("vV").split("-", 1)[0].split(".")
+    if not parts or not all(part.isdigit() for part in parts):
+        print(f"unrecognized shopware/core version: {package.get('version')}", file=sys.stderr)
+        raise SystemExit(1)
+    while len(parts) < 4:
+        parts.append("0")
+    print(".".join(parts[:4]))
+    raise SystemExit(0)
+
+print("shopware/core is missing from composer.lock", file=sys.stderr)
+raise SystemExit(1)
+PY
+}
+
+shop_version_matches() {
+  local required="$1"
+  if [[ ! -f "$SHOP_ROOT/composer.lock" ]]; then
+    return 1
+  fi
+  [[ "$(installed_shopware_version "$SHOP_ROOT/composer.lock")" == "$required" ]]
+}
+
+stop_storefront() {
+  local pids pid
+  pids="$(sudo ss -ltnpH "sport = :8000" 2>/dev/null | sed -n 's/.*pid=\([0-9][0-9]*\).*/\1/p' | sort -u || true)"
+  if [[ -z "${pids}" ]]; then
+    return 0
+  fi
+  for pid in ${pids}; do
+    kill "${pid}" 2>/dev/null || true
+  done
+  sleep 1
+}
+
+reset_shopware_project() {
+  echo "Recreating ${SHOP_ROOT} so the database matches Shopware ${SHOPWARE_VERSION}."
+  stop_storefront
+  if [[ -e "$SHOP_ROOT" ]]; then
+    rm -rf "$SHOP_ROOT"
+  fi
+  sudo mariadb -e "DROP DATABASE IF EXISTS \`${DB_NAME}\`;"
+  ensure_mariadb
+}
 
 plugin_root() {
   local candidate
@@ -51,6 +281,52 @@ install_script_fallback() {
 
 mariadb_ready() {
   sudo mariadb -N -e 'SELECT 1' >/dev/null 2>&1
+}
+
+ensure_php() {
+  if command -v php8.3 >/dev/null 2>&1 \
+    && php8.3 -m | grep -qx 'pdo_mysql' \
+    && php8.3 -m | grep -qx 'gd' \
+    && php8.3 -m | grep -qx 'intl' \
+    && php8.3 -m | grep -qx 'zip'; then
+    return 0
+  fi
+
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    -o Dpkg::Options::=--force-confdef \
+    -o Dpkg::Options::=--force-confold \
+    php8.3-cli \
+    php8.3-bcmath \
+    php8.3-curl \
+    php8.3-gd \
+    php8.3-intl \
+    php8.3-mbstring \
+    php8.3-mysql \
+    php8.3-opcache \
+    php8.3-readline \
+    php8.3-xml \
+    php8.3-zip
+}
+
+ensure_composer() {
+  if command -v composer >/dev/null 2>&1; then
+    return 0
+  fi
+
+  local setup signature actual
+  setup="$(mktemp)"
+  curl -fsSL -o "$setup" https://getcomposer.org/installer
+  signature="$(curl -fsSL https://composer.github.io/installer.sig)"
+  actual="$(php8.3 -r "echo hash_file('sha384', '${setup}');")"
+  if [[ "$signature" != "$actual" ]]; then
+    rm -f "$setup"
+    echo "Composer installer checksum mismatch" >&2
+    return 1
+  fi
+
+  sudo php8.3 "$setup" --install-dir=/usr/local/bin --filename=composer --quiet
+  rm -f "$setup"
 }
 
 ensure_mariadb() {
@@ -143,7 +419,11 @@ ensure_storefront() {
     return 0
   fi
   write_php_router
-  php -S 127.0.0.1:8000 -t "$SHOP_ROOT/public" "$SHOP_ROOT/dev-router.php" >/tmp/shopware-php.log 2>&1 &
+  local php_bin="php"
+  if ! command -v php >/dev/null 2>&1; then
+    php_bin="php8.3"
+  fi
+  "$php_bin" -S 127.0.0.1:8000 -t "$SHOP_ROOT/public" "$SHOP_ROOT/dev-router.php" >/tmp/shopware-php.log 2>&1 &
 }
 
 wait_for_storefront() {
