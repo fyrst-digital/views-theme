@@ -23313,7 +23313,7 @@
                           "reusable": true,
                           "clip": true,
                           "width": 720,
-                          "fill": "$white",
+                          "fill": "$ivory",
                           "cornerRadius": 16,
                           "stroke": "$linen",
                           "strokeWidth": 1,
@@ -23321,572 +23321,606 @@
                           "effect": {
                             "type": "shadow",
                             "shadowType": "outer",
-                            "color": "#2E282A1A",
+                            "color": "#2E282A12",
                             "offset": {
                               "x": 0,
-                              "y": 12
+                              "y": 10
                             },
-                            "blur": 32
+                            "blur": 28
                           },
                           "layout": "vertical",
                           "children": [
                             {
                               "type": "frame",
-                              "id": "DElFf",
+                              "id": "wiCbN",
                               "name": "Header",
                               "width": "fill_container",
-                              "stroke": "$linen",
-                              "strokeWidth": {
-                                "bottom": 1
-                              },
-                              "strokeAlignment": "inner",
-                              "gap": "$spacing-sm",
-                              "padding": "$spacing-md",
-                              "justifyContent": "space_between",
-                              "alignItems": "center",
+                              "layout": "vertical",
+                              "gap": 22,
+                              "padding": [
+                                32,
+                                32,
+                                0,
+                                32
+                              ],
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "Q1MO5n",
-                                  "name": "Title",
-                                  "fill": "$ink",
-                                  "content": "Addresses",
-                                  "fontFamily": "$font",
-                                  "fontSize": "$font-size-lg",
-                                  "fontWeight": "600"
-                                },
-                                {
                                   "type": "frame",
-                                  "id": "GhEFu",
-                                  "name": "Close",
-                                  "width": 32,
-                                  "height": 32,
-                                  "cornerRadius": 8,
-                                  "justifyContent": "center",
+                                  "id": "syUH0",
+                                  "name": "Top",
+                                  "width": "fill_container",
+                                  "justifyContent": "space_between",
                                   "alignItems": "center",
                                   "children": [
                                     {
-                                      "type": "icon",
-                                      "id": "v9B2iw",
-                                      "name": "Icon",
-                                      "width": 16,
-                                      "height": 16,
-                                      "icon": "x",
-                                      "library": "lucide",
-                                      "fill": "$ink"
+                                      "type": "text",
+                                      "id": "H7uKSC",
+                                      "name": "Title",
+                                      "fill": "$ink",
+                                      "content": "Choose an address",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-2xl",
+                                      "fontWeight": "600",
+                                      "letterSpacing": -0.6
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "ZMokn",
+                                      "name": "Close",
+                                      "width": 32,
+                                      "height": 32,
+                                      "justifyContent": "center",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "icon",
+                                          "id": "Om39U",
+                                          "name": "Icon",
+                                          "width": 18,
+                                          "height": 18,
+                                          "icon": "x",
+                                          "library": "lucide",
+                                          "fill": "$ash"
+                                        }
+                                      ]
                                     }
                                   ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "H6Eow0",
-                              "name": "Body",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "children": [
+                                },
                                 {
                                   "type": "frame",
-                                  "id": "qZDty",
-                                  "name": "Tabs",
-                                  "width": "fill_container",
-                                  "stroke": "$linen",
-                                  "strokeWidth": {
-                                    "bottom": 1
-                                  },
-                                  "strokeAlignment": "inner",
-                                  "gap": "$spacing-lg",
-                                  "padding": [
-                                    4,
-                                    16,
-                                    0,
-                                    16
-                                  ],
+                                  "id": "g2NiKw",
+                                  "name": "Roles",
+                                  "gap": 28,
+                                  "alignItems": "end",
                                   "children": [
                                     {
                                       "type": "frame",
-                                      "id": "SCvBC",
-                                      "name": "Shipping Tab",
-                                      "stroke": "$ink",
+                                      "id": "Z0U6Ow",
+                                      "name": "Shipping",
+                                      "stroke": "$coral",
                                       "strokeWidth": {
                                         "bottom": 2
                                       },
                                       "strokeAlignment": "inner",
                                       "layout": "vertical",
                                       "padding": [
-                                        12,
-                                        4
+                                        0,
+                                        0,
+                                        4,
+                                        0
                                       ],
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "OKDmD",
+                                          "id": "EoZQ6",
                                           "name": "Label",
                                           "fill": "$ink",
-                                          "content": "Shipping address",
+                                          "content": "Shipping",
                                           "fontFamily": "$font",
-                                          "fontSize": "$font-size-sm",
+                                          "fontSize": "$font-size-md",
                                           "fontWeight": "600"
                                         }
                                       ]
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "u4VwbQ",
-                                      "name": "Billing Tab",
+                                      "id": "f7NccC",
+                                      "name": "Billing",
+                                      "stroke": "#00000000",
+                                      "strokeWidth": {
+                                        "bottom": 2
+                                      },
+                                      "strokeAlignment": "inner",
                                       "layout": "vertical",
                                       "padding": [
-                                        12,
-                                        4
+                                        0,
+                                        0,
+                                        4,
+                                        0
                                       ],
                                       "children": [
                                         {
                                           "type": "text",
-                                          "id": "riJ1T",
+                                          "id": "ieE2l",
                                           "name": "Label",
                                           "fill": "$ash",
-                                          "content": "Billing address",
+                                          "content": "Billing",
                                           "fontFamily": "$font",
-                                          "fontSize": "$font-size-sm",
+                                          "fontSize": "$font-size-md",
                                           "fontWeight": "normal"
                                         }
                                       ]
                                     }
                                   ]
-                                },
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "EhVxu",
+                              "name": "Hero",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "padding": [
+                                24,
+                                32,
+                                0,
+                                32
+                              ],
+                              "children": [
                                 {
                                   "type": "frame",
-                                  "id": "xJvI7",
-                                  "name": "Pane",
+                                  "id": "q8z2j",
+                                  "name": "Selected",
                                   "width": "fill_container",
+                                  "fill": "$white",
+                                  "cornerRadius": 12,
                                   "layout": "vertical",
-                                  "gap": "$spacing-md",
-                                  "padding": "$spacing-md",
+                                  "gap": 12,
+                                  "padding": 20,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "t8nLe",
-                                      "name": "Current Title",
-                                      "fill": "$ink",
-                                      "content": "Current shipping address",
-                                      "fontFamily": "$font",
-                                      "fontSize": "$font-size-md",
-                                      "fontWeight": "600"
-                                    },
-                                    {
                                       "type": "frame",
-                                      "id": "sPjRu",
-                                      "name": "Address/Manager/Item",
-                                      "reusable": true,
+                                      "id": "QDvrW",
+                                      "name": "Status",
                                       "width": "fill_container",
-                                      "gap": "$spacing-xs",
                                       "alignItems": "center",
                                       "children": [
                                         {
                                           "type": "frame",
-                                          "id": "LFzH0",
-                                          "name": "Card",
-                                          "width": "fill_container",
-                                          "fill": "$white",
-                                          "cornerRadius": "$border-radius-lg",
-                                          "stroke": "$ink",
-                                          "strokeWidth": 1,
-                                          "strokeAlignment": "inner",
-                                          "gap": "$spacing-sm",
-                                          "padding": "$spacing-sm",
-                                          "children": [
-                                            {
-                                              "type": "frame",
-                                              "id": "k0IBw",
-                                              "name": "Radio",
-                                              "width": 20,
-                                              "height": 20,
-                                              "fill": "$coral",
-                                              "cornerRadius": 10,
-                                              "stroke": "$coral",
-                                              "strokeWidth": 1.5,
-                                              "strokeAlignment": "inner",
-                                              "justifyContent": "center",
-                                              "alignItems": "center",
-                                              "children": [
-                                                {
-                                                  "type": "ellipse",
-                                                  "id": "BQNwS",
-                                                  "name": "Dot",
-                                                  "fill": "$white",
-                                                  "width": 8,
-                                                  "height": 8
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "frame",
-                                              "id": "sqYxd",
-                                              "name": "Body",
-                                              "width": "fill_container",
-                                              "layout": "vertical",
-                                              "gap": "$spacing-xs",
-                                              "children": [
-                                                {
-                                                  "type": "frame",
-                                                  "id": "By99y",
-                                                  "name": "Lines",
-                                                  "width": "fill_container",
-                                                  "layout": "vertical",
-                                                  "gap": 2,
-                                                  "children": [
-                                                    {
-                                                      "type": "text",
-                                                      "id": "zTQn5",
-                                                      "name": "Name",
-                                                      "fill": "$ink",
-                                                      "textGrowth": "fixed-width",
-                                                      "width": "fill_container",
-                                                      "content": "Lena Hoffmann",
-                                                      "fontFamily": "$font",
-                                                      "fontSize": "$font-size-md",
-                                                      "fontWeight": "600"
-                                                    },
-                                                    {
-                                                      "type": "text",
-                                                      "id": "knDPy",
-                                                      "name": "Street",
-                                                      "fill": "$ash",
-                                                      "textGrowth": "fixed-width",
-                                                      "width": "fill_container",
-                                                      "content": "Auguststraße 24",
-                                                      "fontFamily": "$font",
-                                                      "fontSize": "$font-size-sm",
-                                                      "fontWeight": "normal"
-                                                    },
-                                                    {
-                                                      "type": "text",
-                                                      "id": "ubYzw",
-                                                      "name": "City",
-                                                      "fill": "$ash",
-                                                      "textGrowth": "fixed-width",
-                                                      "width": "fill_container",
-                                                      "content": "10117 Berlin",
-                                                      "fontFamily": "$font",
-                                                      "fontSize": "$font-size-sm",
-                                                      "fontWeight": "normal"
-                                                    },
-                                                    {
-                                                      "type": "text",
-                                                      "id": "JzEYo",
-                                                      "name": "Country",
-                                                      "fill": "$ash",
-                                                      "textGrowth": "fixed-width",
-                                                      "width": "fill_container",
-                                                      "content": "Germany",
-                                                      "fontFamily": "$font",
-                                                      "fontSize": "$font-size-sm",
-                                                      "fontWeight": "normal"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "type": "frame",
-                                                  "id": "uo0kq",
-                                                  "name": "Badge",
-                                                  "fill": "$sage-pale",
-                                                  "cornerRadius": 99,
-                                                  "stroke": "$linen",
-                                                  "strokeWidth": 1,
-                                                  "strokeAlignment": "inner",
-                                                  "padding": [
-                                                    2,
-                                                    8
-                                                  ],
-                                                  "children": [
-                                                    {
-                                                      "type": "text",
-                                                      "id": "qavu3",
-                                                      "name": "Label",
-                                                      "fill": "$ink",
-                                                      "content": "Default",
-                                                      "fontFamily": "$font",
-                                                      "fontSize": 12,
-                                                      "fontWeight": "600"
-                                                    }
-                                                  ]
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "type": "frame",
-                                          "id": "uJYh0",
-                                          "name": "Menu",
-                                          "width": 32,
-                                          "height": 32,
-                                          "cornerRadius": 8,
-                                          "justifyContent": "center",
+                                          "id": "B8pZrV",
+                                          "name": "In use",
+                                          "gap": 10,
                                           "alignItems": "center",
                                           "children": [
                                             {
-                                              "type": "icon",
-                                              "id": "R9GkN",
-                                              "name": "Icon",
-                                              "width": 16,
-                                              "height": 16,
-                                              "icon": "chevron-down",
-                                              "library": "lucide",
-                                              "fill": "$ash"
+                                              "type": "ellipse",
+                                              "id": "c0Tkj",
+                                              "name": "Dot",
+                                              "fill": "$coral",
+                                              "width": 8,
+                                              "height": 8
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "u2TTC",
+                                              "name": "Label",
+                                              "fill": "$ink",
+                                              "content": "In use",
+                                              "fontFamily": "$font",
+                                              "fontSize": 13,
+                                              "fontWeight": "600"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "ecTX9",
+                                              "name": "Separator",
+                                              "fill": "$ash",
+                                              "content": "·",
+                                              "fontFamily": "$font",
+                                              "fontSize": 13,
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "Dzcy3",
+                                              "name": "Default",
+                                              "fill": "$ash",
+                                              "content": "Default",
+                                              "fontFamily": "$font",
+                                              "fontSize": 13,
+                                              "fontWeight": "600"
                                             }
                                           ]
                                         }
                                       ]
                                     },
                                     {
+                                      "type": "text",
+                                      "id": "hmuw2",
+                                      "name": "Name",
+                                      "fill": "$ink",
+                                      "content": "Lena Hoffmann",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-xl",
+                                      "fontWeight": "600",
+                                      "letterSpacing": -0.4
+                                    },
+                                    {
                                       "type": "frame",
-                                      "id": "m6CICb",
-                                      "name": "Available",
+                                      "id": "KD08t",
+                                      "name": "Lines",
                                       "width": "fill_container",
                                       "layout": "vertical",
-                                      "gap": "$spacing-sm",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "hQHGC",
+                                          "name": "Street",
+                                          "fill": "$ash",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "Auguststraße 24",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-md",
+                                          "fontWeight": "normal"
+                                        },
+                                        {
+                                          "type": "text",
+                                          "id": "udVDc",
+                                          "name": "City",
+                                          "fill": "$ash",
+                                          "textGrowth": "fixed-width",
+                                          "width": "fill_container",
+                                          "content": "10117 Berlin, Germany",
+                                          "lineHeight": 1.4,
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-md",
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "H0eKE",
+                                      "name": "Edit",
+                                      "stroke": "$ink",
+                                      "strokeWidth": {
+                                        "bottom": 1
+                                      },
+                                      "strokeAlignment": "inner",
+                                      "layout": "vertical",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "XFwzR",
+                                          "name": "Label",
+                                          "fill": "$ink",
+                                          "content": "Edit",
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-sm",
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "GXeKl",
+                              "name": "Search Row",
+                              "width": "fill_container",
+                              "gap": 20,
+                              "padding": [
+                                28,
+                                32,
+                                0,
+                                32
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "j162zg",
+                                  "name": "Search",
+                                  "width": "fill_container",
+                                  "fill": "$white",
+                                  "cornerRadius": 8,
+                                  "gap": 8,
+                                  "padding": [
+                                    12,
+                                    14
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "Bl0iv",
+                                      "name": "Icon",
+                                      "width": 16,
+                                      "height": 16,
+                                      "icon": "search",
+                                      "library": "lucide",
+                                      "fill": "$ash"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "W7zCG",
+                                      "name": "Placeholder",
+                                      "fill": "$ash",
+                                      "content": "Search addresses",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-sm",
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "xs4Az",
+                                  "name": "New address",
+                                  "gap": 6,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "icon",
+                                      "id": "MbWds",
+                                      "name": "Icon",
+                                      "width": 15,
+                                      "height": 15,
+                                      "icon": "plus",
+                                      "library": "lucide",
+                                      "fill": "$ink"
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "CUdUc",
+                                      "name": "Label",
+                                      "stroke": "$ink",
+                                      "strokeWidth": {
+                                        "bottom": 1
+                                      },
+                                      "strokeAlignment": "inner",
+                                      "layout": "vertical",
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "r7HPu",
+                                          "name": "Text",
+                                          "fill": "$ink",
+                                          "content": "New address",
+                                          "fontFamily": "$font",
+                                          "fontSize": "$font-size-sm",
+                                          "fontWeight": "600"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "HhVND",
+                              "name": "Others",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "padding": [
+                                28,
+                                32,
+                                0,
+                                32
+                              ],
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "gWPI9",
+                                  "name": "Label",
+                                  "fill": "$ink",
+                                  "content": "Other addresses",
+                                  "fontFamily": "$font",
+                                  "fontSize": "$font-size-sm",
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "pehZ5",
+                                  "name": "Rows",
+                                  "width": "fill_container",
+                                  "layout": "vertical",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "iMASF",
+                                      "name": "Jonas Berger",
+                                      "width": "fill_container",
+                                      "gap": 16,
+                                      "padding": [
+                                        16,
+                                        0
+                                      ],
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
                                       "children": [
                                         {
                                           "type": "frame",
-                                          "id": "vfYN9",
-                                          "name": "Toolbar",
+                                          "id": "eUiby",
+                                          "name": "Info",
                                           "width": "fill_container",
-                                          "gap": "$spacing-sm",
-                                          "alignItems": "center",
+                                          "layout": "vertical",
+                                          "gap": 2,
                                           "children": [
                                             {
-                                              "id": "VaXEx",
-                                              "type": "ref",
-                                              "ref": "b5WQYy",
-                                              "name": "Search",
+                                              "type": "text",
+                                              "id": "j2FVQ",
+                                              "name": "Name",
+                                              "fill": "$ink",
+                                              "textGrowth": "fixed-width",
                                               "width": "fill_container",
-                                              "descendants": {
-                                                "lcQcy": {
-                                                  "enabled": false
-                                                },
-                                                "OuyIP": {
-                                                  "content": "Search addresses"
-                                                },
-                                                "xJrtM": {
-                                                  "enabled": false,
-                                                  "textGrowth": "auto",
-                                                  "width": 80
-                                                }
-                                              }
+                                              "content": "Jonas Berger",
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-md",
+                                              "fontWeight": "600"
                                             },
                                             {
-                                              "id": "Z81n6",
-                                              "type": "ref",
-                                              "ref": "DzIeP",
-                                              "name": "Add address",
-                                              "descendants": {
-                                                "IxKrC": {
-                                                  "icon": "plus"
-                                                },
-                                                "dNNK6": {
-                                                  "content": "Add address"
-                                                }
-                                              }
+                                              "type": "text",
+                                              "id": "N0aW9v",
+                                              "name": "Detail",
+                                              "fill": "$ash",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Kastanienallee 12, 10435 Berlin",
+                                              "lineHeight": 1.4,
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-sm",
+                                              "fontWeight": "normal"
                                             }
                                           ]
                                         },
                                         {
                                           "type": "frame",
-                                          "id": "E75qTM",
-                                          "name": "Items",
-                                          "width": "fill_container",
-                                          "layout": "vertical",
-                                          "gap": "$spacing-sm",
+                                          "id": "oJeCe",
+                                          "name": "Actions",
+                                          "gap": 16,
+                                          "alignItems": "center",
                                           "children": [
                                             {
-                                              "id": "SyQbg",
-                                              "type": "ref",
-                                              "ref": "sPjRu",
-                                              "name": "Jonas Berger",
-                                              "width": "fill_container",
-                                              "alignItems": "center",
-                                              "descendants": {
-                                                "LFzH0": {
-                                                  "stroke": "$linen"
-                                                },
-                                                "k0IBw": {
-                                                  "fill": "$linen",
-                                                  "stroke": "$line",
-                                                  "strokeWidth": 1
-                                                },
-                                                "zTQn5": {
-                                                  "content": "Jonas Berger"
-                                                },
-                                                "knDPy": {
-                                                  "content": "Kastanienallee 12"
-                                                },
-                                                "ubYzw": {
-                                                  "content": "10435 Berlin"
-                                                },
-                                                "uo0kq": {
-                                                  "enabled": false
-                                                }
-                                              }
+                                              "type": "text",
+                                              "id": "oYhZA",
+                                              "name": "Make default",
+                                              "fill": "$ash",
+                                              "content": "Make default",
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-sm",
+                                              "fontWeight": "normal"
                                             },
                                             {
-                                              "id": "ErOS7",
-                                              "type": "ref",
-                                              "ref": "sPjRu",
-                                              "name": "Mara Klein",
-                                              "width": "fill_container",
-                                              "alignItems": "start",
-                                              "descendants": {
-                                                "LFzH0": {
-                                                  "stroke": "$linen"
-                                                },
-                                                "k0IBw": {
-                                                  "fill": "$linen",
-                                                  "stroke": "$line",
-                                                  "strokeWidth": 1
-                                                },
-                                                "zTQn5": {
-                                                  "content": "Mara Klein"
-                                                },
-                                                "knDPy": {
-                                                  "content": "Schönhauser Allee 80"
-                                                },
-                                                "ubYzw": {
-                                                  "content": "10439 Berlin"
-                                                },
-                                                "uo0kq": {
-                                                  "enabled": false
-                                                },
-                                                "uJYh0": {
-                                                  "type": "frame",
-                                                  "id": "h4AT6",
-                                                  "name": "Menu Open",
-                                                  "layout": "vertical",
-                                                  "gap": 4,
-                                                  "alignItems": "end",
-                                                  "children": [
-                                                    {
-                                                      "type": "frame",
-                                                      "id": "Ae1aN",
-                                                      "name": "Toggle",
-                                                      "width": 32,
-                                                      "height": 32,
-                                                      "fill": "$ivory",
-                                                      "cornerRadius": 8,
-                                                      "justifyContent": "center",
-                                                      "alignItems": "center",
-                                                      "children": [
-                                                        {
-                                                          "type": "icon",
-                                                          "id": "P4ulUT",
-                                                          "name": "Icon",
-                                                          "width": 16,
-                                                          "height": 16,
-                                                          "icon": "chevron-down",
-                                                          "library": "lucide",
-                                                          "fill": "$ink"
-                                                        }
-                                                      ]
-                                                    },
-                                                    {
-                                                      "type": "frame",
-                                                      "id": "BLLQZ",
-                                                      "name": "Menu Panel",
-                                                      "width": 228,
-                                                      "fill": "$white",
-                                                      "cornerRadius": 8,
-                                                      "stroke": "$linen",
-                                                      "strokeWidth": 1,
-                                                      "strokeAlignment": "inner",
-                                                      "effect": {
-                                                        "type": "shadow",
-                                                        "shadowType": "outer",
-                                                        "color": "#2E282A14",
-                                                        "offset": {
-                                                          "x": 0,
-                                                          "y": 4
-                                                        },
-                                                        "blur": 12
-                                                      },
-                                                      "layout": "vertical",
-                                                      "padding": 4,
-                                                      "children": [
-                                                        {
-                                                          "type": "frame",
-                                                          "id": "u54xE",
-                                                          "name": "Edit",
-                                                          "width": "fill_container",
-                                                          "cornerRadius": 6,
-                                                          "gap": 8,
-                                                          "padding": [
-                                                            8,
-                                                            10
-                                                          ],
-                                                          "alignItems": "center",
-                                                          "children": [
-                                                            {
-                                                              "type": "icon",
-                                                              "id": "z0xZbz",
-                                                              "name": "Icon",
-                                                              "width": 16,
-                                                              "height": 16,
-                                                              "icon": "pencil",
-                                                              "library": "lucide",
-                                                              "fill": "$ink"
-                                                            },
-                                                            {
-                                                              "type": "text",
-                                                              "id": "BdbMx",
-                                                              "name": "Label",
-                                                              "fill": "$ink",
-                                                              "content": "Edit",
-                                                              "fontFamily": "$font",
-                                                              "fontSize": "$font-size-sm",
-                                                              "fontWeight": "normal"
-                                                            }
-                                                          ]
-                                                        },
-                                                        {
-                                                          "type": "frame",
-                                                          "id": "D0a09j",
-                                                          "name": "Set as default shipping",
-                                                          "width": "fill_container",
-                                                          "cornerRadius": 6,
-                                                          "gap": 8,
-                                                          "padding": [
-                                                            8,
-                                                            10
-                                                          ],
-                                                          "alignItems": "center",
-                                                          "children": [
-                                                            {
-                                                              "type": "icon",
-                                                              "id": "AGEK2",
-                                                              "name": "Icon",
-                                                              "width": 16,
-                                                              "height": 16,
-                                                              "icon": "check",
-                                                              "library": "lucide",
-                                                              "fill": "$ink"
-                                                            },
-                                                            {
-                                                              "type": "text",
-                                                              "id": "n3Zbx",
-                                                              "name": "Label",
-                                                              "fill": "$ink",
-                                                              "content": "Set as default shipping",
-                                                              "fontFamily": "$font",
-                                                              "fontSize": "$font-size-sm",
-                                                              "fontWeight": "normal"
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
-                                                    }
-                                                  ]
+                                              "type": "frame",
+                                              "id": "I5MXyX",
+                                              "name": "Use",
+                                              "stroke": "$ink",
+                                              "strokeWidth": {
+                                                "bottom": 1
+                                              },
+                                              "strokeAlignment": "inner",
+                                              "layout": "vertical",
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "Bhn2o",
+                                                  "name": "Label",
+                                                  "fill": "$ink",
+                                                  "content": "Use this",
+                                                  "fontFamily": "$font",
+                                                  "fontSize": "$font-size-sm",
+                                                  "fontWeight": "600"
                                                 }
-                                              }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "rectangle",
+                                      "id": "cDigj",
+                                      "name": "Divider",
+                                      "fill": "$linen",
+                                      "width": "fill_container",
+                                      "height": 1
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "JPR6W",
+                                      "name": "Mara Klein",
+                                      "width": "fill_container",
+                                      "gap": 16,
+                                      "padding": [
+                                        16,
+                                        0
+                                      ],
+                                      "justifyContent": "space_between",
+                                      "alignItems": "center",
+                                      "children": [
+                                        {
+                                          "type": "frame",
+                                          "id": "fC1IB",
+                                          "name": "Info",
+                                          "width": "fill_container",
+                                          "layout": "vertical",
+                                          "gap": 2,
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "x3oRK",
+                                              "name": "Name",
+                                              "fill": "$ink",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Mara Klein",
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-md",
+                                              "fontWeight": "600"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "LZARb",
+                                              "name": "Detail",
+                                              "fill": "$ash",
+                                              "textGrowth": "fixed-width",
+                                              "width": "fill_container",
+                                              "content": "Schönhauser Allee 80, 10439 Berlin",
+                                              "lineHeight": 1.4,
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-sm",
+                                              "fontWeight": "normal"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "type": "frame",
+                                          "id": "BTkLC",
+                                          "name": "Actions",
+                                          "gap": 16,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "text",
+                                              "id": "Tdsz8",
+                                              "name": "Make default",
+                                              "fill": "$ash",
+                                              "content": "Make default",
+                                              "fontFamily": "$font",
+                                              "fontSize": "$font-size-sm",
+                                              "fontWeight": "normal"
+                                            },
+                                            {
+                                              "type": "frame",
+                                              "id": "vK6j0",
+                                              "name": "Use",
+                                              "stroke": "$ink",
+                                              "strokeWidth": {
+                                                "bottom": 1
+                                              },
+                                              "strokeAlignment": "inner",
+                                              "layout": "vertical",
+                                              "children": [
+                                                {
+                                                  "type": "text",
+                                                  "id": "I1Edm0",
+                                                  "name": "Label",
+                                                  "fill": "$ink",
+                                                  "content": "Use this",
+                                                  "fontFamily": "$font",
+                                                  "fontSize": "$font-size-sm",
+                                                  "fontWeight": "600"
+                                                }
+                                              ]
                                             }
                                           ]
                                         }
@@ -23898,44 +23932,52 @@
                             },
                             {
                               "type": "frame",
-                              "id": "BeRt1",
+                              "id": "DXG8v",
                               "name": "Footer",
                               "width": "fill_container",
-                              "stroke": "$linen",
-                              "strokeWidth": {
-                                "top": 1
-                              },
-                              "strokeAlignment": "inner",
-                              "gap": "$spacing-sm",
-                              "padding": "$spacing-md",
+                              "padding": [
+                                28,
+                                32,
+                                32,
+                                32
+                              ],
                               "justifyContent": "space_between",
                               "alignItems": "center",
                               "children": [
                                 {
-                                  "id": "fhcpn",
-                                  "type": "ref",
-                                  "ref": "DzIeP",
-                                  "name": "Close",
-                                  "descendants": {
-                                    "IxKrC": {
-                                      "enabled": false
-                                    },
-                                    "dNNK6": {
-                                      "content": "Close"
+                                  "type": "frame",
+                                  "id": "oxbXl",
+                                  "name": "Cancel",
+                                  "stroke": "$ink",
+                                  "strokeWidth": {
+                                    "bottom": 1
+                                  },
+                                  "strokeAlignment": "inner",
+                                  "layout": "vertical",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "p82nv",
+                                      "name": "Label",
+                                      "fill": "$ink",
+                                      "content": "Cancel",
+                                      "fontFamily": "$font",
+                                      "fontSize": "$font-size-sm",
+                                      "fontWeight": "600"
                                     }
-                                  }
+                                  ]
                                 },
                                 {
-                                  "id": "jWdA0",
+                                  "id": "V2y88N",
                                   "type": "ref",
-                                  "ref": "swDlW",
-                                  "name": "Change address",
+                                  "ref": "lgsrC",
+                                  "name": "Use for shipping",
                                   "descendants": {
-                                    "hWhUd": {
+                                    "e9wgP": {
                                       "enabled": false
                                     },
-                                    "D5ADn": {
-                                      "content": "Change address"
+                                    "cJn72": {
+                                      "content": "Use for shipping"
                                     }
                                   }
                                 }
