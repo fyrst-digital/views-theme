@@ -30,12 +30,23 @@
   --btn-color: var(--white);
 }
 
-[class*='btn-outline'] {
-  text-decoration-line: underline !important;
-}
-
 .btn-outline-primary {
   --btn-color: var(--body-color);
+}
+
+.btn-outline-light {
+  --btn-color: var(--body-color);
+  --btn-bg: var(--white);
+  --btn-border-color: var(--border-color);
+  --btn-hover-color: var(--body-color);
+  --btn-hover-bg: var(--light);
+  --btn-hover-border-color: var(--border-color);
+  --btn-active-color: var(--body-color);
+  --btn-active-bg: var(--border-color);
+  --btn-active-border-color: var(--border-color);
+  --btn-disabled-color: var(--body-color);
+  --btn-disabled-bg: var(--white);
+  --btn-disabled-border-color: var(--border-color);
 }
 
 .btn-link {
