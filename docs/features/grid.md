@@ -63,7 +63,7 @@ No PHP/JS / `data-component`.
 
 Theme may assign `--vi-grid-cols` / `--vi-grid-gap` / `--vi-grid-columns` on a host without props. **No media queries in Grid.css.**
 
-Address/register fields: parent `columns="6"`; full = `g-col-6`, pair = `g-col-3`, third = `g-col-2`. Listing empty (auto-fill tracks) sets `grid-column: 1 / -1` on `Product:Listing:Empty` — not on Grid.
+Address/register fields: parent `columns="6"`. `Address:Personal` and `Address:PersonalCompany` take `order` and `spans` so a caller sets sequence and `g-col-*` without rewriting the inputs. Default full = `g-col-6`, pair = `g-col-3`, third = `g-col-2` on `Address:Form`. Listing empty (auto-fill tracks) sets `grid-column: 1 / -1` on `Product:Listing:Empty` — not on Grid.
 
 ## Blocks
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Resources\views\components\Address;
 
 use Fyrst\ViewsTheme\Service\ComponentData;
+use Fyrst\ViewsTheme\Service\FieldGrid;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
@@ -48,6 +49,23 @@ class Personal
      * @var array<string, mixed>
      */
     public array $cva = [];
+
+    /**
+     * Grid slot order. A list replaces the default; unknown names are dropped.
+     * `prepend` and `append` are the bookend slots (register credentials use `append`).
+     * `accountType` stays one slot: the type select and the company fields move together.
+     *
+     * @var list<string>|null
+     */
+    public ?array $order = null;
+
+    /**
+     * Column spans (1–12) merged over the defaults. `accountTypeSelect` is the
+     * select inside the account-type row. `company` is the company group on this grid.
+     *
+     * @var array<string, int|string>
+     */
+    public array $spans = [];
 
     public bool $showAccountType = false;
 
@@ -124,6 +142,42 @@ class Personal
         $this->salutations ??= ComponentData::pageSalutations($this->page);
         $this->salutationOptions = $this->buildSalutationOptions();
         $this->fields = $this->buildFields();
+        $this->order = FieldGrid::order($this->order, self::defaultOrder());
+        $this->spans = FieldGrid::spans($this->spans, self::defaultSpans());
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function defaultOrder(): array
+    {
+        return [
+            'prepend',
+            'accountType',
+            'salutation',
+            'title',
+            'firstName',
+            'lastName',
+            'birthday',
+            'append',
+        ];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private static function defaultSpans(): array
+    {
+        return [
+            'accountType' => 6,
+            'accountTypeSelect' => 3,
+            'salutation' => 3,
+            'title' => 3,
+            'firstName' => 3,
+            'lastName' => 3,
+            'birthday' => 6,
+            'company' => 6,
+        ];
     }
 
     private function resolveAccountType(): string

@@ -115,7 +115,7 @@ JS selectors: `[data-component="ViewsTheme:Address:…"]`, `input[type="search"]
 | `showHint` | `true` | `false` in the modal (no “required fields” line) |
 | `submitLabel` | `account.addressSaveChange` | Modal uses the same label |
 
-Personal and Form always use the same 6-column `Grid` (`columns: 6`, `gap: 'sm'`, `g-col-*` on fields). Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
+Personal and Form always use the same 6-column `Grid` (`columns: 6`, `gap: 'sm'`). Personal field order and column spans are the `order` and `spans` props ([checkout register](checkout-register.md#address-fields)); company-name, department, and VAT use `company:order` and `company:spans`. Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
 
 ### Controller
 

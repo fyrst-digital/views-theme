@@ -85,7 +85,33 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 `Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials` (email always visible; password gated when `guestSelectable`). Profile passes `showCompanyFields: true` so company/VAT stay visible when the shop hides the account-type select.
 
-Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
+Fields sit in `Grid` `columns="6"`. No Bootstrap `row` / `col-md-*`. Column span is a CVA `span` variant (`g-col-1` … `g-col-12`) on each field slot. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
+
+`Address:Personal` renders those slots from `order`. A passed list replaces the default; names that are not slots are dropped; duplicates are dropped. Omit `order` for the default. An empty list renders no slots.
+
+| `order` name | Default `spans` | Role |
+|--------------|-----------------|------|
+| `prepend` | — | Empty bookend |
+| `accountType` | `6` | Type select and the company fields (one slot; they move together) |
+| `salutation` | `3` | |
+| `title` | `3` | |
+| `firstName` | `3` | |
+| `lastName` | `3` | |
+| `birthday` | `6` | Passed through to `Form:Birthday` (that root has no `g-col-*` of its own) |
+| `append` | — | Empty bookend. Register puts `Account:Register:Credentials` here |
+
+`spans` merges over those defaults. Keys are the span slots: the order names above (except the bookends), plus `accountTypeSelect` (`3`, the select inside the account-type row’s own 6-column grid) and `company` (`6`, the company group on this grid). Values are integers `1`–`12`. Unknown keys and out-of-range values stay on the default.
+
+```twig
+<twig:ViewsTheme:Address:Personal
+    :order="['firstName', 'lastName', 'salutation', 'title', 'accountType', 'birthday', 'append']"
+    :spans="{ firstName: 6, lastName: 6, salutation: 2, title: 4 }"
+    :company:order="['company', 'vat', 'department']"
+    :company:spans="{ company: 6, vat: 3, department: 3 }"
+/>
+```
+
+`Address:PersonalCompany` uses the same pair of props for `company`, `department`, and `vat` (default span `3` on its own 6-column grid). From `Address:Personal`, pass them as `company:order` and `company:spans`. `spans.company` on Personal is the group’s span, not the company-name field.
 
 `Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`. Field ids (`countrySelectId`, `stateSelectId`, `zipInputId`, `vatInputId`) are resolved on the closest `form` (VAT lives in `Address:PersonalCompany`, not inside the CountryState wrapper).
 

@@ -508,7 +508,7 @@ Co-located: `Form/Slider.css` (non-utility only).
 
 ## Form:Birthday
 
-Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
+Class component. Label + 3× `Form:Select` (day / month / year). Inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`. The root has no `g-col-*`; the parent grid assigns the span (`Address:Personal` birthday slot).
 
 ## Form:Toggle
 
