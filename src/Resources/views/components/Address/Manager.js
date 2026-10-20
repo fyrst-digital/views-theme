@@ -20,6 +20,8 @@ export default class AddressManager extends ShopwareComponent {
         tab: 'shipping',
         hideShipping: false,
         viewComponent: 'ViewsTheme:Address:Manager:View',
+        panelComponent: 'ViewsTheme:Modal:Panel',
+        modalComponent: 'ViewsTheme:Modal',
         itemComponent: 'ViewsTheme:Address:Manager:Item',
         handlerComponent: 'ViewsTheme:Form:Handler',
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
@@ -304,6 +306,8 @@ export default class AddressManager extends ShopwareComponent {
             return
         }
 
+        this._syncPanelChrome(next)
+
         const name = this.options.viewComponent
         const island = next.matches(`[data-component="${name}"]`)
             ? next
@@ -312,13 +316,50 @@ export default class AddressManager extends ShopwareComponent {
 
         if (existing && island) {
             existing.replaceWith(island)
-            const title = island.querySelector('h1')
-            const dialog = this.el.querySelector(`[data-component="ViewsTheme:Modal"]`)
-            const label = title?.textContent?.trim()
-            if (dialog && label) {
-                dialog.setAttribute('aria-label', label)
-            }
         }
+    }
+
+    /**
+     * Copy the response panel title and footer actions onto the open modal.
+     *
+     * @param {Element} source
+     */
+    _syncPanelChrome(source) {
+        const sourcePanel = this._panel(source)
+        const livePanel = this._panel(this.el)
+        if (!sourcePanel || !livePanel) {
+            return
+        }
+
+        const label = sourcePanel.querySelector('h1')?.textContent?.trim()
+        const liveTitle = livePanel.querySelector('h1')
+        if (liveTitle && label) {
+            liveTitle.textContent = label
+        }
+
+        const dialog = this.el.querySelector(`[data-component="${this.options.modalComponent}"]`)
+        if (dialog && label) {
+            dialog.setAttribute('aria-label', label)
+        }
+
+        const sourceFooter = sourcePanel.lastElementChild
+        const liveFooter = livePanel.lastElementChild
+        if (sourceFooter && liveFooter) {
+            liveFooter.replaceChildren(...sourceFooter.childNodes)
+        }
+    }
+
+    /**
+     * @param {ParentNode} root
+     * @returns {Element|null}
+     */
+    _panel(root) {
+        const name = this.options.panelComponent
+        if (root instanceof Element && root.matches(`[data-component="${name}"]`)) {
+            return root
+        }
+
+        return root.querySelector(`[data-component="${name}"]`)
     }
 
     /**

@@ -10,7 +10,7 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 |-------|----------------|
 | `Address:Manager:Action` | Confirm change buttons. Lazy fetch/mount/unmount; `aria-expanded` / `aria-haspopup="dialog"`. Options: `managerUrl`, `editorUrl`, `tab` (`shipping` \| `billing`), `hideShipping`. Public `open()` / `close()` |
 | `Address:Manager` | Class-backed view-model (current vs available per tab, active/default ids, `hideShipping`). Owner JS: select, search is on List, create/edit, set-default, switch, editor submit, tab change |
-| `Address:Manager:View` | Panel island identity (`mode=list` \| `editor`). Inner fetch swaps this root — Modal is not remounted |
+| `Address:Manager:View` | Panel body island (`mode=list` \| `editor`). Inner fetch swaps this root — Modal is not remounted |
 | `Address:Manager:Pane` | Selected hero + available `List` for one type. No pane heading |
 | `Address:Manager:List` | Full-width search (`input[type="search"]`), available rows, empty / no-results `Status`. Client-side text filter. Create lives in the footer |
 | `Address:Manager:Item` | One address, two faces: `data-variant` `current` (hero, the address in use) or `available` (compact `Form:Selection` row). The hero does not move. Hero: radio, “In use” (+ “Default” or “use as default”), name, lines, Edit. Row: name, `street, zip city`, trailing “use as default” or “Default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning stays. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s visible radio |
@@ -35,15 +35,14 @@ Lazy shell (body mount):
 ```
 Address:Manager
 └─ Modal #vi-address-manager
-     └─ Modal:Panel          (manager only: rounded-5, linen border, no shadow)
-          └─ Address:Manager:View     (island; header + scroll body + pinned footer)
-               ├─ header: Modal:Header + Tabs:List (list mode, unless hideShipping)
-               ├─ body
-               │    ├─ list: Pane → hero Item + List rows
-               │    └─ editor: Address:Editor layout=manager (preventNative, showActions=false, showHint=false)
-               └─ footer
-                    ├─ list: Dismiss + Create + Form:Handler switch POST (Apply)
-                    └─ editor: Back + submit (form="vi-address-editor")
+     └─ Modal:Panel          (title prop → Modal:Header; actions block is the footer)
+          ├─ header: title (list: addressChoose; editor: addressAdd / addressEditWelcome)
+          ├─ body: Address:Manager:View
+          │    ├─ list: Tabs:List (unless hideShipping) + scroll body → Pane
+          │    └─ editor: Address:Editor layout=manager (preventNative, showActions=false, showHint=false)
+          └─ actions
+               ├─ list: Dismiss + Create + Form:Handler switch POST (Apply)
+               └─ editor: Back + submit (form="vi-address-editor")
 ```
 
 ```
@@ -62,7 +61,7 @@ Address:Editor
 - The hero is the address already in use and stays in place. Choosing a row checks that row’s radio, unchecks the previous one, and updates the switch hidden input. Selected fill and border follow the checked radio. Edit is only on the hero
 - Search filters rows inside `List` (the hero stays). Empty vs no-results `Status` stay
 - Apply POSTs `/vi/address/switch` → **204** → `location.reload()`
-- Footer **New address** / hero **Edit** load `/vi/address/editor` into the View island (valid save → 204 + reload; violations → **4xx HTML** swap). Editor title is `viewsTheme.account.addressAdd` or `account.addressEditWelcome`. Submit label is `account.addressSaveChange`
+- Footer **New address** / hero **Edit** load `/vi/address/editor` (valid save → 204 + reload; violations → **4xx HTML** swap). The response is a full Manager. JS swaps the View island and copies the panel title and footer actions onto the open modal. Editor title is `viewsTheme.account.addressAdd` or `account.addressEditWelcome`. Submit label is `account.addressSaveChange`
 - Set default POSTs core `frontend.account.address.switch-default` (`redirect: 'manual'`; opaque/status 0 is success), then refetches GET manager into the island. Already-default rows show “Default” instead of the action
 - Guest checkout allowed (login required + guest)
 - Addressbook create/edit: same Editor, native submit to `frontend.account.address.create` / `.edit.save`
@@ -85,15 +84,15 @@ Fallback `href` on the Action Button is `frontend.account.address.edit.page` (no
 
 ### Inner navigation (island)
 
-Modal stays mounted. Manager JS fetches HTML and replaces `[data-component="ViewsTheme:Address:Manager:View"]`.
+Modal stays mounted. Manager JS fetches HTML, replaces `[data-component="ViewsTheme:Address:Manager:View"]`, and copies the response panel `h1` plus footer children onto the open panel.
 
 | Intent | HTTP | Result |
 |--------|------|--------|
-| Create | `GET /vi/address/editor?type=` | View `mode=editor` |
-| Edit | `GET /vi/address/editor?type=&addressId=` | View `mode=editor` |
-| Back | `GET /vi/address/manager?tab=&hideShipping=` | View `mode=list` |
+| Create | `GET /vi/address/editor?type=` | Manager `mode=editor` |
+| Edit | `GET /vi/address/editor?type=&addressId=` | Manager `mode=editor` |
+| Back | `GET /vi/address/manager?tab=&hideShipping=` | Manager `mode=list` |
 | Editor submit (ok) | `POST /vi/address/editor` | **204** → `location.reload()` |
-| Editor submit (violations) | `POST /vi/address/editor` | **4xx** View HTML → swap |
+| Editor submit (violations) | `POST /vi/address/editor` | **4xx** Manager HTML → swap |
 | Switch | `POST /vi/address/switch` | **204** → `location.reload()` |
 | Set default | `POST frontend.account.address.switch-default` (`redirect: 'manual'`) | opaque/302 counts as success, then GET manager → swap |
 
@@ -123,8 +122,8 @@ Checkout **register** does **not** mount Editor (credentials / shipping toggle s
 | Route name | Path | Method | Renders |
 |------------|------|--------|---------|
 | `frontend.views-theme.address.manager` | `/vi/address/manager` | GET (XHR) | `ViewsTheme:Address:Manager` |
-| `frontend.views-theme.address.editor` | `/vi/address/editor` | GET (XHR) | `ViewsTheme:Address:Manager:View` (editor) |
-| `frontend.views-theme.address.editor.save` | `/vi/address/editor` | POST (XHR) | **204** + flash, or **422** editor View |
+| `frontend.views-theme.address.editor` | `/vi/address/editor` | GET (XHR) | `ViewsTheme:Address:Manager` (editor) |
+| `frontend.views-theme.address.editor.save` | `/vi/address/editor` | POST (XHR) | **204** + flash, or **422** editor Manager |
 | `frontend.views-theme.address.switch` | `/vi/address/switch` | POST (XHR) | **204** + flash |
 
 Login required + **guest allowed**. After `AddressListingPageLoader`, fire `AddressBookWidgetLoadedHook` (`address-book-widget-loaded`). Upsert via `AbstractUpsertAddressRoute`; on success switch context for that `type` (core `handleAddressCreation` parity). Switch uses `AbstractContextSwitchRoute` (empty shipping/billing ids stripped). Render via `AbstractComponentController::renderComponent()`.
@@ -140,11 +139,15 @@ Centered card (header + scroll body + footer). Drawer / Search overlay / Gallery
 | Piece | Role |
 |-------|------|
 | `Modal` | `role="dialog"`, `aria-modal`, `inert` / `aria-hidden`, `data-open`, body lock, Escape, Tab trap, `ViewsTheme:Modal:Open` / `:Close` `{ el }` |
-| `Modal:Panel` | slots `header` / `body` / `footer`; body `min-h-0` + overflow |
+| `Modal:Panel` | slots `header` / `body` / `footer`. `title` feeds `Modal:Header`. Footer contains the `actions` block. Panel is `overflow-hidden` inside `--vi-modal-max-h`. Slot body is the scrollport (`overflow-y-auto`) unless a caller overrides it |
 | `Modal:Close` | `callMethod('ViewsTheme:Modal', 'close')` |
 | `Backdrop` | `componentName="ViewsTheme:Modal"` |
 
-Layout: fixed overlay (`d-flex` / `d-none`), centered panel. Tokens: `--vi-modal-width`, `--vi-modal-max-h`, `--vi-modal-duration`, `--vi-modal-z`. Co-located `Modal.css` for overlay/centering/motion only; CVA for flex chrome.
+Address manager keeps the panel header and footer. Its body override is `overflow-hidden` (not the scrollport). `Address:Manager:View` fills that body: an `overflow-hidden` flex column. List mode’s tabs wrapper is the same kind of column. The view body is the only `overflow-y-auto` scrollport. Header and footer stay `flex-shrink-0`, so the footer stays pinned while the body scrolls.
+
+Shared card chrome (pen): `rounded-5`, linen `border`, `--vi-modal-shadow` (`0 10px 28px`), header `pt-7 px-7` with `fs-2` title, close `--vi-modal-close-size` (32px), footer inset `px-7 pt-6 pb-7`. Address manager footer is `justify-content-between`. An empty footer (`:not(:has(*))`) is hidden.
+
+Layout: fixed overlay (`d-flex` / `d-none`), centered panel. Tokens: `--vi-modal-width`, `--vi-modal-max-h`, `--vi-modal-duration`, `--vi-modal-z`, `--vi-modal-shadow`, `--vi-modal-close-size`. Co-located `Modal.css` for overlay, shadow, close size, and motion; CVA for flex chrome.
 
 Shared Tab trap: `@views-theme/modules/shared/focus-trap.js` (`trapFocus`) — also Drawer, Search Overlay, Gallery Fullscreen.
 
