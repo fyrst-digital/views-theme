@@ -8,7 +8,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Address` | Formatted lines. Wraps core `address.html.twig` so plugin overrides of that include still apply |
+| `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer |
 | `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
 | `Checkout:Confirm:Addresses` | Class VM for the confirm panel: customer `active*` addresses, country-format lines, `Address:Manager:Action`. Not `Address:List` |
 | `Checkout:Success:Addresses` | Class VM adapter: order addresses (6.7 vs 6.8 delivery) → `Address:List`, no change actions |
@@ -19,7 +19,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 ## Composition
 
 ```
-Address                          (core address.html.twig)
+Address                          (class VM; one block per field)
 Address:List
 ├─ Grid
 │    ├─ shipping card → Address or equal text  (+ shippingActions nest)
@@ -40,13 +40,17 @@ Address:Manager:Item         (available row)
 
 ## Address
 
-Anonymous. Props:
+Class view-model. `address` is `CustomerAddressEntity|OrderAddressEntity`. `#[PostMount]` copies each field onto its own string. Empty or missing values are `''`. `fullName` is the trimmed first and last name. Salutation, country, and country state prefer the translated label and fall back to the entity name. Nothing is joined into a format row.
+
+`showWarning` is set when `showShippingWarning` is true and the country is missing or `shippingAvailable` is false.
+
+Each field is a `{% block %}` on a `span`. Callers replace one with `<twig:block name="street">`. The default span renders only when the string is non-empty. Block order: `salutation`, `title`, `fullName`, `company`, `department`, `street`, `additionalLine1`, `additionalLine2`, `zipcode`, `city`, `countryState`, `country`, `phone`.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `address` | required | Customer or order address entity |
-| `showShippingWarning` | `false` | Forwards to the core include (`address.countryNoShippingAlert`) |
-| `cva` | `{}` | Root `vi-address` |
+| `address` | required | `CustomerAddressEntity` or `OrderAddressEntity` |
+| `showShippingWarning` | `false` | When true, `Alert` with `address.countryNoShippingAlert` |
+| `cva` | `{}` | Root `vi-address`; one `vi-address__*` slot per field |
 
 ## Address:List
 
