@@ -16,7 +16,7 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:Item` | Class-backed view-model (display lines, default flag, shipping block). One `Form:Selection` radio: name, `street, zip city`, trailing “Default” or “use as default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning below the selection. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s radio |
 | `Address:Manager:Item:Hero` | Current-address face. Mounts `Item` and overrides `label` (Default badge or use-as-default, then the name), `description` (lines and Edit), and an empty `trailing` |
 | `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close`. Create follows the active tab |
-| `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. `layout` `page` (default) or `manager` (modal only). Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
+| `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
 | `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
 
@@ -40,7 +40,7 @@ Address:Manager
           ├─ header: title (list: addressChoose; editor: addressAdd / addressEditWelcome)
           ├─ body: Address:Manager:View
           │    ├─ list: Tabs:List (unless hideShipping) + scroll body → Pane
-          │    └─ editor: Address:Editor layout=manager (preventNative, showActions=false, showHint=false)
+          │    └─ editor: Address:Editor (preventNative, showActions=false, showHint=false)
           └─ actions
                ├─ list: Dismiss + Create + Form:Handler switch POST (Apply)
                └─ editor: Back + submit (form="vi-address-editor")
@@ -113,10 +113,9 @@ JS selectors: `[data-component="ViewsTheme:Address:…"]`, `input[type="search"]
 | `preventNative` | `false` | `true` in the modal |
 | `showActions` | `true` | `false` in the modal (footer owns buttons) |
 | `showHint` | `true` | `false` in the modal (no “required fields” line) |
-| `layout` | `page` | `manager` only from the modal. Stacks salutation, name, street, zip \| city (country arrangement; state stays its own row), country, phone. Account create/edit and checkout register stay on the 6-column grid |
 | `submitLabel` | `account.addressSaveChange` | Modal uses the same label |
 
-Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount Editor without `layout` (page grid).
+Personal and Form always use the same 6-column `Grid` (`columns: 6`, `gap: 'sm'`, `g-col-*` on fields). Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
 
 ### Controller
 

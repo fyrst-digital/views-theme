@@ -15,7 +15,6 @@
     accountType = null,
     backHref = null,
     submitLabel = 'account.addressSaveChange'|trans|sw_sanitize,
-    layout = 'page',
     showHint = true,
     cva = {},
 %}
@@ -41,7 +40,7 @@
         {% block fields %}
             <div
                 {{ vi_attrs('fields') }}
-                class="{{ vi_class('fields', { layout: layout }) }}"
+                class="{{ vi_class('fields') }}"
             >
                 <twig:ViewsTheme:Address:Personal
                     class="{{ vi_class('personal') }}"
@@ -52,7 +51,6 @@
                         page: page,
                         formViolations: formViolations,
                         accountType: accountType,
-                        layout: layout,
                     }).all() }}
                 />
                 <twig:ViewsTheme:Address:Form
@@ -66,7 +64,6 @@
                         showNoShippingPostfix: showNoShippingPostfix,
                         disableNonShippableCountries: disableNonShippableCountries,
                         vatInputId: vatInputId ?? (typePrefix ~ 'address-vatIds'),
-                        layout: layout,
                     }).all() }}
                 />
             </div>
