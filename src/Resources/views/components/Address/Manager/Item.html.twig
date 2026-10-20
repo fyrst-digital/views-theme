@@ -1,142 +1,64 @@
-{% props
-    address,
-    type = 'shipping',
-    selected = false,
-    activeId = null,
-    defaultId = null,
-    cva = {},
-%}
-
-{% set shippingBlocked = type is same as('shipping') and not address.country.shippingAvailable %}
-{% set isDefault = defaultId and address.id is same as(defaultId) %}
-{% set person = (address.firstName|default('') ~ ' ' ~ address.lastName|default(''))|trim %}
-{% set company = address.company|default('')|trim %}
-{% set name = person ?: company %}
-{% set street = address.street|default('')|trim %}
-{% set extra1 = address.additionalAddressLine1|default('')|trim %}
-{% set extra2 = address.additionalAddressLine2|default('')|trim %}
-{% set zipCity = (address.zipcode|default('') ~ ' ' ~ address.city|default(''))|trim %}
-{% set countryName = address.country ? address.country.translated.name|default(address.country.name|default('')) : '' %}
-{% set cityLine = [zipCity, countryName]|filter(line => line)|join(', ') %}
-{% set summary = [street, zipCity]|filter(line => line)|join(', ') %}
-{% set radioId = 'vi-address-' ~ type ~ '-' ~ address.id %}
-{% set inUseLabel = 'viewsTheme.account.addressInUse'|trans|sw_sanitize %}
-{% set defaultLabel = 'account.addressDefault'|trans|sw_sanitize %}
-
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['radio', 'edit', 'default']) %}
 
 <div
     {{ attributes.defaults({
         role: selected ? false : 'listitem',
-        'data-variant': selected ? 'current' : 'available',
         'data-component': 'ViewsTheme:Address:Manager:Item',
         'data-component-options': {
-            addressId: address.id,
+            addressId: addressId,
             type: type,
             disabled: shippingBlocked,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block hero %}
-        <div class="{{ vi_class('hero') }}">
-            <twig:ViewsTheme:Form:Radio
-                class="{{ vi_class('radio') }}"
-                {{ ...vi_attrs('radio').defaults({
-                    tag: 'div',
-                    id: radioId ~ '-current',
-                    name: type,
-                    value: address.id,
-                    checked: selected,
-                    disabled: shippingBlocked,
-                    'input:aria-label': name,
-                }).all() }}
-            />
-            <div class="{{ vi_class('copy') }}">
-                <div class="{{ vi_class('status') }}">
-                    <span class="{{ vi_class('dot') }}" aria-hidden="true"></span>
-                    <span class="fs-6 fw-semibold">{{ inUseLabel }}</span>
-                    {% if isDefault %}
-                        <span class="fs-6 text-muted" aria-hidden="true">·</span>
-                        <span class="fs-6 fw-semibold text-muted">{{ defaultLabel }}</span>
-                    {% elseif not shippingBlocked %}
-                        <span class="fs-6 text-muted" aria-hidden="true">·</span>
-                        <twig:ViewsTheme:Address:Manager:Default
-                            {{ ...vi_attrs('default').defaults({
-                                addressId: address.id,
-                                type: type,
-                            }).all() }}
-                        />
-                    {% endif %}
-                </div>
-                <p class="{{ vi_class('name') }}">{{ name }}</p>
-                <div class="{{ vi_class('lines') }}">
-                    {% if company and person %}
-                        <p class="{{ vi_class('line') }}">{{ company }}</p>
-                    {% endif %}
-                    {% if extra1 %}
-                        <p class="{{ vi_class('line') }}">{{ extra1 }}</p>
-                    {% endif %}
-                    {% if extra2 %}
-                        <p class="{{ vi_class('line') }}">{{ extra2 }}</p>
-                    {% endif %}
-                    {% if street %}
-                        <p class="{{ vi_class('line') }}">{{ street }}</p>
-                    {% endif %}
-                    {% if cityLine %}
-                        <p class="{{ vi_class('line') }}">{{ cityLine }}</p>
-                    {% endif %}
-                </div>
-                {% if shippingBlocked %}
-                    <twig:ViewsTheme:Alert
-                        type="warning"
-                        :icon="false"
-                        content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+    <twig:ViewsTheme:Form:Selection
+        type="radio"
+        id="{{ radioId }}"
+        name="{{ type }}"
+        value="{{ addressId }}"
+        label="{{ name }}"
+        description="{{ summary }}"
+        :checked="selected"
+        :disabled="shippingBlocked"
+        :trailing="false"
+    >
+        <twig:block name="label">
+            {% vi_block label %}
+                {% if label is not empty %}
+                    <span class="d-block fs-5 fw-semibold">{{ label }}</span>
+                {% endif %}
+            {% endvi_block %}
+        </twig:block>
+        <twig:block name="description">
+            {% vi_block description %}
+                {% if description is not empty %}
+                    <span class="d-block fs-6 text-muted" id="{{ id }}-description">{{ description }}</span>
+                {% endif %}
+            {% endvi_block %}
+        </twig:block>
+        <twig:block name="trailing">
+            {% vi_block trailing %}
+                {% if isDefault %}
+                    <twig:ViewsTheme:Badge
+                        size="sm"
+                        color="light"
+                        label="{{ 'account.addressDefault'|trans|sw_sanitize }}"
+                    />
+                {% elseif not shippingBlocked %}
+                    <twig:ViewsTheme:Address:Manager:Default
+                        addressId="{{ addressId }}"
+                        type="{{ name }}"
                     />
                 {% endif %}
-                <twig:ViewsTheme:Address:Manager:Edit
-                    {{ ...vi_attrs('edit').defaults({
-                        addressId: address.id,
-                        type: type,
-                    }).all() }}
-                />
-            </div>
-        </div>
-    {% endblock %}
-
-    {% block row %}
-        <div class="{{ vi_class('row') }}">
-            <twig:ViewsTheme:Form:Selection
-                type="radio"
-                id="{{ radioId }}"
-                name="{{ type }}"
-                value="{{ address.id }}"
-                label="{{ name }}"
-                label:class="fw-semibold"
-                description="{{ summary }}"
-                :checked="false"
-                :disabled="shippingBlocked"
-                :trailing="false"
-            >
-                <twig:block name="trailing">
-                    {% if isDefault %}
-                        <span class="vi-form-selection__trailing fs-5 fw-semibold flex-shrink-0">{{ defaultLabel }}</span>
-                    {% elseif not shippingBlocked %}
-                        <twig:ViewsTheme:Address:Manager:Default
-                            addressId="{{ address.id }}"
-                            type="{{ type }}"
-                        />
-                    {% endif %}
-                </twig:block>
-            </twig:ViewsTheme:Form:Selection>
-            {% if shippingBlocked %}
-                <twig:ViewsTheme:Alert
-                    type="warning"
-                    :icon="false"
-                    content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
-                />
-            {% endif %}
-        </div>
-    {% endblock %}
+            {% endvi_block %}
+        </twig:block>
+    </twig:ViewsTheme:Form:Selection>
+    {% if shippingBlocked %}
+        <twig:ViewsTheme:Alert
+            type="warning"
+            :icon="false"
+            content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+        />
+    {% endif %}
 </div>

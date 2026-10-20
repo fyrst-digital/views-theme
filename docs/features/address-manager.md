@@ -11,9 +11,10 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:Action` | Confirm change buttons. Lazy fetch/mount/unmount; `aria-expanded` / `aria-haspopup="dialog"`. Options: `managerUrl`, `editorUrl`, `tab` (`shipping` \| `billing`), `hideShipping`. Public `open()` / `close()` |
 | `Address:Manager` | Class-backed view-model (current vs available per tab, active/default ids, `hideShipping`). Owner JS: select, search is on List, create/edit, set-default, switch, editor submit, tab change |
 | `Address:Manager:View` | Panel body island (`mode=list` \| `editor`). Inner fetch swaps this root — Modal is not remounted |
-| `Address:Manager:Pane` | Selected hero + available `List` for one type. No pane heading |
+| `Address:Manager:Pane` | Selected address + available `List` for one type. No pane heading. Mounts `Address:Manager:Item:Hero` for the address in use |
 | `Address:Manager:List` | Full-width search (`input[type="search"]`), available rows, empty / no-results `Status`. Client-side text filter. Create lives in the footer |
-| `Address:Manager:Item` | One address, two faces: `data-variant` `current` (hero, the address in use) or `available` (compact `Form:Selection` row). The hero does not move. Hero: radio, “In use” (+ “Default” or “use as default”), name, lines, Edit. Row: name, `street, zip city`, trailing “use as default” or “Default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning stays. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s visible radio |
+| `Address:Manager:Item` | Class-backed view-model (display lines, default flag, shipping block). One `Form:Selection` radio: name, `street, zip city`, trailing “Default” or “use as default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning below the selection. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s radio |
+| `Address:Manager:Item:Hero` | Current-address face. Mounts `Item` and overrides `label` (Default badge or use-as-default, then the name), `description` (lines and Edit), and an empty `trailing` |
 | `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close`. Create follows the active tab |
 | `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. `layout` `page` (default) or `manager` (modal only). Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
@@ -58,10 +59,10 @@ Address:Editor
 
 - Confirm shipping / billing change opens the themed modal on the matching tab. Title is `viewsTheme.account.addressChoose`
 - Tabs sit under the title (underline is manager `View.css` on `[aria-selected]`, not a global Tabs change). Digital cart (`hideShipping`): billing-only pane, no tabs
-- The hero is the address already in use and stays in place. Choosing a row checks that row’s radio, unchecks the previous one, and updates the switch hidden input. Selected fill and border follow the checked radio. Edit is only on the hero
-- Search filters rows inside `List` (the hero stays). Empty vs no-results `Status` stay
+- The current address stays in place. `Item:Hero` fills its `label` (Default badge or use-as-default, then the name), `description` (lines and Edit), and an empty `trailing`. Choosing a row checks that row’s radio, unchecks the previous one, and updates the switch hidden input. Selected fill and border follow the checked radio. Edit is only on the current address
+- Search filters rows inside `List` (the address in use stays). Empty vs no-results `Status` stay
 - Apply POSTs `/vi/address/switch` → **204** → `location.reload()`
-- Footer **New address** / hero **Edit** load `/vi/address/editor` (valid save → 204 + reload; violations → **4xx HTML** swap). The response is a full Manager. JS swaps the View island and copies the panel title and footer actions onto the open modal. Editor title is `viewsTheme.account.addressAdd` or `account.addressEditWelcome`. Submit label is `account.addressSaveChange`
+- Footer **New address** / current-address **Edit** load `/vi/address/editor` (valid save → 204 + reload; violations → **4xx HTML** swap). The response is a full Manager. JS swaps the View island and copies the panel title and footer actions onto the open modal. Editor title is `viewsTheme.account.addressAdd` or `account.addressEditWelcome`. Submit label is `account.addressSaveChange`
 - Set default POSTs core `frontend.account.address.switch-default` (`redirect: 'manual'`; opaque/status 0 is success), then refetches GET manager into the island. Already-default rows show “Default” instead of the action
 - Guest checkout allowed (login required + guest)
 - Addressbook create/edit: same Editor, native submit to `frontend.account.address.create` / `.edit.save`

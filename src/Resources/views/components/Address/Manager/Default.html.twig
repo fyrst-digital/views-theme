@@ -6,16 +6,18 @@
 
 {% do vi_define_cva(cva) %}
 
-<button
-    {{ attributes.defaults({
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
         type: 'button',
+        color: 'dark',
+        size: 'sm',
+        link: true,
+        label: 'viewsTheme.account.addressUseAsDefault'|trans|sw_sanitize,
         'data-component': 'ViewsTheme:Address:Manager:Default',
         'data-component-options': {
             addressId: addressId,
             type: type,
         }|json_encode,
-    }) }}
-    class="{{ vi_class('root') }}"
->
-    {{ 'viewsTheme.account.addressUseAsDefault'|trans|sw_sanitize }}
-</button>
+    }).all() }}
+/>

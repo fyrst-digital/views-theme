@@ -1,7 +1,7 @@
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 
 /**
- * Selectable address card. `data-variant` is `current` (hero) or `available` (row).
+ * Selectable address row. One `Form:Selection` radio.
  *
  * @extends {ShopwareComponent}
  */

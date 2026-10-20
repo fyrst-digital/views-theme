@@ -407,14 +407,12 @@ export default class AddressManager extends ShopwareComponent {
     }
 
     /**
-     * Check the radio on the face that is showing. Same `name` clears the previous one.
+     * Check this item's radio. Same `name` clears the previous one.
      *
      * @param {HTMLElement} item
      */
     _checkVisibleRadio(item) {
-        const radios = item.querySelectorAll('input[type="radio"]')
-        const index = item.dataset.variant === 'current' ? 0 : 1
-        const radio = radios[index]
+        const radio = item.querySelector('input[type="radio"]')
         if (radio instanceof HTMLInputElement && !radio.disabled) {
             radio.checked = true
         }

@@ -31,9 +31,11 @@ Checkout:Success:Addresses       (class VM, root-host)
 └─ Address:List             (no action nests)
 Address:Item
 └─ Address
-Address:Manager:Item
-├─ hero (selected): Form:Radio, status, lines, Edit
-└─ row: Form:Selection
+Address:Manager:Item:Hero   (address in use)
+└─ Address:Manager:Item
+     └─ Form:Selection (Hero overrides label, description, and trailing)
+Address:Manager:Item         (available row)
+└─ Form:Selection
 ```
 
 ## Address

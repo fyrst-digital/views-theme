@@ -34,6 +34,10 @@
   }
 }
 
+.text-underline {
+  text-decoration-line: underline;
+}
+
 :focus-visible {
   outline: var(--focus-outline-width, 2px) solid
     var(--focus-outline-color, var(--primary));
