@@ -17,9 +17,5 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% if type is same as('shipping') %}
-        {{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}
-    {% else %}
-        {{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}
-    {% endif %}
+    {{ 'viewsTheme.account.addressUseAsDefault'|trans|sw_sanitize }}
 </button>

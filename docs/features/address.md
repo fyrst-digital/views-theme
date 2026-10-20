@@ -29,8 +29,11 @@ Checkout:Confirm:Addresses       (class VM; not Address:List)
 └─ billing column → lines or equal copy + Address:Manager:Action
 Checkout:Success:Addresses       (class VM, root-host)
 └─ Address:List             (no action nests)
-Address:Item / Address:Manager:Item
+Address:Item
 └─ Address
+Address:Manager:Item
+├─ hero (selected): Form:Radio, status, lines, Edit
+└─ row: Form:Selection
 ```
 
 ## Address

@@ -319,7 +319,7 @@ Lazy-loaded centered `Modal` from confirm change buttons. **Manager** owns list/
 - **Multi-instance ownership:** shipping + billing Actions. Only the Action that mounted handles Close (`payload.el` inside `_managerEl`). Opening while another shell is live: close existing first, then mount
 - Open/Close payload: `{ el }` via `emitQueued`
 - Inner list ↔ editor swaps the View island only (Modal stays). Successful switch / editor save: **204** → `location.reload()`
-- Search: List filters `input[type="search"]` against item text. Tab trap: `shared/focus-trap.js`
+- Search: List filters `input[type="search"]` against item text inside the list. Selecting a row checks that radio and updates the switch input. The hero stays the address in use. Tab trap: `shared/focus-trap.js`
 
 See [Address manager](../features/address-manager.md).
 

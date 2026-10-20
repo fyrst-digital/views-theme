@@ -223,13 +223,13 @@ class AddressManagerController extends AbstractComponentController
 
         $response = $this->renderComponent('ViewsTheme:Address:Manager:View', [
             'mode' => 'editor',
-            'title' => $this->editorTitle($type, $addressId),
+            'title' => $this->editorTitle($addressId),
             'page' => $page,
             'type' => $type,
             'editorAction' => $this->generateUrl('frontend.views-theme.address.editor.save', $params),
             'editorData' => $editorData,
             'formViolations' => $formViolations,
-            'submitLabel' => $this->editorSubmitLabel($context, $type, $addressId),
+            'submitLabel' => $this->trans('account.addressSaveChange'),
             'formId' => 'vi-address-editor',
         ]);
         $response->setStatusCode($status);
@@ -237,29 +237,13 @@ class AddressManagerController extends AbstractComponentController
         return $response;
     }
 
-    private function editorTitle(string $type, ?string $addressId): string
+    private function editorTitle(?string $addressId): string
     {
         if ($addressId !== null) {
             return $this->trans('account.addressEditWelcome');
         }
 
-        return $type === self::TYPE_SHIPPING
-            ? $this->trans('account.addressNewShipping')
-            : $this->trans('account.addressNewBilling');
-    }
-
-    private function editorSubmitLabel(SalesChannelContext $context, string $type, ?string $addressId): string
-    {
-        $entity = $context->getCustomer();
-        $activeId = $type === self::TYPE_SHIPPING
-            ? $entity?->getActiveShippingAddress()?->getId()
-            : $entity?->getActiveBillingAddress()?->getId();
-
-        if ($addressId !== null && $addressId === $activeId) {
-            return $this->trans('account.addressSaveChange');
-        }
-
-        return $this->trans('account.addressSaveAndUse');
+        return $this->trans('viewsTheme.account.addressAdd');
     }
 
     private function switchContextAddress(string $addressId, string $type, SalesChannelContext $context): void

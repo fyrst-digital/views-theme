@@ -4,19 +4,32 @@
     selected = false,
     activeId = null,
     defaultId = null,
-    tag = 'div',
     cva = {},
 %}
 
 {% set shippingBlocked = type is same as('shipping') and not address.country.shippingAvailable %}
 {% set isDefault = defaultId and address.id is same as(defaultId) %}
-{% set menuId = 'vi-address-item-menu-' ~ type ~ '-' ~ address.id %}
+{% set person = (address.firstName|default('') ~ ' ' ~ address.lastName|default(''))|trim %}
+{% set company = address.company|default('')|trim %}
+{% set name = person ?: company %}
+{% set street = address.street|default('')|trim %}
+{% set extra1 = address.additionalAddressLine1|default('')|trim %}
+{% set extra2 = address.additionalAddressLine2|default('')|trim %}
+{% set zipCity = (address.zipcode|default('') ~ ' ' ~ address.city|default(''))|trim %}
+{% set countryName = address.country ? address.country.translated.name|default(address.country.name|default('')) : '' %}
+{% set cityLine = [zipCity, countryName]|filter(line => line)|join(', ') %}
+{% set summary = [street, zipCity]|filter(line => line)|join(', ') %}
+{% set radioId = 'vi-address-' ~ type ~ '-' ~ address.id %}
+{% set inUseLabel = 'viewsTheme.account.addressInUse'|trans|sw_sanitize %}
+{% set defaultLabel = 'account.addressDefault'|trans|sw_sanitize %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['radio', 'body', 'badge', 'menu', 'edit', 'default']) %}
+{% do vi_define_attrs(['radio', 'edit', 'default']) %}
 
-<{{ tag|raw }}
+<div
     {{ attributes.defaults({
+        role: selected ? false : 'listitem',
+        'data-variant': selected ? 'current' : 'available',
         'data-component': 'ViewsTheme:Address:Manager:Item',
         'data-component-options': {
             addressId: address.id,
@@ -26,73 +39,29 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block content %}
-        <label class="{{ vi_class('card') }}">
-            <input
-                {{ vi_attrs('radio').defaults({
-                    type: 'radio',
+    {% block hero %}
+        <div class="{{ vi_class('hero') }}">
+            <twig:ViewsTheme:Form:Radio
+                class="{{ vi_class('radio') }}"
+                {{ ...vi_attrs('radio').defaults({
+                    tag: 'div',
+                    id: radioId ~ '-current',
                     name: type,
                     value: address.id,
                     checked: selected,
                     disabled: shippingBlocked,
-                }) }}
-                class="{{ vi_class('radio') }}"
-            >
-
-            <div
-                {{ vi_attrs('body') }}
-                class="{{ vi_class('body') }}"
-            >
-                <twig:ViewsTheme:Address
-                    :address="address"
-                    :showShippingWarning="type is same as('shipping')"
-                />
-
-                {% if isDefault %}
-                    <twig:ViewsTheme:Badge
-                        class="{{ vi_class('badge') }}"
-                        {{ ...vi_attrs('badge').defaults({
-                            color: 'light',
-                            size: 'sm',
-                            pill: true,
-                            label: 'account.addressDefault'|trans|sw_sanitize,
-                        }).all() }}
-                    />
-                {% endif %}
-            </div>
-        </label>
-
-        {% block menu %}
-            <twig:ViewsTheme:Dropdown
-                class="{{ vi_class('menu') }}"
-                {{ ...vi_attrs('menu').defaults({
-                    id: menuId,
-                    placement: 'bottom-end',
+                    'input:aria-label': name,
                 }).all() }}
-            >
-                <twig:block name="toggle">
-                    <twig:ViewsTheme:Button
-                        type="button"
-                        color="none"
-                        size="sm"
-                        icon="caret-down"
-                        :square="true"
-                        :label="'account.addressOptionsBtn'|trans|sw_sanitize"
-                        popovertarget="{{ menuId }}"
-                        aria-expanded="false"
-                        aria-haspopup="true"
-                        aria-controls="{{ menuId }}"
-                        style="anchor-name: --{{ menuId }}"
-                    />
-                </twig:block>
-                <twig:block name="content">
-                    <twig:ViewsTheme:Address:Manager:Edit
-                        {{ ...vi_attrs('edit').defaults({
-                            addressId: address.id,
-                            type: type,
-                        }).all() }}
-                    />
-                    {% if not isDefault and not shippingBlocked %}
+            />
+            <div class="{{ vi_class('copy') }}">
+                <div class="{{ vi_class('status') }}">
+                    <span class="{{ vi_class('dot') }}" aria-hidden="true"></span>
+                    <span class="fs-6 fw-semibold">{{ inUseLabel }}</span>
+                    {% if isDefault %}
+                        <span class="fs-6 text-muted" aria-hidden="true">·</span>
+                        <span class="fs-6 fw-semibold text-muted">{{ defaultLabel }}</span>
+                    {% elseif not shippingBlocked %}
+                        <span class="fs-6 text-muted" aria-hidden="true">·</span>
                         <twig:ViewsTheme:Address:Manager:Default
                             {{ ...vi_attrs('default').defaults({
                                 addressId: address.id,
@@ -100,8 +69,74 @@
                             }).all() }}
                         />
                     {% endif %}
-                </twig:block>
-            </twig:ViewsTheme:Dropdown>
-        {% endblock %}
+                </div>
+                <p class="{{ vi_class('name') }}">{{ name }}</p>
+                <div class="{{ vi_class('lines') }}">
+                    {% if company and person %}
+                        <p class="{{ vi_class('line') }}">{{ company }}</p>
+                    {% endif %}
+                    {% if extra1 %}
+                        <p class="{{ vi_class('line') }}">{{ extra1 }}</p>
+                    {% endif %}
+                    {% if extra2 %}
+                        <p class="{{ vi_class('line') }}">{{ extra2 }}</p>
+                    {% endif %}
+                    {% if street %}
+                        <p class="{{ vi_class('line') }}">{{ street }}</p>
+                    {% endif %}
+                    {% if cityLine %}
+                        <p class="{{ vi_class('line') }}">{{ cityLine }}</p>
+                    {% endif %}
+                </div>
+                {% if shippingBlocked %}
+                    <twig:ViewsTheme:Alert
+                        type="warning"
+                        :icon="false"
+                        content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+                    />
+                {% endif %}
+                <twig:ViewsTheme:Address:Manager:Edit
+                    {{ ...vi_attrs('edit').defaults({
+                        addressId: address.id,
+                        type: type,
+                    }).all() }}
+                />
+            </div>
+        </div>
     {% endblock %}
-</{{ tag|raw }}>
+
+    {% block row %}
+        <div class="{{ vi_class('row') }}">
+            <twig:ViewsTheme:Form:Selection
+                type="radio"
+                id="{{ radioId }}"
+                name="{{ type }}"
+                value="{{ address.id }}"
+                label="{{ name }}"
+                label:class="fw-semibold"
+                description="{{ summary }}"
+                :checked="false"
+                :disabled="shippingBlocked"
+                :trailing="false"
+            >
+                <twig:block name="trailing">
+                    {% if isDefault %}
+                        <span class="vi-form-selection__trailing fs-5 fw-semibold flex-shrink-0">{{ defaultLabel }}</span>
+                    {% elseif not shippingBlocked %}
+                        <twig:ViewsTheme:Address:Manager:Default
+                            addressId="{{ address.id }}"
+                            type="{{ type }}"
+                        />
+                    {% endif %}
+                </twig:block>
+            </twig:ViewsTheme:Form:Selection>
+            {% if shippingBlocked %}
+                <twig:ViewsTheme:Alert
+                    type="warning"
+                    :icon="false"
+                    content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+                />
+            {% endif %}
+        </div>
+    {% endblock %}
+</div>

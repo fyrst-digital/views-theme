@@ -42,6 +42,8 @@ class Form
      */
     public array $cva = [];
 
+    public string $layout = 'page';
+
     public bool $showAdditional1 = false;
 
     public bool $showAdditional2 = false;
@@ -58,6 +60,20 @@ class Form
      * @var list<string>
      */
     public array $arrangement = ['city', 'state', 'zip'];
+
+    /**
+     * Zip and city in arrangement order. State stays its own row.
+     *
+     * @var list<string>
+     */
+    public array $placeParts = [];
+
+    /**
+     * Manager stack. Each row is `state` or `place`.
+     *
+     * @var list<array{kind: string}>
+     */
+    public array $managerRows = [];
 
     /**
      * @var list<array<string, mixed>>
@@ -98,6 +114,8 @@ class Form
     #[PostMount]
     public function postMount(array $data): void
     {
+        $this->layout = $this->layout === 'manager' ? 'manager' : 'page';
+
         $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
         $this->formViolations = ComponentData::formViolations(
             $this->formViolations,
@@ -122,6 +140,8 @@ class Form
             $this->arrangement = ['city', 'state', 'zip'];
         }
 
+        $this->buildManagerRows();
+
         $this->countries ??= ComponentData::pageCountries($this->page);
 
         $this->countryId = $this->resolveCountryId();
@@ -133,6 +153,29 @@ class Form
         $this->zipInputId = $this->idPrefix . $this->prefix . 'AddressZipcode';
 
         $this->fields = $this->buildFields();
+    }
+
+    private function buildManagerRows(): void
+    {
+        $place = [];
+        $rows = [];
+        $seenPlace = false;
+
+        foreach ($this->arrangement as $part) {
+            if ($part === 'state') {
+                $rows[] = ['kind' => 'state'];
+                continue;
+            }
+
+            $place[] = $part;
+            if (!$seenPlace) {
+                $rows[] = ['kind' => 'place'];
+                $seenPlace = true;
+            }
+        }
+
+        $this->placeParts = $place;
+        $this->managerRows = $rows;
     }
 
     private function resolveCountryId(): ?string

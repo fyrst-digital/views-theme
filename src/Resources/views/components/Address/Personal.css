@@ -1,0 +1,14 @@
+.vi-address-personal[data-layout='manager'] .vi-address-personal__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-7, 32px);
+}
+
+.vi-address-personal[data-layout='manager'] .vi-address-personal__grid > * {
+  width: 100%;
+}
+
+.vi-address-personal[data-layout='manager'] .vi-address-personal__name > * {
+  flex: 1 1 0;
+  min-width: 0;
+}

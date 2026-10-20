@@ -334,7 +334,7 @@ Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle 
 
 ## Form:Selection
 
-Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The remaining attribute map is merged into that mount, so caller nests (`label:*`, `description:*`, `input:*`, `feedback:*`, and any other) reach the inner control. Title weight is caller-owned. `Payment:Selection` and `Shipping:Selection` pass `label:class="fw-semibold"`. The description stays regular. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `trailing` is 16px / 600.
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). The card root is a `<div>`. `type` maps to the UX tag and `component()` renders it as the inner `<label>` (`tag: 'label'`, `class: 'flex-fill min-w-0'`). The remaining attribute map is merged into that mount, so caller nests (`label:*`, `description:*`, `input:*`, `feedback:*`, and any other) reach the inner control. Title weight is caller-owned. `Payment:Selection` and `Shipping:Selection` pass `label:class="fw-semibold"`. The description stays regular. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `trailing` is a sibling of the label (16px / 600), so a button in the `{% block trailing %}` does not toggle the control. Clicking the trailing text on payment and shipping rows no longer selects the row.
 
 ```twig
 <twig:ViewsTheme:Form:Selection
@@ -354,7 +354,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
 | `id` | `vi-form-selection-{random}` | Forwarded to the inner control |
 | `name` / `value` | `null` / `'1'` | Native grouping for radios |
 | `label` / `description` | `null` | Title and supporting line |
-| `trailing` | `null` | Trailing text; omitted when empty |
+| `trailing` | `null` | Trailing text in the default block; omitted when empty. Override `{% block trailing %}` for a button |
 | `checked` / `disabled` | `false` | |
 | `validationRules` / `violationPath` / `error` / `formViolations` | same as Checkbox | |
 

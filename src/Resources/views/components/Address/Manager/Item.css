@@ -1,0 +1,11 @@
+.vi-address-manager-item[data-variant='available'] .vi-address-manager-item__hero,
+.vi-address-manager-item[data-variant='current'] .vi-address-manager-item__row {
+  display: none;
+}
+
+.vi-address-manager-item__dot {
+  width: var(--vi-address-manager-item-dot, 8px);
+  height: var(--vi-address-manager-item-dot, 8px);
+  border-radius: var(--border-radius-pill);
+  background-color: var(--primary);
+}

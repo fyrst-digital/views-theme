@@ -5,10 +5,12 @@
 {% do vi_define_cva(cva) %}
 
 <twig:ViewsTheme:Button
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root') }} btn btn-link fw-semibold"
     {{ ...attributes.defaults({
         type: 'button',
-        color: 'secondary',
+        color: 'none',
+        size: 'sm',
+        link: true,
         label: 'general.back'|trans|sw_sanitize,
         'data-component': 'ViewsTheme:Address:Manager:Back',
     }).all() }}

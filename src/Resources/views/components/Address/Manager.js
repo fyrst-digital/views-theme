@@ -20,6 +20,7 @@ export default class AddressManager extends ShopwareComponent {
         tab: 'shipping',
         hideShipping: false,
         viewComponent: 'ViewsTheme:Address:Manager:View',
+        itemComponent: 'ViewsTheme:Address:Manager:Item',
         handlerComponent: 'ViewsTheme:Form:Handler',
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
         tabsChangeEvent: 'ViewsTheme:Tabs:Change',
@@ -65,19 +66,21 @@ export default class AddressManager extends ShopwareComponent {
             input.value = id
         }
 
-        const radio = this.el.querySelector(
-            `input[type="radio"][name="${type}"][value="${CSS.escape(id)}"]`,
-        )
-        if (radio instanceof HTMLInputElement && !radio.disabled) {
-            radio.checked = true
+        const next = this._item(id, type)
+        const nextApi = getInstanceByElement(this.options.itemComponent, next)
+        if (!next || nextApi?.options?.disabled) {
+            return
         }
+
+        this._checkVisibleRadio(next)
     }
 
     /**
      * @param {string} [type]
      */
     openCreate(type) {
-        void this._loadEditor({ type: type || this._tab })
+        const next = type === 'shipping' || type === 'billing' ? type : this._tab
+        void this._loadEditor({ type: next })
     }
 
     /**
@@ -309,6 +312,12 @@ export default class AddressManager extends ShopwareComponent {
 
         if (existing && island) {
             existing.replaceWith(island)
+            const title = island.querySelector('h1')
+            const dialog = this.el.querySelector(`[data-component="ViewsTheme:Modal"]`)
+            const label = title?.textContent?.trim()
+            if (dialog && label) {
+                dialog.setAttribute('aria-label', label)
+            }
         }
     }
 
@@ -336,5 +345,37 @@ export default class AddressManager extends ShopwareComponent {
     _switchForm() {
         const form = this.el.querySelector(`#${this.options.switchFormId}`)
         return form instanceof HTMLFormElement ? form : null
+    }
+
+    /**
+     * @param {string} id
+     * @param {string} type
+     * @returns {HTMLElement|null}
+     */
+    _item(id, type) {
+        const name = this.options.itemComponent
+        const items = this.el.querySelectorAll(`[data-component="${name}"]`)
+        for (const item of items) {
+            const api = getInstanceByElement(name, item)
+            if (api?.options?.addressId === id && api?.options?.type === type) {
+                return item
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Check the radio on the face that is showing. Same `name` clears the previous one.
+     *
+     * @param {HTMLElement} item
+     */
+    _checkVisibleRadio(item) {
+        const radios = item.querySelectorAll('input[type="radio"]')
+        const index = item.dataset.variant === 'current' ? 0 : 1
+        const radio = radios[index]
+        if (radio instanceof HTMLInputElement && !radio.disabled) {
+            radio.checked = true
+        }
     }
 }

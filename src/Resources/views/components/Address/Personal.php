@@ -49,6 +49,8 @@ class Personal
      */
     public array $cva = [];
 
+    public string $layout = 'page';
+
     public bool $showAccountType = false;
 
     public bool $showSalutation = false;
@@ -98,6 +100,8 @@ class Personal
     #[PostMount]
     public function postMount(array $data): void
     {
+        $this->layout = $this->layout === 'manager' ? 'manager' : 'page';
+
         $salesChannelId = $this->salesChannelContextAccessor->get()?->getSalesChannelId();
         $this->formViolations = ComponentData::formViolations(
             $this->formViolations,

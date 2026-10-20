@@ -11,11 +11,11 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:Action` | Confirm change buttons. Lazy fetch/mount/unmount; `aria-expanded` / `aria-haspopup="dialog"`. Options: `managerUrl`, `editorUrl`, `tab` (`shipping` \| `billing`), `hideShipping`. Public `open()` / `close()` |
 | `Address:Manager` | Class-backed view-model (current vs available per tab, active/default ids, `hideShipping`). Owner JS: select, search is on List, create/edit, set-default, switch, editor submit, tab change |
 | `Address:Manager:View` | Panel island identity (`mode=list` \| `editor`). Inner fetch swaps this root — Modal is not remounted |
-| `Address:Manager:Pane` | Current card + available `List` for one type |
-| `Address:Manager:List` | Toolbar (search `input[type="search"]` + create), available items, empty / no-results `Status`. Client-side text filter |
-| `Address:Manager:Item` | Selectable card: radio + [`Address`](address.md) + `Badge` “Standard” + `Dropdown` (edit, set default). **No delete**. Shipping unavailable → radio disabled. Click (not dropdown) → Manager `select(id, type)` |
-| `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close` |
-| `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
+| `Address:Manager:Pane` | Selected hero + available `List` for one type. No pane heading |
+| `Address:Manager:List` | Full-width search (`input[type="search"]`), available rows, empty / no-results `Status`. Client-side text filter. Create lives in the footer |
+| `Address:Manager:Item` | One address, two faces: `data-variant` `current` (hero, the address in use) or `available` (compact `Form:Selection` row). The hero does not move. Hero: radio, “In use” (+ “Default” or “use as default”), name, lines, Edit. Row: name, `street, zip city`, trailing “use as default” or “Default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning stays. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s visible radio |
+| `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close`. Create follows the active tab |
+| `Address:Editor` | Form SoT: `Address:Personal` + `Address:Form` + `Form:Handler`. `layout` `page` (default) or `manager` (modal only). Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
 | `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
 
@@ -35,14 +35,14 @@ Lazy shell (body mount):
 ```
 Address:Manager
 └─ Modal #vi-address-manager
-     └─ Modal:Panel
-          └─ Address:Manager:View     (island)
-               ├─ Modal:Header
-               ├─ body: list XOR editor
-               │    ├─ list: Tabs (unless hideShipping) → Pane → current Item + List
-               │    └─ editor: Address:Editor (preventNative, showActions=false)
+     └─ Modal:Panel          (manager only: rounded-5, linen border, no shadow)
+          └─ Address:Manager:View     (island; header + scroll body + pinned footer)
+               ├─ header: Modal:Header + Tabs:List (list mode, unless hideShipping)
+               ├─ body
+               │    ├─ list: Pane → hero Item + List rows
+               │    └─ editor: Address:Editor layout=manager (preventNative, showActions=false, showHint=false)
                └─ footer
-                    ├─ list: Dismiss + Form:Handler switch POST
+                    ├─ list: Dismiss + Create + Form:Handler switch POST (Apply)
                     └─ editor: Back + submit (form="vi-address-editor")
 ```
 
@@ -57,12 +57,13 @@ Address:Editor
 
 ## Features
 
-- Confirm shipping / billing change opens the themed modal on the matching tab
-- Digital cart (`hideShipping`): billing-only pane, no shipping tab
-- Search filters available cards client-side (empty vs no-results copy)
-- Select + “Adresse ändern” POSTs `/vi/address/switch` → **204** → `location.reload()`
-- Create / edit loads `/vi/address/editor` into the View island (valid save → 204 + reload; violations → **4xx HTML** swap)
-- Set default POSTs core `frontend.account.address.switch-default` (`redirect: 'manual'`; opaque/status 0 is success), then refetches GET manager into the island
+- Confirm shipping / billing change opens the themed modal on the matching tab. Title is `viewsTheme.account.addressChoose`
+- Tabs sit under the title (underline is manager `View.css` on `[aria-selected]`, not a global Tabs change). Digital cart (`hideShipping`): billing-only pane, no tabs
+- The hero is the address already in use and stays in place. Choosing a row checks that row’s radio, unchecks the previous one, and updates the switch hidden input. Selected fill and border follow the checked radio. Edit is only on the hero
+- Search filters rows inside `List` (the hero stays). Empty vs no-results `Status` stay
+- Apply POSTs `/vi/address/switch` → **204** → `location.reload()`
+- Footer **New address** / hero **Edit** load `/vi/address/editor` into the View island (valid save → 204 + reload; violations → **4xx HTML** swap). Editor title is `viewsTheme.account.addressAdd` or `account.addressEditWelcome`. Submit label is `account.addressSaveChange`
+- Set default POSTs core `frontend.account.address.switch-default` (`redirect: 'manual'`; opaque/status 0 is success), then refetches GET manager into the island. Already-default rows show “Default” instead of the action
 - Guest checkout allowed (login required + guest)
 - Addressbook create/edit: same Editor, native submit to `frontend.account.address.create` / `.edit.save`
 - Escape / backdrop / close unmounts the shell; reopen always refetches
@@ -111,9 +112,11 @@ JS selectors: `[data-component="ViewsTheme:Address:…"]`, `input[type="search"]
 | `formId` | `vi-address-editor` | Footer submit uses `form=` |
 | `preventNative` | `false` | `true` in the modal |
 | `showActions` | `true` | `false` in the modal (footer owns buttons) |
-| `submitLabel` | `account.addressSaveChange` | Modal: save vs save-and-use |
+| `showHint` | `true` | `false` in the modal (no “required fields” line) |
+| `layout` | `page` | `manager` only from the modal. Stacks salutation, name, street, zip \| city (country arrangement; state stays its own row), country, phone. Account create/edit and checkout register stay on the 6-column grid |
+| `submitLabel` | `account.addressSaveChange` | Modal uses the same label |
 
-Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`).
+Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount Editor without `layout` (page grid).
 
 ### Controller
 

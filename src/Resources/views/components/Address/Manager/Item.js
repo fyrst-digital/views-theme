@@ -1,7 +1,7 @@
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 
 /**
- * Selectable address card — click selects (except dropdown).
+ * Selectable address card. `data-variant` is `current` (hero) or `available` (row).
  *
  * @extends {ShopwareComponent}
  */
@@ -11,7 +11,8 @@ export default class AddressManagerItem extends ShopwareComponent {
         type: 'shipping',
         disabled: false,
         managerComponent: 'ViewsTheme:Address:Manager',
-        dropdownComponent: 'ViewsTheme:Dropdown',
+        editComponent: 'ViewsTheme:Address:Manager:Edit',
+        defaultComponent: 'ViewsTheme:Address:Manager:Default',
     }
 
     init() {
@@ -27,14 +28,15 @@ export default class AddressManagerItem extends ShopwareComponent {
      * @param {MouseEvent} event
      */
     _onClick(event) {
-        if (this.options.disabled) {
+        const action = event.target.closest(
+            `[data-component="${this.options.editComponent}"], [data-component="${this.options.defaultComponent}"]`,
+        )
+        if (action && this.el.contains(action)) {
+            event.preventDefault()
             return
         }
 
-        const dropdown = event.target.closest(
-            `[data-component="${this.options.dropdownComponent}"]`,
-        )
-        if (dropdown && this.el.contains(dropdown)) {
+        if (this.options.disabled) {
             return
         }
 

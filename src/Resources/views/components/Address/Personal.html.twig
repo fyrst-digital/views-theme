@@ -2,14 +2,17 @@
 {% do vi_define_attrs(['grid', 'accountType', 'accountTypeSelect', 'salutation', 'title', 'firstName', 'lastName', 'birthday', 'company']) %}
 
 <div
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-layout': layout,
+    }) }}
     class="{{ vi_class('root') }}"
 >
     {% block fields %}
         <twig:ViewsTheme:Grid
+            class="{{ vi_class('grid') }}"
             {{ ...vi_attrs('grid').defaults({
                 columns: 6,
-                gap: 'sm',
+                gap: layout == 'manager' ? false : 'sm',
             }).all() }}
         >
 
@@ -120,6 +123,7 @@
                 {% endif %}
             {% endvi_block %}
 
+            <div class="{{ vi_class('name', { layout: layout }) }}">
             {% vi_block firstName %}
                 <twig:ViewsTheme:Form:Input
                     class="{{ vi_class('firstName') }}"
@@ -151,6 +155,7 @@
                     }).all() }}
                 />
             {% endvi_block %}
+            </div>
 
             {% vi_block birthday %}
                 {% if showBirthday %}

@@ -1,5 +1,15 @@
 {
     root: { base: 'vi-address-personal' },
+    grid: { base: 'vi-address-personal__grid' },
+    name: {
+        variants: {
+            layout: {
+                page: 'd-contents',
+                manager: 'vi-address-personal__name d-flex gap-3',
+            },
+        },
+        defaultVariants: { layout: 'page' },
+    },
     accountType: { base: 'vi-address-personal__account-type g-col-6' },
     accountTypeSelect: { base: 'g-col-3' },
     salutation: { base: 'vi-address-personal__salutation g-col-3' },

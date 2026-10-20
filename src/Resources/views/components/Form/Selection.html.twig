@@ -18,7 +18,7 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['trailing']) %}
 
-<label
+<div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
@@ -28,7 +28,7 @@
     }[type]|default('ViewsTheme:Form:Radio') %}
 
     {{ component(control, attributes.all()|merge({
-        tag: 'div',
+        tag: 'label',
         class: 'flex-fill min-w-0',
         id: id,
         name: name,
@@ -43,12 +43,14 @@
         formViolations: formViolations,
     })) }}
 
-    {% if trailing is not empty %}
-        <span
-            {{ vi_attrs('trailing') }}
-            class="{{ vi_class('trailing') }}"
-        >
-            {{ trailing }}
-        </span>
-    {% endif %}
-</label>
+    {% block trailing %}
+        {% if trailing is not empty %}
+            <span
+                {{ vi_attrs('trailing') }}
+                class="{{ vi_class('trailing') }}"
+            >
+                {{ trailing }}
+            </span>
+        {% endif %}
+    {% endblock %}
+</div>

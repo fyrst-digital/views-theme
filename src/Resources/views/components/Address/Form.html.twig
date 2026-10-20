@@ -2,7 +2,9 @@
 {% do vi_define_attrs(['grid', 'countryState', 'street', 'additional1', 'additional2', 'city', 'zipcode', 'country', 'state', 'phone']) %}
 
 <div
-    {{ attributes }}
+    {{ attributes.defaults({
+        'data-layout': layout,
+    }) }}
     class="{{ vi_class('root') }}"
 >
     {% if data and data.id|default(null) %}
@@ -21,9 +23,10 @@
     >
         <twig:block name="content">
             <twig:ViewsTheme:Grid
+                class="{{ vi_class('grid') }}"
                 {{ ...vi_attrs('grid').defaults({
                     columns: 6,
-                    gap: 'sm',
+                    gap: layout == 'manager' ? false : 'sm',
                 }).all() }}
             >
                 <twig:block name="content">
@@ -39,6 +42,7 @@
                             validationRules: 'required',
                             autocomplete: fields.street.autocomplete,
                             label: 'address.streetLabel'|trans|sw_sanitize,
+                            placeholder: layout == 'manager' ? 'viewsTheme.account.addressStreetPlaceholder'|trans|sw_sanitize : false,
                         }).all() }}
                     />
                 {% endvi_block %}
@@ -80,51 +84,105 @@
                 {% endvi_block %}
 
                 {% vi_block arrangement %}
-                    {% for part in arrangement %}
-                        {% if part == 'city' %}
-                            <twig:ViewsTheme:Form:Input
-                                class="{{ vi_class('city') }}"
-                                {{ ...vi_attrs('city').defaults({
-                                    id: fields.city.id,
-                                    name: fields.city.name,
-                                    value: fields.city.value,
-                                    violationPath: fields.city.violationPath,
-                                    formViolations: formViolations,
-                                    validationRules: 'required',
-                                    autocomplete: fields.city.autocomplete,
-                                    label: 'address.cityLabel'|trans|sw_sanitize,
-                                }).all() }}
-                            />
-                        {% elseif part == 'zip' %}
-                            <twig:ViewsTheme:Form:Input
-                                class="{{ vi_class('zipcode') }}"
-                                {{ ...vi_attrs('zipcode').defaults({
-                                    id: fields.zipcode.id,
-                                    name: fields.zipcode.name,
-                                    value: fields.zipcode.value,
-                                    violationPath: fields.zipcode.violationPath,
-                                    formViolations: formViolations,
-                                    autocomplete: fields.zipcode.autocomplete,
-                                    label: 'address.zipcodeLabel'|trans|sw_sanitize,
-                                }).all() }}
-                            />
-                        {% elseif part == 'state' %}
-                            <twig:ViewsTheme:Form:Select
-                                class="{{ vi_class('state') }}"
-                                {{ ...vi_attrs('state').defaults({
-                                    id: fields.countryState.id,
-                                    name: fields.countryState.name,
-                                    options: [{ value: '', label: 'address.countryStatePlaceholder'|trans|sw_sanitize }],
-                                    value: fields.countryState.value,
-                                    violationPath: fields.countryState.violationPath,
-                                    formViolations: formViolations,
-                                    autocomplete: fields.countryState.autocomplete,
-                                    label: 'address.countryStateLabel'|trans|sw_sanitize,
-                                    'data-country-state-host': stateSelectId,
-                                }).all() }}
-                            />
-                        {% endif %}
-                    {% endfor %}
+                    {% if layout == 'manager' %}
+                        {% for row in managerRows %}
+                            {% if row.kind == 'state' %}
+                                <twig:ViewsTheme:Form:Select
+                                    class="{{ vi_class('state', { layout: 'manager' }) }}"
+                                    {{ ...vi_attrs('state').defaults({
+                                        id: fields.countryState.id,
+                                        name: fields.countryState.name,
+                                        options: [{ value: '', label: 'address.countryStatePlaceholder'|trans|sw_sanitize }],
+                                        value: fields.countryState.value,
+                                        violationPath: fields.countryState.violationPath,
+                                        formViolations: formViolations,
+                                        autocomplete: fields.countryState.autocomplete,
+                                        label: 'address.countryStateLabel'|trans|sw_sanitize,
+                                        'data-country-state-host': stateSelectId,
+                                    }).all() }}
+                                />
+                            {% else %}
+                                <div class="{{ vi_class('place') }}">
+                                    {% for placePart in placeParts %}
+                                        {% if placePart == 'city' %}
+                                            <twig:ViewsTheme:Form:Input
+                                                class="{{ vi_class('city', { layout: 'manager' }) }}"
+                                                {{ ...vi_attrs('city').defaults({
+                                                    id: fields.city.id,
+                                                    name: fields.city.name,
+                                                    value: fields.city.value,
+                                                    violationPath: fields.city.violationPath,
+                                                    formViolations: formViolations,
+                                                    validationRules: 'required',
+                                                    autocomplete: fields.city.autocomplete,
+                                                    label: 'address.cityLabel'|trans|sw_sanitize,
+                                                }).all() }}
+                                            />
+                                        {% elseif placePart == 'zip' %}
+                                            <twig:ViewsTheme:Form:Input
+                                                class="{{ vi_class('zipcode', { layout: 'manager' }) }}"
+                                                {{ ...vi_attrs('zipcode').defaults({
+                                                    id: fields.zipcode.id,
+                                                    name: fields.zipcode.name,
+                                                    value: fields.zipcode.value,
+                                                    violationPath: fields.zipcode.violationPath,
+                                                    formViolations: formViolations,
+                                                    autocomplete: fields.zipcode.autocomplete,
+                                                    label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                                                }).all() }}
+                                            />
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {% for part in arrangement %}
+                            {% if part == 'city' %}
+                                <twig:ViewsTheme:Form:Input
+                                    class="{{ vi_class('city', { layout: 'page' }) }}"
+                                    {{ ...vi_attrs('city').defaults({
+                                        id: fields.city.id,
+                                        name: fields.city.name,
+                                        value: fields.city.value,
+                                        violationPath: fields.city.violationPath,
+                                        formViolations: formViolations,
+                                        validationRules: 'required',
+                                        autocomplete: fields.city.autocomplete,
+                                        label: 'address.cityLabel'|trans|sw_sanitize,
+                                    }).all() }}
+                                />
+                            {% elseif part == 'zip' %}
+                                <twig:ViewsTheme:Form:Input
+                                    class="{{ vi_class('zipcode', { layout: 'page' }) }}"
+                                    {{ ...vi_attrs('zipcode').defaults({
+                                        id: fields.zipcode.id,
+                                        name: fields.zipcode.name,
+                                        value: fields.zipcode.value,
+                                        violationPath: fields.zipcode.violationPath,
+                                        formViolations: formViolations,
+                                        autocomplete: fields.zipcode.autocomplete,
+                                        label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                                    }).all() }}
+                                />
+                            {% elseif part == 'state' %}
+                                <twig:ViewsTheme:Form:Select
+                                    class="{{ vi_class('state', { layout: 'page' }) }}"
+                                    {{ ...vi_attrs('state').defaults({
+                                        id: fields.countryState.id,
+                                        name: fields.countryState.name,
+                                        options: [{ value: '', label: 'address.countryStatePlaceholder'|trans|sw_sanitize }],
+                                        value: fields.countryState.value,
+                                        violationPath: fields.countryState.violationPath,
+                                        formViolations: formViolations,
+                                        autocomplete: fields.countryState.autocomplete,
+                                        label: 'address.countryStateLabel'|trans|sw_sanitize,
+                                        'data-country-state-host': stateSelectId,
+                                    }).all() }}
+                                />
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 {% endvi_block %}
 
                 {% vi_block country %}
@@ -158,6 +216,7 @@
                                 autocomplete: fields.phoneNumber.autocomplete,
                                 type: 'tel',
                                 label: 'address.phoneNumberLabel'|trans|sw_sanitize,
+                                placeholder: layout == 'manager' and not phoneRequired ? 'viewsTheme.account.addressPhoneOptional'|trans|sw_sanitize : false,
                             }).all() }}
                         />
                     {% endif %}

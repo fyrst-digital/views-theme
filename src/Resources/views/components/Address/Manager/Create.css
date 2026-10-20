@@ -1,0 +1,4 @@
+.btn-light.vi-address-manager-create {
+  --btn-border-color: var(--border-color);
+  border-color: var(--border-color);
+}
