@@ -30,6 +30,13 @@
   --btn-color: var(--white);
 }
 
+.btn-light {
+  --btn-border-color: var(--border-color);
+  --btn-hover-border-color: var(--border-color);
+  --btn-active-border-color: var(--btn-active-bg);
+  --btn-disabled-border-color: var(--border-color);
+}
+
 .btn-outline-primary {
   --btn-color: var(--body-color);
 }
