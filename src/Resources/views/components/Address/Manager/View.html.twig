@@ -23,8 +23,6 @@
     cva = {},
 %}
 
-{% set tabListCva = { root: 'vi-tabs__list nav border-0 gap-6 m-0' } %}
-{% set tabCva = { root: 'vi-tabs__tab nav-link border-0 rounded-0 px-0 pt-0 pb-1 fs-5' } %}
 {% set showTabs = mode is not same as('editor') and not hideShipping %}
 
 {% do vi_define_cva(cva) %}
@@ -51,12 +49,12 @@
                     class="{{ vi_class('header') }}"
                 >
                     <twig:ViewsTheme:Tabs:List
-                        :cva="tabListCva"
+                        :cva="{ root: 'vi-tabs__list nav border-0 gap-6 m-0' }"
                         label="{{ title|striptags }}"
                     >
                         <twig:block name="content">
                             <twig:ViewsTheme:Tabs:Tab
-                                :cva="tabCva"
+                                :cva="{ root: 'vi-tabs__tab nav-link border-0 rounded-0 px-0 pt-0 pb-1 fs-5' }"
                                 id="vi-address-tab-shipping"
                                 panel="vi-address-pane-shipping"
                                 :active="tab is not same as('billing')"
@@ -66,7 +64,7 @@
                                 </twig:block>
                             </twig:ViewsTheme:Tabs:Tab>
                             <twig:ViewsTheme:Tabs:Tab
-                                :cva="tabCva"
+                                :cva="{ root: 'vi-tabs__tab nav-link border-0 rounded-0 px-0 pt-0 pb-1 fs-5' }"
                                 id="vi-address-tab-billing"
                                 panel="vi-address-pane-billing"
                                 :active="tab is same as('billing')"
