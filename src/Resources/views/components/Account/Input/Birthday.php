@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address\Input;
+namespace Fyrst\ViewsTheme\Resources\views\components\Account\Input;
 
 use Fyrst\ViewsTheme\Service\ComponentData;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
@@ -12,7 +12,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Address:Input:Birthday — day, month, and year passed to Form:Birthday.
+ * View-model for Account:Input:Birthday — day, month, and year passed to Form:Birthday.
  */
 #[AsTwigComponent]
 class Birthday

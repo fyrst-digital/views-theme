@@ -43,7 +43,7 @@
                 {% endif %}
 
                 {% block personal %}
-                    <twig:ViewsTheme:Address:Form:Personal
+                    <twig:ViewsTheme:Account:Form:Personal
                         class="{{ vi_class('personal') }}"
                         {{ ...vi_attrs('personal').defaults({
                             data: billingAddress,
@@ -59,7 +59,7 @@
                     >
                     <twig:block name="append">
                         {% vi_block account %}
-                            <twig:ViewsTheme:Account:Form:Credentials
+                            <twig:ViewsTheme:Account:Input:Credentials
                                 class="{{ vi_class('credentials') }}"
                                 {{ ...vi_attrs('credentials').defaults({
                                     email: email,
@@ -75,7 +75,7 @@
                             />
                         {% endvi_block %}
                     </twig:block>
-                </twig:ViewsTheme:Address:Form:Personal>
+                </twig:ViewsTheme:Account:Form:Personal>
                 {% endblock %}
 
                 {% block billing %}
@@ -92,7 +92,6 @@
                                 prefix: 'billingAddress',
                                 showNoShippingPostfix: true,
                                 formViolations: formViolations,
-                                vatInputId: 'billingAddress-vatIds',
                             }).all() }}
                         />
                     </fieldset>
@@ -120,7 +119,7 @@
                                 <legend class="{{ vi_class('sectionTitle') }}">
                                     {{ 'account.registerAddressShippingHeader'|trans|sw_sanitize }}
                                 </legend>
-                                <twig:ViewsTheme:Address:Form:Personal
+                                <twig:ViewsTheme:Account:Form:Personal
                                     class="{{ vi_class('shippingPersonal') }}"
                                     {{ ...vi_attrs('shippingPersonal').defaults({
                                         data: shippingAddress,

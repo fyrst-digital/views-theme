@@ -15,10 +15,10 @@ Forward a caller `<twig:block>` into a **nested** `<twig:…>` host (e.g. Grid).
 ```
 
 ```twig
-<twig:ViewsTheme:Address:Form:Personal …>
+<twig:ViewsTheme:Account:Form:Personal …>
     <twig:block name="accountType">…replaces the default…</twig:block>
     <twig:block name="append">…</twig:block>
-</twig:ViewsTheme:Address:Form:Personal>
+</twig:ViewsTheme:Account:Form:Personal>
 ```
 
 ## Behaviour

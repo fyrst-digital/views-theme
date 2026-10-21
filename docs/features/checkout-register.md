@@ -48,21 +48,21 @@ Class component. `Form:Handler` posts to `frontend.account.register.save`.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `guestSelectable` | `false` | Checkout: `true` — Credentials owns `Form:Switch` `createCustomerAccount` + `Form:Toggle` around password only. Email always visible. |
+| `guestSelectable` | `false` | Checkout: `true` — `Account:Input:Credentials` owns `Form:Switch` `createCustomerAccount` + `Form:Toggle` around password only. Email always visible. |
 | `createAccountChecked` | first load = shop `createCustomerAccountDefault`; posted key = boolean; omitted key on a **filled** bag when `guestSelectable` = guest (`false`); `guestSelectable` false always `true` | Switch + toggle open (create-account, not “guest”). Unchecked HTML checkboxes are omitted from POST — do not fall back to shop default on repost. |
 | `redirectTo` | confirm (guest) / account home | Hidden input |
 | `errorRoute` | checkout register / account register | Hidden input |
 | `data` / `page` | | Prefill + countries / salutations |
-| `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesces the Shopware request attribute when omitted. `Checkout:Register` reads ambient `__context.formViolations` and passes it; account register bridge passes `:formViolations`. Forwarded to `Address:Form:Personal` / Form / Credentials / `Privacy:Note`. |
+| `formViolations` | request attribute / passed | Class `#[PostMount]` null-coalesces the Shopware request attribute when omitted. `Checkout:Register` reads ambient `__context.formViolations` and passes it; account register bridge passes `:formViolations`. Forwarded to `Account:Form:Personal` / Form / `Account:Input:Credentials` / `Privacy:Note`. |
 | `requestedGroupId` | `null` | Hidden input — customer-group register |
-| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Form:Personal` |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Account:Form:Personal` |
 | `formAction` | `frontend.account.register.save` | Leftover `component/account/register.html.twig` includes |
 
 Same form SoT on `/account/register` (full header, no advantages list, `guestSelectable` false, hidden `createCustomerAccount=1`).
 
 Captcha stays a core include. `Form:Handler` lets the native `submit` event continue after validation so captcha plugins can attach a token — it does not call `HTMLFormElement.prototype.submit()`. Privacy is `Privacy:Note` (nest `privacy`).
 
-`formViolations` is a Shopware request attribute (Twig global via `TemplateDataExtension`). Class VMs (`Account:Register`, `Address:Form`, `Address:Input:*`) null-coalesce it in `#[PostMount]` when the prop is omitted. `Address:Form:Personal` is anonymous and defaults the prop from `__context`. `Checkout:Register` and the account register page also pass it explicitly.
+`formViolations` is a Shopware request attribute (Twig global via `TemplateDataExtension`). Class VMs (`Account:Register`, `Account:Input:Birthday`, `Address:Input:*`) null-coalesce it in `#[PostMount]` when the prop is omitted. `Address:Form` and `Account:Form:Personal` are anonymous and default the prop from `__context`. `Checkout:Register` and the account register page also pass it explicitly.
 
 ## Privacy:Note
 
@@ -83,13 +83,15 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 ## Address fields
 
-`Address:Form:Personal` (anonymous composer) + `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Birthday` / `Company` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Form:Credentials` (email always visible; password gated when `guestSelectable`). Profile passes `showCompanyFields: true` so company/VAT stay visible when the shop hides the account-type select.
+`Address:Form` and `Account:Form:Personal` are anonymous composers. Personal mounts `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` and `Account:Input:Birthday` (class). Form mounts `Address:Input:Street` / `Postal` / `Country` / `Phone` (class). Email/password fields are `Account:Input:Credentials` (email always visible; password gated when `guestSelectable`). Profile passes `showCompanyFields: true` so company/VAT stay visible when the shop hides the account-type select.
 
-`Address:Form:Personal` keeps the public props (`data`, `prefix`, `idPrefix`, `page`, `salutations`, `accountType`, `hideCustomerTypeSelect`, `onlyCompanyRegistration`, `showBirthdayField`, `showVat`, `showCompanyFields`, `formViolations`) and forwards them. Each input builds its own field codes. Account type owns the private/business select, the hidden input when registration is company-only, and the `Form:Toggle` that discloses `Address:Input:Company`. Salutation, title, and birthday render nothing when their `core.loginRegistration.show*` flag is off. Birthday still honors `showBirthdayField` and `birthdayFieldRequired`, and passes `prefix: null` into `Form:Birthday` so the names stay `birthdayDay` / `birthdayMonth` / `birthdayYear`. Salutation and name are full-width nested grids (`columns="lg"`, `gap="sm"`). The salutation select and each name field stay half of their own row (`g-col-md-3`), so title cannot sit beside either row.
+`Account:Form:Personal` keeps the public props (`data`, `prefix`, `idPrefix`, `page`, `salutations`, `accountType`, `hideCustomerTypeSelect`, `onlyCompanyRegistration`, `showBirthdayField`, `showVat`, `showCompanyFields`, `formViolations`) and forwards them. Each input builds its own field codes. Account type owns the private/business select, the hidden input when registration is company-only, and the `Form:Toggle` that discloses `Address:Input:Company`. Salutation, title, and birthday render nothing when their `core.loginRegistration.show*` flag is off. `Account:Input:Birthday` still honors `showBirthdayField` and `birthdayFieldRequired`, and passes `prefix: null` into `Form:Birthday` so the names stay `birthdayDay` / `birthdayMonth` / `birthdayYear`. Salutation and name are full-width nested grids (`columns="lg"`, `gap="sm"`). The salutation select and each name field stay half of their own row (`g-col-md-3`), so title cannot sit beside either row.
 
-Fields sit in `Grid` `columns="lg"` (one column, six tracks from `md`). Spans live in each slot CVA `base` (`g-col-1 g-col-md-6` / `g-col-md-3` / `g-col-md-2`). No Bootstrap `row` / `col-md-*`. Personal slots are `prepend`, `accountType`, `company`, `salutation`, `title`, `name`, `birthday`, `append` ([`{% vi_block %}`](../twig/vi-block.md)). `company` is forwarded into `Address:Input:AccountType`. `firstName` / `lastName` live on `Address:Input:Name`. `{% block fields %}` stays a real Personal slot (it wraps Grid).
+Fields sit in `Grid` `columns="lg"` (one column, six tracks from `md`). Each Form slot is one full row (`g-col-1 g-col-md-6`). Inside the row, zip and city are halves (`g-col-md-3`); country and state are halves when the country displays a state, and the country cell is `g-col-md-6` when it does not. Street lines stay full width inside `Address:Input:Street`. No Bootstrap `row` / `col-md-*`. Personal slots are `prepend`, `accountType`, `company`, `salutation`, `title`, `name`, `birthday`, `append` ([`{% vi_block %}`](../twig/vi-block.md)). Form slots are `street`, `postal`, `country`, `phone`. `company` is forwarded into `Address:Input:AccountType`. `firstName` / `lastName` live on `Address:Input:Name`. `{% block fields %}` stays a real Personal slot (it wraps Grid).
 
-`Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`. Field ids (`countrySelectId`, `stateSelectId`, `zipInputId`, `vatInputId`) are resolved on the closest `form` (VAT lives in `Address:Input:Company`, not inside the CountryState wrapper).
+`Address:Input:Street` reads `showAdditionalAddressField*` / `additionalAddressField*Required` and skips a line when its flag is off. `Address:Input:Postal` orders zip and city from `core.loginRegistration.addressInputFieldArrangement`, keeping only `zip` and `city`. The `state` token in that setting does not place the state field. `Address:Input:Phone` renders only when `showPhoneNumberField` is on, and is required when `phoneNumberFieldRequired` is on.
+
+`Address:Input:Country` is the country and state row (`data-component="ViewsTheme:Address:Input:Country"` on the row grid). It fetches `frontend.country.country.data`. `data-component-options` is only `countryDataUrl`. Country flags live on each `<option>`: `data-zip-required`, `data-state-required`, `data-vat-required`, `data-state-displayed` (`true` / `false`). The country `<select>` is the one named `countryId` or `[countryId]`. Zip and VAT are `form.elements` names from that prefix (`{prefix}[zipcode]`; no prefix → `zipcode`). VAT uses the `Address:Input:Company` name rule: `vatIds[]` when the prefix is empty or `billingAddress`, otherwise `{prefix}[vatIds][]`. The state `Form:Select` root (parent of the state `<select>`) is hidden when that country does not display a state, and the country cell switches between `g-col-md-3` and `g-col-md-6`. A shipping country change does not address the billing state or VAT input.
 
 Guest password, different-shipping, and company visibility use `Form:Toggle` (control + content; `hidden` / `inert` / `fieldset disabled`). Nested toggles `sync()` via instance lookup — no PluginManager / CSS targets.
 
@@ -105,11 +107,11 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 | `storefront/page/account/addressbook/address-actions.html.twig` | `Address:ItemActions` |
 | `storefront/component/account/login.html.twig` | `Account:Login` |
 
-`Address:Editor` composes `Address:Form:Personal` + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps `Address:Form:Personal` + Form inside `Account:Register` (not Editor). Address-book **listing** is [`Account:Addressbook`](account.md) — listing rows use [`Address:Item`](address.md). See [address manager](address-manager.md).
+`Address:Editor` composes `Account:Form:Personal` + Form + `Form:Handler` (native submit on account pages; `preventNative` in the manager modal). No `data-form-ajax-submit`. Checkout register keeps `Account:Form:Personal` + Form inside `Account:Register` (not Editor). Address-book **listing** is [`Account:Addressbook`](account.md) — listing rows use [`Address:Item`](address.md). See [address manager](address-manager.md).
 
 ## Files
 
-`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Form/Credentials.*` · `components/Privacy/Note.*` · `components/Address.{html.twig,cva.twig}` · `components/Address/{List,Form,CountryState,Item,ItemActions,Editor}.*` · `components/Address/Form/Personal.*` · `components/Address/Input/{AccountType,Salutation,Title,Name,Birthday,Company}.*` · `src/Service/ComponentData.php`
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Form/Personal.*` · `components/Account/Input/Birthday.*` · `components/Account/Input/Credentials.*` · `components/Privacy/Note.*` · `components/Address.{html.twig,cva.twig}` · `components/Address/{List,Form,Item,ItemActions,Editor}.*` · `components/Address/Input/{AccountType,Salutation,Title,Name,Company,Street,Postal,Country,Phone}.*` · `src/Service/ComponentData.php`
 
 ## Related
 

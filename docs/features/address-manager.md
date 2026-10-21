@@ -1,6 +1,6 @@
 # Address manager
 
-Theme-owned address picker and create/edit form. Checkout confirm change buttons open a centered `Modal` with list → editor navigation. Account addressbook **create/edit pages** mount the same `Address:Editor`. Checkout register stays on `Address:Form:Personal` + `Address:Form` inside `Account:Register`.
+Theme-owned address picker and create/edit form. Checkout confirm change buttons open a centered `Modal` with list → editor navigation. Account addressbook **create/edit pages** mount the same `Address:Editor`. Checkout register stays on `Account:Form:Personal` + `Address:Form` inside `Account:Register`.
 
 Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`, `AddressManagerPlugin`, `/widgets/account/address-manager`) is **not** used. Markup is served by theme routes under `/vi/address/…` via `renderComponent()`.
 
@@ -16,7 +16,7 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:Item` | Class-backed view-model (display lines, default flag, shipping block). One `Form:Selection` radio: name, `street, zip city`, trailing “Default” or “use as default”. **No delete, no Dropdown**. Shipping unavailable → radio disabled, warning below the selection. Click (not Edit / Default) → Manager `select(id, type)`, which checks that item’s radio |
 | `Address:Manager:Item:Hero` | Current-address face. Mounts `Item` and overrides `label` (Default badge or use-as-default, then the name), `description` (lines and Edit), and an empty `trailing` |
 | `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close`. Create follows the active tab |
-| `Address:Editor` | Form SoT: `Address:Form:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
+| `Address:Editor` | Form SoT: `Account:Form:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
 | `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
 
@@ -50,7 +50,7 @@ Address:Manager
 Address:Editor
 └─ Form:Handler
      ├─ hidden address[id] (edit)
-     ├─ Address:Form:Personal
+     ├─ Account:Form:Personal
      ├─ Address:Form
      └─ actions (account pages only)
 ```
@@ -115,7 +115,7 @@ JS selectors: `[data-component="ViewsTheme:Address:…"]`, `input[type="search"]
 | `showHint` | `true` | `false` in the modal (no “required fields” line) |
 | `submitLabel` | `account.addressSaveChange` | Modal uses the same label |
 
-Personal and Form always use the same field-canvas `Grid` (`columns: 'lg'`, `gap: 'sm'`). Below `md` each field is one column; from `md` the canvas is six tracks (`g-col-md-6` full, `g-col-md-3` half, `g-col-md-2` third). Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
+Personal and Form always use the same field-canvas `Grid` (`columns: 'lg'`, `gap: 'md'`). Below `md` each row is one column; from `md` the canvas is six tracks. Form slots are full rows (`g-col-md-6`). Zip and city, and country and state, are halves (`g-col-md-3`) inside those rows. Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
 
 ### Controller
 

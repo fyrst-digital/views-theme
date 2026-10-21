@@ -11,7 +11,6 @@
     showActions = true,
     showNoShippingPostfix = true,
     disableNonShippableCountries = false,
-    vatInputId = null,
     accountType = null,
     backHref = null,
     submitLabel = 'account.addressSaveChange'|trans|sw_sanitize,
@@ -42,7 +41,7 @@
                 {{ vi_attrs('fields') }}
                 class="{{ vi_class('fields') }}"
             >
-                <twig:ViewsTheme:Address:Form:Personal
+                <twig:ViewsTheme:Account:Form:Personal
                     class="{{ vi_class('personal') }}"
                     {{ ...vi_attrs('personal').defaults({
                         data: data,
@@ -63,7 +62,6 @@
                         formViolations: formViolations,
                         showNoShippingPostfix: showNoShippingPostfix,
                         disableNonShippableCountries: disableNonShippableCountries,
-                        vatInputId: vatInputId ?? (typePrefix ~ 'address-vatIds'),
                     }).all() }}
                 />
             </div>

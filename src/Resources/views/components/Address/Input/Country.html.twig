@@ -1,0 +1,69 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['country', 'state']) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        columns: 'lg',
+        gap: 'sm',
+        'data-component': 'ViewsTheme:Address:Input:Country',
+        'data-component-options': {
+            countryDataUrl: path('frontend.country.country.data'),
+        }|json_encode,
+    }).all() }}
+>
+    <twig:block name="content">
+    {% vi_block country %}
+        <twig:ViewsTheme:Form:Select
+            class="{{ vi_class('country', { span: stateDisplayed ? 'half' : 'full' }) }}"
+            {{ ...vi_attrs('country').defaults({
+                id: field.id,
+                name: field.name,
+                options: options,
+                value: field.value,
+                violationPath: field.violationPath,
+                formViolations: formViolations,
+                validationRules: 'required',
+                autocomplete: field.autocomplete,
+                label: 'address.countryLabel'|trans|sw_sanitize,
+            }).all() }}
+        >
+            <twig:block name="options">
+                {% for option in options %}
+                    <option
+                        value="{{ option.value }}"
+                        {% if option.disabled|default(false) %}disabled="disabled"{% endif %}
+                        {% if field.value is not null
+                            ? option.value == field.value
+                            : option.selected|default(false)
+                        %}selected="selected"{% endif %}
+                        {% if option.value is not empty %}
+                            data-zip-required="{{ option.zipRequired ? 'true' : 'false' }}"
+                            data-state-required="{{ option.stateRequired ? 'true' : 'false' }}"
+                            data-vat-required="{{ option.vatRequired ? 'true' : 'false' }}"
+                            data-state-displayed="{{ option.stateDisplayed ? 'true' : 'false' }}"
+                        {% endif %}
+                    >{{ option.label }}</option>
+                {% endfor %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Select>
+    {% endvi_block %}
+
+    {% vi_block state %}
+        <twig:ViewsTheme:Form:Select
+            class="{{ vi_class('state') }}"
+            {{ ...vi_attrs('state').defaults({
+                id: state.id,
+                name: state.name,
+                options: [{ value: '', label: 'address.countryStatePlaceholder'|trans|sw_sanitize }],
+                value: state.value,
+                violationPath: state.violationPath,
+                formViolations: formViolations,
+                autocomplete: state.autocomplete,
+                label: 'address.countryStateLabel'|trans|sw_sanitize,
+                hidden: not stateDisplayed,
+            }).all() }}
+        />
+    {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

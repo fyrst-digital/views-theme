@@ -6,7 +6,6 @@
     formViolations = __context.formViolations|default(null),
     accountType = null,
     backHref = path('frontend.account.address.page'),
-    vatInputId = 'address-vatIds',
     showNoShippingPostfix = true,
     redirectTo = null,
     cva = {},
@@ -38,7 +37,6 @@
                 formViolations: formViolations,
                 accountType: accountType,
                 backHref: backHref,
-                vatInputId: vatInputId,
                 showNoShippingPostfix: showNoShippingPostfix,
             }).all() }}
         >

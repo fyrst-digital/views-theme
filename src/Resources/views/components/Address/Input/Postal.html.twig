@@ -1,0 +1,47 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['zipcode', 'city']) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        columns: 'lg',
+        gap: 'sm',
+    }).all() }}
+>
+    <twig:block name="content">
+        {% for part in order %}
+            {% if part == 'zip' %}
+                {% vi_block zipcode %}
+                    <twig:ViewsTheme:Form:Input
+                        class="{{ vi_class('zipcode') }}"
+                        {{ ...vi_attrs('zipcode').defaults({
+                            id: fields.zipcode.id,
+                            name: fields.zipcode.name,
+                            value: fields.zipcode.value,
+                            violationPath: fields.zipcode.violationPath,
+                            formViolations: formViolations,
+                            autocomplete: fields.zipcode.autocomplete,
+                            label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            {% elseif part == 'city' %}
+                {% vi_block city %}
+                    <twig:ViewsTheme:Form:Input
+                        class="{{ vi_class('city') }}"
+                        {{ ...vi_attrs('city').defaults({
+                            id: fields.city.id,
+                            name: fields.city.name,
+                            value: fields.city.value,
+                            violationPath: fields.city.violationPath,
+                            formViolations: formViolations,
+                            validationRules: 'required',
+                            autocomplete: fields.city.autocomplete,
+                            label: 'address.cityLabel'|trans|sw_sanitize,
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            {% endif %}
+        {% endfor %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Birthday` / `Company`, `Address:Form`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Confirm:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Account:Input:Birthday`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` / `Street` / `Postal` / `Country` / `Phone`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Confirm:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form` / `Account:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 
@@ -408,10 +408,10 @@ A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — 
 ```
 
 ```twig
-<twig:ViewsTheme:Address:Form:Personal …>
+<twig:ViewsTheme:Account:Form:Personal …>
     <twig:block name="accountType">…</twig:block>
     <twig:block name="append">…</twig:block>
-</twig:ViewsTheme:Address:Form:Personal>
+</twig:ViewsTheme:Account:Form:Personal>
 ```
 
 | Need | Pattern |

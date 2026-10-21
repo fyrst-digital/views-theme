@@ -110,10 +110,10 @@ Optional action key `activePrefix` marks the item active when `activeRoute` star
 | Prop | Default | Notes |
 |------|---------|--------|
 | `requestedGroupId` | `null` | Hidden input — customer-group register |
-| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Form:Personal` |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Account:Form:Personal` |
 | `formAction` | `frontend.account.register.save` | Override when a leftover include passes `formAction` |
 
-Profile personal form passes `showCompanyFields: true` into `Address:Form:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
+Profile personal form passes `showCompanyFields: true` into `Account:Form:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
 
 ## Order:Item
 
