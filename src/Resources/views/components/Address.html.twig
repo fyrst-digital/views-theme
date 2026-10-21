@@ -1,19 +1,108 @@
-{% props
-    address,
-    showShippingWarning = false,
-    cva = {},
-%}
-
 {% do vi_define_cva(cva) %}
+{% do vi_define_attrs([
+    'salutation',
+    'title',
+    'fullName',
+    'company',
+    'department',
+    'street',
+    'additionalLine1',
+    'additionalLine2',
+    'zipcode',
+    'city',
+    'countryState',
+    'country',
+    'phone',
+]) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        {% sw_include '@Storefront/storefront/component/address/address.html.twig' with {
-            address: address,
-            showShippingWarning: showShippingWarning,
-        } %}
+        {% if showWarning %}
+            <twig:ViewsTheme:Alert
+                type="warning"
+                content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+            />
+        {% endif %}
+
+        {% block salutation %}
+            {% if salutation %}
+                <span {{ vi_attrs('salutation') }} class="{{ vi_class('salutation') }}">{{ salutation }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block title %}
+            {% if title %}
+                <span {{ vi_attrs('title') }} class="{{ vi_class('title') }}">{{ title }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block fullName %}
+            {% if fullName %}
+                <span {{ vi_attrs('fullName') }} class="{{ vi_class('fullName') }}">{{ fullName }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block company %}
+            {% if company %}
+                <span {{ vi_attrs('company') }} class="{{ vi_class('company') }}">{{ company }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block department %}
+            {% if department %}
+                <span {{ vi_attrs('department') }} class="{{ vi_class('department') }}">{{ department }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block street %}
+            {% if street %}
+                <span {{ vi_attrs('street') }} class="{{ vi_class('street') }}">{{ street }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block additionalLine1 %}
+            {% if additionalLine1 %}
+                <span {{ vi_attrs('additionalLine1') }} class="{{ vi_class('additionalLine1') }}">{{ additionalLine1 }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block additionalLine2 %}
+            {% if additionalLine2 %}
+                <span {{ vi_attrs('additionalLine2') }} class="{{ vi_class('additionalLine2') }}">{{ additionalLine2 }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block zipcode %}
+            {% if zipcode %}
+                <span {{ vi_attrs('zipcode') }} class="{{ vi_class('zipcode') }}">{{ zipcode }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block city %}
+            {% if city %}
+                <span {{ vi_attrs('city') }} class="{{ vi_class('city') }}">{{ city }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block countryState %}
+            {% if countryState %}
+                <span {{ vi_attrs('countryState') }} class="{{ vi_class('countryState') }}">{{ countryState }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block country %}
+            {% if country %}
+                <span {{ vi_attrs('country') }} class="{{ vi_class('country') }}">{{ country }}</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block phone %}
+            {% if phone %}
+                <span {{ vi_attrs('phone') }} class="{{ vi_class('phone') }}">{{ phone }}</span>
+            {% endif %}
+        {% endblock %}
     {% endblock %}
 </div>

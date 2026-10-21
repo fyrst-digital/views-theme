@@ -67,10 +67,5 @@ $icon-sizes: (
 
 @import 'overrides/utilities';
 
-@property --vi-grid-columns {
-  syntax: "*";
-  inherits: false;
-}
-
 @import 'overrides/button';
 @import 'overrides/form';

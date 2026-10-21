@@ -5,7 +5,6 @@ import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
  */
 export default class AddressManagerCreate extends ShopwareComponent {
     static options = {
-        type: 'shipping',
         managerComponent: 'ViewsTheme:Address:Manager',
     }
 
@@ -24,6 +23,6 @@ export default class AddressManagerCreate extends ShopwareComponent {
     _onClick(event) {
         event.preventDefault()
         const root = this.el.closest(`[data-component="${this.options.managerComponent}"]`)
-        getInstanceByElement(this.options.managerComponent, root)?.openCreate?.(this.options.type)
+        getInstanceByElement(this.options.managerComponent, root)?.openCreate?.()
     }
 }

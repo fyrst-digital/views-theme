@@ -119,7 +119,7 @@ There is no auto-reload for these files: edit + hard-refresh the storefront. The
 
 ### Theme SCSS overrides
 
-Global token assigns that sit outside a single component live in `app/storefront/src/scss/_theme.scss`, imported last from `base.scss`. `theme.json` compiles that file after `@StorefrontBootstrap`, so the rules follow Bootstrap in the theme stylesheet.
+Global token assigns that sit outside a single component live in `app/storefront/src/scss/_theme.scss`, imported last from `base.scss`. `theme.json` compiles that file after `@StorefrontBootstrap`, so the rules follow Bootstrap in the theme stylesheet. `.btn-light` is the pen Light Solid button: `--light` fill, `--border-color` stroke on rest, hover, and disabled, and an active stroke that follows `--btn-active-bg`. `.btn-outline-light` is the pen Light Outline button: white fill, `--border-color` stroke, `--body-color` label, `--light` hover, and `--border-color` active. It is excluded from the outline underline.
 
 Breakpoints use `$grid-breakpoints` from `override.scss` via `@include media-breakpoint-up(...)`. Footer columns that open from `data-collapse-until` up use the `vi-collapse-until` mixin (attribute selector plus `media-breakpoint-up` for each named breakpoint except `xs`).
 

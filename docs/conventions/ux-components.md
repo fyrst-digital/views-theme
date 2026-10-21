@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Confirm:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Account:Input:Birthday`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` / `Street` / `Postal` / `Country` / `Phone`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Confirm:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form` / `Account:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 
@@ -396,7 +396,7 @@ Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twi
 A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
 
 ```twig
-<twig:ViewsTheme:Grid columns="6" gap="sm">
+<twig:ViewsTheme:Grid columns="1-md:6" gap="sm">
     <twig:block name="content">
         {% vi_block prepend %}{% endvi_block %}
         {% vi_block accountType %}
@@ -408,10 +408,10 @@ A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — 
 ```
 
 ```twig
-<twig:ViewsTheme:Address:Personal …>
+<twig:ViewsTheme:Account:Form:Personal …>
     <twig:block name="accountType">…</twig:block>
     <twig:block name="append">…</twig:block>
-</twig:ViewsTheme:Address:Personal>
+</twig:ViewsTheme:Account:Form:Personal>
 ```
 
 | Need | Pattern |
@@ -490,7 +490,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid/table), LineItems:Table (island identity), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
-| Address / Address:List | Anonymous UX + `vi_cva`; formatted lines + shipping/billing pair — [address.md](../features/address.md) |
+| Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
 | Checkout:Confirm (+ Tos / Comment / Additions / Aside) + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm:Addresses (class-backed) | UX + `vi_cva`; cards and country-format lines in `Addresses.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |

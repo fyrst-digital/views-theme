@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address;
+namespace Fyrst\ViewsTheme\Resources\views\components\Address\Input;
 
 use Fyrst\ViewsTheme\Service\ComponentData;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Address:PersonalCompany — company / department / VAT field codes.
+ * View-model for Address:Input:Company — company, department, and VAT field codes.
  */
 #[AsTwigComponent]
-class PersonalCompany
+class Company
 {
     public mixed $data = null;
 
@@ -36,12 +37,22 @@ class PersonalCompany
      */
     public array $fields = [];
 
+    public function __construct(
+        private readonly RequestStack $requestStack,
+    ) {
+    }
+
     /**
      * @param array<string, mixed> $data
      */
     #[PostMount]
     public function postMount(array $data): void
     {
+        $this->formViolations = ComponentData::formViolations(
+            $this->formViolations,
+            $this->requestStack->getCurrentRequest(),
+        );
+
         $vatName = $this->prefix !== '' && $this->prefix !== 'billingAddress'
             ? $this->prefix . '[vatIds][]'
             : 'vatIds[]';

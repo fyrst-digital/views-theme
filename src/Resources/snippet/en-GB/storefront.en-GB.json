@@ -37,6 +37,15 @@
             "product": "Product",
             "quantity": "Qty",
             "total": "Price"
+        },
+        "account": {
+            "addressChoose": "Choose an address",
+            "addressAdd": "Add address",
+            "addressApply": "Apply",
+            "addressUseAsDefault": "use as default",
+            "addressNew": "New address",
+            "addressPhoneOptional": "Optional",
+            "addressStreetPlaceholder": "Street and number"
         }
     },
 

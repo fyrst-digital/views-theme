@@ -66,7 +66,7 @@ app/storefront/src/modules/
 | `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
-| `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / CountryState) |
+| `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / Address:Input:Country) |
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
@@ -240,7 +240,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Form toggle | `ViewsTheme:Form:Toggle` | `Form/Toggle.js` |
 | Form handler | `ViewsTheme:Form:Handler` | `Form/Handler.js` |
 | Newsletter form / messages / sample | `ViewsTheme:Newsletter:Form` / `Form:Messages` / `Form:Messages:Sample` | `Newsletter/Form.js`, `Newsletter/Form/Messages.js`, `Newsletter/Form/Messages/Sample.js` |
-| Address country-state | `ViewsTheme:Address:CountryState` | `Address/CountryState.js` |
+| Address country | `ViewsTheme:Address:Input:Country` | `Address/Input/Country.js` |
 | Address manager | `ViewsTheme:Address:Manager` | `Address/Manager.js` |
 | Address manager action | `ViewsTheme:Address:Manager:Action` | `Address/Manager/Action.js` |
 | Address manager view / list / item | `ViewsTheme:Address:Manager:View` / `List` / `Item` | `Address/Manager/View.js` etc. |
@@ -318,8 +318,8 @@ Lazy-loaded centered `Modal` from confirm change buttons. **Manager** owns list/
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Modal:Close` **unmount** manager root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - **Multi-instance ownership:** shipping + billing Actions. Only the Action that mounted handles Close (`payload.el` inside `_managerEl`). Opening while another shell is live: close existing first, then mount
 - Open/Close payload: `{ el }` via `emitQueued`
-- Inner list ↔ editor swaps the View island only (Modal stays). Successful switch / editor save: **204** → `location.reload()`
-- Search: List filters `input[type="search"]` against item text. Tab trap: `shared/focus-trap.js`
+- Inner list ↔ editor swaps the View island and copies the response panel title and footer actions (Modal stays). Successful switch / editor save: **204** → `location.reload()`
+- Search: List filters `input[type="search"]` against item text inside the list. Selecting a row checks that radio and updates the switch input. The hero stays the address in use. Tab trap: `shared/focus-trap.js`
 
 See [Address manager](../features/address-manager.md).
 

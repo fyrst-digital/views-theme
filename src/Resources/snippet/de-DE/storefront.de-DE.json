@@ -37,6 +37,15 @@
             "product": "Produkt",
             "quantity": "Anz.",
             "total": "Preis"
+        },
+        "account": {
+            "addressChoose": "Adresse auswählen",
+            "addressAdd": "Adresse hinzufügen",
+            "addressApply": "Übernehmen",
+            "addressUseAsDefault": "als Standard",
+            "addressNew": "Neue Adresse",
+            "addressPhoneOptional": "Optional",
+            "addressStreetPlaceholder": "Straße und Hausnummer"
         }
     },
 

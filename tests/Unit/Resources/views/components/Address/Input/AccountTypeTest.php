@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Address;
+namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Address\Input;
 
-use Fyrst\ViewsTheme\Resources\views\components\Address\Personal;
+use Fyrst\ViewsTheme\Resources\views\components\Address\Input\AccountType;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class PersonalTest extends TestCase
+final class AccountTypeTest extends TestCase
 {
     public function testProfileAlwaysShowsCompanyFieldsWhenAccountTypeIsHidden(): void
     {
@@ -46,16 +46,16 @@ final class PersonalTest extends TestCase
         self::assertSame(CustomerEntity::ACCOUNT_TYPE_BUSINESS, $component->accountTypeValue);
     }
 
-    private function createComponent(bool $showAccountTypeSelection): Personal
+    private function createComponent(bool $showAccountTypeSelection): AccountType
     {
-        $config = $this->createMock(SystemConfigService::class);
+        $config = $this->createStub(SystemConfigService::class);
         $config->method('get')->willReturnCallback(
             static fn (string $key): mixed => $key === 'core.loginRegistration.showAccountTypeSelection'
                 ? $showAccountTypeSelection
                 : false,
         );
 
-        return new Personal(
+        return new AccountType(
             $config,
             new SalesChannelContextAccessor(new RequestStack()),
             $this->createStub(TranslatorInterface::class),

@@ -20,6 +20,9 @@ export default class AddressManager extends ShopwareComponent {
         tab: 'shipping',
         hideShipping: false,
         viewComponent: 'ViewsTheme:Address:Manager:View',
+        panelComponent: 'ViewsTheme:Modal:Panel',
+        modalComponent: 'ViewsTheme:Modal',
+        itemComponent: 'ViewsTheme:Address:Manager:Item',
         handlerComponent: 'ViewsTheme:Form:Handler',
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
         tabsChangeEvent: 'ViewsTheme:Tabs:Change',
@@ -65,19 +68,21 @@ export default class AddressManager extends ShopwareComponent {
             input.value = id
         }
 
-        const radio = this.el.querySelector(
-            `input[type="radio"][name="${type}"][value="${CSS.escape(id)}"]`,
-        )
-        if (radio instanceof HTMLInputElement && !radio.disabled) {
-            radio.checked = true
+        const next = this._item(id, type)
+        const nextApi = getInstanceByElement(this.options.itemComponent, next)
+        if (!next || nextApi?.options?.disabled) {
+            return
         }
+
+        this._checkVisibleRadio(next)
     }
 
     /**
      * @param {string} [type]
      */
     openCreate(type) {
-        void this._loadEditor({ type: type || this._tab })
+        const next = type === 'shipping' || type === 'billing' ? type : this._tab
+        void this._loadEditor({ type: next })
     }
 
     /**
@@ -301,6 +306,8 @@ export default class AddressManager extends ShopwareComponent {
             return
         }
 
+        this._syncPanelChrome(next)
+
         const name = this.options.viewComponent
         const island = next.matches(`[data-component="${name}"]`)
             ? next
@@ -310,6 +317,49 @@ export default class AddressManager extends ShopwareComponent {
         if (existing && island) {
             existing.replaceWith(island)
         }
+    }
+
+    /**
+     * Copy the response panel title and footer actions onto the open modal.
+     *
+     * @param {Element} source
+     */
+    _syncPanelChrome(source) {
+        const sourcePanel = this._panel(source)
+        const livePanel = this._panel(this.el)
+        if (!sourcePanel || !livePanel) {
+            return
+        }
+
+        const label = sourcePanel.querySelector('h1')?.textContent?.trim()
+        const liveTitle = livePanel.querySelector('h1')
+        if (liveTitle && label) {
+            liveTitle.textContent = label
+        }
+
+        const dialog = this.el.querySelector(`[data-component="${this.options.modalComponent}"]`)
+        if (dialog && label) {
+            dialog.setAttribute('aria-label', label)
+        }
+
+        const sourceFooter = sourcePanel.lastElementChild
+        const liveFooter = livePanel.lastElementChild
+        if (sourceFooter && liveFooter) {
+            liveFooter.replaceChildren(...sourceFooter.childNodes)
+        }
+    }
+
+    /**
+     * @param {ParentNode} root
+     * @returns {Element|null}
+     */
+    _panel(root) {
+        const name = this.options.panelComponent
+        if (root instanceof Element && root.matches(`[data-component="${name}"]`)) {
+            return root
+        }
+
+        return root.querySelector(`[data-component="${name}"]`)
     }
 
     /**
@@ -336,5 +386,35 @@ export default class AddressManager extends ShopwareComponent {
     _switchForm() {
         const form = this.el.querySelector(`#${this.options.switchFormId}`)
         return form instanceof HTMLFormElement ? form : null
+    }
+
+    /**
+     * @param {string} id
+     * @param {string} type
+     * @returns {HTMLElement|null}
+     */
+    _item(id, type) {
+        const name = this.options.itemComponent
+        const items = this.el.querySelectorAll(`[data-component="${name}"]`)
+        for (const item of items) {
+            const api = getInstanceByElement(name, item)
+            if (api?.options?.addressId === id && api?.options?.type === type) {
+                return item
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Check this item's radio. Same `name` clears the previous one.
+     *
+     * @param {HTMLElement} item
+     */
+    _checkVisibleRadio(item) {
+        const radio = item.querySelector('input[type="radio"]')
+        if (radio instanceof HTMLInputElement && !radio.disabled) {
+            radio.checked = true
+        }
     }
 }

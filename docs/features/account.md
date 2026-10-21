@@ -110,10 +110,10 @@ Optional action key `activePrefix` marks the item active when `activeRoute` star
 | Prop | Default | Notes |
 |------|---------|--------|
 | `requestedGroupId` | `null` | Hidden input — customer-group register |
-| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Personal` |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Account:Form:Personal` |
 | `formAction` | `frontend.account.register.save` | Override when a leftover include passes `formAction` |
 
-Profile personal form passes `showCompanyFields: true` into `Address:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
+Profile personal form passes `showCompanyFields: true` into `Account:Form:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
 
 ## Order:Item
 
@@ -165,7 +165,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 
 ## Files
 
-`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
 
 ## Out of scope
 
