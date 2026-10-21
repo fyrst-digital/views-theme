@@ -115,7 +115,7 @@ JS selectors: `[data-component="ViewsTheme:Address:…"]`, `input[type="search"]
 | `showHint` | `true` | `false` in the modal (no “required fields” line) |
 | `submitLabel` | `account.addressSaveChange` | Modal uses the same label |
 
-Personal and Form always use the same field-canvas `Grid` (`columns: 'lg'`, `gap: 'md'`). Below `md` each row is one column; from `md` the canvas is six tracks. Form slots are full rows (`g-col-md-6`). Zip and city, and country and state, are halves (`g-col-md-3`) inside those rows. Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
+Personal and Form always use the same field-canvas `Grid` (`columns: '1-md:6'`, `gap: 'md'`). Below `md` each row is one column; from `md` the canvas is six tracks. Form slots are full rows (`g-col-md-6`). Zip and city, and country and state, are halves (`g-col-md-3`) inside those rows. Checkout **register** does **not** mount Editor (credentials / shipping toggle stay on `Account:Register`). Account address create/edit mount the same Editor.
 
 ### Controller
 

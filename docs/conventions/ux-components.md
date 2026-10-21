@@ -396,7 +396,7 @@ Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twi
 A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
 
 ```twig
-<twig:ViewsTheme:Grid columns="lg" gap="sm">
+<twig:ViewsTheme:Grid columns="1-md:6" gap="sm">
     <twig:block name="content">
         {% vi_block prepend %}{% endvi_block %}
         {% vi_block accountType %}

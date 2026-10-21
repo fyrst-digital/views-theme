@@ -30,7 +30,7 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (columns=xxl; gap=false / --vi-grid-gap)
+          ├─ Grid (columns=1-lg:8; gap=false / --vi-grid-gap)
           │    ├─ Page:Footer:Column:Hotline      root-host of Column; g-col-1 + g-col-lg-3
           │    ├─ Page:Footer:Column:Navigation   g-col-1 g-col-lg-5 flex (role=list, d-flex gap-6)
           │    │    └─ Page:Footer:Column × N
