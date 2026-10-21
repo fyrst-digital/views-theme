@@ -12,10 +12,10 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: `Bottom` only — copyright, real service-menu links, VAT notice. No revocation CTA |
-| `Page:Footer:Column` | Headline + body; optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
-| `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open |
-| `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`); tree loop of N Columns; `collapsible` when a root has children |
-| `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-8`); payment + shipping Columns |
+| `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
+| `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
+| `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
+| `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-1 g-col-lg-8`); payment + shipping Columns |
 | `Page:Footer:Bottom` | Service menu, VAT notice, copyright (`brand` prop → snippet `%brand%`) |
 | `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
 | `FooterCmsUrlResolver` | Contact / revocation / shipping CMS URLs from service menu or nav `seoUrl`, else `frontend.cms.page.full` |
@@ -30,11 +30,11 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (columns=8; gap=false / --vi-grid-gap)
-          │    ├─ Page:Footer:Column:Hotline      root-host of Column
-          │    ├─ Page:Footer:Column:Navigation   flex div (role=list, d-flex gap-6)
+          ├─ Grid (columns=xxl; gap=false / --vi-grid-gap)
+          │    ├─ Page:Footer:Column:Hotline      root-host of Column; g-col-1 + g-col-lg-3
+          │    ├─ Page:Footer:Column:Navigation   g-col-1 g-col-lg-5 flex (role=list, d-flex gap-6)
           │    │    └─ Page:Footer:Column × N
-          │    └─ Page:Footer:Column:Logos        g-col-8 flex (role=list)
+          │    └─ Page:Footer:Column:Logos        g-col-1 g-col-lg-8 flex (role=list)
           │         ├─ Page:Footer:Column         payment (if paymentLogos)
           │         └─ Page:Footer:Column         shipping (if shippingLogos)
           └─ Page:Footer:Bottom
@@ -55,7 +55,7 @@ Main skips the Navigation mount when `footer.navigation.tree` is empty. Skip `Co
 
 Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid has no `role=list`; list semantics live on Navigation’s and Logos’ flex roots + their Column `role=listitem` (hosts pass it; Column does not default it).
 
-Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`.
+Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`. From `lg` the row is Hotline 3 + Navigation 5; Logos is the next full 8. Column contributes `g-col-1`; Hotline adds `g-col-lg-3`.
 
 ## Class components
 

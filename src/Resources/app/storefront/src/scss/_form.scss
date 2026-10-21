@@ -4,6 +4,10 @@
   row-gap: var(--vi-form-gap, 6px);
 }
 
+.form-field-feedback:not(:has(*)) {
+  display: none;
+}
+
 .form-required-label {
   color: var(--primary);
 }

@@ -85,7 +85,7 @@ Links use CVA `link` (`fw-semibold text-body`), same ajax-modal pattern as `Prod
 
 `Address:Personal` (class) + `Address:PersonalCompany` (class) + `Address:Form` (class) + `Address:CountryState` JS. Email/password fields are `Account:Register:Credentials` (email always visible; password gated when `guestSelectable`). Profile passes `showCompanyFields: true` so company/VAT stay visible when the shop hides the account-type select.
 
-Fields sit in `Grid` `columns="6"`. Spans live in each slot CVA `base` (`g-col-6` / `g-col-3` / `g-col-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
+Fields sit in `Grid` `columns="lg"` (one column, six tracks from `md`). Spans live in each slot CVA `base` (`g-col-1 g-col-md-6` / `g-col-md-3` / `g-col-md-2`). No Bootstrap `row` / `col-md-*`. Personal / Form / PersonalCompany field slots (and Personal `prepend` / `append`) use [`{% vi_block %}`](../twig/vi-block.md) so callers can override them inside the Grid. `{% block fields %}` stays a real Personal slot (it wraps Grid).
 
 `Address:CountryState` fetches `frontend.country.country.data`. Country flags live on the PHP `countryFlags` map (`requiredZip`, `requiredState`, `requiredVat`, `displayState`) — not option `data-*`. State host is `[data-country-state-host]`. Field ids (`countrySelectId`, `stateSelectId`, `zipInputId`, `vatInputId`) are resolved on the closest `form` (VAT lives in `Address:PersonalCompany`, not inside the CountryState wrapper).
 

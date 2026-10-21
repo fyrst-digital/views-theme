@@ -117,8 +117,6 @@
 }
 
 .vi-product-listing-results__grid {
-  --vi-grid-columns: repeat(auto-fill, minmax(min(100%, var(--vi-product-basis, 220px)), 1fr));
-
   @include media-breakpoint-up(xxl) {
     --vi-product-basis: 320px;
   }
@@ -132,7 +130,6 @@
 
 .vi-review-panel {
   @include media-breakpoint-up(lg) {
-    --vi-grid-columns: auto minmax(0, 1fr);
     --vi-sidebar-w: 360px;
   }
 }

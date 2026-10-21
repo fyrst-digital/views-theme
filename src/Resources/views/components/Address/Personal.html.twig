@@ -8,7 +8,7 @@
     {% block fields %}
         <twig:ViewsTheme:Grid
             {{ ...vi_attrs('grid').defaults({
-                columns: 6,
+                columns: 'lg',
                 gap: 'sm',
             }).all() }}
         >
@@ -28,7 +28,7 @@
                         <twig:block name="control">
                             <twig:ViewsTheme:Grid
                                 {{ ...vi_attrs('grid').defaults({
-                                    columns: 6,
+                                    columns: 'lg',
                                     gap: 'sm',
                                 }).all() }}
                             >

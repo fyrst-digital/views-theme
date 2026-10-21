@@ -72,7 +72,7 @@ Reusable form field primitives owned by the theme:
 
 Default control padding is 12×20 (`--spacing-3` / `--spacing-5`), type is 16px / line-height 1.5, radius is 8. `sm` stays 8×12 and 14px (review sort). `lg` is 16×20 and 16px. Focus adds an inward 0.5px stroke on the 1px border. A valid or invalid input shows a 16px status icon 20px from the trailing edge. Selects keep only the caret at that same inset.
 
-Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, and the form-check float reset.
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, empty `.form-field-feedback` (`:not(:has(*))` is `display: none` until it contains an element), `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, and the form-check float reset.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 
@@ -508,7 +508,7 @@ Co-located: `Form/Slider.css` (non-utility only).
 
 ## Form:Birthday
 
-Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
+Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-1 g-col-md-6` on the field canvas; inner `Grid` `columns="sm"` (three equal selects from `sm`). Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
 
 ## Form:Toggle
 
