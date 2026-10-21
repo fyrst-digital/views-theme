@@ -43,7 +43,7 @@
                 {% endif %}
 
                 {% block personal %}
-                    <twig:ViewsTheme:Address:Personal
+                    <twig:ViewsTheme:Address:Form:Personal
                         class="{{ vi_class('personal') }}"
                         {{ ...vi_attrs('personal').defaults({
                             data: billingAddress,
@@ -59,7 +59,7 @@
                     >
                     <twig:block name="append">
                         {% vi_block account %}
-                            <twig:ViewsTheme:Account:Register:Credentials
+                            <twig:ViewsTheme:Account:Form:Credentials
                                 class="{{ vi_class('credentials') }}"
                                 {{ ...vi_attrs('credentials').defaults({
                                     email: email,
@@ -75,7 +75,7 @@
                             />
                         {% endvi_block %}
                     </twig:block>
-                </twig:ViewsTheme:Address:Personal>
+                </twig:ViewsTheme:Address:Form:Personal>
                 {% endblock %}
 
                 {% block billing %}
@@ -120,7 +120,7 @@
                                 <legend class="{{ vi_class('sectionTitle') }}">
                                     {{ 'account.registerAddressShippingHeader'|trans|sw_sanitize }}
                                 </legend>
-                                <twig:ViewsTheme:Address:Personal
+                                <twig:ViewsTheme:Address:Form:Personal
                                     class="{{ vi_class('shippingPersonal') }}"
                                     {{ ...vi_attrs('shippingPersonal').defaults({
                                         data: shippingAddress,

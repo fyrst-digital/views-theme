@@ -67,12 +67,12 @@ Reusable form field primitives owned by the theme:
 | label | `form-label` + inline flex, gap 4px | `label:class` |
 | required | `form-required-label` (color `--primary`) | `required:class` |
 | input | `form-control` (+ size / `is-invalid` / `is-valid`) | `input:class` |
-| description | `form-text` (12px ash; danger when invalid, success when valid) | `description:class` |
+| description | `form-text` (14px / `--font-size-6` ash; danger when invalid, success when valid) | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
 Default control padding is 12×20 (`--spacing-3` / `--spacing-5`), type is 16px / line-height 1.5, radius is 8. `sm` stays 8×12 and 14px (review sort). `lg` is 16×20 and 16px. Focus adds an inward 0.5px stroke on the 1px border. A valid or invalid input shows a 16px status icon 20px from the trailing edge. Selects keep only the caret at that same inset.
 
-Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, empty `.form-field-feedback` (`:not(:has(*))` is `display: none` until it contains an element), `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, and the form-check float reset.
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, empty `.form-field-feedback` (`:not(:has(*))` is `display: none` until it contains an element), `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, the form-check float reset, and re-applies `$form-text-font-size` on `.form-text` after Shopware’s `font-size: 1rem` rule.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 

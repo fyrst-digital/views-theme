@@ -1,0 +1,67 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['grid', 'select']) %}
+
+{% if showAccountType %}
+    <twig:ViewsTheme:Form:Toggle
+        class="{{ vi_class('root') }}"
+        {{ ...attributes.defaults({
+            value: businessType,
+            open: accountTypeValue == businessType,
+        }).all() }}
+    >
+        <twig:block name="control">
+            <twig:ViewsTheme:Grid
+                {{ ...vi_attrs('grid').defaults({
+                    columns: 'lg',
+                    gap: 'sm',
+                }).all() }}
+            >
+                <twig:block name="content">
+                <twig:ViewsTheme:Form:Select
+                    class="{{ vi_class('select') }}"
+                    {{ ...vi_attrs('select').defaults({
+                        id: field.id,
+                        name: field.name,
+                        options: options,
+                        value: accountTypeValue,
+                        disabled: companyAlways,
+                        validationRules: 'required',
+                        violationPath: field.violationPath,
+                        autocomplete: 'off',
+                        label: 'account.personalTypeLabel'|trans|sw_sanitize,
+                    }).all() }}
+                />
+                </twig:block>
+            </twig:ViewsTheme:Grid>
+            {% if companyAlways %}
+                <input type="hidden" name="{{ field.name }}" value="{{ businessType }}">
+            {% endif %}
+        </twig:block>
+        <twig:block name="content">
+            {% vi_block company %}
+                <twig:ViewsTheme:Address:Input:Company
+                    class="{{ vi_class('company') }}"
+                    :data="data"
+                    prefix="{{ prefix }}"
+                    idPrefix="{{ idPrefix }}"
+                    :showVat="showVat"
+                    :formViolations="formViolations"
+                />
+            {% endvi_block %}
+        </twig:block>
+    </twig:ViewsTheme:Form:Toggle>
+{% elseif showCompany %}
+    {% if companyAlways %}
+        <input type="hidden" name="{{ field.name }}" value="{{ businessType }}">
+    {% endif %}
+    {% vi_block company %}
+        <twig:ViewsTheme:Address:Input:Company
+            class="{{ vi_class('company') }}"
+            :data="data"
+            prefix="{{ prefix }}"
+            idPrefix="{{ idPrefix }}"
+            :showVat="showVat"
+            :formViolations="formViolations"
+        />
+    {% endvi_block %}
+{% endif %}

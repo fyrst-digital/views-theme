@@ -1,0 +1,28 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['grid', 'select']) %}
+
+{% if visible %}
+    <twig:ViewsTheme:Grid
+        class="{{ vi_class('root') }}"
+        {{ ...vi_attrs('grid').defaults({
+            columns: 'lg',
+            gap: 'sm',
+        }).all() }}
+    >
+        <twig:block name="content">
+            <twig:ViewsTheme:Form:Select
+                class="{{ vi_class('select') }}"
+                {{ ...vi_attrs('select').defaults({
+                    id: field.id,
+                    name: field.name,
+                    options: options,
+                    value: field.value,
+                    violationPath: field.violationPath,
+                    formViolations: formViolations,
+                    autocomplete: 'section-personal honorific-prefix',
+                    label: 'account.personalSalutationLabel'|trans|sw_sanitize,
+                }).all() }}
+            />
+        </twig:block>
+    </twig:ViewsTheme:Grid>
+{% endif %}

@@ -1,0 +1,121 @@
+{% props
+    data = null,
+    salutations = null,
+    page = null,
+    formViolations = __context.formViolations|default(null),
+    prefix = '',
+    idPrefix = '',
+    accountType = null,
+    hideCustomerTypeSelect = false,
+    onlyCompanyRegistration = false,
+    showBirthdayField = null,
+    showVat = true,
+    showCompanyFields = false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['grid', 'accountType', 'salutation', 'title', 'name', 'birthday', 'company']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block fields %}
+        <twig:ViewsTheme:Grid
+            {{ ...vi_attrs('grid').defaults({
+                columns: 'lg',
+                gap: 'md',
+            }).all() }}
+        >
+            <twig:block name="content">
+            {% vi_block prepend %}{% endvi_block %}
+
+            {% vi_block accountType %}
+                <twig:ViewsTheme:Address:Input:AccountType
+                    class="{{ vi_class('accountType') }}"
+                    {{ ...vi_attrs('accountType').defaults({
+                        data: data,
+                        prefix: prefix,
+                        idPrefix: idPrefix,
+                        accountType: accountType,
+                        hideCustomerTypeSelect: hideCustomerTypeSelect,
+                        onlyCompanyRegistration: onlyCompanyRegistration,
+                        showCompanyFields: showCompanyFields,
+                        showVat: showVat,
+                        formViolations: formViolations,
+                    }).all() }}
+                >
+                    <twig:block name="company">
+                        {% vi_block company %}
+                            <twig:ViewsTheme:Address:Input:Company
+                                class="{{ vi_class('company') }}"
+                                {{ ...vi_attrs('company').defaults({
+                                    data: data,
+                                    prefix: prefix,
+                                    idPrefix: idPrefix,
+                                    showVat: showVat,
+                                    formViolations: formViolations,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Address:Input:AccountType>
+            {% endvi_block %}
+
+            {% vi_block salutation %}
+                <twig:ViewsTheme:Address:Input:Salutation
+                    class="{{ vi_class('salutation') }}"
+                    {{ ...vi_attrs('salutation').defaults({
+                        data: data,
+                        salutations: salutations,
+                        page: page,
+                        prefix: prefix,
+                        idPrefix: idPrefix,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+            {% endvi_block %}
+
+            {% vi_block title %}
+                <twig:ViewsTheme:Address:Input:Title
+                    class="{{ vi_class('title') }}"
+                    {{ ...vi_attrs('title').defaults({
+                        data: data,
+                        prefix: prefix,
+                        idPrefix: idPrefix,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+            {% endvi_block %}
+
+            {% vi_block name %}
+                <twig:ViewsTheme:Address:Input:Name
+                    class="{{ vi_class('name') }}"
+                    {{ ...vi_attrs('name').defaults({
+                        data: data,
+                        prefix: prefix,
+                        idPrefix: idPrefix,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+            {% endvi_block %}
+
+            {% vi_block birthday %}
+                <twig:ViewsTheme:Address:Input:Birthday
+                    class="{{ vi_class('birthday') }}"
+                    {{ ...vi_attrs('birthday').defaults({
+                        data: data,
+                        prefix: prefix,
+                        idPrefix: idPrefix,
+                        showBirthdayField: showBirthdayField,
+                        formViolations: formViolations,
+                    }).all() }}
+                />
+            {% endvi_block %}
+
+            {% vi_block append %}{% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    {% endblock %}
+</div>
