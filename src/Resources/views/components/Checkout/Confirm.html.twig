@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'violations', 'title', 'main', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'violations', 'title', 'main', 'aside']) %}
 
 <div
     {{ attributes }}
@@ -49,65 +49,12 @@
     {% endblock %}
 
     {% block main %}
-        <div
-            {{ vi_attrs('main') }}
+        <twig:ViewsTheme:Checkout:Confirm:Main
             class="{{ vi_class('main') }}"
-        >
-            {% block addresses %}
-                <twig:ViewsTheme:Checkout:Addresses
-                    class="{{ vi_class('addresses') }}"
-                    {{ ...vi_attrs('addresses').defaults({
-                        page: page,
-                    }).all() }}
-                />
-            {% endblock %}
-
-            {% block methods %}
-                <twig:ViewsTheme:Checkout:Methods
-                    class="{{ vi_class('methods') }}"
-                    {{ ...vi_attrs('methods').defaults({
-                        page: page,
-                    }).all() }}
-                />
-            {% endblock %}
-
-            {% block items %}
-                <section
-                    {{ vi_attrs('itemsSection') }}
-                    class="{{ vi_class('itemsSection') }}"
-                >
-                    {% block items_title %}
-                        <h2
-                            {{ vi_attrs('itemsTitle') }}
-                            class="{{ vi_class('sectionTitle') }}"
-                        >
-                            {{ 'checkout.confirmItems'|trans|sw_sanitize }}
-                        </h2>
-                    {% endblock %}
-
-                    <twig:ViewsTheme:LineItems:Table
-                        class="{{ vi_class('items') }}"
-                        {{ ...vi_attrs('items').defaults({
-                            cart: page.cart,
-                            showRemoveButton: false,
-                            showQuantitySelect: false,
-                        }).all() }}
-                    />
-
-                    {% block returns %}
-                        <p
-                            {{ vi_attrs('returns') }}
-                            class="{{ vi_class('returns') }}"
-                        >
-                            {{ vi_icon('arrow-counter-clockwise', { class: vi_class('returnsIcon') }) }}
-                            <span class="{{ vi_class('returnsCopy') }}">
-                                {{ 'checkout.confirmReturns'|trans|sw_sanitize }}
-                            </span>
-                        </p>
-                    {% endblock %}
-                </section>
-            {% endblock %}
-        </div>
+            {{ ...vi_attrs('main').defaults({
+                page: page,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block aside %}

@@ -492,7 +492,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
 | Checkout:Title (class-backed) | UX + `vi_cva`; `meta` is `array<string, CheckoutTitleMeta>` (`label`, optional `icon`); `{% block meta_item %}` — [checkout-confirm.md](../features/checkout-confirm.md) |
-| Checkout:Confirm (+ Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm (+ Main / Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm:Title (class-backed) | UX + `vi_cva`; email, item count, and arrival in `Title.php`; fills `Checkout:Title` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Addresses (class-backed) | UX + `vi_cva`; section and `checkout.confirmAddresses` title in Twig; cards in `Addresses.php`; lines are `Address` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |

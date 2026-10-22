@@ -1,0 +1,21 @@
+.vi-checkout-confirm-main {
+    gap: var(--vi-confirm-main-gap, 28px);
+
+    @media (min-width: 1260px) {
+        --vi-confirm-main-gap: 40px;
+    }
+}
+
+.vi-checkout-confirm-main__returns-icon {
+    --icon-size: var(--vi-confirm-main-icon, 14px);
+}
+
+.vi-checkout-confirm-main__returns-copy {
+    font-size: var(--vi-confirm-main-returns-size, 13px);
+    line-height: var(--vi-confirm-main-returns-lh, 1.4);
+
+    @media (min-width: 1260px) {
+        --vi-confirm-main-returns-size: 14px;
+        --vi-confirm-main-returns-lh: normal;
+    }
+}
