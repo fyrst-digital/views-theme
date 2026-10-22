@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
+{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'divider', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
 
 {% set deliveries = page.cart.deliveries|default(null) %}
 {% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
@@ -37,11 +37,52 @@
 
             {% block summary %}
                 <twig:ViewsTheme:Cart:Summary
-                    class="{{ vi_class('summary') }}"
                     {{ ...vi_attrs('summary').defaults({
                         summary: page.cart,
+                        cva: {
+                            root: { base: 'vi-cart-summary d-grid align-items-center' },
+                        },
+                        'total:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'shipping:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'grand:cva': {
+                            root: 'fs-5',
+                            label: 'fw-semibold',
+                            value: 'vi-cart-summary__grand fs-3 fw-bold',
+                        },
+                        'net:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
+                        'tax:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
                     }).all() }}
-                />
+                >
+                    <twig:block name="grand_total">
+                        {% if showGrandTotal is not same as(false) %}
+                            <hr
+                                {{ vi_attrs('divider') }}
+                                class="{{ vi_class('divider') }}"
+                            >
+                            <twig:ViewsTheme:Cart:Summary:GrandTotal
+                                {{ ...vi_attrs('grand').defaults({
+                                    summary: summary,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    </twig:block>
+                </twig:ViewsTheme:Cart:Summary>
             {% endblock %}
 
             {% block arrival %}

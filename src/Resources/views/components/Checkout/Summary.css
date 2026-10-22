@@ -1,5 +1,7 @@
 .vi-checkout-summary {
     top: var(--vi-top, 24px);
+    --vi-cart-summary-gap: 10px;
+    --vi-cart-summary-tracking: -0.6px;
 }
 
 .vi-checkout-summary__accent {
@@ -10,55 +12,16 @@
     padding: var(--vi-checkout-summary-pad, 28px);
 }
 
-.vi-checkout-summary__summary {
-    align-items: center;
-    row-gap: var(--vi-checkout-summary-rows, 10px);
-}
-
-.vi-checkout-summary__summary dt,
-.vi-checkout-summary__summary dd {
-    font-size: var(--vi-checkout-summary-row-size, 16px);
-}
-
-.vi-checkout-summary__summary dt {
-    font-weight: 500;
-    color: var(--vi-checkout-summary-label, #66605D);
-}
-
-.vi-checkout-summary__summary dd {
-    font-weight: 600;
-    color: var(--vi-checkout-summary-value, var(--body-color));
-}
-
-.vi-checkout-summary__summary .fs-5 dt,
-.vi-checkout-summary__summary .fs-5 dd {
-    margin-top: var(--vi-checkout-summary-split, 10px);
-    padding-top: var(--vi-checkout-summary-total-gap, 20px);
+.vi-checkout-summary__divider {
+    grid-column: 1 / -1;
+    margin-block: var(--vi-checkout-summary-split, 10px);
+    border: 0;
     border-top: 1px solid var(--border-color);
-    font-weight: 600;
-    color: var(--vi-checkout-summary-value, var(--body-color));
-}
-
-.vi-checkout-summary__summary .fs-5 dd {
-    font-size: var(--vi-checkout-summary-total, 24px);
-    font-weight: 700;
-    letter-spacing: -0.6px;
-}
-
-.vi-checkout-summary__summary .text-body-tertiary dt,
-.vi-checkout-summary__summary .text-body-tertiary dd {
-    font-size: var(--vi-checkout-summary-meta, 14px);
-    font-weight: 400;
-    color: var(--vi-checkout-summary-label, #66605D);
+    opacity: 1;
 }
 
 .vi-checkout-summary__arrival {
     padding: var(--vi-checkout-summary-arrival-pad, 10px 12px);
-}
-
-.vi-checkout-summary__secure,
-.vi-checkout-summary__secure-icon {
-    color: var(--vi-checkout-summary-label, #66605D);
 }
 
 .vi-checkout-summary__secure-icon {

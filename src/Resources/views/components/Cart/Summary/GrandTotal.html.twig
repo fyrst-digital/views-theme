@@ -1,0 +1,20 @@
+{% props
+    summary,
+    cva = {},
+%}
+
+{% do vi_define_cva({
+    root: { base: 'fs-5' },
+    label: { base: 'fw-semibold' },
+    value: { base: 'vi-cart-summary__grand fw-semibold' },
+}|replace_recursive(cva)) %}
+
+<twig:ViewsTheme:Cart:Summary:Item
+    class="{{ vi_class('root') }}"
+    label:class="{{ vi_class('label') }}"
+    value:class="{{ vi_class('value') }}"
+    {{ ...attributes.defaults({
+        label: 'checkout.summaryTotalPrice'|trans|sw_sanitize,
+        value: summary.price.totalPrice|currency,
+    }).all() }}
+/>

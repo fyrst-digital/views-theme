@@ -1,0 +1,29 @@
+{% props
+    delivery,
+    cva = {},
+%}
+
+{% set shippingLabel = 'checkout.summaryShipping'|trans|sw_sanitize %}
+
+{% do vi_define_cva({
+    root: { base: 'fs-6' },
+    label: { base: 'fw-medium' },
+    value: { base: 'fw-medium' },
+}|replace_recursive(cva)) %}
+
+<twig:ViewsTheme:Cart:Summary:Item
+    class="{{ vi_class('root') }}"
+    value:class="{{ vi_class('value') }}"
+    {{ ...attributes.defaults({
+        label: shippingLabel,
+        value: delivery.shippingCosts.totalPrice|currency,
+    }).all() }}
+>
+    <twig:block name="label">
+        {% vi_block label %}
+            <dt class="{{ vi_class('label') }}">
+                {{ shippingLabel|raw }}
+            </dt>
+        {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Cart:Summary:Item>
