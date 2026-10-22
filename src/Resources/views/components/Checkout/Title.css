@@ -1,0 +1,9 @@
+.vi-checkout-title__heading {
+    font-size: var(--vi-checkout-title-size, 30px);
+    letter-spacing: var(--vi-checkout-title-tracking, 0);
+
+    @media (min-width: 1260px) {
+        --vi-checkout-title-size: 36px;
+        --vi-checkout-title-tracking: -0.7px;
+    }
+}

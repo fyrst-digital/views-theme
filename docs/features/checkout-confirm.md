@@ -14,7 +14,9 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
-| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, methods, items, then `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, addresses, methods, items, then `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm:Title` | Class view-model. `#[PostMount]` builds `heading` and keyed `meta` (`email`, `items`, `arrival`) from the cart and customer. Fills `Checkout:Title`’s `description` block with `header.supportInfo`. Passes Confirm’s grid class through. No `g-col-*` in its CVA |
+| `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
 | `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
 | `Checkout:Summary` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Confirm address panel. Class view-model builds the cards and country-format lines; Twig composes the columns and `Address:Manager:Action`. Not [`Address:List`](address.md) |
@@ -41,10 +43,11 @@ page/checkout/confirm/index.html.twig
 ├─ page_checkout → Checkout:Confirm        (.grid; grid-columns-1, grid-columns-xl-8; no data-component, no Stepper)
 │    ├─ Cart:Flashes                       (g-col-1 g-col-xl-8)
 │    ├─ formViolations → Alert             (g-col-1 g-col-xl-8)
-│    ├─ title                              (g-col-1 g-col-xl-8)
-│    │    ├─ h1 checkout.confirmHeader
-│    │    ├─ header.supportInfo            (below xl only)
-│    │    └─ meta: email · checkout.itemCounter · arrival
+│    ├─ Checkout:Confirm:Title            (caller class: g-col-1 g-col-xl-8 g-col-xxl-12)
+│    │    └─ Checkout:Title
+│    │         ├─ h1 heading prop          (checkout.confirmHeader)
+│    │         ├─ description block        (Confirm:Title: header.supportInfo, hidden from xl)
+│    │         └─ meta                     (keyed CheckoutTitleMeta: email · items · arrival; block meta_item)
 │    ├─ main                               (g-col-1 g-col-xl-5)
 │    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses
 │    │    │    (not Address:List; change is Address:Manager:Action)
@@ -76,13 +79,21 @@ Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. Title,
 
 TOS lives **in the summary** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
 
-## Title
+## Checkout:Confirm:Title
 
-`checkout.confirmHeader` is the h1 (30px, 600; from `xl` 36px, 600, letter-spacing `-0.7px`). The meta line under it is the customer email, `checkout.itemCounter` with `page.cart.lineItems|length`, and an arrival range. A middot separates the segments. Meta type is 14px below `xl` and 16px from `xl`.
+`Checkout:Confirm` mounts `<twig:ViewsTheme:Checkout:Confirm:Title>` and passes `page`. The component is class-backed. `#[PostMount]` builds `heading` (`checkout.confirmHeader`) and `meta` as `array<string, CheckoutTitleMeta>`. The template does not calculate those values. The grid span is Confirm’s `title` class (`g-col-1 g-col-xl-8 g-col-xxl-12`), passed through onto `Checkout:Title`. `Checkout:Confirm:Title` has no element of its own and no `g-col-*` in its CVA.
+
+`meta` keys: `email` (customer email via `EmailIdnConverter::decode`, omitted when empty), `items` (`checkout.itemCounter` with the cart line-item count), and `arrival` (`checkout.confirmArrival`, omitted when the cart has no delivery). Each entry is a label with no icon. The support line stays in Twig: `header.supportInfo` in `vi-checkout-confirm-title__description` (`d-xl-none fs-6 text-body-tertiary`), so that line shows only below `xl`.
 
 Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — the dates Shopware already stores on the delivery, not the preferred-delivery-date field. Same month renders as a day plus the later day and month (`checkout.confirmArrival`, pen shape “Arrives 16–20 October”). The arrival segment is omitted when the cart has no delivery.
 
-Below `xl`, `header.supportInfo` sits between the heading and the meta. Confirm passes `supportDisplay="desktop"` so the header hides that same snippet under the desktop breakpoint. Register, success, and edit-order do not pass it, so their header keeps support at every width.
+## Checkout:Title
+
+`Checkout:Confirm:Title` mounts `<twig:ViewsTheme:Checkout:Title>` with a `heading` string and `meta`. It does not pass `page`. `Checkout:Title` is class-backed. `#[PostMount]` maps each hash to `CheckoutTitleMeta` (`label`, optional `icon` for `vi_icon`), keeps the caller key, and drops an empty label.
+
+`checkout.confirmHeader` is the h1 (30px, 600; from `xl` 36px, 600, letter-spacing `-0.7px`). The meta container is a `div`. An inner `div` holds the items. `{% block meta_item %}` renders once per entry with `key` and `item` in scope, so a caller can override that block and branch on `key`. A middot sits between items, outside the block. Title omits the line when nothing remains. An `icon` renders with `vi_icon` before its label. Meta type is 14px below `xl` and 16px from `xl`.
+
+The `description` block on `Checkout:Title` is empty. `Checkout:Confirm:Title` fills it. Confirm also passes `supportDisplay="desktop"` on the minimal header so that header hides the same snippet from `xl`. Register, success, and edit-order do not pass it, so their header keeps support at every width.
 
 Section titles (`checkout.confirmAddresses`, `checkout.confirmItems`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
@@ -207,7 +218,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/{Aside,Summary,Additions}.*` · `components/Checkout/Confirm/{Addresses,Tos,Comment}.*` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Addresses,Title,Tos,Comment}.*` · `components/Checkout/{Aside,Summary,Additions,Title}.*` · `src/Struct/CheckoutTitleMeta.php` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 

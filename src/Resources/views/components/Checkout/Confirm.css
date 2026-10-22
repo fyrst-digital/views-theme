@@ -1,13 +1,3 @@
-.vi-checkout-confirm__heading {
-    font-size: var(--vi-checkout-confirm-heading-size, 30px);
-    letter-spacing: var(--vi-checkout-confirm-heading-tracking, 0);
-
-    @media (min-width: 1260px) {
-        --vi-checkout-confirm-heading-size: 36px;
-        --vi-checkout-confirm-heading-tracking: -0.7px;
-    }
-}
-
 .vi-checkout-confirm__main {
     gap: var(--vi-checkout-confirm-section-gap, 28px);
 
