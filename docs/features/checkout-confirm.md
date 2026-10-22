@@ -172,13 +172,15 @@ Pen component `Checkout/Before you order`. White card, 1px linen border, 12px ra
 
 Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card chrome stays on this box. Comment localStorage and the delivery-date subscriber stay on those components.
 
+`Checkout:Confirm` passes `page` in (self-closing `component()` does not inherit it). Additions passes `page.extensions.viewsTheme.deliveryDate` into `Checkout:DeliveryDateSelection` as `deliveryDate`.
+
 Renders nothing when the customer comment is disabled and the delivery-date extension is inactive. No `data-component`.
 
 The confirm layout mounts this tag in the aside above the summary. On mobile it sits in the closing stack.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `page` | ambient | Delivery-date extension gates the box with the comment config |
+| `page` | `__context.page` | Confirm passes it. Gates the box with the comment config and feeds the delivery-date picker |
 | `showComment` | `core.cart.showCustomerComment` | |
 
 ## Checkout:Confirm:Comment

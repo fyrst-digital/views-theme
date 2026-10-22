@@ -28,6 +28,8 @@ See [Configuration](../configuration.md).
 
 Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Confirm:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. The confirm layout mounts Additions in the aside above the summary (closing stack on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
 
+Self-closing `<twig:… />` compiles to `component()` and does not inherit `page`. `Checkout:Confirm` passes `page` into Additions (same hand-off as the aside). Additions passes `page.extensions.viewsTheme.deliveryDate` into `deliveryDate`. Without that prop the picker reads an empty default and renders nothing.
+
 Conventions:
 
 - UX component (`cva` + `attributes`)

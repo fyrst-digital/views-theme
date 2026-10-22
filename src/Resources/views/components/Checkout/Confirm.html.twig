@@ -198,7 +198,9 @@
             {% block additions %}
                 <twig:ViewsTheme:Checkout:Confirm:Additions
                     class="{{ vi_class('additions') }}"
-                    {{ ...vi_attrs('additions').all() }}
+                    {{ ...vi_attrs('additions').defaults({
+                        page: page,
+                    }).all() }}
                 />
             {% endblock %}
 
