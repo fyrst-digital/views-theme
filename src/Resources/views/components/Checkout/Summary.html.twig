@@ -10,7 +10,7 @@
 {% set deliveries = page.cart.deliveries|default(null) %}
 {% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
 
-<aside
+<div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
@@ -110,4 +110,4 @@
             {% endblock %}
         </div>
     {% endblock %}
-</aside>
+</div>

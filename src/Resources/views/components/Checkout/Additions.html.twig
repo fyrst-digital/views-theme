@@ -40,7 +40,10 @@
                 {% block delivery_date %}
                     <twig:ViewsTheme:Checkout:DeliveryDateSelection
                         class="{{ vi_class('deliveryDate') }}"
-                        {{ ...vi_attrs('deliveryDate').all() }}
+                        :title="''"
+                        {{ ...vi_attrs('deliveryDate').defaults({
+                            deliveryDate: page.extensions.viewsTheme.deliveryDate|default({}),
+                        }).all() }}
                     />
                 {% endblock %}
             </div>

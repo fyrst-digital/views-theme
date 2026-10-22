@@ -491,7 +491,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
-| Checkout:Confirm (+ Tos / Comment / Additions / Aside) + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm (+ Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm:Addresses (class-backed) | UX + `vi_cva`; cards and country-format lines in `Addresses.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Success (+ Addresses / Payment / Shipping / Header / Comment / DeliveryDate / Aside) | Success:Addresses class VM adapts Address:List — [checkout-success.md](../features/checkout-success.md) |

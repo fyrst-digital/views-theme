@@ -26,13 +26,19 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Confirm:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. The confirm layout mounts Additions in the aside above the summary (closing stack on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. `Checkout:Aside` mounts Additions above `Checkout:Summary` (that column stacks after main on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
+
+The confirm box passes an empty `title`. The picker renders the headline only when `title` is not empty. Callers that omit `title` still get `checkout.preferredDeliveryDateHeader`. The success-page title stays that snippet.
+
+The field is [`Form:Input`](form-input.md) with `type="date"`. `label` and `helpText` map to `label` and `description`. `min`, `max`, and `form="confirmOrderForm"` are nested `input:*` attributes. `name` is `viewsThemeDeliveryDate`.
+
+Self-closing `<twig:… />` compiles to `component()` and does not inherit `page`. `Checkout:Aside` passes `page` into Additions (same hand-off as the summary). Additions passes `page.extensions.viewsTheme.deliveryDate` into `deliveryDate`. Without that prop the picker reads an empty default and renders nothing.
 
 Conventions:
 
 - UX component (`cva` + `attributes`)
 - `data-component="ViewsTheme:Checkout:DeliveryDateSelection"` for co-located JS
-- Input attached via `form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`
+- `Form:Input` associated via `input:form="confirmOrderForm"` and `name="viewsThemeDeliveryDate"`
 
 ### Page subscriber
 
@@ -72,7 +78,7 @@ Co-located `Checkout/DeliveryDateSelection.js` (`ShopwareComponent`) reads `min`
 | Confirm page subscriber | `src/Subscriber/CheckoutConfirmPageSubscriber.php` |
 | Order placed subscriber | `src/Subscriber/CheckoutOrderPlacedSubscriber.php` |
 | Component | `src/Resources/views/components/Checkout/DeliveryDateSelection.html.twig` |
-| Additions box | `src/Resources/views/components/Checkout/Confirm/Additions.html.twig` |
+| Additions box | `src/Resources/views/components/Checkout/Additions.html.twig` |
 | Success display | `src/Resources/views/components/Checkout/Success/DeliveryDate.html.twig` |
 | JS | `src/Resources/views/components/Checkout/DeliveryDateSelection.js` |
 
