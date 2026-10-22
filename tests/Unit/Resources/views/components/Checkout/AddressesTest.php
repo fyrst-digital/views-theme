@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout\Confirm;
+namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout;
 
-use Fyrst\ViewsTheme\Resources\views\components\Checkout\Confirm\Addresses;
+use Fyrst\ViewsTheme\Resources\views\components\Checkout\Addresses;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
@@ -17,32 +17,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Environment;
 
 final class AddressesTest extends TestCase
 {
-    public function testContextDefaultsBuildCardsAndSplitLines(): void
+    public function testContextDefaultsBuildCards(): void
     {
         $shipping = $this->address('ship', $this->country(true));
         $billing = $this->address('bill', $this->country(true));
         $page = new CheckoutConfirmPage();
         $page->setHideShippingAddress(false);
 
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::exactly(2))
-            ->method('render')
-            ->willReturnCallback(static function (string $name, array $context): string {
-                self::assertSame('@Framework/snippets/render.html.twig', $name);
-                self::assertSame([['address/street']], $context['format']);
-
-                return match ($context['address']->getId()) {
-                    'ship' => "  Jane Doe<br/>Main St<br>10115 Berlin  ",
-                    'bill' => "Bill Person<br />Town",
-                    default => '',
-                };
-            });
-
-        $component = $this->component($this->context($billing, $shipping), $twig);
+        $component = $this->component($this->context($billing, $shipping));
         $component->page = $page;
         $component->postMount([]);
 
@@ -62,7 +47,7 @@ final class AddressesTest extends TestCase
                 'equal' => false,
                 'warn' => false,
                 'editHref' => '/account/address/ship',
-                'lines' => ['Jane Doe', 'Main St', '10115 Berlin'],
+                'address' => $shipping,
             ],
             [
                 'nest' => 'billing',
@@ -74,7 +59,7 @@ final class AddressesTest extends TestCase
                 'equal' => false,
                 'warn' => false,
                 'editHref' => '/account/address/bill',
-                'lines' => ['Bill Person', 'Town'],
+                'address' => $billing,
             ],
         ], $component->cards);
     }
@@ -86,12 +71,7 @@ final class AddressesTest extends TestCase
         $billing = $this->address('custom-bill', $this->country(false));
         $shipping = $this->address('custom-ship', $this->country(false));
 
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::once())
-            ->method('render')
-            ->willReturn('Custom Street');
-
-        $component = $this->component($this->context($contextBilling, $contextShipping), $twig);
+        $component = $this->component($this->context($contextBilling, $contextShipping));
         $component->billingAddress = $billing;
         $component->shippingAddress = $shipping;
         $component->hideShippingAddress = false;
@@ -111,9 +91,9 @@ final class AddressesTest extends TestCase
         self::assertSame('Edit', $component->changeLabel);
         self::assertSame('shipping', $component->cards[0]['nest']);
         self::assertFalse($component->cards[0]['warn']);
-        self::assertSame(['Custom Street'], $component->cards[0]['lines']);
+        self::assertSame($shipping, $component->cards[0]['address']);
         self::assertTrue($component->cards[1]['equal']);
-        self::assertSame([], $component->cards[1]['lines']);
+        self::assertNull($component->cards[1]['address']);
         self::assertSame('/account/address/custom-bill', $component->cards[1]['editHref']);
     }
 
@@ -123,10 +103,7 @@ final class AddressesTest extends TestCase
         $page = new CheckoutConfirmPage();
         $page->setHideShippingAddress(true);
 
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::once())->method('render')->willReturn('Only Street');
-
-        $component = $this->component($this->context($address, $address), $twig);
+        $component = $this->component($this->context($address, $address));
         $component->page = $page;
         $component->postMount([]);
 
@@ -136,26 +113,23 @@ final class AddressesTest extends TestCase
         self::assertSame('billing', $component->cards[0]['nest']);
         self::assertFalse($component->cards[0]['divided']);
         self::assertFalse($component->cards[0]['equal']);
-        self::assertSame(['Only Street'], $component->cards[0]['lines']);
+        self::assertSame($address, $component->cards[0]['address']);
     }
 
-    public function testEqualBillingKeepsShippingLines(): void
+    public function testEqualBillingKeepsShippingAddress(): void
     {
         $address = $this->address('same', $this->country(true));
 
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::once())->method('render')->willReturn("Jane Doe<br/>Main St");
-
-        $component = $this->component($this->context($address, $address), $twig);
+        $component = $this->component($this->context($address, $address));
         $component->postMount([]);
 
         self::assertTrue($component->addressesEqual);
         self::assertSame('Same as delivery', $component->equalTitle);
         self::assertSame('Invoices are sent to the delivery address.', $component->equalText);
         self::assertFalse($component->cards[0]['equal']);
-        self::assertSame(['Jane Doe', 'Main St'], $component->cards[0]['lines']);
+        self::assertSame($address, $component->cards[0]['address']);
         self::assertTrue($component->cards[1]['equal']);
-        self::assertSame([], $component->cards[1]['lines']);
+        self::assertNull($component->cards[1]['address']);
         self::assertTrue($component->cards[1]['divided']);
     }
 
@@ -164,19 +138,18 @@ final class AddressesTest extends TestCase
         $shipping = $this->address('ship', $this->country(false));
         $billing = $this->address('bill', $this->country(false));
 
-        $component = $this->component($this->context($billing, $shipping), $this->twig('Line'));
+        $component = $this->component($this->context($billing, $shipping));
         $component->postMount([]);
 
         self::assertTrue($component->cards[0]['warn']);
         self::assertFalse($component->cards[1]['warn']);
+        self::assertSame($shipping, $component->cards[0]['address']);
+        self::assertSame($billing, $component->cards[1]['address']);
     }
 
-    public function testMissingAddressSkipsHrefAndLines(): void
+    public function testMissingAddressSkipsHref(): void
     {
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::never())->method('render');
-
-        $component = $this->component(null, $twig);
+        $component = $this->component(null);
         $component->postMount([]);
 
         self::assertNull($component->billingAddress);
@@ -184,28 +157,27 @@ final class AddressesTest extends TestCase
         self::assertFalse($component->addressesEqual);
         self::assertCount(2, $component->cards);
         self::assertNull($component->cards[0]['editHref']);
-        self::assertSame([], $component->cards[0]['lines']);
+        self::assertNull($component->cards[0]['address']);
         self::assertFalse($component->cards[0]['warn']);
         self::assertNull($component->cards[1]['editHref']);
+        self::assertNull($component->cards[1]['address']);
     }
 
-    public function testMissingFormatSkipsRender(): void
+    public function testMissingCountryStillKeepsAddress(): void
     {
-        $shipping = $this->address('ship', $this->country(true, null));
+        $shipping = $this->address('ship');
         $billing = $this->address('bill');
 
-        $twig = $this->createMock(Environment::class);
-        $twig->expects(self::never())->method('render');
-
-        $component = $this->component($this->context($billing, $shipping), $twig);
+        $component = $this->component($this->context($billing, $shipping));
         $component->postMount([]);
 
-        self::assertSame([], $component->cards[0]['lines']);
+        self::assertSame($shipping, $component->cards[0]['address']);
         self::assertSame('/account/address/ship', $component->cards[0]['editHref']);
-        self::assertSame([], $component->cards[1]['lines']);
+        self::assertSame($billing, $component->cards[1]['address']);
+        self::assertFalse($component->cards[0]['warn']);
     }
 
-    private function component(?SalesChannelContext $context, Environment $twig): Addresses
+    private function component(?SalesChannelContext $context): Addresses
     {
         $stack = new RequestStack();
         if ($context !== null) {
@@ -235,7 +207,6 @@ final class AddressesTest extends TestCase
             new SalesChannelContextAccessor($stack),
             $translator,
             $urls,
-            $twig,
         );
     }
 
@@ -262,26 +233,12 @@ final class AddressesTest extends TestCase
         return $address;
     }
 
-    /**
-     * @param list<list<string>>|null $format
-     */
-    private function country(bool $shippingAvailable, ?array $format = [['address/street']]): CountryEntity
+    private function country(bool $shippingAvailable): CountryEntity
     {
         $country = new CountryEntity();
         $country->setId('country');
         $country->setShippingAvailable($shippingAvailable);
-        if ($format !== null) {
-            $country->setTranslated(['addressFormat' => $format]);
-        }
 
         return $country;
-    }
-
-    private function twig(string $rendered): Environment
-    {
-        $twig = $this->createStub(Environment::class);
-        $twig->method('render')->willReturn($rendered);
-
-        return $twig;
     }
 }

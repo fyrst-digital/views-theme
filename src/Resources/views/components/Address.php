@@ -15,7 +15,7 @@ use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
  * View-model for Address — one display string per address field.
- * Template owns a block and span for each field, plus the shipping Alert.
+ * fullName includes the salutation. Template owns a block and span for each field, plus the shipping Alert.
  */
 #[AsTwigComponent]
 class Address
@@ -85,7 +85,11 @@ class Address
 
         $this->salutation = $this->salutationName($address->getSalutation());
         $this->title = $this->text($address->getTitle());
-        $this->fullName = trim($this->text($address->getFirstName()) . ' ' . $this->text($address->getLastName()));
+        $this->fullName = $this->join(
+            $this->salutation,
+            $this->text($address->getFirstName()),
+            $this->text($address->getLastName()),
+        );
         $this->company = $this->text($address->getCompany());
         $this->department = $this->text($address->getDepartment());
         $this->street = $this->text($address->getStreet());
@@ -107,11 +111,16 @@ class Address
 
     private function salutationName(?SalutationEntity $salutation): string
     {
-        if (!$salutation instanceof SalutationEntity) {
+        if (!$salutation instanceof SalutationEntity || $salutation->getSalutationKey() === 'not_specified') {
             return '';
         }
 
         return $this->translated($salutation, 'displayName', $salutation->getDisplayName());
+    }
+
+    private function join(string ...$parts): string
+    {
+        return implode(' ', array_filter($parts, static fn (string $part): bool => $part !== ''));
     }
 
     private function stateName(?CountryStateEntity $state): string

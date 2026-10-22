@@ -22,7 +22,7 @@ final class AddressTest extends TestCase
 
         self::assertSame('Frau', $component->salutation);
         self::assertSame('Dr.', $component->title);
-        self::assertSame('Juthamas Wisetsuk', $component->fullName);
+        self::assertSame('Frau Juthamas Wisetsuk', $component->fullName);
         self::assertSame('Acme', $component->company);
         self::assertSame('Sales', $component->department);
         self::assertSame('teststrasse 21', $component->street);
@@ -124,6 +124,7 @@ final class AddressTest extends TestCase
         $component->postMount([]);
 
         self::assertSame('Mrs.', $component->salutation);
+        self::assertSame('Mrs. Juthamas Wisetsuk', $component->fullName);
         self::assertSame('Zurich', $component->countryState);
         self::assertSame('Switzerland', $component->country);
     }
@@ -171,6 +172,24 @@ final class AddressTest extends TestCase
         $component->postMount([]);
 
         self::assertFalse($component->showWarning);
+    }
+
+    public function testNotSpecifiedSalutationIsLeftOffTheName(): void
+    {
+        $salutation = new SalutationEntity();
+        $salutation->setId('salutation');
+        $salutation->setSalutationKey('not_specified');
+        $salutation->setDisplayName('Not specified');
+
+        $address = $this->customerAddress();
+        $address->setSalutation($salutation);
+
+        $component = new Address();
+        $component->address = $address;
+        $component->postMount([]);
+
+        self::assertSame('', $component->salutation);
+        self::assertSame('Juthamas Wisetsuk', $component->fullName);
     }
 
     public function testMissingAddressClearsFields(): void

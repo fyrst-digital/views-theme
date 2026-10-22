@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'violations', 'title', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'violations', 'title', 'main', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'aside']) %}
 
 <div
     {{ attributes }}
@@ -54,26 +54,12 @@
             class="{{ vi_class('main') }}"
         >
             {% block addresses %}
-                <section
-                    {{ vi_attrs('addressSection') }}
-                    class="{{ vi_class('addressSection') }}"
-                >
-                    {% block address_title %}
-                        <h2
-                            {{ vi_attrs('addressTitle') }}
-                            class="{{ vi_class('sectionTitle') }}"
-                        >
-                            {{ 'checkout.confirmAddresses'|trans|sw_sanitize }}
-                        </h2>
-                    {% endblock %}
-
-                    <twig:ViewsTheme:Checkout:Confirm:Addresses
-                        class="{{ vi_class('addresses') }}"
-                        {{ ...vi_attrs('addresses').defaults({
-                            page: page,
-                        }).all() }}
-                    />
-                </section>
+                <twig:ViewsTheme:Checkout:Addresses
+                    class="{{ vi_class('addresses') }}"
+                    {{ ...vi_attrs('addresses').defaults({
+                        page: page,
+                    }).all() }}
+                />
             {% endblock %}
 
             {% block methods %}

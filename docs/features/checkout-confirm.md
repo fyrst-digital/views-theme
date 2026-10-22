@@ -14,12 +14,12 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
-| `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, addresses, methods, items, then `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, `Checkout:Addresses`, methods, items, then `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
 | `Checkout:Confirm:Title` | Class view-model. `#[PostMount]` builds `heading` and keyed `meta` (`email`, `items`, `arrival`) from the cart and customer. Fills `Checkout:Title`’s `description` block with `header.supportInfo`. Passes Confirm’s grid class through. No `g-col-*` in its CVA |
 | `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
 | `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
 | `Checkout:Summary` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
-| `Checkout:Confirm:Addresses` | Confirm address panel. Class view-model builds the cards and country-format lines; Twig composes the columns and `Address:Manager:Action`. Not [`Address:List`](address.md) |
+| `Checkout:Addresses` | Section + address panel. Class view-model builds the cards; Twig owns the section, the `checkout.confirmAddresses` title, the columns, `Address`, and `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
 | `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping is a class view-model and renders only for a physical line item. Payment `framed` defaults to true for edit-order |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
@@ -49,8 +49,9 @@ page/checkout/confirm/index.html.twig
 │    │         ├─ description block        (Confirm:Title: header.supportInfo, hidden from xl)
 │    │         └─ meta                     (keyed CheckoutTitleMeta: email · items · arrival; block meta_item)
 │    ├─ main                               (g-col-1 g-col-xl-5)
-│    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses
-│    │    │    (not Address:List; change is Address:Manager:Action)
+│    │    ├─ Checkout:Addresses
+│    │    │    ├─ h2 checkout.confirmAddresses
+│    │    │    └─ shipping / billing columns → Address (equal copy overrides content; change is Address:Manager:Action)
 │    │    ├─ Checkout:Methods
 │    │    │    ├─ h2 checkout.confirmMethods
 │    │    │    ├─ Payment:Selection                  (framed=false)
@@ -95,7 +96,7 @@ Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — 
 
 The `description` block on `Checkout:Title` is empty. `Checkout:Confirm:Title` fills it. Confirm also passes `supportDisplay="desktop"` on the minimal header so that header hides the same snippet from `xl`. Register, success, and edit-order do not pass it, so their header keeps support at every width.
 
-Section titles (`checkout.confirmAddresses`, `checkout.confirmItems`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
+Section titles (`checkout.confirmAddresses` on `Checkout:Addresses`, `checkout.confirmItems`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
 ## Checkout:Aside
 
@@ -125,11 +126,11 @@ Secure note: `checkout.confirmSecureNote`.
 
 `Checkout:Confirm` itself has **no** `data-component`. `Form:Handler` includes associated fields (`form="…"`) in constraint-validation chrome.
 
-## Checkout:Confirm:Addresses
+## Checkout:Addresses
 
-One panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
+`Checkout:Addresses` owns the section. The title is `checkout.confirmAddresses` (20px / 600). The gap under it is 12px. Under the title is one panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
 
-Class view-model (`Addresses.php`). `#[PostMount]` resolves the defaults below and builds `cards` (shipping, then billing). The template only composes CVA, attributes, the warning, and `Address:Manager:Action`.
+Class view-model (`Addresses.php`). `#[PostMount]` resolves the defaults below and builds `cards` (shipping, then billing). The template composes the section, the title, CVA, attributes, the warning, `Address`, and `Address:Manager:Action`.
 
 Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `xl`: stacked, change in the column head, billing’s divider on top. Shipping is omitted when `hideShippingAddress`; the divider goes with it.
 
@@ -145,13 +146,13 @@ Desktop (`xl` / 1260px): equal columns, billing’s divider on the left. Below `
 | `equalTitle` / `equalText` | `viewsTheme.checkout.confirmAddressEqualTitle` / `confirmAddressEqualText` | Same as delivery; invoices go to the delivery address. Not `checkout.addressEqualText` |
 | `changeLabel` | `viewsTheme.checkout.confirmAddressChange` | Visible label |
 
-When the ids match and shipping is visible, billing shows `equalTitle` and `equalText`. Shipping still shows the address.
+When the ids match and shipping is visible, billing shows `equalTitle` and `equalText` inside `Address`’s `content` block. Shipping still shows the address.
 
-Lines come from the country address format (same renderer as [`Address`](address.md)). `Addresses.php` renders `@Framework/snippets/render.html.twig` with the country’s translated `addressFormat`, then splits `<br>`, `<br/>`, and `<br />`. The template prints those lines. The first line uses the pen name style; later lines are the ash body. Additional street lines stay separate. A missing country or format yields no lines.
+Each other column mounts [`Address`](address.md) with that card’s customer address. `fullName` uses the pen name style and already includes the salutation. Every other field uses the ash body style. Empty fields stay hidden. Zip and city are separate lines. The equal column passes no address.
 
 Change stays `Address:Manager:Action` (`tab` shipping/billing, `hideShipping` from `hideShippingAddress`). Fallback `href` is `frontend.account.address.edit.page`. Visible label is `changeLabel`. `title` and `aria-label` stay `account.overviewChangeShipping` / `overviewChangeBilling`. See [address manager](address-manager.md).
 
-Nests: `shipping`, `billing`, `shippingChange`, `billingChange`. Shared chrome (`head`, `label`, `lines`, `name`, `line`, `change`) is CVA.
+Nests: `title`, `panel`, `shipping`, `billing`, `shippingChange`, `billingChange`. Shared chrome (`head`, `label`, `lines`, `name`, `line`, `change`) is CVA.
 
 Pen metrics: white card, 12px radius, 1px linen border. Column padding 16px, 24px from `xl`. Column gap 10px, 14px from `xl`. Line gap 2px. Title and name 15px, 16px from `xl`, semibold, ink. Body 14px ash, line-height 1.4 below `xl`. Change is 14px semibold ink with a 1px ink bottom rule.
 
@@ -218,7 +219,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Addresses,Title,Tos,Comment}.*` · `components/Checkout/{Aside,Summary,Additions,Title}.*` · `src/Struct/CheckoutTitleMeta.php` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Title,Tos,Comment}.*` · `components/Checkout/{Addresses,Aside,Summary,Additions,Title}.*` · `src/Struct/CheckoutTitleMeta.php` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 
