@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Confirm;
+namespace Fyrst\ViewsTheme\Resources\views\components\Checkout;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
-use Twig\Environment;
 
 /**
- * View-model for Checkout:Confirm:Addresses — cards and country-format lines.
- * Template composes the columns and Address:Manager:Action.
+ * View-model for Checkout:Addresses — shipping and billing cards.
+ * Template composes the section, title, columns, Address, and Address:Manager:Action.
  */
 #[AsTwigComponent]
 class Addresses
@@ -60,7 +58,7 @@ class Addresses
      *     equal: bool,
      *     warn: bool,
      *     editHref: ?string,
-     *     lines: list<string>
+     *     address: CustomerAddressEntity|null
      * }>
      */
     public array $cards = [];
@@ -69,8 +67,6 @@ class Addresses
         private readonly SalesChannelContextAccessor $salesChannelContextAccessor,
         private readonly TranslatorInterface $translator,
         private readonly UrlGeneratorInterface $urlGenerator,
-        #[Autowire(lazy: true)]
-        private readonly Environment $twig,
     ) {
     }
 
@@ -144,7 +140,7 @@ class Addresses
      *     equal: bool,
      *     warn: bool,
      *     editHref: ?string,
-     *     lines: list<string>
+     *     address: CustomerAddressEntity|null
      * }
      */
     private function card(
@@ -168,7 +164,7 @@ class Addresses
             'equal' => $equal,
             'warn' => $warn && $this->shippingUnavailable($address),
             'editHref' => $this->editHref($address),
-            'lines' => $equal ? [] : $this->lines($address),
+            'address' => $equal || !$address instanceof CustomerAddressEntity ? null : $address,
         ];
     }
 
@@ -201,48 +197,5 @@ class Addresses
         return $this->urlGenerator->generate('frontend.account.address.edit.page', [
             'addressId' => $address->getId(),
         ]);
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function lines(mixed $address): array
-    {
-        if (!$address instanceof CustomerAddressEntity) {
-            return [];
-        }
-
-        $country = $address->getCountry();
-        if (!$country instanceof CountryEntity) {
-            return [];
-        }
-
-        $format = $country->getTranslation('addressFormat');
-        if (!\is_array($format)) {
-            return [];
-        }
-
-        $formatted = $this->twig->render('@Framework/snippets/render.html.twig', [
-            'format' => $format,
-            'address' => $address,
-        ]);
-
-        return $this->splitLines($formatted);
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function splitLines(string $formatted): array
-    {
-        $lines = [];
-        foreach (explode('<br>', str_replace(['<br/>', '<br />'], '<br>', $formatted)) as $line) {
-            $line = trim($line);
-            if ($line !== '') {
-                $lines[] = $line;
-            }
-        }
-
-        return $lines;
     }
 }

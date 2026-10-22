@@ -1,6 +1,5 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs([
-    'salutation',
     'title',
     'fullName',
     'company',
@@ -26,12 +25,6 @@
                 content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
             />
         {% endif %}
-
-        {% block salutation %}
-            {% if salutation %}
-                <span {{ vi_attrs('salutation') }} class="{{ vi_class('salutation') }}">{{ salutation }}</span>
-            {% endif %}
-        {% endblock %}
 
         {% block title %}
             {% if title %}

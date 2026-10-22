@@ -5,26 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'violations', 'title', 'heading', 'support', 'meta', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'aside']) %}
-
-{% set productsQuantity = page.cart.lineItems|length %}
-{% set customerEmail = context.customer ? context.customer.email|decodeIdnEmail : '' %}
-{% set deliveries = page.cart.deliveries %}
-{% set delivery = deliveries and deliveries.count > 0 ? deliveries.first : null %}
-{% set arrivalEarliest = null %}
-{% set arrivalLatest = null %}
-
-{% if delivery %}
-    {% set earliest = delivery.deliveryDate.earliest %}
-    {% set latest = delivery.deliveryDate.latest %}
-    {% if earliest|date('Y-m') == latest|date('Y-m') %}
-        {% set arrivalEarliest = earliest|format_date(pattern='d', locale=app.request.locale) %}
-        {% set arrivalLatest = latest|format_date(pattern='d MMMM', locale=app.request.locale) %}
-    {% else %}
-        {% set arrivalEarliest = earliest|format_date(pattern='d MMMM', locale=app.request.locale) %}
-        {% set arrivalLatest = latest|format_date(pattern='d MMMM', locale=app.request.locale) %}
-    {% endif %}
-{% endif %}
+{% do vi_define_attrs(['flashes', 'violations', 'title', 'main', 'aside']) %}
 
 <div
     {{ attributes }}
@@ -59,128 +40,21 @@
     {% endblock %}
 
     {% block title %}
-        <div
-            {{ vi_attrs('title') }}
+        <twig:ViewsTheme:Checkout:Confirm:Title
             class="{{ vi_class('title') }}"
-        >
-            {% block heading %}
-                <h1
-                    {{ vi_attrs('heading') }}
-                    class="{{ vi_class('heading') }}"
-                >
-                    {{ 'checkout.confirmHeader'|trans|sw_sanitize }}
-                </h1>
-            {% endblock %}
-
-            {% block support %}
-                <div
-                    {{ vi_attrs('support') }}
-                    class="{{ vi_class('support') }}"
-                >
-                    {{ 'header.supportInfo'|trans|sw_sanitize }}
-                </div>
-            {% endblock %}
-
-            {% block meta %}
-                <p
-                    {{ vi_attrs('meta') }}
-                    class="{{ vi_class('meta') }}"
-                >
-                    {% if customerEmail %}
-                        <span>{{ customerEmail }}</span>
-                        <span aria-hidden="true">·</span>
-                    {% endif %}
-
-                    <span>{{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}</span>
-
-                    {% if arrivalEarliest %}
-                        <span aria-hidden="true">·</span>
-                        <span>
-                            {{ 'checkout.confirmArrival'|trans({
-                                '%earliest%': arrivalEarliest,
-                                '%latest%': arrivalLatest,
-                            })|sw_sanitize }}
-                        </span>
-                    {% endif %}
-                </p>
-            {% endblock %}
-        </div>
+            {{ ...vi_attrs('title').defaults({
+                page: page,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block main %}
-        <div
-            {{ vi_attrs('main') }}
+        <twig:ViewsTheme:Checkout:Confirm:Main
             class="{{ vi_class('main') }}"
-        >
-            {% block addresses %}
-                <section
-                    {{ vi_attrs('addressSection') }}
-                    class="{{ vi_class('addressSection') }}"
-                >
-                    {% block address_title %}
-                        <h2
-                            {{ vi_attrs('addressTitle') }}
-                            class="{{ vi_class('sectionTitle') }}"
-                        >
-                            {{ 'checkout.confirmAddresses'|trans|sw_sanitize }}
-                        </h2>
-                    {% endblock %}
-
-                    <twig:ViewsTheme:Checkout:Confirm:Addresses
-                        class="{{ vi_class('addresses') }}"
-                        {{ ...vi_attrs('addresses').defaults({
-                            page: page,
-                        }).all() }}
-                    />
-                </section>
-            {% endblock %}
-
-            {% block methods %}
-                <twig:ViewsTheme:Checkout:Methods
-                    class="{{ vi_class('methods') }}"
-                    {{ ...vi_attrs('methods').defaults({
-                        page: page,
-                    }).all() }}
-                />
-            {% endblock %}
-
-            {% block items %}
-                <section
-                    {{ vi_attrs('itemsSection') }}
-                    class="{{ vi_class('itemsSection') }}"
-                >
-                    {% block items_title %}
-                        <h2
-                            {{ vi_attrs('itemsTitle') }}
-                            class="{{ vi_class('sectionTitle') }}"
-                        >
-                            {{ 'checkout.confirmItems'|trans|sw_sanitize }}
-                        </h2>
-                    {% endblock %}
-
-                    <twig:ViewsTheme:LineItems:Table
-                        class="{{ vi_class('items') }}"
-                        {{ ...vi_attrs('items').defaults({
-                            cart: page.cart,
-                            showRemoveButton: false,
-                            showQuantitySelect: false,
-                        }).all() }}
-                    />
-
-                    {% block returns %}
-                        <p
-                            {{ vi_attrs('returns') }}
-                            class="{{ vi_class('returns') }}"
-                        >
-                            {{ vi_icon('arrow-counter-clockwise', { class: vi_class('returnsIcon') }) }}
-                            <span class="{{ vi_class('returnsCopy') }}">
-                                {{ 'checkout.confirmReturns'|trans|sw_sanitize }}
-                            </span>
-                        </p>
-                    {% endblock %}
-                </section>
-            {% endblock %}
-        </div>
+            {{ ...vi_attrs('main').defaults({
+                page: page,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block aside %}

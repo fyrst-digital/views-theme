@@ -1,0 +1,53 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['heading', 'meta', 'items', 'item', 'icon']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block heading %}
+        {% if heading is not empty %}
+            <h1
+                {{ vi_attrs('heading') }}
+                class="{{ vi_class('heading') }}"
+            >
+                {{ heading }}
+            </h1>
+        {% endif %}
+    {% endblock %}
+
+    {% block description %}{% endblock %}
+
+    {% block meta %}
+        {% if meta %}
+            <div
+                {{ vi_attrs('meta') }}
+                class="{{ vi_class('meta') }}"
+            >
+                <div
+                    {{ vi_attrs('items') }}
+                    class="{{ vi_class('items') }}"
+                >
+                    {% for key, item in meta %}
+                        {% block meta_item_divider %}
+                            {% if not loop.first %}
+                                <span aria-hidden="true">·</span>
+                            {% endif %}
+                        {% endblock %}
+                        {% block meta_item %}
+                            <div
+                                {{ vi_attrs('item') }}
+                                class="{{ vi_class('item') }}"
+                            >
+                                {% if item.icon %}
+                                    {{ vi_icon(item.icon, { class: vi_class('icon') }) }}
+                                {% endif %}
+                                {{ item.label }}
+                            </div>
+                        {% endblock %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+</div>
