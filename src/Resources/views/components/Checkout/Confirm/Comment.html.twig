@@ -6,7 +6,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['title', 'field']) %}
+{% do vi_define_attrs(['field']) %}
 
 <div
     {{ attributes.defaults({
@@ -18,12 +18,6 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block title %}
-        <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-            {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
-        </div>
-    {% endblock %}
-
     {% block field %}
         <twig:ViewsTheme:Form:Textarea
             class="{{ vi_class('field') }}"

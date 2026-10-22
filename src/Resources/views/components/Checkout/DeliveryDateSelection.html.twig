@@ -8,7 +8,7 @@
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['title', 'control', 'label', 'input', 'help']) %}
+{% do vi_define_attrs(['title', 'field']) %}
 
 {% if deliveryDate.active|default(false) %}
     <div
@@ -18,51 +18,27 @@
         class="{{ vi_class('root') }}"
     >
         {% block title %}
-            {% if title is not same as(false) %}
+            {% if title is not empty %}
                 <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
                     {{ title }}
                 </div>
             {% endif %}
         {% endblock %}
 
-        {% block control %}
-            <div {{ vi_attrs('control') }} class="{{ vi_class('control') }}">
-                {% block label %}
-                    {% if label is not same as(false) %}
-                        <label
-                            {{ vi_attrs('label').defaults({
-                                for: 'PreferredDeliveryDate',
-                            }) }}
-                            class="{{ vi_class('label') }}"
-                        >
-                            {{ label }}
-                        </label>
-                    {% endif %}
-                {% endblock %}
-
-                {% block input %}
-                    <input
-                        {{ vi_attrs('input').defaults({
-                            type: 'date',
-                            id: 'PreferredDeliveryDate',
-                            form: 'confirmOrderForm',
-                            name: 'viewsThemeDeliveryDate',
-                            min: deliveryDate.min|default(''),
-                            max: deliveryDate.max|default(''),
-                            value: '',
-                        }) }}
-                        class="{{ vi_class('input') }}"
-                    >
-                {% endblock %}
-
-                {% block help %}
-                    {% if helpText is not same as(false) %}
-                        <div {{ vi_attrs('help') }} class="{{ vi_class('help') }}">
-                            {{ helpText }}
-                        </div>
-                    {% endif %}
-                {% endblock %}
-            </div>
+        {% block field %}
+            <twig:ViewsTheme:Form:Input
+                class="{{ vi_class('field') }}"
+                {{ ...vi_attrs('field').defaults({
+                    type: 'date',
+                    id: 'PreferredDeliveryDate',
+                    name: 'viewsThemeDeliveryDate',
+                    label: label,
+                    description: helpText,
+                    'input:form': 'confirmOrderForm',
+                    'input:min': deliveryDate.min|default(false),
+                    'input:max': deliveryDate.max|default(false),
+                }).all() }}
+            />
         {% endblock %}
     </div>
 {% endif %}

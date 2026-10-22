@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'violations', 'details', 'title', 'heading', 'support', 'meta', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'close', 'additions', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'violations', 'title', 'heading', 'support', 'meta', 'main', 'addressSection', 'addressTitle', 'addresses', 'methods', 'itemsSection', 'itemsTitle', 'items', 'returns', 'aside']) %}
 
 {% set productsQuantity = page.cart.lineItems|length %}
 {% set customerEmail = context.customer ? context.customer.email|decodeIdnEmail : '' %}
@@ -30,188 +30,165 @@
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% block details %}
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block violations %}
+        {% if formViolations and formViolations.getViolations()|length > 0 %}
+            <div
+                {{ vi_attrs('violations') }}
+                class="{{ vi_class('violations') }}"
+            >
+                {% for violation in formViolations.getViolations() %}
+                    {% set snippetName = "error.#{violation.code}" %}
+                    {% set fieldName = violation.propertyPath|trim('/', 'left') %}
+
+                    <twig:ViewsTheme:Alert
+                        type="danger"
+                        content="{{ snippetName|trans({'%field%': fieldName})|sw_sanitize }}"
+                        announceOnLoad
+                        ariaLive="assertive"
+                    />
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block title %}
         <div
-            {{ vi_attrs('details') }}
-            class="{{ vi_class('details') }}"
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
         >
-            {% block flashes %}
-                <twig:ViewsTheme:Cart:Flashes
-                    class="{{ vi_class('flashes') }}"
-                    {{ ...vi_attrs('flashes').all() }}
-                />
-            {% endblock %}
-
-            {% block violations %}
-                {% if formViolations and formViolations.getViolations()|length > 0 %}
-                    <div
-                        {{ vi_attrs('violations') }}
-                        class="{{ vi_class('violations') }}"
-                    >
-                        {% for violation in formViolations.getViolations() %}
-                            {% set snippetName = "error.#{violation.code}" %}
-                            {% set fieldName = violation.propertyPath|trim('/', 'left') %}
-
-                            <twig:ViewsTheme:Alert
-                                type="danger"
-                                content="{{ snippetName|trans({'%field%': fieldName})|sw_sanitize }}"
-                                announceOnLoad
-                                ariaLive="assertive"
-                            />
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endblock %}
-
-            {% block title %}
-                <div
-                    {{ vi_attrs('title') }}
-                    class="{{ vi_class('title') }}"
+            {% block heading %}
+                <h1
+                    {{ vi_attrs('heading') }}
+                    class="{{ vi_class('heading') }}"
                 >
-                    {% block heading %}
-                        <h1
-                            {{ vi_attrs('heading') }}
-                            class="{{ vi_class('heading') }}"
-                        >
-                            {{ 'checkout.confirmHeader'|trans|sw_sanitize }}
-                        </h1>
-                    {% endblock %}
+                    {{ 'checkout.confirmHeader'|trans|sw_sanitize }}
+                </h1>
+            {% endblock %}
 
-                    {% block support %}
-                        <div
-                            {{ vi_attrs('support') }}
-                            class="{{ vi_class('support') }}"
-                        >
-                            {{ 'header.supportInfo'|trans|sw_sanitize }}
-                        </div>
-                    {% endblock %}
-
-                    {% block meta %}
-                        <p
-                            {{ vi_attrs('meta') }}
-                            class="{{ vi_class('meta') }}"
-                        >
-                            {% if customerEmail %}
-                                <span>{{ customerEmail }}</span>
-                                <span aria-hidden="true">·</span>
-                            {% endif %}
-
-                            <span>{{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}</span>
-
-                            {% if arrivalEarliest %}
-                                <span aria-hidden="true">·</span>
-                                <span>
-                                    {{ 'checkout.confirmArrival'|trans({
-                                        '%earliest%': arrivalEarliest,
-                                        '%latest%': arrivalLatest,
-                                    })|sw_sanitize }}
-                                </span>
-                            {% endif %}
-                        </p>
-                    {% endblock %}
+            {% block support %}
+                <div
+                    {{ vi_attrs('support') }}
+                    class="{{ vi_class('support') }}"
+                >
+                    {{ 'header.supportInfo'|trans|sw_sanitize }}
                 </div>
             {% endblock %}
 
-            {% block main %}
-                <div
-                    {{ vi_attrs('main') }}
-                    class="{{ vi_class('main') }}"
+            {% block meta %}
+                <p
+                    {{ vi_attrs('meta') }}
+                    class="{{ vi_class('meta') }}"
                 >
-                    {% block addresses %}
-                        <section
-                            {{ vi_attrs('addressSection') }}
-                            class="{{ vi_class('addressSection') }}"
-                        >
-                            {% block address_title %}
-                                <h2
-                                    {{ vi_attrs('addressTitle') }}
-                                    class="{{ vi_class('sectionTitle') }}"
-                                >
-                                    {{ 'checkout.confirmAddresses'|trans|sw_sanitize }}
-                                </h2>
-                            {% endblock %}
+                    {% if customerEmail %}
+                        <span>{{ customerEmail }}</span>
+                        <span aria-hidden="true">·</span>
+                    {% endif %}
 
-                            <twig:ViewsTheme:Checkout:Confirm:Addresses
-                                class="{{ vi_class('addresses') }}"
-                                {{ ...vi_attrs('addresses').defaults({
-                                    page: page,
-                                }).all() }}
-                            />
-                        </section>
-                    {% endblock %}
+                    <span>{{ 'checkout.itemCounter'|trans({'%count%': productsQuantity})|sw_sanitize }}</span>
 
-                    {% block methods %}
-                        <twig:ViewsTheme:Checkout:Methods
-                            class="{{ vi_class('methods') }}"
-                            {{ ...vi_attrs('methods').defaults({
-                                page: page,
-                            }).all() }}
-                        />
-                    {% endblock %}
-
-                    {% block items %}
-                        <section
-                            {{ vi_attrs('itemsSection') }}
-                            class="{{ vi_class('itemsSection') }}"
-                        >
-                            {% block items_title %}
-                                <h2
-                                    {{ vi_attrs('itemsTitle') }}
-                                    class="{{ vi_class('sectionTitle') }}"
-                                >
-                                    {{ 'checkout.confirmItems'|trans|sw_sanitize }}
-                                </h2>
-                            {% endblock %}
-
-                            <twig:ViewsTheme:LineItems:Table
-                                class="{{ vi_class('items') }}"
-                                {{ ...vi_attrs('items').defaults({
-                                    cart: page.cart,
-                                    showRemoveButton: false,
-                                    showQuantitySelect: false,
-                                }).all() }}
-                            />
-
-                            {% block returns %}
-                                <p
-                                    {{ vi_attrs('returns') }}
-                                    class="{{ vi_class('returns') }}"
-                                >
-                                    {{ vi_icon('arrow-counter-clockwise', { class: vi_class('returnsIcon') }) }}
-                                    <span class="{{ vi_class('returnsCopy') }}">
-                                        {{ 'checkout.confirmReturns'|trans|sw_sanitize }}
-                                    </span>
-                                </p>
-                            {% endblock %}
-                        </section>
-                    {% endblock %}
-                </div>
+                    {% if arrivalEarliest %}
+                        <span aria-hidden="true">·</span>
+                        <span>
+                            {{ 'checkout.confirmArrival'|trans({
+                                '%earliest%': arrivalEarliest,
+                                '%latest%': arrivalLatest,
+                            })|sw_sanitize }}
+                        </span>
+                    {% endif %}
+                </p>
             {% endblock %}
         </div>
     {% endblock %}
 
-    {% block close %}
+    {% block main %}
         <div
-            {{ vi_attrs('close') }}
-            class="{{ vi_class('close') }}"
+            {{ vi_attrs('main') }}
+            class="{{ vi_class('main') }}"
         >
-            {% block additions %}
-                <twig:ViewsTheme:Checkout:Confirm:Additions
-                    class="{{ vi_class('additions') }}"
-                    {{ ...vi_attrs('additions').defaults({
+            {% block addresses %}
+                <section
+                    {{ vi_attrs('addressSection') }}
+                    class="{{ vi_class('addressSection') }}"
+                >
+                    {% block address_title %}
+                        <h2
+                            {{ vi_attrs('addressTitle') }}
+                            class="{{ vi_class('sectionTitle') }}"
+                        >
+                            {{ 'checkout.confirmAddresses'|trans|sw_sanitize }}
+                        </h2>
+                    {% endblock %}
+
+                    <twig:ViewsTheme:Checkout:Confirm:Addresses
+                        class="{{ vi_class('addresses') }}"
+                        {{ ...vi_attrs('addresses').defaults({
+                            page: page,
+                        }).all() }}
+                    />
+                </section>
+            {% endblock %}
+
+            {% block methods %}
+                <twig:ViewsTheme:Checkout:Methods
+                    class="{{ vi_class('methods') }}"
+                    {{ ...vi_attrs('methods').defaults({
                         page: page,
                     }).all() }}
                 />
             {% endblock %}
 
-            {% block aside %}
-                <twig:ViewsTheme:Checkout:Confirm:Aside
-                    class="{{ vi_class('aside') }}"
-                    {{ ...vi_attrs('aside').defaults({
-                        page: page,
-                    }).all() }}
-                />
+            {% block items %}
+                <section
+                    {{ vi_attrs('itemsSection') }}
+                    class="{{ vi_class('itemsSection') }}"
+                >
+                    {% block items_title %}
+                        <h2
+                            {{ vi_attrs('itemsTitle') }}
+                            class="{{ vi_class('sectionTitle') }}"
+                        >
+                            {{ 'checkout.confirmItems'|trans|sw_sanitize }}
+                        </h2>
+                    {% endblock %}
+
+                    <twig:ViewsTheme:LineItems:Table
+                        class="{{ vi_class('items') }}"
+                        {{ ...vi_attrs('items').defaults({
+                            cart: page.cart,
+                            showRemoveButton: false,
+                            showQuantitySelect: false,
+                        }).all() }}
+                    />
+
+                    {% block returns %}
+                        <p
+                            {{ vi_attrs('returns') }}
+                            class="{{ vi_class('returns') }}"
+                        >
+                            {{ vi_icon('arrow-counter-clockwise', { class: vi_class('returnsIcon') }) }}
+                            <span class="{{ vi_class('returnsCopy') }}">
+                                {{ 'checkout.confirmReturns'|trans|sw_sanitize }}
+                            </span>
+                        </p>
+                    {% endblock %}
+                </section>
             {% endblock %}
         </div>
+    {% endblock %}
+
+    {% block aside %}
+        <twig:ViewsTheme:Checkout:Aside
+            class="{{ vi_class('aside') }}"
+            {{ ...vi_attrs('aside').defaults({
+                page: page,
+            }).all() }}
+        />
     {% endblock %}
 </div>

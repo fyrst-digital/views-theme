@@ -14,14 +14,15 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` defaults to `all`; `desktop` hides support below `xl`. Confirm passes `supportDisplay="desktop"` |
-| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, methods, items, closing stack (`Additions` then `Aside`). No page JS. Does not mount `Stepper` or `Cart:Heading` |
-| `Checkout:Confirm:Aside` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, title, addresses, methods, items, then `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
+| `Checkout:Summary` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Confirm address panel. Class view-model builds the cards and country-format lines; Twig composes the columns and `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
 | `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping is a class view-model and renders only for a physical line item. Payment `framed` defaults to true for edit-order |
 | `Checkout:Method:Form` | POST `frontend.checkout.configure`; native change → submit |
 | `Checkout:Confirm:Tos` | Required `tos` (+ `revocation` when `page.showRevocation`). Modal links like `Privacy:Note` |
-| `Checkout:Confirm:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
+| `Checkout:Additions` | Pen “Before you order” box around comment and delivery date. Card chrome lives here |
 | `Checkout:Confirm:Comment` | Inside Additions. `Form:Textarea` + comment-only localStorage persist |
 | `Checkout:DeliveryDateSelection` | Inside Additions, next to the comment. Subscribers unchanged ([delivery-date](delivery-date.md)) |
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
@@ -37,14 +38,14 @@ page/checkout/confirm/index.html.twig
 │    ├─ Page:Logo
 │    ├─ header.supportInfo            (hidden below xl on confirm)
 │    └─ Button (frontend.home.page)
-├─ page_checkout → Checkout:Confirm        (no data-component, no Stepper)
-│    ├─ Cart:Flashes
-│    ├─ formViolations → Alert
-│    ├─ title
+├─ page_checkout → Checkout:Confirm        (.grid; grid-columns-1, grid-columns-xl-8; no data-component, no Stepper)
+│    ├─ Cart:Flashes                       (g-col-1 g-col-xl-8)
+│    ├─ formViolations → Alert             (g-col-1 g-col-xl-8)
+│    ├─ title                              (g-col-1 g-col-xl-8)
 │    │    ├─ h1 checkout.confirmHeader
 │    │    ├─ header.supportInfo            (below xl only)
 │    │    └─ meta: email · checkout.itemCounter · arrival
-│    ├─ main
+│    ├─ main                               (g-col-1 g-col-xl-5)
 │    │    ├─ checkout.confirmAddresses + Checkout:Confirm:Addresses
 │    │    │    (not Address:List; change is Address:Manager:Action)
 │    │    ├─ Checkout:Methods
@@ -54,12 +55,12 @@ page/checkout/confirm/index.html.twig
 │    │    └─ checkout.confirmItems
 │    │         ├─ LineItems:Table   (cart=page.cart, showRemoveButton=false, showQuantitySelect=false)
 │    │         └─ checkout.confirmReturns
-│    └─ close (aside column from xl, stack after main below xl)
-│         ├─ Checkout:Confirm:Additions
+│    └─ Checkout:Aside                 (<aside>; g-col-1 g-col-xl-3)
+│         ├─ Checkout:Additions
 │         │    ├─ Checkout:Confirm:Comment           (if core.cart.showCustomerComment)
 │         │    └─ Checkout:DeliveryDateSelection
-│         └─ Checkout:Confirm:Aside
-│              ├─ Cart:Summary                       (as-is; row tweaks scoped on this aside)
+│         └─ Checkout:Summary
+│              ├─ Cart:Summary                       (as-is; row tweaks scoped on this card)
 │              ├─ arrival range                     (first delivery deliveryDate; omit if none)
 │              ├─ Checkout:Confirm:Tos               (tos + revocation)
 │              ├─ Form:Handler#confirmOrderForm → hash + Button submit (`blockResubmit`)
@@ -67,13 +68,13 @@ page/checkout/confirm/index.html.twig
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): the title spans the row, then main and a 400px closing column (`--vi-checkout-confirm-aside`, column gap 56px). Title-to-columns gap is 36px. Main section gap is 40px. Root padding is 40px / 64px. The aside stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+Desktop (`xl` / 1260px): eight equal tracks (`grid-columns-xl-8`). Flashes, violations, and the title span the row (`g-col-xl-8`). Main is `g-col-xl-5` and `Checkout:Aside` is `g-col-xl-3`. Column gap is 64px (`column-gap-xl-9`). Row gap is 32px (`row-gap-7`). Inside the xl container that aside is about 399px; from `xxl` the container grows and the aside grows with it. Main section gap is 40px. Root padding is 40px / 64px. The summary card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
-Mobile: title, addresses, payment and delivery, and items stack with a 28px gap (padding 24px / 32px). `Additions` then `Aside` follow as the closing stack (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront container, shared with the minimal header (pen page inset 160px / 16px).
+Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. Title, addresses, payment and delivery, and items stack with a 32px row gap (top padding 24px). `Checkout:Aside` follows as the closing stack: `Additions` then `Summary` (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront container, shared with the minimal header (pen page inset 160px / 16px).
 
 `Stepper` is not mounted. `Cart:Items` stays the stacked list for the cart drawer and the register aside. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
 
-TOS lives **in the aside** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
+TOS lives **in the summary** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
 
 ## Title
 
@@ -85,9 +86,15 @@ Below `xl`, `header.supportInfo` sits between the heading and the meta. Confirm 
 
 Section titles (`checkout.confirmAddresses`, `checkout.confirmItems`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
-## Checkout:Confirm:Aside
+## Checkout:Aside
 
-Summary card for confirm only. Chrome (coral accent, linen border, 12px radius, 28px padding) is on this aside. `Cart:Summary` is nested as-is. Row size, the divider before the grand total, and muted labels are scoped under `.vi-checkout-confirm-aside` so the cart page summary does not change.
+Sidebar landmark. Root is `<aside>`. `Checkout:Confirm` mounts it and passes `page`, with `g-col-1 g-col-xl-3` on that tag. The column layout lives here: flex column, gap 16px (24px from `xl`), padding-top 20px below `xl`, padding-bottom 28px below `xl`.
+
+Blocks: `additions` (`Checkout:Additions`), `summary` (`Checkout:Summary`). Sticky stays on the summary card.
+
+## Checkout:Summary
+
+Summary card for confirm only. Root is a `div`; the landmark is `Checkout:Aside`. Chrome (coral accent, linen border, 12px radius, 28px padding) is on this card. `Cart:Summary` is nested as-is. Row size, the divider before the grand total, and muted labels are scoped under `.vi-checkout-summary` so the cart page summary does not change. The card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
 Arrival is the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. The block is omitted when the cart has no delivery. This is not the preferred-delivery-date field and not the title’s `checkout.confirmArrival` line.
 
@@ -166,26 +173,26 @@ Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto
 
 Snippets: `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
 
-## Checkout:Confirm:Additions
+## Checkout:Additions
 
-Pen component `Checkout/Before you order`. White card, 1px linen border, 12px radius, 20px padding, 16px gap between the title and the fields and between the fields. Title snippet `checkout.beforeYouOrderHeader` (20px / 600, ink).
+Pen component `Checkout/Before you order`. White card, 1px linen border, 12px radius, 20px padding, 16px gap between the title and the fields and between the fields. Title snippet `checkout.beforeYouOrderHeader` (20px / 600, ink). That box title is the only headline.
 
-Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card chrome stays on this box. Comment localStorage and the delivery-date subscriber stay on those components.
+Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card chrome stays on this box. Comment localStorage and the delivery-date subscriber stay on those components. The comment has no inner title. Additions passes an empty `title` into the delivery-date picker. The picker is `Form:Input`.
 
-`Checkout:Confirm` passes `page` in (self-closing `component()` does not inherit it). Additions passes `page.extensions.viewsTheme.deliveryDate` into `Checkout:DeliveryDateSelection` as `deliveryDate`.
+`Checkout:Aside` passes `page` in (self-closing `component()` does not inherit it). Additions passes `page.extensions.viewsTheme.deliveryDate` into `Checkout:DeliveryDateSelection` as `deliveryDate`.
 
 Renders nothing when the customer comment is disabled and the delivery-date extension is inactive. No `data-component`.
 
-The confirm layout mounts this tag in the aside above the summary. On mobile it sits in the closing stack.
+`Checkout:Aside` mounts this tag above the summary. On mobile it sits in that column.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `page` | `__context.page` | Confirm passes it. Gates the box with the comment config and feeds the delivery-date picker |
+| `page` | `__context.page` | Aside passes it. Gates the box with the comment config and feeds the delivery-date picker |
 | `showComment` | `core.cart.showCustomerComment` | |
 
 ## Checkout:Confirm:Comment
 
-Shown when `core.cart.showCustomerComment`. `Form:Textarea` name/id = `OrderService::CUSTOMER_COMMENT_KEY`.
+Shown when `core.cart.showCustomerComment`. `Form:Textarea` name/id = `OrderService::CUSTOMER_COMMENT_KEY`. No field headline; the textarea label (`checkout.customerCommentLabel`) is the caption. `checkout.customerCommentHeader` stays on the success and order views.
 
 | Hook | Attribute |
 |------|-----------|
@@ -200,7 +207,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Files
 
-`components/Checkout/Confirm.*` · `components/Checkout/Confirm/{Aside,Addresses,Tos,Comment,Additions}.*` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
+`components/Checkout/Confirm.*` · `components/Checkout/{Aside,Summary,Additions}.*` · `components/Checkout/Confirm/{Addresses,Tos,Comment}.*` · `components/Checkout/Methods.*` · `components/Payment/Selection.*` · `components/Shipping/Selection.*` · `components/Checkout/Method/Form.*` · `storefront/page/checkout/confirm/index.html.twig` · `storefront/page/account/order/index.html.twig`
 
 ## Out of scope
 
