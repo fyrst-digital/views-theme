@@ -7,9 +7,6 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'divider', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
 
-{% set deliveries = page.cart.deliveries|default(null) %}
-{% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
-
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
@@ -71,10 +68,10 @@
                 >
                     <twig:block name="grand_total">
                         {% if showGrandTotal is not same as(false) %}
-                            <hr
-                                {{ vi_attrs('divider') }}
+                            <twig:ViewsTheme:Divider
                                 class="{{ vi_class('divider') }}"
-                            >
+                                {{ ...vi_attrs('divider').all() }}
+                            />
                             <twig:ViewsTheme:Cart:Summary:GrandTotal
                                 {{ ...vi_attrs('grand').defaults({
                                     summary: summary,
@@ -86,18 +83,12 @@
             {% endblock %}
 
             {% block arrival %}
-                {% if arrivalDelivery and arrivalDelivery.deliveryDate %}
-                    <div
-                        {{ vi_attrs('arrival') }}
-                        class="{{ vi_class('arrival') }}"
-                    >
-                        {{ vi_icon('truck', { class: vi_class('arrivalIcon') }) }}
-                        {{ 'checkout.lineItemDeliveryDate'|trans({
-                            '%earliest%': arrivalDelivery.deliveryDate.earliest|format_date('medium', locale=app.request.locale),
-                            '%latest%': arrivalDelivery.deliveryDate.latest|format_date('medium', locale=app.request.locale),
-                        })|sw_sanitize }}
-                    </div>
-                {% endif %}
+                <twig:ViewsTheme:Checkout:ArrivalDate
+                    class="{{ vi_class('arrival') }}"
+                    {{ ...vi_attrs('arrival').defaults({
+                        page: page,
+                    }).all() }}
+                />
             {% endblock %}
 
             {% block tos %}

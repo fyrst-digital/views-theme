@@ -64,4 +64,16 @@
             <max>365</max>
         </input-field>
     </card>
+
+    <card>
+        <title>Checkout</title>
+        <title lang="de-DE">Kasse</title>
+
+        <input-field type="bool">
+            <name>checkoutArrivalDateActive</name>
+            <label>Show arrival date in summary</label>
+            <label lang="de-DE">Lieferzeitraum in der Zusammenfassung anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
 </config>

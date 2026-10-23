@@ -1,0 +1,29 @@
+{% props
+    page = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['icon']) %}
+
+{% set active = config('ViewsTheme.config.checkoutArrivalDateActive') ?? true %}
+{% set deliveries = page.cart.deliveries|default(null) %}
+{% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
+
+{% if active and arrivalDelivery and arrivalDelivery.deliveryDate %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block icon %}
+            {{ vi_icon('truck', { class: vi_class('icon') }) }}
+        {% endblock %}
+
+        {% block label %}
+            {{ 'checkout.lineItemDeliveryDate'|trans({
+                '%earliest%': arrivalDelivery.deliveryDate.earliest|format_date('medium', locale=app.request.locale),
+                '%latest%': arrivalDelivery.deliveryDate.latest|format_date('medium', locale=app.request.locale),
+            })|sw_sanitize }}
+        {% endblock %}
+    </div>
+{% endif %}

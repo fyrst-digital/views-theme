@@ -1,0 +1,3 @@
+.vi-divider {
+    grid-column: var(--vi-divider-col, 1 / -1);
+}
