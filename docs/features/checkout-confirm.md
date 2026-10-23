@@ -184,16 +184,17 @@ Description is every method’s plain text (tags stripped), truncated at 75 char
 
 ## Checkout:Confirm:Tos
 
-Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto-confirm copy.
+Both controls are `Form:Checkbox`. Do **not** implement 6.8 `showTosCheckbox` auto-confirm copy.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `formId` | `confirmOrderForm` | Associated via `form=` |
+| `formId` | `confirmOrderForm` | Forwarded as `input:form` |
+| `title` | `checkout.confirmTermsHeader` | Omitted when empty. `Checkout:Summary` passes `title: false` |
 | `tosUrl` / `revocationUrl` | CMS pages from `core.basicInformation.*` | |
 | `formViolations` | ambient | Paths `/tos`, `/revocation` |
 | `page` | ambient | `page.showRevocation` gates the revocation checkbox |
 
-Snippets: `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
+Snippets: `checkout.confirmTermsHeader`, `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
 
 ## Checkout:Additions
 

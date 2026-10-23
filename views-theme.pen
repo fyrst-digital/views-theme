@@ -2239,8 +2239,8 @@
     {
       "type": "frame",
       "id": "oDEuB",
-      "x": 7,
-      "y": -3775,
+      "x": 1,
+      "y": -3768,
       "name": "Components",
       "clip": true,
       "fill": "#FFFFFF",
@@ -27183,6 +27183,99 @@
                             {
                               "type": "text",
                               "id": "N2SNOj",
+                              "name": "Wordmark",
+                              "fill": "$ink",
+                              "content": "views",
+                              "fontFamily": "$font",
+                              "fontSize": 22,
+                              "fontWeight": "600",
+                              "letterSpacing": -0.4
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rK9Fj",
+                      "name": "Slash",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "S6sxf",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Slash",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Wg6td",
+                          "name": "Layout/Logo/Slash",
+                          "reusable": true,
+                          "gap": 10,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "mxmJ0",
+                              "name": "Mark",
+                              "clip": true,
+                              "width": 34,
+                              "height": 20,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "path",
+                                  "id": "qmUFO",
+                                  "x": 1,
+                                  "y": 1,
+                                  "name": "Chevron",
+                                  "geometry": "M3.25 3.25l7.25 12 7.25-12",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    32,
+                                    18
+                                  ],
+                                  "fill": "#00000000",
+                                  "width": 32,
+                                  "height": 18,
+                                  "stroke": "$coral",
+                                  "strokeWidth": 6.25,
+                                  "strokeLinejoin": "round",
+                                  "strokeLinecap": "round"
+                                },
+                                {
+                                  "type": "path",
+                                  "id": "P2ITo",
+                                  "x": 1,
+                                  "y": 1,
+                                  "name": "Slash",
+                                  "geometry": "M21.5 15.25l7.25-12",
+                                  "viewBox": [
+                                    0,
+                                    0,
+                                    32,
+                                    18
+                                  ],
+                                  "fill": "#00000000",
+                                  "width": 32,
+                                  "height": 18,
+                                  "stroke": "$coral",
+                                  "strokeWidth": 6.25,
+                                  "strokeLinecap": "round"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "htlG3",
                               "name": "Wordmark",
                               "fill": "$ink",
                               "content": "views",
