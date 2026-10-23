@@ -48,7 +48,7 @@ Shared totals list. This page mounts the row components with their default CVA. 
 | `Cart:Summary:Shipping` | same as total; one row per delivery; `label` block | `shipping` |
 | `Cart:Summary:GrandTotal` | `fs-5`; label and value `fw-semibold`; value also `vi-cart-summary__grand` | `grand` |
 | `Cart:Summary:NetTotal` | `fs-6 text-body-tertiary`; label and value `fw-medium` | `net` |
-| `Cart:Summary:Tax` | same as net; one row per rate | `tax` |
+| `Cart:Summary:Tax` | same as net; one row per rate. An empty `calculatedTaxes` collection still renders one row at 0% (`checkout.summaryTax`, amount 0) | `tax` |
 
 `delivery` and `taxItem` are passed on the tag inside the loops. Blocks stay `total`, `shippings`, `grand_total`, `net_total`, `taxes`. This page does not override `grand_total`, so it has no rule. Confirm does, and renders the `hr` there — [checkout confirm](checkout-confirm.md). The drawer footer mounts `Total` and `Shipping` with its own `cva`, and fills Shipping’s `label` block with `Cart:ShippingCalculation:Open`. Grand total stays off there.
 

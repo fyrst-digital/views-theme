@@ -61,7 +61,11 @@
 
         {% block taxes %}
             {% if showTax is not same as(false) %}
-                {% for taxItem in summary.price.calculatedTaxes %}
+                {% set taxes = summary.price.calculatedTaxes %}
+                {% if taxes is empty %}
+                    {% set taxes = [{ taxRate: 0, tax: 0 }] %}
+                {% endif %}
+                {% for taxItem in taxes %}
                     <twig:ViewsTheme:Cart:Summary:Tax
                         {{ ...vi_attrs('tax').all() }}
                         :taxItem="taxItem"
