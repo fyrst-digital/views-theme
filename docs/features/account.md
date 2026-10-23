@@ -88,7 +88,7 @@ Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 
-`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (copyright, service menu, VAT; no revocation CTA).
+`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
 
 ## Scripts (theme-owned)
 

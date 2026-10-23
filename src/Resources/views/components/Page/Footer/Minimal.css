@@ -1,14 +1,6 @@
 .vi-footer-minimal {
-  padding: var(--vi-footer-minimal-pt, 18px) var(--vi-footer-minimal-px, 20px) var(--vi-footer-minimal-pb, 22px);
-  color: var(--vi-footer-minimal-color, #66605d);
 
   a {
-    color: inherit;
-  }
-
-  @media (min-width: 1260px) {
-    --vi-footer-minimal-pt: 22px;
-    --vi-footer-minimal-px: 160px;
-    --vi-footer-minimal-pb: 22px;
+    color: var(--vi-footer-color, currentColor);
   }
 }

@@ -614,83 +614,11 @@
           ]
         },
         {
-          "type": "frame",
-          "id": "zwyAf",
+          "id": "f8EwtK",
+          "type": "ref",
+          "ref": "A1LtAw",
           "name": "Footer",
-          "width": "fill_container",
-          "fill": "$ivory",
-          "stroke": "$linen",
-          "strokeWidth": {
-            "top": 1
-          },
-          "strokeAlignment": "inner",
-          "padding": [
-            22,
-            160
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "EYSWO",
-              "name": "Footer Brand",
-              "fill": "$ash",
-              "content": "© 2026 views",
-              "fontFamily": "$font",
-              "fontSize": 14,
-              "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "DP3fX",
-              "name": "Footer Links",
-              "gap": 24,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "LoWn4",
-                  "name": "Footer Shipping",
-                  "fill": "$ash",
-                  "content": "Shipping",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "aEwLb",
-                  "name": "Footer Returns",
-                  "fill": "$ash",
-                  "content": "Returns",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "AbbEp",
-                  "name": "Footer Privacy",
-                  "fill": "$ash",
-                  "content": "Privacy",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "rabxV",
-                  "name": "Footer Imprint",
-                  "fill": "$ash",
-                  "content": "Imprint",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                }
-              ]
-            }
-          ]
+          "width": "fill_container"
         }
       ]
     },
@@ -1215,85 +1143,11 @@
               ]
             },
             {
-              "type": "frame",
-              "id": "np0dm",
+              "id": "WcMtC",
+              "type": "ref",
+              "ref": "Z7aC8",
               "name": "Footer",
-              "width": "fill_container",
-              "fill": "$ivory",
-              "stroke": "$linen",
-              "strokeWidth": {
-                "top": 1
-              },
-              "strokeAlignment": "inner",
-              "layout": "vertical",
-              "gap": 12,
-              "padding": [
-                18,
-                20,
-                22,
-                20
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "vYs7K",
-                  "name": "Footer Brand",
-                  "fill": "$ash",
-                  "content": "© 2026 views",
-                  "fontFamily": "$font",
-                  "fontSize": 14,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "c76ev1",
-                  "name": "Footer Links",
-                  "gap": 24,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "Ycqpi",
-                      "name": "Footer Shipping",
-                      "fill": "$ash",
-                      "content": "Shipping",
-                      "fontFamily": "$font",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "jMH8h",
-                      "name": "Footer Returns",
-                      "fill": "$ash",
-                      "content": "Returns",
-                      "fontFamily": "$font",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Mg7n3",
-                      "name": "Footer Privacy",
-                      "fill": "$ash",
-                      "content": "Privacy",
-                      "fontFamily": "$font",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "YI8of",
-                      "name": "Footer Imprint",
-                      "fill": "$ash",
-                      "content": "Imprint",
-                      "fontFamily": "$font",
-                      "fontSize": 14,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
+              "width": "fill_container"
             }
           ]
         }
@@ -27492,6 +27346,314 @@
                                   "content": "Back to shop"
                                 }
                               }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KuQS5",
+              "name": "Footer / Minimal",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tJY1K",
+                  "name": "Heading",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "arfUJ",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Footer / Minimal",
+                      "fontFamily": "$font",
+                      "fontSize": 22,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "AWd9H",
+                      "name": "Rule",
+                      "fill": "$linen",
+                      "width": "fill_container",
+                      "height": 1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nXHED",
+                  "name": "Variants",
+                  "width": "fill_container",
+                  "gap": 32,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ROh36",
+                      "name": "Desktop",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vz4ks",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Desktop",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "A1LtAw",
+                          "name": "Layout/Footer/Minimal/Desktop",
+                          "reusable": true,
+                          "width": "fill_container",
+                          "fill": "$ivory",
+                          "stroke": "$linen",
+                          "strokeWidth": {
+                            "top": 1
+                          },
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "padding": [
+                            22,
+                            160
+                          ],
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "PtApS",
+                              "name": "Footer Row",
+                              "width": "fill_container",
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "o1rLG",
+                                  "name": "Footer Brand",
+                                  "fill": "$ash",
+                                  "content": "© 2026 ACME Store",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "MKaqm",
+                                  "name": "Footer Links",
+                                  "gap": 24,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "O8zG1",
+                                      "name": "Footer Shipping",
+                                      "fill": "$ash",
+                                      "content": "Shipping",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "VRwb1",
+                                      "name": "Footer Returns",
+                                      "fill": "$ash",
+                                      "content": "Returns",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "C3CYS",
+                                      "name": "Footer Privacy",
+                                      "fill": "$ash",
+                                      "content": "Privacy",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dch2u",
+                                      "name": "Footer Imprint",
+                                      "fill": "$ash",
+                                      "content": "Imprint",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "fnd6W",
+                              "name": "Footer Notice",
+                              "fill": "$ash",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "All prices excl. VAT plus shipping costs and possible delivery charges, if not stated otherwise.",
+                              "lineHeight": 1.4,
+                              "fontFamily": "$font",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "H9jn7",
+                      "name": "Mobile",
+                      "width": 375,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "L4PS9u",
+                          "name": "Label",
+                          "fill": "$ash",
+                          "content": "Mobile",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600",
+                          "letterSpacing": 0.4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Z7aC8",
+                          "name": "Layout/Footer/Minimal/Mobile",
+                          "reusable": true,
+                          "width": "fill_container",
+                          "fill": "$ivory",
+                          "stroke": "$linen",
+                          "strokeWidth": {
+                            "top": 1
+                          },
+                          "strokeAlignment": "inner",
+                          "layout": "vertical",
+                          "gap": 12,
+                          "padding": [
+                            18,
+                            20,
+                            22,
+                            20
+                          ],
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "kTvO4",
+                              "name": "Footer Legal",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Fo478",
+                                  "name": "Footer Brand",
+                                  "fill": "$ash",
+                                  "content": "© 2026 ACME Store",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "TJgM7",
+                              "name": "Footer Links",
+                              "gap": 24,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "VwIQF",
+                                  "name": "Footer Shipping",
+                                  "fill": "$ash",
+                                  "content": "Shipping",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "w1OnYm",
+                                  "name": "Footer Returns",
+                                  "fill": "$ash",
+                                  "content": "Returns",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "eZ5T6",
+                                  "name": "Footer Privacy",
+                                  "fill": "$ash",
+                                  "content": "Privacy",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "poSnZ",
+                                  "name": "Footer Imprint",
+                                  "fill": "$ash",
+                                  "content": "Imprint",
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "mqfHV",
+                              "name": "Frame 2",
+                              "width": "fit_content(335)",
+                              "layout": "vertical",
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Ht56n",
+                                  "name": "Footer Notice",
+                                  "fill": "$ash",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "All prices excl. VAT plus shipping costs and possible delivery charges, if not stated otherwise.",
+                                  "lineHeight": 1.4,
+                                  "fontFamily": "$font",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
                             }
                           ]
                         }

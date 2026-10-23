@@ -24,6 +24,8 @@ class Minimal
 
     public string $shippingUrl = '#';
 
+    public string $brand = '<a href="https://fyrst.dev" target="_blank" rel="noopener noreferrer" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>';
+
     public function __construct(
         private readonly FooterCmsUrlResolver $footerCmsUrlResolver,
     ) {

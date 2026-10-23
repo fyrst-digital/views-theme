@@ -50,6 +50,8 @@ SoT: `src/Resources/app/storefront/src/scss/override.scss` (`$grid-breakpoints`)
 | `xl` | **1260px** |
 | `xxl` | 1600px |
 
+`$grid-gutter-width` and `$container-padding-x` are `40px`. Bootstrap halves that for container side padding (`20px`) and for each half of a `.row` gutter. `sm`–`xxl` container max-widths are the breakpoint minus that gutter (`480px`, `728px`, `984px`, `1220px`, `1560px`). `xs` stays `360px`.
+
 Desktop storefront chrome uses **`xl`**, not `1280px`. Display utilities include `contents` (`d-contents`, `d-xl-contents`). Spacers `0–10` (`gap-6` = 24px). Position is responsive (`position-xl-sticky`). Grid track count is a responsive utility (`.grid-columns-*`, `.grid-columns-xl-*`): `grid-template-columns: repeat(N, minmax(0, 1fr))`, generated from `$grid-columns` (default `12`).
 
 ### Variants vs tokens

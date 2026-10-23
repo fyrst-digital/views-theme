@@ -1,29 +1,46 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['bottom']) %}
+{% do vi_define_attrs(['container', 'row', 'shop', 'services', 'bottom']) %}
 
 <footer
     {{ attributes.without('data-component-template') }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        {% block bottom %}
-            {% if footer %}
-                <twig:ViewsTheme:Page:Footer:Bottom
-                    {{ ...vi_attrs('bottom').defaults({
-                        serviceMenu: footer.serviceMenu,
-                        shippingUrl: shippingUrl,
-                        cva: {
-                            root: { base: 'vi-footer-bottom' },
-                            container: { base: 'vi-footer-bottom__container d-flex flex-column flex-xl-row flex-wrap align-items-xl-center justify-content-xl-between gap-3' },
-                            serviceList: { base: 'vi-footer-bottom__services list-unstyled d-flex flex-wrap align-items-center gap-6 mb-0' },
-                            serviceItem: { base: 'vi-footer-bottom__service' },
-                            serviceLink: { base: 'vi-footer-bottom__service-link fw-normal text-decoration-none' },
-                            vat: { base: 'vi-footer-bottom__vat mb-0 w-100' },
-                            copyright: { base: 'vi-footer-bottom__copyright mb-0 order-first' },
-                        },
-                    }).all() }}
-                />
-            {% endif %}
-        {% endblock %}
+        {% if footer %}
+            {% block container %}
+                <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
+                    {% block row %}
+                        <div {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+                            {% block shop %}
+                                <div {{ vi_attrs('shop') }} class="{{ vi_class('shop') }}">
+                                    {{ 'viewsTheme.shopCopyright'|trans({
+                                        '%year%': 'now'|date('Y'),
+                                        '%shop%': config('core.basicInformation.shopName')|default(context.salesChannel.translated.name|default(''), true),
+                                    })|sw_sanitize }}
+                                </div>
+                            {% endblock %}
+
+                            {% block services %}
+                                <twig:ViewsTheme:Page:Footer:Services
+                                    class="{{ vi_class('services') }}"
+                                    {{ ...vi_attrs('services').defaults({
+                                        serviceMenu: footer.serviceMenu,
+                                    }).all() }}
+                                />
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block bottom %}
+                        <twig:ViewsTheme:Page:Footer:Bottom
+                            {{ ...vi_attrs('bottom').defaults({
+                                shippingUrl: shippingUrl,
+                                brand: brand,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        {% endif %}
     {% endblock %}
 </footer>

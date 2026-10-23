@@ -1,0 +1,37 @@
+{% props
+    serviceMenu = [],
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['item', 'link']) %}
+
+{% if serviceMenu is not empty %}
+    <ul
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block items %}
+            {% for serviceMenuItem in serviceMenu %}
+                <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+                    {% block link %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('link') }}"
+                            {{ ...vi_attrs('link').defaults({
+                                type: 'link',
+                                href: category_url(serviceMenuItem),
+                                title: serviceMenuItem.translated.name,
+                                target: category_linknewtab(serviceMenuItem) ? '_blank' : false,
+                                rel: category_linknewtab(serviceMenuItem) ? 'noopener noreferrer' : false,
+                                color: 'dark',
+                                size: 'sm',
+                                link: true,
+                                label: serviceMenuItem.translated.name,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                </li>
+            {% endfor %}
+        {% endblock %}
+    </ul>
+{% endif %}

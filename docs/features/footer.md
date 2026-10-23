@@ -11,12 +11,13 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | ESI bridge | `storefront/layout/footer.html.twig` → `<footer class="footer-main">` + inner include |
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
-| `Page:Footer:Minimal` | Class VM. Checkout chrome: `Bottom` only — copyright, real service-menu links, VAT notice. No revocation CTA |
+| `Page:Footer:Minimal` | Class VM. Checkout chrome: shop copyright, `Services`, then `Bottom` (VAT + theme credit). No revocation CTA |
+| `Page:Footer:Bottom` | VAT notice and theme credit (`brand` prop → snippet `%brand%`). Mounted by Main and Minimal |
 | `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
 | `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
 | `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-1 g-col-lg-8`); payment + shipping Columns |
-| `Page:Footer:Bottom` | Service menu, VAT notice, copyright (`brand` prop → snippet `%brand%`) |
+| `Page:Footer:Services` | Service-menu list. Renders nothing when `serviceMenu` is empty. Each link is `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Callers add list chrome (`gap-6` on Minimal, `justify-content-center gap-3` on Main) |
 | `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
 | `FooterCmsUrlResolver` | Contact / revocation / shipping CMS URLs from service menu or nav `seoUrl`, else `frontend.cms.page.full` |
 
@@ -37,17 +38,23 @@ layout/footer.html.twig                    (ESI frontend.footer)
           │    └─ Page:Footer:Column:Logos        g-col-1 g-col-lg-8 flex (role=list)
           │         ├─ Page:Footer:Column         payment (if paymentLogos)
           │         └─ Page:Footer:Column         shipping (if shippingLogos)
+          ├─ Page:Footer:Services (`justify-content-center gap-3`)
           └─ Page:Footer:Bottom
+               ├─ VAT notice
+               └─ theme credit (`viewsTheme.copyright`, `%brand%`)
 
 checkout / edit-order  base_esi_footer     (inline, no ESI)
 └─ Page:Footer:Minimal :footer="footer"
-     └─ Page:Footer:Bottom
-          ├─ copyright (`viewsTheme.copyright`, `%brand%`)
-          ├─ service menu (`footer.serviceMenu` names + `category_url`)
-          └─ VAT notice (`footer.includeVatTextPage` / `excludeVatTextPage`)
+     └─ .container
+          ├─ row
+          │    ├─ shop copyright (`viewsTheme.shopCopyright`, `%year%` `%shop%`)
+          │    └─ Page:Footer:Services (`gap-6`)
+          └─ Page:Footer:Bottom (`shippingUrl`, `brand`; full-width, not centered)
+               ├─ VAT notice (`footer.includeVatTextPage` / `excludeVatTextPage`)
+               └─ theme credit (`viewsTheme.copyright`, `%brand%`)
 ```
 
-Minimal matches the checkout pen footer, with shop copy in place of the pen’s sample brand and sample link labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: copyright, then the service links, then the VAT line; padding `18px 20px 22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: one row, copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line; padding `22px 160px`. `Page:Footer:Revocation` is not mounted. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s hotline column.
+Minimal matches the checkout pen footer, with the shop name in place of the pen’s sample brand and real service-menu labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: shop copyright, then the service links, then the VAT line, then the theme credit; vertical padding `18px` / `22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: the row is one line, shop copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line, theme credit on the line after that; vertical padding `22px`. The bar is full-bleed. Horizontal inset is Minimal’s `.container`, the same inset as the minimal header. Service links are `Page:Footer:Services` in both footers: `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Minimal passes `gap-6`; Main passes `justify-content-center gap-3`. `Page:Footer:Bottom` is only the VAT notice and the theme credit, mounted by Main and Minimal. Minimal forwards `:brand`. `Page:Footer:Revocation` is not mounted on Minimal. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s hotline column.
 
 Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open, the caret is `d-{collapseUntil}-none`, and `inert` stays off even if `aria-expanded` is false. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
 
@@ -62,7 +69,7 @@ Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation an
 `Main` and `Minimal` are [class UX components](../conventions/ux-components.md#class-components-php-backed):
 
 - `Main.php` — `#[PostMount]` reads `FooterCmsUrlResolver::urls()` (contact, revocation, shipping) and builds `paymentLogos` / `shippingLogos` (methods with media; `{ media, alt, title }`)
-- `Minimal.php` — `#[PostMount]` reads `shippingUrl` only, for Bottom’s VAT notice
+- `Minimal.php` — `#[PostMount]` reads `shippingUrl` for Bottom’s VAT notice. `brand` is forwarded to Bottom
 - Templates compose only. `Column:Logos` is anonymous and always renders when mounted (inner Columns only when that list is non-empty).
 
 Must stay registered via the components `**/*.php` service prototype (autowire + autoconfigure).
@@ -72,7 +79,8 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 | `footer` | `FooterPagelet` (ESI + checkout controllers already load it) |
 | `contactUrl` | Main only — contact CMS page |
 | `revocationUrl` | Main only — revocation CMS page (hotline). Minimal does not mount `Page:Footer:Revocation` |
-| `shippingUrl` | Shipping/payment info CMS page (VAT snippet). Minimal passes it through to Bottom |
+| `shippingUrl` | Shipping/payment info CMS page (VAT snippet). Passed into Bottom |
+| `brand` | Theme-credit link (`%brand%`). Minimal forwards it to Bottom; Bottom’s own default is the same fyrst.dev `<a>` |
 | `showRevocation` | Main only — `core.basicInformation.showRevocationButton` and a revocation page id |
 | `paymentLogos` | Main only — payment methods with media (`media`, `alt`, `title`) |
 | `shippingLogos` | Main only — shipping methods with media (`media`, `alt`, `title`) |
@@ -87,7 +95,7 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 
 ## Snippets
 
-Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyright is theme-owned: `viewsTheme.copyright` with `%brand%` from Bottom’s `brand` prop (default fyrst.dev `<a>`). Override via `:brand` on Bottom or Main/Minimal nest `bottom:brand`.
+Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal shows the shop claim `viewsTheme.shopCopyright` (`%year%`, `%shop%` from `core.basicInformation.shopName`, else the sales channel name). The theme credit `viewsTheme.copyright` is `Page:Footer:Bottom` in both footers (`%brand%` from `brand`, default fyrst.dev `<a>`). Minimal forwards `:brand` into Bottom.
 
 | Key | Where |
 |-----|--------|
@@ -96,7 +104,8 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 | `footer.serviceRevocationRequestTextPage` | Hotline revocation CTA (`%url%`). Not the minimal footer |
 | `footer.includeVatTextPage` / `footer.excludeVatTextPage` | VAT (`%url%`, `%star%`) |
 | `checkout.paymentMethod` / `checkout.shippingMethod` | Logos Column headlines |
-| `viewsTheme.copyright` | Bottom (`%brand%` = `brand` prop) |
+| `viewsTheme.shopCopyright` | Minimal shop claim (`%year%`, `%shop%`) |
+| `viewsTheme.copyright` | Bottom theme credit (`%brand%` = `brand`). Minimal forwards `:brand` |
 
 ## Scripts
 
@@ -104,7 +113,7 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Copyrig
 |-----------|------|
 | `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `vi-collapse-until` in `scss/_theme.scss`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
 
-Main / Minimal / Bottom / Column:Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
+Main / Minimal / Bottom / Services / Column:Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
 
 ## Out of scope
 
@@ -115,7 +124,7 @@ Main / Minimal / Bottom / Column:Logos / Column:Hotline have **no** `data-compon
 
 ## Files
 
-`components/Page/Footer/{Main,Minimal,Column,Bottom,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation,Logos}.*` · `app/storefront/src/scss/_theme.scss` (`vi-collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
+`components/Page/Footer/{Main,Minimal,Column,Bottom,Services,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation,Logos}.*` · `app/storefront/src/scss/_theme.scss` (`vi-collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
 
 ## Related
 

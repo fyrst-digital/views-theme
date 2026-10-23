@@ -158,10 +158,6 @@
   }
 }
 
-.vi-footer-minimal {
-  --vi-footer-minimal-color: #{$muted};
-}
-
 .vi-checkout-methods__panel {
   @include media-breakpoint-up(lg) {
     --vi-checkout-methods-cols: minmax(0, 1fr) auto minmax(0, 1fr);
