@@ -33,6 +33,7 @@
             "shippingFree": "Gratis"
         },
         "copyright": "Theme erstellt mit ❤️ von %brand%",
+        "shopCopyright": "© %year% %shop%",
         "lineItems": {
             "product": "Produkt",
             "quantity": "Anz.",

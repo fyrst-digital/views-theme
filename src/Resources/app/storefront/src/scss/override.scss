@@ -36,16 +36,17 @@ $grid-breakpoints: (
   xxl: 1600px,
 );
 
+$grid-gutter-width: 40px;
+$container-padding-x: $grid-gutter-width;
+
 $container-max-widths: (
   xs: 360px,
-  sm: 490px,
-  md: 738px,
-  lg: 994px,
-  xl: 1230px,
-  xxl: 1570px,
+  sm: map-get($grid-breakpoints, sm) - $container-padding-x,
+  md: map-get($grid-breakpoints, md) - $container-padding-x,
+  lg: map-get($grid-breakpoints, lg) - $container-padding-x,
+  xl: map-get($grid-breakpoints, xl) - $container-padding-x,
+  xxl: map-get($grid-breakpoints, xxl) - $container-padding-x,
 );
-
-$container-padding-x: 30px;
 
 $font-sizes: (
   1: $h1-font-size,

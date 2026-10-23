@@ -158,14 +158,6 @@
   }
 }
 
-.vi-header-minimal__support {
-  --vi-header-minimal-color: #{$muted};
-}
-
-.vi-footer-minimal {
-  --vi-footer-minimal-color: #{$muted};
-}
-
 .vi-checkout-methods__panel {
   @include media-breakpoint-up(lg) {
     --vi-checkout-methods-cols: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -176,5 +168,11 @@
   @include media-breakpoint-up(lg) {
     --vi-checkout-methods-divide-y: auto;
     --vi-checkout-methods-divide-x: 1px;
+  }
+}
+
+.vi-header-minimal {
+  @include media-breakpoint-up(xl) {
+    --vi-header-minimal-cols: auto minmax(0, 1fr) auto;
   }
 }

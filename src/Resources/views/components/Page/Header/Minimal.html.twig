@@ -4,40 +4,42 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['logo', 'support', 'back']) %}
+{% do vi_define_attrs(['container', 'logo', 'support', 'back']) %}
 
 <header
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% block logo %}
-        <twig:ViewsTheme:Page:Logo
-            class="{{ vi_class('logo') }}"
-            {{ ...vi_attrs('logo').all() }}
-        />
-    {% endblock %}
+    {% block container %}
+        <div {{ vi_attrs('container') }} class="{{ vi_class('container') }}">
+            {% block logo %}
+                <twig:ViewsTheme:Page:Logo
+                    class="{{ vi_class('logo') }}"
+                    {{ ...vi_attrs('logo').all() }}
+                />
+            {% endblock %}
 
-    {% block support %}
-        <div
-            {{ vi_attrs('support') }}
-            class="{{ vi_class('support', { supportDisplay: supportDisplay }) }}"
-        >
-            {{ 'header.supportInfo'|trans|sw_sanitize }}
+            {% block support %}
+                <twig:ViewsTheme:Page:Support
+                    class="{{ vi_class('support', { supportDisplay: supportDisplay }) }}"
+                    {{ ...vi_attrs('support').all() }}
+                />
+            {% endblock %}
+
+            {% block back %}
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('back') }}"
+                    {{ ...vi_attrs('back').defaults({
+                        type: 'link',
+                        href: path('frontend.home.page'),
+                        color: 'light',
+                        size: 'sm',
+                        icon: 'arrow-left',
+                        label: 'checkout.finishButtonBackToShop'|trans|striptags,
+                        title: 'checkout.finishButtonBackToShop'|trans|striptags,
+                    }).all() }}
+                />
+            {% endblock %}
         </div>
-    {% endblock %}
-
-    {% block back %}
-        <twig:ViewsTheme:Button
-            class="{{ vi_class('back') }}"
-            {{ ...vi_attrs('back').defaults({
-                type: 'link',
-                href: path('frontend.home.page'),
-                color: 'light',
-                size: 'sm',
-                icon: 'arrow-left',
-                label: 'checkout.finishButtonBackToShop'|trans|striptags,
-                title: 'checkout.finishButtonBackToShop'|trans|striptags,
-            }).all() }}
-        />
     {% endblock %}
 </header>
