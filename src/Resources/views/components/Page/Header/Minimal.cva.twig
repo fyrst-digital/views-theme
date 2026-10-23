@@ -1,8 +1,9 @@
 {
-    root: { base: 'vi-header-minimal d-grid align-items-center bg-white border-bottom' },
+    root: { base: 'vi-header-minimal bg-white border-bottom py-4' },
+    container: { base: 'vi-header-minimal__container container d-grid align-items-center column-gap-6 row-gap-2' },
     logo: { base: 'vi-header-minimal__logo' },
     support: {
-        base: 'vi-header-minimal__support fs-6 fw-normal',
+        base: '',
         variants: {
             supportDisplay: {
                 all: '',
@@ -11,5 +12,5 @@
         },
         defaultVariants: { supportDisplay: 'all' },
     },
-    back: { base: 'vi-header-minimal__back' },
+    back: { base: 'vi-header-minimal__back ms-auto' },
 }

@@ -6,7 +6,7 @@ UX tags are **`Checkout:Success`** (branch / theme name). Shopware’s route and
 
 Unlike [cart page](cart-page.md), **`Checkout:Success` has no `data-component` / no island JS / no `/vi/…`**. Recap is read-only: order DTO (`page.order`), not the cart.
 
-`Stepper` is not mounted. Line items are a read-only `LineItems:Table` (`page.order.nestedLineItems`). `Checkout:Method` is removed; payment and shipping are one checked, nameless `Form:Selection`. Header `supportDisplay` stays the default `all`, so support shows at every width. Addresses still use [`Address:List`](address.md).
+`Stepper` is not mounted. Line items are a read-only `LineItems:Table` (`page.order.nestedLineItems`). `Checkout:Method` is removed; payment and shipping are one checked, nameless `Form:Selection`. Header `supportDisplay` stays the default `all`, so `Page:Support` shows at every width. Addresses still use [`Address:List`](address.md).
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) — see [checkout confirm](checkout-confirm.md#edit-order-isolation).
 
@@ -15,7 +15,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo`, `header.supportInfo`, light `Button` home (`arrow-left`). `supportDisplay` stays `all`, so support shows at every width |
+| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button` home). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width |
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, line-item table, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
@@ -33,9 +33,10 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 ```
 page/checkout/finish/index.html.twig
 ├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
-│    ├─ Page:Logo
-│    ├─ header.supportInfo
-│    └─ Button (frontend.home.page)
+│    └─ .container
+│         ├─ Page:Logo
+│         ├─ Page:Support
+│         └─ Button (frontend.home.page)
 ├─ page_checkout → Checkout:Success        (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ Checkout:Success:Header

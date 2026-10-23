@@ -69,6 +69,10 @@ Edit-order (checkout `_page`, minimal chrome):
 ```
 page/account/order/index.html.twig
 ├─ base_esi_header → Page:Header:Minimal
+│    └─ .container
+│         ├─ Page:Logo
+│         ├─ Page:Support
+│         └─ Button (frontend.home.page)
 ├─ page_checkout → Account:Order:Edit
 │    ├─ alerts
 │    ├─ Account:Heading
@@ -84,7 +88,7 @@ Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 
-`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `header.supportInfo` shows at every width. The footer is [`Page:Footer:Minimal`](footer.md) (copyright, service menu, VAT; no revocation CTA).
+`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (copyright, service menu, VAT; no revocation CTA).
 
 ## Scripts (theme-owned)
 

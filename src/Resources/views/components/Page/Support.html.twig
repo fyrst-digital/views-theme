@@ -1,0 +1,12 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {{ 'header.supportInfo'|trans|sw_sanitize }}
+</div>
