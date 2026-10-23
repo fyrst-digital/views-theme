@@ -29,6 +29,14 @@ See [Variants grid](features/variants-grid.md).
 
 See [Preferred delivery date](features/delivery-date.md).
 
+### Checkout
+
+| Config key | Type | Default | Description |
+|------------|------|---------|-------------|
+| `ViewsTheme.config.checkoutArrivalDateActive` | bool | `true` | Show `Checkout:ArrivalDate` on the confirm summary |
+
+See [Checkout confirm](features/checkout-confirm.md).
+
 ## Theme configuration (`theme.json`)
 
 Path: `src/Resources/theme.json`.

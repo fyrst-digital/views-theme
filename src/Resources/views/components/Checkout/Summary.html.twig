@@ -5,10 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
-
-{% set deliveries = page.cart.deliveries|default(null) %}
-{% set arrivalDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
+{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'divider', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
 
 <div
     {{ attributes }}
@@ -37,26 +34,61 @@
 
             {% block summary %}
                 <twig:ViewsTheme:Cart:Summary
-                    class="{{ vi_class('summary') }}"
                     {{ ...vi_attrs('summary').defaults({
                         summary: page.cart,
+                        cva: {
+                            root: { base: 'vi-cart-summary d-grid align-items-center' },
+                        },
+                        'total:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'shipping:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'grand:cva': {
+                            root: 'fs-5',
+                            label: 'fw-semibold',
+                            value: 'vi-cart-summary__grand fs-3 fw-bold',
+                        },
+                        'net:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
+                        'tax:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
                     }).all() }}
-                />
+                >
+                    <twig:block name="grand_total">
+                        {% if showGrandTotal is not same as(false) %}
+                            <twig:ViewsTheme:Divider
+                                class="{{ vi_class('divider') }}"
+                                {{ ...vi_attrs('divider').all() }}
+                            />
+                            <twig:ViewsTheme:Cart:Summary:GrandTotal
+                                {{ ...vi_attrs('grand').defaults({
+                                    summary: summary,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    </twig:block>
+                </twig:ViewsTheme:Cart:Summary>
             {% endblock %}
 
             {% block arrival %}
-                {% if arrivalDelivery and arrivalDelivery.deliveryDate %}
-                    <div
-                        {{ vi_attrs('arrival') }}
-                        class="{{ vi_class('arrival') }}"
-                    >
-                        {{ vi_icon('truck', { class: vi_class('arrivalIcon') }) }}
-                        {{ 'checkout.lineItemDeliveryDate'|trans({
-                            '%earliest%': arrivalDelivery.deliveryDate.earliest|format_date('medium', locale=app.request.locale),
-                            '%latest%': arrivalDelivery.deliveryDate.latest|format_date('medium', locale=app.request.locale),
-                        })|sw_sanitize }}
-                    </div>
-                {% endif %}
+                <twig:ViewsTheme:Checkout:ArrivalDate
+                    class="{{ vi_class('arrival') }}"
+                    {{ ...vi_attrs('arrival').defaults({
+                        page: page,
+                    }).all() }}
+                />
             {% endblock %}
 
             {% block tos %}
@@ -65,6 +97,7 @@
                     {{ ...vi_attrs('tos').defaults({
                         formId: formId,
                         page: page,
+                        title: false,
                     }).all() }}
                 />
             {% endblock %}

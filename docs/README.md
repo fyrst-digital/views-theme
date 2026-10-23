@@ -85,7 +85,7 @@ Families that exist in code but are only covered lightly (or not at all) under `
 - **Cookie** — banner / configuration UX
 - **Page layout** — Logo, `meta.html.twig` + `CartContextSubscriber` / `cartCount` (footer: [footer](features/footer.md))
 - **Offcanvas** (vs Drawer), **ScrollUp**
-- **Primitives** — Button, Alert, Badge, Progress, Blockquote (conventions + call sites)
+- **Primitives** — Button, Alert, Badge, Progress, Blockquote, Divider (conventions + call sites)
 
 ## Related
 

@@ -98,6 +98,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |
 | `Account:Register`, `Address:*` | Theme `Form:*` in 6-col `Grid` — [checkout-register.md](checkout-register.md) |
 | `Checkout:Confirm:Comment` | `Form:Textarea` associated with `#confirmOrderForm` — [checkout-confirm.md](checkout-confirm.md) |
+| `Checkout:Confirm:Tos` | `Form:Checkbox` for `tos` and `revocation`; `form` via `input:form` — [checkout-confirm.md](checkout-confirm.md) |
 | `Checkout:DeliveryDateSelection` | `Form:Input` `type="date"`; `min` / `max` / `form` via `input:*` — [delivery-date.md](delivery-date.md) |
 
 ---

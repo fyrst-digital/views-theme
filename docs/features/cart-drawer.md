@@ -195,7 +195,7 @@ Nest names (via `Cart:Options` → `promotion:*`):
 
 ### Shipping calculation
 
-`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary shipping label uses `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
+`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary rows are `Cart:Summary:Total` (`fs-4`, `fw-semibold`) and `Cart:Summary:Shipping` (`fs-5`; value `fw-medium`). Grand total, net, and tax stay off. Shipping’s `label` block is `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
 
 | Piece | Component |
 |-------|-----------|

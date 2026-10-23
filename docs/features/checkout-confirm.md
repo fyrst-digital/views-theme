@@ -19,7 +19,8 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap 28px, 40px from `xl`. No `data-component`. No `g-col-*` in its CVA |
 | `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
 | `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
-| `Checkout:Summary` | Sticky summary card: `Cart:Summary` nested as-is, arrival range, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:Summary` | Sticky summary card: `Cart:Summary` with confirm row CVA, `Checkout:ArrivalDate`, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:ArrivalDate` | Delivery-period pill. First cart delivery’s `deliveryDate`, `checkout.lineItemDeliveryDate`, truck icon. Hidden when `ViewsTheme.config.checkoutArrivalDateActive` is off, or when the cart has no delivery date. Not the title meta line |
 | `Checkout:Addresses` | Section + address panel. Class view-model builds the cards; Twig owns the section, the `checkout.confirmAddresses` title, the columns, `Address`, and `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
 | `Payment:Selection` / `Shipping:Selection` | Columns inside that card: icon + label, then `Form:Selection` radios inside `Checkout:Method:Form`. Shipping is a class view-model and renders only for a physical line item. Payment `framed` defaults to true for edit-order |
@@ -65,8 +66,8 @@ page/checkout/confirm/index.html.twig
 │         │    ├─ Checkout:Confirm:Comment           (if core.cart.showCustomerComment)
 │         │    └─ Checkout:DeliveryDateSelection
 │         └─ Checkout:Summary
-│              ├─ Cart:Summary                       (as-is; row tweaks scoped on this card)
-│              ├─ arrival range                     (first delivery deliveryDate; omit if none)
+│              ├─ Cart:Summary                       (confirm row CVA; `grand_total` override adds `Divider`)
+│              ├─ Checkout:ArrivalDate             (first delivery deliveryDate; omit if none or switch off)
 │              ├─ Checkout:Confirm:Tos               (tos + revocation)
 │              ├─ Form:Handler#confirmOrderForm → hash + Button submit (`blockResubmit`)
 │              └─ secure note                       (`checkout.confirmSecureNote`)
@@ -115,13 +116,13 @@ Blocks: `additions` (`Checkout:Additions`), `summary` (`Checkout:Summary`). Stic
 
 ## Checkout:Summary
 
-Summary card for confirm only. Root is a `div`; the landmark is `Checkout:Aside`. Chrome (coral accent, linen border, 12px radius, 28px padding) is on this card. `Cart:Summary` is nested as-is. Row size, the divider before the grand total, and muted labels are scoped under `.vi-checkout-summary` so the cart page summary does not change. The card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+Summary card for confirm only. Root is a `div`; the landmark is `Checkout:Aside`. Chrome (coral accent, linen border, 12px radius, 24px padding (`p-6`)) is on this card. Row utilities are plain class strings on the `Cart:Summary` call: `total:cva`, `shipping:cva`, `grand:cva`, `net:cva`, and `tax:cva` (`root`, `label`, `value`). `cva.root` is the summary grid (`d-grid align-items-center`). Subtotal and shipping are `fs-5`, labels `fw-medium text-muted`, values `fw-semibold`. The grand total is `fs-5` / `fw-semibold`, and its value is `vi-cart-summary__grand fs-3 fw-bold`. Net and tax are `fs-6 text-muted` at `fw-normal`. `.vi-checkout-summary` assigns `--vi-cart-summary-gap` (`10px`) and `--vi-cart-summary-tracking` (`-0.6px`). Confirm overrides `grand_total` and renders `Divider` (`my-2`) before `GrandTotal`. The span is `--vi-divider-col` (`1 / -1`) on `.vi-divider`. `GrandTotal` is only the row. The cart page does not override that block, so it has no rule, and it keeps each row component’s default classes. The card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
-Arrival is the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. The block is omitted when the cart has no delivery. This is not the preferred-delivery-date field and not the title’s `checkout.confirmArrival` line.
+Arrival is `Checkout:ArrivalDate`: the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. Row padding is `py-2 px-3`. The component renders nothing when `ViewsTheme.config.checkoutArrivalDateActive` is off, or when the cart has no delivery. This is not the preferred-delivery-date field and not the title’s `checkout.confirmArrival` line. That title meta string is not gated by this switch.
 
 Place order stays `Form:Handler` `#confirmOrderForm` (`frontend.checkout.finish.order`), the cart hash, and `disabled` when `page.cart.errors.blockResubmit`.
 
-Secure note: `checkout.confirmSecureNote`.
+Secure note: `checkout.confirmSecureNote` (`text-muted`). The lock is `icon-size-2`.
 
 ## Scripts (theme-owned — no core form plugins)
 
@@ -183,16 +184,17 @@ Description is every method’s plain text (tags stripped), truncated at 75 char
 
 ## Checkout:Confirm:Tos
 
-Always a native checkbox on 6.7. Do **not** implement 6.8 `showTosCheckbox` auto-confirm copy.
+Both controls are `Form:Checkbox`. Do **not** implement 6.8 `showTosCheckbox` auto-confirm copy.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `formId` | `confirmOrderForm` | Associated via `form=` |
+| `formId` | `confirmOrderForm` | Forwarded as `input:form` |
+| `title` | `checkout.confirmTermsHeader` | Omitted when empty. `Checkout:Summary` passes `title: false` |
 | `tosUrl` / `revocationUrl` | CMS pages from `core.basicInformation.*` | |
 | `formViolations` | ambient | Paths `/tos`, `/revocation` |
 | `page` | ambient | `page.showRevocation` gates the revocation checkbox |
 
-Snippets: `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
+Snippets: `checkout.confirmTermsHeader`, `checkout.confirmTermsTextModal`, `checkout.confirmRevocationNoticeModal`. Modal tags match `Privacy:Note` (`<a data-ajax-modal>`).
 
 ## Checkout:Additions
 
