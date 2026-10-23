@@ -8,41 +8,51 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Address` | Formatted lines. Wraps core `address.html.twig` so plugin overrides of that include still apply |
+| `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer |
 | `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
-| `Checkout:Confirm:Addresses` | Adapter: customer `active*` addresses + `Address:Manager:Action` in the action slots |
+| `Checkout:Addresses` | Class VM for the confirm section: customer `active*` addresses mounted as `Address`, section title `checkout.confirmAddresses`, `Address:Manager:Action`. Not `Address:List` |
 | `Checkout:Success:Addresses` | Class VM adapter: order addresses (6.7 vs 6.8 delivery) → `Address:List`, no change actions |
 | `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is [`Account:Addressbook`](account.md) |
 | `Address:Manager:*` | Picker modal — [address manager](address-manager.md) |
-| `Address:Editor` / `Personal` / `Form` | Create/edit forms — [address manager](address-manager.md) / [checkout register](checkout-register.md) |
+| `Address:Editor` / `Account:Form:Personal` / `Address:Form` | Create/edit forms — [address manager](address-manager.md) / [checkout register](checkout-register.md) |
 
 ## Composition
 
 ```
-Address                          (core address.html.twig)
+Address                          (class VM; one block per field)
 Address:List
 ├─ Grid
 │    ├─ shipping card → Address or equal text  (+ shippingActions nest)
 │    └─ billing card → Address or equal text  (+ billingActions nest)
-Checkout:Confirm:Addresses       (root-host)
-└─ Address:List
-     ├─ shippingActions → Address:Manager:Action
-     └─ billingActions → Address:Manager:Action
+Checkout:Addresses               (class VM; not Address:List)
+├─ h2 checkout.confirmAddresses
+└─ panel
+     ├─ shipping column → Address + Address:Manager:Action
+     └─ billing column → Address (or equal copy in content) + Address:Manager:Action
 Checkout:Success:Addresses       (class VM, root-host)
 └─ Address:List             (no action nests)
-Address:Item / Address:Manager:Item
+Address:Item
 └─ Address
+Address:Manager:Item:Hero   (address in use)
+└─ Address:Manager:Item
+     └─ Form:Selection (Hero overrides label, description, and trailing)
+Address:Manager:Item         (available row)
+└─ Form:Selection
 ```
 
 ## Address
 
-Anonymous. Props:
+Class view-model. `address` is `CustomerAddressEntity|OrderAddressEntity`. `#[PostMount]` copies each field onto its own string. Empty or missing values are `''`. `fullName` is the salutation display name, then the trimmed first and last name. A salutation key of `not_specified` is left off. Salutation, country, and country state prefer the translated label and fall back to the entity name. The academic title stays its own line. Nothing else is joined into a format row.
+
+`showWarning` is set when `showShippingWarning` is true and the country is missing or `shippingAvailable` is false.
+
+Each field is a `{% block %}` on a `span`. Callers replace one with `<twig:block name="street">`. The default span renders only when the string is non-empty. Block order: `title`, `fullName`, `company`, `department`, `street`, `additionalLine1`, `additionalLine2`, `zipcode`, `city`, `countryState`, `country`, `phone`. Salutation is not its own block.
 
 | Prop | Default | Notes |
 |------|---------|--------|
-| `address` | required | Customer or order address entity |
-| `showShippingWarning` | `false` | Forwards to the core include (`address.countryNoShippingAlert`) |
-| `cva` | `{}` | Root `vi-address` |
+| `address` | required | `CustomerAddressEntity` or `OrderAddressEntity` |
+| `showShippingWarning` | `false` | When true, `Alert` with `address.countryNoShippingAlert` |
+| `cva` | `{}` | Root `vi-address`; one `vi-address__*` slot per field |
 
 ## Address:List
 
@@ -64,7 +74,7 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 ## Adapters
 
-`Checkout:Confirm:Addresses` keeps customer defaults (`activeBillingAddress` / `activeShippingAddress`, `page.hideShippingAddress`) and fills the action slots with `Address:Manager:Action` (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). Nests: `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
+`Checkout:Addresses` is a class view-model. `#[PostMount]` resolves customer `activeBillingAddress` / `activeShippingAddress` and `page.hideShippingAddress`, and builds the card list. Each card keeps the customer address entity. The template owns the section and the `checkout.confirmAddresses` title, mounts `Address` for the lines (`fullName`, including the salutation, as the name style; other fields as the body style), and puts `Address:Manager:Action` on each column (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). When billing matches shipping, that column passes no address and overrides `Address`’s `content` with the equal copy. Nests: `title`, `panel`, `shipping`, `billing`, `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
 
 `Order:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`). `Checkout:Success:Addresses` is a shim. No manager. See [checkout success](checkout-success.md) and [account pages](account.md).
 
@@ -74,7 +84,7 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 ## Files
 
-`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/Confirm/Addresses.*` · `components/Order/Addresses.*` · `components/Checkout/Success/Addresses.*` (shim → `Order:Addresses`)
+`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/Addresses.*` · `components/Order/Addresses.*` · `components/Checkout/Success/Addresses.*` (shim → `Order:Addresses`)
 
 ## Related
 

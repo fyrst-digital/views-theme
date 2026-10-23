@@ -32,6 +32,22 @@ class Manager
 
     public ?string $defaultUrl = null;
 
+    public string $mode = 'list';
+
+    public ?string $title = null;
+
+    public string $type = 'shipping';
+
+    public ?string $editorAction = null;
+
+    public mixed $editorData = null;
+
+    public mixed $formViolations = null;
+
+    public ?string $submitLabel = null;
+
+    public string $formId = 'vi-address-editor';
+
     public ?string $activeShippingId = null;
 
     public ?string $activeBillingId = null;

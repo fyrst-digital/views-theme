@@ -11,6 +11,7 @@
     square = false,
     pill = false,
     full = false,
+    link = false,
     justify = 'center',
     cva = {},
 %}
@@ -27,7 +28,7 @@
         target: element is same as('a') and target ? target : false,
         title: title ?? label,
     }) }}
-    class="{{ vi_class('root', { color: color, size: size, justify: justify, pill: pill, square: square, full: full }) }}"
+    class="{{ vi_class('root', { color: color, size: size, justify: justify, pill: pill, square: square, full: full, link: link }) }}"
 >
     {% block prepend %}{% endblock %}
 

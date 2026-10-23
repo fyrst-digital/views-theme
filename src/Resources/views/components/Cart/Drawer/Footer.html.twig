@@ -22,24 +22,18 @@
                 :showTax="false">
                 <twig:block name="total">
                     {% if showTotal is not same as(false) %}
-                        <twig:ViewsTheme:Cart:Summary:Item
-                            label="{{ 'checkout.subtotalAmount'|trans|sw_sanitize }}"
-                            value="{{ summary.price.positionPrice|currency }}"
-                            class="fs-4"
-                            label:class="fw-semibold"
-                            value:class="fw-semibold"
+                        <twig:ViewsTheme:Cart:Summary:Total
+                            :summary="summary"
+                            :cva="{ root: 'fs-4', label: 'fw-semibold', value: 'fw-semibold' }"
                         />
                     {% endif %}
                 </twig:block>
                 <twig:block name="shippings">
                     {% if summary.deliveries is defined and showShipping is not same as(false) %}
                         {% for delivery in summary.deliveries %}
-                            <twig:ViewsTheme:Cart:Summary:Item
-                                label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
-                                value="{{ delivery.shippingCosts.totalPrice|currency }}"
-                                class="fs-5"
-                                label:class="fw-medium"
-                                value:class="fw-medium"
+                            <twig:ViewsTheme:Cart:Summary:Shipping
+                                :delivery="delivery"
+                                :cva="{ root: 'fs-5', label: 'fw-medium', value: 'fw-medium' }"
                             >
                                 <twig:block name="label">
                                     <dt {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
@@ -48,7 +42,7 @@
                                         />
                                     </dt>
                                 </twig:block>
-                            </twig:ViewsTheme:Cart:Summary:Item>
+                            </twig:ViewsTheme:Cart:Summary:Shipping>
                         {% endfor %}
                     {% endif %}
                 </twig:block>

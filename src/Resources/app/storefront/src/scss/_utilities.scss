@@ -1,0 +1,18 @@
+$utilities: map-merge(
+  $utilities,
+  (
+    "color": map-merge(
+      map-get($utilities, "color"),
+      (
+        values: map-merge(
+          map-get(map-get($utilities, "color"), "values"),
+          (
+            "muted": $muted,
+          ),
+        ),
+      ),
+    ),
+  )
+);
+
+@include generate-utility(map-get($utilities, "color"));

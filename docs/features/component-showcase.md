@@ -35,7 +35,7 @@ One `Form:Handler` (`method="get"`, action is this route) so an invalid submit s
 | Select | `Form:Select` stacked `:options` and `layout="bar"` |
 | Checkbox | `Form:Checkbox` — default, checked, disabled, error |
 | Radio | `Form:Radio` — default, checked, disabled |
-| Selection | `Form:Selection` — `type` `radio` and `checkbox`, unchecked and checked, with price |
+| Selection | `Form:Selection` — `type` `radio` and `checkbox`, unchecked and checked, with trailing text |
 | Switch | `Form:Switch` default and `reverse` |
 | Slider | `Form:Slider` `single` and `range` |
 | Birthday | `Form:Birthday` |

@@ -20,7 +20,7 @@
     {% block image %}
         <div
             {{ vi_attrs('image') }}
-            class="{{ vi_class('image') }}"
+            class="{{ vi_class('image', { layout: layout }) }}"
         >
             {{ vi_icon('tag') }}
         </div>
@@ -28,7 +28,18 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...vi_attrs('content').all() }}
+            {{ ...vi_attrs('content').defaults({
+                layout: layout,
+                cva: {
+                    root: {
+                        variants: {
+                            layout: {
+                                table: 'd-contents',
+                            },
+                        },
+                    },
+                },
+            }).all() }}
         >
             <div
                 {{ vi_attrs('header') }}
@@ -48,7 +59,7 @@
             </div>
 
             <twig:ViewsTheme:LineItem:Price
-                class="{{ vi_class('price') }}"
+                class="{{ vi_class('price', { layout: layout }) }}"
                 {{ ...vi_attrs('price').defaults({
                     lineItem: lineItem,
                 }).all() }}

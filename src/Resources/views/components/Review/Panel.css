@@ -1,3 +1,7 @@
 .vi-review-panel {
-    grid-template-columns: var(--vi-grid-columns, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+
+    @media (min-width: 1024px) {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
 }

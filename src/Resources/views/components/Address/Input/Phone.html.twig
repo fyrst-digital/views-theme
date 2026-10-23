@@ -1,0 +1,18 @@
+{% do vi_define_cva(cva) %}
+
+{% if visible %}
+    <twig:ViewsTheme:Form:Input
+        class="{{ vi_class('root') }}"
+        {{ ...attributes.defaults({
+            id: field.id,
+            name: field.name,
+            value: field.value,
+            violationPath: field.violationPath,
+            formViolations: formViolations,
+            validationRules: required ? 'required' : null,
+            autocomplete: field.autocomplete,
+            type: 'tel',
+            label: 'address.phoneNumberLabel'|trans|sw_sanitize,
+        }).all() }}
+    />
+{% endif %}

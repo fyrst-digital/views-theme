@@ -1,0 +1,65 @@
+{% props
+    address = null,
+    type = 'shipping',
+    selected = true,
+    activeId = null,
+    defaultId = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Address:Manager:Item
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        address: address,
+        type: type,
+        selected: selected,
+        activeId: activeId,
+        defaultId: defaultId,
+    }).all() }}
+>
+    <twig:block name="label">
+        {% if isDefault or not shippingBlocked %}
+            <span class="{{ vi_class('status') }}">
+                {% if isDefault %}
+                    <twig:ViewsTheme:Badge
+                        size="sm"
+                        color="light"
+                        label="{{ 'account.addressDefault'|trans|sw_sanitize }}"
+                    />
+                {% else %}
+                    <twig:ViewsTheme:Address:Manager:Default
+                        addressId="{{ addressId }}"
+                        type="{{ name }}"
+                    />
+                {% endif %}
+                <twig:ViewsTheme:Address:Manager:Edit
+                    addressId="{{ addressId }}"
+                    type="{{ name }}"
+                />
+            </span>
+        {% endif %}
+        <span class="{{ vi_class('name') }}">{{ label }}</span>
+    </twig:block>
+    <twig:block name="description">
+        <span class="{{ vi_class('lines') }}" id="{{ id }}-description">
+            {% if showCompany %}
+                <span class="{{ vi_class('line') }}">{{ company }}</span>
+            {% endif %}
+            {% if extra1 %}
+                <span class="{{ vi_class('line') }}">{{ extra1 }}</span>
+            {% endif %}
+            {% if extra2 %}
+                <span class="{{ vi_class('line') }}">{{ extra2 }}</span>
+            {% endif %}
+            {% if street %}
+                <span class="{{ vi_class('line') }}">{{ street }}</span>
+            {% endif %}
+            {% if cityLine %}
+                <span class="{{ vi_class('line') }}">{{ cityLine }}</span>
+            {% endif %}
+        </span>
+    </twig:block>
+    <twig:block name="trailing"></twig:block>
+</twig:ViewsTheme:Address:Manager:Item>

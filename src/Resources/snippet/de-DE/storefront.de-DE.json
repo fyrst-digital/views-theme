@@ -24,7 +24,29 @@
             "fullscreenAriaLabel": "Vollbild-Produktgalerie",
             "dotsAriaLabel": "Galerienavigation"
         },
-        "copyright": "Theme erstellt mit ❤️ von %brand%"
+        "checkout": {
+            "confirmShippingTitle": "Versand",
+            "confirmBillingTitle": "Rechnung",
+            "confirmAddressChange": "Ändern",
+            "confirmAddressEqualTitle": "Wie die Lieferung",
+            "confirmAddressEqualText": "Rechnungen werden an die Lieferadresse gesendet.",
+            "shippingFree": "Gratis"
+        },
+        "copyright": "Theme erstellt mit ❤️ von %brand%",
+        "lineItems": {
+            "product": "Produkt",
+            "quantity": "Anz.",
+            "total": "Preis"
+        },
+        "account": {
+            "addressChoose": "Adresse auswählen",
+            "addressAdd": "Adresse hinzufügen",
+            "addressApply": "Übernehmen",
+            "addressUseAsDefault": "als Standard",
+            "addressNew": "Neue Adresse",
+            "addressPhoneOptional": "Optional",
+            "addressStreetPlaceholder": "Straße und Hausnummer"
+        }
     },
 
     "variantsGrid": {
@@ -39,8 +61,15 @@
         }
     },
     "checkout": {
+        "beforeYouOrderHeader": "Bevor Sie bestellen",
         "preferredDeliveryDateHeader": "Wunschlieferdatum",
         "preferredDeliveryDateLabel": "Wunschlieferdatum auswählen",
-        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie."
+        "preferredDeliveryDateHelpText": "Wählen Sie ein Datum innerhalb des zulässigen Zeitraums. Es handelt sich um einen Wunsch, keine Garantie.",
+        "confirmSecureNote": "Verschlüsselter Checkout",
+        "confirmAddresses": "Adressen",
+        "confirmMethods": "Zahlung und Lieferung",
+        "confirmItems": "Ihre Artikel",
+        "confirmArrival": "Lieferung %earliest%–%latest%",
+        "confirmReturns": "Kostenlose Rückgabe innerhalb von 30 Tagen. Mengenänderungen bleiben im Warenkorb."
     }
 }

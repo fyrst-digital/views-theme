@@ -37,6 +37,13 @@
                     lineItem: lineItem,
                 }).all() }}
             />
+        {% elseif layout is same as('table') and showRemoveButton %}
+            <span
+                {{ vi_attrs('remove').defaults({
+                    'aria-hidden': 'true',
+                }) }}
+                class="{{ vi_class('remove') }}"
+            ></span>
         {% endif %}
     {% endblock %}
 
@@ -54,7 +61,7 @@
 
     {% block price %}
         <twig:ViewsTheme:LineItem:Price
-            class="{{ vi_class('price') }}"
+            class="{{ vi_class('price', { layout: layout }) }}"
             {{ ...vi_attrs('price').defaults({
                 lineItem: lineItem,
                 showPrice: showPrice,

@@ -14,7 +14,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
 | `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
-| `Cart:Items` | Line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`; shared with [cart page](cart-page.md) |
+| `Cart:Items` | Stacked line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`. Register aside uses the same list. The cart page table is [`LineItems:Table`](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
 | `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
@@ -122,12 +122,12 @@ LineItem:Product
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (Cart:Items passes `div`) and `layout` (`stacked` default, `grid` on [cart page](cart-page.md) / [confirm](checkout-confirm.md)) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
+| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (`div` from `Cart:Items` and `LineItems:Table`) and `layout` (`stacked` default, `grid` on [confirm](checkout-confirm.md) `Cart:Items`, `table` on [cart page](cart-page.md) `LineItems:Table`) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name |
 | `LineItem:Body` | Variations / features / delivery |
-| `LineItem:Footer` | Quantity + line total + remove; grid adds `UnitPrice` and is `display: contents` so cells join the `Cart:Items` grid |
+| `LineItem:Footer` | Quantity + line total + remove; grid adds `UnitPrice` and is `display: contents` so cells join the `Cart:Items` grid. `table` is `display: contents` so qty, remove, and line total join the row (no unit price) |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `LineItem:UnitPrice` | Unit price (`unitPrice\|currency`); rendered in `layout="grid"` footer only |
 | `Product:Cover` | Line thumb / placeholder |
@@ -195,7 +195,7 @@ Nest names (via `Cart:Options` → `promotion:*`):
 
 ### Shipping calculation
 
-`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary shipping label uses `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
+`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary rows are `Cart:Summary:Total` (`fs-4`, `fw-semibold`) and `Cart:Summary:Shipping` (`fs-5`; value `fw-medium`). Grand total, net, and tax stay off. Shipping’s `label` block is `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
 
 | Piece | Component |
 |-------|-----------|

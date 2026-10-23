@@ -1,0 +1,16 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['description']) %}
+
+<twig:ViewsTheme:Checkout:Title
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        heading: heading,
+        meta: meta,
+    }).all() }}
+>
+    <twig:block name="description">
+        <div class="{{ vi_class('description') }}">
+            {{ 'header.supportInfo'|trans|sw_sanitize }}
+        </div>
+    </twig:block>
+</twig:ViewsTheme:Checkout:Title>

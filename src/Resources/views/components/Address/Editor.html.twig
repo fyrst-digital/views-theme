@@ -11,10 +11,10 @@
     showActions = true,
     showNoShippingPostfix = true,
     disableNonShippableCountries = false,
-    vatInputId = null,
     accountType = null,
     backHref = null,
     submitLabel = 'account.addressSaveChange'|trans|sw_sanitize,
+    showHint = true,
     cva = {},
 %}
 
@@ -41,7 +41,7 @@
                 {{ vi_attrs('fields') }}
                 class="{{ vi_class('fields') }}"
             >
-                <twig:ViewsTheme:Address:Personal
+                <twig:ViewsTheme:Account:Form:Personal
                     class="{{ vi_class('personal') }}"
                     {{ ...vi_attrs('personal').defaults({
                         data: data,
@@ -62,19 +62,20 @@
                         formViolations: formViolations,
                         showNoShippingPostfix: showNoShippingPostfix,
                         disableNonShippableCountries: disableNonShippableCountries,
-                        vatInputId: vatInputId ?? (typePrefix ~ 'address-vatIds'),
                     }).all() }}
                 />
             </div>
         {% endblock %}
 
         {% block hint %}
-            <p
-                {{ vi_attrs('hint') }}
-                class="{{ vi_class('hint') }}"
-            >
-                {{ 'general.requiredFields'|trans|sw_sanitize }}
-            </p>
+            {% if showHint %}
+                <p
+                    {{ vi_attrs('hint') }}
+                    class="{{ vi_class('hint') }}"
+                >
+                    {{ 'general.requiredFields'|trans|sw_sanitize }}
+                </p>
+            {% endif %}
         {% endblock %}
 
         {% block actions %}

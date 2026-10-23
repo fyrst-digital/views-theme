@@ -1,3 +1,4 @@
 .vi-cart-summary {
     grid-template-columns: var(--vi-cols, minmax(0, 1fr) auto);
+    row-gap: var(--vi-cart-summary-gap, 0);
 }

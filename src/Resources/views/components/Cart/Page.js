@@ -16,7 +16,7 @@ export default class CartPage extends ShopwareComponent {
         changedEvent: 'ViewsTheme:Cart:Changed',
         flashesComponent: 'ViewsTheme:Cart:Flashes',
         headingComponent: 'ViewsTheme:Cart:Heading',
-        itemsComponent: 'ViewsTheme:Cart:Items',
+        itemsComponent: 'ViewsTheme:LineItems:Table',
         asideComponent: 'ViewsTheme:Cart:Page:Aside',
     }
 

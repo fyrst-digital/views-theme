@@ -140,11 +140,10 @@
         "block": "default",
         "order": 400
       },
-      "page-bg": {
+      "body-bg": {
         "type": "color",
         "value": "#FFFFFF",
         "editable": true,
-        "custom": { "css": true },
         "tab": "colors",
         "block": "default",
         "order": 400

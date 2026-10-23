@@ -24,11 +24,13 @@ class Shipping
 
     public ?string $methodId = null;
 
-    public mixed $media = null;
-
     public ?string $name = null;
 
     public ?string $description = null;
+
+    public ?float $price = null;
+
+    public ?string $currencyIso = null;
 
     public bool $visible = false;
 
@@ -53,16 +55,17 @@ class Shipping
             : $order->getDeliveries()?->first();
 
         $method = $delivery?->getShippingMethod();
-        if (!$method instanceof ShippingMethodEntity) {
+        if ($delivery === null || !$method instanceof ShippingMethodEntity) {
             return;
         }
 
         $this->visible = true;
         $this->method = $method;
         $this->methodId = $method->getId();
-        $this->media = $method->getMedia();
         $this->name = $this->translatedString($method, 'name');
         $this->description = $this->truncateDescription($method->getTranslation('description') ?? $method->getDescription());
+        $this->price = $delivery->getShippingCosts()->getTotalPrice();
+        $this->currencyIso = $order->getCurrency()?->getIsoCode();
     }
 
     private function order(): ?OrderEntity
@@ -99,6 +102,11 @@ class Shipping
     private function truncateDescription(mixed $description): ?string
     {
         if (!is_string($description) || $description === '') {
+            return null;
+        }
+
+        $description = trim(strip_tags($description));
+        if ($description === '') {
             return null;
         }
 

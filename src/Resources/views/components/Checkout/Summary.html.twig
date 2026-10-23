@@ -1,0 +1,146 @@
+{% props
+    page,
+    formId = 'confirmOrderForm',
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['accent', 'body', 'heading', 'summary', 'divider', 'arrival', 'tos', 'form', 'submit', 'secure']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block accent %}
+        <div
+            {{ vi_attrs('accent') }}
+            class="{{ vi_class('accent') }}"
+        ></div>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block heading %}
+                <h2
+                    {{ vi_attrs('heading') }}
+                    class="{{ vi_class('heading') }}"
+                >
+                    {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+                </h2>
+            {% endblock %}
+
+            {% block summary %}
+                <twig:ViewsTheme:Cart:Summary
+                    {{ ...vi_attrs('summary').defaults({
+                        summary: page.cart,
+                        cva: {
+                            root: { base: 'vi-cart-summary d-grid align-items-center' },
+                        },
+                        'total:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'shipping:cva': {
+                            root: 'fs-5',
+                            label: 'fw-medium text-muted',
+                            value: 'fw-semibold',
+                        },
+                        'grand:cva': {
+                            root: 'fs-5',
+                            label: 'fw-semibold',
+                            value: 'vi-cart-summary__grand fs-3 fw-bold',
+                        },
+                        'net:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
+                        'tax:cva': {
+                            root: 'fs-6 text-muted',
+                            label: 'fw-normal',
+                            value: 'fw-normal',
+                        },
+                    }).all() }}
+                >
+                    <twig:block name="grand_total">
+                        {% if showGrandTotal is not same as(false) %}
+                            <twig:ViewsTheme:Divider
+                                class="{{ vi_class('divider') }}"
+                                {{ ...vi_attrs('divider').all() }}
+                            />
+                            <twig:ViewsTheme:Cart:Summary:GrandTotal
+                                {{ ...vi_attrs('grand').defaults({
+                                    summary: summary,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    </twig:block>
+                </twig:ViewsTheme:Cart:Summary>
+            {% endblock %}
+
+            {% block arrival %}
+                <twig:ViewsTheme:Checkout:ArrivalDate
+                    class="{{ vi_class('arrival') }}"
+                    {{ ...vi_attrs('arrival').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block tos %}
+                <twig:ViewsTheme:Checkout:Confirm:Tos
+                    class="{{ vi_class('tos') }}"
+                    {{ ...vi_attrs('tos').defaults({
+                        formId: formId,
+                        page: page,
+                        title: false,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block form %}
+                <twig:ViewsTheme:Form:Handler
+                    class="{{ vi_class('form') }}"
+                    {{ ...vi_attrs('form').defaults({
+                        id: formId,
+                        action: path('frontend.checkout.finish.order'),
+                        method: 'post',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <input type="hidden" name="hash" value="{{ page.cart.hash }}">
+
+                        {% vi_block submit %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('submit') }}"
+                                {{ ...vi_attrs('submit').defaults({
+                                    type: 'submit',
+                                    color: 'primary',
+                                    size: 'md',
+                                    full: true,
+                                    label: 'checkout.confirmSubmit'|trans|sw_sanitize,
+                                    title: 'checkout.confirmSubmit'|trans|striptags,
+                                    disabled: page.cart.errors.blockResubmit ? true : false,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Form:Handler>
+            {% endblock %}
+
+            {% block secure %}
+                <div
+                    {{ vi_attrs('secure') }}
+                    class="{{ vi_class('secure') }}"
+                >
+                    {{ vi_icon('lock', { class: vi_class('secureIcon') }) }}
+                    {{ 'checkout.confirmSecureNote'|trans|sw_sanitize }}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</div>

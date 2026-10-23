@@ -4,7 +4,7 @@
     name = null,
     label = null,
     description = null,
-    price = null,
+    trailing = null,
     value = '1',
     checked = false,
     disabled = false,
@@ -16,19 +16,14 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['price']) %}
+{% do vi_define_attrs(['label', 'description', 'trailing']) %}
 
-<label
+<div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% set control = {
-        radio: 'ViewsTheme:Form:Radio',
-        checkbox: 'ViewsTheme:Form:Checkbox',
-    }[type]|default('ViewsTheme:Form:Radio') %}
-
-    {{ component(control, {
-        tag: 'div',
+    {% set control = attributes.all()|merge({
+        tag: 'label',
         class: 'flex-fill min-w-0',
         id: id,
         name: name,
@@ -41,14 +36,79 @@
         violationPath: violationPath,
         error: error,
         formViolations: formViolations,
-    }) }}
+    }) %}
 
-    {% if price is not empty %}
+    {% if type == 'checkbox' %}
+        <twig:ViewsTheme:Form:Checkbox {{ ...control }}>
+            <twig:block name="label">
+                {% vi_block label %}
+                    {% if label is not empty %}
+                        <span
+                            {{ vi_attrs('label') }}
+                            class="{{ vi_class('label') }}"
+                        >
+                            {{ label|raw }}
+                        </span>
+                    {% endif %}
+                {% endvi_block %}
+            </twig:block>
+            <twig:block name="description">
+                {% vi_block description %}
+                    {% if description is not empty %}
+                        <span
+                            {{ vi_attrs('description').defaults({
+                                id: id ~ '-description',
+                            }) }}
+                            class="{{ vi_class('description') }}"
+                        >
+                            {{ description }}
+                        </span>
+                    {% endif %}
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Checkbox>
+    {% else %}
+        <twig:ViewsTheme:Form:Radio {{ ...control }}>
+            <twig:block name="label">
+                {% vi_block label %}
+                    {% if label is not empty %}
+                        <span
+                            {{ vi_attrs('label') }}
+                            class="{{ vi_class('label') }}"
+                        >
+                            {{ label|raw }}
+                        </span>
+                    {% endif %}
+                {% endvi_block %}
+            </twig:block>
+            <twig:block name="description">
+                {% vi_block description %}
+                    {% if description is not empty %}
+                        <span
+                            {{ vi_attrs('description').defaults({
+                                id: id ~ '-description',
+                            }) }}
+                            class="{{ vi_class('description') }}"
+                        >
+                            {{ description }}
+                        </span>
+                    {% endif %}
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Form:Radio>
+    {% endif %}
+
+    {% set trailingContent %}
+        {%- block trailing -%}
+            {{ trailing }}
+        {%- endblock -%}
+    {% endset %}
+    {% if trailingContent|trim is not empty %}
         <span
-            {{ vi_attrs('price') }}
-            class="{{ vi_class('price') }}"
+            {{ vi_attrs('trailing') }}
+            class="{{ vi_class('trailing') }}"
         >
-            {{ price }}
+            {{ trailingContent|raw }}
         </span>
     {% endif %}
-</label>
+</div>

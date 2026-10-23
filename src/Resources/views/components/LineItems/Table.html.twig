@@ -1,0 +1,103 @@
+{% props
+    cart,
+    lineItems = cart.lineItems,
+    showRemoveButton = true,
+    showQuantitySelect = true,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['empty', 'table', 'header', 'headerProduct', 'headerQuantity', 'headerRemove', 'headerTotal', 'rows', 'item']) %}
+
+{% set isEmpty = lineItems|length < 1 %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:LineItems:Table',
+        'data-empty': isEmpty ? 'true' : 'false',
+        'data-show-remove': showRemoveButton ? 'true' : 'false',
+        'data-show-quantity': showQuantitySelect ? 'true' : 'false',
+    }) }}
+    class="{{ vi_class('root', { empty: isEmpty }) }}"
+>
+    {% if isEmpty %}
+        {% block empty %}
+            <twig:ViewsTheme:Cart:Empty
+                {{ ...vi_attrs('empty').all() }}
+            />
+        {% endblock %}
+    {% else %}
+        <div
+            {{ vi_attrs('table').defaults({
+                role: 'table',
+            }) }}
+            class="{{ vi_class('table') }}"
+        >
+            {% block header %}
+                <div
+                    {{ vi_attrs('header').defaults({
+                        role: 'row',
+                    }) }}
+                    class="{{ vi_class('header') }}"
+                >
+                    <span
+                        {{ vi_attrs('headerProduct').defaults({
+                            role: 'columnheader',
+                        }) }}
+                        class="{{ vi_class('headerProduct') }}"
+                    >
+                        {{ 'viewsTheme.lineItems.product'|trans|sw_sanitize }}
+                    </span>
+                    <span
+                        {{ vi_attrs('headerQuantity').defaults({
+                            role: 'columnheader',
+                        }) }}
+                        class="{{ vi_class('headerQuantity') }}"
+                    >
+                        {{ 'viewsTheme.lineItems.quantity'|trans|sw_sanitize }}
+                    </span>
+                    {% if showRemoveButton %}
+                        <span
+                            {{ vi_attrs('headerRemove').defaults({
+                                'aria-hidden': 'true',
+                            }) }}
+                            class="{{ vi_class('headerRemove') }}"
+                        ></span>
+                    {% endif %}
+                    <span
+                        {{ vi_attrs('headerTotal').defaults({
+                            role: 'columnheader',
+                        }) }}
+                        class="{{ vi_class('headerTotal') }}"
+                    >
+                        {{ 'viewsTheme.lineItems.total'|trans|sw_sanitize }}
+                    </span>
+                </div>
+            {% endblock %}
+
+            <div
+                {{ vi_attrs('rows').defaults({
+                    role: 'rowgroup',
+                }) }}
+                class="{{ vi_class('rows') }}"
+            >
+                {% block items %}
+                    {% for lineItem in lineItems %}
+                        <twig:ViewsTheme:LineItem
+                            class="{{ vi_class('item') }}"
+                            {{ ...vi_attrs('item').defaults({
+                                lineItem: lineItem,
+                                deliveries: cart.deliveries,
+                                showRemoveButton: showRemoveButton,
+                                showQuantitySelect: showQuantitySelect,
+                                layout: 'table',
+                                tag: 'div',
+                                role: 'row',
+                            }).all() }}
+                        />
+                    {% endfor %}
+                {% endblock %}
+            </div>
+        </div>
+    {% endif %}
+</div>

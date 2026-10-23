@@ -1,0 +1,51 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'panel', 'payment', 'shipping']) %}
+
+<section
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h2
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'checkout.confirmMethods'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block panel %}
+        <div
+            {{ vi_attrs('panel') }}
+            class="{{ vi_class('panel') }}"
+        >
+            {% block payment %}
+                <twig:ViewsTheme:Payment:Selection
+                    class="{{ vi_class('payment') }}"
+                    :framed="false"
+                    {{ ...vi_attrs('payment').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+
+            {% block divider %}
+                <div class="{{ vi_class('divider') }}"></div>
+            {% endblock %}
+
+            {% block shipping %}
+                <twig:ViewsTheme:Shipping:Selection
+                    class="{{ vi_class('shipping') }}"
+                    {{ ...vi_attrs('shipping').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+</section>

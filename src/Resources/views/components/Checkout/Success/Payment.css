@@ -1,0 +1,9 @@
+.vi-checkout-success-payment__title {
+  font-size: var(--vi-success-payment-title, 15px);
+}
+
+@media (min-width: 1260px) {
+  .vi-checkout-success-payment__title {
+    --vi-success-payment-title: 16px;
+  }
+}

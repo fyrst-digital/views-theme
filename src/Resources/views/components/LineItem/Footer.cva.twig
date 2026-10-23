@@ -5,6 +5,7 @@
             layout: {
                 stacked: 'd-flex align-items-center gap-2',
                 grid: 'd-flex d-xl-contents align-items-center gap-2',
+                table: 'd-contents',
             },
         },
     },
@@ -12,7 +13,14 @@
         base: 'flex-shrink-0',
     },
     price: {
-        base: 'flex-shrink-0 ms-auto ms-xl-0',
+        base: 'vi-line-item__price fw-semibold',
+        variants: {
+            layout: {
+                stacked: 'flex-shrink-0 ms-auto ms-xl-0',
+                grid: 'flex-shrink-0 ms-auto ms-xl-0',
+                table: 'text-end',
+            },
+        },
     },
     quantity: {
         base: 'vi-line-item__quantity',

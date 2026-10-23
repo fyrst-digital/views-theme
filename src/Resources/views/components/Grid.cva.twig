@@ -1,6 +1,6 @@
 {
     root: {
-        base: 'vi-grid grid',
+        base: 'vi-grid d-grid grid',
         variants: {
             gap: {
                 false: 'css-gap',
@@ -8,6 +8,17 @@
                 md: 'gap-4',
                 lg: 'gap-6',
             },
+            columns: {
+                '1-sm:3': 'grid-columns-1 grid-columns-sm-3',
+                '1-md:2': 'grid-columns-1 grid-columns-md-2',
+                '1-md:6': 'grid-columns-1 grid-columns-md-6',
+                '1-xl:6': 'grid-columns-1 grid-columns-xl-6',
+                '1-lg:8': 'grid-columns-1 grid-columns-lg-8',
+                custom: '',
+            },
+        },
+        defaultVariants: {
+            columns: '1-md:2',
         },
     },
 }

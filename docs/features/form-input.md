@@ -67,12 +67,12 @@ Reusable form field primitives owned by the theme:
 | label | `form-label` + inline flex, gap 4px | `label:class` |
 | required | `form-required-label` (color `--primary`) | `required:class` |
 | input | `form-control` (+ size / `is-invalid` / `is-valid`) | `input:class` |
-| description | `form-text` (12px ash; danger when invalid, success when valid) | `description:class` |
+| description | `form-text` (14px / `--font-size-6` ash; danger when invalid, success when valid) | `description:class` |
 | feedback | `form-field-feedback` | `feedback:class` |
 
 Default control padding is 12×20 (`--spacing-3` / `--spacing-5`), type is 16px / line-height 1.5, radius is 8. `sm` stays 8×12 and 14px (review sort). `lg` is 16×20 and 16px. Focus adds an inward 0.5px stroke on the 1px border. A valid or invalid input shows a 16px status icon 20px from the trailing edge. Selects keep only the caret at that same inset.
 
-Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, and the form-check float reset.
+Chrome for padding, type, radius, border, placeholder, disabled, label, hint, the caret, the focus inset, and status-icon position lives in Bootstrap variables in `scss/overrides/_form.scss` (`$input-*`, `$form-label-*`, `$form-text-*`, `$form-feedback-*`, `$form-select-*`). `scss/_form.scss` sets the host leftovers: `.form-group` row-gap, the required asterisk, empty `.form-field-feedback` (`:not(:has(*))` is `display: none` until it contains an element), `--form-select-bg-icon: none` on valid and invalid selects, the textarea floor (including validation padding and icon suppression), the input-group shell, the form-check float reset, and re-applies `$form-text-font-size` on `.form-text` after Shopware’s `font-size: 1rem` rule.
 
 Extra HTML attributes on the control: nested `input:…` (e.g. `input:data-foo="bar"`). Do **not** pass a prop named `attributes`.
 
@@ -98,6 +98,8 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 | `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |
 | `Account:Register`, `Address:*` | Theme `Form:*` in 6-col `Grid` — [checkout-register.md](checkout-register.md) |
 | `Checkout:Confirm:Comment` | `Form:Textarea` associated with `#confirmOrderForm` — [checkout-confirm.md](checkout-confirm.md) |
+| `Checkout:Confirm:Tos` | `Form:Checkbox` for `tos` and `revocation`; `form` via `input:form` — [checkout-confirm.md](checkout-confirm.md) |
+| `Checkout:DeliveryDateSelection` | `Form:Input` `type="date"`; `min` / `max` / `form` via `input:*` — [delivery-date.md](delivery-date.md) |
 
 ---
 
@@ -326,7 +328,7 @@ No `Form:Select:Option` sub-component — native `<option>` is enough (low CSS v
 
 20px checkbox row. Presentational (no `data-component`). The box is a wrapper; the white mark is a stroked `--svg` mask on `.form-check-input` (16 viewBox, `fill: none`, `stroke-width: 2.25`, round cap and join) with `mask-size: 100%`. Unchecked fill is linen; checked fill is `--primary`. Disabled: ivory, 1.5px linen edge, no check, copy ash. Error (unchecked): white, 1.5px danger edge, no check, danger hint.
 
-`label` and `description` are both 16px and use the body line-height. A single-line `label` is regular; when `description` is set, `label` is 600 and `description` stays regular. `tag` defaults to `label`.
+`label` and `description` are both 16px and use the body line-height. `label` has no weight utility. `description` stays regular. `tag` defaults to `label`.
 
 ## Form:Radio
 
@@ -334,7 +336,7 @@ Same row and copy API as `Form:Checkbox`. The 7px white dot is a `--svg` circle 
 
 ## Form:Selection
 
-Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). `type` maps to the UX tag and `component()` renders it with `tag: 'div'` and `class: 'flex-fill min-w-0'`. The card is the single `<label>`. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. Optional `price` is trailing 16px / 600.
+Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`). The card root is a `<div>`. The control is that tag (`tag: 'label'`, `class: 'flex-fill min-w-0'`). Caller nests (`label:*`, `description:*`, `input:*`, `feedback:*`) still reach it. `{% block label %}` and `{% block description %}` on the control are the text spans. Selection forwards them with `{% vi_block label %}` and `{% vi_block description %}`; the default body is the same span, so `label:class` on payment and shipping rows stays on that span. An override replaces the span. Keep the replacement phrasing content (`span`, `button`) because the control copy is a `<span>`. Title weight is caller-owned. `Payment:Selection` and `Shipping:Selection` pass `label:class="fw-semibold"`. The description stays regular. Checked chrome is CSS `:has(input:checked)`: `--primary-pale` fill and a `--primary` border. Unchecked: white, linen border, radius 10px, padding 12×16. `{% block trailing %}` is only the inner content. The `vi-form-selection__trailing` span stays on Selection and renders when that content is non-empty, so a button there does not toggle the control. Clicking the trailing text on payment and shipping rows no longer selects the row.
 
 ```twig
 <twig:ViewsTheme:Form:Selection
@@ -344,7 +346,7 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
     value="standard"
     label="Standard"
     description="Delivered in 3–5 days"
-    price="€0.00"
+    trailing="€0.00"
 />
 ```
 
@@ -353,8 +355,8 @@ Card that embeds `Form:Radio` or `Form:Checkbox` (`type` `radio` or `checkbox`).
 | `type` | `'radio'` | `'radio'` \| `'checkbox'` |
 | `id` | `vi-form-selection-{random}` | Forwarded to the inner control |
 | `name` / `value` | `null` / `'1'` | Native grouping for radios |
-| `label` / `description` | `null` | Title and supporting line |
-| `price` | `null` | Trailing text; omitted when empty |
+| `label` / `description` | `null` | Title and supporting line. Override `{% vi_block label %}` / `{% vi_block description %}` to replace the span |
+| `trailing` | `null` | Inner content of the trailing span. Omitted when that content is empty. Override `{% block trailing %}` for a button; the span stays |
 | `checked` / `disabled` | `false` | |
 | `validationRules` / `violationPath` / `error` / `formViolations` | same as Checkbox | |
 
@@ -508,7 +510,7 @@ Co-located: `Form/Slider.css` (non-utility only).
 
 ## Form:Birthday
 
-Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-6`; inner `Grid` `columns="3"`. Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
+Class component. Label + 3× `Form:Select` (day / month / year). Root `g-col-1 g-col-md-6` on the field canvas; inner `Grid` `columns="1-sm:3"` (three equal selects from `sm`). Names `birthdayDay` / `birthdayMonth` / `birthdayYear` (optional `prefix`). Option lists are built in `Birthday.php`.
 
 ## Form:Toggle
 

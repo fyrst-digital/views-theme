@@ -109,6 +109,18 @@ final class ComponentData
         return $field;
     }
 
+    public static function addressAutocompletePrefix(string $prefix): string
+    {
+        if ($prefix === 'shippingAddress') {
+            return 'shipping ';
+        }
+        if ($prefix === 'billingAddress') {
+            return 'billing ';
+        }
+
+        return '';
+    }
+
     public static function pageCountries(mixed $page): mixed
     {
         return match (true) {

@@ -6,12 +6,11 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['item']) %}
 
-<twig:ViewsTheme:Cart:Items
+<twig:ViewsTheme:LineItems:Table
     class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         cart: order,
         lineItems: order.nestedLineItems,
-        layout: 'grid',
         showRemoveButton: false,
         showQuantitySelect: false,
     }).all() }}

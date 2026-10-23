@@ -10,7 +10,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Page:Footer:Minimal — CMS URLs from the footer pagelet; Twig only composes.
+ * View-model for Page:Footer:Minimal — shipping URL for the VAT notice; Twig only composes.
  */
 #[AsTwigComponent]
 class Minimal
@@ -22,11 +22,7 @@ class Minimal
      */
     public array $cva = [];
 
-    public string $revocationUrl = '#';
-
     public string $shippingUrl = '#';
-
-    public bool $showRevocation = false;
 
     public function __construct(
         private readonly FooterCmsUrlResolver $footerCmsUrlResolver,
@@ -44,8 +40,6 @@ class Minimal
         }
 
         $urls = $this->footerCmsUrlResolver->urls($this->footer);
-        $this->revocationUrl = $urls['revocationUrl'];
         $this->shippingUrl = $urls['shippingUrl'];
-        $this->showRevocation = $urls['showRevocation'];
     }
 }
