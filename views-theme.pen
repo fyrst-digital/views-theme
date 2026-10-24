@@ -25,12 +25,12 @@
           "name": "Body",
           "width": "fill_container",
           "layout": "vertical",
-          "gap": 36,
+          "gap": "$spacing-2xl",
           "padding": [
-            40,
-            160,
-            64,
-            160
+            "$spacing-3xl",
+            "$spacing-5xl",
+            "$spacing-4xl",
+            "$spacing-5xl"
           ],
           "children": [
             {
@@ -46,7 +46,7 @@
               "name": "Title Block",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 8,
+              "gap": "$spacing-xs",
               "children": [
                 {
                   "type": "text",
@@ -80,7 +80,7 @@
               "id": "tFPRO",
               "name": "Columns",
               "width": "fill_container",
-              "gap": 56,
+              "gap": "$spacing-4xl",
               "children": [
                 {
                   "type": "frame",
@@ -88,7 +88,7 @@
                   "name": "Main",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 40,
+                  "gap": "$spacing-3xl",
                   "children": [
                     {
                       "type": "frame",
@@ -97,7 +97,7 @@
                       "width": "fill_container",
                       "fill": "#00000000",
                       "layout": "vertical",
-                      "gap": 12,
+                      "gap": "$spacing-sm",
                       "children": [
                         {
                           "type": "text",
@@ -124,7 +124,7 @@
                       "name": "Shipping and Payment",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 24,
+                      "gap": "$spacing-xl",
                       "children": [
                         {
                           "type": "text",
@@ -152,7 +152,7 @@
                       "width": "fill_container",
                       "fill": "$ivory",
                       "layout": "vertical",
-                      "gap": 24,
+                      "gap": "$spacing-xl",
                       "children": [
                         {
                           "type": "frame",
@@ -160,7 +160,7 @@
                           "name": "Items Heading",
                           "width": "fill_container",
                           "layout": "vertical",
-                          "gap": 12,
+                          "gap": "$spacing-sm",
                           "children": [
                             {
                               "type": "text",
@@ -186,7 +186,7 @@
                           "strokeWidth": 1,
                           "strokeAlignment": "inner",
                           "layout": "vertical",
-                          "padding": 20,
+                          "padding": "$spacing-lg",
                           "children": [
                             {
                               "type": "frame",
@@ -198,11 +198,11 @@
                                 "bottom": 1
                               },
                               "strokeAlignment": "inner",
-                              "gap": 16,
+                              "gap": "$spacing-md",
                               "padding": [
                                 0,
                                 0,
-                                12,
+                                "$spacing-sm",
                                 0
                               ],
                               "alignItems": "center",
@@ -260,9 +260,9 @@
                                 "bottom": 1
                               },
                               "strokeAlignment": "inner",
-                              "gap": 16,
+                              "gap": "$spacing-md",
                               "padding": [
-                                14,
+                                "$spacing-sm",
                                 0
                               ],
                               "alignItems": "center",
@@ -293,7 +293,7 @@
                                   "name": "Merino Crew Neck Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -359,9 +359,9 @@
                                 "bottom": 1
                               },
                               "strokeAlignment": "inner",
-                              "gap": 16,
+                              "gap": "$spacing-md",
                               "padding": [
-                                14,
+                                "$spacing-sm",
                                 0
                               ],
                               "alignItems": "center",
@@ -392,7 +392,7 @@
                                   "name": "Wide Trouser Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -455,9 +455,9 @@
                               "width": "fill_container",
                               "stroke": "#00000000",
                               "strokeAlignment": "inner",
-                              "gap": 16,
+                              "gap": "$spacing-md",
                               "padding": [
-                                14,
+                                "$spacing-sm",
                                 0
                               ],
                               "alignItems": "center",
@@ -488,7 +488,7 @@
                                   "name": "Canvas Tote Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -550,9 +550,9 @@
                           "type": "frame",
                           "id": "PqpZv",
                           "name": "Returns",
-                          "gap": 8,
+                          "gap": "$spacing-xs",
                           "padding": [
-                            4,
+                            "$spacing-2xs",
                             0,
                             0,
                             0
@@ -591,7 +591,7 @@
                   "name": "Aside",
                   "width": 400,
                   "layout": "vertical",
-                  "gap": 24,
+                  "gap": "$spacing-xl",
                   "children": [
                     {
                       "id": "N0IVK",
@@ -653,12 +653,12 @@
               "name": "Content",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 28,
+              "gap": "$spacing-xl",
               "padding": [
-                24,
-                16,
-                32,
-                16
+                "$spacing-xl",
+                "$spacing-md",
+                "$spacing-2xl",
+                "$spacing-md"
               ],
               "children": [
                 {
@@ -674,7 +674,7 @@
                   "name": "Title",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 8,
+                  "gap": "$spacing-xs",
                   "children": [
                     {
                       "type": "text",
@@ -720,7 +720,7 @@
                   "name": "Addresses",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 12,
+                  "gap": "$spacing-sm",
                   "children": [
                     {
                       "type": "text",
@@ -747,7 +747,7 @@
                   "name": "Payment and Delivery",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 12,
+                  "gap": "$spacing-sm",
                   "children": [
                     {
                       "type": "text",
@@ -774,7 +774,7 @@
                   "name": "Items",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 12,
+                  "gap": "$spacing-sm",
                   "children": [
                     {
                       "type": "text",
@@ -797,8 +797,8 @@
                       "strokeWidth": 1,
                       "layout": "vertical",
                       "padding": [
-                        4,
-                        14
+                        "$spacing-2xs",
+                        "$spacing-sm"
                       ],
                       "children": [
                         {
@@ -810,9 +810,9 @@
                           "strokeWidth": {
                             "bottom": 1
                           },
-                          "gap": 12,
+                          "gap": "$spacing-sm",
                           "padding": [
-                            12,
+                            "$spacing-sm",
                             0
                           ],
                           "alignItems": "center",
@@ -846,7 +846,7 @@
                                   "name": "Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -879,7 +879,7 @@
                                   "id": "VuRSY",
                                   "name": "Footer",
                                   "width": "fill_container",
-                                  "gap": 12,
+                                  "gap": "$spacing-sm",
                                   "justifyContent": "space_between",
                                   "alignItems": "center",
                                   "children": [
@@ -919,9 +919,9 @@
                           "strokeWidth": {
                             "bottom": 1
                           },
-                          "gap": 12,
+                          "gap": "$spacing-sm",
                           "padding": [
-                            12,
+                            "$spacing-sm",
                             0
                           ],
                           "alignItems": "center",
@@ -955,7 +955,7 @@
                                   "name": "Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -988,7 +988,7 @@
                                   "id": "KxiER",
                                   "name": "Footer",
                                   "width": "fill_container",
-                                  "gap": 12,
+                                  "gap": "$spacing-sm",
                                   "justifyContent": "space_between",
                                   "alignItems": "center",
                                   "children": [
@@ -1028,9 +1028,9 @@
                           "strokeWidth": {
                             "bottom": 1
                           },
-                          "gap": 12,
+                          "gap": "$spacing-sm",
                           "padding": [
-                            12,
+                            "$spacing-sm",
                             0
                           ],
                           "alignItems": "center",
@@ -1064,7 +1064,7 @@
                                   "name": "Info",
                                   "width": "fill_container",
                                   "layout": "vertical",
-                                  "gap": 4,
+                                  "gap": "$spacing-2xs",
                                   "children": [
                                     {
                                       "type": "text",
@@ -1097,7 +1097,7 @@
                                   "id": "T3gOPx",
                                   "name": "Footer",
                                   "width": "fill_container",
-                                  "gap": 12,
+                                  "gap": "$spacing-sm",
                                   "justifyContent": "space_between",
                                   "alignItems": "center",
                                   "children": [
@@ -1135,7 +1135,7 @@
                       "id": "cjaSB",
                       "name": "Returns",
                       "width": "fill_container",
-                      "gap": 8,
+                      "gap": "$spacing-xs",
                       "children": [
                         {
                           "type": "icon",
@@ -1181,12 +1181,12 @@
               "name": "Close Content",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 16,
+              "gap": "$spacing-md",
               "padding": [
-                20,
-                20,
-                28,
-                20
+                "$spacing-lg",
+                "$spacing-lg",
+                "$spacing-xl",
+                "$spacing-lg"
               ],
               "children": [
                 {
