@@ -1,17 +1,5 @@
-.vi-line-items-table[data-empty='false'] {
-  padding: var(--vi-line-items-pad, 4px 14px);
-}
-
-.vi-line-items-table__table {
-  grid-template-columns: var(--vi-line-items-cols, auto minmax(0, 1fr) auto auto);
-  row-gap: var(--vi-line-items-row-gap, 0);
-}
-
-.vi-line-items-table__header-product,
-.vi-line-items-table__header-quantity,
-.vi-line-items-table__header-total {
-  letter-spacing: var(--vi-line-items-track, 0.6px);
-  color: var(--vi-line-items-color, #66605D);
+.vi-line-items-table {
+  grid-template-columns: var(--vi-line-items-cols, minmax(0, 1fr));
 }
 
 .vi-line-items-table__header-product {

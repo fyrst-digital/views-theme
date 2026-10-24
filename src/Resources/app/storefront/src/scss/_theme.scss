@@ -179,11 +179,7 @@
 
 .vi-line-items-table {
   @include media-breakpoint-up(lg) {
-    --vi-line-items-row-gap: 14px;
-
-    &[data-empty='false'] {
-      --vi-line-items-pad: 20px;
-    }
+    --vi-line-items-cols: auto minmax(0, 1fr) auto auto;
   }
 }
 

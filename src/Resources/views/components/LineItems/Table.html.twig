@@ -7,7 +7,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['empty', 'table', 'headerProduct', 'headerQuantity', 'headerTotal', 'headerLine', 'item', 'itemLine']) %}
+{% do vi_define_attrs(['empty', 'headerProduct', 'headerQuantity', 'headerTotal', 'headerLine', 'item', 'itemLine']) %}
 
 {% set isEmpty = lineItems|length < 1 %}
 
@@ -15,6 +15,7 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:LineItems:Table',
         'data-empty': isEmpty ? 'true' : 'false',
+        role: isEmpty ? false : 'table',
     }) }}
     class="{{ vi_class('root', { empty: isEmpty }) }}"
 >
@@ -25,69 +26,62 @@
             />
         {% endblock %}
     {% else %}
-        <div
-            {{ vi_attrs('table').defaults({
-                role: 'table',
-            }) }}
-            class="{{ vi_class('table') }}"
-        >
-            {% block header %}
-                <span
-                    {{ vi_attrs('headerProduct').defaults({
-                        role: 'columnheader',
-                    }) }}
-                    class="{{ vi_class('headerProduct') }}"
-                >
-                    {{ 'viewsTheme.lineItems.product'|trans|sw_sanitize }}
-                </span>
-                <span
-                    {{ vi_attrs('headerQuantity').defaults({
-                        role: 'columnheader',
-                    }) }}
-                    class="{{ vi_class('headerQuantity') }}"
-                >
-                    {{ 'viewsTheme.lineItems.quantity'|trans|sw_sanitize }}
-                </span>
-                <span
-                    {{ vi_attrs('headerTotal').defaults({
-                        role: 'columnheader',
-                    }) }}
-                    class="{{ vi_class('headerTotal') }}"
-                >
-                    {{ 'viewsTheme.lineItems.total'|trans|sw_sanitize }}
-                </span>
-                <twig:ViewsTheme:Divider
-                    class="{{ vi_class('headerLine') }}"
-                    {{ ...vi_attrs('headerLine').defaults({
-                        'aria-hidden': 'true',
+        {% block header %}
+            <span
+                {{ vi_attrs('headerProduct').defaults({
+                    role: 'columnheader',
+                }) }}
+                class="{{ vi_class('headerProduct') }}"
+            >
+                {{ 'viewsTheme.lineItems.product'|trans|sw_sanitize }}
+            </span>
+            <span
+                {{ vi_attrs('headerQuantity').defaults({
+                    role: 'columnheader',
+                }) }}
+                class="{{ vi_class('headerQuantity') }}"
+            >
+                {{ 'viewsTheme.lineItems.quantity'|trans|sw_sanitize }}
+            </span>
+            <span
+                {{ vi_attrs('headerTotal').defaults({
+                    role: 'columnheader',
+                }) }}
+                class="{{ vi_class('headerTotal') }}"
+            >
+                {{ 'viewsTheme.lineItems.total'|trans|sw_sanitize }}
+            </span>
+            <twig:ViewsTheme:Divider
+                class="{{ vi_class('headerLine') }}"
+                {{ ...vi_attrs('headerLine').defaults({
+                    'aria-hidden': 'true',
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block items %}
+            {% for lineItem in lineItems %}
+                <twig:ViewsTheme:LineItem
+                    class="{{ vi_class('item') }}"
+                    {{ ...vi_attrs('item').defaults({
+                        lineItem: lineItem,
+                        deliveries: cart.deliveries,
+                        showRemoveButton: showRemoveButton,
+                        showQuantitySelect: showQuantitySelect,
+                        layout: 'table',
+                        tag: 'div',
+                        role: 'row',
                     }).all() }}
                 />
-            {% endblock %}
-
-            {% block items %}
-                {% for lineItem in lineItems %}
-                    <twig:ViewsTheme:LineItem
-                        class="{{ vi_class('item') }}"
-                        {{ ...vi_attrs('item').defaults({
-                            lineItem: lineItem,
-                            deliveries: cart.deliveries,
-                            showRemoveButton: showRemoveButton,
-                            showQuantitySelect: showQuantitySelect,
-                            layout: 'table',
-                            tag: 'div',
-                            role: 'row',
+                {% if not loop.last %}
+                    <twig:ViewsTheme:Divider
+                        class="{{ vi_class('itemLine') }}"
+                        {{ ...vi_attrs('itemLine').defaults({
+                            'aria-hidden': 'true',
                         }).all() }}
                     />
-                    {% if not loop.last %}
-                        <twig:ViewsTheme:Divider
-                            class="{{ vi_class('itemLine') }}"
-                            {{ ...vi_attrs('itemLine').defaults({
-                                'aria-hidden': 'true',
-                            }).all() }}
-                        />
-                    {% endif %}
-                {% endfor %}
-            {% endblock %}
-        </div>
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
     {% endif %}
 </div>

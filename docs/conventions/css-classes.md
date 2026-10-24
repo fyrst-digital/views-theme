@@ -85,14 +85,19 @@ footer: {
 ```
 
 ```css
-/* ✅ CSS — content-sized tracks on the shared table grid */
-.vi-line-items-table__table {
-  grid-template-columns: var(--vi-line-items-cols, auto minmax(0, 1fr) auto auto);
+/* ✅ CSS — one track until lg assigns the content-sized tracks */
+.vi-line-items-table {
+  grid-template-columns: var(--vi-line-items-cols, minmax(0, 1fr));
 }
 ```
 
 ```scss
 /* ✅ _theme.scss — lg token assign */
+.vi-line-items-table {
+  @include media-breakpoint-up(lg) {
+    --vi-line-items-cols: auto minmax(0, 1fr) auto auto;
+  }
+}
 .vi-line-item[data-layout='table'] {
   @include media-breakpoint-up(lg) {
     --vi-line-item-areas: none;

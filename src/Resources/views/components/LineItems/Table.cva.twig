@@ -1,15 +1,12 @@
 {
     root: {
-        base: 'vi-line-items-table min-w-0',
+        base: 'vi-line-items-table min-w-0 p-4',
         variants: {
             empty: {
                 true: '',
-                false: 'bg-white border rounded-4 overflow-hidden',
+                false: 'd-grid align-items-lg-center column-gap-lg-4 row-gap-4 bg-white border rounded-4 overflow-hidden',
             },
         },
-    },
-    table: {
-        base: 'vi-line-items-table__table d-lg-grid align-items-lg-center column-gap-lg-4',
     },
     headerProduct: {
         base: 'vi-line-items-table__header-product d-none d-lg-block fs-6 fw-semibold',
