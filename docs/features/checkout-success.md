@@ -15,7 +15,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
-| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button` home). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width |
+| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width. Finish passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, line-item table, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
@@ -32,11 +32,11 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/finish/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal action="cart"   (inline, no ESI)
 │    └─ .container
 │         ├─ Page:Logo
 │         ├─ Page:Support
-│         └─ Button (frontend.home.page)
+│         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
 ├─ page_checkout → Checkout:Success        (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ Checkout:Success:Header

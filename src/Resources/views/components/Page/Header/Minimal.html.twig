@@ -1,10 +1,23 @@
 {% props
     supportDisplay = 'all',
+    action = 'home',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['container', 'logo', 'support', 'back']) %}
+
+{% set backTargets = {
+    home: {
+        href: path('frontend.home.page'),
+        label: 'checkout.finishButtonBackToShop'|trans|striptags,
+    },
+    cart: {
+        href: path('frontend.checkout.cart.page'),
+        label: 'checkout.backToCart'|trans|striptags,
+    },
+} %}
+{% set backTarget = backTargets[action]|default(backTargets.home) %}
 
 <header
     {{ attributes }}
@@ -31,12 +44,12 @@
                     class="{{ vi_class('back') }}"
                     {{ ...vi_attrs('back').defaults({
                         type: 'link',
-                        href: path('frontend.home.page'),
+                        href: backTarget.href,
                         color: 'light',
                         size: 'sm',
                         icon: 'arrow-left',
-                        label: 'checkout.finishButtonBackToShop'|trans|striptags,
-                        title: 'checkout.finishButtonBackToShop'|trans|striptags,
+                        label: backTarget.label,
+                        title: backTarget.label,
                     }).all() }}
                 />
             {% endblock %}

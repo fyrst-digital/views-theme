@@ -9,7 +9,7 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/address/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Register` |
-| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button` home). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width |
+| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width. Register passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
 | `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside. Ambient `__context.formViolations` (and `data` / login errors) forwarded into `Account:Register` |
 | `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
 | `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
@@ -23,11 +23,11 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/address/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal action="cart"   (inline, no ESI)
 │    └─ .container
 │         ├─ Page:Logo
 │         ├─ Page:Support
-│         └─ Button (frontend.home.page)
+│         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
 ├─ page_checkout → Checkout:Register       (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ heading (h1, checkout.addressHeader)
