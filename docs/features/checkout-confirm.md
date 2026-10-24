@@ -11,7 +11,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button`. Bridge passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
 | `Checkout:Confirm` | Layout composer — flashes, violations, h1, addresses, methods, grid items, comment + delivery date, aside |
 | `Checkout:Confirm:Aside` | Sticky summary + TOS + place-order. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:Confirm:Addresses` | Adapter: customer addresses → [`Address:List`](address.md) + `Address:Manager:Action` |
@@ -30,10 +30,10 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/confirm/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal action="cart"   (inline, no ESI)
 │    ├─ Page:Logo
 │    ├─ header.supportInfo
-│    └─ Button (frontend.home.page)
+│    └─ Button (frontend.checkout.cart.page, checkout.backToCart)
 ├─ page_checkout → Checkout:Confirm        (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ formViolations → Alert

@@ -13,7 +13,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
+| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button`. `action` omitted (default `home`: `frontend.home.page`, `checkout.finishButtonBackToShop`) |
 | `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
@@ -31,10 +31,10 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/finish/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal   (inline, no ESI; action default home)
 │    ├─ Page:Logo
 │    ├─ header.supportInfo
-│    └─ Button (frontend.home.page)
+│    └─ Button (frontend.home.page, checkout.finishButtonBackToShop)
 ├─ page_checkout → Checkout:Success        (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ Checkout:Success:Header

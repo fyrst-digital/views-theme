@@ -68,7 +68,7 @@ Edit-order (checkout `_page`, minimal chrome):
 
 ```
 page/account/order/index.html.twig
-├─ base_esi_header → Page:Header:Minimal
+├─ base_esi_header → Page:Header:Minimal (action default home)
 ├─ page_checkout → Account:Order:Edit
 │    ├─ alerts
 │    ├─ Account:Heading
@@ -144,7 +144,7 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | `page/account/order-history/order-detail-list.html.twig` | `Order:ItemDetailsList` |
 | `page/account/order-history/order-detail-document.html.twig` | `Order:Documents` |
 | `page/account/order/index.html.twig` | `Account:Order:Edit` |
-| `page/account/order/header.html.twig` | `Page:Header:Minimal` |
+| `page/account/order/header.html.twig` | `Page:Header:Minimal` (`action` omitted, default `home`) |
 | `page/account/order/address.html.twig` | `Order:Addresses` |
 | `page/account/order/confirm-payment.html.twig` | `Checkout:Confirm:Payment` (edit-order action) |
 | `page/account/order/confirm-shipping.html.twig` | `Checkout:Success:Shipping` |

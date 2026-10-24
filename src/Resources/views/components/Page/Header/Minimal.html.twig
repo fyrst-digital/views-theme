@@ -1,6 +1,19 @@
 {% props
+    action = 'home',
     cva = {},
 %}
+
+{% set backActions = {
+    home: {
+        href: path('frontend.home.page'),
+        label: 'checkout.finishButtonBackToShop'|trans|striptags,
+    },
+    cart: {
+        href: path('frontend.checkout.cart.page'),
+        label: 'checkout.backToCart'|trans|striptags,
+    },
+} %}
+{% set back = backActions[action] is defined ? backActions[action] : backActions.home %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['logo', 'support', 'back']) %}
@@ -30,10 +43,10 @@
             class="{{ vi_class('back') }}"
             {{ ...vi_attrs('back').defaults({
                 type: 'link',
-                href: path('frontend.home.page'),
+                href: back.href,
                 color: 'secondary',
-                label: 'checkout.finishButtonBackToShop'|trans|striptags,
-                title: 'checkout.finishButtonBackToShop'|trans|striptags,
+                label: back.label,
+                title: back.label,
             }).all() }}
         />
     {% endblock %}
