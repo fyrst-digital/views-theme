@@ -71,6 +71,7 @@
         "confirmMethods": "Payment and Delivery",
         "confirmItems": "Your items",
         "confirmArrival": "Arrives %earliest%–%latest%",
-        "confirmReturns": "Free returns within 30 days. Quantity changes stay in the cart."
+        "confirmReturns": "Free returns within 30 days. Quantity changes stay in the cart.",
+        "backToCart": "Back to cart"
     }
 }

@@ -13,7 +13,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
-| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button` home). Column gap is `column-gap-6` (24px); row gap is `row-gap-2` (8px). No min-height and no inline padding. `supportDisplay` defaults to `all`; `desktop` hides `Page:Support` below `xl`. Confirm passes `supportDisplay="desktop"` |
+| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). Column gap is `column-gap-6` (24px); row gap is `row-gap-2` (8px). No min-height and no inline padding. `supportDisplay` defaults to `all`; `desktop` hides `Page:Support` below `xl`. Confirm passes `supportDisplay="desktop"`. `action` defaults to `home` (`frontend.home.page`, `checkout.finishButtonBackToShop`). Confirm passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
 | `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, then `Checkout:Confirm:Main` and `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
 | `Checkout:Confirm:Title` | Class view-model. `#[PostMount]` builds `heading` and keyed `meta` (`email`, `items`, `arrival`) from the cart and customer. Fills `Checkout:Title`’s `description` block with `Page:Support` (`d-xl-none`). Passes Confirm’s grid class through. No `g-col-*` in its CVA |
 | `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap 28px, 40px from `xl`. No `data-component`. No `g-col-*` in its CVA |
@@ -38,11 +38,11 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/confirm/index.html.twig
-├─ base_esi_header → Page:Header:Minimal supportDisplay="desktop"   (inline, no ESI)
+├─ base_esi_header → Page:Header:Minimal supportDisplay="desktop" action="cart"   (inline, no ESI)
 │    └─ .container
 │         ├─ Page:Logo
 │         ├─ Page:Support                  (hidden below xl on confirm)
-│         └─ Button (frontend.home.page)
+│         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
 ├─ page_checkout → Checkout:Confirm        (.grid; grid-columns-1, grid-columns-xl-8; no data-component, no Stepper)
 │    ├─ Cart:Flashes                       (g-col-1 g-col-xl-8)
 │    ├─ formViolations → Alert             (g-col-1 g-col-xl-8)
