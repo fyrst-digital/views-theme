@@ -21,7 +21,7 @@
                 {{ ...vi_attrs('item').defaults({
                     color: 'light',
                     size: 'sm',
-                    label: variation.option ,
+                    label: variation.group ? variation.group ~ ': ' ~ variation.option : variation.option,
                 }).all() }}
             />
         {% endfor %}

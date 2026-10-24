@@ -139,7 +139,7 @@ Does **not** compute or pass `productUrl` / `href`. Nested overrides: `header:â€
 | `cva` | `{}` | `Body.cva.twig`: `root`, `variations`, `description` |
 | `visible` | derived | Root omitted when neither variations nor description |
 
-Variations render above description when shown.
+Variations render above description when shown. Each badge is `group: option` (for example `Color: Oat`). An empty `group` shows the option alone.
 
 ### `Product:Box:Footer` (class-backed)
 

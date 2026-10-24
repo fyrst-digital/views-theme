@@ -131,7 +131,7 @@ LineItem:Product
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
-| `Product:Variations` | `payload.options` |
+| `Product:Variations` | `payload.options`. Each badge is `group: option` (for example `Color: Oat`). An empty `group` shows the option alone |
 | `LineItem:Features` | `payload.features` |
 | `LineItem:DeliveryDate` | Delivery window when configured. In the header, under the name, in every layout including `table` below `lg` |
 | `LineItem:Actions` | Flex group. Always renders `QuantityInput` and `Remove` |
