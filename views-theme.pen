@@ -833,66 +833,86 @@
                             },
                             {
                               "type": "frame",
-                              "id": "PaAid",
-                              "name": "Info",
+                              "id": "TAcx9",
+                              "name": "Content",
                               "width": "fill_container",
                               "layout": "vertical",
-                              "gap": 4,
+                              "gap": "$spacing-xs",
+                              "justifyContent": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "qsE1u",
-                                  "name": "Name",
-                                  "fill": "$ink",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "PaAid",
+                                  "name": "Info",
                                   "width": "fill_container",
-                                  "content": "Merino Crew Neck",
-                                  "fontFamily": "$font",
-                                  "fontSize": 15,
-                                  "fontWeight": "600"
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "qsE1u",
+                                      "name": "Name",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Merino Crew Neck",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Ifut3",
+                                      "name": "Meta",
+                                      "fill": "$ash",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Oat  ·  Size M",
+                                      "fontFamily": "$font",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "Ifut3",
-                                  "name": "Meta",
-                                  "fill": "$ash",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "VuRSY",
+                                  "name": "Footer",
                                   "width": "fill_container",
-                                  "content": "Oat  ·  Size M",
-                                  "fontFamily": "$font",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
+                                  "gap": 12,
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "KRNuh",
+                                      "name": "Merino Crew Neck Qty",
+                                      "fill": "$dark",
+                                      "content": "Quantity 1",
+                                      "textAlign": "center",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "dhyan",
+                                      "name": "Price",
+                                      "fill": "$dark",
+                                      "content": "€128.00",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
                                 }
                               ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "KRNuh",
-                              "name": "Merino Crew Neck Qty",
-                              "fill": "$ash",
-                              "textGrowth": "fixed-width",
-                              "width": 32,
-                              "content": "1",
-                              "textAlign": "center",
-                              "fontFamily": "$font",
-                              "fontSize": 14,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "dhyan",
-                              "name": "Price",
-                              "fill": "$ink",
-                              "content": "€128.00",
-                              "fontFamily": "$font",
-                              "fontSize": 15,
-                              "fontWeight": "600"
                             }
                           ]
                         },
                         {
                           "type": "frame",
-                          "id": "t3DEjT",
+                          "id": "aR8f0",
                           "name": "Wide Trouser",
                           "width": "fill_container",
                           "stroke": "$linen",
@@ -909,7 +929,7 @@
                             {
                               "type": "rectangle",
                               "cornerRadius": 6,
-                              "id": "RgQOJ",
+                              "id": "UvGsT",
                               "name": "Swatch",
                               "fill": {
                                 "type": "image",
@@ -922,69 +942,92 @@
                             },
                             {
                               "type": "frame",
-                              "id": "m7yrb",
-                              "name": "Info",
+                              "id": "pDNb3",
+                              "name": "Content",
                               "width": "fill_container",
                               "layout": "vertical",
-                              "gap": 4,
+                              "gap": "$spacing-xs",
+                              "justifyContent": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "wcrO3",
-                                  "name": "Name",
-                                  "fill": "$ink",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "CSzjc",
+                                  "name": "Info",
                                   "width": "fill_container",
-                                  "content": "Wide Trouser",
-                                  "fontFamily": "$font",
-                                  "fontSize": 15,
-                                  "fontWeight": "600"
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "U4p0Q",
+                                      "name": "Name",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Wide Trouser",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "Q13Ipf",
+                                      "name": "Meta",
+                                      "fill": "$ash",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Ink  ·  Size 36",
+                                      "fontFamily": "$font",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "pAqTr",
-                                  "name": "Meta",
-                                  "fill": "$ash",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "KxiER",
+                                  "name": "Footer",
                                   "width": "fill_container",
-                                  "content": "Ink  ·  Size 36",
-                                  "fontFamily": "$font",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
+                                  "gap": 12,
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "UFp6c",
+                                      "name": "Wide Trouser Qty",
+                                      "fill": "$dark",
+                                      "content": "Quantity 1",
+                                      "textAlign": "center",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "mlpUA",
+                                      "name": "Price",
+                                      "fill": "$dark",
+                                      "content": "€168.00",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
                                 }
                               ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "aThpC",
-                              "name": "Wide Trouser Qty",
-                              "fill": "$ash",
-                              "textGrowth": "fixed-width",
-                              "width": 32,
-                              "content": "1",
-                              "textAlign": "center",
-                              "fontFamily": "$font",
-                              "fontSize": 14,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "WHuxM",
-                              "name": "Price",
-                              "fill": "$ink",
-                              "content": "€168.00",
-                              "fontFamily": "$font",
-                              "fontSize": 15,
-                              "fontWeight": "600"
                             }
                           ]
                         },
                         {
                           "type": "frame",
-                          "id": "dLEJy",
+                          "id": "ddbkj",
                           "name": "Canvas Tote",
                           "width": "fill_container",
                           "stroke": "#00000000",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
                           "gap": 12,
                           "padding": [
                             12,
@@ -995,7 +1038,7 @@
                             {
                               "type": "rectangle",
                               "cornerRadius": 6,
-                              "id": "eOsy5",
+                              "id": "jPKQx",
                               "name": "Swatch",
                               "fill": {
                                 "type": "image",
@@ -1008,60 +1051,80 @@
                             },
                             {
                               "type": "frame",
-                              "id": "n1ayb",
-                              "name": "Info",
+                              "id": "kHJPx",
+                              "name": "Content",
                               "width": "fill_container",
                               "layout": "vertical",
-                              "gap": 4,
+                              "gap": "$spacing-xs",
+                              "justifyContent": "center",
                               "children": [
                                 {
-                                  "type": "text",
-                                  "id": "Qg3c3",
-                                  "name": "Name",
-                                  "fill": "$ink",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "q9g91",
+                                  "name": "Info",
                                   "width": "fill_container",
-                                  "content": "Canvas Tote",
-                                  "fontFamily": "$font",
-                                  "fontSize": 15,
-                                  "fontWeight": "600"
+                                  "layout": "vertical",
+                                  "gap": 4,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "VeFNX",
+                                      "name": "Name",
+                                      "fill": "$ink",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Canvas Tote",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "RodFj",
+                                      "name": "Meta",
+                                      "fill": "$ash",
+                                      "textGrowth": "fixed-width",
+                                      "width": "fill_container",
+                                      "content": "Natural",
+                                      "fontFamily": "$font",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
                                 },
                                 {
-                                  "type": "text",
-                                  "id": "I4sQon",
-                                  "name": "Meta",
-                                  "fill": "$ash",
-                                  "textGrowth": "fixed-width",
+                                  "type": "frame",
+                                  "id": "T3gOPx",
+                                  "name": "Footer",
                                   "width": "fill_container",
-                                  "content": "Natural",
-                                  "fontFamily": "$font",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
+                                  "gap": 12,
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "GDlNx",
+                                      "name": "Canvas Tote Qty",
+                                      "fill": "$dark",
+                                      "content": "Quantity 1",
+                                      "textAlign": "center",
+                                      "fontFamily": "$font",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "p0GhNt",
+                                      "name": "Price",
+                                      "fill": "$dark",
+                                      "content": "€48.00",
+                                      "fontFamily": "$font",
+                                      "fontSize": 15,
+                                      "fontWeight": "600"
+                                    }
+                                  ]
                                 }
                               ]
-                            },
-                            {
-                              "type": "text",
-                              "id": "gGnU2",
-                              "name": "Canvas Tote Qty",
-                              "fill": "$ash",
-                              "textGrowth": "fixed-width",
-                              "width": 32,
-                              "content": "1",
-                              "textAlign": "center",
-                              "fontFamily": "$font",
-                              "fontSize": 14,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "E9RAC",
-                              "name": "Price",
-                              "fill": "$ink",
-                              "content": "€48.00",
-                              "fontFamily": "$font",
-                              "fontSize": 15,
-                              "fontWeight": "600"
                             }
                           ]
                         }

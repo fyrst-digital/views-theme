@@ -7,16 +7,16 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['empty', 'table', 'header', 'headerProduct', 'headerQuantity', 'headerRemove', 'headerTotal', 'rows', 'item']) %}
+{% do vi_define_attrs(['empty', 'table', 'header', 'headerProduct', 'headerQuantity', 'headerTotal', 'rows', 'item']) %}
 
 {% set isEmpty = lineItems|length < 1 %}
+{% set showActions = showQuantitySelect is same as(true) and showRemoveButton is same as(true) %}
 
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:LineItems:Table',
         'data-empty': isEmpty ? 'true' : 'false',
-        'data-show-remove': showRemoveButton ? 'true' : 'false',
-        'data-show-quantity': showQuantitySelect ? 'true' : 'false',
+        'data-show-actions': showActions ? 'true' : 'false',
     }) }}
     class="{{ vi_class('root', { empty: isEmpty }) }}"
 >
@@ -56,14 +56,6 @@
                     >
                         {{ 'viewsTheme.lineItems.quantity'|trans|sw_sanitize }}
                     </span>
-                    {% if showRemoveButton %}
-                        <span
-                            {{ vi_attrs('headerRemove').defaults({
-                                'aria-hidden': 'true',
-                            }) }}
-                            class="{{ vi_class('headerRemove') }}"
-                        ></span>
-                    {% endif %}
                     <span
                         {{ vi_attrs('headerTotal').defaults({
                             role: 'columnheader',

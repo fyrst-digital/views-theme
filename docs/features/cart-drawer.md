@@ -23,7 +23,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Action:Cart` | Cart-page link via generic `Button`; label `viewsTheme.cart.cart` |
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
-| `LineItem:Quantity` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path) |
+| `LineItem:QuantityInput` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path). Grouped in `LineItem:Actions` |
 | `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `ShippingCalculation:Selection` → field adapters → `Form:Select` |
 | `Cart:ShippingCalculation:Open` | Summary shipping label button; `callMethod(ShippingCalculation, toggle)` to open/close the `<details>` |
 
@@ -115,27 +115,28 @@ See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers
 LineItem:Product
 ├─ Product:Cover
 ├─ LineItem:Content
-│  ├─ LineItem:Header → Product:Name
-│  └─ LineItem:Body → Product:Variations + Features + DeliveryDate
-└─ LineItem:Footer → Quantity + Remove + Price (grid also UnitPrice; order qty · remove · unit · total)
+│  ├─ LineItem:Header → Product:Name + DeliveryDate
+│  └─ LineItem:Body → Product:Variations + Features
+└─ LineItem:Footer → Actions (QuantityInput + Remove) or Quantity, then Price
 ```
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (`div` from `Cart:Items` and `LineItems:Table`) and `layout` (`stacked` default, `grid` on [confirm](checkout-confirm.md) `Cart:Items`, `table` on [cart page](cart-page.md) `LineItems:Table`) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
+| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (`div` from `Cart:Items` and `LineItems:Table`) and `layout` (`stacked` default on drawer and register `Cart:Items`, `table` on [cart page](cart-page.md) and [confirm](checkout-confirm.md) `LineItems:Table`) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
-| `LineItem:Header` | Product name |
-| `LineItem:Body` | Variations / features / delivery |
-| `LineItem:Footer` | Quantity + line total + remove; grid adds `UnitPrice` and is `display: contents` so cells join the `Cart:Items` grid. `table` is `display: contents` so qty, remove, and line total join the row (no unit price) |
+| `LineItem:Header` | Product name, then the delivery window. Name is `d-inline` here (`Product:Name` stays `d-inline-flex` elsewhere). `header:name:class` appends on Header, then that string replaces `Product:Name`’s root |
+| `LineItem:Body` | Variations / features |
+| `LineItem:Footer` | `LineItem:Actions` or `LineItem:Quantity`, then the line total. Never both. Actions when `showQuantitySelect` and `showRemoveButton` are true, `nestingLevel < 1`, and the line item has `quantityInformation`, is `stackable`, and is `removable`. Otherwise the plain number. `stacked` stays that flex row at every width (total `ms-auto`). `table` below `lg` is the same flex row. The stepper and remove stay one group when the footer wraps. From `lg`, `table` is `display: contents`, so Actions or Quantity is one grid cell and Price is the next |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
-| `LineItem:UnitPrice` | Unit price (`unitPrice\|currency`); rendered in `layout="grid"` footer only |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
 | `Product:Variations` | `payload.options` |
 | `LineItem:Features` | `payload.features` |
-| `LineItem:DeliveryDate` | Delivery window when configured |
-| `LineItem:Quantity` | Debounced emit `Cart:Update` |
+| `LineItem:DeliveryDate` | Delivery window when configured. In the header, under the name, in every layout including `table` below `lg` |
+| `LineItem:Actions` | Flex group. Always renders `QuantityInput` and `Remove` |
+| `LineItem:Quantity` | Plain quantity. No JS. Below `lg` the label is “Quantity” (`viewsTheme.lineItems.quantityLabel`) beside a `fw-semibold` amount; from `lg` only the amount shows |
+| `LineItem:QuantityInput` | Debounced emit `Cart:Update`. Digital rows keep the stepper disabled |
 | `LineItem:Remove` | Emit `Cart:Remove` |
 | `LineItem:Promotion` | Slim promotion row; reuses `Content` + `Price` |
 
@@ -147,15 +148,16 @@ Region-nested override keys on `LineItem:Product`:
 | `content` | `LineItem:Content` |
 | `header` | `LineItem:Header` |
 | `header:name` | `Product:Name` |
+| `header:deliveryDate` | `LineItem:DeliveryDate` |
 | `body` | `LineItem:Body` |
 | `body:variations` | `Product:Variations` |
 | `body:features` | `LineItem:Features` |
-| `body:deliveryDate` | `LineItem:DeliveryDate` |
 | `footer` | `LineItem:Footer` |
-| `footer:unitPrice` | `LineItem:UnitPrice` (grid layout only) |
 | `footer:price` | `LineItem:Price` |
-| `footer:quantityInput` | `LineItem:Quantity` (further `quantityInput:*` → `QuantityInput`; ± are `Button` nests; `quantityInput:icon:class` / `decrease:*` / `increase:*`) |
-| `footer:remove` | `LineItem:Remove` (`button:*` → remove Button) |
+| `footer:actions` | `LineItem:Actions` |
+| `footer:actions:quantityInput` | `LineItem:QuantityInput` (further `quantityInput:*` → `QuantityInput`; ± are `Button` nests; `quantityInput:icon:class` / `decrease:*` / `increase:*`) |
+| `footer:actions:remove` | `LineItem:Remove` (`button:*` → remove Button) |
+| `footer:quantity` | `LineItem:Quantity` (plain number) |
 
 No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 
@@ -170,7 +172,7 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
 | Heading / Footer | `data-component="ViewsTheme:Cart:Drawer:Heading"` / `ViewsTheme:Cart:Drawer:Footer` |
-| Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
+| Quantity input | `data-component="ViewsTheme:LineItem:QuantityInput"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
 | Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |

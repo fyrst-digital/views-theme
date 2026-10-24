@@ -1,7 +1,7 @@
 /**
  * @extends {ShopwareComponent}
  */
-export default class LineItemQuantity extends ShopwareComponent {
+export default class LineItemQuantityInput extends ShopwareComponent {
     static options = {
         lineItemId: null,
         updateEvent: 'ViewsTheme:Cart:Update',

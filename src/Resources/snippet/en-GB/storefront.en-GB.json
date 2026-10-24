@@ -37,6 +37,7 @@
         "lineItems": {
             "product": "Product",
             "quantity": "Qty",
+            "quantityLabel": "Quantity",
             "total": "Price"
         },
         "account": {
