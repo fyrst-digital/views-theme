@@ -127,7 +127,7 @@ LineItem:Product
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name, then the delivery window. Name is `d-inline` here (`Product:Name` stays `d-inline-flex` elsewhere). `header:name:class` appends on Header, then that string replaces `Product:Name`’s root |
 | `LineItem:Body` | Variations / features |
-| `LineItem:Footer` | `LineItem:Actions` or `LineItem:Quantity`, then the line total. Never both. Actions when `showQuantitySelect` and `showRemoveButton` are true, `nestingLevel < 1`, and the line item has `quantityInformation`, is `stackable`, and is `removable`. Otherwise the plain number. `stacked` stays that flex row at every width (total `ms-auto`). `table` below `lg` is the same flex row. The stepper and remove stay one group when the footer wraps. From `lg`, `table` is `display: contents`, so Actions or Quantity is one grid cell and Price is the next |
+| `LineItem:Footer` | `LineItem:Actions` or `LineItem:Quantity`, then the line total. Never both. Actions when `showQuantitySelect` and `showRemoveButton` are true, `nestingLevel < 1`, and the line item has `quantityInformation`, is `stackable`, and is `removable`. Otherwise the plain number. `stacked` stays that flex row at every width (total `ms-auto`). `table` below `lg` is the same flex row. The stepper and remove stay one group when the footer wraps. From `lg`, the table-layout line item root is `d-lg-contents` and the footer is `display: contents`, so cover, content, qty, and price are cells of `LineItems:Table`. The row rule is a sibling `Divider` on the table (`itemLine`), at every viewport, not after the last row |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
@@ -158,6 +158,8 @@ Region-nested override keys on `LineItem:Product`:
 | `footer:actions:quantityInput` | `LineItem:QuantityInput` (further `quantityInput:*` → `QuantityInput`; ± are `Button` nests; `quantityInput:icon:class` / `decrease:*` / `increase:*`) |
 | `footer:actions:remove` | `LineItem:Remove` (`button:*` → remove Button) |
 | `footer:quantity` | `LineItem:Quantity` (plain number) |
+
+The table row rule is not a Product nest. `LineItems:Table` renders `Divider` after each row (`itemLine`) except the last — [cart page](cart-page.md).
 
 No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-submit`. Forms keep progressive-enhancement `redirectTo` for no-JS.
 

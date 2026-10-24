@@ -36,7 +36,7 @@ CVA is the **variant API**, not a bag for a BEM root. Check CVA first. Component
 | `display`, `flex`/`grid` chrome, `gap`, `align-*`, `justify-*`, `margin`/`padding`, `font-size`/`fw`, visibility (`d-none` / `d-xl-block`) | Custom `grid-template-columns` / `grid-template-areas` |
 | Prop axes (`layout: stacked \| table`) | `grid-area`, `grid-column` index |
 | Breakpoint chrome (`d-xl-*`, `align-items-xl-center`, `gap-xl-4`) | px size with no utility (`--vi-image-max-w`, `--vi-top`) |
-| | Inherited geometry a parent must set (`--vi-line-items-cols` on `LineItems:Table`) |
+| | Inherited geometry (`--vi-line-items-cols` on `LineItems:Table`) |
 
 ### Theme breakpoints
 
@@ -62,7 +62,7 @@ root: {
     variants: {
         layout: {
             stacked: 'd-grid column-gap-3 row-gap-2 align-items-start',
-            table: 'd-grid column-gap-3 row-gap-2 align-items-start align-items-lg-center gap-lg-4',
+            table: 'd-grid column-gap-3 row-gap-2 align-items-start d-lg-contents',
         },
     },
 },
@@ -84,14 +84,15 @@ footer: {
 }
 ```
 
+```css
+/* ✅ CSS — content-sized tracks on the shared table grid */
+.vi-line-items-table__table {
+  grid-template-columns: var(--vi-line-items-cols, auto minmax(0, 1fr) auto auto);
+}
+```
+
 ```scss
 /* ✅ _theme.scss — lg token assign */
-.vi-line-items-table {
-  @include media-breakpoint-up(lg) {
-    --vi-line-items-cols: 64px minmax(0, 1fr) 32px 88px;
-  }
-}
-
 .vi-line-item[data-layout='table'] {
   @include media-breakpoint-up(lg) {
     --vi-line-item-areas: none;

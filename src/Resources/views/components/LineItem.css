@@ -26,7 +26,6 @@
 
 .vi-line-item[data-layout='table'] {
   padding-block: var(--vi-line-item-pad, 12px);
-  border-bottom: 1px solid var(--vi-line-item-line, var(--border-color, #E5DBD0));
 
   .vi-product-name,
   .vi-line-item__label,
@@ -56,5 +55,5 @@
 }
 
 .vi-line-item__promotion[data-layout='table'] .vi-line-item__price {
-  grid-column: -1;
+  grid-column: -2 / -1;
 }

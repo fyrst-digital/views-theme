@@ -28,8 +28,9 @@ Cart:Page (data-component owner)
 ├─ [role=alert] (client error)
 └─ body (`data-cart-page-body`)
       ├─ LineItems:Table
-      │    ├─ header d-none d-lg-grid (Product · Qty · Price)
-      │    └─ LineItem layout="table" × N  |  Cart:Empty
+      │    ├─ Product / Qty / Total (d-none d-lg-block; Product spans 2)
+      │    ├─ Divider (header, d-none d-lg-block)
+      │    └─ LineItem layout="table" d-lg-contents × N, then Divider after each row except the last (every viewport)  |  Cart:Empty
       └─ Cart:Page:Aside (when not empty; position-xl-sticky)
           ├─ Cart:Summary
           ├─ Cart:Options
@@ -59,13 +60,13 @@ Root is `d-grid align-items-baseline`. CSS is the two-column track (`--vi-cols`)
 | Value | Used by | Host |
 |-------|---------|------|
 | `stacked` (default) | Drawer and register `Cart:Items` | Narrow row: 80px cover (`rounded-2`), content stack, footer (actions group or plain quantity, then line total) |
-| `table` | `LineItems:Table` | Below `lg`: the same stacked row, plus the list’s row padding and bottom border. From `lg`: Product / Qty / Price column grid; footer is `display: contents`. The qty cell is `LineItem:Actions` (stepper and remove) or `LineItem:Quantity` (the number). Header from `lg` only. Read-only mounts show the quantity as a number. Delivery window sits under the name in the header, then variations, at every width. From `lg`, image size, row padding, type size, and the area reset are token assigns in `_theme.scss` (`media-breakpoint-up(lg)`). Table padding and the Product / Qty / Total tracks are `--vi-line-items-pad` and `--vi-line-items-cols` in the same file (`32px` qty, `max-content` when `data-show-actions` is true) |
+| `table` | `LineItems:Table` | Below `lg`: the same stacked row, plus the list’s row padding. A `Divider` sibling (`itemLine`) follows each row except the last, in normal flow. From `lg`: `.vi-line-items-table__table` is one grid (`d-lg-grid`) and the line item root is `display: contents`, so cover, content, qty, and price are cells of that grid. That same row `Divider` (`--vi-divider-col`, default `1 / -1`) is the next grid cell, after the line item. Footer stays `display: contents`, so the qty cell is `LineItem:Actions` (stepper and remove) or `LineItem:Quantity` (the number) and Price is the next cell. Column labels are direct children of the table (Product spans the cover and content tracks, then Qty and Total), from `lg` only, followed by a header `Divider` on the same track (`d-none d-lg-block`). Read-only mounts show the quantity as a number. Delivery window sits under the name in the header, then variations, at every width. From `lg`, image size, type size, and the area reset are token assigns in `_theme.scss` (`media-breakpoint-up(lg)`). Table padding is `--vi-line-items-pad`. Tracks are `--vi-line-items-cols` with fallback `auto minmax(0, 1fr) auto auto` on `.vi-line-items-table__table`. Row gap is `--vi-line-items-row-gap` (`14px` from `lg`) |
 
 `layout` is forwarded `Cart:Items` or `LineItems:Table` → `LineItem` (`typeProps`) → Product / Promotion / Container / Generic. `LineItem` is a class component: it resolves the leaf with `component()` (product, then the discount heuristic, then container, else generic). Both lists pass `tag="div"` (no `<ul>` / `<li>`).
 
 `showQuantitySelect` and `showRemoveButton` (both default `true`) are forwarded to `LineItem` → Footer. Footer renders `LineItem:Actions` only when both are true, `nestingLevel < 1`, and the line item has `quantityInformation`, is `stackable`, and is `removable`. Otherwise it renders `LineItem:Quantity` (below `lg`: “Quantity” plus the `fw-semibold` amount; from `lg`: the amount only). The two are never both mounted. The cart page table leaves both flags on. The register aside sets both false on `Cart:Items`. Confirm, finish, order details, and edit-order set both false on `LineItems:Table`.
 
-Footer order is the actions group or the number, then the line total. Below `lg` the `table` footer is a flex row (total `ms-auto`); the stepper and remove wrap as one group. From `lg` the `table` footer is `display: contents`, so Actions or Quantity is one grid cell and Price is the next. The qty column is `max-content` when both flags are on (`data-show-actions`) and `32px` otherwise. Header is Product · Qty · Total. Stacked footers keep the total at the end at every width.
+Footer order is the actions group or the number, then the line total. Below `lg` the `table` footer is a flex row (total `ms-auto`); the stepper and remove wrap as one group. From `lg` the line item root and the `table` footer are `display: contents`, so cover, content, Actions or Quantity, and Price share the table tracks. The row separator is that `Divider` at every viewport. There is no border on the line item host, and no rule after the last row. Qty and total tracks are `auto`, sized by the cell content. A promotion price uses `grid-column: -2 / -1` so it stays on the last explicit track. Header is Product · Qty · Total. Stacked footers keep the total at the end at every width.
 
 ## Controller
 
