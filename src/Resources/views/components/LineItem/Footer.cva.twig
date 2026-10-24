@@ -4,28 +4,22 @@
         variants: {
             layout: {
                 stacked: 'd-flex align-items-center gap-2',
-                grid: 'd-flex d-xl-contents align-items-center gap-2',
-                table: 'd-contents',
+                table: 'd-flex flex-wrap align-items-center gap-2 d-lg-contents',
             },
         },
-    },
-    unitPrice: {
-        base: 'flex-shrink-0',
     },
     price: {
-        base: 'vi-line-item__price fw-semibold',
+        base: 'vi-line-item__price fw-semibold flex-shrink-0 ms-auto',
         variants: {
             layout: {
-                stacked: 'flex-shrink-0 ms-auto ms-xl-0',
-                grid: 'flex-shrink-0 ms-auto ms-xl-0',
-                table: 'text-end',
+                table: 'text-end ms-lg-0',
             },
         },
+    },
+    actions: {
+        base: 'vi-line-item__actions',
     },
     quantity: {
         base: 'vi-line-item__quantity',
-    },
-    remove: {
-        base: 'vi-line-item__remove flex-shrink-0',
     },
 }

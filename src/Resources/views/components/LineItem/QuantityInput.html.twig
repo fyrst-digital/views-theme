@@ -1,0 +1,57 @@
+{% props
+    lineItem,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    cva = {},
+%}
+
+{% set quantityInformation = lineItem.quantityInformation %}
+
+{% set DIGITAL_CONST = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_DIGITAL') %}
+{% set isDigital = lineItem.payload.productType is defined and lineItem.payload.productType == DIGITAL_CONST %}
+{% if feature('v6.8.0.0') %}
+    {% set isDigital = isDigital or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% else %}
+    {% set DOWNLOAD_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_DOWNLOAD') %}
+    {% set isDigital = isDigital
+        or (lineItem.states is defined and DOWNLOAD_STATE in lineItem.states)
+        or (quantityInformation and quantityInformation.maxPurchase === 1) %}
+{% endif %}
+
+{% do vi_define_cva(cva) %}
+
+{% do vi_define_attrs(['quantityInput']) %}
+
+{% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
+    ? quantityInformation.maxPurchase
+    : config('core.cart.maxQuantity') %}
+
+<form
+    {{ attributes.defaults({
+        action: path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }),
+        method: 'post',
+        'data-component': 'ViewsTheme:LineItem:QuantityInput',
+        'data-component-options': {
+            lineItemId: lineItem.id,
+            updateEvent: 'ViewsTheme:Cart:Update',
+            delay: 800,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root', { digital: isDigital }) }}"
+>
+    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
+    {% if redirectParameters is not null %}
+        <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
+    {% endif %}
+
+    <twig:ViewsTheme:QuantityInput
+        {{ ...vi_attrs('quantityInput').defaults({
+            quantity: lineItem.quantity,
+            minQuantity: quantityInformation.minPurchase|default(1),
+            maxQuantity: maxQuantity,
+            purchaseSteps: quantityInformation.purchaseSteps|default(1),
+            size: 'sm',
+            disabled: isDigital,
+        }).all() }}
+    />
+</form>

@@ -101,6 +101,8 @@ The `description` block on `Checkout:Title` is empty. `Checkout:Confirm:Title` f
 
 Section titles (`checkout.confirmAddresses` on `Checkout:Addresses`, `checkout.confirmItems` on `Checkout:Confirm:Main`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
+Below `lg`, each confirm row is the stacked line item inside `LineItems:Table`: 80px cover (`rounded-2`), name, delivery window, then `Product:Variations` badges, then the quantity (“Quantity” plus the amount) and the line total. From `lg` that row is the Product / Qty / Price column grid and the quantity is the amount only. Arrival stays on the title and on `Checkout:ArrivalDate`.
+
 ## Checkout:Confirm:Main
 
 Primary column. Root is a `div`; the page landmark stays `#content-main`. `Checkout:Confirm` mounts `<twig:ViewsTheme:Checkout:Confirm:Main>` and passes `page`, with `g-col-1 g-col-xl-5 g-col-xxl-8` on that tag. No `g-col-*` in its CVA. No `data-component`.

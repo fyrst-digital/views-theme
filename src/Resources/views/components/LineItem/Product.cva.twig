@@ -3,23 +3,12 @@
         base: 'vi-line-item vi-line-item__product',
         variants: {
             layout: {
-                stacked: 'd-grid gx-3 gy-2 align-items-start',
-                grid: 'd-contents',
-                table: 'd-grid align-items-center gap-3 gap-xl-4',
+                stacked: 'd-grid column-gap-3 row-gap-2 align-items-start',
+                table: 'd-grid column-gap-3 row-gap-2 align-items-start d-lg-contents',
             },
         },
     },
     image: {
-        base: 'vi-line-item__image flex-shrink-0 d-block overflow-hidden',
-        variants: {
-            layout: {
-                stacked: 'rounded-2',
-                grid: 'rounded-2',
-                table: 'rounded-1',
-            },
-        },
-        defaultVariants: {
-            layout: 'stacked',
-        },
+        base: 'vi-line-item__image flex-shrink-0 d-block overflow-hidden rounded-2',
     },
 }

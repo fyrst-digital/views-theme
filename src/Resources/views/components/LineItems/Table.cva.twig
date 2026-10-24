@@ -1,35 +1,29 @@
 {
     root: {
-        base: 'vi-line-items-table min-w-0',
+        base: 'vi-line-items-table min-w-0 p-4',
         variants: {
             empty: {
                 true: '',
-                false: 'bg-white border rounded-4 overflow-hidden',
+                false: 'd-grid align-items-lg-center column-gap-lg-4 row-gap-4 bg-white border rounded-4 overflow-hidden',
             },
         },
     },
-    table: {
-        base: 'vi-line-items-table__table',
-    },
-    header: {
-        base: 'vi-line-items-table__header d-none d-xl-grid align-items-center gap-3 gap-xl-4 border-bottom pb-3 fs-6 fw-semibold',
-    },
     headerProduct: {
-        base: 'vi-line-items-table__header-product',
+        base: 'vi-line-items-table__header-product d-none d-lg-block fs-6 fw-semibold',
     },
     headerQuantity: {
-        base: 'vi-line-items-table__header-quantity text-center',
-    },
-    headerRemove: {
-        base: 'vi-line-items-table__header-remove',
+        base: 'vi-line-items-table__header-quantity d-none d-lg-block fs-6 fw-semibold text-center',
     },
     headerTotal: {
-        base: 'vi-line-items-table__header-total text-end',
+        base: 'vi-line-items-table__header-total d-none d-lg-block fs-6 fw-semibold text-end',
     },
-    rows: {
-        base: 'vi-line-items-table__rows',
+    headerLine: {
+        base: 'd-none d-lg-block',
     },
     item: {
         base: 'vi-line-items-table__item',
+    },
+    itemLine: {
+        base: '',
     },
 }

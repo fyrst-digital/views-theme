@@ -3,12 +3,13 @@
     label = lineItem.label|trans|sw_sanitize,
     productLink = null,
     nestingLevel = 0,
+    deliveries = null,
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['name']) %}
+{% do vi_define_attrs(['name', 'deliveryDate']) %}
 
 <div
     {{ attributes }}
@@ -16,12 +17,25 @@
 >
     {% block name %}
         <twig:ViewsTheme:Product:Name
-            class="{{ vi_class('name') }}"
             {{ ...vi_attrs('name').defaults({
                 name: label,
                 url: productLink,
                 showLink: productLink is not null,
+                cva: {
+                    root: { base: vi_class('name') },
+                },
             }).all() }}
         />
+    {% endblock %}
+
+    {% block deliveryDate %}
+        {% if config('core.cart.showDeliveryTime') %}
+            <twig:ViewsTheme:LineItem:DeliveryDate
+                {{ ...vi_attrs('deliveryDate').defaults({
+                    lineItem: lineItem,
+                    deliveries: deliveries,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 </div>

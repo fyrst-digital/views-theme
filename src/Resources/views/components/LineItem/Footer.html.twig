@@ -10,7 +10,14 @@
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['unitPrice', 'price', 'quantity', 'quantityInput', 'remove']) %}
+{% do vi_define_attrs(['price', 'actions', 'quantity']) %}
+
+{% set showActions = showQuantitySelect is same as(true)
+    and showRemoveButton is same as(true)
+    and nestingLevel < 1
+    and lineItem.quantityInformation
+    and lineItem.stackable
+    and lineItem.removable %}
 
 <div
     {{ attributes.defaults({
@@ -18,46 +25,25 @@
     }) }}
     class="{{ vi_class('root', { layout: layout }) }}"
 >
-    {% block quantity %}
-        <twig:ViewsTheme:LineItem:Quantity
-            class="{{ vi_class('quantity') }}"
-            {{ ...vi_attrs('quantityInput').defaults({
-                lineItem: lineItem,
-                nestingLevel: nestingLevel,
-                showQuantitySelect: showQuantitySelect,
-            }).all() }}
-        />
-    {% endblock %}
-
-    {% block remove %}
-        {% if showRemoveButton is same as(true) and lineItem.removable and nestingLevel < 1 %}
-            <twig:ViewsTheme:LineItem:Remove
-                class="{{ vi_class('remove') }}"
-                {{ ...vi_attrs('remove').defaults({
+    {% if showActions %}
+        {% block actions %}
+            <twig:ViewsTheme:LineItem:Actions
+                class="{{ vi_class('actions') }}"
+                {{ ...vi_attrs('actions').defaults({
                     lineItem: lineItem,
                 }).all() }}
             />
-        {% elseif layout is same as('table') and showRemoveButton %}
-            <span
-                {{ vi_attrs('remove').defaults({
-                    'aria-hidden': 'true',
-                }) }}
-                class="{{ vi_class('remove') }}"
-            ></span>
-        {% endif %}
-    {% endblock %}
-
-    {% block unitPrice %}
-        {% if layout is same as('grid') %}
-            <twig:ViewsTheme:LineItem:UnitPrice
-                class="{{ vi_class('unitPrice') }}"
-                {{ ...vi_attrs('unitPrice').defaults({
+        {% endblock %}
+    {% else %}
+        {% block quantity %}
+            <twig:ViewsTheme:LineItem:Quantity
+                class="{{ vi_class('quantity') }}"
+                {{ ...vi_attrs('quantity').defaults({
                     lineItem: lineItem,
-                    showPrice: showPrice,
                 }).all() }}
             />
-        {% endif %}
-    {% endblock %}
+        {% endblock %}
+    {% endif %}
 
     {% block price %}
         <twig:ViewsTheme:LineItem:Price

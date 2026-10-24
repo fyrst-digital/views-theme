@@ -198,7 +198,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart page aside | `ViewsTheme:Cart:Page:Aside` | `Cart/Page/Aside.js` |
 | Cart drawer heading / footer | `ViewsTheme:Cart:Drawer:Heading` / `Footer` | `Cart/Drawer/Heading.js` etc. |
 | Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` — theme-owned only; do **not** set core `data-quantity-selector` / `js-btn-*` hooks |
-| Line item quantity | `ViewsTheme:LineItem:Quantity` | `LineItem/Quantity.js` |
+| Line item quantity input | `ViewsTheme:LineItem:QuantityInput` | `LineItem/QuantityInput.js` |
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
 | Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
@@ -410,7 +410,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
 | Heading / Footer | `data-component="ViewsTheme:Cart:Drawer:Heading"` / `ViewsTheme:Cart:Drawer:Footer` |
-| Quantity | `data-component="ViewsTheme:LineItem:Quantity"` |
+| Quantity input | `data-component="ViewsTheme:LineItem:QuantityInput"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)

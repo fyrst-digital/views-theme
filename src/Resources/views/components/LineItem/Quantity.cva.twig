@@ -1,11 +1,17 @@
 {
     root: {
-        base: 'vi-line-item-quantity',
+        base: 'vi-line-item-quantity d-inline-flex align-items-baseline gap-1',
         variants: {
             digital: {
                 true: 'vi-line-item-quantity--digital opacity-50 pointer-events-none',
                 false: '',
             },
         },
+    },
+    label: {
+        base: 'vi-line-item-quantity__label d-lg-none text-muted',
+    },
+    value: {
+        base: 'vi-line-item-quantity__value fw-semibold',
     },
 }
