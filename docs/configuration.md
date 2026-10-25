@@ -74,6 +74,8 @@ Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
 **Text muted utility** (Bootstrap color utility): `.text-muted` sets `color` to the theme field `muted` (`$muted`, `#66605D`). `scss/_utilities.scss` merges that value into the color utility and generates the group again, after Storefront. Not responsive. `.text-opacity-*` does not tint it.
 
+**Text decoration hover** (Bootstrap `$utilities`): `scss/_utilities.scss` sets `state: hover` on `text-decoration` and generates that group again. `.text-decoration-none-hover:hover` (and the underline and line-through variants) set `text-decoration` on hover. That beats `a:hover { text-decoration: underline }`. `.text-decoration-none` alone does not.
+
 **Font family utility** (Bootstrap `$utilities`):
 
 | Class | Declaration | Source |

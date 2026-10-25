@@ -166,6 +166,34 @@
   }
 }
 
+.vi-stepper__item {
+  @include media-breakpoint-up(xl) {
+    --vi-stepper-basis: auto;
+  }
+
+  &:last-child {
+    @include media-breakpoint-up(xl) {
+      flex-grow: 0;
+    }
+  }
+
+  &:not(:last-child)::after {
+    position: absolute;
+    inset-block-start: calc(var(--vi-stepper-size, 24px) / 2);
+    inset-inline-start: 50%;
+    inline-size: 100%;
+    translate: 0 -50%;
+
+    @include media-breakpoint-up(xl) {
+      position: static;
+      flex-grow: 1;
+      inset: auto;
+      inline-size: auto;
+      translate: none;
+    }
+  }
+}
+
 .vi-header-minimal {
   @include media-breakpoint-up(xl) {
     --vi-header-minimal-cols: auto minmax(0, 1fr) auto;

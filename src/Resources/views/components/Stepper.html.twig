@@ -5,22 +5,12 @@
 
 {% if items is not empty %}
     {% do vi_define_cva(cva) %}
-    {% do vi_define_attrs(['track', 'list', 'item', 'line']) %}
+    {% do vi_define_attrs(['list', 'item']) %}
 
     <nav
         {{ attributes }}
         class="{{ vi_class('root') }}"
     >
-        {% block track %}
-            <span
-                {{ vi_attrs('track').defaults({
-                    'aria-hidden': 'true',
-                    style: '--vi-stepper-count: ' ~ (items|length),
-                }) }}
-                class="{{ vi_class('track') }}"
-            ></span>
-        {% endblock %}
-
         {% block list %}
             <ol
                 {{ vi_attrs('list') }}
@@ -39,17 +29,6 @@
                             }).all() }}
                         />
                     {% endblock %}
-
-                    {% if not loop.last %}
-                        {% block line %}
-                            <li
-                                {{ vi_attrs('line').defaults({
-                                    'aria-hidden': 'true',
-                                }) }}
-                                class="{{ vi_class('line') }}"
-                            ></li>
-                        {% endblock %}
-                    {% endif %}
                 {% endfor %}
             </ol>
         {% endblock %}

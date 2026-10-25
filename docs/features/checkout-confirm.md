@@ -4,8 +4,6 @@ Theme-owned `/checkout/confirm` (`frontend.checkout.confirm.page`). Guest and em
 
 Unlike [cart page](cart-page.md), **`Checkout:Confirm` has no `data-component` / no island JS**. Address change is nested `Address:Manager:Action` ([address manager](address-manager.md)). Line items are a read-only `LineItems:Table` — qty stepper / remove stay on the cart page. Confirm does not use `Cart:Heading`.
 
-`Stepper` is not mounted on confirm, cart, register, success, or edit-order. The pen’s Cart / Details / Delivery / Review row is an example only: Shopware has no stepper and no delivery step.
-
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) on checkout `_page.html.twig` (not `Checkout:Confirm`).
 
 ## Ownership
@@ -14,7 +12,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/confirm/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Confirm` |
 | `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). Column gap is `column-gap-6` (24px); row gap is `row-gap-2` (8px). No min-height and no inline padding. `supportDisplay` defaults to `all`; `desktop` hides `Page:Support` below `xl`. Confirm passes `supportDisplay="desktop"`. `action` defaults to `home` (`frontend.home.page`, `checkout.finishButtonBackToShop`). Confirm passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
-| `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, then `Checkout:Confirm:Main` and `Checkout:Aside`. No page JS. Does not mount `Stepper` or `Cart:Heading` |
+| `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, then `Checkout:Confirm:Main` and `Checkout:Aside`. No page JS. Does not mount `Cart:Heading` |
 | `Checkout:Confirm:Title` | Class view-model. `#[PostMount]` builds `heading` and keyed `meta` (`email`, `items`, `arrival`) from the cart and customer. Fills `Checkout:Title`’s `description` block with `Page:Support` (`d-xl-none`). Passes Confirm’s grid class through. No `g-col-*` in its CVA |
 | `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap 28px, 40px from `xl`. No `data-component`. No `g-col-*` in its CVA |
 | `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
@@ -43,7 +41,7 @@ page/checkout/confirm/index.html.twig
 │         ├─ Page:Logo
 │         ├─ Page:Support                  (hidden below xl on confirm)
 │         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
-├─ page_checkout → Checkout:Confirm        (.grid; grid-columns-1, grid-columns-xl-8; no data-component, no Stepper)
+├─ page_checkout → Checkout:Confirm        (.grid; grid-columns-1, grid-columns-xl-8; no data-component)
 │    ├─ Cart:Flashes                       (g-col-1 g-col-xl-8)
 │    ├─ formViolations → Alert             (g-col-1 g-col-xl-8)
 │    ├─ Checkout:Confirm:Title            (caller class: g-col-1 g-col-xl-8 g-col-xxl-12)
@@ -77,9 +75,9 @@ page/checkout/confirm/index.html.twig
 
 Desktop (`xl` / 1260px): eight equal tracks (`grid-columns-xl-8`). Flashes, violations, and the title span the row (`g-col-xl-8`). `Checkout:Confirm:Main` is `g-col-xl-5` (`g-col-xxl-8` from `xxl`) and `Checkout:Aside` is `g-col-xl-3` (`g-col-xxl-4` from `xxl`). Column gap is 64px (`column-gap-xl-9`). Row gap is 32px (`row-gap-7`). Inside the xl container that aside is about 399px; from `xxl` the container grows and the aside grows with it. Inside Main the section gap is 28px, 40px from `xl`. Root padding is 40px / 64px. The summary card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
-Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. Title, `Checkout:Confirm:Main`, and `Checkout:Aside` stack with a 32px row gap (top padding 24px). Inside the main column, addresses, payment and delivery, and items stack with a 28px gap. `Checkout:Aside` follows as the closing stack: `Additions` then `Summary` (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront `.container`, shared with the minimal header.
+Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. The title, `Checkout:Confirm:Main`, and `Checkout:Aside` stack with a 32px row gap (top padding 24px). Inside the main column, addresses, payment and delivery, and items stack with a 28px gap. `Checkout:Aside` follows as the closing stack: `Additions` then `Summary` (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront `.container`, shared with the minimal header.
 
-`Stepper` is not mounted. `Cart:Items` stays the stacked list for the cart drawer and the register aside. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
+`Cart:Items` stays the stacked list for the cart drawer and the register aside. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
 
 TOS lives **in the summary** with submit (not top of main). Associated fields (`tos`, `revocation`, `customerComment`, `viewsThemeDeliveryDate`) use `form="confirmOrderForm"`.
 

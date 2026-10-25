@@ -29,7 +29,7 @@
                 {% block mark %}
                     <span
                         {{ vi_attrs('mark') }}
-                        class="{{ vi_class('mark') }}"
+                        class="{{ vi_class('mark', { active: active }) }}"
                     >
                         {% if icon %}
                             {{ vi_icon(icon, { class: vi_class('icon') }) }}

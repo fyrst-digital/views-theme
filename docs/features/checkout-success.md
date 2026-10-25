@@ -6,7 +6,7 @@ UX tags are **`Checkout:Success`** (branch / theme name). Shopware’s route and
 
 Unlike [cart page](cart-page.md), **`Checkout:Success` has no `data-component` / no island JS / no `/vi/…`**. Recap is read-only: order DTO (`page.order`), not the cart.
 
-`Stepper` is not mounted. Line items are a read-only `LineItems:Table` (`page.order.nestedLineItems`). `Checkout:Method` is removed; payment and shipping are one checked, nameless `Form:Selection`. Header `supportDisplay` stays the default `all`, so `Page:Support` shows at every width. Addresses still use [`Address:List`](address.md).
+Line items are a read-only `LineItems:Table` (`page.order.nestedLineItems`). `Checkout:Method` is removed; payment and shipping are one checked, nameless `Form:Selection`. Header `supportDisplay` stays the default `all`, so `Page:Support` shows at every width. Addresses still use [`Address:List`](address.md).
 
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) — see [checkout confirm](checkout-confirm.md#edit-order-isolation).
 

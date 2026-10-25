@@ -1,49 +1,16 @@
 .vi-stepper__item {
   flex-basis: var(--vi-stepper-basis, 0);
   min-inline-size: 0;
-}
 
-.vi-stepper__body {
-  gap: var(--vi-stepper-gap, 6px);
-}
-
-.vi-stepper__body:hover {
-  text-decoration: none;
+  &:not(:last-child)::after {
+    content: "";
+    z-index: 0;
+    background-color: var(--vi-stepper-rule, var(--border-color));
+    block-size: var(--vi-stepper-line, 1px);
+  }
 }
 
 .vi-stepper__mark {
-  inline-size: var(--vi-stepper-size, 22px);
-  block-size: var(--vi-stepper-size, 22px);
-  background-color: var(--vi-stepper-bg, var(--border-color));
-  color: var(--vi-stepper-color, #66605D);
-  font-size: var(--vi-stepper-num, 11px);
-
-  .icon {
-    --icon-size: var(--vi-stepper-num, 11px);
-  }
-}
-
-.vi-stepper__label {
-  color: var(--vi-stepper-text, #66605D);
-  font-size: var(--vi-stepper-label, var(--icon-size-1, 12px));
-}
-
-.vi-stepper__item[aria-current='step'] {
-  --vi-stepper-bg: var(--dark);
-  --vi-stepper-color: var(--white);
-  --vi-stepper-text: var(--body-color);
-}
-
-@media (min-width: 1260px) {
-  .vi-stepper__item {
-    --vi-stepper-basis: auto;
-  }
-
-  .vi-stepper__body {
-    --vi-stepper-gap: var(--spacing-2, 8px);
-  }
-
-  .vi-stepper__label {
-    --vi-stepper-label: var(--font-size-6, 14px);
-  }
+  inline-size: var(--vi-stepper-size, 24px);
+  block-size: var(--vi-stepper-size, 24px);
 }
