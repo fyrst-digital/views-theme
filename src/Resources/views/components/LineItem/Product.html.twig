@@ -27,7 +27,7 @@
 >
     {% block image %}
         <twig:ViewsTheme:Product:Cover
-            class="{{ vi_class('image') }}"
+            class="{{ vi_class('image', { layout: layout }) }}"
             image:class="w-100 h-100 object-fit-cover"
             placeholder:class="d-flex align-items-center justify-content-center w-100 h-100 bg-body-secondary text-body-secondary"
             {{ ...vi_attrs('cover').defaults({
@@ -44,7 +44,9 @@
 
     {% block content %}
         <twig:ViewsTheme:LineItem:Content
-            {{ ...vi_attrs('content').all() }}
+            {{ ...vi_attrs('content').defaults({
+                layout: layout,
+            }).all() }}
         >
             <twig:ViewsTheme:LineItem:Header
                 {{ ...vi_attrs('header').defaults({
@@ -53,13 +55,13 @@
                     productLink: productLink,
                     showRemoveButton: showRemoveButton,
                     nestingLevel: nestingLevel,
+                    deliveries: deliveries,
                 }).all() }}
             />
 
             <twig:ViewsTheme:LineItem:Body
                 {{ ...vi_attrs('body').defaults({
                     lineItem: lineItem,
-                    deliveries: deliveries,
                 }).all() }}
             />
         </twig:ViewsTheme:LineItem:Content>

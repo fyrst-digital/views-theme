@@ -168,6 +168,12 @@
 
         <service id="Fyrst\ViewsTheme\Service\ProductPriceResolver"/>
 
+        <service id="Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Delivery\DeliveryBuilder"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Delivery\DeliveryCalculator"/>
+            <argument type="service" id="shipping_method.repository"/>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Controller\ListingController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
             <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
@@ -230,6 +236,7 @@
 
         <service id="Fyrst\ViewsTheme\Subscriber\CheckoutConfirmPageSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
         <service id="Fyrst\ViewsTheme\Subscriber\CheckoutFinishPageSubscriber">

@@ -1,0 +1,20 @@
+{% props
+    taxItem,
+    cva = {},
+%}
+
+{% do vi_define_cva({
+    root: { base: 'fs-6 text-body-tertiary' },
+    label: { base: 'fw-medium' },
+    value: { base: 'fw-medium' },
+}|replace_recursive(cva)) %}
+
+<twig:ViewsTheme:Cart:Summary:Item
+    class="{{ vi_class('root') }}"
+    label:class="{{ vi_class('label') }}"
+    value:class="{{ vi_class('value') }}"
+    {{ ...attributes.defaults({
+        label: 'checkout.summaryTax'|trans({ '%rate%': taxItem.taxRate })|sw_sanitize,
+        value: taxItem.tax|currency,
+    }).all() }}
+/>

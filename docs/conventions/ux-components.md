@@ -96,7 +96,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Address:Personal`, `Address:PersonalCompany`, `Address:Form`, `Form:Birthday`, `Order:Item`, `Order:Addresses`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Account:Input:Birthday`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` / `Street` / `Postal` / `Country` / `Phone`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Checkout:Title`, `Checkout:Confirm:Title`, `Checkout:Addresses`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form` / `Account:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 
@@ -396,7 +396,7 @@ Do **not** multi-hop blocks through `{% set x %}{% block %}{% endset %}` + `<twi
 A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — callers of the outer component cannot fill it. Forward with [`{% vi_block %}`](../twig/vi-block.md) (Symfony `outerBlocks` under the hood):
 
 ```twig
-<twig:ViewsTheme:Grid columns="6" gap="sm">
+<twig:ViewsTheme:Grid columns="1-md:6" gap="sm">
     <twig:block name="content">
         {% vi_block prepend %}{% endvi_block %}
         {% vi_block accountType %}
@@ -408,10 +408,10 @@ A `{% block foo %}` inside a nested `<twig:…>` belongs to that inner host — 
 ```
 
 ```twig
-<twig:ViewsTheme:Address:Personal …>
+<twig:ViewsTheme:Account:Form:Personal …>
     <twig:block name="accountType">…</twig:block>
     <twig:block name="append">…</twig:block>
-</twig:ViewsTheme:Address:Personal>
+</twig:ViewsTheme:Account:Form:Personal>
 ```
 
 | Need | Pattern |
@@ -487,11 +487,15 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Filter:* (Drawer compose + Drawer:Action, Panel, Group + Toggle/Count, Chip, MultiSelect, Boolean, Range, Rating, Active) | Theme filters + lazy drawer; [filters.md](../features/filters.md) |
 | Product:Badges (class-backed) + Product:Badge:* + Badge | UX + `vi_cva`; discount gates in `Badges.php` |
 | Product:Box / Cover / Box:Header / Body / Footer / Action:Detail (class-backed) | UX + `vi_cva`; detail URL via `ProductDetailUrlBuilder` on Cover/Header/Footer + Detail fallback |
-| LineItem:* (+ Quantity/Remove JS only; `layout` stacked/grid), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
+| LineItem:* (+ QuantityInput/Remove JS only; `layout` stacked/table), LineItems:Table (island identity), Cart:* (+ mutation owner / drawer / page), Wishlist:* | UX + JS |
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
-| Address / Address:List | Anonymous UX + `vi_cva`; formatted lines + shipping/billing pair — [address.md](../features/address.md) |
-| Checkout:Confirm (+ Addresses / Payment / Shipping / Tos / Comment / Aside) + Checkout:Method / Method:Form | Anonymous UX; confirm page composer; Confirm:Addresses adapts Address:List — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
+| Checkout:Title (class-backed) | UX + `vi_cva`; `meta` is `array<string, CheckoutTitleMeta>` (`label`, optional `icon`); `{% block meta_item %}` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm (+ Main / Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Confirm:Title (class-backed) | UX + `vi_cva`; email, item count, and arrival in `Title.php`; fills `Checkout:Title` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Checkout:Addresses (class-backed) | UX + `vi_cva`; section and `checkout.confirmAddresses` title in Twig; cards in `Addresses.php`; lines are `Address` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Success (+ Addresses / Payment / Shipping / Header / Comment / DeliveryDate / Aside) | Success:Addresses class VM adapts Address:List — [checkout-success.md](../features/checkout-success.md) |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |

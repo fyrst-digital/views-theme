@@ -7,7 +7,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['toolbar', 'search', 'create', 'items', 'item', 'empty', 'notFound']) %}
+{% do vi_define_attrs(['toolbar', 'search', 'items', 'item', 'empty', 'notFound']) %}
 
 <div
     {{ attributes.defaults({
@@ -33,21 +33,14 @@
                     }).all() }}
                 />
             {% endblock %}
-
-            {% block create %}
-                <twig:ViewsTheme:Address:Manager:Create
-                    class="{{ vi_class('create') }}"
-                    {{ ...vi_attrs('create').defaults({
-                        type: type,
-                    }).all() }}
-                />
-            {% endblock %}
         </div>
     {% endblock %}
 
     {% block items %}
-        <ul
-            {{ vi_attrs('items') }}
+        <div
+            {{ vi_attrs('items').defaults({
+                role: 'list',
+            }) }}
             class="{{ vi_class('items') }}"
         >
             {% for address in addresses %}
@@ -56,14 +49,13 @@
                     {{ ...vi_attrs('item').defaults({
                         address: address,
                         type: type,
-                        selected: address.id is same as(activeId),
+                        selected: false,
                         activeId: activeId,
                         defaultId: defaultId,
-                        tag: 'li',
                     }).all() }}
                 />
             {% endfor %}
-        </ul>
+        </div>
     {% endblock %}
 
     {% block empty %}

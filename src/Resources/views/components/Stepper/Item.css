@@ -1,0 +1,16 @@
+.vi-stepper__item {
+  flex-basis: var(--vi-stepper-basis, 0);
+  min-inline-size: 0;
+
+  &:not(:last-child)::after {
+    content: "";
+    z-index: 0;
+    background-color: var(--vi-stepper-rule, var(--border-color));
+    block-size: var(--vi-stepper-line, 1px);
+  }
+}
+
+.vi-stepper__mark {
+  inline-size: var(--vi-stepper-size, 24px);
+  block-size: var(--vi-stepper-size, 24px);
+}

@@ -24,7 +24,31 @@
             "fullscreenAriaLabel": "Fullscreen product gallery",
             "dotsAriaLabel": "Gallery slide navigation"
         },
-        "copyright": "Theme made with ❤️ by %brand%"
+        "checkout": {
+            "confirmShippingTitle": "Shipping",
+            "confirmBillingTitle": "Billing",
+            "confirmAddressChange": "Change",
+            "confirmAddressEqualTitle": "Same as delivery",
+            "confirmAddressEqualText": "Invoices are sent to the delivery address.",
+            "shippingFree": "Free"
+        },
+        "copyright": "Theme made with ❤️ by %brand%",
+        "shopCopyright": "© %year% %shop%",
+        "lineItems": {
+            "product": "Product",
+            "quantity": "Qty",
+            "quantityLabel": "Quantity",
+            "total": "Price"
+        },
+        "account": {
+            "addressChoose": "Choose an address",
+            "addressAdd": "Add address",
+            "addressApply": "Apply",
+            "addressUseAsDefault": "use as default",
+            "addressNew": "New address",
+            "addressPhoneOptional": "Optional",
+            "addressStreetPlaceholder": "Street and number"
+        }
     },
 
     "variantsGrid": {
@@ -39,8 +63,16 @@
         }
     },
     "checkout": {
+        "beforeYouOrderHeader": "Before you order",
         "preferredDeliveryDateHeader": "Preferred delivery date",
         "preferredDeliveryDateLabel": "Choose a preferred delivery date",
-        "preferredDeliveryDateHelpText": "Pick a date within the allowed window. This is a preference, not a guarantee."
+        "preferredDeliveryDateHelpText": "Pick a date within the allowed window. This is a preference, not a guarantee.",
+        "confirmSecureNote": "Encrypted checkout",
+        "confirmAddresses": "Addresses",
+        "confirmMethods": "Payment and Delivery",
+        "confirmItems": "Your items",
+        "confirmArrival": "Arrives %earliest%–%latest%",
+        "confirmReturns": "Free returns within 30 days. Quantity changes stay in the cart.",
+        "backToCart": "Back to cart"
     }
 }

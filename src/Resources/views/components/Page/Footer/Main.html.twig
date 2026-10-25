@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['columns', 'hotline', 'navigation', 'logos', 'bottom']) %}
+{% do vi_define_attrs(['columns', 'hotline', 'navigation', 'logos', 'bottom', 'services', 'legal']) %}
 
 <div
     {{ attributes.without('data-component-template') }}
@@ -12,7 +12,7 @@
                     class="{{ vi_class('columns') }}"
                     {{ ...vi_attrs('columns').defaults({
                         gap: false,
-                        columns: '8',
+                        columns: '1-lg:8',
                     }).all() }}
                 >
                     <twig:block name="content">
@@ -56,13 +56,24 @@
 
         {% block bottom %}
             {% if footer %}
-                <twig:ViewsTheme:Page:Footer:Bottom
-                    class="{{ vi_class('bottom') }}"
-                    {{ ...vi_attrs('bottom').defaults({
-                        serviceMenu: footer.serviceMenu,
-                        shippingUrl: shippingUrl,
-                    }).all() }}
-                />
+                <div {{ vi_attrs('bottom') }} class="{{ vi_class('bottom') }}">
+                    {% block services %}
+                        <twig:ViewsTheme:Page:Footer:Services
+                            class="{{ vi_class('services') }}"
+                            {{ ...vi_attrs('services').defaults({
+                                serviceMenu: footer.serviceMenu,
+                            }).all() }}
+                        />
+                    {% endblock %}
+
+                    {% block legal %}
+                        <twig:ViewsTheme:Page:Footer:Bottom
+                            {{ ...vi_attrs('legal').defaults({
+                                shippingUrl: shippingUrl,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                </div>
             {% endif %}
         {% endblock %}
     {% endblock %}

@@ -2,6 +2,11 @@
     {% do vi_define_cva(cva) %}
     {% do vi_define_attrs(['title', 'method']) %}
 
+    {% set formattedPrice = null %}
+    {% if price is not null %}
+        {% set formattedPrice = currencyIso ? price|currency(currencyIso) : price|currency %}
+    {% endif %}
+
     <section
         {{ attributes }}
         class="{{ vi_class('root') }}"
@@ -11,22 +16,21 @@
                 {{ vi_attrs('title') }}
                 class="{{ vi_class('title') }}"
             >
-                {{ 'checkout.confirmShippingMethod'|trans|sw_sanitize }}
+                {{ vi_icon('truck', { class: vi_class('icon') }) -}}
+                {{- 'checkout.confirmShippingMethod'|trans|sw_sanitize }}
             </h2>
         {% endblock %}
 
         {% block method %}
-            <twig:ViewsTheme:Checkout:Method
+            <twig:ViewsTheme:Form:Selection
+                type="radio"
+                id="{{ 'shippingMethod' ~ methodId }}"
+                label="{{ name }}"
+                :description="description"
+                :trailing="formattedPrice"
+                :checked="true"
                 class="{{ vi_class('method') }}"
-                {{ ...vi_attrs('method').defaults({
-                    methodType: 'shipping',
-                    methodId: methodId,
-                    selectedMethodId: methodId,
-                    interactive: false,
-                    media: media,
-                    name: name,
-                    description: description,
-                }).all() }}
+                {{ ...vi_attrs('method').all() }}
             />
         {% endblock %}
     </section>

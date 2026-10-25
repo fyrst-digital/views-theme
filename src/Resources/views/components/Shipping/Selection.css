@@ -1,0 +1,9 @@
+.vi-shipping-selection__title {
+  font-size: var(--vi-shipping-selection-title, 15px);
+}
+
+@media (min-width: 1260px) {
+  .vi-shipping-selection__title {
+    --vi-shipping-selection-title: 16px;
+  }
+}

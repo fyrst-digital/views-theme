@@ -1,0 +1,44 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['firstName', 'lastName']) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        columns: '1-md:6',
+        gap: 'sm',
+    }).all() }}
+>
+    <twig:block name="content">
+    {% vi_block firstName %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('firstName') }}"
+            {{ ...vi_attrs('firstName').defaults({
+                id: firstName.id,
+                name: firstName.name,
+                value: firstName.value,
+                violationPath: firstName.violationPath,
+                formViolations: formViolations,
+                validationRules: 'required',
+                autocomplete: 'section-personal given-name',
+                label: 'account.personalFirstNameLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endvi_block %}
+
+    {% vi_block lastName %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('lastName') }}"
+            {{ ...vi_attrs('lastName').defaults({
+                id: lastName.id,
+                name: lastName.name,
+                value: lastName.value,
+                violationPath: lastName.violationPath,
+                formViolations: formViolations,
+                validationRules: 'required',
+                autocomplete: 'section-personal family-name',
+                label: 'account.personalLastNameLabel'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

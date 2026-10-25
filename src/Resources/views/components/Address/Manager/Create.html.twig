@@ -1,5 +1,4 @@
 {% props
-    type = 'shipping',
     cva = {},
 %}
 
@@ -9,12 +8,9 @@
     class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         type: 'button',
-        color: 'secondary',
+        color: 'light',
         icon: 'plus',
-        label: 'account.addressCreateBtn'|trans|sw_sanitize,
+        label: 'viewsTheme.account.addressNew'|trans|sw_sanitize,
         'data-component': 'ViewsTheme:Address:Manager:Create',
-        'data-component-options': {
-            type: type,
-        }|json_encode,
     }).all() }}
 />

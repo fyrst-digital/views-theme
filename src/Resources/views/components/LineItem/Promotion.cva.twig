@@ -3,8 +3,8 @@
         base: 'vi-line-item vi-line-item__promotion',
         variants: {
             layout: {
-                stacked: 'd-grid gx-3 gy-2 align-items-center',
-                grid: 'd-contents',
+                stacked: 'd-grid column-gap-3 row-gap-2 align-items-center',
+                table: 'd-grid column-gap-3 row-gap-2 align-items-center d-lg-contents',
             },
         },
     },
@@ -18,18 +18,17 @@
         base: 'vi-line-item__label',
     },
     image: {
-        base: 'vi-line-item__image icon-size-5 d-flex align-items-center justify-content-center flex-shrink-0 rounded-2 bg-body-secondary p-4',
+        base: 'vi-line-item__image icon-size-5 d-flex align-items-center justify-content-center flex-shrink-0 bg-body-secondary rounded-2 p-4',
     },
     footer: {
-        base: 'vi-line-item__footer',
-        variants: {
-            layout: {
-                stacked: 'd-flex align-items-center gap-2',
-                grid: 'd-flex d-xl-contents align-items-center gap-2',
-            },
-        },
+        base: 'vi-line-item__footer d-flex align-items-center gap-2',
     },
     price: {
-        base: 'flex-shrink-0 ms-auto ms-xl-0',
+        base: 'vi-line-item__price fw-semibold flex-shrink-0 ms-auto',
+        variants: {
+            layout: {
+                table: 'text-end ms-lg-0',
+            },
+        },
     },
 }

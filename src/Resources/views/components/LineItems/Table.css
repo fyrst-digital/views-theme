@@ -1,0 +1,7 @@
+.vi-line-items-table {
+  grid-template-columns: var(--vi-line-items-cols, minmax(0, 1fr));
+}
+
+.vi-line-items-table__header-product {
+  grid-column: span 2;
+}

@@ -1,0 +1,89 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'panel', 'shipping', 'billing', 'shippingChange', 'billingChange']) %}
+
+<section
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        <h2
+            {{ vi_attrs('title') }}
+            class="{{ vi_class('title') }}"
+        >
+            {{ 'checkout.confirmAddresses'|trans|sw_sanitize }}
+        </h2>
+    {% endblock %}
+
+    {% block panel %}
+        <div
+            {{ vi_attrs('panel') }}
+            class="{{ vi_class('panel') }}"
+        >
+            {% for card in cards %}
+                <section
+                    class="{{ vi_class('column') }}"
+                    {{ vi_attrs(card.nest).defaults({
+                        'data-divided': card.divided ? 'true' : false,
+                    }) }}
+                >
+                    <div class="{{ vi_class('head') }}">
+                        <h2 class="{{ vi_class('label') }}">
+                            {{ card.title }}
+                        </h2>
+
+                        <twig:ViewsTheme:Address:Manager:Action
+                            class="{{ vi_class('change') }}"
+                            {{ ...vi_attrs(card.changeNest).defaults({
+                                tab: card.tab,
+                                hideShipping: hideShippingAddress,
+                                href: card.editHref,
+                                color: 'none',
+                                label: changeLabel,
+                                title: card.changeTitle,
+                                'aria-label': card.changeTitle,
+                                link: true,
+                            }).all() }}
+                        />
+                    </div>
+
+                    {% if card.warn %}
+                        <twig:ViewsTheme:Alert
+                            type="warning"
+                            content="{{ 'address.countryNoShippingAlert'|trans|sw_sanitize }}"
+                        />
+                    {% endif %}
+
+                    {% if card.equal %}
+                        <twig:ViewsTheme:Address class="{{ vi_class('lines') }}">
+                            <twig:block name="content">
+                                <p class="{{ vi_class('name') }}">
+                                    {{ equalTitle }}
+                                </p>
+                                <p class="{{ vi_class('line') }}">
+                                    {{ equalText }}
+                                </p>
+                            </twig:block>
+                        </twig:ViewsTheme:Address>
+                    {% else %}
+                        <twig:ViewsTheme:Address
+                            class="{{ vi_class('lines') }}"
+                            :address="card.address"
+                            title:class="{{ vi_class('line') }}"
+                            fullName:class="{{ vi_class('name') }}"
+                            company:class="{{ vi_class('line') }}"
+                            department:class="{{ vi_class('line') }}"
+                            street:class="{{ vi_class('line') }}"
+                            additionalLine1:class="{{ vi_class('line') }}"
+                            additionalLine2:class="{{ vi_class('line') }}"
+                            zipcode:class="{{ vi_class('line') }}"
+                            city:class="{{ vi_class('line') }}"
+                            countryState:class="{{ vi_class('line') }}"
+                            country:class="{{ vi_class('line') }}"
+                            phone:class="{{ vi_class('line') }}"
+                        />
+                    {% endif %}
+                </section>
+            {% endfor %}
+        </div>
+    {% endblock %}
+</section>

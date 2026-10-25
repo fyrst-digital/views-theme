@@ -1,0 +1,29 @@
+{
+    root: {
+        base: 'vi-line-items-table min-w-0 p-4',
+        variants: {
+            empty: {
+                true: '',
+                false: 'd-grid align-items-lg-center column-gap-lg-4 row-gap-4 bg-white border rounded-4 overflow-hidden',
+            },
+        },
+    },
+    headerProduct: {
+        base: 'vi-line-items-table__header-product d-none d-lg-block fs-6 fw-semibold',
+    },
+    headerQuantity: {
+        base: 'vi-line-items-table__header-quantity d-none d-lg-block fs-6 fw-semibold text-center',
+    },
+    headerTotal: {
+        base: 'vi-line-items-table__header-total d-none d-lg-block fs-6 fw-semibold text-end',
+    },
+    headerLine: {
+        base: 'd-none d-lg-block',
+    },
+    item: {
+        base: 'vi-line-items-table__item',
+    },
+    itemLine: {
+        base: '',
+    },
+}

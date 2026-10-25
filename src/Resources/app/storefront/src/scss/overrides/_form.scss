@@ -1,7 +1,7 @@
 $input-padding-y: var(--spacing-3);
 $input-padding-x: var(--spacing-5);
-$input-padding-y-sm: var(--spacing-2);
-$input-padding-x-sm: var(--spacing-3);
+$input-padding-y-sm: var(--spacing-1);
+$input-padding-x-sm: var(--spacing-2);
 $input-padding-y-lg: var(--spacing-4);
 $input-padding-x-lg: var(--spacing-5);
 $input-font-size: var(--font-size-5);
@@ -38,7 +38,7 @@ $form-label-font-weight: 600;
 $form-label-color: var(--body-color);
 
 $form-text-margin-top: 0;
-$form-text-font-size: var(--icon-size-1);
+$form-text-font-size: var(--font-size-6);
 $form-text-color: $muted;
 
 $form-feedback-margin-top: 0;

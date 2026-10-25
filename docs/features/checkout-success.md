@@ -6,6 +6,8 @@ UX tags are **`Checkout:Success`** (branch / theme name). Shopware’s route and
 
 Unlike [cart page](cart-page.md), **`Checkout:Success` has no `data-component` / no island JS / no `/vi/…`**. Recap is read-only: order DTO (`page.order`), not the cart.
 
+Line items are a read-only `LineItems:Table` (`page.order.nestedLineItems`). `Checkout:Method` is removed; payment and shipping are one checked, nameless `Form:Selection`. Header `supportDisplay` stays the default `all`, so `Page:Support` shows at every width. Addresses still use [`Address:List`](address.md).
+
 Does **not** own account edit-order / complete-payment. That page is [`Account:Order:Edit`](account.md) — see [checkout confirm](checkout-confirm.md#edit-order-isolation).
 
 ## Ownership
@@ -13,13 +15,12 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Piece | Responsibility |
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Success` |
-| `Page:Header:Minimal` | Inline header (no ESI): `Page:Logo` + `header.supportInfo` + `Button` home |
-| `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, grid items, comment + preferred date, aside |
+| `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width. Finish passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
+| `Checkout:Success` | Layout composer — flashes, thank-you header, addresses, methods, line-item table, comment + preferred date, aside |
 | `Checkout:Success:Header` | `checkout.finishHeader` / `finishUpdateHeader`, order number (`data-order-number`), confirmation-mail teaser, changed-payment subtitle, Google enhanced conversions, hidden line-item dump |
 | `Checkout:Success:Addresses` | Shim → [`Order:Addresses`](account.md) (order billing/shipping → [`Address:List`](address.md)). No `Address:Manager:Action` |
-| `Checkout:Success:Payment` / `:Shipping` | Class VM. One selected `Checkout:Method` (`interactive=false`). Shipping omitted when the order has no delivery |
-| `Checkout:Method` | Radio primitive; `interactive=false` drops the input and uses a `div` instead of `label` |
-| `Cart:Items` | Grid, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
+| `Checkout:Success:Payment` / `:Shipping` | Class VM. One checked, nameless `Form:Selection`. Shipping omitted when the order has no delivery |
+| `LineItems:Table` | Read-only table, `showRemoveButton=false`, `showQuantitySelect=false`, `lineItems` = `page.order.nestedLineItems`, `cart` = `page.order` |
 | `Checkout:Success:Comment` | Read-only `page.order.customerComment` (no localStorage, no textarea) |
 | `Checkout:Success:DeliveryDate` | Read-only preferred date from the order custom field ([delivery-date](delivery-date.md)) |
 | `Checkout:Success:Aside` | Sticky summary. `Cart:Summary` with `summary: page.order`. No TOS / place-order |
@@ -31,10 +32,11 @@ Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefron
 
 ```
 page/checkout/finish/index.html.twig
-├─ base_esi_header → Page:Header:Minimal   (inline, no ESI)
-│    ├─ Page:Logo
-│    ├─ header.supportInfo
-│    └─ Button (frontend.home.page)
+├─ base_esi_header → Page:Header:Minimal action="cart"   (inline, no ESI)
+│    └─ .container
+│         ├─ Page:Logo
+│         ├─ Page:Support
+│         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
 ├─ page_checkout → Checkout:Success        (no data-component)
 │    ├─ Cart:Flashes
 │    ├─ Checkout:Success:Header
@@ -49,7 +51,7 @@ page/checkout/finish/index.html.twig
 │    │    └─ billing card (or checkout.addressEqualText)
 │    ├─ Checkout:Success:Payment
 │    ├─ Checkout:Success:Shipping          (if order delivery + shipping method)
-│    ├─ Cart:Items grid, nestedLineItems, showRemoveButton=false, showQuantitySelect=false
+│    ├─ LineItems:Table, nestedLineItems, showRemoveButton=false, showQuantitySelect=false
 │    ├─ additional
 │    │    ├─ Checkout:Success:Comment      (if order.customerComment)
 │    │    └─ Checkout:Success:DeliveryDate (if custom field set)
@@ -62,9 +64,9 @@ Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-success-cols`). Asi
 
 ## Scripts
 
-No owner JS. `Checkout:Success` has **no** `data-component`. `Cart:Items` / `Cart:Heading` island hooks are unused here (no `Cart:Page` swap).
+No owner JS. `Checkout:Success` has **no** `data-component`. `LineItems:Table` / `Cart:Heading` island hooks are unused here (no `Cart:Page` swap).
 
-`Checkout:Method` on this page is display-only (`interactive=false`). Do **not** mount `Checkout:Method:Form`.
+`Checkout:Success:Payment` and `Checkout:Success:Shipping` are display recaps: one checked `Form:Selection` with no `name`. Do **not** mount `Checkout:Method:Form`.
 
 ## Checkout:Success:Addresses
 
@@ -95,13 +97,13 @@ Class VMs. One method row each — not the confirm radio lists (`page.paymentMet
 
 Shipping renders nothing when `visible` is false (no delivery / no method).
 
-`Checkout:Method` props: `interactive=false`, `selectedMethodId` = `methodId`, description truncated at 75 chars (same as confirm).
+Finish rows are `Form:Selection` (`type="radio"`, `checked`, no `name`). Description is plain text truncated at 75 characters (same as confirm). Shipping passes `trailing` from that delivery’s `shippingCosts.totalPrice` (order currency when loaded). Payment omits `trailing`.
 
-## Cart:Items on the order
+## Line items on the order
 
-Optional `lineItems` (default `cart.lineItems`) so finish can pass `page.order.nestedLineItems` without flattening children. `cart` is still `page.order` for `deliveries` / empty checks.
+`LineItems:Table` `lineItems` (default `cart.lineItems`) so finish can pass `page.order.nestedLineItems` without flattening children. `cart` is still `page.order` for `deliveries` / empty checks.
 
-Qty / remove stay off — order line items are not cart `LineItem` mutators.
+Qty / remove stay off — order line items are not cart `LineItem` mutators. The returns note is not part of this table.
 
 ## Checkout:Success:Header
 

@@ -5,6 +5,16 @@
 .vi-modal__panel {
     width: var(--vi-modal-width, min(720px, 100%));
     max-height: var(--vi-modal-max-h, min(90vh, 800px));
+    box-shadow: var(--vi-modal-shadow, 0 10px 28px #2E282A12);
+}
+
+.vi-modal-close {
+    width: var(--vi-modal-close-size, 32px);
+    height: var(--vi-modal-close-size, 32px);
+}
+
+.vi-modal__footer:not(:has(*)) {
+    display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {

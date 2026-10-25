@@ -24,7 +24,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |
 | `Account:Orders` | Order list + `Pagination` (GET `?p=`) |
 | `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion |
-| `Order:ItemDetails` / `:Documents` | Line items (`Cart:Items`), documents, totals |
+| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Shared with [success](checkout-success.md) |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
@@ -69,13 +69,17 @@ Edit-order (checkout `_page`, minimal chrome):
 ```
 page/account/order/index.html.twig
 ├─ base_esi_header → Page:Header:Minimal
+│    └─ .container
+│         ├─ Page:Logo
+│         ├─ Page:Support
+│         └─ Button (frontend.home.page)
 ├─ page_checkout → Account:Order:Edit
 │    ├─ alerts
 │    ├─ Account:Heading
 │    ├─ Order:Addresses
-│    ├─ Checkout:Confirm:Payment   (POST edit-order.change-payment-method)
+│    ├─ Payment:Selection          (POST edit-order.change-payment-method)
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
-│    ├─ Cart:Items grid
+│    ├─ LineItems:Table (read-only, nestedLineItems)
 │    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
@@ -83,6 +87,8 @@ page/account/order/index.html.twig
 Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
+
+`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
 
 ## Scripts (theme-owned)
 
@@ -108,10 +114,10 @@ Optional action key `activePrefix` marks the item active when `activeRoute` star
 | Prop | Default | Notes |
 |------|---------|--------|
 | `requestedGroupId` | `null` | Hidden input — customer-group register |
-| `onlyCompanyRegistration` | `false` | Forwarded to `Address:Personal` |
+| `onlyCompanyRegistration` | `false` | Forwarded to `Account:Form:Personal` |
 | `formAction` | `frontend.account.register.save` | Override when a leftover include passes `formAction` |
 
-Profile personal form passes `showCompanyFields: true` into `Address:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
+Profile personal form passes `showCompanyFields: true` into `Account:Form:Personal` so company/VAT stay visible when the shop hides the account-type select (core `showCompanyFields` parity).
 
 ## Order:Item
 
@@ -123,7 +129,7 @@ Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOr
 | `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
 | `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
 
-Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `Cart:Items` + `Order:Documents` + totals.
+Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
 
 ## Storefront bridges
 
@@ -146,7 +152,7 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | `page/account/order/index.html.twig` | `Account:Order:Edit` |
 | `page/account/order/header.html.twig` | `Page:Header:Minimal` |
 | `page/account/order/address.html.twig` | `Order:Addresses` |
-| `page/account/order/confirm-payment.html.twig` | `Checkout:Confirm:Payment` (edit-order action) |
+| `page/account/order/confirm-payment.html.twig` | `Payment:Selection` (edit-order action) |
 | `page/account/order/confirm-shipping.html.twig` | `Checkout:Success:Shipping` |
 | `page/account/order/cancel-order-modal.html.twig` | `Order:Cancel` |
 | `page/account/register/index.html.twig` | `Account:Register:Page` |
@@ -163,7 +169,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 
 ## Files
 
-`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
 
 ## Out of scope
 

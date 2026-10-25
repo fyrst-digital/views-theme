@@ -1,0 +1,52 @@
+{% props
+    page = __context.page|default(null),
+    showComment = config('core.cart.showCustomerComment'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'fields', 'comment', 'deliveryDate']) %}
+
+{% set deliveryDateActive = page ? page.extensions.viewsTheme.deliveryDate.active|default(false) : false %}
+
+{% if showComment or deliveryDateActive %}
+    <section
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <h2
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
+            >
+                {{ 'checkout.beforeYouOrderHeader'|trans|sw_sanitize }}
+            </h2>
+        {% endblock %}
+
+        {% block fields %}
+            <div
+                {{ vi_attrs('fields') }}
+                class="{{ vi_class('fields') }}"
+            >
+                {% block comment %}
+                    {% if showComment %}
+                        <twig:ViewsTheme:Checkout:Confirm:Comment
+                            class="{{ vi_class('comment') }}"
+                            {{ ...vi_attrs('comment').all() }}
+                        />
+                    {% endif %}
+                {% endblock %}
+
+                {% block delivery_date %}
+                    <twig:ViewsTheme:Checkout:DeliveryDateSelection
+                        class="{{ vi_class('deliveryDate') }}"
+                        :title="''"
+                        {{ ...vi_attrs('deliveryDate').defaults({
+                            deliveryDate: page.extensions.viewsTheme.deliveryDate|default({}),
+                        }).all() }}
+                    />
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </section>
+{% endif %}

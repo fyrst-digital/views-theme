@@ -1,0 +1,29 @@
+{
+    root: {
+        base: 'vi-stepper__item position-relative d-flex flex-grow-1 flex-xl-grow-1 align-items-xl-center gap-xl-3',
+    },
+    body: {
+        base: 'vi-stepper__body d-flex flex-column flex-xl-row align-items-center flex-grow-1 flex-xl-grow-0 text-decoration-none text-decoration-none-hover gap-2',
+    },
+    mark: {
+        base: 'vi-stepper__mark d-flex align-items-center justify-content-center flex-shrink-0 rounded-circle position-relative z-1 lh-1 fw-semibold fs-6',
+        variants: {
+            active: {
+                true: 'bg-dark text-white',
+                false: 'bg-light text-muted',
+            },
+        },
+    },
+    icon: {
+        base: 'vi-stepper__icon icon-size-2',
+    },
+    label: {
+        base: 'vi-stepper__label align-self-stretch align-self-xl-center text-center text-xl-start fs-6',
+        variants: {
+            active: {
+                true: 'fw-semibold text-body',
+                false: 'fw-medium text-muted',
+            },
+        },
+    },
+}

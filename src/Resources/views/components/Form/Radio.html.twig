@@ -51,47 +51,47 @@
         {% endblock %}
     </span>
 
-    {% block copy %}
-        {% if label is not empty or described or isInvalid %}
-            <span class="{{ vi_class('copy') }}">
-                {% if label is not empty %}
-                    <span
-                        {{ vi_attrs('label') }}
-                        class="{{ vi_class('label', { described: described }) }}"
-                    >
-                        {{ label|raw }}
-                    </span>
-                {% endif %}
+    <span class="{{ vi_class('copy') }}">
+        {% block label %}
+            {% if label is not empty %}
+                <span
+                    {{ vi_attrs('label') }}
+                    class="{{ vi_class('label') }}"
+                >
+                    {{ label|raw }}
+                </span>
+            {% endif %}
+        {% endblock %}
 
-                {% if described %}
-                    <span
-                        {{ vi_attrs('description').defaults({
-                            id: descriptionId,
-                        }) }}
-                        class="{{ vi_class('description') }}"
-                    >
-                        {{ description }}
-                    </span>
-                {% endif %}
+        {% block description %}
+            {% if described %}
+                <span
+                    {{ vi_attrs('description').defaults({
+                        id: descriptionId,
+                    }) }}
+                    class="{{ vi_class('description') }}"
+                >
+                    {{ description }}
+                </span>
+            {% endif %}
+        {% endblock %}
 
-                {% if isInvalid %}
-                    <span
-                        {{ vi_attrs('feedback').defaults({
-                            id: feedbackId,
-                        }) }}
-                        class="{{ vi_class('feedback') }}"
-                    >
-                        {%- block feedback -%}
-                            {%- if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty -%}
-                                {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
-                                    formViolations: formViolations,
-                                    violationPath: violationPath,
-                                } %}
-                            {%- endif -%}
-                        {%- endblock -%}
-                    </span>
-                {% endif %}
+        {% if isInvalid %}
+            <span
+                {{ vi_attrs('feedback').defaults({
+                    id: feedbackId,
+                }) }}
+                class="{{ vi_class('feedback') }}"
+            >
+                {%- block feedback -%}
+                    {%- if violationPath is not empty and formViolations and formViolations.getViolations(violationPath) is not empty -%}
+                        {% sw_include '@Storefront/storefront/utilities/form-violation.html.twig' with {
+                            formViolations: formViolations,
+                            violationPath: violationPath,
+                        } %}
+                    {%- endif -%}
+                {%- endblock -%}
             </span>
         {% endif %}
-    {% endblock %}
+    </span>
 </{{ tag|raw }}>

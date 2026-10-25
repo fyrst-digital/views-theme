@@ -29,6 +29,14 @@ See [Variants grid](features/variants-grid.md).
 
 See [Preferred delivery date](features/delivery-date.md).
 
+### Checkout
+
+| Config key | Type | Default | Description |
+|------------|------|---------|-------------|
+| `ViewsTheme.config.checkoutArrivalDateActive` | bool | `true` | Show `Checkout:ArrivalDate` on the confirm summary |
+
+See [Checkout confirm](features/checkout-confirm.md).
+
 ## Theme configuration (`theme.json`)
 
 Path: `src/Resources/theme.json`.
@@ -64,6 +72,10 @@ Responsive: `.icon-size-{breakpoint}-{n}` (e.g. `icon-size-2 icon-size-md-4`).
 
 **Appearance utility** (Bootstrap `$utilities`): `.appearance-none` is the theme Bootstrap class for `appearance: none`.
 
+**Text muted utility** (Bootstrap color utility): `.text-muted` sets `color` to the theme field `muted` (`$muted`, `#66605D`). `scss/_utilities.scss` merges that value into the color utility and generates the group again, after Storefront. Not responsive. `.text-opacity-*` does not tint it.
+
+**Text decoration hover** (Bootstrap `$utilities`): `scss/_utilities.scss` sets `state: hover` on `text-decoration` and generates that group again. `.text-decoration-none-hover:hover` (and the underline and line-through variants) set `text-decoration` on hover. That beats `a:hover { text-decoration: underline }`. `.text-decoration-none` alone does not.
+
 **Font family utility** (Bootstrap `$utilities`):
 
 | Class | Declaration | Source |
@@ -76,7 +88,7 @@ Not responsive. Use these in CVA / `class` the same way as `.icon-size-*`.
 
 **Column count utility** (Bootstrap `$utilities`, `grid-template-columns`):
 
-The count is `$grid-columns` in `scss/override.scss` (default `12`). The same variable is Bootstrap’s flex-grid column count.
+The count is `$grid-columns` in `scss/overrides/_utilities.scss` (default `12`). The same variable is Bootstrap’s flex-grid column count.
 
 | Class | Declaration |
 |-------|-------------|
@@ -117,7 +129,7 @@ There is no auto-reload for these files: edit + hard-refresh the storefront. The
 
 ### Theme SCSS overrides
 
-Global token assigns that sit outside a single component live in `app/storefront/src/scss/_theme.scss`, imported last from `base.scss`. `theme.json` compiles that file after `@StorefrontBootstrap`, so the rules follow Bootstrap in the theme stylesheet.
+Global token assigns that sit outside a single component live in `app/storefront/src/scss/_theme.scss`, imported last from `base.scss`. `theme.json` compiles that file after `@StorefrontBootstrap`, so the rules follow Bootstrap in the theme stylesheet. `.btn-light` is the pen Light Solid button: `--light` fill, `--border-color` stroke on rest, hover, and disabled, and an active stroke that follows `--btn-active-bg`. `.btn-outline-light` is the pen Light Outline button: white fill, `--border-color` stroke, `--body-color` label, `--light` hover, and `--border-color` active. It is excluded from the outline underline.
 
 Breakpoints use `$grid-breakpoints` from `override.scss` via `@include media-breakpoint-up(...)`. Footer columns that open from `data-collapse-until` up use the `vi-collapse-until` mixin (attribute selector plus `media-breakpoint-up` for each named breakpoint except `xs`).
 

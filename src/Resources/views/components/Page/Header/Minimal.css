@@ -1,0 +1,3 @@
+.vi-header-minimal__container {
+  grid-template-columns: var(--vi-header-minimal-cols, auto auto);
+}

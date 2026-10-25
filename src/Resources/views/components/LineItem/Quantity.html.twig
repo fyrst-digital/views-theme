@@ -1,9 +1,6 @@
 {% props
     lineItem,
-    nestingLevel = 0,
-    showQuantitySelect = true,
-    redirectTo = 'frontend.checkout.cart.page',
-    redirectParameters = null,
+    label = 'viewsTheme.lineItems.quantityLabel'|trans|sw_sanitize,
     cva = {},
 %}
 
@@ -22,51 +19,10 @@
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['quantityInput']) %}
-
-{% set maxQuantity = quantityInformation and quantityInformation.maxPurchase
-    ? quantityInformation.maxPurchase
-    : config('core.cart.maxQuantity') %}
-
-{% if showQuantitySelect
-    and lineItem.quantityInformation
-    and lineItem.stackable
-    and nestingLevel < 1
-%}
-    <form
-        {{ attributes.defaults({
-            action: path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }),
-            method: 'post',
-            'data-component': 'ViewsTheme:LineItem:Quantity',
-            'data-component-options': {
-                lineItemId: lineItem.id,
-                updateEvent: 'ViewsTheme:Cart:Update',
-                delay: 800,
-            }|json_encode,
-        }) }}
-        class="{{ vi_class('root', { digital: isDigital }) }}"
-    >
-        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-        {% if redirectParameters is not null %}
-            <input type="hidden" name="redirectParameters" value="{{ redirectParameters }}">
-        {% endif %}
-
-        <twig:ViewsTheme:QuantityInput
-            {{ ...vi_attrs('quantityInput').defaults({
-                quantity: lineItem.quantity,
-                minQuantity: quantityInformation.minPurchase|default(1),
-                maxQuantity: maxQuantity,
-                purchaseSteps: quantityInformation.purchaseSteps|default(1),
-                size: 'sm',
-                disabled: isDigital,
-            }).all() }}
-        />
-    </form>
-{% else %}
-    <div
-        {{ attributes }}
-        class="{{ vi_class('root', { digital: isDigital }) }}"
-    >
-        {{ lineItem.quantity }}
-    </div>
-{% endif %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root', { digital: isDigital }) }}"
+>
+    <span class="{{ vi_class('label') }}">{{ label }}</span>
+    <span class="{{ vi_class('value') }}">{{ lineItem.quantity }}</span>
+</div>

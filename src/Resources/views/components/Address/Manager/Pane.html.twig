@@ -8,28 +8,15 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['title', 'current', 'list']) %}
+{% do vi_define_attrs(['current', 'list']) %}
 
 <section
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% block title %}
-        <h2
-            {{ vi_attrs('title') }}
-            class="{{ vi_class('title') }}"
-        >
-            {% if type is same as('shipping') %}
-                {{ 'account.addressesTitleCurrentShippingAddress'|trans|sw_sanitize }}
-            {% else %}
-                {{ 'account.addressesTitleCurrentBillingAddress'|trans|sw_sanitize }}
-            {% endif %}
-        </h2>
-    {% endblock %}
-
     {% block current %}
         {% if current %}
-            <twig:ViewsTheme:Address:Manager:Item
+            <twig:ViewsTheme:Address:Manager:Item:Hero
                 class="{{ vi_class('current') }}"
                 {{ ...vi_attrs('current').defaults({
                     address: current,

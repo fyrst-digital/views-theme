@@ -1,12 +1,12 @@
 # Grid
 
-Generic CSS grid layout shell. Owns container chrome (`grid`) plus optional **gap** / **columns** CSS tokens. Children own their own spans (`g-col-*`).
+Generic CSS grid layout shell. Owns container chrome (`d-grid grid`) plus a **columns** track recipe and an optional **gap** token. Children own their own spans (`g-col-*`). `.g-col-*` is generated under `.grid`.
 
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Grid` | `display: grid`; `css-gap` → `--vi-grid-gap`; optional `--vi-grid-cols` |
+| `Grid` | `d-grid grid` (`.grid` is the `.g-col-*` parent); `columns` recipe → responsive `grid-columns-*`; `css-gap` → `--vi-grid-gap` |
 | Caller | Content; item column classes when needed |
 
 No PHP/JS / `data-component`.
@@ -14,22 +14,27 @@ No PHP/JS / `data-component`.
 ## Usage
 
 ```twig
-{# Default 12-col BS grid; items use g-col-* #}
+{# Default 1-md:2 — one column, two from md #}
 <twig:ViewsTheme:Grid role="list" gap="md">
     <twig:block name="content">
         {% for product in products %}
-            <twig:ViewsTheme:Product:Box class="g-col-6 g-col-lg-4" :product="product" />
+            <twig:ViewsTheme:Product:Box :product="product" />
         {% endfor %}
     </twig:block>
 </twig:ViewsTheme:Grid>
 
-{# Address / register fields — 6-col base #}
-<twig:ViewsTheme:Grid columns="6" gap="sm">
+{# Field canvas — one column, six from md. Full g-col-1 g-col-md-6, half g-col-md-3, third g-col-md-2 #}
+<twig:ViewsTheme:Grid columns="1-md:6" gap="sm">
     …
 </twig:ViewsTheme:Grid>
 
 {# Token gap — CVA `css-gap` #}
 <twig:ViewsTheme:Grid :gap="false">
+    …
+</twig:ViewsTheme:Grid>
+
+{# Custom tracks on the host — omit the utility (`!important`) #}
+<twig:ViewsTheme:Grid columns="custom" gap="md">
     …
 </twig:ViewsTheme:Grid>
 ```
@@ -40,30 +45,28 @@ No PHP/JS / `data-component`.
 |------|---------|--------|
 | `role` | `null` | Root ARIA role |
 | `gap` | `false` | `false` → `css-gap` (`gap: var(--vi-grid-gap, …)`); `'sm'` / `'md'` / `'lg'` → `gap-2` / `gap-4` / `gap-6` |
-| `columns` | `null` | Scalar only → `--vi-grid-cols: N` (no breakpoint maps) |
+| `columns` | `null` | `null` → `1-md:2`. Grammar: base count, then `-{breakpoint}:{count}` steps in breakpoint order (`1-sm:3-xl:6` = 1, then 3 from `sm`, 6 from `xl`). Presets: `1-sm:3` `grid-columns-1 grid-columns-sm-3`; `1-md:2` `grid-columns-1 grid-columns-md-2`; `1-md:6` `grid-columns-1 grid-columns-md-6`; `1-xl:6` `grid-columns-1 grid-columns-xl-6`; `1-lg:8` `grid-columns-1 grid-columns-lg-8`. `custom` omits the utility so the host owns the tracks |
 | `cva` | `{}` | Root override |
 
 ## Tokens (CSS only consumes)
 
 ```css
 .vi-grid {
-  grid-template-columns: var(--vi-grid-columns, repeat(var(--vi-grid-cols, 12), minmax(0, 1fr)));
-
   &.css-gap {
     gap: var(--vi-grid-gap, var(--spacing-0, 0));
   }
 }
 ```
 
+Column count is a `columns` recipe of `grid-columns-*` utilities: `repeat(N, minmax(0, 1fr))`. They are `!important`, so a host cannot override them with a custom property. Spans (`g-col-*`) must match the track count at that breakpoint.
+
 | Token | Role |
 |-------|------|
-| `--vi-grid-cols` | Track **count** (from `columns` prop; default `12`) |
 | `--vi-grid-gap` | Token path when `gap` is `false` (`css-gap`). Named sizes use Bootstrap `gap-*` instead |
-| `--vi-grid-columns` | Optional **full** `grid-template-columns` override (listing auto-fill, Review panel/matrix) |
 
-Theme may assign `--vi-grid-cols` / `--vi-grid-gap` / `--vi-grid-columns` on a host without props. **No media queries in Grid.css.**
+Theme may assign `--vi-grid-gap` on a host without props. **No media queries in Grid.css.** Custom tracks (listing auto-fill, review panel/matrix) live in that component’s CSS. A `Grid` host that needs them passes `columns: 'custom'`.
 
-Address/register fields: parent `columns="6"`; full = `g-col-6`, pair = `g-col-3`, third = `g-col-2`. Listing empty (auto-fill tracks) sets `grid-column: 1 / -1` on `Product:Listing:Empty` — not on Grid.
+Field canvas (`columns="1-md:6"`): below `md` one column; from `md` six tracks. Full = `g-col-1 g-col-md-6`, half = `g-col-1 g-col-md-3`, third = `g-col-1 g-col-md-2`. Listing empty (auto-fill tracks) sets `grid-column: 1 / -1` on `Product:Listing:Empty` — not on Grid.
 
 ## Blocks
 
@@ -77,10 +80,10 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 
 | Caller | Notes |
 |--------|--------|
-| `Product:Listing:Results` | Items grid (`gap="md"`; `size=md` adds `gap-md-8`); density via Results `size` → item CVA `g-col-*`; host may set `--vi-grid-columns` |
-| `Account:Register` / `Address:*` | Field layout, 6-col base |
-| `Address:List` | Shipping + billing cards (`g-col-12 g-col-md-6`) |
-| `Page:Footer:Main` | Outer columns Grid (`columns="8"`, `gap: false` / `--vi-grid-gap`) around `Column:Hotline` + `Column:Navigation` + `Column:Logos` (`g-col-8`) |
+| `Product:Listing:Results` | Items grid (`gap="md"`; `size=md` adds `gap-md-8`); `columns: 'custom'`; auto-fill tracks in `Results.css` (`--vi-product-basis`) |
+| `Account:Register` / `Address:*` | Field canvas `columns="1-md:6"` (one column, six from `md`) |
+| `Address:List` | Shipping + billing cards (`columns="1-md:2"`; each card is one track) |
+| `Page:Footer:Main` | Outer columns Grid (`columns="1-lg:8"`, `gap: false` / `--vi-grid-gap`). From `lg`: Hotline `g-col-lg-3`, Navigation `g-col-lg-5`, Logos `g-col-lg-8` |
 
 ## Files
 

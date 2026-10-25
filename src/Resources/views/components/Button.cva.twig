@@ -1,6 +1,6 @@
 {
     root: {
-        base: 'btn align-items-center d-inline-flex',
+        base: 'align-items-center d-inline-flex',
         variants: {
             color: {
                 none: '',
@@ -11,8 +11,19 @@
                 link: 'btn-link',
                 success: 'btn-success',
                 danger: 'btn-danger',
+                warning: 'btn-warning',
+                info: 'btn-info',
+                muted: 'btn-muted',
                 'outline-primary': 'btn-outline-primary',
                 'outline-secondary': 'btn-outline-secondary',
+                'outline-light': 'btn-outline-light',
+                'outline-dark': 'btn-outline-dark',
+                'outline-white': 'btn-outline-white',
+                'outline-success': 'btn-outline-success',
+                'outline-danger': 'btn-outline-danger',
+                'outline-warning': 'btn-outline-warning',
+                'outline-info': 'btn-outline-info',
+                'outline-muted': 'btn-outline-muted',
             },
             size: {
                 sm: 'btn-sm gap-2',
@@ -29,6 +40,10 @@
             },
             full: {
                 true: 'w-100'
+            },
+            link: {
+                true: 'border-0 bg-transparent p-0 fw-medium text-underline link-offset-2 link-underline-opacity-25 link-underline-opacity-50-hover',
+                false: 'btn',
             }
         },
         compoundVariants: [{
@@ -43,8 +58,20 @@
             square: [true],
             size: ['lg'],
             class: 'p-3',
+        }, {
+            square: [true],
+            link: [true],
+            class: 'p-0',
+        }, {
+            link: [true],
+            color: ['none', 'dark'],
+            class: 'link-dark link-underline-dark',
+        }, {
+            link: [true],
+            size: ['sm'],
+            class: 'fs-6',
         }],
     },
-    icon: { base: '' },
-    label: { base: '' },
+    icon: { base: 'btn-icon' },
+    label: { base: 'btn-label' },
 }

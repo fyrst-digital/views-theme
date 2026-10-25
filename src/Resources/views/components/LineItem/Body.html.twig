@@ -1,13 +1,12 @@
 {% props
     lineItem,
-    deliveries = null,
     cva = {},
 %}
 
 {% set options = lineItem.payload.options ?? [] %}
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['variations', 'features', 'deliveryDate']) %}
+{% do vi_define_attrs(['variations', 'features']) %}
 
 <div
     {{ attributes }}
@@ -30,16 +29,5 @@
                 lineItem: lineItem,
             }).all() }}
         />
-    {% endblock %}
-
-    {% block deliveryDate %}
-        {% if config('core.cart.showDeliveryTime') %}
-            <twig:ViewsTheme:LineItem:DeliveryDate
-                {{ ...vi_attrs('deliveryDate').defaults({
-                    lineItem: lineItem,
-                    deliveries: deliveries,
-                }).all() }}
-            />
-        {% endif %}
     {% endblock %}
 </div>

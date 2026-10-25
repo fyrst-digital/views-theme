@@ -36,16 +36,17 @@ $grid-breakpoints: (
   xxl: 1600px,
 );
 
+$grid-gutter-width: 40px;
+$container-padding-x: $grid-gutter-width;
+
 $container-max-widths: (
   xs: 360px,
-  sm: 490px,
-  md: 738px,
-  lg: 994px,
-  xl: 1230px,
-  xxl: 1570px,
+  sm: map-get($grid-breakpoints, sm) - $container-padding-x,
+  md: map-get($grid-breakpoints, md) - $container-padding-x,
+  lg: map-get($grid-breakpoints, lg) - $container-padding-x,
+  xl: map-get($grid-breakpoints, xl) - $container-padding-x,
+  xxl: map-get($grid-breakpoints, xxl) - $container-padding-x,
 );
-
-$container-padding-x: 30px;
 
 $font-sizes: (
   1: $h1-font-size,
@@ -65,94 +66,7 @@ $icon-sizes: (
   6: $icon-size-3xl,
 );
 
-// Track count utilities (`.grid-columns-*`). Also Bootstrap's flex-grid column count.
-$grid-column-counts: ();
-@for $i from 1 through $grid-columns {
-  $grid-column-counts: map-merge($grid-column-counts, ($i: unquote("repeat(#{$i}, minmax(0, 1fr))")));
-}
-
-// BUtilities overrides
-$utilities: (
-  "width": (
-    property: width,
-    class: w,
-    values: (
-      25: 25%,
-      50: 50%,
-      75: 75%,
-      100: 100%,
-      auto: auto,
-      fit: fit-content,
-      min: min-content,
-      max: max-content,
-    )
-  ),
-  "position": (
-    property: position,
-    responsive: true,
-    values: static relative absolute fixed sticky
-  ),
-  "display": (
-    responsive: true,
-    print: true,
-    property: display,
-    class: d,
-    values: inline inline-block block grid inline-grid table table-row table-cell flex inline-flex contents none
-  ),
-  "font-family": (
-    property: font-family,
-    class: font,
-    values: (
-      base: var(--#{$prefix}body-font-family),
-      headline: var(--#{$prefix}heading-font-family),
-      monospace: var(--#{$prefix}font-monospace),
-    )
-  ),
-  "font-size": (
-    rfs: true,
-    property: font-size,
-    class: fs,
-    responsive: true,
-    values: $font-sizes
-  ),
-  "icon-size": (
-    property: --icon-size,
-    class: icon-size,
-    responsive: true,
-    values: $icon-sizes
-  ),
-  "cursor": (
-    property: cursor,
-    values: pointer default text
-  ),
-  "appearance": (
-    property: appearance,
-    values: none
-  ),
-  "overflow": (
-    property: overflow,
-    values: auto hidden visible scroll clip,
-  ),
-  "overflow-x": (
-    property: overflow-x,
-    values: auto hidden visible scroll clip,
-  ),
-  "overflow-y": (
-    property: overflow-y,
-    values: auto hidden visible scroll clip,
-  ),
-  "grid-columns": (
-    property: grid-template-columns,
-    class: grid-columns,
-    responsive: true,
-    values: $grid-column-counts
-  ),
-);
-
-@property --vi-grid-columns {
-  syntax: "*";
-  inherits: false;
-}
+@import 'overrides/utilities';
 
 @import 'overrides/button';
 @import 'overrides/form';

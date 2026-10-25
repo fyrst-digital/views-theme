@@ -34,9 +34,9 @@ CVA is the **variant API**, not a bag for a BEM root. Check CVA first. Component
 | CVA | CSS token |
 |-----|-----------|
 | `display`, `flex`/`grid` chrome, `gap`, `align-*`, `justify-*`, `margin`/`padding`, `font-size`/`fw`, visibility (`d-none` / `d-xl-block`) | Custom `grid-template-columns` / `grid-template-areas` |
-| Prop axes (`layout: stacked \| grid`) | `grid-column: 1 / -1`, `span 2`, column index |
-| Breakpoint chrome (`d-xl-*`, `align-items-xl-center`) | px size with no utility (`--vi-image-size`, `--vi-top`) |
-| | Inherited geometry a parent must set (`--vi-cols` on `Cart:Items`) |
+| Prop axes (`layout: stacked \| table`) | `grid-area`, `grid-column` index |
+| Breakpoint chrome (`d-xl-*`, `align-items-xl-center`, `gap-xl-4`) | px size with no utility (`--vi-image-max-w`, `--vi-top`) |
+| | Inherited geometry (`--vi-line-items-cols` on `LineItems:Table`) |
 
 ### Theme breakpoints
 
@@ -50,17 +50,19 @@ SoT: `src/Resources/app/storefront/src/scss/override.scss` (`$grid-breakpoints`)
 | `xl` | **1260px** |
 | `xxl` | 1600px |
 
+`$grid-gutter-width` and `$container-padding-x` are `40px`. Bootstrap halves that for container side padding (`20px`) and for each half of a `.row` gutter. `sm`–`xxl` container max-widths are the breakpoint minus that gutter (`480px`, `728px`, `984px`, `1220px`, `1560px`). `xs` stays `360px`.
+
 Desktop storefront chrome uses **`xl`**, not `1280px`. Display utilities include `contents` (`d-contents`, `d-xl-contents`). Spacers `0–10` (`gap-6` = 24px). Position is responsive (`position-xl-sticky`). Grid track count is a responsive utility (`.grid-columns-*`, `.grid-columns-xl-*`): `grid-template-columns: repeat(N, minmax(0, 1fr))`, generated from `$grid-columns` (default `12`).
 
 ### Variants vs tokens
 
 ```twig
-{# ✅ CVA — layout + xl chrome #}
+{# ✅ CVA — layout + lg chrome #}
 root: {
     variants: {
         layout: {
-            stacked: 'd-grid gx-3 gy-2 align-items-start',
-            grid: 'd-contents',
+            stacked: 'd-grid column-gap-3 row-gap-2 align-items-start',
+            table: 'd-grid column-gap-3 row-gap-2 align-items-start d-lg-contents',
         },
     },
 },
@@ -68,23 +70,42 @@ footer: {
     variants: {
         layout: {
             stacked: 'd-flex align-items-center gap-2',
-            grid: 'd-flex d-xl-contents align-items-center gap-2',
+            table: 'd-flex flex-wrap align-items-center gap-2 d-lg-contents',
         },
     },
 }
 ```
 
 ```css
-/* ✅ CSS — custom tracks / span only */
-.vi-cart-items[data-layout='grid'] {
-  grid-template-columns: var(--vi-cols, var(--vi-image-size, 80px) minmax(0, 1fr));
+/* ✅ CSS — init areas once; lg assigns live in _theme.scss */
+.vi-line-item[data-layout='stacked'],
+.vi-line-item[data-layout='table'] {
+  grid-template-areas: var(--vi-line-item-areas, 'cover content' 'cover footer');
+}
+```
 
-  @media (min-width: 1260px) {
-    --vi-cols: var(--vi-image-size, 80px) minmax(0, 1fr) minmax(104px, auto) auto minmax(72px, auto) minmax(80px, auto);
-    --vi-span: span 2;
+```css
+/* ✅ CSS — one track until lg assigns the content-sized tracks */
+.vi-line-items-table {
+  grid-template-columns: var(--vi-line-items-cols, minmax(0, 1fr));
+}
+```
+
+```scss
+/* ✅ _theme.scss — lg token assign */
+.vi-line-items-table {
+  @include media-breakpoint-up(lg) {
+    --vi-line-items-cols: auto minmax(0, 1fr) auto auto;
   }
 }
+.vi-line-item[data-layout='table'] {
+  @include media-breakpoint-up(lg) {
+    --vi-line-item-areas: none;
+  }
+}
+```
 
+```css
 /* ❌ NEVER — wrap a utility in a token */
 .vi-line-item__unit-price {
   display: var(--vi-unit-d, none);
@@ -107,7 +128,7 @@ root: { base: 'vi-line-item__unit-price d-none d-xl-block' }
 
 ### Bootstrap names only
 
-This theme’s utilities are Bootstrap (see `override.scss`).
+This theme’s utilities are Bootstrap (see `scss/overrides/_utilities.scss`, imported from `override.scss`).
 
 | Use | Not |
 |-----|-----|

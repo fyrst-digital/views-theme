@@ -1,6 +1,16 @@
 {
-    root: { base: 'vi-header-minimal container d-flex flex-wrap flex-row align-items-center justify-content-between gap-3 py-4' },
+    root: { base: 'vi-header-minimal bg-white border-bottom py-4' },
+    container: { base: 'vi-header-minimal__container container d-grid align-items-center column-gap-6 row-gap-2' },
     logo: { base: 'vi-header-minimal__logo' },
-    support: { base: 'vi-header-minimal__support d-none d-md-block text-center flex-fill' },
-    back: { base: 'vi-header-minimal__back' },
+    support: {
+        base: '',
+        variants: {
+            supportDisplay: {
+                all: '',
+                desktop: 'd-none d-xl-block',
+            },
+        },
+        defaultVariants: { supportDisplay: 'all' },
+    },
+    back: { base: 'vi-header-minimal__back ms-auto' },
 }

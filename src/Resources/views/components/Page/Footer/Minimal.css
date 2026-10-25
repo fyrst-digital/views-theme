@@ -1,0 +1,6 @@
+.vi-footer-minimal {
+
+  a {
+    color: var(--vi-footer-color, currentColor);
+  }
+}

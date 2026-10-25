@@ -1,0 +1,30 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['additions', 'summary']) %}
+
+<aside
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block additions %}
+        <twig:ViewsTheme:Checkout:Additions
+            class="{{ vi_class('additions') }}"
+            {{ ...vi_attrs('additions').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block summary %}
+        <twig:ViewsTheme:Checkout:Summary
+            class="{{ vi_class('summary') }}"
+            {{ ...vi_attrs('summary').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+</aside>

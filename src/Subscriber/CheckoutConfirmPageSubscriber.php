@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Subscriber;
 
+use Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -19,6 +22,7 @@ class CheckoutConfirmPageSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private readonly SystemConfigService $systemConfig,
+        private readonly ShippingMethodPriceResolver $shippingMethodPriceResolver,
     ) {
     }
 
@@ -34,6 +38,19 @@ class CheckoutConfirmPageSubscriber implements EventSubscriberInterface
         $page = $event->getPage();
         $salesChannelContext = $event->getSalesChannelContext();
 
+        $this->viewsTheme($page)->set('shippingPrices', new ArrayStruct(
+            $this->shippingMethodPriceResolver->resolve(
+                $page->getCart(),
+                $page->getShippingMethods(),
+                $salesChannelContext,
+            ),
+        ));
+
+        $this->addDeliveryDate($page, $salesChannelContext);
+    }
+
+    private function addDeliveryDate(CheckoutConfirmPage $page, SalesChannelContext $salesChannelContext): void
+    {
         $active = (bool) $this->systemConfig->get(
             self::CONFIG_DELIVERY_DATE_ACTIVE,
             $salesChannelContext->getSalesChannelId(),
@@ -64,17 +81,22 @@ class CheckoutConfirmPageSubscriber implements EventSubscriberInterface
         $today = (new \DateTimeImmutable('today'))->format('Y-m-d');
         $max = (new \DateTimeImmutable('today'))->modify(sprintf('+%d days', $maxDays))->format('Y-m-d');
 
+        $this->viewsTheme($page)->set('deliveryDate', new ArrayStruct([
+            'active' => true,
+            'min' => $today,
+            'max' => $max,
+            'customFieldKey' => $customFieldKey,
+        ]));
+    }
+
+    private function viewsTheme(CheckoutConfirmPage $page): ArrayStruct
+    {
         $viewsTheme = $page->getExtension('viewsTheme');
         if (!$viewsTheme instanceof ArrayStruct) {
             $viewsTheme = new ArrayStruct();
             $page->addExtension('viewsTheme', $viewsTheme);
         }
 
-        $viewsTheme->set('deliveryDate', new ArrayStruct([
-            'active' => true,
-            'min' => $today,
-            'max' => $max,
-            'customFieldKey' => $customFieldKey,
-        ]));
+        return $viewsTheme;
     }
 }

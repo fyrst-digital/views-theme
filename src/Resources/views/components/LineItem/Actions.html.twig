@@ -1,0 +1,37 @@
+{% props
+    lineItem,
+    redirectTo = 'frontend.checkout.cart.page',
+    redirectParameters = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% do vi_define_attrs(['quantityInput', 'remove']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block quantityInput %}
+        <twig:ViewsTheme:LineItem:QuantityInput
+            class="{{ vi_class('quantityInput') }}"
+            {{ ...vi_attrs('quantityInput').defaults({
+                lineItem: lineItem,
+                redirectTo: redirectTo,
+                redirectParameters: redirectParameters,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block remove %}
+        <twig:ViewsTheme:LineItem:Remove
+            class="{{ vi_class('remove') }}"
+            {{ ...vi_attrs('remove').defaults({
+                lineItem: lineItem,
+                redirectTo: redirectTo,
+                redirectParameters: redirectParameters,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

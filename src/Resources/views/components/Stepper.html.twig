@@ -1,0 +1,36 @@
+{% props
+    items = [],
+    cva = {},
+%}
+
+{% if items is not empty %}
+    {% do vi_define_cva(cva) %}
+    {% do vi_define_attrs(['list', 'item']) %}
+
+    <nav
+        {{ attributes }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block list %}
+            <ol
+                {{ vi_attrs('list') }}
+                class="{{ vi_class('list') }}"
+            >
+                {% for item in items %}
+                    {% block item %}
+                        <twig:ViewsTheme:Stepper:Item
+                            class="{{ vi_class('item') }}"
+                            {{ ...vi_attrs('item').defaults({
+                                label: item.label|default(''),
+                                url: item.url|default(null),
+                                icon: item.icon|default(null),
+                                active: item.active|default(false),
+                                number: loop.index,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                {% endfor %}
+            </ol>
+        {% endblock %}
+    </nav>
+{% endif %}

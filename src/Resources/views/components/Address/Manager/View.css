@@ -1,0 +1,7 @@
+.vi-address-manager-view__tabs .vi-tabs__tab {
+  border-bottom: 2px solid var(--vi-tab-line, transparent);
+}
+
+.vi-address-manager-view__tabs .vi-tabs__tab[aria-selected='true'] {
+  --vi-tab-line: var(--primary);
+}
