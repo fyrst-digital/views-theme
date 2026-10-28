@@ -13,7 +13,7 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | `LineItems:Table` | Table view on this page. Columns: product (image, name, `Product:Variations` badges), qty, line total. `Cart:Empty` when empty. Editable rows put the stepper and remove in the qty cell |
 | `Cart:Items` | Stacked list (cart drawer, register aside) |
 | `Cart:Page:Aside` | Summary + `Cart:Options` + checkout CTA — **omitted** when empty |
-| `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) via `Total`, `Shipping`, `GrandTotal`, `NetTotal`, and `Tax`. Confirm passes per-row `cva`; this page keeps the defaults |
+| `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) via `Total`, `Shipping`, `GrandTotal`, `NetTotal`, and `Tax`. Row styling lives in each row component’s default CVA, shared by every consumer |
 | `Cart:Options` | Shipping pre-calc + promotion form |
 | `Cart:Actions` | Checkout only (`cart` nest emptied) |
 | `LineItem` | `layout="table"` row inside `LineItems:Table`. Cart page keeps the actions group (stepper and remove) when the line item can be edited and removed |
@@ -41,19 +41,19 @@ Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
 
 ## Cart:Summary
 
-Shared totals list. This page mounts the row components with their default CVA. Confirm passes a `cva` map into each row — [checkout confirm](checkout-confirm.md).
+Shared totals list. The row defaults below follow the confirm summary design and are shared by every consumer (cart page, confirm, register / success / edit-order asides, drawer). Callers only override per row where they differ (the drawer footer does) — [checkout confirm](checkout-confirm.md).
 
 | Component | Default | Nest |
 |-----------|---------|------|
-| `Cart:Summary:Total` | `fs-6`; label and value `fw-medium` | `total` (`summary`) |
+| `Cart:Summary:Total` | `fs-5`; label `fw-medium text-muted`; value `fw-semibold` | `total` (`summary`) |
 | `Cart:Summary:Shipping` | same as total; one row per delivery; `label` block | `shipping` |
-| `Cart:Summary:GrandTotal` | `fs-5`; label and value `fw-semibold`; value also `vi-cart-summary__grand` | `grand` |
-| `Cart:Summary:NetTotal` | `fs-6 text-body-tertiary`; label and value `fw-medium` | `net` |
+| `Cart:Summary:GrandTotal` | `fs-5`; label `fw-semibold`; value `vi-cart-summary__grand fs-3 fw-bold` | `grand` |
+| `Cart:Summary:NetTotal` | `fs-6 text-muted`; label and value `fw-normal` | `net` |
 | `Cart:Summary:Tax` | same as net; one row per rate. An empty `calculatedTaxes` collection still renders one row at 0% (`checkout.summaryTax`, amount 0) | `tax` |
 
-`delivery` and `taxItem` are passed on the tag inside the loops. Blocks stay `total`, `shippings`, `grand_total`, `net_total`, `taxes`. This page does not override `grand_total`, so it has no rule. Confirm does, and renders the `hr` there — [checkout confirm](checkout-confirm.md). The drawer footer mounts `Total` and `Shipping` with its own `cva`, and fills Shipping’s `label` block with `Cart:ShippingCalculation:Open`. Grand total stays off there.
+`delivery` and `taxItem` are passed on the tag inside the loops. Blocks stay `total`, `shippings`, `grand_total`, `net_total`, `taxes`. The `grand_total` block renders a `Divider` inside its own `grand_total_divider` block (override or empty it from a caller) (nest `divider`, CVA `my-2`, spanning both tracks via `--vi-divider-col`) before `GrandTotal`, for every consumer. It is hidden together with the grand total (`showGrandTotal=false`, as in the drawer footer). The drawer footer mounts `Total` and `Shipping` with its own `cva`, and fills Shipping’s `label` block with `Cart:ShippingCalculation:Open`. Grand total stays off there.
 
-Root is `d-grid align-items-baseline`. CSS is the two-column track (`--vi-cols`), `row-gap: var(--vi-cart-summary-gap, 0)`, and `letter-spacing: var(--vi-cart-summary-tracking, normal)` on `.vi-cart-summary__grand`.
+Root is `d-grid align-items-center`. CSS is the two-column track (`--vi-cols`), `row-gap: var(--vi-cart-summary-gap, 0)`, and `letter-spacing: var(--vi-cart-summary-tracking, normal)` on `.vi-cart-summary__grand`.
 
 ## LineItem `layout`
 

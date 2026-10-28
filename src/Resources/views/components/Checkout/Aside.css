@@ -1,7 +1,0 @@
-.vi-checkout-aside {
-    padding-bottom: var(--vi-checkout-aside-pb, 28px);
-
-    @media (min-width: 1260px) {
-        --vi-checkout-aside-pb: 0;
-    }
-}

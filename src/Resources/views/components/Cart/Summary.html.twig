@@ -9,7 +9,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['total', 'shipping', 'grand', 'net', 'tax']) %}
+{% do vi_define_attrs(['total', 'shipping', 'divider', 'grand', 'net', 'tax']) %}
 
 <div
     {{ attributes }}
@@ -41,6 +41,12 @@
 
         {% block grand_total %}
             {% if showGrandTotal is not same as(false) %}
+                {% block grand_total_divider %}
+                    <twig:ViewsTheme:Divider
+                        class="{{ vi_class('divider') }}"
+                        {{ ...vi_attrs('divider').all() }}
+                    />
+                {% endblock %}
                 <twig:ViewsTheme:Cart:Summary:GrandTotal
                     {{ ...vi_attrs('grand').defaults({
                         summary: summary,

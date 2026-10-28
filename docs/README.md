@@ -69,6 +69,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Accordion](features/accordion.md)
 - [Grid](features/grid.md)
 - [Stepper](features/stepper.md)
+- [Summary box](features/summary-box.md)
 - [Pagination](features/pagination.md)
 - [Sorting](features/sorting.md)
 - [Filters](features/filters.md)

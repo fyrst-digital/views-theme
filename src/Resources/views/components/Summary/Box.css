@@ -1,0 +1,3 @@
+.vi-summary-box__accent {
+    block-size: var(--vi-summary-box-accent, 4px);
+}

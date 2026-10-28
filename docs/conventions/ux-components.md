@@ -491,6 +491,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
+| Summary:Box | Anonymous UX + `vi_cva`; shared summary card shell (accent + padded body, `content` block); root of `Checkout:Summary` — [summary-box.md](../features/summary-box.md) |
 | Checkout:Title (class-backed) | UX + `vi_cva`; `meta` is `array<string, CheckoutTitleMeta>` (`label`, optional `icon`); `{% block meta_item %}` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm (+ Main / Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm:Title (class-backed) | UX + `vi_cva`; email, item count, and arrival in `Title.php`; fills `Checkout:Title` — [checkout-confirm.md](../features/checkout-confirm.md) |

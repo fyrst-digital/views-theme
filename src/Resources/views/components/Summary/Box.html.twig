@@ -1,0 +1,27 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['accent', 'body']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block accent %}
+        <div
+            {{ vi_attrs('accent') }}
+            class="{{ vi_class('accent') }}"
+        ></div>
+    {% endblock %}
+
+    {% block body %}
+        <div
+            {{ vi_attrs('body') }}
+            class="{{ vi_class('body') }}"
+        >
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
+</div>
