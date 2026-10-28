@@ -1,12 +1,13 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
 import { request as shippingRequest } from '@views-theme/modules/shipping/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Cart mutation owner (HTTP + serial queue).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Cart extends ShopwareComponent {
+export default class Cart extends ThemeComponent {
     static options = {
         cartJsonUrl: null,
         changeQuantityPath: null,
@@ -39,21 +40,17 @@ export default class Cart extends ShopwareComponent {
         this._onPromote = this._onPromote.bind(this)
         this._onShippingRequest = this._onShippingRequest.bind(this)
 
-        window.Shopware.on(this.options.addEvent, this._onAdd)
-        window.Shopware.on(this.options.removeEvent, this._onRemove)
-        window.Shopware.on(this.options.updateEvent, this._onUpdate)
-        window.Shopware.on(this.options.promoteEvent, this._onPromote)
-        this._unsubscribeShipping = shippingRequest.subscribe(this._onShippingRequest)
+        this.scope.bus(this.options.addEvent, this._onAdd)
+        this.scope.bus(this.options.removeEvent, this._onRemove)
+        this.scope.bus(this.options.updateEvent, this._onUpdate)
+        this.scope.bus(this.options.promoteEvent, this._onPromote)
+        this.scope.watch(shippingRequest, this._onShippingRequest)
     }
 
     destroy() {
-        window.Shopware.off(this.options.addEvent, this._onAdd)
-        window.Shopware.off(this.options.removeEvent, this._onRemove)
-        window.Shopware.off(this.options.updateEvent, this._onUpdate)
-        window.Shopware.off(this.options.promoteEvent, this._onPromote)
-        this._unsubscribeShipping?.()
-
         this._queue?.clear()
+
+        super.destroy()
     }
 
     _onAdd(payload) {

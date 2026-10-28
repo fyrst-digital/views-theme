@@ -1,18 +1,16 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class DrawerPanel extends ShopwareComponent {
+export default class DrawerPanel extends ThemeComponent {
     static options = {
         drawerComponentName: 'ViewsTheme:Drawer',
     }
 
     init() {
         this._onTransitionEnd = this._onTransitionEnd.bind(this)
-        this.el.addEventListener('transitionend', this._onTransitionEnd)
-    }
-
-    destroy() {
-        this.el.removeEventListener('transitionend', this._onTransitionEnd)
+        this.scope.on(this.el, 'transitionend', this._onTransitionEnd)
     }
 
     _onTransitionEnd(event) {

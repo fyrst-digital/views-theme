@@ -3,14 +3,16 @@ import {
     beginRequest,
     fetchText,
 } from '@views-theme/modules/shared/http.js'
-import { parseHtmlFragment } from '@views-theme/modules/shared/dom.js'
+import { parseHtmlFragment, swapComponentIsland } from '@views-theme/modules/shared/dom.js'
+import { shell } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * In-open cart drawer island refresh.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CartDrawerBody extends ShopwareComponent {
+export default class CartDrawerBody extends ThemeComponent {
     static options = {
         drawerUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
@@ -19,7 +21,7 @@ export default class CartDrawerBody extends ShopwareComponent {
         itemsComponent: 'ViewsTheme:Cart:Items',
         shippingComponent: 'ViewsTheme:Cart:Shipping',
         footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
-        drawerSelector: '#vi-cart-drawer',
+        shellId: 'vi-cart-drawer',
     }
 
     init() {
@@ -27,16 +29,16 @@ export default class CartDrawerBody extends ShopwareComponent {
         this._queued = false
         this._fetch = { controller: null, seq: 0 }
         this._onCartChanged = this._onCartChanged.bind(this)
-        this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
         this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
-        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+        this.scope.bus(this.options.changedEvent, this._onCartChanged)
     }
 
     destroy() {
-        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
         abortRequest(this._fetch)
         this._queued = false
+
+        super.destroy()
     }
 
     async _onCartChanged(payload) {
@@ -89,43 +91,11 @@ export default class CartDrawerBody extends ShopwareComponent {
      */
     _apply(html) {
         const source = parseHtmlFragment(html)
-        this._swap(source, this.el, this.options.flashesComponent)
-        this._swap(source, this.el, this.options.itemsComponent)
-        this._swap(source, this.el, this.options.shippingComponent, this.options.footerComponent)
-        this._swap(source, this.el, this.options.footerComponent)
-        this._swap(source, this._drawerEl || document, this.options.headingComponent)
-    }
-
-    /**
-     * @param {ParentNode} sourceRoot
-     * @param {ParentNode} targetRoot
-     * @param {string} componentName
-     * @param {string} [beforeComponentName] insert a newly present island before this one
-     */
-    _swap(sourceRoot, targetRoot, componentName, beforeComponentName) {
-        if (!targetRoot) {
-            return
-        }
-
-        const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
-        const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
-
-        if (existing && next) {
-            existing.replaceWith(next)
-            return
-        }
-
-        if (existing && !next) {
-            existing.remove()
-            return
-        }
-
-        if (!existing && next) {
-            const anchor = beforeComponentName
-                ? targetRoot.querySelector(`[data-component="${beforeComponentName}"]`)
-                : null
-            targetRoot.insertBefore(next, anchor)
-        }
+        swapComponentIsland(source, this.el, this.options.flashesComponent)
+        swapComponentIsland(source, this.el, this.options.itemsComponent)
+        swapComponentIsland(source, this.el, this.options.shippingComponent, this.options.footerComponent)
+        swapComponentIsland(source, this.el, this.options.footerComponent)
+        swapComponentIsland(source, shell(this.options.shellId).el || document, this.options.headingComponent)
     }
 
     _showError(message) {

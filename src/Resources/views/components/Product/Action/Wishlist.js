@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ProductActionWishlist extends ShopwareComponent {
+export default class ProductActionWishlist extends ThemeComponent {
     static options = {
         productId: null,
         showText: false,
@@ -23,8 +25,8 @@ export default class ProductActionWishlist extends ShopwareComponent {
         this._onClick = this._onClick.bind(this)
         this._onChanged = this._onChanged.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.changedEvent, this._onChanged)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.bus(this.options.changedEvent, this._onChanged)
 
         const known = window.wishlistProducts
         if (known && typeof known === 'object') {
@@ -32,11 +34,6 @@ export default class ProductActionWishlist extends ShopwareComponent {
         } else {
             this._sync(false)
         }
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.changedEvent, this._onChanged)
     }
 
     _onClick(event) {

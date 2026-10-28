@@ -5,9 +5,6 @@
  */
 
 import { replaceComponentIsland } from '@views-theme/modules/shared/dom.js'
-import { waitForComponentsIn } from '@views-theme/modules/shared/component.js'
-
-const RESULTS_CONTROL_NAMES = ['ViewsTheme:Pagination', 'ViewsTheme:Sorting']
 
 /**
  * @param {Element} root
@@ -16,20 +13,6 @@ const RESULTS_CONTROL_NAMES = ['ViewsTheme:Pagination', 'ViewsTheme:Sorting']
  */
 export function replaceResults(root, html, resultsComponent) {
     replaceComponentIsland(root, html, resultsComponent)
-}
-
-/**
- * @param {Element} root
- * @param {string} resultsComponent
- * @param {number} [retries]
- * @returns {Promise<void>}
- */
-export async function waitForResultsControls(root, resultsComponent, retries = 20) {
-    const results = root.querySelector(`[data-component="${resultsComponent}"]`)
-    if (!results) {
-        return
-    }
-    await waitForComponentsIn(results, RESULTS_CONTROL_NAMES, retries)
 }
 
 /**
@@ -47,27 +30,20 @@ export function scrollToListing(el, scrollOffset = 0) {
 }
 
 /**
+ * Screen-reader text the server rendered on the Results island, or `null`.
+ *
  * @param {import('@views-theme/modules/types.js').ListingOptions} options
  * @param {Element} listingEl
+ * @returns {string|null}
  */
-export function updateAriaLive(options, listingEl) {
+export function readAriaLiveText(options, listingEl) {
     if (!options.ariaLiveUpdates) {
-        return
+        return null
     }
 
     const results = listingEl.querySelector(
         `[data-component="${options.resultsComponent}"]`,
     )
-    const text = results?.getAttribute('data-aria-live-text')
-    if (!text) {
-        return
-    }
 
-    const panelName = options.panelComponent || 'ViewsTheme:Filter:Panel'
-    document.querySelectorAll(`[data-component="${panelName}"]`).forEach((panel) => {
-        const live = panel.querySelector('[data-aria-live]')
-        if (live) {
-            live.textContent = text
-        }
-    })
+    return results?.getAttribute('data-aria-live-text') || null
 }

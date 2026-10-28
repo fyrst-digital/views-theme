@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class LineItemRemove extends ShopwareComponent {
+export default class LineItemRemove extends ThemeComponent {
     static options = {
         lineItemId: null,
         removeEvent: 'ViewsTheme:Cart:Remove',
@@ -9,11 +11,7 @@ export default class LineItemRemove extends ShopwareComponent {
 
     init() {
         this._onSubmit = this._onSubmit.bind(this)
-        this.el.addEventListener('submit', this._onSubmit)
-    }
-
-    destroy() {
-        this.el.removeEventListener('submit', this._onSubmit)
+        this.scope.on(this.el, 'submit', this._onSubmit)
     }
 
     _onSubmit(event) {

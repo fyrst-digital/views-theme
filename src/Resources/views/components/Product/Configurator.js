@@ -1,14 +1,16 @@
-import { attach, commit, detach, getSnapshot } from '@views-theme/modules/configurator/store.js'
+import { configurators } from '@views-theme/modules/configurator/store.js'
 import { fetchJson, urlWithParams } from '@views-theme/modules/shared/http.js'
+import { hideLoader, showLoader } from '@views-theme/modules/shared/loader.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 const FOCUS_KEY = 'variant-switch'
 
 /**
- * Product configurator owner. Reads the store snapshot and calls the Shopware switch API.
+ * Product configurator owner. Provides itself to the store session and calls the Shopware switch API.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ProductConfigurator extends ShopwareComponent {
+export default class ProductConfigurator extends ThemeComponent {
     static options = {
         configuratorId: null,
         switchUrl: null,
@@ -17,8 +19,7 @@ export default class ProductConfigurator extends ShopwareComponent {
 
     init() {
         this._id = this.options.configuratorId || null
-        /** @type {Element|null} */
-        this._loaderEl = null
+        this._loaderOwner = Symbol('configurator-loader')
         this._onSubmit = (event) => {
             event.preventDefault()
         }
@@ -27,24 +28,26 @@ export default class ProductConfigurator extends ShopwareComponent {
             return
         }
 
-        this.el.addEventListener('submit', this._onSubmit)
-        attach(this._id, this)
-        commit(this._id, {
-            options: this._optionMap(this.options.selected),
-            busy: false,
-            switched: null,
-            focusId: null,
+        this.scope.on(this.el, 'submit', this._onSubmit)
+        const session = configurators.get(this._id)
+        session.options.set(this._optionMap(this.options.selected))
+        session.busy.set(false)
+        session.switched.set(null)
+        session.focusId.set(null)
+        this.scope.effect(session.busy, (busy) => {
+            this.el.setAttribute('aria-busy', busy ? 'true' : 'false')
         })
-        this.el.setAttribute('aria-busy', 'false')
+        this.scope.add(session.owner.provide(this))
         window.focusHandler?.resumeFocusStatePersistent?.(FOCUS_KEY)
     }
 
     destroy() {
-        this.el.removeEventListener('submit', this._onSubmit)
         this._removeLoader()
         if (this._id) {
-            detach(this._id, this)
+            configurators.drop(this._id)
         }
+
+        super.destroy()
     }
 
     switch() {
@@ -52,21 +55,21 @@ export default class ProductConfigurator extends ShopwareComponent {
             return
         }
 
-        const snapshot = getSnapshot(this._id)
-        if (snapshot.busy || !snapshot.switched) {
+        const session = configurators.get(this._id)
+        const switched = session.switched.get()
+        if (session.busy.get() || !switched) {
             return
         }
 
-        commit(this._id, { busy: true })
-        this.el.setAttribute('aria-busy', 'true')
+        session.busy.set(true)
 
         /** @type {Record<string, string>} */
         const params = {
-            switched: snapshot.switched,
-            options: JSON.stringify(snapshot.options || {}),
+            switched,
+            options: JSON.stringify(session.options.get()),
         }
 
-        void this._switchPage(snapshot.focusId, params)
+        void this._switchPage(session.focusId.get(), params)
     }
 
     /**
@@ -96,35 +99,17 @@ export default class ProductConfigurator extends ShopwareComponent {
 
     _fail() {
         if (this._id) {
-            commit(this._id, { busy: false })
-        }
-        if (this.el?.isConnected) {
-            this.el.setAttribute('aria-busy', 'false')
+            configurators.peek(this._id)?.busy.set(false)
         }
         this._removeLoader()
     }
 
     _showLoader() {
-        if (this._loaderEl || document.querySelector('.modal-backdrop')) {
-            return
-        }
-
-        document.documentElement.classList.add('no-scroll')
-        document.body.insertAdjacentHTML(
-            'beforeend',
-            '<div class="modal-backdrop modal-backdrop-open"><div class="loader" role="status"><span class="visually-hidden">Loading...</span></div></div>',
-        )
-        this._loaderEl = document.body.lastElementChild
+        showLoader(this._loaderOwner)
     }
 
     _removeLoader() {
-        if (!this._loaderEl) {
-            return
-        }
-
-        this._loaderEl.remove()
-        this._loaderEl = null
-        document.documentElement.classList.remove('no-scroll')
+        hideLoader(this._loaderOwner)
     }
 
     /**

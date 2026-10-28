@@ -1,27 +1,37 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { selectAddress, selection } from '@views-theme/modules/address/selection.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Selectable address row. One `Form:Selection` radio.
+ * Selectable address row. One `Form:Selection` radio that follows the selection signal.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManagerItem extends ShopwareComponent {
+export default class AddressManagerItem extends ThemeComponent {
     static options = {
         addressId: null,
         type: 'shipping',
         disabled: false,
-        managerComponent: 'ViewsTheme:Address:Manager',
         editComponent: 'ViewsTheme:Address:Manager:Edit',
         defaultComponent: 'ViewsTheme:Address:Manager:Default',
     }
 
     init() {
+        this._radio = this.el.querySelector('input[type="radio"]')
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
+        this.scope.on(this.el, 'click', this._onClick)
 
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        if (this.options.disabled || !this._radio) {
+            return
+        }
+
+        // Claim the server-rendered choice first, then follow the signal.
+        if (this._radio.checked) {
+            selectAddress(this.options.type, this.options.addressId)
+        }
+        this.scope.effect(selection, (value) => {
+            this._radio.checked = value[this.options.type] === this.options.addressId
+        })
     }
 
     /**
@@ -40,11 +50,6 @@ export default class AddressManagerItem extends ShopwareComponent {
             return
         }
 
-        this._manager()?.select?.(this.options.addressId, this.options.type)
-    }
-
-    _manager() {
-        const root = this.el.closest(`[data-component="${this.options.managerComponent}"]`)
-        return getInstanceByElement(this.options.managerComponent, root)
+        selectAddress(this.options.type, this.options.addressId)
     }
 }

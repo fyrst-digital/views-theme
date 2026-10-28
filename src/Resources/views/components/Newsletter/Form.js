@@ -1,5 +1,6 @@
 import { fetchResponse } from '@views-theme/modules/shared/http.js'
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { newsletterForms } from '@views-theme/modules/newsletter/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Core captcha plugins call `form.submit()` after a token check (no second
@@ -15,13 +16,12 @@ const CAPTCHA_OWNS_SUBMIT = [
 /**
  * Public newsletter subscribe — JSON POST to the core newsletter route.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NewsletterForm extends ShopwareComponent {
+export default class NewsletterForm extends ThemeComponent {
     static options = {
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
-        handlerComponent: 'ViewsTheme:Form:Handler',
-        messagesComponent: 'ViewsTheme:Newsletter:Form:Messages',
+        formId: null,
     }
 
     init() {
@@ -33,24 +33,27 @@ export default class NewsletterForm extends ShopwareComponent {
             }
         }
         this._onHandlerSubmit = this._onHandlerSubmit.bind(this)
-        window.Shopware.on(this.options.submitEvent, this._onHandlerSubmit)
+        this.scope.bus(this.options.submitEvent, this._onHandlerSubmit)
     }
 
     destroy() {
-        window.Shopware.off(this.options.submitEvent, this._onHandlerSubmit)
         if (this.form && Object.prototype.hasOwnProperty.call(this.form, 'submit')) {
             delete this.form.submit
         }
+
+        super.destroy()
     }
 
     /**
-     * @param {{ el?: Element, form?: HTMLFormElement }} payload
+     * @param {{ el?: Element, form?: HTMLFormElement, handler?: { setSubmitting: (busy: boolean) => void, el?: Element } }} payload
      */
     _onHandlerSubmit(payload) {
         const form = payload?.form || payload?.el
         if (!(form instanceof HTMLFormElement) || form !== this.form) {
             return
         }
+        // Kept for the captcha path, which posts later through the patched `form.submit()`.
+        this._handler = payload?.handler || null
         if (this._captchaOwnsSubmit()) {
             return
         }
@@ -75,7 +78,7 @@ export default class NewsletterForm extends ShopwareComponent {
         }
 
         this._posting = true
-        const handler = getInstanceByElement(this.options.handlerComponent, this.form)
+        const handler = this._handler
         handler?.setSubmitting(true)
 
         try {
@@ -117,12 +120,6 @@ export default class NewsletterForm extends ShopwareComponent {
      * @param {Array<{ type?: string, alert?: string }>} items
      */
     _show(items) {
-        const messages = this.el.querySelector(`[data-component="${this.options.messagesComponent}"]`)
-        const instance = getInstanceByElement(this.options.messagesComponent, messages)
-        if (typeof instance?.show !== 'function') {
-            return
-        }
-
-        instance.show(items)
+        newsletterForms.get(this.options.formId).messages.set({ items })
     }
 }

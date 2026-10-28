@@ -3,14 +3,15 @@ import {
     beginRequest,
     fetchText,
 } from '@views-theme/modules/shared/http.js'
-import { parseHtmlFragment } from '@views-theme/modules/shared/dom.js'
+import { parseHtmlFragment, swapComponentIsland } from '@views-theme/modules/shared/dom.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Cart page owner: island refresh on Cart:Changed.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CartPage extends ShopwareComponent {
+export default class CartPage extends ThemeComponent {
     static options = {
         pageUrl: null,
         changedEvent: 'ViewsTheme:Cart:Changed',
@@ -27,13 +28,14 @@ export default class CartPage extends ShopwareComponent {
         this._onCartChanged = this._onCartChanged.bind(this)
         this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
-        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+        this.scope.bus(this.options.changedEvent, this._onCartChanged)
     }
 
     destroy() {
-        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
         abortRequest(this._fetch)
         this._queued = false
+
+        super.destroy()
     }
 
     _bodyEl() {
@@ -90,38 +92,10 @@ export default class CartPage extends ShopwareComponent {
      */
     _apply(html) {
         const source = parseHtmlFragment(html)
-        this._swap(source, this.el, this.options.flashesComponent)
-        this._swap(source, this.el, this.options.headingComponent)
-        this._swap(source, this.el, this.options.itemsComponent)
-        this._swap(source, this._bodyEl(), this.options.asideComponent)
-    }
-
-    /**
-     * @param {ParentNode} sourceRoot
-     * @param {ParentNode} targetRoot
-     * @param {string} componentName
-     */
-    _swap(sourceRoot, targetRoot, componentName) {
-        if (!targetRoot) {
-            return
-        }
-
-        const next = sourceRoot.querySelector(`[data-component="${componentName}"]`)
-        const existing = targetRoot.querySelector(`[data-component="${componentName}"]`)
-
-        if (existing && next) {
-            existing.replaceWith(next)
-            return
-        }
-
-        if (existing && !next) {
-            existing.remove()
-            return
-        }
-
-        if (!existing && next) {
-            targetRoot.appendChild(next)
-        }
+        swapComponentIsland(source, this.el, this.options.flashesComponent)
+        swapComponentIsland(source, this.el, this.options.headingComponent)
+        swapComponentIsland(source, this.el, this.options.itemsComponent)
+        swapComponentIsland(source, this._bodyEl(), this.options.asideComponent)
     }
 
     _showError(message) {

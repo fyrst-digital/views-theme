@@ -52,6 +52,11 @@
                     formViolations: formViolations,
                     autocomplete: fields.vat.autocomplete,
                     label: 'address.companyVatLabel'|trans|sw_sanitize,
+                    'data-component': 'ViewsTheme:Address:Input:Field',
+                    'data-component-options': {
+                        scope: prefix,
+                        field: 'vat',
+                    }|json_encode,
                 }).all() }}
             />
         {% endif %}

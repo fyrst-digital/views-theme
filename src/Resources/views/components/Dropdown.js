@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Dropdown extends ShopwareComponent {
+export default class Dropdown extends ThemeComponent {
     static options = {
         lgUpMedia: '(max-width: 1023.98px)',
         lgUpHostClass: 'vi-dropdown-host--lg-up',
@@ -17,24 +19,24 @@ export default class Dropdown extends ShopwareComponent {
         }
 
         this._onToggle = this._handleToggle.bind(this)
-        this._panel.addEventListener('toggle', this._onToggle)
+        this.scope.on(this._panel, 'toggle', this._onToggle)
 
         if (this._host.classList.contains(this.options.lgUpHostClass)) {
             this._mql = window.matchMedia(this.options.lgUpMedia)
             this._onMql = this._closeIfBelowLg.bind(this)
-            this._mql.addEventListener('change', this._onMql)
+            this.scope.on(this._mql, 'change', this._onMql)
         }
     }
 
     destroy() {
-        this._panel?.removeEventListener('toggle', this._onToggle)
-        this._mql?.removeEventListener('change', this._onMql)
         this._host = null
         this._panel = null
         this._toggle = null
         this._onToggle = null
         this._mql = null
         this._onMql = null
+
+        super.destroy()
     }
 
     _handleToggle(event) {

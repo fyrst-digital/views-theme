@@ -530,7 +530,7 @@ Is the `<form>`. Constraint Validation + `confirmFor` match + Bootstrap `is-inva
 | `action` / `method` | `null` / `'post'` | Form attrs |
 | `preventNative` | `false` | `Review:Form` sets `true` and listens for `Submit` |
 
-Public JS: `setSubmitting(boolean)`.
+Public JS: `setSubmitting(boolean)`. The `ViewsTheme:Form:Handler:Submit` payload is `{ el, form, handler }`; listeners use `handler` instead of looking the Handler up by element. `confirmFor` resolves the other field within the form first (`form.elements`), then by document id.
 
 Do **not** mount core `FormHandler` / `FormValidation` / `data-form-handler` / `window.formValidation`.
 

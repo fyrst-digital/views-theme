@@ -2,6 +2,7 @@
     medias = [],
     active = 0,
     align = 'start',
+    galleryId = null,
     cva = {},
 %}
 
@@ -13,6 +14,9 @@
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Gallery:Thumbnails',
+        'data-component-options': {
+            galleryId: galleryId,
+        }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -29,6 +33,7 @@
                         :index="index"
                         :active="index == active"
                         :total="total"
+                        :galleryId="galleryId"
                     />
                 {% endfor %}
             </div>

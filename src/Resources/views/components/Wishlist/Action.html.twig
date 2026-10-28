@@ -4,6 +4,7 @@
     label = 'header.wishlist'|trans|striptags,
     badgeId = 'wishlist-basket',
     liveId = 'wishlist-basket-live-area',
+    liveText = 'header.wishlistAriaLiveTemplate'|trans,
     size = 'md',
     cva = {},
 %}
@@ -28,7 +29,6 @@
     <twig:block name="prepend">
         <twig:ViewsTheme:Wishlist:Action:Badge
             :id="badgeId"
-            :liveId="liveId"
         />
     </twig:block>
 
@@ -37,6 +37,8 @@
             id="{{ liveId }}"
             class="{{ vi_class('live') }}"
             aria-live="polite"
+            data-component="ViewsTheme:Wishlist:Action:Live"
+            data-component-options="{{ { liveText: liveText }|json_encode }}"
         ></span>
     </twig:block>
 </twig:ViewsTheme:Button>

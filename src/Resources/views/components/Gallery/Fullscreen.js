@@ -1,19 +1,20 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { galleries } from '@views-theme/modules/gallery/store.js'
 import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
+import { registerShell, setShellOpen } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Fullscreen gallery dialog shell.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryFullscreen extends ShopwareComponent {
+export default class GalleryFullscreen extends ThemeComponent {
     static options = {
         openClass: 'd-flex',
         closedClass: 'd-none',
         bodyOpenClass: 'overflow-hidden',
-        galleryComponent: 'ViewsTheme:Gallery',
-        gallerySelector: '[data-component="ViewsTheme:Gallery"]',
+        galleryId: null,
         openEvent: 'ViewsTheme:Gallery:Fullscreen:Open',
         closeEvent: 'ViewsTheme:Gallery:Fullscreen:Close',
     }
@@ -24,13 +25,17 @@ export default class GalleryFullscreen extends ShopwareComponent {
         this._onKeydown = this._onKeydown.bind(this)
 
         this.el.inert = true
-        document.addEventListener('keydown', this._onKeydown)
+        this.scope.on(document, 'keydown', this._onKeydown)
+
+        this._shellId = this.el.id
+        this.scope.add(this._shellId ? registerShell(this._shellId, this, this.el) : null)
     }
 
     destroy() {
-        document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
         this.el.inert = true
+
+        super.destroy()
     }
 
     async open() {
@@ -43,9 +48,13 @@ export default class GalleryFullscreen extends ShopwareComponent {
             this._setBodyLock(true)
         }
 
+        const openIndex = this._galleryIndex()
+        if (this._shellId) {
+            setShellOpen(this._shellId, true, { index: openIndex })
+        }
         window.Shopware.emitQueued(this.options.openEvent, {
             el: this.el,
-            index: this._galleryIndex(),
+            index: openIndex,
         })
 
         this._focusClose()
@@ -65,6 +74,9 @@ export default class GalleryFullscreen extends ShopwareComponent {
         this.el.inert = true
         this._setBodyLock(false)
 
+        if (this._shellId) {
+            setShellOpen(this._shellId, false, { index })
+        }
         window.Shopware.emitQueued(this.options.closeEvent, {
             el: this.el,
             index,
@@ -79,20 +91,7 @@ export default class GalleryFullscreen extends ShopwareComponent {
      * @returns {number}
      */
     _galleryIndex() {
-        const gallery = this._gallery()
-        if (gallery && typeof gallery.getIndex === 'function') {
-            return Number(gallery.getIndex()) || 0
-        }
-        return 0
-    }
-
-    /**
-     * @returns {import('../Gallery.js').default|null}
-     */
-    _gallery() {
-        const name = this.options.galleryComponent
-        const el = this.el.querySelector(this.options.gallerySelector)
-        return getInstanceByElement(name, el)
+        return galleries.peek(this.options.galleryId)?.index.get() ?? 0
     }
 
     _focusClose() {

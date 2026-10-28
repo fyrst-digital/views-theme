@@ -1,15 +1,28 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { newsletterForms } from '@views-theme/modules/newsletter/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 const TYPES = ['success', 'info', 'warning', 'danger']
 
 /**
- * Renders newsletter route `{ type, alert }` items as theme alerts.
+ * Renders newsletter route `{ type, alert }` items (published by `Newsletter:Form`
+ * on the `formId` store) as theme alerts, cloned from its own `<template data-type>` samples.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NewsletterFormMessages extends ShopwareComponent {
+export default class NewsletterFormMessages extends ThemeComponent {
     static options = {
-        sampleComponent: 'ViewsTheme:Newsletter:Form:Messages:Sample',
+        formId: null,
+    }
+
+    init() {
+        /** @type {Map<string, HTMLTemplateElement>} */
+        this._samples = new Map()
+        this.el.querySelectorAll(':scope > template[data-type]').forEach((template) => {
+            this._samples.set(template.dataset.type, template)
+        })
+
+        // No replay: only responses after init are shown.
+        this.scope.watch(newsletterForms.get(this.options.formId).messages, ({ items }) => this.show(items))
     }
 
     /**
@@ -44,51 +57,9 @@ export default class NewsletterFormMessages extends ShopwareComponent {
      * @returns {Element|null}
      */
     _clone(type) {
-        const sample = this._sample(type) || this._sample('info')
-        if (!(sample instanceof HTMLTemplateElement)) {
-            return null
-        }
+        const sample = this._samples.get(type) || this._samples.get('info')
 
-        return sample.content.cloneNode(true).firstElementChild
-    }
-
-    /**
-     * @param {string} type
-     * @returns {Element|null}
-     */
-    _sample(type) {
-        const name = this.options.sampleComponent
-        const nodes = this.el.querySelectorAll(`[data-component="${name}"]`)
-        for (const node of nodes) {
-            if (this._sampleType(node) === type) {
-                return node
-            }
-        }
-
-        return null
-    }
-
-    /**
-     * @param {Element} node
-     * @returns {string|null}
-     */
-    _sampleType(node) {
-        const instance = getInstanceByElement(this.options.sampleComponent, node)
-        if (typeof instance?.options?.type === 'string') {
-            return instance.options.type
-        }
-
-        const raw = node.getAttribute('data-component-options')
-        if (!raw) {
-            return null
-        }
-
-        try {
-            const parsed = JSON.parse(raw)
-            return typeof parsed?.type === 'string' ? parsed.type : null
-        } catch {
-            return null
-        }
+        return sample ? sample.content.cloneNode(true).firstElementChild : null
     }
 
     /**

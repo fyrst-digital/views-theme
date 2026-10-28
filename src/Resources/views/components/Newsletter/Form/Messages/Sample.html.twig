@@ -9,6 +9,7 @@
 <template
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Newsletter:Form:Messages:Sample',
+        'data-type': type,
         'data-component-options': { type: type }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"

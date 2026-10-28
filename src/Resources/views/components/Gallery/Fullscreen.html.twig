@@ -1,6 +1,7 @@
 {% props
     medias = [],
     active = 0,
+    galleryId = 'vi-gallery-fullscreen-gallery',
     cva = {},
 %}
 
@@ -16,6 +17,9 @@
         'aria-hidden': 'true',
         inert: true,
         'data-component': 'ViewsTheme:Gallery:Fullscreen',
+        'data-component-options': {
+            galleryId: galleryId,
+        }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -42,6 +46,7 @@
                         fullscreen: false,
                         controlsOnHover: false,
                         thumbnailAlign: 'center',
+                        galleryId: galleryId,
                     }).all() }}
                 />
             {% endblock %}

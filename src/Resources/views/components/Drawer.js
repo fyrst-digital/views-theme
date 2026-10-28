@@ -1,10 +1,12 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
+import { registerShell, setShellOpen } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Drawer extends ShopwareComponent {
+export default class Drawer extends ThemeComponent {
     static options = {
         openClass: 'd-flex',
         closedClass: 'd-none',
@@ -25,14 +27,18 @@ export default class Drawer extends ShopwareComponent {
 
         this.el.inert = true
         this.el.setAttribute(this.options.openAttr, 'false')
-        document.addEventListener('keydown', this._onKeydown)
+        this.scope.on(document, 'keydown', this._onKeydown)
+
+        this._shellId = this.el.id
+        this.scope.add(this._shellId ? registerShell(this._shellId, this, this.el) : null)
     }
 
     destroy() {
         this._clearCloseWait()
-        document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
         this.el.inert = true
+
+        super.destroy()
     }
 
     open() {
@@ -57,6 +63,9 @@ export default class Drawer extends ShopwareComponent {
             this.el.setAttribute(this.options.openAttr, 'true')
         })
 
+        if (this._shellId) {
+            setShellOpen(this._shellId, true)
+        }
         window.Shopware.emitQueued(this.options.openEvent, this.el)
     }
 
@@ -108,6 +117,9 @@ export default class Drawer extends ShopwareComponent {
         this.el.setAttribute('aria-hidden', 'true')
         this.el.inert = true
         this._setBodyLock(false)
+        if (this._shellId) {
+            setShellOpen(this._shellId, false)
+        }
         window.Shopware.emitQueued(this.options.closeEvent, this.el)
     }
 

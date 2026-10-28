@@ -1,16 +1,16 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
+import { registerShell, setShellOpen, shell, whenShellReady } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class SearchOverlay extends ShopwareComponent {
+export default class SearchOverlay extends ThemeComponent {
     static options = {
         openClass: 'd-flex',
         closedClass: 'd-none',
         bodyOpenClass: 'overflow-hidden',
-        barComponentName: 'ViewsTheme:Search:Bar',
-        barSelector: '[data-component="ViewsTheme:Search:Bar"]',
         openEvent: 'ViewsTheme:Search:Overlay:Open',
         closeEvent: 'ViewsTheme:Search:Overlay:Close',
     }
@@ -21,13 +21,17 @@ export default class SearchOverlay extends ShopwareComponent {
         this._onKeydown = this._onKeydown.bind(this)
 
         this.el.inert = true
-        document.addEventListener('keydown', this._onKeydown)
+        this.scope.on(document, 'keydown', this._onKeydown)
+
+        this._shellId = this.el.id
+        this.scope.add(this._shellId ? registerShell(this._shellId, this, this.el) : null)
     }
 
     destroy() {
-        document.removeEventListener('keydown', this._onKeydown)
         this._setBodyLock(false)
         this.el.inert = true
+
+        super.destroy()
     }
 
     async open({ term = null } = {}) {
@@ -40,9 +44,12 @@ export default class SearchOverlay extends ShopwareComponent {
             this._setBodyLock(true)
         }
 
-        const bar = await this._waitForBar()
+        const bar = await this._bar()
         bar?.onOpened?.(term)
 
+        if (this._shellId) {
+            setShellOpen(this._shellId, true, { term })
+        }
         window.Shopware.emitQueued(this.options.openEvent, {
             el: this.el,
             term,
@@ -56,7 +63,7 @@ export default class SearchOverlay extends ShopwareComponent {
             return
         }
 
-        const term = this._bar()?.getTerm?.() ?? ''
+        const term = this._barApi()?.getTerm?.() ?? ''
 
         this._open = false
         this.el.classList.remove(this.options.openClass)
@@ -65,6 +72,9 @@ export default class SearchOverlay extends ShopwareComponent {
         this.el.inert = true
         this._setBodyLock(false)
 
+        if (this._shellId) {
+            setShellOpen(this._shellId, false, { term })
+        }
         window.Shopware.emitQueued(this.options.closeEvent, {
             el: this.el,
             term,
@@ -75,31 +85,13 @@ export default class SearchOverlay extends ShopwareComponent {
         return this._open
     }
 
-    _bar() {
-        const barEl = this.el.querySelector(this.options.barSelector)
-        if (!barEl || !window.Shopware) {
-            return null
-        }
-
-        return window.Shopware.getComponentInstanceByElement(
-            this.options.barComponentName,
-            barEl,
-        )
+    /** The Bar registers itself as `<shellId>:bar` (see `Search/Bar.js`). */
+    _barApi() {
+        return shell(`${this._shellId}:bar`).api.get()
     }
 
-    async _waitForBar(retries = 20) {
-        for (let i = 0; i < retries; i++) {
-            const bar = this._bar()
-            if (bar) {
-                return bar
-            }
-
-            await new Promise((resolve) => {
-                requestAnimationFrame(resolve)
-            })
-        }
-
-        return this._bar()
+    _bar() {
+        return whenShellReady(`${this._shellId}:bar`)
     }
 
     _onKeydown(event) {

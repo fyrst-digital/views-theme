@@ -1,15 +1,16 @@
+import { busy } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterGroup extends ShopwareComponent {
+export default class FilterGroup extends ThemeComponent {
     static options = {
         open: false,
         layout: 'bar',
         toggleComponent: 'ViewsTheme:Filter:Group:Toggle',
         countComponent: 'ViewsTheme:Filter:Group:Count',
-        loadingEvent: 'ViewsTheme:Listing:Loading',
         viewportMargin: 8,
         minBodyHeight: 120,
         defaultPlacement: 'bottom-start',
@@ -26,9 +27,13 @@ export default class FilterGroup extends ShopwareComponent {
         this._accordion = this.options.layout === 'stacked'
         this._onPopoverToggle = this._onPopoverToggle.bind(this)
         this._onAccordionClick = this._onAccordionClick.bind(this)
-        this._onLoading = this._onLoading.bind(this)
 
-        window.Shopware.on(this.options.loadingEvent, this._onLoading)
+        // A listing request dismisses an open facet.
+        this.scope.watch(busy, (value) => {
+            if (value) {
+                this.close()
+            }
+        })
 
         if (this._accordion) {
             this._setupAccordion()
@@ -39,13 +44,12 @@ export default class FilterGroup extends ShopwareComponent {
     }
 
     destroy() {
-        window.Shopware.off(this.options.loadingEvent, this._onLoading)
-        this._body?.removeEventListener('toggle', this._onPopoverToggle)
-        this._toggle?.removeEventListener('click', this._onAccordionClick)
         this._clearFit()
         this._toggle = null
         this._count = null
         this._body = null
+
+        super.destroy()
     }
 
     /**
@@ -121,7 +125,7 @@ export default class FilterGroup extends ShopwareComponent {
                 this._body.setAttribute('popover', 'auto')
             }
             this._body.removeAttribute('hidden')
-            this._body.addEventListener('toggle', this._onPopoverToggle)
+            this.scope.on(this._body, 'toggle', this._onPopoverToggle)
         }
 
         if (this._toggle && this._body?.id && !this._toggle.disabled) {
@@ -148,7 +152,7 @@ export default class FilterGroup extends ShopwareComponent {
 
         if (this._toggle) {
             this._toggle.removeAttribute('popovertarget')
-            this._toggle.addEventListener('click', this._onAccordionClick)
+            this.scope.on(this._toggle, 'click', this._onAccordionClick)
             if (this._toggle.disabled) {
                 this._open = false
             }
@@ -156,12 +160,6 @@ export default class FilterGroup extends ShopwareComponent {
 
         this._open = !!this.options.open
         this._syncAccordion()
-    }
-
-    _onLoading(payload) {
-        if (payload?.busy) {
-            this.close()
-        }
     }
 
     _onPopoverToggle(event) {

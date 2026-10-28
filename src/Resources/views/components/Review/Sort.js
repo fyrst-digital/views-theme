@@ -1,23 +1,19 @@
-import { applyReview } from '@views-theme/modules/review/apply.js'
+import { applyReview, connectReviewControl } from '@views-theme/modules/review/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Review sort control (URL SoT key: sort).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewSort extends ShopwareComponent {
-    static options = {
-        panelComponent: 'ViewsTheme:Review:Panel',
-    }
+export default class ReviewSort extends ThemeComponent {
+    static options = {}
 
     init() {
         this._select = this.el.querySelector('select')
         this._onChange = this._onChange.bind(this)
-        this._select?.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this._select?.removeEventListener('change', this._onChange)
+        this.scope.on(this._select, 'change', this._onChange)
+        this.scope.add(connectReviewControl(this))
     }
 
     getValues() {
@@ -46,9 +42,6 @@ export default class ReviewSort extends ShopwareComponent {
     }
 
     _onChange() {
-        applyReview(
-            { sort: this._select.value },
-            { panelComponent: this.options.panelComponent },
-        )
+        applyReview({ sort: this._select.value })
     }
 }

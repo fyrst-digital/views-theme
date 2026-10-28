@@ -1,11 +1,13 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
+import { wishlistCount } from '@views-theme/modules/wishlist/count.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Wishlist mutation owner (HTTP + serial queue).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Wishlist extends ShopwareComponent {
+export default class Wishlist extends ThemeComponent {
     static options = {
         listPath: null,
         mergePath: null,
@@ -33,13 +35,14 @@ export default class Wishlist extends ShopwareComponent {
         })
         this._onToggle = this._onToggle.bind(this)
 
-        window.Shopware.on(this.options.toggleEvent, this._onToggle)
+        this.scope.bus(this.options.toggleEvent, this._onToggle)
         void this._bootstrap()
     }
 
     destroy() {
-        window.Shopware.off(this.options.toggleEvent, this._onToggle)
         this._queue?.clear()
+
+        super.destroy()
     }
 
     _onToggle(payload) {
@@ -204,6 +207,7 @@ export default class Wishlist extends ShopwareComponent {
         const products = { ...this._products }
         const count = Object.keys(products).length
         window.wishlistCount = count
+        wishlistCount.set(count)
         window.wishlistProducts = products
 
         window.Shopware.emitQueued(this.options.changedEvent, {

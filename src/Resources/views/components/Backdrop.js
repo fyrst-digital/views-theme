@@ -1,18 +1,16 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Backdrop extends ShopwareComponent {
+export default class Backdrop extends ThemeComponent {
     static options = {
         componentName: null,
     }
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     _onClick(event) {

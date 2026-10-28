@@ -1,6 +1,7 @@
 {% props
     page,
     customer = context.customer,
+    listId = 'vi-addressbook-' ~ random(),
     cva = {},
 %}
 
@@ -11,8 +12,8 @@
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Account:Addressbook',
         'data-component-options': {
+            listId: listId,
             itemComponent: 'ViewsTheme:Address:Item',
-            statusComponent: 'ViewsTheme:Address:Manager:Status',
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
@@ -126,6 +127,7 @@
             class="{{ vi_class('empty') }}"
             {{ ...vi_attrs('empty').defaults({
                 kind: 'empty',
+                listId: listId,
             }).all() }}
         />
     {% endblock %}
@@ -135,6 +137,7 @@
             class="{{ vi_class('notFound') }}"
             {{ ...vi_attrs('notFound').defaults({
                 kind: 'notFound',
+                listId: listId,
             }).all() }}
         />
     {% endblock %}

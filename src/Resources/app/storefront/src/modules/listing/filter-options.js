@@ -16,30 +16,28 @@ export function controlFilterKey(control) {
 }
 
 /**
- * @param {Iterable<import('@views-theme/modules/types.js').ListingControl>} controls
+ * @param {import('@views-theme/modules/types.js').ListingControl} control
  * @param {import('@views-theme/modules/types.js').FilterOptionsPayload} payload
  */
-export function applyFilterOptionsPayload(controls, payload) {
+export function applyFilterOptionsToControl(control, payload) {
     if (!payload || typeof payload !== 'object') {
+        return
+    }
+
+    const key = controlFilterKey(control)
+    if (!key) {
         return
     }
 
     const options = payload.options || {}
     const meta = payload.meta || {}
 
-    for (const control of controls) {
-        const key = controlFilterKey(control)
-        if (!key) {
-            continue
-        }
+    if (typeof options[key] === 'string' && typeof control.replaceOptions === 'function') {
+        control.replaceOptions(options[key])
+    }
 
-        if (typeof options[key] === 'string' && typeof control.replaceOptions === 'function') {
-            control.replaceOptions(options[key])
-        }
-
-        if (meta[key] && typeof control.applyOptionsMeta === 'function') {
-            control.applyOptionsMeta(meta[key])
-        }
+    if (meta[key] && typeof control.applyOptionsMeta === 'function') {
+        control.applyOptionsMeta(meta[key])
     }
 }
 

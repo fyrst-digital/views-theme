@@ -1,3 +1,6 @@
+import { registerShell } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 const ANALYTICS = {
     performed: 'product:search-performed',
     suggestionShown: 'product:search-suggestion-shown',
@@ -5,18 +8,22 @@ const ANALYTICS = {
 }
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class SearchBar extends ShopwareComponent {
+export default class SearchBar extends ThemeComponent {
     static options = {
         suggestUrl: null,
         minChars: 3,
         delay: 250,
+        shellId: null,
         inputSelector: 'input[type="search"]',
         viewAllSelector: '[data-action="view-all"]',
     }
 
     init() {
+        if (this.options.shellId) {
+            this.scope.add(registerShell(`${this.options.shellId}:bar`, this, this.el))
+        }
         this._input = this.el.querySelector(this.options.inputSelector)
         this._resultsEl = null
         this._suggestLinks = []
@@ -34,9 +41,9 @@ export default class SearchBar extends ShopwareComponent {
         this._onResultsClick = this._onResultsClick.bind(this)
         this._onResultsKeydown = this._onResultsKeydown.bind(this)
 
-        this._input.addEventListener('input', this._onInput)
-        this._input.addEventListener('keydown', this._onKeydown)
-        this.el.addEventListener('submit', this._onSubmit)
+        this.scope.on(this._input, 'input', this._onInput)
+        this.scope.on(this._input, 'keydown', this._onKeydown)
+        this.scope.on(this.el, 'submit', this._onSubmit)
     }
 
     getTerm() {
@@ -62,13 +69,11 @@ export default class SearchBar extends ShopwareComponent {
     }
 
     destroy() {
-        this._input?.removeEventListener('input', this._onInput)
-        this._input?.removeEventListener('keydown', this._onKeydown)
-        this.el.removeEventListener('submit', this._onSubmit)
-
         clearTimeout(this._debounceTimer)
         this._abortInFlight()
         this._clearResults()
+
+        super.destroy()
     }
 
     _emit(name, term = this.getTerm()) {

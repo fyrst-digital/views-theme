@@ -1,22 +1,18 @@
-import { applyReview } from '@views-theme/modules/review/apply.js'
+import { applyReview, connectReviewControl } from '@views-theme/modules/review/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Review points filter control (URL SoT key: points).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewMatrix extends ShopwareComponent {
-    static options = {
-        panelComponent: 'ViewsTheme:Review:Panel',
-    }
+export default class ReviewMatrix extends ThemeComponent {
+    static options = {}
 
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
+        this.scope.add(connectReviewControl(this))
     }
 
     getValues() {
@@ -54,6 +50,6 @@ export default class ReviewMatrix extends ShopwareComponent {
     }
 
     _onChange() {
-        applyReview({}, { panelComponent: this.options.panelComponent })
+        applyReview()
     }
 }

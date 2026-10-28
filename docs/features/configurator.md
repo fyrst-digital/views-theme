@@ -93,16 +93,16 @@ No `data-component`. `label` variant `combinable: no` is `text-decoration-line-t
 
 ## JavaScript
 
-`@views-theme/modules/configurator/store.js` holds one session per `configuratorId` (`busy`, `options`, `switched`, `focusId`). `options` is `groupId => optionId`.
+`@views-theme/modules/configurator/store.js` is a keyed store (`configurators.get(configuratorId)`) of signals: `busy`, `options`, `switched`, `focusId`, `request`. `options` is `groupId => optionId`.
 
 | Role | Import | API |
 |------|--------|-----|
-| `Product:Configurator` | `configurator/store.js`, `shared/http.js` | `attach` / `commit` / `detach`. `switch()` reads the snapshot |
+| `Product:Configurator` | `configurator/store.js`, `shared/http.js` | Seeds the session signals, subscribes to `request`, mirrors `busy` to `aria-busy`. `switch()` reads the signals |
 | `Product:Configurator:Group` | `configurator/store.js` only | `change` on the fieldset → `apply(id, { groupId, optionId, focusId })`. `groupId` is the control `name`, `optionId` is its value, `focusId` is its `id` |
 
-The executor does not query radios or selects. Group does not query its controls; it reads the change event target. `apply` no-ops when that id has no executor.
+The executor does not query radios or selects. Group does not query its controls; it reads the change event target. `apply` writes the session signals (`options`, `switched`, `focusId`) and raises `request`; the executor reacts.
 
-On attach, Configurator commits the PHP `selected` map. A change merges that group, sets `switched` to the group id (Shopware `switched` / `switchedGroup`), and calls `switch()`.
+On init, Configurator seeds `options` from the PHP `selected` map. A change merges that group, sets `switched` to the group id (Shopware `switched` / `switchedGroup`) and raises `request`; Configurator then calls `switch()`. The session is dropped in `destroy`.
 
 Every page, including a CMS buy box, calls `GET frontend.detail.switch`. The JSON response is `{ url, productId }`. The theme saves focus (`variant-switch`, `[id="…"]`), shows the page loader, and `location.replace(url)`. Query: `switched` = group id, `options` = JSON object of group id → option id. The theme does not call `frontend.cms.buybox.switch` or publish `updateBuyWidget`.
 

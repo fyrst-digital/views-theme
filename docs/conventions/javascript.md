@@ -7,7 +7,7 @@ Component entries stay co-located for Shopware’s import map. Domain and shared
 **Import rule:** always use `@views-theme/modules/…` — never relative paths into `modules/`.
 
 ```js
-import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
+import { connectControl } from '@views-theme/modules/listing/store.js'
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
 ```
 
@@ -26,10 +26,10 @@ Storefront app root **must** have `package.json` with `vite` + the local modules
 > **Shopware gap:** plugin `vite.components.config.mts` aliases are not applied by the unified component dev server ([shopware#19032](https://github.com/shopware/shopware/issues/19032)). The `file:` dependency is the dual-path workaround.
 
 ```
-views/components/**/*.js          # ShopwareComponent entries (data-component)
+views/components/**/*.js          # ShopwareComponent / ThemeComponent entries (data-component)
         │ import '@views-theme/modules/…'
 app/storefront/src/modules/
-  shared/     http · dom · component · object-option · history · form · focus-trap · signal
+  shared/     http · dom · component · object-option · history · form · focus-trap · signal · scope · store · service · registry · field-store · shell-registry · loader
   listing/    Product:Listing domain only
   review/     Review:Panel domain only
   configurator/  Product:Configurator sessions only
@@ -44,15 +44,22 @@ app/storefront/src/modules/
 | `Product/Configurator.js` | `@views-theme/modules/configurator/*`, `shared/http.js` |
 | `Product/Configurator/Group.js` | `@views-theme/modules/configurator/store.js` only |
 | `Shipping/Calculation/Field.js` | `@views-theme/modules/shipping/store.js` only |
+| `Address/Input/{Country,Field}.js` | `@views-theme/modules/address/country.js` (+ shared) |
+| `Address/Manager*.js`, `Address/Manager/{Item,List,Status}.js`, `Account/Addressbook.js` | `@views-theme/modules/address/{selection,filter}.js` (+ shared) |
+| `Gallery*.js` (owner, Canvas, Thumbnails, Thumb, Dot, Control, Slide, Fullscreen, Action) | `@views-theme/modules/gallery/store.js` (+ shared / lazy-shell) |
 | `Review/Panel.js` | any `@views-theme/modules/review/*` |
-| Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
-| Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
+| Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/store.js` |
+| Review controls (Matrix/Sort/Language), `Review/Form.js` | `@views-theme/modules/review/store.js` only (+ shared) |
+| `Newsletter/Form*.js` | `@views-theme/modules/newsletter/store.js` (+ shared) |
+| `Wishlist*.js`, `Wishlist/Action/*.js` | `@views-theme/modules/wishlist/count.js` (+ shared) |
 | `@views-theme/modules/listing/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/listing/*` — **not** `review/*` or `configurator/*` |
 | `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` or `configurator/*` |
 | `@views-theme/modules/configurator/*` | `@views-theme/modules/shared/*` — **not** `listing/*` or `review/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
 | Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor) |
 | `@views-theme/modules/shipping/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*` or `configurator/*` |
+| `@views-theme/modules/address/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*`, `configurator/*` or `shipping/*` |
+| `@views-theme/modules/gallery/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*`, `configurator/*` or `shipping/*` |
 
 **URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third URL owner needs it. Configurator sessions (`configurator/store.js`) are a separate selection store, not a URL owner.
 
@@ -65,22 +72,36 @@ app/storefront/src/modules/
 | Path | Role |
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
-| `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland, swapComponentIsland |
+| `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland, `swapComponentIsland(source, target, name, beforeName?)` — the only island swap (Cart page + drawer Body use it; do not copy it into a component) |
 | `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / Address:Input:Country) |
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
-| `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
-| `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
+| `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting: signals (`busy`, `labels`, `liveText`, …), `connectControl`, `apply` / `resetFilters` / `resetOption` |
+| `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Keyed store of signals (`busy`, `options`, `switched`, `focusId`, `request`); Configurator subscribes to `request` — [configurator.md](../features/configurator.md) |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
-| `review/apply.js` | façade for review controls / Pagination → Panel |
+| `review/store.js` | Facade for review controls / Pagination / Form → Panel executor; self-registering controls (`connectReviewControl`) — [review.md](../features/review.md) |
+| `newsletter/store.js` | Keyed `newsletterMessages` signal per form id — [newsletter.md](../features/newsletter.md) |
+| `wishlist/count.js` | `wishlistCount` signal (owner writes; badge + live region follow) — [wishlist.md](../features/wishlist.md) |
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
 | `body-lock.js` | ref-counted body scroll lock (Drawer, Overlay, Modal, Gallery Fullscreen) |
 | `serial-queue.js` | Cart + Wishlist |
-| `shared/signal.js` | `createSignal(initial)` → `{ get, set, subscribe }`; `set` is a no-op for an identical value |
-| `shipping/store.js` | Shipping calculation signals; see [cart-drawer](../features/cart-drawer.md#shipping-store) |
+| `shared/signal.js` | `createSignal(initial)` → `{ get, set, update, subscribe(fn, { signal }) }`; `set` is a no-op for an identical value. `effect(signal \| signal[], fn, { signal })` runs `fn` with the current value(s), then on change — [Reactive primitives](#reactive-primitives) |
+| `shared/scope.js` | `createScope()` — one `AbortController`-based disposer: `on` / `bus` / `effect` / `watch` / `add` / `dispose` |
+| `shared/store.js` | `createStore({ a: 0 })` → `{ get(id?), peek(id?), drop(id?) }`: signals per server-rendered id, or a singleton without id |
+| `shared/service.js` | `createService()` → `{ provide, call, ready, api, whenReady }`: call the one mounted owner |
+| `shared/registry.js` | `createRegistry({ identify })` → `{ connect, all, active, version }`: self-registering controls, last-connect-wins |
+| `theme-component.js` | `ThemeComponent` base class: `this.scope`, disposed in `destroy()` |
+| `shared/shell-registry.js` | Lazy shells register by their root `id`: `shell(id)` → `{ api, open, el, mount, detail }` (`api` is a `createService` provider); `registerShell`, `setShellOpen(id, open, detail?)`, `releaseShell`, `whenShellReady` — [lazy shells](#lazy-loaded-shells-critical) |
+| `shared/loader.js` | `showLoader(owner)` / `hideLoader(owner)` — one ref-counted page overlay, scroll lock via `body-lock.js` |
+| `shared/field-store.js` | `createFieldStore()` → `{ values, request, connect, select }`; fields publish, one executor subscribes to `request` ([pattern](#reactive-primitives)) |
+| `gallery/store.js` | Keyed store per `galleryId`: `index` / `count` / `rewind` signals + `select` / `step` / `isDisabled` / `bindIndexItem`; see [gallery](../features/gallery.md#js-api) |
+| `address/country.js` | Keyed store per form prefix: country rules (`flags`, `states`) published by `Address:Input:Country`, applied by `Address:Input:Field`; see [checkout-register](../features/checkout-register.md) |
+| `address/selection.js` | Address manager selection signal `{ shipping, billing }` (singleton: one manager shell); see [address-manager](../features/address-manager.md) |
+| `address/filter.js` | Address list search state per `listId` (`{ term, total, visible }`) + `Status` binding; Manager list and Account addressbook |
+| `shipping/store.js` | The shipping calculation instance of `createFieldStore()`; see [cart-drawer](../features/cart-drawer.md#shipping-store) |
 | `types.js` | Shared JSDoc `@typedef`s (empty runtime export) |
 | `shopware-globals.d.ts` | Ambient `ShopwareComponent` / `window.Shopware` for IDE |
 
@@ -120,6 +141,46 @@ Do **not** use `data-ref`, `data-vi`, or other ad-hoc identity attributes (remov
 
 Prefer **event delegation** only when a single parent owns many identical children *and* those children are not worth components — default is still sub-components for interactive pieces.
 
+## Reactive primitives
+
+Five small modules in `modules/shared/`, platform JS only (AbortController / AbortSignal, WeakMap, `Promise.withResolvers`; Baseline 2024). They are the whole vocabulary for state, wiring and teardown — do not hand-roll `this._stop` fields, `removeEventListener` pairs or `attach` / `detach` executors.
+
+| Need | Use |
+|------|-----|
+| Undo everything a component set up (listeners, bus, effects, registry disconnects, observers) | `ThemeComponent` + `this.scope` — no `destroy()` needed |
+| One mutable value | `createSignal` (`get` / `set` / `update` / `subscribe`; `subscribe` does not replay, `effect` does) |
+| Several values that belong together (per gallery / form / list, or one singleton) | `createStore({ index: 0, count: 0 })` — `store.get(id).index.get()`; `store.get()` for a singleton; ids are rendered by Twig, never discovered |
+| Call the one mounted owner (`Product:Listing`, `Review:Panel`, `Address:Manager`, `Product:Configurator`, a shell) | `createService()` — the owner `scope.add(service.provide(this))`, callers `service.call('method', …)` (no-op while nobody provides), `service.ready` / `whenReady()` |
+| Controls that register with an owner (facets, pagination, sorting, review controls) | `createRegistry()` — `scope.add(registry.connect(this))`, last connect wins per `identify` key |
+| Several mounted fields feed one executor with a value map + request (shipping calculation → `Cart`) | `shared/field-store.js`: fields `connect` + `select`, the executor subscribes to `request` |
+| A component reads or writes **its own** native control / form / children | Direct and local — allowed, no store |
+| A parent / ancestor API where no single owner exists (shell Close / Panel / Backdrop) | `callMethod` ([Component communication](#component-communication)) |
+| Server HTML replaced after a mutation | `swapComponentIsland` (identity by `data-component`) |
+
+```js
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
+export default class GalleryControl extends ThemeComponent {
+    init() {
+        const { count, index } = galleries.get(this.options.galleryId)
+        this.scope.on(this.el, 'click', (event) => this._onClick(event))   // addEventListener with { signal }
+        this.scope.effect([index, count], () => this._sync())              // runs now + once per change
+        this.scope.bus('ViewsTheme:Cart:Changed', (payload) => {})         // Shopware.on + off
+        this.scope.add(listing.provide(this))                              // any disposer
+    }                                                                      // nothing to undo by hand
+}
+```
+
+Rules:
+
+- **Teardown lives in the scope.** `scope.dispose()` runs in `ThemeComponent.destroy()`. A component that still needs its own `destroy()` (timers, `releaseShell`, `abortRequest`) must call `super.destroy()`; `scope.add(() => …)` takes custom cleanups such as `observer.disconnect()` (capture the observer in a local `const`, not `this._x`, because `destroy()` may null fields before the scope disposes). Pass `scope.signal` to `fetch`, or `AbortSignal.any([scope.signal, request.signal])`.
+- **`init()` runs inside `ShopwareComponent`'s constructor**, before subclass field initializers. Never read class fields or `#private` fields in `init`; the scope lives in a WeakMap for that reason.
+- **Registration order.** A control registers at the **end** of `init` (after its own fields exist). `connect` hydrates the control from the last applied params and never triggers a request; only user input does.
+- **Stores hold immutable values.** `set` a new object / array; `set` is a no-op for an identical value, so a "fresh message" signal uses a fresh object.
+- **Singleton constraint.** `store.get()` without an id is for state of which exactly one exists per page (listing, wishlist count, address-manager selection). Anything that can appear twice gets a Twig-rendered id.
+- **Public events stay.** `ViewsTheme:*` events are thin emitters for outside listeners; the theme itself follows signals and services.
+- **Field stores** (`field-store.js`): a field never queries for its siblings, its `<form>` or the executor; `connect` returns the disconnect (`scope.add`); only `select` sets `request`; the executor builds the request from `request.values`, never from the DOM. A `data-component` field needs co-located JS like any component.
+
 ## Component communication
 
 | Pattern | Use for |
@@ -128,7 +189,7 @@ Prefer **event delegation** only when a single parent owns many identical childr
 | `Shopware.callMethod(name, method, …)` | Direct child → parent API (e.g. Close → `close`, Panel → `onPanelTransitionEnd`) |
 | Native `CustomEvent` on `document` | External/analytics hooks only |
 
-Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefer `emitQueued` when emitting from `init()` to avoid race conditions. Always `Shopware.off` in `destroy()`.
+Do **not** use bubbled DOM CustomEvents for component-to-component wiring. Prefer `emitQueued` when emitting from `init()` to avoid race conditions. Subscribe with `this.scope.bus(name, fn)`, which unsubscribes on destroy.
 
 **Event name casing:** PascalCase segments (`Namespace:Feature:Action`), e.g. `ViewsTheme:Drawer:Open`, `ViewsTheme:Navigation:Drawer:Menu:Drill`.
 
@@ -150,6 +211,21 @@ Does **not** cover in-session Menu drill level HTML caches, suggest result fragm
 | **Re-open** | Full fetch + mount again. |
 
 The Action owns this lifecycle; the shell primitive only open/closes.
+
+**Shell registry (required):** an Action never finds its shell with `document.querySelector`, `getInstanceByElement`, `waitForInstance` or by filtering the global `*:Open` / `*:Close` events by element. The shell root has a server-rendered `id` (`vi-cart-drawer`, `vi-search-overlay`, `vi-gallery-fullscreen`, `vi-address-manager` …); the Action option `shellId` carries that id.
+
+| Step | Mechanism |
+|------|-----------|
+| Shell component (`Drawer`, `Modal`, `Search:Overlay`, `Gallery:Fullscreen`) | `init`: `this.scope.add(registerShell(this.el.id, this, this.el))`; `open` / `_finishClose`: `setShellOpen(id, bool, detail?)` |
+| Action mount | `mountShell(shellId, html)` (from `lazy-shell.js`) releases the previous mount, appends the HTML and resolves with the shell `api` once registered |
+| Action state | `this.scope.watch(shell(shellId).open, fn)` sets `aria-expanded`, and on close unmounts with `releaseShell(shellId)`. `shell(shellId).detail` carries close data (search `term`, gallery `index`) |
+| Commands | `shell(shellId).api.get()?.open() / close() / isOpen()` |
+| Named parts | A part of a shell registers as `<shellId>:<part>` (Search Bar → `vi-search-overlay:bar`); the shell reads it with `whenShellReady` |
+| Shared single shell (gallery fullscreen, address manager) | The Action keeps an `_owns` flag; only the owner reacts to `open`, and a new Action closes the current shell (`api.close()`) before mounting |
+
+The public `ViewsTheme:*:Open` / `:Close` events are still emitted (thin emitters for external listeners) but components in this theme do not listen to them. `Modal:Open` opens a modal through the registry by `modalId` (no "closest" / "first modal" fallback). Loader overlays use `shared/loader.js`, never the global `.modal-backdrop` or a direct `no-scroll` class.
+
+**Not yet registry-based:** `Drawer:Close`, `Drawer:Panel`, `Backdrop`, `Modal:Close` / `Panel`, `Search:Overlay:Close`, `Gallery:Fullscreen:Close`, `Address:Manager:Dismiss` still call the shell by component name (`callMethod`); that is safe because a lazy shell has one mount at a time.
 
 **Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
 
@@ -444,7 +520,7 @@ See [Cart page](../features/cart-page.md).
 
 ### Gallery fullscreen
 
-Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is the media SoT inside the shell.
+Lazy-loaded dialog from the PDP/CMS gallery canvas action. The nested `Gallery` has its own store (`galleryId`) inside the shell.
 
 | Hook | Attribute |
 |------|-----------|
@@ -454,16 +530,16 @@ Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is t
 | Close | `data-component="ViewsTheme:Gallery:Fullscreen:Close"` |
 | Nested gallery | `data-component="ViewsTheme:Gallery"` (inside shell; `fullscreen=false`) |
 
-- Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + parent `getIndex()`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- **Multi-instance ownership (critical):** unlike singleton Search/Cart Actions, many galleries may mount Actions on one page. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`). Never adopt a foreign shell via global selector; unmount owned el only (no selector fallback). Opening while another shell is live: close existing first so its owner restores index + unmounts, then mount
-- Open/Close payload: `{ el, index }` via `emitQueued`; owning Action restores **its** parent gallery index on close
-- Control / Canvas settle use **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries
+- Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + the parent store `index`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- **Multi-instance ownership (critical):** unlike singleton Search/Cart Actions, many galleries may mount Actions on one page. Only the Action that mounted (`_owns`) reacts to `shell('vi-gallery-fullscreen').open`. Opening while another shell is live: close it first so its owner restores index + unmounts, then mount
+- Close detail: `shell(id).detail.index` (also emitted as `{ el, index }` via `emitQueued`); the owning Action restores **its** parent store with `select(galleryId, index)`
+- Gallery parts (Control, Canvas, Thumb, Dot, Slide, Thumbnails) share state through `galleries.get(galleryId)` — a `galleryId` rendered by Twig, never `closest` + `getInstanceByElement`
 
 See [Gallery](../features/gallery.md).
 
 ### Filter drawer / bar
 
-Lazy-loaded end-side filter drawer + desktop horizontal bar. **Product:Listing** owns filter state (URL + control registry); Action owns shell lifecycle.
+Lazy-loaded end-side filter drawer + desktop horizontal bar. **Product:Listing** owns filter state (URL + the self-registering control registry); Action owns shell lifecycle.
 
 | Hook | Attribute |
 |------|-----------|
@@ -473,7 +549,7 @@ Lazy-loaded end-side filter drawer + desktop horizontal bar. **Product:Listing**
 | Group (disclosure) | `data-component="ViewsTheme:Filter:Group"` |
 
 - Action lifecycle (critical): **(re)fetch + mount on every open** with current `location.search`; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
-- After mount/unmount: `Shopware.callMethod('ViewsTheme:Product:Listing', 'syncControls')` (discover + hydrate from URL)
+- After mount/unmount nothing is synced by hand: drawer facets `connectControl` on init and disconnect on destroy (last-connect-wins, see [filters](../features/filters.md#control-contract))
 - Desktop: always-mounted SSR Panel bar (`class="d-none d-lg-block"`); facet body = Popover API + CSS `position-anchor` (Group.js)
 - Drawer: Group switches to accordion (`popover` stripped); mobile Action only (`d-lg-none`)
 - Public `open()` / `close()` via `callMethod`

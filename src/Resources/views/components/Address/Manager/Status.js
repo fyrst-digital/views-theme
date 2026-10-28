@@ -1,12 +1,18 @@
+import { bindStatus } from '@views-theme/modules/address/filter.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * Empty / not-found identity for Address:Manager:List.
+ * Empty / not-found status for the address list; follows the shared address filter.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManagerStatus extends ShopwareComponent {
+export default class AddressManagerStatus extends ThemeComponent {
     static options = {
         kind: 'empty',
+        listId: null,
     }
 
-    init() {}
+    init() {
+        this.scope.add(bindStatus(this.options.listId, this.el, this.options.kind))
+    }
 }

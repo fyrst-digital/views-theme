@@ -14,13 +14,18 @@
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Newsletter:Form',
+        'data-component-options': {
+            formId: id,
+        }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
     {% block messages %}
         <twig:ViewsTheme:Newsletter:Form:Messages
             class="{{ vi_class('messages') }}"
-            {{ ...vi_attrs('messages') }}
+            {{ ...vi_attrs('messages').defaults({
+                formId: id,
+            }).all() }}
         />
     {% endblock %}
 

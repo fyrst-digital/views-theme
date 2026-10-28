@@ -65,8 +65,8 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer:Header` title (m
 3. **`open()`** (click or `callMethod`): if already open → no-op; else **always** fetch `frontend.views-theme.navigation.drawer` (optional `navigationId` from `window.activeNavigationId`)
 4. Response root is `ViewsTheme:Drawer` (`#vi-navigation-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
 5. Drawer + Panel + Menu + Drill children initialize; Action calls Drawer `open()` (logs if instance never mounts)
-6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
-7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, returns focus, **removes** the drawer root (next open is a full fetch + mount)
+6. Drawer registers with the shell registry (`vi-navigation-drawer`) and publishes `open`; Action sets `aria-expanded` from it
+7. On close: Action sets `aria-expanded`, returns focus, **removes** the drawer root (next open is a full fetch + mount)
 
 ### Menu item interaction
 

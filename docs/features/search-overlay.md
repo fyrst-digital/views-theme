@@ -43,8 +43,8 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 ### Close flow
 
 1. Backdrop / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`, or Escape
-2. Overlay reads `Bar.getTerm()`, closes chrome, `emitQueued` Close `{ el, term }`
-3. Action stores `term`, updates aria, focuses the trigger, **removes** the overlay root
+2. Overlay reads `Bar.getTerm()` (the Bar registers as `vi-search-overlay:bar` in the shell registry), closes chrome, `setShellOpen(id, false, { term })`, and `emitQueued` Close `{ el, term }` for external listeners
+3. Action (subscribed to `shell('vi-search-overlay').open`) stores `term` from `shell.detail`, updates aria, focuses the trigger, **removes** the overlay root
 
 ### Suggest flow
 

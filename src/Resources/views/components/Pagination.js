@@ -1,14 +1,29 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
+import { connectControl } from '@views-theme/modules/listing/store.js'
+import { connectReviewControl } from '@views-theme/modules/review/store.js'
+
+const LISTING_OWNER = 'ViewsTheme:Product:Listing'
+const REVIEW_OWNER = 'ViewsTheme:Review:Panel'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Pagination extends ShopwareComponent {
+export default class Pagination extends ThemeComponent {
     static options = {
         page: null,
         pageParameter: 'p',
+        ownerComponent: LISTING_OWNER,
     }
 
     init() {
         this._page = this._resolveInitialPage()
+        // The owner decides which registry takes this control (Orders paginate with plain links).
+        if (this.options.ownerComponent === LISTING_OWNER) {
+            this.scope.add(connectControl(this))
+        } else if (this.options.ownerComponent === REVIEW_OWNER) {
+            this.scope.add(connectReviewControl(this))
+        }
     }
 
     getValues() {

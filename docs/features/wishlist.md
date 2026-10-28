@@ -9,7 +9,8 @@ Theme-owned wishlist: product toggle, header/nav badge, guest localStorage and l
 | `Wishlist` | Always-mounted owner: load, guest storage, logged-in HTTP, merge on login; emits `Wishlist:Changed` |
 | `Product:Action:Wishlist` | Product heart Button; emits `Wishlist:Toggle`; syncs `aria-pressed` / label from `Changed` |
 | `Wishlist:Action` | Header / nav link to wishlist page (`Button` + badge + live region) |
-| `Wishlist:Action:Badge` | Count badge from `Changed` (and `window.wishlistCount` on late mount) |
+| `Wishlist:Action:Badge` | Count badge; follows the `wishlistCount` signal (`modules/wishlist/count.js`, written by `Wishlist` on every emit; initial `window.wishlistCount`) |
+| `Wishlist:Action:Live` | Screen-reader live region (`aria-live`); renders the `liveText` template (`%counter%`) from the same signal |
 
 ## Wire-up
 
@@ -58,7 +59,7 @@ Guest + cookie consent: without `wishlist-enabled` cookie, owner requests core `
 
 ## Badge
 
-No `data-wishlist-storage` / `data-wishlist-widget`. Listens to `Wishlist:Changed`; updates optional live region by `liveId`.
+No `data-wishlist-storage` / `data-wishlist-widget`. Follows the `wishlistCount` signal; the live region is its own component (`Wishlist:Action:Live`), not looked up by `liveId` (the id stays for `aria-labelledby`). `Wishlist:Changed` stays as the public event for hearts and outside listeners.
 
 ## Listing page
 

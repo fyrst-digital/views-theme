@@ -69,13 +69,15 @@ export function replaceComponentIsland(root, html, componentName) {
 
 /**
  * Swap a nested `[data-component]` island.
- * both → replace; existing only → remove; next only → append to target.
+ * both → replace; existing only → remove; next only → insert before the
+ * `beforeComponentName` island when present, else append to target.
  *
  * @param {ParentNode} sourceRoot
  * @param {ParentNode} targetRoot
  * @param {string} componentName
+ * @param {string} [beforeComponentName]
  */
-export function swapComponentIsland(sourceRoot, targetRoot, componentName) {
+export function swapComponentIsland(sourceRoot, targetRoot, componentName, beforeComponentName) {
     if (!targetRoot) {
         return
     }
@@ -94,6 +96,9 @@ export function swapComponentIsland(sourceRoot, targetRoot, componentName) {
     }
 
     if (!existing && next) {
-        targetRoot.appendChild(next)
+        const anchor = beforeComponentName
+            ? targetRoot.querySelector(`[data-component="${beforeComponentName}"]`)
+            : null
+        targetRoot.insertBefore(next, anchor)
     }
 }

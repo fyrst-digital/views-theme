@@ -1,10 +1,11 @@
-import { apply } from '@views-theme/modules/listing/store.js'
+import { apply, connectControl } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterRating extends ShopwareComponent {
+export default class FilterRating extends ThemeComponent {
     static options = {
         name: 'rating',
         groupComponent: 'ViewsTheme:Filter:Group',
@@ -12,14 +13,11 @@ export default class FilterRating extends ShopwareComponent {
 
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
         if (this.options.name) {
             this.el.setAttribute('data-filter-key', this.options.name)
         }
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.add(connectControl(this))
     }
 
     getValues() {

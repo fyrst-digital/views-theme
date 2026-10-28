@@ -5,40 +5,33 @@ import {
     collectControlValues,
     urlParams,
 } from '@views-theme/modules/review/params.js'
-import { getInstanceByElement, waitForComponentsIn } from '@views-theme/modules/shared/component.js'
+import {
+    attach,
+    connectedControls,
+    hydrateControls,
+    params as appliedParams,
+} from '@views-theme/modules/review/store.js'
 import { parseHtmlRoot, replaceComponentIsland } from '@views-theme/modules/shared/dom.js'
-
-const RESULTS_CONTROL_NAMES = [
-    'ViewsTheme:Pagination',
-    'ViewsTheme:Review:Sort',
-    'ViewsTheme:Review:Language',
-]
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Review panel owner: URL SoT, list island XHR, save.
+ * Review panel owner: URL SoT, list island XHR, save. Controls register
+ * themselves (`review/store.js`); the panel never scans for them.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewPanel extends ShopwareComponent {
+export default class ReviewPanel extends ThemeComponent {
     static options = {
         listUrl: null,
         saveUrl: null,
         baseParams: {},
         history: true,
         listComponent: 'ViewsTheme:Review:Results',
-        controlComponents: [
-            'ViewsTheme:Pagination',
-            'ViewsTheme:Review:Sort',
-            'ViewsTheme:Review:Language',
-            'ViewsTheme:Review:Matrix',
-        ],
         loadingEvent: 'ViewsTheme:Review:Loading',
         changedEvent: 'ViewsTheme:Review:Changed',
     }
 
     init() {
-        /** @type {Set<object>} */
-        this._controls = new Set()
         this._onPopstate = this._onPopstate.bind(this)
 
         this._fetch = createReviewFetch({
@@ -48,49 +41,22 @@ export default class ReviewPanel extends ShopwareComponent {
         this._history = createHistoryController()
 
         if (this.options.history) {
-            window.addEventListener('popstate', this._onPopstate)
+            this.scope.on(window, 'popstate', this._onPopstate)
         }
 
+        this.scope.add(attach(this))
         this.syncControls()
-        requestAnimationFrame(() => this.syncControls())
     }
 
     destroy() {
-        window.removeEventListener('popstate', this._onPopstate)
         this._fetch.abortAll()
-        this._controls.clear()
+
+        super.destroy()
     }
 
-    refreshControls() {
-        this._controls.forEach((control) => {
-            if (!control.el || !document.body.contains(control.el)) {
-                this._controls.delete(control)
-            }
-        })
-
-        const names = this.options.controlComponents || []
-        names.forEach((name) => {
-            this.el.querySelectorAll(`[data-component="${name}"]`).forEach((el) => {
-                const instance = getInstanceByElement(name, el)
-                if (instance && typeof instance.getValues === 'function') {
-                    this._controls.add(instance)
-                }
-            })
-        })
-    }
-
-    hydrateFromUrl() {
-        const params = urlParams()
-        this._controls.forEach((control) => {
-            if (typeof control.setFromUrl === 'function') {
-                control.setFromUrl(params)
-            }
-        })
-    }
-
+    /** Hydrate every connected control from the URL (init, popstate). */
     syncControls() {
-        this.refreshControls()
-        this.hydrateFromUrl()
+        hydrateControls(urlParams())
     }
 
     /**
@@ -99,7 +65,7 @@ export default class ReviewPanel extends ShopwareComponent {
      */
     async apply(patch = {}, options = {}) {
         const pushHistory = options.pushHistory !== false
-        const controlValues = collectControlValues(this._controls)
+        const controlValues = collectControlValues(connectedControls())
         const merged = {
             ...controlValues,
             ...patch,
@@ -118,25 +84,13 @@ export default class ReviewPanel extends ShopwareComponent {
                 return
             }
 
+            // Set before the swap: Pagination in the new list hydrates from it on connect.
+            appliedParams.set(params)
             replaceComponentIsland(this.el, html, this.options.listComponent)
-
-            const results = this.el.querySelector(
-                `[data-component="${this.options.listComponent}"]`,
-            )
-            if (results) {
-                await waitForComponentsIn(results, RESULTS_CONTROL_NAMES)
-            }
-
-            this.syncControls()
-
-            this._controls.forEach((control) => {
-                if (typeof control.setFromUrl === 'function') {
-                    control.setFromUrl(params)
-                }
-            })
+            hydrateControls(params)
 
             if (pushHistory && this.options.history) {
-                this._history.push(params, this.options, this._controls)
+                this._history.push(params, this.options, connectedControls())
             }
 
             window.Shopware.emitQueued(this.options.changedEvent, {

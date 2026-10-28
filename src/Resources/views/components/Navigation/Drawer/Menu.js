@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NavigationDrawerMenu extends ShopwareComponent {
+export default class NavigationDrawerMenu extends ThemeComponent {
     static options = {
         drillEvent: 'ViewsTheme:Navigation:Drawer:Menu:Drill',
         scrollSelector: '[data-component="ViewsTheme:Scroll:Area"]',
@@ -11,11 +13,7 @@ export default class NavigationDrawerMenu extends ShopwareComponent {
         this._cache = {}
         this._busy = false
         this._onDrill = this._onDrill.bind(this)
-        window.Shopware.on(this.options.drillEvent, this._onDrill)
-    }
-
-    destroy() {
-        window.Shopware.off(this.options.drillEvent, this._onDrill)
+        this.scope.bus(this.options.drillEvent, this._onDrill)
     }
 
     _onDrill(payload = {}) {

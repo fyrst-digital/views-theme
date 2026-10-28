@@ -1,29 +1,15 @@
+import { wishlistCount } from '@views-theme/modules/wishlist/count.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * Header wishlist badge — follows the wishlist count signal.
+ *
+ * @extends {ThemeComponent}
  */
-export default class WishlistActionBadge extends ShopwareComponent {
-    static options = {
-        changedEvent: 'ViewsTheme:Wishlist:Changed',
-        liveId: null,
-        liveText: '%counter%',
-    }
-
+export default class WishlistActionBadge extends ThemeComponent {
     init() {
-        this._onChanged = this._onChanged.bind(this)
-        window.Shopware.on(this.options.changedEvent, this._onChanged)
-        this._render(window.wishlistCount || 0)
-    }
-
-    destroy() {
-        window.Shopware.off(this.options.changedEvent, this._onChanged)
-    }
-
-    _onChanged(payload) {
-        if (!payload || typeof payload.count !== 'number') {
-            return
-        }
-
-        this._render(payload.count)
+        this.scope.effect(wishlistCount, (count) => this._render(count))
     }
 
     _render(count) {
@@ -34,21 +20,5 @@ export default class WishlistActionBadge extends ShopwareComponent {
             this.el.hidden = true
             this.el.textContent = ''
         }
-
-        this._updateLiveArea(count)
-    }
-
-    _updateLiveArea(count) {
-        if (!this.options.liveId) {
-            return
-        }
-
-        const live = document.getElementById(this.options.liveId)
-        if (!live) {
-            return
-        }
-
-        const template = this.options.liveText || '%counter%'
-        live.textContent = template.replace('%counter%', String(count || 0))
     }
 }

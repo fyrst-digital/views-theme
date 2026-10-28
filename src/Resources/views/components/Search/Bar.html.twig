@@ -3,6 +3,7 @@
     minSearchLength = shopware.minSearchLength,
     suggestUrl = path('frontend.views-theme.search.suggest'),
     delay = 250,
+    shellId = null,
     cva = {},
 %}
 
@@ -19,6 +20,7 @@
             suggestUrl: suggestUrl,
             minChars: minSearchLength,
             delay: delay,
+            shellId: shellId,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"

@@ -1,9 +1,10 @@
-import { apply } from '@views-theme/modules/listing/store.js'
+import { apply, connectControl } from '@views-theme/modules/listing/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterBoolean extends ShopwareComponent {
+export default class FilterBoolean extends ThemeComponent {
     static options = {
         name: null,
         displayName: null,
@@ -13,14 +14,11 @@ export default class FilterBoolean extends ShopwareComponent {
         /** @type {HTMLInputElement|null} */
         this._input = this.el.querySelector('input[type="checkbox"]')
         this._onChange = this._onChange.bind(this)
-        this._input?.addEventListener('change', this._onChange)
+        this.scope.on(this._input, 'change', this._onChange)
         if (this.options.name) {
             this.el.setAttribute('data-filter-key', this.options.name)
         }
-    }
-
-    destroy() {
-        this._input?.removeEventListener('change', this._onChange)
+        this.scope.add(connectControl(this))
     }
 
     /**

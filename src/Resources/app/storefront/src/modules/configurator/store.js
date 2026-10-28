@@ -1,24 +1,16 @@
 /**
- * Client sessions for product configurators.
+ * Client sessions for product configurators, keyed by `configuratorId` so several
+ * CMS buy boxes can coexist.
  *
- * Group dispatches here. Product:Configurator is the only executor.
- * Sessions are keyed by configurator id so several CMS buy boxes can coexist.
+ * Group writes a selection through `apply` (updates `options`, then asks the
+ * session's `owner` to `switch`). Product:Configurator is the only executor: it
+ * provides itself as `owner` and reports `busy`.
  *
  * @module @views-theme/modules/configurator/store
  */
-
-/**
- * @typedef {object} ConfiguratorExecutor
- * @property {() => void} switch
- */
-
-/**
- * @typedef {object} ConfiguratorSnapshot
- * @property {boolean} busy
- * @property {Record<string, string>} options
- * @property {string|null} switched
- * @property {string|null} focusId
- */
+import { createService } from '@views-theme/modules/shared/service.js'
+import { createSignal } from '@views-theme/modules/shared/signal.js'
+import { createStore } from '@views-theme/modules/shared/store.js'
 
 /**
  * @typedef {object} ConfiguratorApplyPatch
@@ -27,111 +19,31 @@
  * @property {string|null} [focusId]
  */
 
-/**
- * @typedef {object} ConfiguratorSession
- * @property {ConfiguratorExecutor|null} executor
- * @property {ConfiguratorSnapshot} snapshot
- */
-
-/** @type {Map<string, ConfiguratorSession>} */
-const sessions = new Map()
-
-/**
- * @returns {ConfiguratorSnapshot}
- */
-function blankSnapshot() {
-    return {
-        busy: false,
-        options: {},
-        switched: null,
-        focusId: null,
-    }
-}
-
-/**
- * @param {string} id
- * @returns {ConfiguratorSession}
- */
-function session(id) {
-    let current = sessions.get(id)
-    if (!current) {
-        current = {
-            executor: null,
-            snapshot: blankSnapshot(),
-        }
-        sessions.set(id, current)
-    }
-
-    return current
-}
-
-/**
- * @param {string} id
- * @returns {ConfiguratorSnapshot}
- */
-export function getSnapshot(id) {
-    return session(id).snapshot
-}
-
-/**
- * @param {string} id
- * @param {ConfiguratorExecutor} next
- */
-export function attach(id, next) {
-    const current = session(id)
-    current.executor = next
-}
-
-/**
- * @param {string} id
- * @param {ConfiguratorExecutor} executor
- */
-export function detach(id, executor) {
-    const current = sessions.get(id)
-    if (!current || current.executor !== executor) {
-        return
-    }
-
-    current.executor = null
-    current.snapshot = blankSnapshot()
-}
-
-/**
- * @param {string} id
- * @param {Partial<ConfiguratorSnapshot>} partial
- */
-export function commit(id, partial) {
-    const current = session(id)
-    current.snapshot = {
-        ...current.snapshot,
-        ...partial,
-    }
-}
+export const configurators = createStore(() => ({
+    /** Selected option per group id. */
+    options: createSignal(/** @type {Record<string, string>} */ ({})),
+    busy: createSignal(false),
+    /** Group id the user just changed. */
+    switched: createSignal(/** @type {string|null} */ (null)),
+    focusId: createSignal(/** @type {string|null} */ (null)),
+    /** The mounted Product:Configurator (executor): `switch`. */
+    owner: createService(),
+}))
 
 /**
  * @param {string} id
  * @param {ConfiguratorApplyPatch} patch
  */
 export function apply(id, patch) {
-    const current = sessions.get(id)
-    if (!current?.executor || typeof current.executor.switch !== 'function') {
-        return
-    }
-
     const groupId = patch?.groupId
     const optionId = patch?.optionId
-    if (!groupId || !optionId) {
+    if (!id || !groupId || !optionId) {
         return
     }
 
-    current.snapshot = {
-        ...current.snapshot,
-        options: {
-            ...current.snapshot.options,
-            [groupId]: optionId,
-        },
-        switched: groupId,
-        focusId: patch.focusId || current.snapshot.focusId,
-    }
-    current.executor.switch()
+    const session = configurators.get(id)
+    session.options.set({ ...session.options.get(), [groupId]: optionId })
+    session.switched.set(groupId)
+    session.focusId.set(patch.focusId || session.focusId.get())
+    session.owner.call('switch')
 }

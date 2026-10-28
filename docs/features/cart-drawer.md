@@ -51,8 +51,8 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
  3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer` (`AbortController`; stale responses ignored)
  4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
  5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()` (logs if instance never mounts)
- 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
- 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
+ 6. Drawer registers with the shell registry (`vi-cart-drawer`) and publishes `open`; Action sets `aria-expanded` from `shell(shellId).open`
+ 7. On close: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
  8. Action `destroy()` aborts in-flight open fetch and unmounts any open shell
  9. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
 
@@ -81,7 +81,7 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Pr
 
 1. Sub-components emit cart intents
 2. `Cart` performs HTTP and emits `Cart:Changed`
- 3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
+ 3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity with the shared `swapComponentIsland`:
     - `ViewsTheme:Cart:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
     - `ViewsTheme:Cart:Items` (`layout="stacked"`)
     - `ViewsTheme:Cart:Shipping` (optional — a newly present island is inserted before the footer, not appended)
@@ -199,7 +199,7 @@ Nest names (via `Cart:Options` → `promotion:*`):
 
 ### Shipping store
 
-`@views-theme/modules/shipping/store.js` holds the shipping calculation state as signals (`shared/signal.js`; `subscribe` notifies on change and does not replay).
+`@views-theme/modules/shipping/store.js` is the shipping instance of the shared `createFieldStore()` ([pattern](../conventions/javascript.md#reactive-primitives); built on `shared/signal.js`, whose `subscribe` notifies on change and does not replay).
 
 | Export | Role |
 |--------|------|

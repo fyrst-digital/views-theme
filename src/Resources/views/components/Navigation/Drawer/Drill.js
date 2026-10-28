@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NavigationDrawerDrill extends ShopwareComponent {
+export default class NavigationDrawerDrill extends ThemeComponent {
     static options = {
         url: null,
         direction: 'forward',
@@ -11,11 +13,7 @@ export default class NavigationDrawerDrill extends ShopwareComponent {
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     _onClick(event) {

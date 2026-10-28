@@ -1,12 +1,14 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Toggles footer column content on small viewports via aria-expanded.
  * State SoT is ARIA (`aria-expanded`) + content `inert`; look follows CSS.
  * From collapseUntil up, CSS forces content open — inert stays off even when
  * aria-expanded is false.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FooterColumn extends ShopwareComponent {
+export default class FooterColumn extends ThemeComponent {
     static options = {
         /**
          * Partial overlay of `window.breakpoints` (`{ sm: 520, md: 768, … }`).
@@ -27,26 +29,26 @@ export default class FooterColumn extends ShopwareComponent {
         this._content = contentId ? document.getElementById(contentId) : null
 
         this._onClick = this._handleClick.bind(this)
-        this._toggle.addEventListener('click', this._onClick)
+        this.scope.on(this._toggle, 'click', this._onClick)
 
         const query = this._forcedOpenQuery(this.el.getAttribute('data-collapse-until'))
         if (query) {
             this._mql = window.matchMedia(query)
             this._onMql = this._syncInert.bind(this)
-            this._mql.addEventListener('change', this._onMql)
+            this.scope.on(this._mql, 'change', this._onMql)
         }
 
         this._syncInert()
     }
 
     destroy() {
-        this._toggle?.removeEventListener('click', this._onClick)
-        this._mql?.removeEventListener('change', this._onMql)
         this._toggle = null
         this._content = null
         this._onClick = null
         this._mql = null
         this._onMql = null
+
+        super.destroy()
     }
 
     _handleClick() {

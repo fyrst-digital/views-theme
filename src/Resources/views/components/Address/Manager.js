@@ -1,17 +1,20 @@
+import { manager } from '@views-theme/modules/address/manager.js'
 import { parseHtmlRoot } from '@views-theme/modules/shared/dom.js'
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { resetSelection, selection } from '@views-theme/modules/address/selection.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
 import {
     abortRequest,
     beginRequest,
     fetchText,
 } from '@views-theme/modules/shared/http.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Address picker / editor owner inside Modal.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManager extends ShopwareComponent {
+export default class AddressManager extends ThemeComponent {
     static options = {
         managerUrl: null,
         editorUrl: null,
@@ -22,8 +25,6 @@ export default class AddressManager extends ShopwareComponent {
         viewComponent: 'ViewsTheme:Address:Manager:View',
         panelComponent: 'ViewsTheme:Modal:Panel',
         modalComponent: 'ViewsTheme:Modal',
-        itemComponent: 'ViewsTheme:Address:Manager:Item',
-        handlerComponent: 'ViewsTheme:Form:Handler',
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
         tabsChangeEvent: 'ViewsTheme:Tabs:Change',
         editorFormId: 'vi-address-editor',
@@ -40,41 +41,39 @@ export default class AddressManager extends ShopwareComponent {
         this._onSubmit = this._onSubmit.bind(this)
         this._onTabsChange = this._onTabsChange.bind(this)
 
-        window.Shopware.on(this.options.submitEvent, this._onSubmit)
-        window.Shopware.on(this.options.tabsChangeEvent, this._onTabsChange)
+        this.scope.bus(this.options.submitEvent, this._onSubmit)
+        this.scope.bus(this.options.tabsChangeEvent, this._onTabsChange)
+        this.scope.effect(selection, (value) => this._writeIds(value))
+        this.scope.add(manager.provide(this))
     }
 
     destroy() {
-        window.Shopware.off(this.options.submitEvent, this._onSubmit)
-        window.Shopware.off(this.options.tabsChangeEvent, this._onTabsChange)
         abortRequest(this._fetch)
+        resetSelection()
+
+        super.destroy()
     }
 
     /**
-     * @param {string} id
-     * @param {string} type
+     * Mirror the selection into the switch form's hidden id inputs.
+     *
+     * @param {import('@views-theme/modules/address/selection.js').AddressSelection} value
      */
-    select(id, type) {
-        if (!id || (type !== 'shipping' && type !== 'billing')) {
-            return
-        }
-
+    _writeIds(value) {
         const form = this._switchForm()
-        const name = type === 'shipping'
-            ? this.options.shippingIdName
-            : this.options.billingIdName
-        const input = form?.elements?.namedItem(name)
-        if (input instanceof HTMLInputElement) {
-            input.value = id
-        }
-
-        const next = this._item(id, type)
-        const nextApi = getInstanceByElement(this.options.itemComponent, next)
-        if (!next || nextApi?.options?.disabled) {
+        if (!form) {
             return
         }
 
-        this._checkVisibleRadio(next)
+        for (const [type, name] of [
+            ['shipping', this.options.shippingIdName],
+            ['billing', this.options.billingIdName],
+        ]) {
+            const input = form.elements.namedItem(name)
+            if (input instanceof HTMLInputElement && value[type]) {
+                input.value = value[type]
+            }
+        }
     }
 
     /**
@@ -134,7 +133,7 @@ export default class AddressManager extends ShopwareComponent {
     }
 
     /**
-     * @param {{ el?: Element, form?: HTMLFormElement }} payload
+     * @param {{ el?: Element, form?: HTMLFormElement, handler?: object }} payload
      */
     async _onSubmit(payload) {
         const form = payload?.form || payload?.el
@@ -142,7 +141,7 @@ export default class AddressManager extends ShopwareComponent {
             return
         }
 
-        const handler = getInstanceByElement(this.options.handlerComponent, form)
+        const handler = payload?.handler || null
 
         if (form.id === this.options.switchFormId) {
             await this._submitSwitch(form, handler)
@@ -315,6 +314,8 @@ export default class AddressManager extends ShopwareComponent {
         const existing = this.el.querySelector(`[data-component="${name}"]`)
 
         if (existing && island) {
+            // New Items claim their SSR-checked radios again.
+            resetSelection()
             existing.replaceWith(island)
         }
     }
@@ -386,35 +387,5 @@ export default class AddressManager extends ShopwareComponent {
     _switchForm() {
         const form = this.el.querySelector(`#${this.options.switchFormId}`)
         return form instanceof HTMLFormElement ? form : null
-    }
-
-    /**
-     * @param {string} id
-     * @param {string} type
-     * @returns {HTMLElement|null}
-     */
-    _item(id, type) {
-        const name = this.options.itemComponent
-        const items = this.el.querySelectorAll(`[data-component="${name}"]`)
-        for (const item of items) {
-            const api = getInstanceByElement(name, item)
-            if (api?.options?.addressId === id && api?.options?.type === type) {
-                return item
-            }
-        }
-
-        return null
-    }
-
-    /**
-     * Check this item's radio. Same `name` clears the previous one.
-     *
-     * @param {HTMLElement} item
-     */
-    _checkVisibleRadio(item) {
-        const radio = item.querySelector('input[type="radio"]')
-        if (radio instanceof HTMLInputElement && !radio.disabled) {
-            radio.checked = true
-        }
     }
 }

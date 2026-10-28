@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class LineItemQuantityInput extends ShopwareComponent {
+export default class LineItemQuantityInput extends ThemeComponent {
     static options = {
         lineItemId: null,
         updateEvent: 'ViewsTheme:Cart:Update',
@@ -20,16 +22,15 @@ export default class LineItemQuantityInput extends ShopwareComponent {
             this._lastEmitted = Number.parseInt(input.value, 10)
         }
 
-        this.el.addEventListener('input', this._onInput)
-        this.el.addEventListener('change', this._onChange)
-        this.el.addEventListener('submit', this._onSubmit)
+        this.scope.on(this.el, 'input', this._onInput)
+        this.scope.on(this.el, 'change', this._onChange)
+        this.scope.on(this.el, 'submit', this._onSubmit)
     }
 
     destroy() {
-        this.el.removeEventListener('input', this._onInput)
-        this.el.removeEventListener('change', this._onChange)
-        this.el.removeEventListener('submit', this._onSubmit)
         this._clearTimer()
+
+        super.destroy()
     }
 
     _onSubmit(event) {

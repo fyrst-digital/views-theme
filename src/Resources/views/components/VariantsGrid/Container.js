@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class VariantsGridContainer extends ShopwareComponent {
+export default class VariantsGridContainer extends ThemeComponent {
     static options = {
         quantityInputSelector: '[data-component="ViewsTheme:QuantityInput"] input[type="number"]',
         buyButtonSelector: 'button[type="submit"]',
@@ -33,32 +35,14 @@ export default class VariantsGridContainer extends ShopwareComponent {
         this._updateButtonState();
     }
 
-    destroy() {
-        this.el.removeEventListener('input', this._onInputChange);
-        this.el.removeEventListener('change', this._onInputChange);
-        if (this._pagination) {
-            this._pagination.removeEventListener('click', this._onPaginationClick);
-        }
-        if (this._form) {
-            this._form.removeEventListener('submit', this._onSubmit, true);
-        }
-        window.removeEventListener('popstate', this._onPopState);
-    }
-
     _registerEvents() {
-        this.el.addEventListener('input', this._onInputChange);
-        this.el.addEventListener('change', this._onInputChange);
-
-        if (this._pagination) {
-            this._pagination.addEventListener('click', this._onPaginationClick);
-        }
+        this.scope.on(this.el, 'input', this._onInputChange);
+        this.scope.on(this.el, 'change', this._onInputChange);
+        this.scope.on(this._pagination, 'click', this._onPaginationClick);
 
         this._form = this.el.tagName === 'FORM' ? this.el : this.el.querySelector('form');
-        if (this._form) {
-            this._form.addEventListener('submit', this._onSubmit, true);
-        }
-
-        window.addEventListener('popstate', this._onPopState);
+        this.scope.on(this._form, 'submit', this._onSubmit, true);
+        this.scope.on(window, 'popstate', this._onPopState);
     }
 
     _onInputChange(event) {

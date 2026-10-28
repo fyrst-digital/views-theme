@@ -103,7 +103,7 @@ Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edi
 | Address manager listing widget | `Account:Addressbook` + `Address:Item` |
 | `data-order-detail-loader` | Drop — details are SSR in `Order:ItemDetails` |
 
-`Account:Addressbook` search filters `[data-component="ViewsTheme:Address:Item"]` client-side (same pattern as `Address:Manager:List`). The field uses nest `input:aria-label` so the name lands on the `<input>`, not the `Form:Input` wrapper. Empty / no-results use `Address:Manager:Status`.
+`Account:Addressbook` search filters `[data-component="ViewsTheme:Address:Item"]` client-side through the shared `modules/address/filter.js` (same as `Address:Manager:List`, keyed by its Twig `listId`). The field uses nest `input:aria-label` so the name lands on the `<input>`, not the `Form:Input` wrapper. Empty / no-results use `Address:Manager:Status` (`kind` + `listId`).
 
 ## Account:Actions active state
 

@@ -1,6 +1,7 @@
 {% props
     total = 0,
     active = 0,
+    galleryId = null,
     cva = {},
 %}
 
@@ -20,6 +21,7 @@
                 :index="i"
                 :active="i == active"
                 :total="total"
+                :galleryId="galleryId"
             />
         {% endfor %}
     {% endblock %}

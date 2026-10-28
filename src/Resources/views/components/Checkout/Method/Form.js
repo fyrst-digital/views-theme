@@ -1,16 +1,14 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Payment / shipping configure form — native change → submit.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CheckoutMethodForm extends ShopwareComponent {
+export default class CheckoutMethodForm extends ThemeComponent {
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
     }
 
     /**

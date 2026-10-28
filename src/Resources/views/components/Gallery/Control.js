@@ -1,23 +1,27 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { galleries, isDisabled, step } from '@views-theme/modules/gallery/store.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Prev/next control — commands nearest Gallery owner.
+ * Prev/next control — steps the gallery store; disabled state follows it.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryControl extends ShopwareComponent {
+export default class GalleryControl extends ThemeComponent {
     static options = {
-        galleryComponent: 'ViewsTheme:Gallery',
+        galleryId: null,
         direction: 'next',
     }
 
     init() {
+        this._direction = this.options.direction === 'prev' ? 'prev' : 'next'
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
+        this._sync = this._sync.bind(this)
+        this.scope.on(this.el, 'click', this._onClick)
 
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        const { count, index } = galleries.get(this.options.galleryId)
+        this.scope.effect(index, this._sync)
+        this.scope.watch(count, this._sync)
     }
 
     /**
@@ -29,19 +33,12 @@ export default class GalleryControl extends ShopwareComponent {
             return
         }
 
-        const method = this.options.direction === 'prev' ? 'prev' : 'next'
-        const gallery = this._gallery()
-        if (gallery && typeof gallery[method] === 'function') {
-            gallery[method]()
-        }
+        step(this.options.galleryId, this._direction)
     }
 
-    /**
-     * @returns {import('../Gallery.js').default|null}
-     */
-    _gallery() {
-        const name = this.options.galleryComponent
-        const el = this.el.closest(`[data-component="${name}"]`)
-        return getInstanceByElement(name, el)
+    _sync() {
+        const disabled = isDisabled(this.options.galleryId, this._direction)
+        this.el.disabled = disabled
+        this.el.setAttribute('aria-disabled', disabled ? 'true' : 'false')
     }
 }

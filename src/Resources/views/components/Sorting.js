@@ -1,24 +1,20 @@
-import { apply } from '@views-theme/modules/listing/store.js'
+import { apply, connectControl } from '@views-theme/modules/listing/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Listing control: sort order select.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Sorting extends ShopwareComponent {
+export default class Sorting extends ThemeComponent {
     init() {
         this._select = this.el.querySelector('select')
         this._onChange = this._onChange.bind(this)
 
         if (this._select) {
-            this._select.addEventListener('change', this._onChange)
+            this.scope.on(this._select, 'change', this._onChange)
         }
-    }
-
-    destroy() {
-        if (this._select) {
-            this._select.removeEventListener('change', this._onChange)
-        }
+        this.scope.add(connectControl(this))
     }
 
     getValues() {

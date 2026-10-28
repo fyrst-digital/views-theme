@@ -22,13 +22,11 @@
  * @property {boolean} [ariaLiveUpdates]
  * @property {boolean} [history]
  * @property {string} [resultsComponent]
- * @property {string} [panelComponent]
  * @property {string} [changedEvent]
  * @property {string} [syncedEvent]
  * @property {string} [availabilitySyncedEvent]
  * @property {string} [loadingEvent]
  * @property {number} [scrollOffset]
- * @property {string[]} [controlComponents]
  * @property {string[]} [displayParamKeys]
  */
 

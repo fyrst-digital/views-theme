@@ -2,47 +2,43 @@ import {
     abortRequest,
     beginRequest,
     fetchText,
-    getInstanceByElement,
-    replaceMount,
-    unmountEl,
-    waitForInstance,
+    mountShell,
+    releaseShell,
+    shell,
 } from '@views-theme/modules/lazy-shell.js'
+import { galleries, select } from '@views-theme/modules/gallery/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Lazy-loads Gallery:Fullscreen shell; owns mount lifecycle.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryActionFullscreen extends ShopwareComponent {
+export default class GalleryActionFullscreen extends ThemeComponent {
     static options = {
         overlayUrl: null,
         ids: [],
-        galleryComponent: 'ViewsTheme:Gallery',
-        overlayComponentName: 'ViewsTheme:Gallery:Fullscreen',
-        overlaySelector: '[data-component="ViewsTheme:Gallery:Fullscreen"]',
-        openEvent: 'ViewsTheme:Gallery:Fullscreen:Open',
-        closeEvent: 'ViewsTheme:Gallery:Fullscreen:Close',
+        galleryId: null,
+        shellId: 'vi-gallery-fullscreen',
     }
 
     init() {
-        this._overlayEl = null
+        /** True while this Action's gallery owns the (single, shared) fullscreen shell. */
+        this._owns = false
         this._loading = false
         this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
-        this._onOverlayOpen = this._onOverlayOpen.bind(this)
-        this._onOverlayClose = this._onOverlayClose.bind(this)
+        this._onShellOpen = this._onShellOpen.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.openEvent, this._onOverlayOpen)
-        window.Shopware.on(this.options.closeEvent, this._onOverlayClose)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.watch(shell(this.options.shellId).open, this._onShellOpen)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.openEvent, this._onOverlayOpen)
-        window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
         abortRequest(this._fetch)
         this._unmountOverlay()
+
+        super.destroy()
     }
 
     async open() {
@@ -118,14 +114,14 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
                 return
             }
 
-            this._overlayEl = replaceMount(this.options.overlaySelector, html)
-            await waitForInstance(() => this._getOverlayInstance())
+            this._owns = true
+            const api = await mountShell(this.options.shellId, html)
 
             if (!request.isCurrent()) {
                 return
             }
 
-            const overlay = this._getOverlayInstance()
+            const overlay = api
             if (!overlay || typeof overlay.open !== 'function') {
                 console.error('GalleryActionFullscreen: Fullscreen component did not mount')
                 return
@@ -145,69 +141,52 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
 
     /**
      * Close another Action's live shell so its owner can restore index + unmount
-     * before this Action mounts. Avoids replaceMount tearing down a foreign DOM
-     * node without emitting Close.
+     * before this Action mounts. The close notifies the registry synchronously,
+     * so the previous owner has unmounted by the time this returns.
      */
     _closeForeignShell() {
-        const existing = document.querySelector(this.options.overlaySelector)
-        if (!existing || existing === this._overlayEl) {
+        if (this._owns) {
             return
         }
 
-        const inst = getInstanceByElement(this.options.overlayComponentName, existing)
-        if (inst && typeof inst.isOpen === 'function' && inst.isOpen() && typeof inst.close === 'function') {
-            inst.close()
+        const api = shell(this.options.shellId).api.get()
+        if (!api) {
             return
         }
 
-        existing.remove()
+        if (typeof api.isOpen === 'function' && api.isOpen() && typeof api.close === 'function') {
+            api.close()
+        }
+        releaseShell(this.options.shellId)
     }
 
     /**
      * @returns {number}
      */
     _galleryIndex() {
-        const gallery = this._gallery()
-        if (gallery && typeof gallery.getIndex === 'function') {
-            return Number(gallery.getIndex()) || 0
-        }
-        return 0
-    }
-
-    /**
-     * @returns {import('../../Gallery.js').default|null}
-     */
-    _gallery() {
-        const name = this.options.galleryComponent
-        const el = this.el.closest(`[data-component="${name}"]`)
-        return getInstanceByElement(name, el)
+        return galleries.get(this.options.galleryId).index.get()
     }
 
     _getOverlayInstance() {
-        if (!this._overlayEl || !document.body.contains(this._overlayEl)) {
-            this._overlayEl = null
-            return null
-        }
-
-        return getInstanceByElement(this.options.overlayComponentName, this._overlayEl)
+        return this._owns ? shell(this.options.shellId).api.get() : null
     }
 
-    _onOverlayOpen(payload) {
-        if (!this._overlayEl || payload?.el !== this._overlayEl) {
+    /**
+     * @param {boolean} open
+     */
+    _onShellOpen(open) {
+        if (!this._owns) {
             return
         }
 
-        this.el.setAttribute('aria-expanded', 'true')
-    }
-
-    _onOverlayClose(payload) {
-        if (!this._overlayEl || payload?.el !== this._overlayEl) {
+        if (open) {
+            this.el.setAttribute('aria-expanded', 'true')
             return
         }
 
-        const index = payload?.index
+        const index = shell(this.options.shellId).detail?.index
         if (typeof index === 'number' && !Number.isNaN(index)) {
-            this._gallery()?.select?.(index, { emit: false, scroll: true })
+            select(this.options.galleryId, index)
         }
 
         this.el.setAttribute('aria-expanded', 'false')
@@ -216,9 +195,9 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
     }
 
     _unmountOverlay() {
-        if (this._overlayEl) {
-            unmountEl(this._overlayEl)
+        if (this._owns) {
+            releaseShell(this.options.shellId)
         }
-        this._overlayEl = null
+        this._owns = false
     }
 }

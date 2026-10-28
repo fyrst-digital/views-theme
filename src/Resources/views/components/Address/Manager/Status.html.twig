@@ -1,5 +1,6 @@
 {% props
     kind = 'empty',
+    listId = null,
     cva = {},
 %}
 
@@ -16,6 +17,7 @@
         'data-component': 'ViewsTheme:Address:Manager:Status',
         'data-component-options': {
             kind: kind,
+            listId: listId,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"

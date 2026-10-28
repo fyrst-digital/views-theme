@@ -9,8 +9,8 @@ Logged-in account opt-in stays [`Account:Newsletter`](account.md) (`frontend.acc
 | Piece | Responsibility |
 |-------|----------------|
 | `Newsletter:Form` | Email, privacy, captcha, submit. Owns the JSON POST |
-| `Newsletter:Form:Messages` | Renders the route's `{ type, alert }` list as `ViewsTheme:Alert` |
-| `Newsletter:Form:Messages:Sample` | Hidden `<template>` per alert type, cloned by Messages |
+| `Newsletter:Form:Messages` | Subscribes to the form's `newsletterMessages` signal (`modules/newsletter/store.js`, keyed by the form id) and renders the route's `{ type, alert }` list as `ViewsTheme:Alert` |
+| `Newsletter:Form:Messages:Sample` | Hidden `<template data-type>` per alert type; Messages maps them by `data-type` in `init` and clones them |
 | `Form:Handler` | Constraint validation + submit loading (`preventNative`) |
 | `Form:Input:Group` | Email field; submit `Button` in `append` |
 | `Privacy:Note` | Required consent checkbox (unique id; `requireCheckbox` forced on). Rendered only when `privacyNote` is true (default) |
@@ -40,7 +40,7 @@ Nests: `messages`, `form`, `email`, `privacy`, `submit`.
 
 `POST /form/newsletter` (`frontend.form.newsletter.register.handle`) is `XmlHttpRequest` and `_captcha`. A navigation POST returns JSON, not a storefront page. `Newsletter:Form` sends `FormData` with `X-Requested-With: XMLHttpRequest`.
 
-The controller reads `option=subscribe` (`FormController::SUBSCRIBE`) and sets `storefrontUrl` itself. The JSON body is a list of `{ type, alert }`. Success `alert` is plain text. Danger, info, and rate-limit `alert` values are HTML from core `alert.html.twig`. Messages keeps the text (list items when the HTML has them) and clones a theme `Alert`. It does not insert the core alert markup.
+The controller reads `option=subscribe` (`FormController::SUBSCRIBE`) and sets `storefrontUrl` itself. The JSON body is a list of `{ type, alert }`. Success `alert` is plain text. Danger, info, and rate-limit `alert` values are HTML from core `alert.html.twig`. `Newsletter:Form` publishes the response items to the signal (`formId` is the Twig form id, passed to Form and Messages), so Messages is never looked up. The Form keeps the Handler from the `Form:Handler:Submit` payload for the captcha path, which posts later through the patched `form.submit()`. Messages keeps the text (list items when the HTML has them) and clones a theme `Alert`. It does not insert the core alert markup.
 
 Reset the fields only when every item is `type: success` (same rule as core `FormCmsHandler`). A persisted subscribe also returns an info alert, so the email stays filled and both alerts show.
 

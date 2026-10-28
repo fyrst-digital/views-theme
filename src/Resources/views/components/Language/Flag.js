@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class LanguageFlag extends ShopwareComponent {
+export default class LanguageFlag extends ThemeComponent {
     static options = {
         fallbackSrc: null,
     }
@@ -9,15 +11,11 @@ export default class LanguageFlag extends ShopwareComponent {
     init() {
         this._triedFallback = false
         this._onError = this._onError.bind(this)
-        this.el.addEventListener('error', this._onError)
+        this.scope.on(this.el, 'error', this._onError)
 
         if (this.el.complete && this.el.naturalWidth === 0) {
             this._onError()
         }
-    }
-
-    destroy() {
-        this.el.removeEventListener('error', this._onError)
     }
 
     _onError() {

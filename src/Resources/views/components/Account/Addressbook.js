@@ -1,24 +1,27 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { applyAddressFilter, dropAddressFilter } from '@views-theme/modules/address/filter.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Addressbook listing — client-side search filter.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AccountAddressbook extends ShopwareComponent {
+export default class AccountAddressbook extends ThemeComponent {
     static options = {
+        listId: null,
         itemComponent: 'ViewsTheme:Address:Item',
-        statusComponent: 'ViewsTheme:Address:Manager:Status',
     }
 
     init() {
         this._onInput = this._onInput.bind(this)
-        this.el.addEventListener('input', this._onInput)
+        this.scope.on(this.el, 'input', this._onInput)
         this._sync('')
     }
 
     destroy() {
-        this.el.removeEventListener('input', this._onInput)
+        dropAddressFilter(this.options.listId)
+
+        super.destroy()
     }
 
     /**
@@ -37,40 +40,10 @@ export default class AccountAddressbook extends ShopwareComponent {
      * @param {string} query
      */
     _sync(query) {
-        const term = String(query || '').trim().toLowerCase()
-        const items = Array.from(
+        applyAddressFilter(
+            this.options.listId,
             this.el.querySelectorAll(`[data-component="${this.options.itemComponent}"]`),
+            query,
         )
-
-        let visible = 0
-        for (const item of items) {
-            const match = term === '' || (item.textContent || '').toLowerCase().includes(term)
-            item.hidden = !match
-            if (match) {
-                visible += 1
-            }
-        }
-
-        const total = items.length
-        const statuses = this.el.querySelectorAll(
-            `[data-component="${this.options.statusComponent}"]`,
-        )
-
-        statuses.forEach((el) => {
-            let kind = getInstanceByElement(this.options.statusComponent, el)?.options?.kind
-            if (!kind) {
-                try {
-                    kind = JSON.parse(el.getAttribute('data-component-options') || '{}').kind
-                } catch {
-                    kind = null
-                }
-            }
-            if (kind === 'empty') {
-                el.hidden = total !== 0
-            }
-            if (kind === 'notFound') {
-                el.hidden = !(term !== '' && visible === 0 && total > 0)
-            }
-        })
     }
 }

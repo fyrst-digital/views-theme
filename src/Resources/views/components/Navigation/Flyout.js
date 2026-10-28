@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NavigationFlyout extends ShopwareComponent {
+export default class NavigationFlyout extends ThemeComponent {
     static options = {
         durationVar: '--vi-flyout-duration',
         durationFallback: 150,
@@ -17,6 +19,8 @@ export default class NavigationFlyout extends ShopwareComponent {
 
     destroy() {
         this._clearCloseWait()
+
+        super.destroy()
     }
 
     open() {

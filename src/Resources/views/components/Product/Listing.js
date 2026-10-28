@@ -1,22 +1,33 @@
-import { createControlsRegistry } from '@views-theme/modules/listing/controls.js'
+import {
+    activeLabels,
+    all,
+    collectValues,
+    controlsVersion,
+    hydrate,
+    hydrateFromUrl,
+    setAvailability,
+    setOptionsPayload,
+} from '@views-theme/modules/listing/controls.js'
 import { createListingFetch } from '@views-theme/modules/listing/fetch.js'
-import { attach, commit, detach } from '@views-theme/modules/listing/store.js'
-import { applyAvailability, applyFilterOptionsPayload, controlFilterKey } from '@views-theme/modules/listing/filter-options.js'
+import { controlFilterKey } from '@views-theme/modules/listing/filter-options.js'
 import { createHistoryController } from '@views-theme/modules/listing/history.js'
 import { buildRequestParams } from '@views-theme/modules/listing/params.js'
 import {
+    readAriaLiveText,
     replaceResults,
     scrollToListing,
-    updateAriaLive,
-    waitForResultsControls,
 } from '@views-theme/modules/listing/results-dom.js'
+import { attach } from '@views-theme/modules/listing/store.js'
+import { busy, labels, liveText, params as appliedParams } from '@views-theme/modules/listing/state.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Product listing owner: URL SoT, control registry, Results XHR, filter-options.
+ * Product listing owner: URL SoT, Results XHR, filter-options. Controls register
+ * themselves (`listing/controls.js`); the owner never scans for them.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ProductListing extends ShopwareComponent {
+export default class ProductListing extends ThemeComponent {
     /** @type {import('@views-theme/modules/types.js').ListingOptions} */
     static options = {
         resultsUrl: null,
@@ -28,20 +39,11 @@ export default class ProductListing extends ShopwareComponent {
         ariaLiveUpdates: true,
         history: true,
         resultsComponent: 'ViewsTheme:Product:Listing:Results',
-        panelComponent: 'ViewsTheme:Filter:Panel',
         changedEvent: 'ViewsTheme:Listing:Changed',
         syncedEvent: 'ViewsTheme:Listing:ControlsSynced',
         availabilitySyncedEvent: 'ViewsTheme:Listing:AvailabilitySynced',
         loadingEvent: 'ViewsTheme:Listing:Loading',
         scrollOffset: 15,
-        controlComponents: [
-            'ViewsTheme:Pagination',
-            'ViewsTheme:Sorting',
-            'ViewsTheme:Filter:MultiSelect',
-            'ViewsTheme:Filter:Boolean',
-            'ViewsTheme:Filter:Range',
-            'ViewsTheme:Filter:Rating',
-        ],
         displayParamKeys: [
             'boxLayout',
             'referrerCategoryId',
@@ -63,47 +65,40 @@ export default class ProductListing extends ShopwareComponent {
             el: this.el,
             getOptions: () => /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
         }
-        this._registry = createControlsRegistry(ctx)
         this._fetch = createListingFetch(ctx)
         this._history = createHistoryController()
 
         if (this.options.history) {
-            window.addEventListener('popstate', this._onPopstate)
+            this.scope.on(window, 'popstate', this._onPopstate)
         }
 
-        attach(this)
-        this.syncControls()
-        requestAnimationFrame(() => {
-            this.syncControls()
-            void this.syncFilterOptions()
+        this.scope.add(attach(this))
+        // Chips follow control connect / disconnect (drawer open / close, Results swap).
+        this.scope.watch(controlsVersion, () => {
+            labels.set(this.getActiveLabels())
         })
+        this.syncControls()
+        void this.syncFilterOptions()
     }
 
     destroy() {
-        window.removeEventListener('popstate', this._onPopstate)
         this._fetch.abortAll()
-        this._registry.clear()
         this._queued = null
-        detach(this)
+
+        super.destroy()
     }
 
-    /** Re-scan control components (e.g. after Filter:Drawer mount/unmount). */
-    refreshControls() {
-        this._registry.refresh()
-    }
-
-    /** Hydrate every registered control from the current URL query. */
+    /** Hydrate every connected control from the current URL query. */
     hydrateFromUrl() {
-        this._registry.hydrateFromUrl()
+        hydrateFromUrl()
     }
 
     /**
-     * Discover controls then hydrate from URL (lazy Filter:Drawer open, init, popstate).
+     * Hydrate connected controls from the URL (init, popstate) and refresh the chips.
      */
     syncControls() {
-        this.refreshControls()
         this.hydrateFromUrl()
-        commit({ labels: this.getActiveLabels() })
+        labels.set(this.getActiveLabels())
         window.Shopware.emitQueued(this.options.syncedEvent, { source: this.el })
     }
 
@@ -121,7 +116,6 @@ export default class ProductListing extends ShopwareComponent {
 
         if (this.options.filterOptionsUrl) {
             await this._withAvailabilityLoading(async () => {
-                this.refreshControls()
                 const requestParams = this._resolveParams(params, options)
                 const payload = await this._fetch.fetchFilterOptions(requestParams)
                 if (!payload) {
@@ -149,13 +143,12 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         await this._withAvailabilityLoading(async () => {
-            this.refreshControls()
             const requestParams = this._resolveParams(params, options)
             const aggregations = await this._fetch.fetchAggregations(requestParams)
             if (!aggregations) {
                 return
             }
-            applyAvailability(this._registry.values(), aggregations)
+            setAvailability(aggregations)
             this._emitAvailability(true, requestParams)
         }, 'availability-failed')
     }
@@ -167,7 +160,7 @@ export default class ProductListing extends ShopwareComponent {
     apply(patch = {}, options = {}) {
         const pushHistory = options.pushHistory !== false
         const resetPage = options.resetPage !== false
-        const next = { ...this._registry.collectValues(), ...patch }
+        const next = { ...collectValues(), ...patch }
 
         if (resetPage && patch.p === undefined) {
             next.p = 1
@@ -180,8 +173,7 @@ export default class ProductListing extends ShopwareComponent {
      * @param {string} id
      */
     reset(id) {
-        this.refreshControls()
-        this._registry.forEach((control) => {
+        all().forEach((control) => {
             if (typeof control.reset === 'function') {
                 control.reset(id)
             }
@@ -195,9 +187,8 @@ export default class ProductListing extends ShopwareComponent {
      * @param {string|string[]|null} [keys]
      */
     resetFilters(keys = null) {
-        this.refreshControls()
         const wanted = filterKeySet(keys)
-        this._registry.forEach((control) => {
+        all().forEach((control) => {
             if (typeof control.resetAll !== 'function') {
                 return
             }
@@ -217,7 +208,7 @@ export default class ProductListing extends ShopwareComponent {
      * @returns {import('@views-theme/modules/types.js').ListingLabel[]}
      */
     getActiveLabels() {
-        return this._registry.getActiveLabels()
+        return activeLabels()
     }
 
     /**
@@ -231,7 +222,7 @@ export default class ProductListing extends ShopwareComponent {
         }
         return buildRequestParams(
             /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
-            params ?? this._registry.collectValues(),
+            params ?? collectValues(),
         )
     }
 
@@ -239,8 +230,7 @@ export default class ProductListing extends ShopwareComponent {
      * @param {import('@views-theme/modules/types.js').FilterOptionsPayload} payload
      */
     _applyOptions(payload) {
-        this.refreshControls()
-        applyFilterOptionsPayload(this._registry.values(), payload)
+        setOptionsPayload(payload)
     }
 
     /**
@@ -265,6 +255,7 @@ export default class ProductListing extends ShopwareComponent {
     async _withAvailabilityLoading(runner, failCode) {
         const standalone = !this._busy
         if (standalone) {
+            busy.set(true)
             window.Shopware.emitQueued(this.options.loadingEvent, {
                 busy: true,
                 source: this.el,
@@ -282,6 +273,7 @@ export default class ProductListing extends ShopwareComponent {
             this._emitAvailability(false, {}, error?.message || failCode)
         } finally {
             if (standalone) {
+                busy.set(false)
                 window.Shopware.emitQueued(this.options.loadingEvent, {
                     busy: false,
                     source: this.el,
@@ -311,7 +303,7 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         this._busy = true
-        commit({ busy: true })
+        busy.set(true)
         this.el.setAttribute('aria-busy', 'true')
         window.Shopware.emitQueued(this.options.loadingEvent, { busy: true, source: this.el })
 
@@ -323,7 +315,7 @@ export default class ProductListing extends ShopwareComponent {
             }
         } finally {
             this._busy = false
-            commit({ busy: false })
+            busy.set(false)
             this.el.removeAttribute('aria-busy')
             window.Shopware.emitQueued(this.options.loadingEvent, { busy: false, source: this.el })
         }
@@ -340,7 +332,6 @@ export default class ProductListing extends ShopwareComponent {
             return
         }
 
-        this._registry.prune()
         const requestParams = buildRequestParams(
             /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
             params,
@@ -357,18 +348,18 @@ export default class ProductListing extends ShopwareComponent {
 
             const html = await resultsPromise
 
+            // Set before the swap: Pagination / Sorting in the new Results hydrate from these on connect.
+            appliedParams.set(requestParams)
             replaceResults(this.el, html, this.options.resultsComponent)
-            await waitForResultsControls(this.el, this.options.resultsComponent)
-            this.refreshControls()
 
             if (pushHistory && this.options.history) {
                 this._history.push(
                     requestParams,
                     /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
-                    this._registry.values(),
+                    all(),
                 )
             }
-            this._registry.hydrateFromParams(requestParams)
+            hydrate(requestParams)
             scrollToListing(this.el, this.options.scrollOffset)
 
             /** @type {import('@views-theme/modules/types.js').FilterOptionsPayload|null|undefined} */
@@ -385,23 +376,22 @@ export default class ProductListing extends ShopwareComponent {
             }
 
             if (optionsPayload) {
-                this.refreshControls()
-                this._registry.hydrateFromParams(requestParams)
+                hydrate(requestParams)
                 this._applyOptions(optionsPayload)
                 this._emitAvailability(true, requestParams)
             } else if (optionsPayload === undefined && this.options.disableEmptyFilter) {
                 await this.syncFilterOptions(requestParams, { built: true })
             }
 
-            updateAriaLive(
+            const liveMessage = readAriaLiveText(
                 /** @type {import('@views-theme/modules/types.js').ListingOptions} */ (this.options),
                 this.el,
             )
+            if (liveMessage) {
+                liveText.set({ text: liveMessage })
+            }
 
-            commit({
-                params: requestParams,
-                labels: this.getActiveLabels(),
-            })
+            labels.set(this.getActiveLabels())
 
             window.Shopware.emitQueued(this.options.changedEvent, {
                 ok: true,
@@ -428,7 +418,7 @@ export default class ProductListing extends ShopwareComponent {
         }
 
         this.syncControls()
-        this._enqueue(this._registry.collectValues(), false)
+        this._enqueue(collectValues(), false)
     }
 }
 

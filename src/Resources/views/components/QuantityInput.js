@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class QuantityInput extends ShopwareComponent {
+export default class QuantityInput extends ThemeComponent {
     static options = {
         inputSelector: 'input[type="number"]',
     }
@@ -20,16 +22,10 @@ export default class QuantityInput extends ShopwareComponent {
         this._onIncrease = this._onIncrease.bind(this)
         this._onInput = this._onInput.bind(this)
 
-        this._decrease?.addEventListener('click', this._onDecrease)
-        this._increase?.addEventListener('click', this._onIncrease)
-        this._input.addEventListener('change', this._onInput)
+        this.scope.on(this._decrease, 'click', this._onDecrease)
+        this.scope.on(this._increase, 'click', this._onIncrease)
+        this.scope.on(this._input, 'change', this._onInput)
         this._syncButtonState()
-    }
-
-    destroy() {
-        this._decrease?.removeEventListener('click', this._onDecrease)
-        this._increase?.removeEventListener('click', this._onIncrease)
-        this._input?.removeEventListener('change', this._onInput)
     }
 
     _step() {

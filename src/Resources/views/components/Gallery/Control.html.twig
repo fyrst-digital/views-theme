@@ -1,6 +1,7 @@
 {% props
     direction = 'next',
     disabled = false,
+    galleryId = null,
     cva = {},
 %}
 
@@ -21,6 +22,7 @@
         'aria-disabled': disabled ? 'true' : 'false',
         'data-component': 'ViewsTheme:Gallery:Control',
         'data-component-options': {
+            galleryId: galleryId,
             direction: direction,
         }|json_encode,
     }) }}

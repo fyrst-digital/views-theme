@@ -1,16 +1,14 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Overview newsletter — native change → submit (replaces FormAutoSubmit).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AccountNewsletter extends ShopwareComponent {
+export default class AccountNewsletter extends ThemeComponent {
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
     }
 
     /**

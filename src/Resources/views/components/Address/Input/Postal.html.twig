@@ -22,6 +22,11 @@
                             formViolations: formViolations,
                             autocomplete: fields.zipcode.autocomplete,
                             label: 'address.zipcodeLabel'|trans|sw_sanitize,
+                            'data-component': 'ViewsTheme:Address:Input:Field',
+                            'data-component-options': {
+                                scope: prefix,
+                                field: 'zip',
+                            }|json_encode,
                         }).all() }}
                     />
                 {% endvi_block %}

@@ -1,14 +1,16 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { galleries, select } from '@views-theme/modules/gallery/store.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Scroll-snap canvas — goTo via scrollIntoView; settle via getBoundingClientRect;
  * resize re-pins current index (no scrollLeft).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryCanvas extends ShopwareComponent {
+export default class GalleryCanvas extends ThemeComponent {
     static options = {
-        galleryComponent: 'ViewsTheme:Gallery',
+        galleryId: null,
         slideComponent: 'ViewsTheme:Gallery:Slide',
     }
 
@@ -24,24 +26,26 @@ export default class GalleryCanvas extends ShopwareComponent {
             return
         }
 
-        track.addEventListener('scrollend', this._onScrollEnd, { passive: true })
-        track.addEventListener('scroll', this._onScroll, { passive: true })
+        this.scope.on(track, 'scrollend', this._onScrollEnd, { passive: true })
+        this.scope.on(track, 'scroll', this._onScroll, { passive: true })
 
-        this._resizeObserver = new ResizeObserver(this._onResize)
-        this._resizeObserver.observe(track)
+        const observer = new ResizeObserver(this._onResize)
+        observer.observe(track)
+        this.scope.add(() => observer.disconnect())
+
+        this.scope.effect(galleries.get(this.options.galleryId).index, (index) => {
+            if (index !== this._index) {
+                this.goTo(index)
+            }
+        })
     }
 
     destroy() {
-        const track = this._track()
-        if (track) {
-            track.removeEventListener('scrollend', this._onScrollEnd)
-            track.removeEventListener('scroll', this._onScroll)
-        }
-        this._resizeObserver?.disconnect()
-        this._resizeObserver = null
         clearTimeout(this._scrollTimer)
         clearTimeout(this._progTimer)
         clearTimeout(this._resizeTimer)
+
+        super.destroy()
     }
 
     /**
@@ -146,16 +150,7 @@ export default class GalleryCanvas extends ShopwareComponent {
         }
 
         this._index = best
-        this._gallery()?.setIndex?.(best)
-    }
-
-    /**
-     * @returns {import('../Gallery.js').default|null}
-     */
-    _gallery() {
-        const name = this.options.galleryComponent
-        const el = this.el.closest(`[data-component="${name}"]`)
-        return getInstanceByElement(name, el)
+        select(this.options.galleryId, best)
     }
 
     /**

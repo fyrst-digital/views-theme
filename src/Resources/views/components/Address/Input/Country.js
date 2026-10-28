@@ -4,34 +4,43 @@ import {
     fetchJson,
     urlWithParams,
 } from '@views-theme/modules/shared/http.js'
-import { setFieldEnabled, setRequired } from '@views-theme/modules/shared/form.js'
+import { countryRules } from '@views-theme/modules/address/country.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Country change — load states, set zip / VAT / state required.
+ * Country change — executor of the address country rules: loads the states and
+ * publishes required zip / VAT / state to the fields of the same `scope`.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressInputCountry extends ShopwareComponent {
+export default class AddressInputCountry extends ThemeComponent {
     static options = {
         countryDataUrl: null,
+        scope: '',
     }
 
     init() {
         this._fetch = { controller: null, seq: 0 }
         this._onCountryChange = this._onCountryChange.bind(this)
         this._select = this._countrySelect()
-        const form = this.el.closest('form')
-        const prefix = this._prefix(this._select?.name || '')
-        this._state = this._control(form, this._fieldName(prefix, 'countryStateId'))
-        this._zip = this._control(form, this._fieldName(prefix, 'zipcode'))
-        this._vat = this._control(form, this._vatName(prefix))
-        this._select?.addEventListener('change', this._onCountryChange)
+        this._rules = countryRules.get(this.options.scope)
+        // The state field hides itself; this host only re-spans the grid cell.
+        this.scope.effect(this._rules.states, (states) => {
+            if (states) {
+                this._setCountrySpan(!states.visible)
+            }
+        })
+        this.scope.on(this._select, 'change', this._onCountryChange)
         this._apply(this._select?.value || '', { preserveState: true })
     }
 
     destroy() {
-        this._select?.removeEventListener('change', this._onCountryChange)
         abortRequest(this._fetch)
+        this._rules.flags.set(null)
+        this._rules.states.set(null)
+
+        super.destroy()
     }
 
     /**
@@ -51,8 +60,7 @@ export default class AddressInputCountry extends ShopwareComponent {
     _apply(countryId, { preserveState = false } = {}) {
         const flags = this._flags()
 
-        setRequired(this._zip, flags.requiredZip)
-        setRequired(this._vat, flags.requiredVat)
+        this._rules.flags.set({ requiredZip: flags.requiredZip, requiredVat: flags.requiredVat })
 
         if (!countryId || !this.options.countryDataUrl) {
             this._setStateOptions([], flags, preserveState)
@@ -103,53 +111,6 @@ export default class AddressInputCountry extends ShopwareComponent {
     }
 
     /**
-     * @param {string} name
-     * @returns {string}
-     */
-    _prefix(name) {
-        const match = /^(.*)\[countryId\]$/.exec(name)
-
-        return match ? match[1] : ''
-    }
-
-    /**
-     * @param {string} prefix
-     * @param {string} key
-     * @returns {string}
-     */
-    _fieldName(prefix, key) {
-        return prefix !== '' ? `${prefix}[${key}]` : key
-    }
-
-    /**
-     * Same name rule as Address:Input:Company.
-     *
-     * @param {string} prefix
-     * @returns {string}
-     */
-    _vatName(prefix) {
-        if (prefix === '' || prefix === 'billingAddress') {
-            return 'vatIds[]'
-        }
-
-        return `${prefix}[vatIds][]`
-    }
-
-    /**
-     * @param {HTMLFormElement|null} form
-     * @param {string} name
-     * @returns {HTMLInputElement|HTMLSelectElement|null}
-     */
-    _control(form, name) {
-        if (!form || name === '') {
-            return null
-        }
-        const el = form.elements.namedItem(name)
-
-        return el instanceof HTMLInputElement || el instanceof HTMLSelectElement ? el : null
-    }
-
-    /**
      * @param {unknown} states
      * @returns {{ value: string, label: string }[]}
      */
@@ -176,58 +137,14 @@ export default class AddressInputCountry extends ShopwareComponent {
      * @param {boolean} preserveState
      */
     _setStateOptions(states, flags, preserveState) {
-        const select = this._state
-        if (!select) {
-            return
-        }
-
         const visible = !!flags.displayState && states.length > 0
-        const selected = preserveState ? select.value : ''
-        const placeholder = select.querySelector('option[value=""]') || this._placeholderOption()
 
-        select.replaceChildren(placeholder)
-        if (visible) {
-            states.forEach((state) => {
-                const option = document.createElement('option')
-                option.value = state.value
-                option.textContent = state.label
-                if (state.value === selected) {
-                    option.selected = true
-                }
-                select.append(option)
-            })
-        }
-
-        setRequired(select, visible && !!flags.requiredState)
-        this._setHostHidden(select, !visible)
-    }
-
-    /**
-     * @returns {HTMLOptionElement}
-     */
-    _placeholderOption() {
-        const option = document.createElement('option')
-        option.value = ''
-        option.textContent = ''
-
-        return option
-    }
-
-    /**
-     * Form:Select root is the control's parent (label, select, feedback).
-     *
-     * @param {HTMLElement} field
-     * @param {boolean} hidden
-     */
-    _setHostHidden(field, hidden) {
-        const host = field.parentElement
-        if (!host) {
-            return
-        }
-        host.hidden = hidden
-        host.inert = hidden
-        setFieldEnabled(field, !hidden)
-        this._setCountrySpan(hidden)
+        this._rules.states.set({
+            options: states,
+            visible,
+            required: visible && !!flags.requiredState,
+            preserve: preserveState,
+        })
     }
 
     /**

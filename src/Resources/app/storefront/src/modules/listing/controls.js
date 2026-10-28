@@ -1,195 +1,164 @@
 /**
- * Listing control registry (discover / hydrate / labels).
+ * Listing control registry. Controls register themselves (`connect` in `init`,
+ * the returned disconnect in `destroy`); nothing scans the DOM.
+ *
+ * Several controls can share one identity (same filter key + param keys): the bar facet and
+ * the same facet inside the filter drawer, top and bottom pagination. Per
+ * identity the **last connected** control is the active one — it provides
+ * values and labels. When it disconnects (drawer closes, island swapped) the
+ * previous one becomes active again. Hydration, options and availability apply
+ * to every connected control so the inactive twin never goes stale.
+ *
+ * `connect` never triggers a request. It hydrates the control from the last
+ * applied params (URL before the first apply) and applies the cached
+ * filter-options payload.
  *
  * @module @views-theme/modules/listing/controls
  */
-
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { applyAvailability, applyFilterOptionsToControl, controlFilterKey } from '@views-theme/modules/listing/filter-options.js'
 import { collectControlValues, urlParams } from '@views-theme/modules/listing/params.js'
+import { params } from '@views-theme/modules/listing/state.js'
+import { createRegistry } from '@views-theme/modules/shared/registry.js'
+
+/** @type {import('@views-theme/modules/shared/registry.js').Registry<import('@views-theme/modules/types.js').ListingControl>} */
+const registry = createRegistry({ identify: identityOf })
+
+/** Bumped (batched) whenever a control connects or disconnects. */
+export const controlsVersion = registry.version
+
+/** @type {import('@views-theme/modules/types.js').FilterOptionsPayload|null} */
+let optionsPayload = null
 
 /**
- * @typedef {object} ControlsRegistry
- * @property {() => void} refresh
- * @property {() => void} prune
- * @property {(params: import('@views-theme/modules/types.js').ListingRequestParams) => void} hydrateFromParams
- * @property {() => void} hydrateFromUrl
- * @property {() => Record<string, unknown>} collectValues
- * @property {(fn: (control: import('@views-theme/modules/types.js').ListingControl) => void) => void} forEach
- * @property {() => import('@views-theme/modules/types.js').ListingLabel[]} getActiveLabels
- * @property {() => void} clear
- * @property {() => Set<import('@views-theme/modules/types.js').ListingControl>} values
+ * @param {import('@views-theme/modules/types.js').ListingControl} control
+ * @returns {string|symbol}
  */
+function identityOf(control) {
+    const keys = typeof control.getParamKeys === 'function' ? control.getParamKeys() : []
+    if (!Array.isArray(keys) || !keys.length) {
+        return Symbol('listing-control')
+    }
+
+    // Property facets share the param key `properties`; their filter key tells them apart.
+    return [controlFilterKey(control) || '', ...keys].join('\u0000')
+}
 
 /**
- * @param {import('@views-theme/modules/types.js').ListingModuleContext} ctx
- * @returns {ControlsRegistry}
+ * @returns {Record<string, unknown>}
  */
-export function createControlsRegistry(ctx) {
-    /** @type {Set<import('@views-theme/modules/types.js').ListingControl>} */
-    const controls = new Set()
+function currentParams() {
+    const applied = params.get()
 
-    /**
-     * @param {import('@views-theme/modules/types.js').ListingControl|null|undefined} control
-     */
-    function register(control) {
-        if (!control || typeof control.getValues !== 'function') {
+    return Object.keys(applied).length ? applied : urlParams()
+}
+
+/**
+ * @param {import('@views-theme/modules/types.js').ListingControl} control
+ * @returns {() => void} disconnect
+ */
+export function connect(control) {
+    if (!control || typeof control.getValues !== 'function') {
+        return () => {}
+    }
+
+    const disconnect = registry.connect(control)
+
+    if (typeof control.setFromUrl === 'function') {
+        control.setFromUrl(/** @type {Record<string, string>} */ (currentParams()))
+    }
+    if (optionsPayload) {
+        applyFilterOptionsToControl(control, optionsPayload)
+    }
+
+    return disconnect
+}
+
+/**
+ * Every connected control.
+ *
+ * @returns {import('@views-theme/modules/types.js').ListingControl[]}
+ */
+export function all() {
+    return registry.all()
+}
+
+/**
+ * The active (last connected) control per identity.
+ *
+ * @returns {import('@views-theme/modules/types.js').ListingControl[]}
+ */
+export function active() {
+    return registry.active()
+}
+
+/**
+ * @param {Record<string, unknown>} next
+ */
+export function hydrate(next) {
+    all().forEach((control) => {
+        if (typeof control.setFromUrl === 'function') {
+            control.setFromUrl(/** @type {Record<string, string>} */ (next || {}))
+        }
+    })
+}
+
+export function hydrateFromUrl() {
+    hydrate(urlParams())
+}
+
+/**
+ * @returns {Record<string, unknown>}
+ */
+export function collectValues() {
+    return collectControlValues(active())
+}
+
+/**
+ * @returns {import('@views-theme/modules/types.js').ListingLabel[]}
+ */
+export function activeLabels() {
+    /** @type {import('@views-theme/modules/types.js').ListingLabel[]} */
+    const labels = []
+    const seen = new Set()
+    active().forEach((control) => {
+        if (typeof control.getLabels !== 'function') {
             return
         }
-        controls.add(control)
-    }
 
-    function prune() {
-        controls.forEach((control) => {
-            if (!control.el || !document.body.contains(control.el)) {
-                controls.delete(control)
-            }
-        })
-    }
-
-    /**
-     * @param {ParentNode|null|undefined} root
-     */
-    function discoverIn(root) {
-        if (!root) {
-            return
-        }
-
-        const names = ctx.getOptions().controlComponents || []
-        names.forEach((name) => {
-            root.querySelectorAll(`[data-component="${name}"]`).forEach((el) => {
-                const instance = /** @type {import('@views-theme/modules/types.js').ListingControl|null} */ (
-                    getInstanceByElement(name, el)
-                )
-                if (instance) {
-                    register(instance)
-                }
-            })
-        })
-    }
-
-    /**
-     * @param {Element|null} drawerEl
-     */
-    function isFilterDrawerOpen(drawerEl) {
-        if (!drawerEl) {
-            return false
-        }
-
-        const instance = getInstanceByElement('ViewsTheme:Drawer', drawerEl)
-        if (instance && typeof /** @type {{ isOpen?: () => boolean }} */ (instance).isOpen === 'function') {
-            return Boolean(/** @type {{ isOpen: () => boolean }} */ (instance).isOpen())
-        }
-
-        return drawerEl.getAttribute('aria-hidden') !== 'true'
-    }
-
-    /**
-     * @returns {Element[]}
-     */
-    function activeFilterPanels() {
-        const panelName = ctx.getOptions().panelComponent || 'ViewsTheme:Filter:Panel'
-        const panels = [...document.querySelectorAll(`[data-component="${panelName}"]`)]
-        const drawer = document.querySelector('#vi-filter-drawer')
-        const drawerActive = isFilterDrawerOpen(drawer)
-
-        if (drawerActive && drawer) {
-            return panels.filter((panel) => drawer.contains(panel))
-        }
-
-        return panels.filter((panel) => !panel.closest('#vi-filter-drawer'))
-    }
-
-    function discover() {
-        discoverIn(ctx.el)
-
-        const panelName = ctx.getOptions().panelComponent || 'ViewsTheme:Filter:Panel'
-        controls.forEach((control) => {
-            if (control.el?.closest(`[data-component="${panelName}"]`)) {
-                controls.delete(control)
-            }
-        })
-
-        activeFilterPanels().forEach((panel) => {
-            discoverIn(panel)
-        })
-    }
-
-    function refresh() {
-        prune()
-        discover()
-    }
-
-    /**
-     * @param {import('@views-theme/modules/types.js').ListingRequestParams} params
-     */
-    function hydrateFromParams(params) {
-        controls.forEach((control) => {
-            if (typeof control.setFromUrl === 'function') {
-                control.setFromUrl(params || {})
-            }
-        })
-    }
-
-    function hydrateFromUrl() {
-        hydrateFromParams(urlParams())
-    }
-
-    function collectValues() {
-        return collectControlValues(controls)
-    }
-
-    /**
-     * @param {(control: import('@views-theme/modules/types.js').ListingControl) => void} fn
-     */
-    function forEach(fn) {
-        controls.forEach(fn)
-    }
-
-    /**
-     * @returns {import('@views-theme/modules/types.js').ListingLabel[]}
-     */
-    function getActiveLabels() {
-        refresh()
-
-        /** @type {import('@views-theme/modules/types.js').ListingLabel[]} */
-        const labels = []
-        const seen = new Set()
-        controls.forEach((control) => {
-            if (typeof control.getLabels !== 'function') {
-                return
-            }
-
-            control.getLabels().forEach((item) => {
-                const id = item?.id
-                if (id !== undefined && id !== null && seen.has(String(id))) {
+        control.getLabels().forEach((item) => {
+            const id = item?.id
+            if (id !== undefined && id !== null) {
+                if (seen.has(String(id))) {
                     return
                 }
-                if (id !== undefined && id !== null) {
-                    seen.add(String(id))
-                }
-                labels.push(item)
-            })
+                seen.add(String(id))
+            }
+            labels.push(item)
         })
-        return labels
+    })
+
+    return labels
+}
+
+/**
+ * Cache the latest filter-options payload (applied to controls that connect later) and apply it now.
+ *
+ * @param {import('@views-theme/modules/types.js').FilterOptionsPayload|null} payload
+ */
+export function setOptionsPayload(payload) {
+    optionsPayload = payload
+    if (!payload) {
+        return
     }
 
-    function clear() {
-        controls.clear()
-    }
+    all().forEach((control) => {
+        applyFilterOptionsToControl(control, payload)
+    })
+}
 
-    function values() {
-        return controls
-    }
-
-    return {
-        refresh,
-        prune,
-        hydrateFromParams,
-        hydrateFromUrl,
-        collectValues,
-        forEach,
-        getActiveLabels,
-        clear,
-        values,
-    }
+/**
+ * @param {object} aggregations
+ */
+export function setAvailability(aggregations) {
+    applyAvailability(all(), aggregations)
 }

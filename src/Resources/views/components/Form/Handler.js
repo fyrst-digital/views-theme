@@ -1,11 +1,12 @@
 import { isFormControl, setInvalidChrome } from '@views-theme/modules/shared/form.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Form owner — Constraint Validation, confirmFor match, submit loading.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FormHandler extends ShopwareComponent {
+export default class FormHandler extends ThemeComponent {
     static options = {
         preventNative: false,
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
@@ -15,25 +16,22 @@ export default class FormHandler extends ShopwareComponent {
         this.el.noValidate = true
         this._onSubmit = this._onSubmit.bind(this)
         this._onInput = this._onInput.bind(this)
-        this.el.addEventListener('submit', this._onSubmit)
-        this.el.addEventListener('input', this._onInput)
-        this.el.addEventListener('change', this._onInput)
+        this.scope.on(this.el, 'submit', this._onSubmit)
+        this.scope.on(this.el, 'input', this._onInput)
+        this.scope.on(this.el, 'change', this._onInput)
         this._associated = this._fields().filter((field) => !this.el.contains(field))
         this._associated.forEach((field) => {
-            field.addEventListener('input', this._onInput)
-            field.addEventListener('change', this._onInput)
+            this.scope.on(field, 'input', this._onInput)
+            this.scope.on(field, 'change', this._onInput)
         })
         this._syncConfirmValidity()
     }
 
     destroy() {
-        this.el.removeEventListener('submit', this._onSubmit)
-        this.el.removeEventListener('input', this._onInput)
-        this.el.removeEventListener('change', this._onInput)
         this._associated?.forEach((field) => {
-            field.removeEventListener('input', this._onInput)
-            field.removeEventListener('change', this._onInput)
         })
+
+        super.destroy()
     }
 
     /**
@@ -72,7 +70,7 @@ export default class FormHandler extends ShopwareComponent {
         }
 
         this.setSubmitting(true)
-        window.Shopware.emit(this.options.submitEvent, { el: this.el, form: this.el })
+        window.Shopware.emit(this.options.submitEvent, { el: this.el, form: this.el, handler: this })
 
         if (this.options.preventNative) {
             event.preventDefault()
@@ -108,7 +106,9 @@ export default class FormHandler extends ShopwareComponent {
                 return
             }
             const otherId = field.getAttribute('data-confirm-for')
-            const other = otherId ? document.getElementById(otherId) : null
+            const other = otherId
+                ? this.el.elements.namedItem(otherId) || document.getElementById(otherId)
+                : null
             if (!isFormControl(other)) {
                 field.setCustomValidity('')
                 return

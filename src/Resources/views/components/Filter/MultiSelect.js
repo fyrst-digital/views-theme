@@ -1,10 +1,11 @@
-import { apply } from '@views-theme/modules/listing/store.js'
+import { apply, connectControl } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterMultiSelect extends ShopwareComponent {
+export default class FilterMultiSelect extends ThemeComponent {
     static options = {
         name: null,
         propertyName: null,
@@ -14,12 +15,9 @@ export default class FilterMultiSelect extends ShopwareComponent {
 
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
         this._syncCount()
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.add(connectControl(this))
     }
 
     getValues() {

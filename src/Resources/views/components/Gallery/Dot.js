@@ -1,8 +1,18 @@
+import { bindIndexItem } from '@views-theme/modules/gallery/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * Dot identity host for Gallery owner discovery.
+ * Dot: click selects its index, `aria-current` follows the gallery store.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryDot extends ShopwareComponent {
-    init() {}
+export default class GalleryDot extends ThemeComponent {
+    static options = {
+        galleryId: null,
+        index: 0,
+    }
+
+    init() {
+        bindIndexItem(this.scope, this.el, this.options.galleryId, Number(this.options.index) || 0)
+    }
 }

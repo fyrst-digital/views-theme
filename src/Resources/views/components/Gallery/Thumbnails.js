@@ -1,19 +1,27 @@
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { galleries } from '@views-theme/modules/gallery/store.js'
+import { effect } from '@views-theme/modules/shared/signal.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Thumbnail strip — scrolls the active thumb into view.
  * Scrollport is nested ViewsTheme:Scroll:Area (axis-correct edge fades).
  * Axis from computed flex-direction (`flex-md-column` at md).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class GalleryThumbnails extends ShopwareComponent {
+export default class GalleryThumbnails extends ThemeComponent {
     static options = {
+        galleryId: null,
         thumbComponent: 'ViewsTheme:Gallery:Thumb',
         scrollComponent: 'ViewsTheme:Scroll:Area',
     }
 
-    init() {}
+    init() {
+        this.scope.effect(galleries.get(this.options.galleryId).index, (index) => {
+            this.scrollToIndex(index)
+        })
+    }
 
     /**
      * @param {number} index

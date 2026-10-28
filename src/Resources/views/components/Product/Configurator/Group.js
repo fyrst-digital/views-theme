@@ -1,22 +1,19 @@
 import { apply } from '@views-theme/modules/configurator/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Dispatches a select or radio change into the configurator store.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ProductConfiguratorGroup extends ShopwareComponent {
+export default class ProductConfiguratorGroup extends ThemeComponent {
     static options = {
         configuratorId: null,
     }
 
     init() {
         this._onChange = this._onChange.bind(this)
-        this.el.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this.el.removeEventListener('change', this._onChange)
+        this.scope.on(this.el, 'change', this._onChange)
     }
 
     /**

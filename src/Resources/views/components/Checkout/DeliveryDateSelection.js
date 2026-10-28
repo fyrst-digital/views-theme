@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CheckoutDeliveryDateSelection extends ShopwareComponent {
+export default class CheckoutDeliveryDateSelection extends ThemeComponent {
   static options = {
     inputSelector: 'input[type="date"]',
   }
@@ -14,14 +16,8 @@ export default class CheckoutDeliveryDateSelection extends ShopwareComponent {
     }
     this._min = this._input.getAttribute('min')
     this._max = this._input.getAttribute('max')
-    this._input.addEventListener('change', this._onChange)
+    this.scope.on(this._input, 'change', this._onChange)
     this._clampValue()
-  }
-
-  destroy() {
-    if (this._input && this._onChange) {
-      this._input.removeEventListener('change', this._onChange)
-    }
   }
 
   _clampValue() {

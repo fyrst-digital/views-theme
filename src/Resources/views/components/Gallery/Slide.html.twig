@@ -3,6 +3,7 @@
     index = 0,
     priority = false,
     total = 0,
+    galleryId = null,
     cva = {},
 %}
 
@@ -18,6 +19,7 @@
         })|striptags,
         'data-component': 'ViewsTheme:Gallery:Slide',
         'data-component-options': {
+            galleryId: galleryId,
             index: index,
         }|json_encode,
     }) }}

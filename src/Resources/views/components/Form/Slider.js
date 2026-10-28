@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FormSlider extends ShopwareComponent {
+export default class FormSlider extends ThemeComponent {
     static options = {
         mode: 'single',
         min: 0,
@@ -13,17 +15,17 @@ export default class FormSlider extends ShopwareComponent {
         this._onInput = this._onInput.bind(this)
         this._inputs = Array.from(this.el.querySelectorAll('input[type="range"][data-slider]'))
         this._inputs.forEach((input) => {
-            input.addEventListener('input', this._onInput)
-            input.addEventListener('change', this._onInput)
+            this.scope.on(input, 'input', this._onInput)
+            this.scope.on(input, 'change', this._onInput)
         })
         this._paint()
     }
 
     destroy() {
         this._inputs?.forEach((input) => {
-            input.removeEventListener('input', this._onInput)
-            input.removeEventListener('change', this._onInput)
         })
+
+        super.destroy()
     }
 
     getValues() {

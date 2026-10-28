@@ -1,5 +1,6 @@
 {% props
     ids = [],
+    galleryId = null,
     overlayUrl = path('frontend.views-theme.gallery.fullscreen'),
     cva = {},
 %}
@@ -18,6 +19,7 @@
         'aria-expanded': 'false',
         'data-component': 'ViewsTheme:Gallery:Action:Fullscreen',
         'data-component-options': {
+            galleryId: galleryId,
             overlayUrl: overlayUrl,
             ids: ids,
         }|json_encode,

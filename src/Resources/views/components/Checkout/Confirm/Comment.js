@@ -1,9 +1,11 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Persist customer comment across configure reloads. Never stores TOS.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CheckoutConfirmComment extends ShopwareComponent {
+export default class CheckoutConfirmComment extends ThemeComponent {
     static options = {
         customerId: null,
         fieldName: 'customerComment',
@@ -20,13 +22,7 @@ export default class CheckoutConfirmComment extends ShopwareComponent {
         this._key = `${this.options.storagePrefix}:${this.options.customerId}`
         this._onInput = this._save.bind(this)
         this._restore()
-        this._field.addEventListener('input', this._onInput)
-    }
-
-    destroy() {
-        if (this._field && this._onInput) {
-            this._field.removeEventListener('input', this._onInput)
-        }
+        this.scope.on(this._field, 'input', this._onInput)
     }
 
     _restore() {

@@ -2,6 +2,7 @@
     index = 0,
     active = false,
     total = 0,
+    galleryId = null,
     cva = {},
 %}
 
@@ -17,6 +18,7 @@
         'aria-current': active ? 'true' : 'false',
         'data-component': 'ViewsTheme:Gallery:Dot',
         'data-component-options': {
+            galleryId: galleryId,
             index: index,
         }|json_encode,
     }) }}

@@ -1,23 +1,19 @@
-import { applyReview } from '@views-theme/modules/review/apply.js'
+import { applyReview, connectReviewControl } from '@views-theme/modules/review/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Review language filter control (URL SoT key: language).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewLanguage extends ShopwareComponent {
-    static options = {
-        panelComponent: 'ViewsTheme:Review:Panel',
-    }
+export default class ReviewLanguage extends ThemeComponent {
+    static options = {}
 
     init() {
         this._input = this.el.querySelector('input[type="checkbox"]')
         this._onChange = this._onChange.bind(this)
-        this._input?.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this._input?.removeEventListener('change', this._onChange)
+        this.scope.on(this._input, 'change', this._onChange)
+        this.scope.add(connectReviewControl(this))
     }
 
     getValues() {
@@ -50,6 +46,6 @@ export default class ReviewLanguage extends ShopwareComponent {
     }
 
     _onChange() {
-        applyReview({}, { panelComponent: this.options.panelComponent })
+        applyReview()
     }
 }

@@ -1,20 +1,22 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Scrollport with edge fades on the overflowing axis only.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ScrollArea extends ShopwareComponent {
+export default class ScrollArea extends ThemeComponent {
     init() {
         this._onScroll = this._syncScrollEdges.bind(this)
-        this._resizeObserver = null
 
-        this.el.addEventListener('scroll', this._onScroll, { passive: true })
+        this.scope.on(this.el, 'scroll', this._onScroll, { passive: true })
 
         if (typeof ResizeObserver !== 'undefined') {
-            this._resizeObserver = new ResizeObserver(() => {
+            const observer = new ResizeObserver(() => {
                 this._syncScrollEdges()
             })
-            this._resizeObserver.observe(this.el)
+            observer.observe(this.el)
+            this.scope.add(() => observer.disconnect())
         }
 
         requestAnimationFrame(() => {
@@ -23,13 +25,12 @@ export default class ScrollArea extends ShopwareComponent {
     }
 
     destroy() {
-        this.el.removeEventListener('scroll', this._onScroll)
-        this._resizeObserver?.disconnect()
-        this._resizeObserver = null
         this.el.removeAttribute('data-scroll-up')
         this.el.removeAttribute('data-scroll-down')
         this.el.removeAttribute('data-scroll-start')
         this.el.removeAttribute('data-scroll-end')
+
+        super.destroy()
     }
 
     /** Re-read edges (e.g. after programmatic scroll or content size change). */

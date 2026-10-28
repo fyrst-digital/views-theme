@@ -2,44 +2,37 @@ import {
     abortRequest,
     beginRequest,
     fetchText,
-    getInstanceByElement,
-    replaceMount,
-    unmountEl,
-    waitForInstance,
+    mountShell,
+    releaseShell,
+    shell,
 } from '@views-theme/modules/lazy-shell.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class SearchAction extends ShopwareComponent {
+export default class SearchAction extends ThemeComponent {
     static options = {
         overlayUrl: null,
-        overlayComponentName: 'ViewsTheme:Search:Overlay',
-        overlaySelector: '[data-component="ViewsTheme:Search:Overlay"]',
-        openEvent: 'ViewsTheme:Search:Overlay:Open',
-        closeEvent: 'ViewsTheme:Search:Overlay:Close',
+        shellId: 'vi-search-overlay',
     }
 
     init() {
-        this._overlayEl = null
         this._preservedTerm = ''
         this._loading = false
         this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
-        this._onOverlayOpen = this._onOverlayOpen.bind(this)
-        this._onOverlayClose = this._onOverlayClose.bind(this)
+        this._onShellOpen = this._onShellOpen.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.openEvent, this._onOverlayOpen)
-        window.Shopware.on(this.options.closeEvent, this._onOverlayClose)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.watch(shell(this.options.shellId).open, this._onShellOpen)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.openEvent, this._onOverlayOpen)
-        window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
         abortRequest(this._fetch)
         this._unmountOverlay()
+
+        super.destroy()
     }
 
     /**
@@ -105,14 +98,13 @@ export default class SearchAction extends ShopwareComponent {
                 return
             }
 
-            this._overlayEl = replaceMount(this.options.overlaySelector, html)
-            await waitForInstance(() => this._getOverlayInstance())
+            const api = await mountShell(this.options.shellId, html)
 
             if (!request.isCurrent()) {
                 return
             }
 
-            const overlay = this._getOverlayInstance()
+            const overlay = api
             if (!overlay || typeof overlay.open !== 'function') {
                 console.error('SearchAction: Overlay component did not mount')
                 return
@@ -131,29 +123,19 @@ export default class SearchAction extends ShopwareComponent {
     }
 
     _getOverlayInstance() {
-        if (!this._overlayEl || !document.body.contains(this._overlayEl)) {
-            this._overlayEl = document.querySelector(this.options.overlaySelector)
-        }
-
-        return getInstanceByElement(this.options.overlayComponentName, this._overlayEl)
+        return shell(this.options.shellId).api.get()
     }
 
-    _onOverlayOpen(payload) {
-        const el = payload?.el ?? null
-        if (el && this._overlayEl && el !== this._overlayEl) {
+    /**
+     * @param {boolean} open
+     */
+    _onShellOpen(open) {
+        if (open) {
+            this.el.setAttribute('aria-expanded', 'true')
             return
         }
 
-        this.el.setAttribute('aria-expanded', 'true')
-    }
-
-    _onOverlayClose(payload) {
-        const el = payload?.el ?? null
-        const term = payload?.term
-        if (el && this._overlayEl && el !== this._overlayEl) {
-            return
-        }
-
+        const term = shell(this.options.shellId).detail?.term
         this._preservedTerm = typeof term === 'string' ? term : ''
         this.el.setAttribute('aria-expanded', 'false')
         this.el.focus()
@@ -161,7 +143,6 @@ export default class SearchAction extends ShopwareComponent {
     }
 
     _unmountOverlay() {
-        unmountEl(this._overlayEl, this.options.overlaySelector)
-        this._overlayEl = null
+        releaseShell(this.options.shellId)
     }
 }

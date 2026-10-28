@@ -1,9 +1,11 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Review form points picker — hidden input + data-points icons + hover preview.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewFormRating extends ShopwareComponent {
+export default class ReviewFormRating extends ThemeComponent {
     static options = {
         currentPoints: 5,
         /** @type {Record<string, string>} */
@@ -21,17 +23,11 @@ export default class ReviewFormRating extends ShopwareComponent {
         this._text = this.el.querySelector('[data-rating-text]')
         this._stars = this.el.querySelector('[data-rating-stars]')
 
-        this.el.addEventListener('click', this._onClick)
-        this._stars?.addEventListener('pointerover', this._onPointerOver)
-        this._stars?.addEventListener('pointerleave', this._onPointerLeave)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.on(this._stars, 'pointerover', this._onPointerOver)
+        this.scope.on(this._stars, 'pointerleave', this._onPointerLeave)
 
         this._paint(this._readPoints())
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        this._stars?.removeEventListener('pointerover', this._onPointerOver)
-        this._stars?.removeEventListener('pointerleave', this._onPointerLeave)
     }
 
     /**

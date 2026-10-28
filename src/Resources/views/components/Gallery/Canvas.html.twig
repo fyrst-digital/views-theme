@@ -5,6 +5,7 @@
     rewind = true,
     controlsOnHover = true,
     fullscreen = false,
+    galleryId = null,
     cva = {},
 %}
 
@@ -24,6 +25,9 @@
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Gallery:Canvas',
+        'data-component-options': {
+            galleryId: galleryId,
+        }|json_encode,
         'data-controls-on-hover': controlsOnHover ? 'true' : 'false',
     }) }}
     class="{{ vi_class('root') }}"
@@ -36,6 +40,7 @@
                     :index="loop.index0"
                     :priority="loop.first"
                     :total="total"
+                    :galleryId="galleryId"
                 />
             {% endfor %}
         </div>
@@ -46,10 +51,12 @@
             <div {{ vi_attrs('controls') }} class="{{ vi_class('controls') }}">
                 <twig:ViewsTheme:Gallery:Control
                     direction="prev"
+                    :galleryId="galleryId"
                     :disabled="not rewind and active <= 0"
                 />
                 <twig:ViewsTheme:Gallery:Control
                     direction="next"
+                    :galleryId="galleryId"
                     :disabled="not rewind and active >= total - 1"
                 />
             </div>
@@ -61,6 +68,7 @@
             <div {{ vi_attrs('fullscreen') }} class="{{ vi_class('fullscreen') }}">
                 <twig:ViewsTheme:Gallery:Action:Fullscreen
                     :ids="mediaIds"
+                    :galleryId="galleryId"
                 />
             </div>
         {% endblock %}
@@ -73,6 +81,7 @@
                 {{ ...vi_attrs('dots').defaults({
                     total: total,
                     active: active,
+                    galleryId: galleryId,
                 }).all() }}
             />
         {% endblock %}

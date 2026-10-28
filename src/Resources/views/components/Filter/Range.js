@@ -1,10 +1,11 @@
-import { apply } from '@views-theme/modules/listing/store.js'
+import { apply, connectControl } from '@views-theme/modules/listing/store.js'
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterRange extends ShopwareComponent {
+export default class FilterRange extends ThemeComponent {
     static options = {
         minKey: 'min-price',
         maxKey: 'max-price',
@@ -26,21 +27,20 @@ export default class FilterRange extends ShopwareComponent {
         this._onFieldInput = this._onFieldInput.bind(this)
         this._onSliderInput = this._onSliderInput.bind(this)
         this._onSliderChange = this._onSliderChange.bind(this)
-        this._min?.addEventListener('input', this._onFieldInput)
-        this._max?.addEventListener('input', this._onFieldInput)
-        this.el.addEventListener('input', this._onSliderInput)
-        this.el.addEventListener('change', this._onSliderChange)
+        this.scope.on(this._min, 'input', this._onFieldInput)
+        this.scope.on(this._max, 'input', this._onFieldInput)
+        this.scope.on(this.el, 'input', this._onSliderInput)
+        this.scope.on(this.el, 'change', this._onSliderChange)
         this._syncSliderFromFields({ silent: true })
+        this.scope.add(connectControl(this))
     }
 
     destroy() {
-        this._min?.removeEventListener('input', this._onFieldInput)
-        this._max?.removeEventListener('input', this._onFieldInput)
-        this.el.removeEventListener('input', this._onSliderInput)
-        this.el.removeEventListener('change', this._onSliderChange)
         if (this._timer) {
             window.clearTimeout(this._timer)
         }
+
+        super.destroy()
     }
 
     getValues() {

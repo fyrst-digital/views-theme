@@ -1,52 +1,44 @@
 import {
     abortRequest,
     beginRequest,
-    eventEl,
     fetchText,
-    getInstanceByElement,
-    replaceMount,
-    unmountEl,
-    waitForInstance,
+    mountShell,
+    releaseShell,
+    shell,
 } from '@views-theme/modules/lazy-shell.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Lazy-loads Address:Manager shell; owns mount lifecycle.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManagerAction extends ShopwareComponent {
+export default class AddressManagerAction extends ThemeComponent {
     static options = {
         managerUrl: null,
         editorUrl: null,
         tab: 'shipping',
         hideShipping: false,
-        managerComponent: 'ViewsTheme:Address:Manager',
-        managerSelector: '[data-component="ViewsTheme:Address:Manager"]',
-        modalComponent: 'ViewsTheme:Modal',
-        modalSelector: '[data-component="ViewsTheme:Modal"]',
-        openEvent: 'ViewsTheme:Modal:Open',
-        closeEvent: 'ViewsTheme:Modal:Close',
+        shellId: 'vi-address-manager',
     }
 
     init() {
-        this._managerEl = null
+        /** True while this Action owns the (single, shared) manager shell. */
+        this._owns = false
         this._loading = false
         this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
-        this._onModalOpen = this._onModalOpen.bind(this)
-        this._onModalClose = this._onModalClose.bind(this)
+        this._onShellOpen = this._onShellOpen.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.openEvent, this._onModalOpen)
-        window.Shopware.on(this.options.closeEvent, this._onModalClose)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.watch(shell(this.options.shellId).open, this._onShellOpen)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.openEvent, this._onModalOpen)
-        window.Shopware.off(this.options.closeEvent, this._onModalClose)
         abortRequest(this._fetch)
         this._unmountManager()
+
+        super.destroy()
     }
 
     async open() {
@@ -112,14 +104,14 @@ export default class AddressManagerAction extends ShopwareComponent {
                 return
             }
 
-            this._managerEl = replaceMount(this.options.managerSelector, html)
-            await waitForInstance(() => this._getModalInstance())
+            this._owns = true
+            const api = await mountShell(this.options.shellId, html)
 
             if (!request.isCurrent()) {
                 return
             }
 
-            const modal = this._getModalInstance()
+            const modal = api
             if (!modal || typeof modal.open !== 'function') {
                 console.error('AddressManagerAction: Modal component did not mount')
                 return
@@ -137,62 +129,49 @@ export default class AddressManagerAction extends ShopwareComponent {
         }
     }
 
+    /**
+     * Close another Action's live manager first, so its owner resets
+     * `aria-expanded` and unmounts before this Action mounts.
+     */
     _closeForeignShell() {
-        const existing = document.querySelector(this.options.managerSelector)
-        if (!existing || existing === this._managerEl) {
+        if (this._owns) {
             return
         }
 
-        const modalEl = existing.querySelector(this.options.modalSelector)
-        if (modalEl) {
-            window.Shopware.emitQueued(this.options.closeEvent, { el: modalEl })
+        const api = shell(this.options.shellId).api.get()
+        if (!api) {
+            return
         }
 
-        if (document.body.contains(existing)) {
-            existing.remove()
+        if (typeof api.isOpen === 'function' && api.isOpen() && typeof api.close === 'function') {
+            api.close()
         }
+        releaseShell(this.options.shellId)
     }
 
     _getModalInstance() {
-        if (!this._managerEl || !document.body.contains(this._managerEl)) {
-            this._managerEl = null
-            return null
-        }
-
-        const modalEl = this._managerEl.querySelector(this.options.modalSelector)
-        return getInstanceByElement(this.options.modalComponent, modalEl)
+        return this._owns ? shell(this.options.shellId).api.get() : null
     }
 
     /**
-     * @param {unknown} payload
+     * @param {boolean} open
      */
-    _onModalOpen(payload) {
-        const el = eventEl(payload)
-        if (!this._managerEl || !el || !this._managerEl.contains(el)) {
+    _onShellOpen(open) {
+        if (!this._owns) {
             return
         }
 
-        this.el.setAttribute('aria-expanded', 'true')
-    }
-
-    /**
-     * @param {unknown} payload
-     */
-    _onModalClose(payload) {
-        const el = eventEl(payload)
-        if (!this._managerEl || !el || !this._managerEl.contains(el)) {
-            return
+        this.el.setAttribute('aria-expanded', open ? 'true' : 'false')
+        if (!open) {
+            this.el.focus()
+            this._unmountManager()
         }
-
-        this.el.setAttribute('aria-expanded', 'false')
-        this.el.focus()
-        this._unmountManager()
     }
 
     _unmountManager() {
-        if (this._managerEl) {
-            unmountEl(this._managerEl)
+        if (this._owns) {
+            releaseShell(this.options.shellId)
         }
-        this._managerEl = null
+        this._owns = false
     }
 }

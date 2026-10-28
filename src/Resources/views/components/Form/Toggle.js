@@ -1,12 +1,13 @@
 import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
 import { setFieldEnabled } from '@views-theme/modules/shared/form.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Show/hide a field group from a switch or select control.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FormToggle extends ShopwareComponent {
+export default class FormToggle extends ThemeComponent {
     static options = {
         value: '1',
         contentId: null,
@@ -15,12 +16,8 @@ export default class FormToggle extends ShopwareComponent {
     init() {
         this._onChange = this._onChange.bind(this)
         this._control = this._findControl()
-        this._control?.addEventListener('change', this._onChange)
+        this.scope.on(this._control, 'change', this._onChange)
         this.sync()
-    }
-
-    destroy() {
-        this._control?.removeEventListener('change', this._onChange)
     }
 
     sync() {

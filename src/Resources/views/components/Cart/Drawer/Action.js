@@ -2,49 +2,41 @@ import {
     abortRequest,
     beginRequest,
     fetchText,
-    getInstanceByElement,
-    replaceMount,
-    unmountEl,
-    waitForInstance,
+    mountShell,
+    releaseShell,
+    shell,
 } from '@views-theme/modules/lazy-shell.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CartDrawerAction extends ShopwareComponent {
+export default class CartDrawerAction extends ThemeComponent {
     static options = {
         drawerUrl: null,
-        drawerComponentName: 'ViewsTheme:Drawer',
-        drawerSelector: '#vi-cart-drawer',
-        openEvent: 'ViewsTheme:Drawer:Open',
-        closeEvent: 'ViewsTheme:Drawer:Close',
+        shellId: 'vi-cart-drawer',
         changedEvent: 'ViewsTheme:Cart:Changed',
         /** Cart:Changed.action values that auto-open when ok (empty = never) */
         openOnActions: ['add'],
     }
 
     init() {
-        this._drawerEl = null
         this._loading = false
         this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
-        this._onDrawerOpen = this._onDrawerOpen.bind(this)
-        this._onDrawerClose = this._onDrawerClose.bind(this)
+        this._onShellOpen = this._onShellOpen.bind(this)
         this._onCartChanged = this._onCartChanged.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
-        window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
-        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.watch(shell(this.options.shellId).open, this._onShellOpen)
+        this.scope.bus(this.options.changedEvent, this._onCartChanged)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
-        window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
-        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
         abortRequest(this._fetch)
         this._unmountDrawer()
+
+        super.destroy()
     }
 
     /**
@@ -56,7 +48,7 @@ export default class CartDrawerAction extends ShopwareComponent {
             return
         }
 
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
             return
         }
@@ -65,7 +57,7 @@ export default class CartDrawerAction extends ShopwareComponent {
     }
 
     async close() {
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.close === 'function') {
             drawer.close()
         }
@@ -78,7 +70,7 @@ export default class CartDrawerAction extends ShopwareComponent {
             return
         }
 
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
             drawer.close()
             return
@@ -119,14 +111,13 @@ export default class CartDrawerAction extends ShopwareComponent {
                 return
             }
 
-            this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForInstance(() => this._getDrawerInstance())
+            const api = await mountShell(this.options.shellId, html)
 
             if (!request.isCurrent()) {
                 return
             }
 
-            const drawer = this._getDrawerInstance()
+            const drawer = api
             if (!drawer || typeof drawer.open !== 'function') {
                 console.error('CartDrawerAction: Drawer component did not mount')
                 return
@@ -144,33 +135,21 @@ export default class CartDrawerAction extends ShopwareComponent {
         }
     }
 
-    _getDrawerInstance() {
-        if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
-            this._drawerEl = document.querySelector(this.options.drawerSelector)
-        }
-
-        return getInstanceByElement(this.options.drawerComponentName, this._drawerEl)
+    _drawerApi() {
+        return shell(this.options.shellId).api.get()
     }
 
-    _onDrawerOpen(drawerEl) {
-        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
-            return
+    /**
+     * @param {boolean} open
+     */
+    _onShellOpen(open) {
+        this.el.setAttribute('aria-expanded', open ? 'true' : 'false')
+        if (!open) {
+            this._unmountDrawer()
         }
-
-        this.el.setAttribute('aria-expanded', 'true')
-    }
-
-    _onDrawerClose(drawerEl) {
-        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
-            return
-        }
-
-        this.el.setAttribute('aria-expanded', 'false')
-        this._unmountDrawer()
     }
 
     _unmountDrawer() {
-        unmountEl(this._drawerEl, this.options.drawerSelector)
-        this._drawerEl = null
+        releaseShell(this.options.shellId)
     }
 }

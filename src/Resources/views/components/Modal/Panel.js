@@ -1,18 +1,16 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ModalPanel extends ShopwareComponent {
+export default class ModalPanel extends ThemeComponent {
     static options = {
         modalComponentName: 'ViewsTheme:Modal',
     }
 
     init() {
         this._onTransitionEnd = this._onTransitionEnd.bind(this)
-        this.el.addEventListener('transitionend', this._onTransitionEnd)
-    }
-
-    destroy() {
-        this.el.removeEventListener('transitionend', this._onTransitionEnd)
+        this.scope.on(this.el, 'transitionend', this._onTransitionEnd)
     }
 
     /**

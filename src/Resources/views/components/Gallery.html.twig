@@ -6,6 +6,7 @@
     fullscreen = false,
     mode = 'default',
     thumbnailAlign = 'start',
+    galleryId = 'vi-gallery-' ~ random(),
     cva = {},
 %}
 
@@ -33,7 +34,9 @@
         'data-thumbnail-align': thumbsAlign,
         'data-component': 'ViewsTheme:Gallery',
         'data-component-options': {
+            galleryId: galleryId,
             active: activeIndex,
+            count: count,
             rewind: rewind,
         }|json_encode,
     }) }}
@@ -47,6 +50,7 @@
                     medias: medias,
                     active: activeIndex,
                     align: thumbsAlign,
+                    galleryId: galleryId,
                 }).all() }}
             />
         {% endblock %}
@@ -62,6 +66,7 @@
                 rewind: rewind,
                 controlsOnHover: controlsOnHover,
                 fullscreen: fullscreen,
+                galleryId: galleryId,
             }).all() }}
         />
     {% endblock %}

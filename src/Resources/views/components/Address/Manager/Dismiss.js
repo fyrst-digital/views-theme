@@ -1,20 +1,18 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Footer close — Modal.close via callMethod.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManagerDismiss extends ShopwareComponent {
+export default class AddressManagerDismiss extends ThemeComponent {
     static options = {
         modalComponentName: 'ViewsTheme:Modal',
     }
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     /**

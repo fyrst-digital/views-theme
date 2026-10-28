@@ -1,5 +1,4 @@
 {% props
-    modal = 'ViewsTheme:Modal',
     modalId = null,
     cva = {},
 %}
@@ -13,7 +12,6 @@
         color: 'link',
         'data-component': 'ViewsTheme:Modal:Open',
         'data-component-options': {
-            modalComponentName: modal,
             modalId: modalId,
         }|json_encode,
     }).all() }}

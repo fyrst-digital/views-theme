@@ -6,15 +6,15 @@ PDP / CMS media gallery (images + video). Scroll-snap canvas synced with a thumb
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex` / `getIndex`, thumb+dot click delegation, control disabled state, pause inactive slide videos, `ViewsTheme:Gallery:Change` |
-| `Gallery:Thumbnails` | Strip shell; `scrollToIndex` keeps active thumb visible (rect math + clamp); composes `Scroll:Area` as scrollport (edge fades) + `__list` flex row/column |
-| `Gallery:Thumb` | Thumb control identity + `aria-current`; `index` in options; video = poster only + play badge |
-| `Gallery:Canvas` | Scroll-snap track; `goTo` via `scrollIntoView`; settle via `getBoundingClientRect`; resize re-pins current index (`behavior: 'instant'`) → `setIndex` only on user scroll; optional fullscreen action slot |
-| `Gallery:Slide` | One media slide identity; image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig` |
-| `Gallery:Control` | Prev/next → nearest Gallery owner (`closest` + instance), never global `callMethod` |
-| `Gallery:Dots` / `Gallery:Dot` | Dot nav; same index / `aria-current` pattern as thumbs |
-| `Gallery:Action:Fullscreen` | Lazy shell owner (multi-instance): fetch/mount/unmount `Gallery:Fullscreen`; open with media `ids` + current index; on close restore **own** parent index. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`); never adopt foreign shells via global selector; unmount owned el only |
-| `Gallery:Fullscreen` | Dialog shell (body lock, Escape, Tab trap); composes nested `Gallery` (SoT, `mode="fullscreen"`, `fullscreen=false`) |
+| `Gallery` | Owner JS: seeds the gallery store (`index` / `count` / `rewind`) from its options, ArrowKey navigation, `select` / `prev` / `next` / `getIndex` façade, `ViewsTheme:Gallery:Change` emitter; drops the store in `destroy` |
+| `Gallery:Thumbnails` | Strip shell; follows the store `index` → `scrollToIndex` keeps active thumb visible (rect math + clamp); composes `Scroll:Area` as scrollport (edge fades) + `__list` flex row/column |
+| `Gallery:Thumb` | Binds itself to the store: click selects its `index`, `aria-current` follows `index`; video = poster only + play badge |
+| `Gallery:Canvas` | Scroll-snap track; follows the store `index` (`goTo` via `scrollIntoView`); settle via `getBoundingClientRect` writes the store only on user scroll; resize re-pins current index (`behavior: 'instant'`); optional fullscreen action slot |
+| `Gallery:Slide` | One media slide; pauses its own videos while not the active index; image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig` |
+| `Gallery:Control` | Prev/next → `step(galleryId, direction)`; `disabled` / `aria-disabled` follow `index` + `count` + `rewind` |
+| `Gallery:Dots` / `Gallery:Dot` | Dot nav; same store binding as thumbs |
+| `Gallery:Action:Fullscreen` | Lazy shell owner (multi-instance): fetch/mount/unmount `Gallery:Fullscreen` through the shell registry (`shellId`); open with media `ids` + the parent store index; on close `select(galleryId, detail.index)` restores **own** parent index. Only the Action that mounted (`_owns`) reacts; a new Action closes the current shell first |
+| `Gallery:Fullscreen` | Dialog shell (body lock, Escape, Tab trap); registers as `vi-gallery-fullscreen`; composes nested `Gallery` with its **own** `galleryId` (`vi-gallery-fullscreen-gallery`, `mode="fullscreen"`, `fullscreen=false`); reports the nested index as close `detail` |
 | `Gallery:Fullscreen:Close` | Close control → `Fullscreen.close` |
 
 ## Composition
@@ -58,47 +58,49 @@ Gallery:Fullscreen
 | `Gallery` | `controlsOnHover` | When `true` (default), canvas prev/next **and** fullscreen action hidden until canvas hover or control/fullscreen `:focus-visible`. `false` = always visible. Touch / coarse pointer: always visible. Not `:focus-within` — mouse click focus must not stick controls open |
 | `Gallery` | `fullscreen` | When `true` and medias have ids, render canvas fullscreen action (default `false`). Nested fullscreen shell always passes `false` |
 | `Gallery` | `mode` | Layout variant: `default` (content-height, AR-driven slides) or `fullscreen` (height-fill panel; media `object-fit: contain`). Sets `data-mode`. Independent of boolean `fullscreen` |
+| `Gallery` | `galleryId` | Store key, rendered by Twig (default `'vi-gallery-' ~ random()`); threaded to Thumbnails, Canvas, Slide, Control, Dots, Dot, Action. Never discovered through the DOM |
 | `Gallery` | `thumbnailAlign` | Thumb strip group align: `start` (default) or `center`. Sets `data-thumbnail-align`. When `center`, list uses auto margins (centers when content fits; collapses when overflowing so scroll stays reachable). Nested fullscreen shell always passes `center` |
-| `Gallery:Thumb` / `Dot` | `index`, `active`, `total` | Identity + SSR `aria-current` |
-| `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends unless parent `rewind` |
+| `Gallery:Thumb` / `Dot` | `index`, `active`, `total`, `galleryId` | Position + SSR `aria-current` (JS keeps it in sync) |
+| `Gallery:Control` | `direction`, `disabled`, `galleryId` | `prev` \| `next`; clamp ends unless `rewind` |
 | `Gallery:Canvas` | `multi` | When false, omit controls + dots |
 | `Gallery:Canvas` | `rewind` | SSR control `disabled` when false at ends |
 | `Gallery:Canvas` | `controlsOnHover` | Sets `data-controls-on-hover`; CSS-only show/hide of `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` |
 | `Gallery:Canvas` | `fullscreen` | When true, top-right `Gallery:Action:Fullscreen` with media ids |
-| `Gallery:Action:Fullscreen` | `ids` | Ordered media UUIDs for XHR load |
-| `Gallery:Fullscreen` | `medias`, `active` | Passed through to nested `Gallery` (`mode=fullscreen`, `thumbnailAlign=center`, …) |
+| `Gallery:Action:Fullscreen` | `ids`, `galleryId` | Ordered media UUIDs for XHR load; parent store key |
+| `Gallery:Fullscreen` | `medias`, `active`, `galleryId` | Passed through to nested `Gallery` (`mode=fullscreen`, `thumbnailAlign=center`, …) |
 
 ## JS API
 
+State lives in `modules/gallery/store.js`: `galleries.get(galleryId)` → `{ index, count, rewind }` signals (keyed store, one per gallery; several galleries and the nested fullscreen gallery never share state). Parts read with `effect(index, fn)` and write with `select(id, index)` / `step(id, 'prev' | 'next')` (clamped; wrap when `rewind`). `Gallery` drops the store in `destroy`.
+
 | API | Role |
 |-----|------|
-| `select(index, { emit, scroll })` | Activate index; optional canvas scroll; pause inactive slide videos |
-| `setIndex(index, { emit })` | Canvas-driven update (no re-scroll); same video pause |
-| `getIndex()` | Current 0-based index (fullscreen open/close hand-off) |
-| `prev()` / `next()` | Clamp at ends; wrap when `rewind` |
+| `select(galleryId, index)` | Module function: clamp + set `index`; every bound part reacts (canvas scroll, thumbs/dots `aria-current`, controls, slide video pause) |
+| `step(galleryId, direction)` | Module function: prev/next; wrap when `rewind`, otherwise clamp |
+| `Gallery#select(index)` / `prev()` / `next()` / `getIndex()` | Thin façade over the store for external `callMethod` callers |
 | ArrowLeft/Up · ArrowRight/Down | When focus is inside gallery (not on `input` / `textarea` / `select` / `video` / contenteditable) → `prev` / `next` |
-| `ViewsTheme:Gallery:Change` | `{ el, index }` after user-facing change |
+| `ViewsTheme:Gallery:Change` | `{ el, index }` on every `index` change after init (incl. a restore from fullscreen) |
 | `Gallery:Action:Fullscreen` `open()` / `close()` | Lazy shell lifecycle |
 | `ViewsTheme:Gallery:Fullscreen:Open` | `{ el, index }` |
 | `ViewsTheme:Gallery:Fullscreen:Close` | `{ el, index }` — Action restores parent gallery index + unmounts |
 
 Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes.
 
-Child → owner commands (Control / Canvas settle) resolve the **nearest** Gallery via `closest` + `getInstanceByElement` so nested fullscreen galleries do not cross-talk.
+Children never resolve the owner through `closest` + `getInstanceByElement`: they share the store through `galleryId`, so nested fullscreen galleries cannot cross-talk.
 
 Canvas settle: `scrollend` clears the programmatic gate (timeout is fallback only) so a user swipe during smooth `goTo` still updates chrome.
 
 ## Fullscreen flow
 
 1. `Gallery:Action:Fullscreen` reads `overlayUrl` + `ids` from options
-2. Click / `open()` → if another gallery’s shell is live, **close it first** (owner restores index + unmounts) so `replaceMount` does not tear down foreign DOM without Close
-3. `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N from parent `getIndex()`)
-4. Response root mounted on `document.body`; Action stores `_overlayEl` (owned only — never re-query foreign shells). Empty body / **204** (no medias) → no mount
-5. Action waits for Fullscreen instance → `open()` (body lock, aria, focus close)
-6. Nested `Gallery` is the media SoT inside the dialog
-7. Close (button / backdrop / Escape) → emit Close `{ el, index }` → **only** the owning Action (`payload.el === this._overlayEl`) restores parent index, returns focus, unmounts owned el
+2. Click / `open()` → if another gallery’s shell is live, **close it first** (its owner restores index + unmounts)
+3. `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N = parent store `index`)
+4. `mountShell('vi-gallery-fullscreen', html)`; the Action sets `_owns`. Empty body / **204** (no medias) → no mount
+5. Action `open()`s the shell (body lock, aria, focus close)
+6. The nested `Gallery` (own store) is the media SoT inside the dialog
+7. Close (button / backdrop / Escape) → `setShellOpen(id, false, { index })` → **only** the owning Action restores the parent store (`select(galleryId, index)`), returns focus, `releaseShell`s
 
-Multi-instance: many Actions may listen on the same Open/Close bus; non-owners no-op. Toggle-on-click closes only the Action’s own shell.
+Multi-instance: every Action subscribes to `shell('vi-gallery-fullscreen').open`; non-owners no-op. Toggle-on-click closes only the Action’s own shell.
 
 Singleton shell id: fixed `id="vi-gallery-fullscreen"` (one body-mounted shell at a time). Every Action’s `aria-controls` points at that id.
 
@@ -145,7 +147,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 
 | Concern | SoT |
 |---------|-----|
-| Active index | Gallery owner |
+| Active index | Gallery store (`galleries.get(galleryId).index`) |
 | Active thumb / dot | `aria-current` — CSS keys off attribute |
 | Control ends | `disabled` + `aria-disabled` |
 | Canvas position | scroll-snap; `goTo` via `scrollIntoView` (element target); `scrollend` clears programmatic settle gate; `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
@@ -208,6 +210,7 @@ Default PDP layout: `cms-block-gallery-buybox` left slot (unchanged).
 |------|------|
 | Controller | `src/Controller/GalleryFullscreenController.php` |
 | Gallery owner | `src/Resources/views/components/Gallery.*` |
+| Gallery store | `src/Resources/app/storefront/src/modules/gallery/store.js` |
 | Canvas / controls | `src/Resources/views/components/Gallery/{Canvas,Control,Slide,Thumb,Thumbnails,Dots,Dot}.*` |
 | Fullscreen action | `src/Resources/views/components/Gallery/Action/Fullscreen.*` |
 | Fullscreen shell | `src/Resources/views/components/Gallery/Fullscreen.*` |

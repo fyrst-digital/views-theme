@@ -1,19 +1,17 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class CartDrawerActionBadge extends ShopwareComponent {
+export default class CartDrawerActionBadge extends ThemeComponent {
     static options = {
         changedEvent: 'ViewsTheme:Cart:Changed',
     }
 
     init() {
         this._onCartChanged = this._onCartChanged.bind(this)
-        window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+        this.scope.bus(this.options.changedEvent, this._onCartChanged)
         this._render(window.cartCount || 0)
-    }
-
-    destroy() {
-        window.Shopware.off(this.options.changedEvent, this._onCartChanged)
     }
 
     _onCartChanged(payload) {

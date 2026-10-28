@@ -1,22 +1,18 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { manager } from '@views-theme/modules/address/manager.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class AddressManagerEdit extends ShopwareComponent {
+export default class AddressManagerEdit extends ThemeComponent {
     static options = {
         addressId: null,
         type: 'shipping',
-        managerComponent: 'ViewsTheme:Address:Manager',
     }
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     /**
@@ -24,10 +20,6 @@ export default class AddressManagerEdit extends ShopwareComponent {
      */
     _onClick(event) {
         event.preventDefault()
-        const root = this.el.closest(`[data-component="${this.options.managerComponent}"]`)
-        getInstanceByElement(this.options.managerComponent, root)?.openEdit?.(
-            this.options.addressId,
-            this.options.type,
-        )
+        manager.call('openEdit', this.options.addressId, this.options.type)
     }
 }

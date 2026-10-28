@@ -1,105 +1,50 @@
 /**
- * Client session for the page product listing.
+ * Listing facade for controls (filters, Pagination, Sorting, Reset, Active chips,
+ * filter drawer, Panel, Group).
  *
- * Controls dispatch and subscribe here. Product:Listing is the only executor.
+ * Controls read the signals (`busy`, `labels`, `liveText`, …), `connectControl`
+ * themselves in `init` (`scope.add(connectControl(this))`), and dispatch `apply` /
+ * `resetFilters` / `resetOption`. Product:Listing is the only executor
+ * (`scope.add(attach(this))`); every dispatch no-ops while none is mounted.
  *
  * @module @views-theme/modules/listing/store
  */
+import { connect } from '@views-theme/modules/listing/controls.js'
+import { attached, busy, labels, listing, liveText, params } from '@views-theme/modules/listing/state.js'
+
+export { attached, busy, labels, liveText, params }
 
 /**
- * @typedef {object} ListingExecutor
- * @property {(patch?: Record<string, unknown>, options?: { pushHistory?: boolean, resetPage?: boolean }) => void} apply
- * @property {(id: string) => void} reset
- * @property {(keys?: string|string[]|null) => void} resetFilters
- * @property {() => void} syncControls
- * @property {(params?: Record<string, unknown>|null, options?: { built?: boolean }) => Promise<void>} [syncFilterOptions]
+ * Register a control (MultiSelect, Boolean, Range, Rating, Sorting, Pagination)
+ * with the listing.
+ *
+ * @param {import('@views-theme/modules/types.js').ListingControl} control
+ * @returns {() => void} disconnect
  */
-
-/**
- * @typedef {object} ListingSnapshot
- * @property {boolean} attached
- * @property {boolean} busy
- * @property {Record<string, unknown>} params
- * @property {import('@views-theme/modules/types.js').ListingLabel[]} labels
- */
-
-/** @type {ListingExecutor|null} */
-let executor = null
-
-/** @type {ListingSnapshot} */
-let snapshot = {
-    attached: false,
-    busy: false,
-    params: {},
-    labels: [],
-}
-
-/** @type {Set<(snapshot: ListingSnapshot) => void>} */
-const listeners = new Set()
-
-function publish() {
-    const current = snapshot
-    listeners.forEach((fn) => {
-        fn(current)
-    })
+export function connectControl(control) {
+    return connect(control)
 }
 
 /**
- * @returns {ListingSnapshot}
- */
-export function getSnapshot() {
-    return snapshot
-}
-
-/**
- * @param {(snapshot: ListingSnapshot) => void} fn
+ * Make `owner` the executor (`apply`, `reset`, `resetFilters`). The returned
+ * dispose resets the listing signals.
+ *
+ * @param {object} owner
  * @returns {() => void}
  */
-export function subscribe(fn) {
-    listeners.add(fn)
-    fn(snapshot)
+export function attach(owner) {
+    const dispose = listing.provide(owner)
+
     return () => {
-        listeners.delete(fn)
-    }
-}
+        if (listing.api.get() !== owner) {
+            return
+        }
 
-/**
- * @param {ListingExecutor} next
- */
-export function attach(next) {
-    executor = next
-    snapshot = { ...snapshot, attached: true }
-    publish()
-}
-
-/**
- * @param {ListingExecutor} current
- */
-export function detach(current) {
-    if (executor !== current) {
-        return
+        dispose()
+        busy.set(false)
+        params.set({})
+        labels.set([])
     }
-
-    executor = null
-    snapshot = {
-        attached: false,
-        busy: false,
-        params: {},
-        labels: [],
-    }
-    publish()
-}
-
-/**
- * @param {Partial<ListingSnapshot>} partial
- */
-export function commit(partial) {
-    snapshot = {
-        ...snapshot,
-        ...partial,
-        attached: executor !== null,
-    }
-    publish()
 }
 
 /**
@@ -107,23 +52,14 @@ export function commit(partial) {
  * @param {{ pushHistory?: boolean, resetPage?: boolean }} [callOptions]
  */
 export function apply(patch = {}, callOptions = {}) {
-    if (!executor) {
-        return
-    }
-
-    const options = {
-        resetPage: false,
-        ...(callOptions || {}),
-    }
-
-    executor.apply({ p: 1, ...patch }, options)
+    listing.call('apply', { p: 1, ...patch }, { resetPage: false, ...callOptions })
 }
 
 /**
  * @param {string|string[]|null} [keys]
  */
 export function resetFilters(keys = null) {
-    executor?.resetFilters(keys ?? null)
+    listing.call('resetFilters', keys ?? null)
 }
 
 /**
@@ -134,20 +70,5 @@ export function resetOption(id) {
         return
     }
 
-    executor?.reset(id)
-}
-
-export function syncControls() {
-    executor?.syncControls()
-}
-
-/**
- * @returns {Promise<void>}
- */
-export function syncFilterOptions() {
-    if (!executor || typeof executor.syncFilterOptions !== 'function') {
-        return Promise.resolve()
-    }
-
-    return executor.syncFilterOptions()
+    listing.call('reset', id)
 }

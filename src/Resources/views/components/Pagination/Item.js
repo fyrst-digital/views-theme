@@ -1,25 +1,21 @@
 import { apply } from '@views-theme/modules/listing/store.js'
-import { applyReview } from '@views-theme/modules/review/apply.js'
+import { applyReview, attached as reviewAttached } from '@views-theme/modules/review/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Pagination page link → owner.apply({ p }).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class PaginationItem extends ShopwareComponent {
+export default class PaginationItem extends ThemeComponent {
     static options = {
         page: 1,
         listingComponent: 'ViewsTheme:Product:Listing',
-        listingSelector: '[data-component="ViewsTheme:Review:Panel"]',
     }
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     _onClick(event) {
@@ -32,18 +28,12 @@ export default class PaginationItem extends ShopwareComponent {
         const owner = this.options.listingComponent || 'ViewsTheme:Product:Listing'
 
         if (owner === 'ViewsTheme:Review:Panel') {
-            if (!document.querySelector(this.options.listingSelector)) {
+            if (!reviewAttached.get()) {
                 return
             }
 
             event.preventDefault()
-            applyReview(
-                { p: page },
-                {
-                    panelComponent: owner,
-                    callOptions: { resetPage: false },
-                },
-            )
+            applyReview({ p: page }, { callOptions: { resetPage: false } })
             return
         }
 

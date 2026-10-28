@@ -15,7 +15,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `FilterRequestSelection` | Parse selected ids from request (`splitParam`) |
 | `FilterAvailabilityApplier` | Pure facet mutation from reduced aggs |
 | `ProductListingGateway` | Category/search listing I/O for drawer + options + results |
-| `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss on `Listing:Loading` |
+| `Filter:Group` | **Disclosure host**: Toggle + empty content; JS open/close/fit via Toggle `controls` id; `setCount` / `close()`; dismiss when the store `busy` turns true |
 | `Filter:Group:Toggle` | Compact chip button (label + Count + caret); bar: `popovertarget` / `anchor-name` |
 | `Filter:Group:Count` | Selection badge; count SoT = `options.count`; `setCount` paints (Group delegates) |
 | `Filter:Group:Collapse` | **Body shell** (popover/accordion root only). Facets compose controls + Footer as direct children; shared `id` with Group |
@@ -27,7 +27,7 @@ Theme-owned listing filters. Core filter plugins / `data-filter-*` / OffCanvasFi
 | `Filter:Active:Chip` | Removable active chip. Root is `ViewsTheme:Button` (`color=none` `size=sm`). Slots `swatch` / `label` (`data-active-chip-swatch` / `data-active-chip-label`). No JS. List clones it from a `<template>` and paints id, label, and swatch |
 | `Filter:Active:List` | Chip painter. Subscribes to the listing store and paints `labels`. Chip click dispatches `resetOption`. Root `d-contents` so chips share the shell flex row. Clears only its own non-`template` children. Toggles `hidden` on itself and the parent shell when `labels` is empty |
 | `Filter:Active` | Presentational flex shell (no JS). Forwards the `chip` attr bag into the list template; one mounted `Filter:Reset` (no `keys`, `color=link` `size=sm`) as a sibling of the list. Starts `hidden` |
-| `Product:Listing` | Executor for the listing store: control registry, apply/history, commits `labels` / `params` / `busy`. URL is the shareable selection. Drawer calls `syncControls` then `syncFilterOptions` on the store |
+| `Product:Listing` | Executor for the listing store: apply/history, writes the `labels` / `params` / `busy` / `liveText` signals. URL is the shareable selection. Facets register themselves; the Drawer Action does not sync anything |
 | Controller | `FilterDrawerController` — `/vi/filter/drawer/…` HTML |
 
 ## Facet resolution (server)
@@ -44,14 +44,14 @@ Each facet is `{ component, type, props }` rendered with `{{ component(facet.com
 | `rating` | max > 0 | `rating` | `ViewsTheme:Filter:Rating` |
 | `shipping-free` | max > 0 | `boolean` | `ViewsTheme:Filter:Boolean` |
 
-**Add a built-in facet:** extend `FilterFacetResolver` (visibility, `type`, props). A new kind also needs a `FilterFacetType` constant, a UX component, and a name on `Product:Listing` JS `controlComponents`.
+**Add a built-in facet:** extend `FilterFacetResolver` (visibility, `type`, props). A new kind also needs a `FilterFacetType` constant, a UX component, and a co-located JS that calls `this.scope.add(connectControl(this))` in `init`.
 
 ## Shared state
 
 | Piece | Role |
 |-------|------|
 | URL query | Shareable selection (history) |
-| Listing store | Client session (`attached`, `busy`, `params`, `labels`). Filters, reset, chips, sort, and page dispatch here |
+| Listing store | Signals (`attached`, `busy`, `params`, `labels`, `liveText`) + `connectControl`. Filters, reset, chips, sort, and page dispatch here |
 | **Catalog** | Full facet + option lists in the Panel DOM (SSR without `reduce-aggregations`) |
 | **Availability** | Which facets show / options enable — reduced aggregations JSON only |
 | `Product:Listing` | Discover controls, hydrate, `syncAvailability`, apply/history, Results XHR |
@@ -85,25 +85,27 @@ Closed groups update in the background (no open required). Falls back to reduced
 
 **Stale races:** filter-options and availability fetches use a dedicated `AbortController` plus a monotonic sequence. A newer options request aborts the previous one; completed responses whose seq no longer matches are ignored so rapid apply / drawer open cannot paint outdated option HTML or disabled state. Results HTML keeps its own abort (opening the drawer does not cancel an in-flight Results swap).
 
-Panel listens to `ViewsTheme:Listing:Loading` (`aria-busy`) during standalone options/availability fetch.
+Panel follows the store `busy` signal (`aria-busy`, also during a standalone options/availability fetch) and writes the `liveText` signal into its own `[data-aria-live]`.
 
 Drawer catalog must **not** use `reduce-aggregations` on the drawer HTML load. Option order/disabled come from SSR Panel applier + batch `filter-options`.
 
 ## Control contract
+
+A control calls `this.scope.add(connectControl(this))` at the **end** of `init` (after its own fields exist); the scope disconnects it on destroy. `Pagination` connects only when its `ownerComponent` is the listing (Review and Orders pagination are not listing controls).
 
 | Method | Role |
 |--------|------|
 | `getValues()` | `{ key: string \| string[] }` |
 | `getParamKeys()` | Query keys this control owns (even when empty) |
 | `getLabels()` | `[{ id, label, previewHex?, previewImageUrl? }]` — Active chips paint image-over-hex swatch when present |
-| `setFromUrl(params)` | Hydrate from query (init / popstate / drawer open) |
+| `setFromUrl(params)` | Hydrate from query (on connect, popstate, after every apply) |
 | `reset(id)` / `resetAll()` | Clear one option / clear this control. Listing `reset(id)` and `resetFilters(keys)` call these, then `apply`. `keys` null matches every control; `resetAll()` on Listing is `resetFilters(null)` |
 | `replaceOptions(html)` | MultiSelect: swap `[data-filter-options]` list from batch |
 | `applyOptionsMeta(meta)` | Toggle disabled/count (and Boolean/Rating state) from batch meta |
 | `applyAvailability(aggregations)` | Fallback when batch URL missing |
 | `refreshDisabled?(aggregations)` | Deprecated alias → `applyAvailability` |
 
-Listing **discovers** controls under its root and under the **active** `Filter:Panel` (open drawer Panel when mounted/open; otherwise page sidebar Panel). No per-control `registerControl` required. Chip labels are de-duplicated by id.
+Controls **register themselves**: `this.scope.add(connectControl(this))` in `init`; the scope disconnects on destroy. Nothing scans the DOM or asks whether the drawer is open. Controls with the same identity (filter key + param keys: a bar facet and the same facet in the drawer, top and bottom pagination) form a stack; the **last connected** one is active and provides values and labels, and the previous one takes over again when it disconnects (drawer closes). Hydration, filter-options and availability apply to every connected control, so the inactive twin stays in sync. On connect a control hydrates from the last applied params (URL before the first apply) and receives the cached filter-options payload. `connect` never triggers a request. Chip labels are de-duplicated by id.
 
 ## CMS presentation config
 
@@ -171,9 +173,9 @@ Popover bodies must not sit under nested `display: contents` hosts (top-layer pa
 | Placement | Group JS on open: flip `bottom-start` ↔ `top-start` by viewport space; clamp Collapse `max-height` to fit |
 | MultiSelect / Rating options | Chip grid (`d-flex flex-wrap gap-2`); `li` → `Filter:Chip` (hidden control) |
 | Facet host CVA | MultiSelect / Range / Rating: `root` + nested `group` / `collapse` / `footer` (+ control slots) with `class` + attrs on children. MultiSelect list chrome SoT = `MultiSelect:Options` CVA (`root`/`item`); batch HTML is Options-only; `replaceOptions` keeps the SSR `<ul>` (host `options:class`) and swaps children only. Rating list/item/chip stay host-owned. Range: `body` → fields (min/max + currency `unit` + divider) + `Form:Slider` (`mode=range`); JS syncs fields ↔ slider; empty field = bound (no query param). Slider applies on **thumb release** (`change`) only — not while dragging (`input` = field preview). Number fields still debounced-apply on type. Boolean: `chip` DOM (`cursor-default` — shell only; pointer on switch/label) + `switch` CVA → `Form:Switch` (`:reverse`; BS form fix in `scss/_form.scss`) |
-| Body footer | `Filter:Group:Footer` composes `Filter:Reset` with the facet key → store `resetFilters` → that control’s `resetAll` + `apply`. Group closes on `ViewsTheme:Listing:Loading` |
+| Body footer | `Filter:Group:Footer` composes `Filter:Reset` with the facet key → store `resetFilters` → that control’s `resetAll` + `apply`. Group closes when the store `busy` turns true |
 | Active chips | Below bar (`Filter:Active` shell + `Filter:Active:List`) when `showActive`. List hides the shell, so reset-all hides with the chips |
-| On apply / listing load | Facet closes Group (`close()`); Group also dismisses on `ViewsTheme:Listing:Loading` `{ busy: true }` |
+| On apply / listing load | Facet closes Group (`close()`); Group also dismisses when `busy` turns true |
 
 `layout=stacked` (mobile `Filter:Drawer`):
 
@@ -218,8 +220,8 @@ Identity hooks: only `data-component="ViewsTheme:…"`. Drawer `id` (`#vi-filter
 
 1. Click Action → always `GET` drawer URL + **current** `location.search` (full catalog; no reduce)
 2. Mount root on `document.body` → wait for Drawer → `open()`
-3. `Listing.syncControls()` then `await syncAvailability()` (hydrate + reduced aggs)
-4. On `ViewsTheme:Drawer:Close` → unmount root → `syncControls` + `syncAvailability` → focus Action
+3. The drawer's facets `connectControl` on init: they hydrate from the applied params and receive the cached filter-options payload (no extra fetch)
+4. On close (`shell('vi-filter-drawer').open` → false) → unmount root (the facets disconnect; the bar facets are active again) → focus Action
 
 See [JS lazy-loaded shells](../conventions/javascript.md#lazy-loaded-shells-critical).
 
@@ -250,7 +252,7 @@ SSR Panel: when `disableEmptyFilter` and the request already has filter params, 
 | `ViewsTheme:Listing:Changed` | `{ ok, params?, error?, source? }` |
 | `ViewsTheme:Listing:ControlsSynced` | `{ source? }` after hydrate |
 | `ViewsTheme:Listing:AvailabilitySynced` | `{ ok, params?, error?, source? }` after reduced aggs applied |
-| `ViewsTheme:Listing:Loading` | `{ busy, source?, availability? }` |
+| `ViewsTheme:Listing:Loading` | `{ busy, source?, availability? }` — thin emitter for outside listeners; the theme itself follows the `busy` signal |
 
 ## Query params
 

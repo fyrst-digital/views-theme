@@ -1,10 +1,12 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
  * Accessible tabs owner — discovers Tabs:Tab / Tabs:Panel children.
  * State SoT is ARIA (`aria-selected`) + panel `hidden`; look follows CSS.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class Tabs extends ShopwareComponent {
+export default class Tabs extends ThemeComponent {
     static options = {
         tabComponent: 'ViewsTheme:Tabs:Tab',
         panelComponent: 'ViewsTheme:Tabs:Panel',
@@ -15,18 +17,13 @@ export default class Tabs extends ShopwareComponent {
         this._onClick = this._onClick.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        this.el.addEventListener('keydown', this._onKeydown)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.on(this.el, 'keydown', this._onKeydown)
 
         const initial = this.options.active
         if (initial) {
             this.select(initial, { emit: false })
         }
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        this.el.removeEventListener('keydown', this._onKeydown)
     }
 
     /**

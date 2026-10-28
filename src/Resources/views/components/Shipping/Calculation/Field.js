@@ -1,12 +1,13 @@
 import { connect, select, values } from '@views-theme/modules/shipping/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * One shipping calculation select. Reads its own native control only; talks to
  * the rest through `shipping/store.js`.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ShippingCalculationField extends ShopwareComponent {
+export default class ShippingCalculationField extends ThemeComponent {
     static options = {
         field: null,
     }
@@ -20,15 +21,9 @@ export default class ShippingCalculationField extends ShopwareComponent {
         this._onChange = this._onChange.bind(this)
         this._onValues = this._onValues.bind(this)
 
-        this._disconnect = connect(this.options.field, this._select.value)
-        this._unsubscribe = values.subscribe(this._onValues)
-        this._select.addEventListener('change', this._onChange)
-    }
-
-    destroy() {
-        this._select?.removeEventListener('change', this._onChange)
-        this._unsubscribe?.()
-        this._disconnect?.()
+        this.scope.add(connect(this.options.field, this._select.value))
+        this.scope.watch(values, this._onValues)
+        this.scope.on(this._select, 'change', this._onChange)
     }
 
     _onChange() {

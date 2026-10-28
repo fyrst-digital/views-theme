@@ -1,29 +1,24 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { saveReview } from '@views-theme/modules/review/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Review form region — write/edit submit via Panel.save after Form:Handler validates.
  * Guest Account:Login submits natively (not intercepted).
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ReviewForm extends ShopwareComponent {
+export default class ReviewForm extends ThemeComponent {
     static options = {
-        panelComponent: 'ViewsTheme:Review:Panel',
         submitEvent: 'ViewsTheme:Form:Handler:Submit',
-        handlerComponent: 'ViewsTheme:Form:Handler',
     }
 
     init() {
         this._onSubmit = this._onSubmit.bind(this)
-        window.Shopware.on(this.options.submitEvent, this._onSubmit)
-    }
-
-    destroy() {
-        window.Shopware.off(this.options.submitEvent, this._onSubmit)
+        this.scope.bus(this.options.submitEvent, this._onSubmit)
     }
 
     /**
-     * @param {{ el?: Element, form?: HTMLFormElement }} payload
+     * @param {{ el?: Element, form?: HTMLFormElement, handler?: { setSubmitting: (busy: boolean) => void, el?: Element } }} payload
      */
     _onSubmit(payload) {
         const form = payload?.form || payload?.el
@@ -31,15 +26,14 @@ export default class ReviewForm extends ShopwareComponent {
             return
         }
 
-        const handler = getInstanceByElement(this.options.handlerComponent, form)
-        const panelEl = this.el.closest(`[data-component="${this.options.panelComponent}"]`)
-        const panel = getInstanceByElement(this.options.panelComponent, panelEl)
-        if (!panel || typeof panel.save !== 'function') {
+        const handler = payload?.handler
+        const saving = saveReview(new FormData(form))
+        if (!saving) {
             handler?.setSubmitting(false)
             return
         }
 
-        Promise.resolve(panel.save(new FormData(form)))
+        saving
             .catch(() => {})
             .finally(() => {
                 if (handler?.el && document.contains(handler.el)) {

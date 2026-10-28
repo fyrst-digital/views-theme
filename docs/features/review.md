@@ -150,8 +150,10 @@ Query also carries `parentId` when needed (variant products).
 | API | Role |
 |-----|------|
 | `apply(patch, { pushHistory, resetPage })` | Results XHR + history |
-| `syncControls` / `refreshControls` / `hydrateFromUrl` | Control registry |
+| `syncControls()` | Hydrate every connected control from the URL (init, popstate) |
 | `save(FormData)` | POST save → replace Panel root |
+
+The Panel is the single executor (`scope.add(attach(this))` in `review/store.js`, a `createService` provider; one Review Panel per page). Controls (`Review:Sort`, `Review:Language`, `Review:Matrix`, and `Pagination` with `ownerComponent` = the Panel) register themselves with `scope.add(connectReviewControl(this))` in `init` (a `createRegistry`); the panel never scans for them and does not wait for new controls after a list swap. A connecting control hydrates from the last applied `params` (URL before the first apply) and never triggers a request. The panel sets `params` before it swaps the list island.
 
 Form region = `Review:Form` root under Teaser (`data-review-region="form"`), always visible. List region = `Review:Results` always visible.
 
@@ -162,13 +164,13 @@ Modules under `@views-theme/modules/review/` (+ shared helpers):
 | `params.js` | merge / URL parse (`points[]`); re-exports `objectOption` / `collectControlValues` from `shared/object-option` |
 | `history.js` | thin wrapper → `shared/history` with review encode (`points[]`) |
 | `fetch.js` | list GET + save POST (abort/seq) |
-| `apply.js` | façade for controls → `Panel.apply` |
+| `store.js` | Facade for controls: `connectReviewControl`, `applyReview`, `saveReview`, `attached` / `params` signals; Panel `attach` |
 
 Domain stays isolated from `listing/*` — [javascript.md](../conventions/javascript.md).
 
 Events: `ViewsTheme:Review:Loading`, `ViewsTheme:Review:Changed`.
 
-Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw listing internals.
+Controls and `Review:Form` reach the Panel only through `@views-theme/modules/review/store.js` (`applyReview`, `saveReview`) — no `callMethod` by name, no `closest` + instance lookup, and not raw listing internals. `Pagination:Item` checks the `attached` signal instead of querying for the panel.
 
 ## Write / edit
 

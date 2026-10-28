@@ -1,34 +1,21 @@
-import { resetOption, subscribe } from '@views-theme/modules/listing/store.js'
+import { labels, resetOption } from '@views-theme/modules/listing/store.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
  * Paints removable active chips into the shell's flex row.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterActiveList extends ShopwareComponent {
+export default class FilterActiveList extends ThemeComponent {
     static options = {
         removeLabel: 'Remove filter',
     }
 
     init() {
         this._chipTemplate = this.el.querySelector(':scope > template')
-        this._onSnapshot = this._onSnapshot.bind(this)
         this._onClick = this._onClick.bind(this)
-        this._unsubscribe = subscribe(this._onSnapshot)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this._unsubscribe?.()
-        this._unsubscribe = null
-        this.el.removeEventListener('click', this._onClick)
-    }
-
-    /**
-     * @param {import('@views-theme/modules/listing/store.js').ListingSnapshot} snapshot
-     */
-    _onSnapshot(snapshot) {
-        this._render(snapshot?.labels || [])
+        this.scope.effect(labels, (items) => this._render(items))
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     _onClick(event) {

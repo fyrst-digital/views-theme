@@ -3,6 +3,7 @@
     type = 'shipping',
     activeId = null,
     defaultId = null,
+    listId = 'vi-address-list-' ~ random(),
     cva = {},
 %}
 
@@ -12,6 +13,9 @@
 <div
     {{ attributes.defaults({
         'data-component': 'ViewsTheme:Address:Manager:List',
+        'data-component-options': {
+            listId: listId,
+        }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
 >
@@ -63,6 +67,7 @@
             class="{{ vi_class('empty') }}"
             {{ ...vi_attrs('empty').defaults({
                 kind: 'empty',
+                listId: listId,
             }).all() }}
         />
     {% endblock %}
@@ -72,6 +77,7 @@
             class="{{ vi_class('notFound') }}"
             {{ ...vi_attrs('notFound').defaults({
                 kind: 'notFound',
+                listId: listId,
             }).all() }}
         />
     {% endblock %}

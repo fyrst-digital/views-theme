@@ -1,23 +1,19 @@
-import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+import { shell } from '@views-theme/modules/shared/shell-registry.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * Opens a Modal by id (or the closest Modal) via instance lookup.
+ * Opens a Modal by its server-rendered `id` through the shell registry.
  *
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class ModalOpen extends ShopwareComponent {
+export default class ModalOpen extends ThemeComponent {
     static options = {
-        modalComponentName: 'ViewsTheme:Modal',
         modalId: null,
     }
 
     init() {
         this._onClick = this._onClick.bind(this)
-        this.el.addEventListener('click', this._onClick)
-    }
-
-    destroy() {
-        this.el.removeEventListener('click', this._onClick)
+        this.scope.on(this.el, 'click', this._onClick)
     }
 
     /**
@@ -25,26 +21,11 @@ export default class ModalOpen extends ShopwareComponent {
      */
     _onClick(event) {
         event.preventDefault()
-        const modalEl = this._modalEl()
-        if (!modalEl) {
+        if (!this.options.modalId) {
+            console.error('ModalOpen: modalId is missing')
             return
         }
 
-        getInstanceByElement(this.options.modalComponentName, modalEl)?.open()
-    }
-
-    /**
-     * @returns {Element|null}
-     */
-    _modalEl() {
-        const id = this.options.modalId
-        if (id) {
-            return document.getElementById(id)
-        }
-
-        return (
-            this.el.closest(`[data-component="${this.options.modalComponentName}"]`)
-            || document.querySelector(`[data-component="${this.options.modalComponentName}"]`)
-        )
+        shell(this.options.modalId).api.get()?.open?.()
     }
 }

@@ -1,7 +1,9 @@
+import ThemeComponent from '@views-theme/modules/theme-component.js'
+
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class NavigationBar extends ShopwareComponent {
+export default class NavigationBar extends ThemeComponent {
     static options = {
         debounceTime: 150,
         switchDelay: 350,
@@ -36,14 +38,14 @@ export default class NavigationBar extends ShopwareComponent {
         this._onFlyoutClose = this._onFlyoutClose.bind(this)
         this._onTriggerClick = this._onTriggerClick.bind(this)
 
-        this.el.addEventListener('pointerenter', this._onPointerEnter, true)
-        this.el.addEventListener('pointerleave', this._onPointerLeave)
-        this.el.addEventListener('focusin', this._onFocusIn)
-        this.el.addEventListener('focusout', this._onFocusOut)
-        this.el.addEventListener('click', this._onTriggerClick)
-        document.addEventListener('keydown', this._onKeydown)
-        window.Shopware.on(this.options.openEvent, this._onFlyoutOpen)
-        window.Shopware.on(this.options.closeEvent, this._onFlyoutClose)
+        this.scope.on(this.el, 'pointerenter', this._onPointerEnter, true)
+        this.scope.on(this.el, 'pointerleave', this._onPointerLeave)
+        this.scope.on(this.el, 'focusin', this._onFocusIn)
+        this.scope.on(this.el, 'focusout', this._onFocusOut)
+        this.scope.on(this.el, 'click', this._onTriggerClick)
+        this.scope.on(document, 'keydown', this._onKeydown)
+        this.scope.bus(this.options.openEvent, this._onFlyoutOpen)
+        this.scope.bus(this.options.closeEvent, this._onFlyoutClose)
 
         this._setActiveItems()
     }
@@ -54,14 +56,7 @@ export default class NavigationBar extends ShopwareComponent {
         this._abortFetch()
         this._unmountFlyout()
 
-        this.el.removeEventListener('pointerenter', this._onPointerEnter, true)
-        this.el.removeEventListener('pointerleave', this._onPointerLeave)
-        this.el.removeEventListener('focusin', this._onFocusIn)
-        this.el.removeEventListener('focusout', this._onFocusOut)
-        this.el.removeEventListener('click', this._onTriggerClick)
-        document.removeEventListener('keydown', this._onKeydown)
-        window.Shopware.off(this.options.openEvent, this._onFlyoutOpen)
-        window.Shopware.off(this.options.closeEvent, this._onFlyoutClose)
+        super.destroy()
     }
 
     _onFlyoutOpen(payload = {}) {

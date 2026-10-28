@@ -1,47 +1,38 @@
-import { syncControls, syncFilterOptions } from '@views-theme/modules/listing/store.js'
 import {
     abortRequest,
     beginRequest,
-    eventEl,
     fetchText,
-    getInstanceByElement,
-    replaceMount,
-    unmountEl,
-    waitForInstance,
+    mountShell,
+    releaseShell,
+    shell,
 } from '@views-theme/modules/lazy-shell.js'
+import ThemeComponent from '@views-theme/modules/theme-component.js'
 
 /**
- * @extends {ShopwareComponent}
+ * @extends {ThemeComponent}
  */
-export default class FilterDrawerAction extends ShopwareComponent {
+export default class FilterDrawerAction extends ThemeComponent {
     static options = {
         drawerUrl: null,
-        drawerComponentName: 'ViewsTheme:Drawer',
-        drawerSelector: '#vi-filter-drawer',
-        openEvent: 'ViewsTheme:Drawer:Open',
-        closeEvent: 'ViewsTheme:Drawer:Close',
+        shellId: 'vi-filter-drawer',
         showActive: true,
     }
 
     init() {
-        this._drawerEl = null
         this._loading = false
         this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
-        this._onDrawerOpen = this._onDrawerOpen.bind(this)
-        this._onDrawerClose = this._onDrawerClose.bind(this)
+        this._onShellOpen = this._onShellOpen.bind(this)
 
-        this.el.addEventListener('click', this._onClick)
-        window.Shopware.on(this.options.openEvent, this._onDrawerOpen)
-        window.Shopware.on(this.options.closeEvent, this._onDrawerClose)
+        this.scope.on(this.el, 'click', this._onClick)
+        this.scope.watch(shell(this.options.shellId).open, this._onShellOpen)
     }
 
     destroy() {
-        this.el.removeEventListener('click', this._onClick)
-        window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
-        window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
         abortRequest(this._fetch)
         this._unmountDrawer()
+
+        super.destroy()
     }
 
     /**
@@ -53,7 +44,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
             return
         }
 
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
             return
         }
@@ -62,7 +53,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
     }
 
     async close() {
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.close === 'function') {
             drawer.close()
         }
@@ -75,7 +66,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
             return
         }
 
-        const drawer = this._getDrawerInstance()
+        const drawer = this._drawerApi()
         if (drawer && typeof drawer.isOpen === 'function' && drawer.isOpen()) {
             drawer.close()
             return
@@ -100,25 +91,20 @@ export default class FilterDrawerAction extends ShopwareComponent {
                 return
             }
 
-            this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForInstance(() => this._getDrawerInstance())
+            const api = await mountShell(this.options.shellId, html)
 
             if (!request.isCurrent()) {
                 return
             }
 
-            const drawer = this._getDrawerInstance()
+            const drawer = api
             if (!drawer || typeof drawer.open !== 'function') {
                 console.error('FilterDrawerAction: Drawer component did not mount')
                 return
             }
 
+            // Facets in the drawer register themselves with the listing and hydrate on connect.
             drawer.open()
-            // Children (Panel/facets) init after Drawer; second frame then sync.
-            await new Promise((resolve) => {
-                requestAnimationFrame(() => requestAnimationFrame(resolve))
-            })
-            await this._syncListingControls()
         } catch (error) {
             if (error?.name === 'AbortError') {
                 return
@@ -143,49 +129,24 @@ export default class FilterDrawerAction extends ShopwareComponent {
         return url.toString()
     }
 
-    _getDrawerInstance() {
-        if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
-            this._drawerEl = document.querySelector(this.options.drawerSelector)
-        }
-
-        return getInstanceByElement(this.options.drawerComponentName, this._drawerEl)
+    _drawerApi() {
+        return shell(this.options.shellId).api.get()
     }
 
     /**
-     * @param {unknown} payload
+     * @param {boolean} open
      */
-    _onDrawerOpen(payload) {
-        const drawerEl = eventEl(payload) ?? payload
-        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
-            return
+    _onShellOpen(open) {
+        this.el.setAttribute('aria-expanded', open ? 'true' : 'false')
+        if (!open) {
+            this._unmountDrawer()
         }
-
-        this.el.setAttribute('aria-expanded', 'true')
-        void this._syncListingControls()
-    }
-
-    /**
-     * @param {unknown} payload
-     */
-    _onDrawerClose(payload) {
-        const drawerEl = eventEl(payload) ?? payload
-        if (drawerEl && this._drawerEl && drawerEl !== this._drawerEl) {
-            return
+        if (!open) {
+            this.el.focus()
         }
-
-        this.el.setAttribute('aria-expanded', 'false')
-        this._unmountDrawer()
-        void this._syncListingControls()
-        this.el.focus()
     }
 
     _unmountDrawer() {
-        unmountEl(this._drawerEl, this.options.drawerSelector)
-        this._drawerEl = null
-    }
-
-    async _syncListingControls() {
-        syncControls()
-        await syncFilterOptions()
+        releaseShell(this.options.shellId)
     }
 }
