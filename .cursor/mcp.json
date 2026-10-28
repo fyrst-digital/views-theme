@@ -4,6 +4,9 @@
       "type": "stdio",
       "command": "${userHome}/.pencil/mcp/cursor/out/mcp-server-linux-x64",
       "args": ["--app", "desktop", "--agent", "cursorIDE"]
+    },
+    "open-pencil": {
+      "command": "openpencil-mcp"
     }
   }
 }
