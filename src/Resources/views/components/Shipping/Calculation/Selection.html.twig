@@ -1,6 +1,5 @@
 {% props
     page,
-    redirectTo = 'frontend.checkout.cart.page',
     cva = {},
 %}
 
@@ -13,7 +12,7 @@
     class="{{ vi_class('root') }}"
 >
     {% block country %}
-        <twig:ViewsTheme:Cart:ShippingCalculation:Country
+        <twig:ViewsTheme:Shipping:Calculation:Country
             class="{{ vi_class('country') }}"
             {{ ...vi_attrs('country').defaults({
                 countries: page.countries,
@@ -23,7 +22,7 @@
     {% endblock %}
 
     {% block payment_method %}
-        <twig:ViewsTheme:Cart:ShippingCalculation:PaymentMethod
+        <twig:ViewsTheme:Shipping:Calculation:PaymentMethod
             class="{{ vi_class('payment') }}"
             {{ ...vi_attrs('payment').defaults({
                 paymentMethods: page.paymentMethods,
@@ -33,7 +32,7 @@
     {% endblock %}
 
     {% block shipping_method %}
-        <twig:ViewsTheme:Cart:ShippingCalculation:ShippingMethod
+        <twig:ViewsTheme:Shipping:Calculation:ShippingMethod
             class="{{ vi_class('shipping') }}"
             {{ ...vi_attrs('shipping').defaults({
                 shippingMethods: page.shippingMethods,
@@ -41,6 +40,4 @@
             }).all() }}
         />
     {% endblock %}
-
-    <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
 </div>

@@ -29,10 +29,11 @@ Storefront app root **must** have `package.json` with `vite` + the local modules
 views/components/**/*.js          # ShopwareComponent entries (data-component)
         │ import '@views-theme/modules/…'
 app/storefront/src/modules/
-  shared/     http · dom · component · object-option · history · form · focus-trap
+  shared/     http · dom · component · object-option · history · form · focus-trap · signal
   listing/    Product:Listing domain only
   review/     Review:Panel domain only
   configurator/  Product:Configurator sessions only
+  shipping/   Shipping calculation signal store (Field → store → Cart)
   lazy-shell.js · body-lock.js · serial-queue.js
 ```
 
@@ -42,6 +43,7 @@ app/storefront/src/modules/
 | `Product/Listing.js` | any `@views-theme/modules/listing/*` |
 | `Product/Configurator.js` | `@views-theme/modules/configurator/*`, `shared/http.js` |
 | `Product/Configurator/Group.js` | `@views-theme/modules/configurator/store.js` only |
+| `Shipping/Calculation/Field.js` | `@views-theme/modules/shipping/store.js` only |
 | `Review/Panel.js` | any `@views-theme/modules/review/*` |
 | Filters / Pagination / Sorting | `@views-theme/modules/listing/store.js` only (+ shared / lazy-shell as needed); Review pagination may use `review/apply.js` |
 | Review controls (Matrix/Sort/Language) | `@views-theme/modules/review/apply.js` only (+ shared) |
@@ -49,7 +51,8 @@ app/storefront/src/modules/
 | `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` or `configurator/*` |
 | `@views-theme/modules/configurator/*` | `@views-theme/modules/shared/*` — **not** `listing/*` or `review/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor) |
+| `@views-theme/modules/shipping/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*` or `configurator/*` |
 
 **URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third URL owner needs it. Configurator sessions (`configurator/store.js`) are a separate selection store, not a URL owner.
 
@@ -76,6 +79,8 @@ app/storefront/src/modules/
 | `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
 | `body-lock.js` | ref-counted body scroll lock (Drawer, Overlay, Modal, Gallery Fullscreen) |
 | `serial-queue.js` | Cart + Wishlist |
+| `shared/signal.js` | `createSignal(initial)` → `{ get, set, subscribe }`; `set` is a no-op for an identical value |
+| `shipping/store.js` | Shipping calculation signals; see [cart-drawer](../features/cart-drawer.md#shipping-store) |
 | `types.js` | Shared JSDoc `@typedef`s (empty runtime export) |
 | `shopware-globals.d.ts` | Ambient `ShopwareComponent` / `window.Shopware` for IDE |
 
@@ -196,13 +201,13 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Cart flashes / items / heading | `ViewsTheme:Cart:Flashes` / `Items` / `Heading` | `Cart/Flashes.js` etc. |
 | Cart page | `ViewsTheme:Cart:Page` | `Cart/Page.js` |
 | Cart page aside | `ViewsTheme:Cart:Page:Aside` | `Cart/Page/Aside.js` |
+| Cart shipping box | `ViewsTheme:Cart:Shipping` | `Cart/Shipping.js` |
 | Cart drawer heading / footer | `ViewsTheme:Cart:Drawer:Heading` / `Footer` | `Cart/Drawer/Heading.js` etc. |
 | Quantity input | `ViewsTheme:QuantityInput` | `QuantityInput.js` — theme-owned only; do **not** set core `data-quantity-selector` / `js-btn-*` hooks |
 | Line item quantity input | `ViewsTheme:LineItem:QuantityInput` | `LineItem/QuantityInput.js` |
 | Line item remove | `ViewsTheme:LineItem:Remove` | `LineItem/Remove.js` |
 | Cart promotion form | `ViewsTheme:Cart:PromotionForm` | `Cart/PromotionForm.js` |
-| Cart shipping calculation | `ViewsTheme:Cart:ShippingCalculation` | `Cart/ShippingCalculation.js` |
-| Cart shipping calculation open | `ViewsTheme:Cart:ShippingCalculation:Open` | `Cart/ShippingCalculation/Open.js` |
+| Shipping calculation field | `ViewsTheme:Shipping:Calculation:Field` | `Shipping/Calculation/Field.js` — `shipping/store.js` only |
 | Delivery date | `ViewsTheme:Checkout:DeliveryDateSelection` | `Checkout/DeliveryDateSelection.js` |
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |

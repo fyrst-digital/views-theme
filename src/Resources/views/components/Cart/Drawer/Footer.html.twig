@@ -34,15 +34,7 @@
                             <twig:ViewsTheme:Cart:Summary:Shipping
                                 :delivery="delivery"
                                 :cva="{ root: 'fs-5', label: 'fw-medium', value: 'fw-medium' }"
-                            >
-                                <twig:block name="label">
-                                    <dt {{ vi_attrs('label') }} class="{{ vi_class('label') }}">
-                                        <twig:ViewsTheme:Cart:ShippingCalculation:Open
-                                            label="{{ 'checkout.summaryShipping'|trans|sw_sanitize }}"
-                                        />
-                                    </dt>
-                                </twig:block>
-                            </twig:ViewsTheme:Cart:Summary:Shipping>
+                            />
                         {% endfor %}
                     {% endif %}
                 </twig:block>
@@ -62,8 +54,11 @@
     {% endblock %}
 
     {% block options %}
-        <twig:ViewsTheme:Cart:Options 
-            :page="page" />
+        <twig:ViewsTheme:Cart:Options
+            :page="page"
+        >
+            <twig:block name="shipping"></twig:block>
+        </twig:ViewsTheme:Cart:Options>
     {% endblock %}
 
     {% block actions %}

@@ -12,11 +12,12 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
 | `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
-| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Footer roots |
+| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Shipping / Footer roots |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
 | `Cart:Items` | Stacked line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`. Register aside uses the same list. The cart page table is [`LineItems:Table`](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
-| `Cart:Drawer:Footer` | Summary, `Cart:Options`, `Cart:Actions` — **omitted** when cart is empty (no root) |
+| `Cart:Shipping` | Shipping details card ([cart page](cart-page.md) shares it): `Shipping:Calculation`, always open. In the drawer it is a Body child between Items and Footer (`flex-shrink-0`, outside the scroll area, so it stays pinned above the footer). Omitted without a physical line item |
+| `Cart:Drawer:Footer` | Summary, `Cart:Options` (promotion only; its `shipping` block is emptied), `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
 | `Cart:Actions` | CTA wrapper (layout); default content is checkout + cart |
 | `Cart:Action:Checkout` | Confirm-page link via generic `Button`; label `viewsTheme.cart.checkout` |
@@ -24,8 +25,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Drawer:Heading` | Title + item count host for header chrome |
 | `Drawer` | Shell: open/close a11y, motion; shared with navigation |
 | `LineItem:QuantityInput` / `Remove` | Emit `Cart:Update` / `Cart:Remove` (no form redirect in JS path). Grouped in `LineItem:Actions` |
-| `Cart:PromotionForm` / `ShippingCalculation` | Emit `Cart:Promote` / `Cart:Configure` (composed by `Cart:Options`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `<form>` + `ShippingCalculation:Selection` → field adapters → `Form:Select` |
-| `Cart:ShippingCalculation:Open` | Summary shipping label button; `callMethod(ShippingCalculation, toggle)` to open/close the `<details>` |
+| `Cart:PromotionForm` / `Shipping:Calculation` | Promotion emits `Cart:Promote`; shipping writes to the [shipping store](#shipping-store) (composed by `Cart:Options` / `Cart:Shipping`). Promotion = `<form>` + `Form:Input:Group` + `Button`; shipping = `div` + `Shipping:Calculation:Selection` → field adapters → `Form:Select` |
 
 ## Features
 
@@ -36,7 +36,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
-- Summary, cart options (promotion form + shipping pre-calculation `<details>`), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
+- Summary, cart options (promotion form + shipping pre-calculation), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
@@ -66,7 +66,6 @@ Always-mounted `ViewsTheme:Cart` (header) owns HTTP against core checkout endpoi
 | `ViewsTheme:Cart:Remove` | `{ lineItemId, source? }` | `POST frontend.checkout.line-item.delete` |
 | `ViewsTheme:Cart:Update` | `{ lineItemId, quantity, source? }` | `POST frontend.checkout.line-item.change-quantity` |
 | `ViewsTheme:Cart:Promote` | `{ code? \| formData, source? }` | `POST frontend.checkout.promotion.add` |
-| `ViewsTheme:Cart:Configure` | `{ formData, source? }` | `POST frontend.checkout.configure` |
 
 | Event (result) | Payload |
 |----------------|---------|
@@ -85,6 +84,7 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Pr
  3. `Cart:Drawer:Body` fetches `frontend.views-theme.cart.drawer` (same route as open) and replaces roots by `data-component` identity:
     - `ViewsTheme:Cart:Flashes` (core `addFlash` messages; `app.flashes` consumes the bag)
     - `ViewsTheme:Cart:Items` (`layout="stacked"`)
+    - `ViewsTheme:Cart:Shipping` (optional — a newly present island is inserted before the footer, not appended)
     - `ViewsTheme:Cart:Drawer:Footer` (optional — remove when missing in response, append when newly present)
     - `ViewsTheme:Cart:Drawer:Heading`
  4. Parse with `<template>`; Body refresh aborts stale fetches and queues one follow-up while busy. Island swap: both → replace; existing only → remove; next only → append to target root
@@ -173,12 +173,12 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
+| Shipping | `data-component="ViewsTheme:Cart:Shipping"` |
 | Heading / Footer | `data-component="ViewsTheme:Cart:Drawer:Heading"` / `ViewsTheme:Cart:Drawer:Footer` |
 | Quantity input | `data-component="ViewsTheme:LineItem:QuantityInput"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 | Promotion form | `data-component="ViewsTheme:Cart:PromotionForm"` |
-| Shipping calculation | `data-component="ViewsTheme:Cart:ShippingCalculation"` |
-| Shipping calculation open | `data-component="ViewsTheme:Cart:ShippingCalculation:Open"` |
+| Shipping calculation field | `data-component="ViewsTheme:Shipping:Calculation:Field"` (one per select; `data-component-options.field` = `countryId` / `paymentMethodId` / `shippingMethodId`) |
 
 ### Promotion form
 
@@ -197,13 +197,26 @@ Nest names (via `Cart:Options` → `promotion:*`):
 | `promotion:submit:*` | Submit `Button` props / attrs |
 | `promotion:redirectTo` | Hidden redirect route name |
 
+### Shipping store
+
+`@views-theme/modules/shipping/store.js` holds the shipping calculation state as signals (`shared/signal.js`; `subscribe` notifies on change and does not replay).
+
+| Export | Role |
+|--------|------|
+| `values` | Signal of `{ countryId?, paymentMethodId, shippingMethodId }` — current value per mounted field |
+| `request` | Signal set **only** by `select` (user intent): `{ seq, values, source }` |
+| `connect(name, value)` | Field mount: registers the server-rendered value (no request); returns `disconnect`. The value is dropped with the last field of that name |
+| `select(name, value, source?)` | Field change: updates `values` and sets `request` |
+
+Each select is `ViewsTheme:Shipping:Calculation:Field` (`Field.js`): it reads only its own native `<select>`, `connect`s on init, writes with `select` on `change`, and mirrors `values` (so a page card and an open drawer stay in sync). `Cart` is the only executor: it subscribes to `request` and POSTs `frontend.checkout.configure` with the stored values (no `redirectTo`), then emits `Cart:Changed` like every other mutation. Nothing reads the DOM to build the request, so the fields can be moved anywhere.
+
 ### Shipping calculation
 
-`Cart:ShippingCalculation` owns the `<form>`, physical-line-item guard, `<details>` chrome, and configure JS. Disclosure toggle is `ViewsTheme:Button` with `tag="summary"` (native `<details>` / `<summary>`). Drawer summary rows are `Cart:Summary:Total` (`fs-4`, `fw-semibold`) and `Cart:Summary:Shipping` (`fs-5`; value `fw-medium`). Grand total, net, and tax stay off. Shipping’s `label` block is `Cart:ShippingCalculation:Open` → `callMethod(…, toggle)` to open/close the same `<details>`. Field stack is composed:
+`Shipping:Calculation` is a plain `div` (no `<form>`, no island JS) that owns the physical-line-item guard. The selection stack is always visible (no disclosure). Drawer summary rows are `Cart:Summary:Total` (`fs-4`, `fw-semibold`) and `Cart:Summary:Shipping` (`fs-5`; value `fw-medium`). Grand total, net, and tax stay off. Field stack is composed:
 
 | Piece | Component |
 |-------|-----------|
-| Selection stack + `redirectTo` | `ViewsTheme:Cart:ShippingCalculation:Selection` |
+| Selection stack | `ViewsTheme:Shipping:Calculation:Selection` |
 | Country (guest only) | `…:Selection` → `…:Country` → `Form:Select` (`:options` + `:value`) |
 | Payment method | `…:Selection` → `…:PaymentMethod` → `Form:Select` (+ leading disabled row when unavailable) |
 | Shipping method | `…:Selection` → `…:ShippingMethod` → same as payment |
@@ -218,8 +231,6 @@ Nest names (via `Cart:Options` → `shipping:*`):
 | `shipping:selection:country:*` | Country → `Form:Select` (default `size: sm` in nest defaults) |
 | `shipping:selection:payment:*` | PaymentMethod → `Form:Select` |
 | `shipping:selection:shipping:*` | ShippingMethod → `Form:Select` |
-| `shipping:summary:*` | Disclosure `Button` (`tag=summary`; default size `sm`) |
-| `shipping:redirectTo` | Hidden redirect route name (forwarded into Selection) |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
 Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.

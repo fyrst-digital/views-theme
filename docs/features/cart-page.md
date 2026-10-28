@@ -12,9 +12,10 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | `Cart:Heading` | Title + inline count (`h1`); island. `title` default `checkout.cartHeader` |
 | `LineItems:Table` | Table view on this page. Columns: product (image, name, `Product:Variations` badges), qty, line total. `Cart:Empty` when empty. Editable rows put the stepper and remove in the qty cell |
 | `Cart:Items` | Stacked list (cart drawer, register aside) |
-| `Cart:Page:Aside` | Summary + `Cart:Options` + checkout CTA — **omitted** when empty |
+| `Cart:Page:Aside` | Sticky island root (`div`, `data-component`) containing `Cart:Shipping` (nest `shipping`, above) and one [`Summary:Box`](summary-box.md) (nest `box`) that groups Summary + `Cart:Options` (promotion only) + checkout CTA (slots are `vi_block`s) — **omitted** when empty. The root keeps `d-flex flex-column gap-6 position-xl-sticky`; the box supplies chrome and the 20px body gap |
 | `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) via `Total`, `Shipping`, `GrandTotal`, `NetTotal`, and `Tax`. Row styling lives in each row component’s default CVA, shared by every consumer |
-| `Cart:Options` | Shipping pre-calc + promotion form |
+| `Cart:Shipping` | Dedicated card above the summary box (same chrome as [`Checkout:Additions`](checkout-confirm.md): border, `rounded-4`, `p-5`, `fs-4` title `checkout.shippingDetailsHeader`, “Shipping details”). Mounts `Shipping:Calculation`, which is always open. Omitted without a physical line item. Island (`data-component="ViewsTheme:Cart:Shipping"`), shared with the cart drawer |
+| `Cart:Options` | Shipping pre-calc + promotion form. The page empties the `shipping` block (shipping lives in `Cart:Shipping`); the drawer keeps both |
 | `Cart:Actions` | Checkout only (`cart` nest emptied) |
 | `LineItem` | `layout="table"` row inside `LineItems:Table`. Cart page keeps the actions group (stepper and remove) when the line item can be edited and removed |
 | `Cart` | HTTP owner (header); page does **not** reload |
@@ -31,10 +32,12 @@ Cart:Page (data-component owner)
       │    ├─ Product / Qty / Total (d-none d-lg-block; Product spans 2)
       │    ├─ Divider (header, d-none d-lg-block)
       │    └─ LineItem layout="table" d-lg-contents × N, then Divider after each row except the last (every viewport)  |  Cart:Empty
-      └─ Cart:Page:Aside (when not empty; position-xl-sticky)
-          ├─ Cart:Summary
-          ├─ Cart:Options
-          └─ Cart:Actions (no cart-page link)
+      └─ Cart:Page:Aside (div root; when not empty; position-xl-sticky)
+          ├─ Cart:Shipping → Shipping:Calculation (always open; physical carts only)
+          └─ Summary:Box
+              ├─ Cart:Summary
+              ├─ Cart:Options (shipping block emptied → promotion only)
+              └─ Cart:Actions (no cart-page link)
 ```
 
 Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
@@ -51,7 +54,7 @@ Shared totals list. The row defaults below follow the confirm summary design and
 | `Cart:Summary:NetTotal` | `fs-6 text-muted`; label and value `fw-normal` | `net` |
 | `Cart:Summary:Tax` | same as net; one row per rate. An empty `calculatedTaxes` collection still renders one row at 0% (`checkout.summaryTax`, amount 0) | `tax` |
 
-`delivery` and `taxItem` are passed on the tag inside the loops. Blocks stay `total`, `shippings`, `grand_total`, `net_total`, `taxes`. The `grand_total` block renders a `Divider` inside its own `grand_total_divider` block (override or empty it from a caller) (nest `divider`, CVA `my-2`, spanning both tracks via `--vi-divider-col`) before `GrandTotal`, for every consumer. It is hidden together with the grand total (`showGrandTotal=false`, as in the drawer footer). The drawer footer mounts `Total` and `Shipping` with its own `cva`, and fills Shipping’s `label` block with `Cart:ShippingCalculation:Open`. Grand total stays off there.
+`delivery` and `taxItem` are passed on the tag inside the loops. Blocks stay `total`, `shippings`, `grand_total`, `net_total`, `taxes`. The `grand_total` block renders a `Divider` inside its own `grand_total_divider` block (override or empty it from a caller) (nest `divider`, CVA `my-2`, spanning both tracks via `--vi-divider-col`) before `GrandTotal`, for every consumer. It is hidden together with the grand total (`showGrandTotal=false`, as in the drawer footer). The drawer footer mounts `Total` and `Shipping` with its own `cva`, and fills Shipping’s `label` block with `Shipping:Calculation:Open`. Grand total stays off there.
 
 Root is `d-grid align-items-center`. CSS is the two-column track (`--vi-cols`), `row-gap: var(--vi-cart-summary-gap, 0)`, and `letter-spacing: var(--vi-cart-summary-tracking, normal)` on `.vi-cart-summary__grand`.
 

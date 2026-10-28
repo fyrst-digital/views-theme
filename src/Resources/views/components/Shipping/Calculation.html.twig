@@ -1,0 +1,26 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root', 'selection']) %}
+{% do vi_define_attrs(['selection']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block panel %}
+        {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
+        {% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
+            {% block selection %}
+                <twig:ViewsTheme:Shipping:Calculation:Selection
+                    class="{{ vi_class('selection') }}"
+                    {{ ...vi_attrs('selection').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            {% endblock %}
+        {% endif %}
+    {% endblock %}
+</div>

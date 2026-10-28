@@ -179,7 +179,7 @@ Payment `framed` defaults to `true`, which adds the standalone card (white, 1px 
 
 Description is every method’s plain text (tags stripped), truncated at 75 characters. `Shipping:Selection` builds those rows in `Selection.php`: the quote comes from `page.extensions.viewsTheme.shippingPrices`, and a missing quote on the selected method uses that cart delivery’s `shippingCosts.totalPrice`. `trailing` is set there too. A total of `0` is `viewsTheme.checkout.shippingFree` (`Free` / `Gratis`). Any other amount is formatted with `CurrencyFormatter` for the current currency and language. A missing quote leaves `trailing` empty. The template only passes each row into `Form:Selection`. Payment rows omit `trailing`.
 
-`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
+`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Shipping:Calculation`).
 
 `Payment:Selection` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect. Edit-order shipping stays read-only [`Checkout:Success:Shipping`](checkout-success.md).
 
