@@ -50,6 +50,18 @@ Prefer **minimal, targeted patches**. Do **not** replace whole files when fixing
 
 Full-file overwrites are a common agent failure mode: a small rule fix clobbers intentional human changes that landed between turns.
 
+## MCP servers
+
+Claude Code loads three project servers from [`.mcp.json`](../../.mcp.json) (approve them once on first start):
+
+| Server | Transport | Notes |
+|--------|-----------|-------|
+| `chrome-devtools` | stdio (`npx chrome-devtools-mcp`) | `--isolated --headless`: throwaway profile, no visible window |
+| `shopware` | HTTP `http://localhost:8000/api/_mcp` | Shopware's built-in Admin API MCP. Needs the local shop running. [`shopware-headers.sh`](../../.claude/mcp/shopware-headers.sh) fetches a bearer token (valid 10 min, refreshed on reconnect) with `ADMIN_ACCOUNT_*` from the git-ignored `.env` |
+| `github` | HTTP `https://api.githubcopilot.com/mcp/` | [`github-headers.sh`](../../.claude/mcp/github-headers.sh) reuses the `gh auth token` login; no token is stored in the repo |
+
+If the shop runs on another URL, set `SHOPWARE_URL` for the helper and edit the `url` in `.mcp.json`.
+
 ## Related
 
 - [Hard rules checklist](hard-rules.md)

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest", "--isolated", "--headless"]
+    },
+    "shopware": {
+      "type": "http",
+      "url": "http://localhost:8000/api/_mcp",
+      "headersHelper": ".claude/mcp/shopware-headers.sh"
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headersHelper": ".claude/mcp/github-headers.sh"
+    }
+  }
+}
