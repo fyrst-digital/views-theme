@@ -4,7 +4,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['shipping', 'box', 'summary', 'options', 'actions']) %}
+{% do vi_define_attrs(['shipping', 'box', 'heading', 'summary', 'options', 'actions']) %}
 
 <div
     {{ attributes.defaults({
@@ -13,12 +13,14 @@
     class="{{ vi_class('root') }}"
 >
     {% block shipping %}
-        <twig:ViewsTheme:Cart:Shipping
-            class="{{ vi_class('shipping') }}"
-            {{ ...vi_attrs('shipping').defaults({
-                page: page,
-            }).all() }}
-        />
+        {% if config('ViewsTheme.config.checkoutShippingCalculationActive') %}
+            <twig:ViewsTheme:Cart:Shipping
+                class="{{ vi_class('shipping') }}"
+                {{ ...vi_attrs('shipping').defaults({
+                    page: page,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     <twig:ViewsTheme:Summary:Box
@@ -26,6 +28,15 @@
         {{ ...vi_attrs('box').all() }}
     >
         <twig:block name="content">
+            {% vi_block heading %}
+                <h2
+                    {{ vi_attrs('heading') }}
+                    class="{{ vi_class('heading') }}"
+                >
+                    {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+                </h2>
+            {% endvi_block %}
+
             {% vi_block summary %}
                 <twig:ViewsTheme:Cart:Summary
                     class="{{ vi_class('summary') }}"

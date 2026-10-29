@@ -12,9 +12,9 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | `Cart:Heading` | Title + inline count (`h1`); island. `title` default `checkout.cartHeader` |
 | `LineItems:Table` | Table view on this page. Columns: product (image, name, `Product:Variations` badges), qty, line total. `Cart:Empty` when empty. Editable rows put the stepper and remove in the qty cell |
 | `Cart:Items` | Stacked list (cart drawer, register aside) |
-| `Cart:Page:Aside` | Sticky island root (`div`, `data-component`) containing `Cart:Shipping` (nest `shipping`, above) and one [`Summary:Box`](summary-box.md) (nest `box`) that groups Summary + `Cart:Options` (promotion only) + checkout CTA (slots are `vi_block`s) — **omitted** when empty. The root keeps `d-flex flex-column gap-6 position-xl-sticky`; the box supplies chrome and the 20px body gap |
+| `Cart:Page:Aside` | Sticky island root (`div`, `data-component`) containing `Cart:Shipping` (nest `shipping`, above) and one [`Summary:Box`](summary-box.md) (nest `box`) that groups a `heading` (`h2`, `checkout.summaryHeader`, same typography as the confirm summary) + Summary + `Cart:Options` (promotion only) + checkout CTA (slots are `vi_block`s) — **omitted** when empty. The root keeps `d-flex flex-column gap-6 position-xl-sticky`; the box supplies chrome and the 20px body gap |
 | `Cart:Summary` | Full totals (subtotal, shipping, grand total, net, tax) via `Total`, `Shipping`, `GrandTotal`, `NetTotal`, and `Tax`. Row styling lives in each row component’s default CVA, shared by every consumer |
-| `Cart:Shipping` | Dedicated card above the summary box (same chrome as [`Checkout:Additions`](checkout-confirm.md): border, `rounded-4`, `p-5`, `fs-4` title `checkout.shippingDetailsHeader`, “Shipping details”). Mounts `Shipping:Calculation`, which is always open. Omitted without a physical line item. Island (`data-component="ViewsTheme:Cart:Shipping"`), shared with the cart drawer |
+| `Cart:Shipping` | Dedicated card above the summary box (same chrome as [`Checkout:Additions`](checkout-confirm.md): border, `rounded-4`, `p-5`, `fs-4` title `checkout.shippingDetailsHeader`, “Shipping details”). Mounts `Shipping:Calculation`, which is always open. Omitted without a physical line item. The callers (`Cart:Page:Aside`, `Cart:Drawer:Body`) skip it when `ViewsTheme.config.checkoutShippingCalculationActive` is off — the component itself does not read the config. Island (`data-component="ViewsTheme:Cart:Shipping"`), shared with the cart drawer |
 | `Cart:Options` | Shipping pre-calc + promotion form. The page empties the `shipping` block (shipping lives in `Cart:Shipping`); the drawer keeps both |
 | `Cart:Actions` | Checkout only (`cart` nest emptied) |
 | `LineItem` | `layout="table"` row inside `LineItems:Table`. Cart page keeps the actions group (stepper and remove) when the line item can be edited and removed |
@@ -35,6 +35,7 @@ Cart:Page (data-component owner)
       └─ Cart:Page:Aside (div root; when not empty; position-xl-sticky)
           ├─ Cart:Shipping → Shipping:Calculation (always open; physical carts only)
           └─ Summary:Box
+              ├─ h2 heading (checkout.summaryHeader)
               ├─ Cart:Summary
               ├─ Cart:Options (shipping block emptied → promotion only)
               └─ Cart:Actions (no cart-page link)

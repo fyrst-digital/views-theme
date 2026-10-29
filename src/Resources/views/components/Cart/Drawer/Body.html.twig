@@ -54,14 +54,16 @@
     {% endblock %}
 
     {% block shipping %}
-        <twig:ViewsTheme:Cart:Shipping
-            {{ ...vi_attrs('shipping').defaults({
-                page: page,
-                cva: {
-                    root: { base: 'vi-cart-shipping d-flex flex-column gap-4 min-w-0 overflow-clip bg-white p-4 flex-shrink-0' },
-                },
-            }).all() }}
-        />
+        {% if config('ViewsTheme.config.checkoutShippingCalculationActive') %}
+            <twig:ViewsTheme:Cart:Shipping
+                {{ ...vi_attrs('shipping').defaults({
+                    page: page,
+                    cva: {
+                        root: { base: 'vi-cart-shipping d-flex flex-column gap-4 min-w-0 overflow-clip bg-white p-4 flex-shrink-0' },
+                    },
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     {% block footer %}

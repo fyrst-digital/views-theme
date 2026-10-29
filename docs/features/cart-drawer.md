@@ -16,7 +16,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
 | `Cart:Items` | Stacked line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`. Register aside uses the same list. The cart page table is [`LineItems:Table`](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
-| `Cart:Shipping` | Shipping details card ([cart page](cart-page.md) shares it): `Shipping:Calculation`, always open. In the drawer it is a Body child between Items and Footer (`flex-shrink-0`, outside the scroll area, so it stays pinned above the footer). Omitted without a physical line item |
+| `Cart:Shipping` | Shipping details card ([cart page](cart-page.md) shares it): `Shipping:Calculation`, always open. In the drawer it is a Body child between Items and Footer (`flex-shrink-0`, outside the scroll area, so it stays pinned above the footer). Omitted without a physical line item. The callers (`Cart:Page:Aside`, `Cart:Drawer:Body`) skip it when `ViewsTheme.config.checkoutShippingCalculationActive` is off — the component itself does not read the config |
 | `Cart:Drawer:Footer` | Summary, `Cart:Options` (promotion only; its `shipping` block is emptied), `Cart:Actions` — **omitted** when cart is empty (no root) |
 | `Cart:Options` | Layout wrapper for promotion form + shipping calculation |
 | `Cart:Actions` | CTA wrapper (layout); default content is checkout + cart |
