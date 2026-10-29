@@ -1,0 +1,26 @@
+{
+    root: {
+        base: 'vi-page-title d-flex flex-column gap-2',
+        variants: {
+            align: {
+                start: '',
+                center: 'text-center',
+            },
+        },
+        defaultVariants: { align: 'start' },
+    },
+    heading: { base: 'vi-page-title__heading fw-semibold m-0' },
+    meta: { base: 'vi-page-title__meta m-0 fs-6 fs-xl-5 text-body-tertiary' },
+    items: {
+        base: 'vi-page-title__items d-flex flex-wrap align-items-baseline column-gap-4 row-gap-1',
+        variants: {
+            align: {
+                start: '',
+                center: 'justify-content-center',
+            },
+        },
+        defaultVariants: { align: 'start' },
+    },
+    item: { base: 'vi-page-title__item d-inline-flex align-items-baseline fw-semibold gap-1' },
+    icon: { base: 'vi-page-title__icon flex-shrink-0' },
+}

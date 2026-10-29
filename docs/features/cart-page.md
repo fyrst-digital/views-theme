@@ -9,7 +9,7 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 | Storefront bridge | `storefront/page/checkout/cart/index.html.twig` → `page_checkout` → `Cart:Page` |
 | `Cart:Page` | Owner JS: listen `Cart:Changed`, fetch `/vi/cart/page`, swap islands |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `Alert`; shared with drawer. With `clientError` (the page sets it) it also holds a `<template>` with the default danger `Alert` (`error.message-default`), which `Cart:Page` mounts when a cart change fails |
-| `Checkout:Title` | Page title (`h1` “Shopping cart” with the item count in the meta line). Reuses the shared atomic checkout title; `Cart:Page` passes `heading` (`checkout.cartHeader`) and `meta.items` (`checkout.itemCounter`, e.g. “6 items”; omitted when the cart is empty) and sets `data-component="ViewsTheme:Cart:Heading"` so the island swap keeps working |
+| `Page:Title` | Page title (`h1` “Shopping cart” with the item count in the meta line). Reuses the shared atomic page title; `Cart:Page` passes `heading` (`checkout.cartHeader`) and `meta.items` (`checkout.itemCounter`, e.g. “6 items”; omitted when the cart is empty) and sets `data-component="ViewsTheme:Cart:Heading"` so the island swap keeps working |
 | `Cart:Heading` | Cart drawer title only (inline count, `div`); island inside `Cart:Drawer:Heading` |
 | `LineItems:Table` | Table view on this page. Columns: product (image, name, `Product:Variations` badges), qty, line total. `Cart:Empty` when empty. Editable rows put the stepper and remove in the qty cell |
 | `Cart:Items` | Stacked list (cart drawer, register aside) |
@@ -26,7 +26,7 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 ```
 Cart:Page (data-component owner; .grid, grid-columns-1 / xl-8 / xxl-12)
 ├─ Cart:Flashes                          (g-col-1 g-col-xl-8 g-col-xxl-12; flash bag + client-error template)
-├─ Checkout:Title                        (g-col-1 g-col-xl-8 g-col-xxl-12; h1 heading prop + meta.items, data-component=ViewsTheme:Cart:Heading)
+├─ Page:Title                        (g-col-1 g-col-xl-8 g-col-xxl-12; h1 heading prop + meta.items, data-component=ViewsTheme:Cart:Heading)
 ├─ LineItems:Table                       (g-col-1 g-col-xl-5 g-col-xxl-8; full row when empty)
 │    ├─ Product / Qty / Total (d-none d-lg-block; Product spans 2)
 │    ├─ Divider (header, d-none d-lg-block)
@@ -97,7 +97,7 @@ On `ViewsTheme:Cart:Changed`:
 | Island | Root |
 |--------|------|
 | `ViewsTheme:Cart:Flashes` | Page |
-| `ViewsTheme:Cart:Heading` | Page (root is `Checkout:Title`) |
+| `ViewsTheme:Cart:Heading` | Page (root is `Page:Title`) |
 | `ViewsTheme:LineItems:Table` | Page |
 | `ViewsTheme:Cart:Page:Aside` | Page (remove when missing; append when newly present — it is the last grid child) |
 

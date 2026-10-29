@@ -1,0 +1,29 @@
+{% props
+    cva = {},
+%}
+
+{% set requestParameter = constant('Shopware\\Storefront\\Framework\\Captcha\\HoneypotCaptcha::CAPTCHA_REQUEST_PARAMETER') %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }} {{ requestParameter }}"
+>
+    {% block input %}
+        <input
+            {{ vi_attrs('input').defaults({
+                type: 'text',
+                name: requestParameter,
+                value: '',
+                tabindex: '-1',
+                autocapitalize: 'off',
+                spellcheck: 'false',
+                autocorrect: 'off',
+                autocomplete: 'new-password',
+            }) }}
+            class="{{ vi_class('input') }}"
+        >
+    {% endblock %}
+</div>

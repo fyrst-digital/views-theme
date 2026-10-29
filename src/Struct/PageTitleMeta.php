@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Struct;
 
 /**
- * One segment on Checkout:Title. `icon` is a `vi_icon` name.
+ * One segment on Page:Title. `icon` is a `vi_icon` name.
  */
-final readonly class CheckoutTitleMeta
+final readonly class PageTitleMeta
 {
     public function __construct(
         public string $label,

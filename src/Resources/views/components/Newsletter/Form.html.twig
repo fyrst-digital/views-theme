@@ -66,9 +66,7 @@
                     </twig:ViewsTheme:Form:Input:Group>
                 {% endvi_block %}
 
-                {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' with {
-                    formId: id,
-                } %}
+                <twig:ViewsTheme:Captcha :formId="id" />
 
                 {% vi_block privacy %}
                     {% if privacyNote %}

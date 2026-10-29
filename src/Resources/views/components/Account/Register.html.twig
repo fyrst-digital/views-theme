@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'form', 'personal', 'credentials', 'billing', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'footer', 'privacy', 'submit']) %}
+{% do vi_define_attrs(['header', 'form', 'personal', 'credentials', 'billingForm', 'shippingToggle', 'shippingPersonal', 'shippingForm', 'captcha', 'footer', 'privacy', 'submit']) %}
 
 <div
     {{ attributes }}
@@ -50,6 +50,7 @@
                             salutations: salutations,
                             page: page,
                             prefix: 'billingAddress',
+                            heading: 'viewsTheme.account.personalHeading'|trans|sw_sanitize,
                             accountType: accountType,
                             showBirthdayField: showBirthdayField,
                             onlyCompanyRegistration: onlyCompanyRegistration,
@@ -79,22 +80,18 @@
                 {% endblock %}
 
                 {% block billing %}
-                    <fieldset {{ vi_attrs('billing') }} class="{{ vi_class('billing') }}">
-                        <legend class="{{ vi_class('sectionTitle') }}">
-                            {{ 'account.registerAddressBillingHeader'|trans|sw_sanitize }}
-                        </legend>
-                        <twig:ViewsTheme:Address:Form
-                            class="{{ vi_class('billingForm') }}"
-                            {{ ...vi_attrs('billingForm').defaults({
-                                data: billingAddress,
-                                countries: countries,
-                                page: page,
-                                prefix: 'billingAddress',
-                                showNoShippingPostfix: true,
-                                formViolations: formViolations,
-                            }).all() }}
-                        />
-                    </fieldset>
+                    <twig:ViewsTheme:Address:Form
+                        class="{{ vi_class('billingForm') }}"
+                        {{ ...vi_attrs('billingForm').defaults({
+                            heading: 'account.registerAddressBillingHeader'|trans|sw_sanitize,
+                            data: billingAddress,
+                            countries: countries,
+                            page: page,
+                            prefix: 'billingAddress',
+                            showNoShippingPostfix: true,
+                            formViolations: formViolations,
+                        }).all() }}
+                    />
                 {% endblock %}
 
                 {% block shipping %}
@@ -115,68 +112,68 @@
                             />
                         </twig:block>
                         <twig:block name="content">
-                            <fieldset>
-                                <legend class="{{ vi_class('sectionTitle') }}">
-                                    {{ 'account.registerAddressShippingHeader'|trans|sw_sanitize }}
-                                </legend>
-                                <twig:ViewsTheme:Account:Form:Personal
-                                    class="{{ vi_class('shippingPersonal') }}"
-                                    {{ ...vi_attrs('shippingPersonal').defaults({
-                                        data: shippingAddress,
-                                        salutations: salutations,
-                                        page: page,
-                                        prefix: 'shippingAddress',
-                                        accountType: shippingAccountType,
-                                        showBirthdayField: false,
-                                        showVat: false,
-                                        formViolations: formViolations,
-                                    }).all() }}
-                                />
-                                <twig:ViewsTheme:Address:Form
-                                    class="{{ vi_class('shippingForm') }}"
-                                    {{ ...vi_attrs('shippingForm').defaults({
-                                        data: shippingAddress,
-                                        countries: countries,
-                                        page: page,
-                                        prefix: 'shippingAddress',
-                                        showNoShippingPostfix: true,
-                                        disableNonShippableCountries: true,
-                                        formViolations: formViolations,
-                                    }).all() }}
-                                />
-                            </fieldset>
+                            <twig:ViewsTheme:Account:Form:Personal
+                                class="{{ vi_class('shippingPersonal') }}"
+                                {{ ...vi_attrs('shippingPersonal').defaults({
+                                    heading: 'account.registerAddressShippingHeader'|trans|sw_sanitize,
+                                    data: shippingAddress,
+                                    salutations: salutations,
+                                    page: page,
+                                    prefix: 'shippingAddress',
+                                    accountType: shippingAccountType,
+                                    showBirthdayField: false,
+                                    showVat: false,
+                                    formViolations: formViolations,
+                                }).all() }}
+                            />
+                            <twig:ViewsTheme:Address:Form
+                                class="{{ vi_class('shippingForm') }}"
+                                {{ ...vi_attrs('shippingForm').defaults({
+                                    data: shippingAddress,
+                                    countries: countries,
+                                    page: page,
+                                    prefix: 'shippingAddress',
+                                    showNoShippingPostfix: true,
+                                    disableNonShippableCountries: true,
+                                    formViolations: formViolations,
+                                }).all() }}
+                            />
                         </twig:block>
                     </twig:ViewsTheme:Form:Toggle>
                 {% endblock %}
 
                 {% block captcha %}
-                    {% sw_include '@Storefront/storefront/component/captcha/base.html.twig' %}
+                    <twig:ViewsTheme:Captcha
+                        class="{{ vi_class('captcha') }}"
+                        {{ ...vi_attrs('captcha').all() }}
+                    />
                 {% endblock %}
 
                 {% block footer %}
                     <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+                        <div class="{{ vi_class('requiredHint') }}">
+                            {{ 'general.requiredFields'|trans|sw_sanitize }}
+                        </div>
+
+
                         <twig:ViewsTheme:Privacy:Note
                             class="{{ vi_class('privacy') }}"
                             {{ ...vi_attrs('privacy').defaults({
                                 formViolations: formViolations,
                             }).all() }}
                         />
-                        <div class="{{ vi_class('requiredHint') }}">
-                            {{ 'general.requiredFields'|trans|sw_sanitize }}
-                        </div>
-                    </div>
-                {% endblock %}
 
-                {% block submit %}
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('submit') }}"
-                        {{ ...vi_attrs('submit').defaults({
-                            type: 'submit',
-                            color: 'primary',
-                            size: 'lg',
-                            label: 'account.registerSubmit'|trans|sw_sanitize,
-                        }).all() }}
-                    />
+                        {% block submit %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('submit') }}"
+                                {{ ...vi_attrs('submit').defaults({
+                                    type: 'submit',
+                                    color: 'primary',
+                                    label: 'account.registerSubmit'|trans|sw_sanitize,
+                                }).all() }}
+                            />
+                        {% endblock %}
+                    </div>
                 {% endblock %}
             </twig:block>
         </twig:ViewsTheme:Form:Handler>

@@ -1,0 +1,50 @@
+{% props
+    formId = 'form-' ~ random(),
+    siteKey = null,
+    cva = {},
+%}
+
+{% set feedbackId = formId ~ '-grecaptcha-v3-feedback' %}
+{% set requestParameter = constant('Shopware\\Storefront\\Framework\\Captcha\\GoogleReCaptchaV3::CAPTCHA_REQUEST_PARAMETER') %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input', 'protection', 'feedback']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-google-re-captcha-v3': 'true',
+        'data-google-re-captcha-v3-options': {
+            siteKey: siteKey,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block input %}
+        <input
+            {{ vi_attrs('input').defaults({
+                type: 'hidden',
+                name: requestParameter,
+                'data-validation': 'grecaptcha',
+                'data-validate-hidden': 'true',
+                'aria-describedby': feedbackId,
+            }) }}
+            class="grecaptcha_v3-input {{ vi_class('input') }}"
+        >
+    {% endblock %}
+
+    {% block protection %}
+        <div
+            {{ vi_attrs('protection') }}
+            class="{{ vi_class('protection') }}"
+        >
+            {{ 'captcha.googleReCaptcha.dataProtectionInformation'|trans|sw_sanitize }}
+        </div>
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ vi_attrs('feedback').defaults({ id: feedbackId }) }}
+            class="{{ vi_class('feedback') }}"
+        ></div>
+    {% endblock %}
+</div>

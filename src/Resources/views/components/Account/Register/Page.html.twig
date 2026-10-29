@@ -1,63 +1,117 @@
-{% props
-    page,
-    data = null,
-    formViolations = __context.formViolations|default(null),
-    loginError = false,
-    errorSnippet = null,
-    waitTime = null,
-    redirectTo = 'frontend.account.home.page',
-    redirectParameters = null,
-    cva = {},
-%}
-
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['heading', 'grid', 'login', 'register']) %}
+{% do vi_define_attrs(['heading', 'description', 'tabs', 'login', 'register']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block heading %}
-        <twig:ViewsTheme:Account:Heading
+        <twig:ViewsTheme:Page:Title
             class="{{ vi_class('heading') }}"
             {{ ...vi_attrs('heading').defaults({
-                title: 'account.loginRegistrationHeader'|trans|sw_sanitize,
-            }).all() }}
-        />
-    {% endblock %}
-
-    {% block grid %}
-        <twig:ViewsTheme:Grid
-            class="{{ vi_class('grid') }}"
-            {{ ...vi_attrs('grid').defaults({
-                columns: '1-xl:6',
-                gap: 'lg',
+                heading: 'account.loginRegistrationHeader'|trans|sw_sanitize,
+                align: 'center',
             }).all() }}
         >
-            <twig:block name="content">
-                <twig:ViewsTheme:Account:Login
-                    class="{{ vi_class('login') }}"
-                    {{ ...vi_attrs('login').defaults({
-                        loginError: loginError,
-                        errorSnippet: errorSnippet,
-                        waitTime: waitTime,
-                        redirectTo: redirectTo,
-                        redirectParameters: redirectParameters,
-                    }).all() }}
-                />
-                <twig:ViewsTheme:Account:Register
-                    class="{{ vi_class('register') }}"
-                    {{ ...vi_attrs('register').defaults({
-                        page: page,
-                        data: data,
-                        formViolations: formViolations,
-                        redirectTo: redirectTo,
-                        redirectParameters: redirectParameters,
-                        errorRoute: 'frontend.account.register.page',
-                        cardTitle: 'account.registerPersonalHeader'|trans|sw_sanitize,
-                    }).all() }}
-                />
+            <twig:block name="description">
+                <div
+                    {{ vi_attrs('description') }}
+                    class="{{ vi_class('description') }}"
+                >
+                    {{ 'viewsTheme.account.loginRegisterDescription'|trans|sw_sanitize }}
+                </div>
             </twig:block>
-        </twig:ViewsTheme:Grid>
+        </twig:ViewsTheme:Page:Title>
+    {% endblock %}
+
+    {% block tabs %}
+        <twig:ViewsTheme:Tabs
+            class="{{ vi_class('tabs') }}"
+            {{ ...vi_attrs('tabs').defaults({
+                active: registerActive ? registerTabId : loginTabId,
+                param: tabParam,
+                label: 'account.loginRegistrationHeader'|trans|striptags,
+            }).all() }}
+        >
+            <twig:block name="list">
+                <twig:ViewsTheme:Tabs:List
+                    :cva="{ root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 p-4' }"
+                >
+                    <twig:block name="content">
+                        {% vi_block tab_login %}
+                            <twig:ViewsTheme:Tabs:Tab
+                                id="{{ loginTabId }}"
+                                panel="{{ loginPanelId }}"
+                                slug="{{ loginSlug }}"
+                                :active="not registerActive"
+                            >
+                                <twig:block name="content">
+                                    {{ 'viewsTheme.account.tabLogin'|trans|sw_sanitize }}
+                                </twig:block>
+                            </twig:ViewsTheme:Tabs:Tab>
+                        {% endvi_block %}
+
+                        {% vi_block tab_register %}
+                            <twig:ViewsTheme:Tabs:Tab
+                                id="{{ registerTabId }}"
+                                panel="{{ registerPanelId }}"
+                                slug="{{ registerSlug }}"
+                                :active="registerActive"
+                            >
+                                <twig:block name="content">
+                                    {{ 'viewsTheme.account.tabRegister'|trans|sw_sanitize }}
+                                </twig:block>
+                            </twig:ViewsTheme:Tabs:Tab>
+                        {% endvi_block %}
+                    </twig:block>
+                </twig:ViewsTheme:Tabs:List>
+            </twig:block>
+
+            <twig:block name="panels">
+                {% block panelLogin %}
+                    <twig:ViewsTheme:Tabs:Panel
+                        id="{{ loginPanelId }}"
+                        tab="{{ loginTabId }}"
+                        :active="not registerActive"
+                    >
+                        <twig:block name="content">
+                            <twig:ViewsTheme:Account:Login
+                                class="{{ vi_class('login') }}"
+                                {{ ...vi_attrs('login').defaults({
+                                    layout: 'column',
+                                    loginError: loginError,
+                                    errorSnippet: errorSnippet,
+                                    waitTime: waitTime,
+                                    redirectTo: redirectTo,
+                                    redirectParameters: redirectParameters,
+                                }).all() }}
+                            />
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Panel>
+                {% endblock %}
+
+                {% block panelRegister %}
+                    <twig:ViewsTheme:Tabs:Panel
+                        id="{{ registerPanelId }}"
+                        tab="{{ registerTabId }}"
+                        :active="registerActive"
+                    >
+                        <twig:block name="content">
+                            <twig:ViewsTheme:Account:Register
+                                class="{{ vi_class('register') }}"
+                                {{ ...vi_attrs('register').defaults({
+                                    page: page,
+                                    data: data,
+                                    formViolations: formViolations,
+                                    redirectTo: redirectTo,
+                                    redirectParameters: redirectParameters,
+                                    errorRoute: 'frontend.account.register.page',
+                                }).all() }}
+                            />
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Panel>
+                {% endblock %}
+            </twig:block>
+        </twig:ViewsTheme:Tabs>
     {% endblock %}
 </div>

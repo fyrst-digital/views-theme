@@ -41,6 +41,10 @@
             "total": "Price"
         },
         "account": {
+            "loginRegisterDescription": "Log in to your account or create a new one to check out faster and keep track of your orders.",
+            "personalHeading": "Personal details",
+            "tabLogin": "Log in",
+            "tabRegister": "Register",
             "addressChoose": "Choose an address",
             "addressAdd": "Add address",
             "addressApply": "Apply",

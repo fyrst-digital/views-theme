@@ -15,7 +15,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | Storefront bridge | `storefront/page/checkout/finish/index.html.twig` → `base_esi_header` = `Page:Header:Minimal supportDisplay="desktop"`; `page_checkout` = `Checkout:Success:Page` |
 | `Page:Header:Minimal` | Inline header (no ESI), same as confirm: `supportDisplay="desktop"` hides `Page:Support` below `xl` (the title shows it there). `action` stays the default `home` (`frontend.home.page`, `checkout.finishButtonBackToShop`) — the order is placed, so there is no cart to go back to |
 | `Checkout:Success:Page` | Layout composer. `.grid`, 8 tracks from `xl` (12 from `xxl`), like Confirm. Flashes, the tracking blocks, `Success:Header`, `Success:Main`, `Success:Aside`. No `g-col-*` in the children’s own CVA — the page passes them in |
-| `Checkout:Success:Header` | Class view-model. `#[PostMount]` builds `heading`, `description` and keyed `meta` (`orderNumber`, `email`). Mounts the shared [`Checkout:Title`](checkout-confirm.md#checkouttitle) and fills its `description` block with the intro copy plus `Page:Support` (`d-xl-none`) |
+| `Checkout:Success:Header` | Class view-model. `#[PostMount]` builds `heading`, `description` and keyed `meta` (`orderNumber`, `email`). Mounts the shared [`Page:Title`](checkout-confirm.md#pagetitle) and fills its `description` block with the intro copy plus `Page:Support` (`d-xl-none`) |
 | `Checkout:Success:Main` | Primary column (`div`; page passes `g-col-1 g-col-xl-5 g-col-xxl-8`). Addresses, methods, items. Gap is CVA: `gap-7` (32px), `gap-xl-8` (40px) |
 | `Checkout:Success:Addresses` | Class view-model that extends `Order:Addresses` (order billing / delivery shipping, 6.7 vs 6.8). Renders the read-only [`Checkout:Addresses`](address.md) panel |
 | `Checkout:Methods` | The confirm card. Success overrides its `payment` and `shipping` blocks |
@@ -37,7 +37,7 @@ page/checkout/finish/index.html.twig
 ├─ page_checkout → Checkout:Success:Page   (.grid; grid-columns-1, grid-columns-xl-8; no data-component)
 │    ├─ Cart:Flashes                         (g-col-1 g-col-xl-8 g-col-xxl-12)
 │    ├─ Checkout:Success:Header              (caller class: g-col-1 g-col-xl-8 g-col-xxl-12)
-│    │    └─ Checkout:Title
+│    │    └─ Page:Title
 │    │         ├─ h1 heading                  (finishHeader / finishUpdateHeader)
 │    │         ├─ description block           (intro paragraph, Page:Support d-xl-none)
 │    │         └─ meta                        (orderNumber · email)
@@ -78,7 +78,7 @@ Class view-model, same shape as `Checkout:Confirm:Title`. `#[PostMount]` needs a
 | Default | `checkout.finishHeader` (`%shop%` = `core.basicInformation.shopName` for the order’s sales channel) | `checkout.finishInfoConfirmationMail` |
 | `page.changedPayment` | `checkout.finishUpdateHeader` | `checkout.finishPaymentHeader` (`%paymentName%`) |
 
-`meta` keys: `orderNumber` (`checkout.finishInfoOrdernumber` + `page.order.orderNumber`) and `email` (order customer email via `EmailIdnConverter::decode`, omitted when empty). `data-order-number` is set on the `Checkout:Title` root. The description paragraph is `fs-6` (`fs-xl-5`) and is sanitized (`sw_sanitize`).
+`meta` keys: `orderNumber` (`checkout.finishInfoOrdernumber` + `page.order.orderNumber`) and `email` (order customer email via `EmailIdnConverter::decode`, omitted when empty). `data-order-number` is set on the `Page:Title` root. The description paragraph is `fs-6` (`fs-xl-5`) and is sanitized (`sw_sanitize`).
 
 The Google enhanced-conversions `gtag` script and the hidden GA line-item dump are not rendered.
 

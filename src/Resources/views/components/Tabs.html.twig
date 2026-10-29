@@ -1,6 +1,7 @@
 {% props
     active = null,
     label = null,
+    param = null,
     cva = {},
 %}
 
@@ -12,6 +13,7 @@
         'data-component': 'ViewsTheme:Tabs',
         'data-component-options': {
             active: active,
+            param: param,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"

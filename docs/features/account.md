@@ -28,7 +28,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
-| `Account:Register:Page` | Login + register grid on `/account/register` |
+| `Account:Register:Page` (class-backed) | View-model (`Page.php`): `#[PostMount]` null-coalesces `formViolations` from the request and computes `registerActive`; it also owns the tab param name (`action`), slugs and tab / panel ids, so the server read and the `Tabs` wiring cannot drift. [`Page:Title`](checkout-confirm.md#pagetitle) (intro copy `viewsTheme.account.loginRegisterDescription` in its `description` block) + one bordered card with two [`Tabs`](tabs.md) (Log in / Register) on `/account/register` and `/account/login`. Register tab is active when the request carries register `formViolations` or posted `data`; otherwise Log in. The tabs use `param="action"` (`Page::TAB_PARAM`, feeds both the `Tabs` prop and the server-side read) with slugs `login` / `register`, so the URL (`?action=register`) keeps the selection and a refresh renders it server-side. Register `formViolations` / posted `data` still force the Register tab |
 | Storefront `component/account/register.html.twig` | `Account:Register` (plugin / leftover includes) |
 | `Account:Recover` / `:ResetPassword` | Password recover / reset |
 | `Account:GuestAuth` | Guest order login (email + zip) |

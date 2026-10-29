@@ -73,6 +73,7 @@ Full index: [docs/README.md](docs/README.md).
 | Form input | [docs/features/form-input.md](docs/features/form-input.md) |
 | Component showcase | [docs/features/component-showcase.md](docs/features/component-showcase.md) |
 | Newsletter | [docs/features/newsletter.md](docs/features/newsletter.md) |
+| Captcha | [docs/features/captcha.md](docs/features/captcha.md) |
 | Product box | [docs/features/product-box.md](docs/features/product-box.md) |
 | Buy container / PDP buy-box | [docs/features/buy-container.md](docs/features/buy-container.md) |
 | Product configurator | [docs/features/configurator.md](docs/features/configurator.md) |

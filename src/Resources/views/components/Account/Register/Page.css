@@ -1,0 +1,3 @@
+.vi-account-register-page {
+  max-width: var(--vi-account-register-page-width, 640px);
+}

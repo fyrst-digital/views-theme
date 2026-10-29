@@ -1,0 +1,90 @@
+{% props
+    formId = 'form-' ~ random(),
+    cva = {},
+%}
+
+{% set requestParameter = constant('Shopware\\Storefront\\Framework\\Captcha\\BasicCaptcha::CAPTCHA_REQUEST_PARAMETER') %}
+{% set imageId = formId ~ '-basic-captcha-content-image' %}
+{% set refreshId = formId ~ '-basic-captcha-content-refresh-icon' %}
+{% set inputId = formId ~ '-basic-captcha-input' %}
+{% set fieldId = formId ~ '-basic-captcha-field' %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['code', 'image', 'refresh', 'field', 'input']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-basic-captcha': 'true',
+        'data-basic-captcha-options': {
+            router: path('frontend.captcha.basic-captcha.load'),
+            validate: path('frontend.captcha.basic-captcha.validate'),
+            captchaRefreshIconId: '#' ~ refreshId,
+            captchaImageId: '#' ~ imageId,
+            basicCaptchaInputId: '#' ~ inputId,
+            basicCaptchaFieldId: '#' ~ fieldId,
+            invalidFeedbackMessage: 'error.captcha.basic-captcha-invalid'|trans|sw_sanitize,
+            formId: formId,
+            preCheckRoute: {
+                path: path('frontend.captcha.basic-captcha.validate'),
+            },
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block code %}
+        <div
+            {{ vi_attrs('code') }}
+            class="{{ vi_class('code') }}"
+        >
+            {% block image %}
+                <div
+                    {{ vi_attrs('image').defaults({ id: imageId }) }}
+                    class="{{ vi_class('image') }}"
+                ></div>
+            {% endblock %}
+
+            {% block refresh %}
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('refresh') }}"
+                    {{ ...vi_attrs('refresh').defaults({
+                        id: refreshId,
+                        type: 'button',
+                        color: 'secondary',
+                        icon: 'arrow-counter-clockwise',
+                        square: true,
+                        title: 'captcha.basicCaptchaRefreshButton'|trans|sw_sanitize,
+                        'aria-label': 'captcha.basicCaptchaRefreshButton'|trans|sw_sanitize,
+                    }).all() }}
+                />
+            {% endblock %}
+        </div>
+    {% endblock %}
+
+    {% block field %}
+        <div
+            {{ vi_attrs('field').defaults({ id: fieldId }) }}
+            class="{{ vi_class('field') }}"
+        >
+            <twig:ViewsTheme:Form:Input
+                class="{{ vi_class('input') }}"
+                {{ ...vi_attrs('input').defaults({
+                    id: inputId,
+                    name: requestParameter,
+                    label: 'captcha.basicCaptchaLabel'|trans|sw_sanitize|replace({'*': ''}),
+                    autocomplete: 'off',
+                    violationPath: '/' ~ requestParameter,
+                    validationRules: 'required,basicCaptcha',
+                }).all() }}
+            />
+        </div>
+    {% endblock %}
+
+    {% block formId %}
+        <input
+            type="text"
+            name="formId"
+            class="d-none"
+            value="{{ formId }}"
+        >
+    {% endblock %}
+</div>

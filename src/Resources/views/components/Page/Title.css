@@ -1,0 +1,9 @@
+.vi-page-title__heading {
+    font-size: var(--vi-page-title-size, 30px);
+    letter-spacing: var(--vi-page-title-tracking, 0);
+
+    @media (min-width: 1260px) {
+        --vi-page-title-size: 36px;
+        --vi-page-title-tracking: -0.7px;
+    }
+}
