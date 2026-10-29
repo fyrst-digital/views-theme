@@ -1,4 +1,6 @@
 {% if visible %}
+    {% set titleId = 'vi-success-shipping-' ~ random() %}
+
     {% do vi_define_cva(cva) %}
     {% do vi_define_attrs(['title', 'method']) %}
 
@@ -8,17 +10,21 @@
     {% endif %}
 
     <section
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
+        {{ attributes.defaults({
+            'aria-labelledby': titleId,
+        }) }}
+        class="{{ vi_class('root', { framed: framed }) }}"
     >
         {% block title %}
-            <h2
-                {{ vi_attrs('title') }}
+            <div
+                {{ vi_attrs('title').defaults({
+                    id: titleId,
+                }) }}
                 class="{{ vi_class('title') }}"
             >
                 {{ vi_icon('truck', { class: vi_class('icon') }) -}}
                 {{- 'checkout.confirmShippingMethod'|trans|sw_sanitize }}
-            </h2>
+            </div>
         {% endblock %}
 
         {% block method %}
@@ -26,6 +32,7 @@
                 type="radio"
                 id="{{ 'shippingMethod' ~ methodId }}"
                 label="{{ name }}"
+                label:class="fw-semibold"
                 :description="description"
                 :trailing="formattedPrice"
                 :checked="true"

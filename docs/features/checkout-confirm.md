@@ -14,7 +14,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). Column gap is `column-gap-6` (24px); row gap is `row-gap-2` (8px). No min-height and no inline padding. `supportDisplay` defaults to `all`; `desktop` hides `Page:Support` below `xl`. Confirm passes `supportDisplay="desktop"`. `action` defaults to `home` (`frontend.home.page`, `checkout.finishButtonBackToShop`). Confirm passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
 | `Checkout:Confirm` | Layout composer — flashes, violations, `Checkout:Confirm:Title`, then `Checkout:Confirm:Main` and `Checkout:Aside`. No page JS. Does not mount `Cart:Heading` |
 | `Checkout:Confirm:Title` | Class view-model. `#[PostMount]` builds `heading` and keyed `meta` (`email`, `items`, `arrival`) from the cart and customer. Fills `Checkout:Title`’s `description` block with `Page:Support` (`d-xl-none`). Passes Confirm’s grid class through. No `g-col-*` in its CVA |
-| `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap 28px, 40px from `xl`. No `data-component`. No `g-col-*` in its CVA |
+| `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap is CVA (`gap-7`, `gap-xl-8`: 32px, 40px from `xl`). No `data-component`. No `g-col-*` in its CVA |
 | `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
 | `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
 | `Checkout:Summary` | Sticky summary card on a [`Summary:Box`](summary-box.md) root: `Cart:Summary` with confirm row CVA, `Checkout:ArrivalDate`, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
@@ -30,7 +30,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Form:Handler` | `#confirmOrderForm` owner — hash + submit (`frontend.checkout.finish.order`) |
 | Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
-Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefront/layout/footer/footer-minimal.html.twig`. Success also uses `Page:Header:Minimal` — [checkout-success](checkout-success.md). Footer: [footer](footer.md).
+Do **not** add `storefront/layout/header/header-minimal.html.twig` or `storefront/layout/footer/footer-minimal.html.twig`. Success also uses `Page:Header:Minimal` (same `supportDisplay="desktop"`) — [checkout-success](checkout-success.md). Footer: [footer](footer.md).
 
 ## Composition
 
@@ -73,9 +73,9 @@ page/checkout/confirm/index.html.twig
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): eight equal tracks (`grid-columns-xl-8`). Flashes, violations, and the title span the row (`g-col-xl-8`). `Checkout:Confirm:Main` is `g-col-xl-5` (`g-col-xxl-8` from `xxl`) and `Checkout:Aside` is `g-col-xl-3` (`g-col-xxl-4` from `xxl`). Column gap is 64px (`column-gap-xl-9`). Row gap is 32px (`row-gap-7`). Inside the xl container that aside is about 399px; from `xxl` the container grows and the aside grows with it. Inside Main the section gap is 28px, 40px from `xl`. Root padding is 40px / 64px. The summary card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+Desktop (`xl` / 1260px): eight equal tracks (`grid-columns-xl-8`). Flashes, violations, and the title span the row (`g-col-xl-8`). `Checkout:Confirm:Main` is `g-col-xl-5` (`g-col-xxl-8` from `xxl`) and `Checkout:Aside` is `g-col-xl-3` (`g-col-xxl-4` from `xxl`). Column gap is 64px (`column-gap-xl-9`). Row gap is 32px (`row-gap-7`). Inside the xl container that aside is about 399px; from `xxl` the container grows and the aside grows with it. Inside Main the section gap is 32px, 40px from `xl`. Root padding is 40px / 64px. The summary card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
-Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. The title, `Checkout:Confirm:Main`, and `Checkout:Aside` stack with a 32px row gap (top padding 24px). Inside the main column, addresses, payment and delivery, and items stack with a 28px gap. `Checkout:Aside` follows as the closing stack: `Additions` then `Summary` (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront `.container`, shared with the minimal header.
+Mobile: one track (`grid-columns-1`), so every direct child is `g-col-1`. The title, `Checkout:Confirm:Main`, and `Checkout:Aside` stack with a 32px row gap (top padding 24px). Inside the main column, addresses, payment and delivery, and items stack with a 32px gap. `Checkout:Aside` follows as the closing stack: `Additions` then `Summary` (gap 16px, padding 20px / 28px). The horizontal inset stays the storefront `.container`, shared with the minimal header.
 
 `Cart:Items` stays the stacked list for the cart drawer and the register aside. Comment localStorage and the delivery-date subscriber stay on those components; `Additions` is the chrome around them. Confirm does not mount `Comment` or `DeliveryDateSelection` itself.
 
@@ -95,7 +95,7 @@ Arrival uses the first cart delivery’s `deliveryDate.earliest` / `latest` — 
 
 `checkout.confirmHeader` is the h1 (30px, 600; from `xl` 36px, 600, letter-spacing `-0.7px`). The meta container is a `div`. An inner `div` holds the items. `{% block meta_item %}` renders once per entry with `key` and `item` in scope, so a caller can override that block and branch on `key`. A middot sits between items, outside the block. Title omits the line when nothing remains. An `icon` renders with `vi_icon` before its label. Meta type is 14px below `xl` and 16px from `xl`.
 
-The `description` block on `Checkout:Title` is empty. `Checkout:Confirm:Title` fills it with `Page:Support` (`d-xl-none`). Confirm also passes `supportDisplay="desktop"` on the minimal header so that header’s `Page:Support` hides below `xl`. Register, success, and edit-order do not pass it, so their header keeps `Page:Support` at every width.
+The `description` block on `Checkout:Title` is empty. `Checkout:Confirm:Title` fills it with `Page:Support` (`d-xl-none`). Confirm also passes `supportDisplay="desktop"` on the minimal header so that header’s `Page:Support` hides below `xl`. Register and edit-order do not pass it, so their header keeps `Page:Support` at every width. Success passes it too.
 
 Section titles (`checkout.confirmAddresses` on `Checkout:Addresses`, `checkout.confirmItems` on `Checkout:Confirm:Main`, and `checkout.confirmMethods` on `Checkout:Methods`) are 20px / 600. The returns note (`checkout.confirmReturns`, `arrow-counter-clockwise` at 14px) sits beside `LineItems:Table`, not inside it.
 
@@ -105,7 +105,7 @@ Below `lg`, each confirm row is the stacked line item inside `LineItems:Table`: 
 
 Primary column. Root is a `div`; the page landmark stays `#content-main`. `Checkout:Confirm` mounts `<twig:ViewsTheme:Checkout:Confirm:Main>` and passes `page`, with `g-col-1 g-col-xl-5 g-col-xxl-8` on that tag. No `g-col-*` in its CVA. No `data-component`.
 
-Column layout: flex column, `min-w-0`. Section gap is `--vi-confirm-main-gap` (28px, 40px from `xl`).
+Column layout: flex column, `min-w-0`. Section gap is the CVA utilities `gap-7` (32px) and `gap-xl-8` (40px).
 
 Blocks: `addresses` (`Checkout:Addresses`), `methods` (`Checkout:Methods`), `items` (`checkout.confirmItems`, read-only `LineItems:Table`, then `returns`). The returns icon is `--vi-confirm-main-icon` (14px). Returns copy is 13px with line-height 1.4, and 14px / normal from `xl`.
 
@@ -139,7 +139,7 @@ Secure note: `checkout.confirmSecureNote` (`text-muted`). The lock is `icon-size
 
 ## Checkout:Addresses
 
-`Checkout:Addresses` owns the section. The title is `checkout.confirmAddresses` (20px / 600). The gap under it is 12px. Under the title is one panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account, address book, and success keep `Address:List`.
+`Checkout:Addresses` owns the section. The title is `checkout.confirmAddresses` (20px / 600). The gap under it is 12px. Under the title is one panel for shipping and billing (`Checkout/Addresses/Desktop`, `Checkout/Addresses/Mobile`). Does **not** compose [`Address:List`](address.md). Account and address book keep `Address:List`. Success mounts this panel read-only (`readOnly`, order addresses) — [checkout success](checkout-success.md#checkoutsuccessaddresses).
 
 Class view-model (`Addresses.php`). `#[PostMount]` resolves the defaults below and builds `cards` (shipping, then billing). The template composes the section, the title, CVA, attributes, the warning, `Address`, and `Address:Manager:Action`.
 
@@ -175,7 +175,7 @@ From `xl` the card is a row of equal columns (`flex: 1 1 0`). Below `xl` the col
 
 `Payment:Selection` and `Shipping:Selection` are those columns: a 16px icon plus label in a `<div>`, then [`Form:Selection`](form-input.md#formselection) rows (`type="radio"`). The `<fieldset>` is named with `aria-labelledby` on that div. Payment uses `credit-card`; shipping uses `truck`. The label is 15px / 600, 16px from `xl`. Space between the label and the rows is 8px, 16px from `xl`. Rows are 16px apart. The radio is `Form:Selection`.
 
-Payment `framed` defaults to `true`, which adds the standalone card (white, 1px linen, 12px radius) used on edit-order. Methods passes `framed` false so the shared card owns that chrome.
+Success reuses the same card read-only: it overrides the `payment` and `shipping` blocks with `Checkout:Success:Payment` / `Shipping` (`framed` false) — [checkout success](checkout-success.md#checkoutsuccesspayment--shipping). Payment `framed` defaults to `true`, which adds the standalone card (white, 1px linen, 12px radius) used on edit-order. Methods passes `framed` false so the shared card owns that chrome.
 
 Description is every method’s plain text (tags stripped), truncated at 75 characters. `Shipping:Selection` builds those rows in `Selection.php`: the quote comes from `page.extensions.viewsTheme.shippingPrices`, and a missing quote on the selected method uses that cart delivery’s `shippingCosts.totalPrice`. `trailing` is set there too. A total of `0` is `viewsTheme.checkout.shippingFree` (`Free` / `Gratis`). Any other amount is formatted with `CurrencyFormatter` for the current currency and language. A missing quote leaves `trailing` empty. The template only passes each row into `Form:Selection`. Payment rows omit `trailing`.
 
@@ -205,13 +205,14 @@ Wraps `Checkout:Confirm:Comment` and `Checkout:DeliveryDateSelection`. That card
 
 `Checkout:Aside` passes `page` in (self-closing `component()` does not inherit it). Additions passes `page.extensions.viewsTheme.deliveryDate` into `Checkout:DeliveryDateSelection` as `deliveryDate`.
 
-Renders nothing when the customer comment is disabled and the delivery-date extension is inactive. No `data-component`.
+Renders nothing when the customer comment is disabled and the delivery-date extension is inactive; the `visible` prop overrides that gate (success passes its own). Success overrides the empty `title` block and the `comment` / `delivery_date` blocks with read-only values. No `data-component`.
 
 `Checkout:Aside` mounts this tag above the summary. On mobile it sits in that column.
 
 | Prop | Default | Notes |
 |------|---------|--------|
 | `page` | `__context.page` | Aside passes it. Gates the box with the comment config and feeds the delivery-date picker |
+| `visible` | `showComment` or an active delivery-date extension | Success passes whether the order has a comment or a preferred date |
 | `showComment` | `core.cart.showCustomerComment` | |
 
 ## Checkout:Confirm:Comment
@@ -227,7 +228,7 @@ Storage key: `views-theme:checkout:comment:{customerId}`. Restore on init; save 
 
 ## Edit-order isolation
 
-`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm` or `Checkout:Success`. Theme `storefront/page/account/order/index.html.twig` extends checkout `_page.html.twig` and mounts [`Account:Order:Edit`](account.md). Payment change reuses `Payment:Selection` with the edit-order action; shipping is read-only `Checkout:Success:Shipping`.
+`frontend.account.edit-order.page` must **not** mount `Checkout:Confirm` or `Checkout:Success:Page`. Theme `storefront/page/account/order/index.html.twig` extends checkout `_page.html.twig` and mounts [`Account:Order:Edit`](account.md). Payment change reuses `Payment:Selection` with the edit-order action; shipping is read-only `Checkout:Success:Shipping`.
 
 ## Files
 

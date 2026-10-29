@@ -31,19 +31,21 @@
                             {{ card.title }}
                         </h2>
 
-                        <twig:ViewsTheme:Address:Manager:Action
-                            class="{{ vi_class('change') }}"
-                            {{ ...vi_attrs(card.changeNest).defaults({
-                                tab: card.tab,
-                                hideShipping: hideShippingAddress,
-                                href: card.editHref,
-                                color: 'none',
-                                label: changeLabel,
-                                title: card.changeTitle,
-                                'aria-label': card.changeTitle,
-                                link: true,
-                            }).all() }}
-                        />
+                        {% if not readOnly %}
+                            <twig:ViewsTheme:Address:Manager:Action
+                                class="{{ vi_class('change') }}"
+                                {{ ...vi_attrs(card.changeNest).defaults({
+                                    tab: card.tab,
+                                    hideShipping: hideShippingAddress,
+                                    href: card.editHref,
+                                    color: 'none',
+                                    label: changeLabel,
+                                    title: card.changeTitle,
+                                    'aria-label': card.changeTitle,
+                                    link: true,
+                                }).all() }}
+                            />
+                        {% endif %}
                     </div>
 
                     {% if card.warn %}

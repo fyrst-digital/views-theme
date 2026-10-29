@@ -6,6 +6,7 @@ namespace Fyrst\ViewsTheme\Resources\views\components\Checkout;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -16,6 +17,7 @@ use Symfony\UX\TwigComponent\Attribute\PostMount;
 /**
  * View-model for Checkout:Addresses — shipping and billing cards.
  * Template composes the section, title, columns, Address, and Address:Manager:Action.
+ * `readOnly` (order recap): no context fallback, no shipping warning, no change action.
  */
 #[AsTwigComponent]
 class Addresses
@@ -31,6 +33,8 @@ class Addresses
     public ?bool $addressesEqual = null;
 
     public bool $showShippingWarning = true;
+
+    public bool $readOnly = false;
 
     public ?string $shippingTitle = null;
 
@@ -58,7 +62,7 @@ class Addresses
      *     equal: bool,
      *     warn: bool,
      *     editHref: ?string,
-     *     address: CustomerAddressEntity|null
+     *     address: CustomerAddressEntity|OrderAddressEntity|null
      * }>
      */
     public array $cards = [];
@@ -76,9 +80,11 @@ class Addresses
     #[PostMount]
     public function postMount(array $data): void
     {
-        $customer = $this->salesChannelContextAccessor->get()?->getCustomer();
-        $this->billingAddress ??= $customer?->getActiveBillingAddress();
-        $this->shippingAddress ??= $customer?->getActiveShippingAddress();
+        if (!$this->readOnly) {
+            $customer = $this->salesChannelContextAccessor->get()?->getCustomer();
+            $this->billingAddress ??= $customer?->getActiveBillingAddress();
+            $this->shippingAddress ??= $customer?->getActiveShippingAddress();
+        }
 
         $hideShipping = $this->hideShippingAddress ?? (
             $this->page instanceof CheckoutConfirmPage && $this->page->isHideShippingAddress()
@@ -140,7 +146,7 @@ class Addresses
      *     equal: bool,
      *     warn: bool,
      *     editHref: ?string,
-     *     address: CustomerAddressEntity|null
+     *     address: CustomerAddressEntity|OrderAddressEntity|null
      * }
      */
     private function card(
@@ -162,24 +168,32 @@ class Addresses
             'changeTitle' => $changeTitle,
             'divided' => $divided,
             'equal' => $equal,
-            'warn' => $warn && $this->shippingUnavailable($address),
-            'editHref' => $this->editHref($address),
-            'address' => $equal || !$address instanceof CustomerAddressEntity ? null : $address,
+            'warn' => $warn && !$this->readOnly && $this->shippingUnavailable($address),
+            'editHref' => $this->readOnly ? null : $this->editHref($address),
+            'address' => $equal || !$this->isAddress($address) ? null : $address,
         ];
     }
 
     private function sameAddress(mixed $billing, mixed $shipping): bool
     {
-        if (!$billing instanceof CustomerAddressEntity || !$shipping instanceof CustomerAddressEntity) {
+        if (!$this->isAddress($billing) || !$this->isAddress($shipping)) {
             return false;
         }
 
         return $billing->getId() === $shipping->getId();
     }
 
+    /**
+     * @phpstan-assert-if-true CustomerAddressEntity|OrderAddressEntity $address
+     */
+    private function isAddress(mixed $address): bool
+    {
+        return $address instanceof CustomerAddressEntity || $address instanceof OrderAddressEntity;
+    }
+
     private function shippingUnavailable(mixed $address): bool
     {
-        if (!$address instanceof CustomerAddressEntity) {
+        if (!$this->isAddress($address)) {
             return false;
         }
 

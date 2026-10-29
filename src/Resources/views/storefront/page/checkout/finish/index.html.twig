@@ -1,11 +1,11 @@
 {% sw_extends '@Storefront/storefront/page/checkout/finish/index.html.twig' %}
 
 {% block base_esi_header %}
-    <twig:ViewsTheme:Page:Header:Minimal action="cart" />
+    <twig:ViewsTheme:Page:Header:Minimal supportDisplay="desktop" />
 {% endblock %}
 
 {% block page_checkout %}
-    <twig:ViewsTheme:Checkout:Success :page="page" />
+    <twig:ViewsTheme:Checkout:Success:Page :page="page" />
 {% endblock %}
 
 {% block base_esi_footer %}

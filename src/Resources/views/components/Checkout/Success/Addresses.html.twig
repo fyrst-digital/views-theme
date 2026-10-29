@@ -1,11 +1,10 @@
-{% props
-    page = null,
-    cva = {},
-%}
-
-<twig:ViewsTheme:Order:Addresses
+<twig:ViewsTheme:Checkout:Addresses
     {{ ...attributes.defaults({
         page: page,
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
+        hideShippingAddress: hideShippingAddress,
+        readOnly: true,
         cva: cva,
     }).all() }}
 />
