@@ -41,6 +41,8 @@
             "total": "Price"
         },
         "account": {
+            "tabLogin": "Log in",
+            "tabRegister": "Register",
             "addressChoose": "Choose an address",
             "addressAdd": "Add address",
             "addressApply": "Apply",

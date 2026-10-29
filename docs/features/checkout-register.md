@@ -100,7 +100,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 | Bridge | Mount |
 |--------|--------|
-| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Account:Login` + `Account:Register` |
+| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Tabs` → `Account:Login` (column) + `Account:Register` (no card title) |
 | `storefront/component/account/register.html.twig` | `Account:Register` |
 | `storefront/component/account/customer-group-register.html.twig` | `Account:Register` + `requestedGroupId` |
 | `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Addressbook:Form` → `Address:Editor` |

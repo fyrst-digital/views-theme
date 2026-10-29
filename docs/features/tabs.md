@@ -83,11 +83,17 @@ Discovery uses `[data-component="ViewsTheme:Tabs:Tab|Panel"]` — never CSS clas
 
 CVA on Tab is chrome only (`base`). Runtime look cannot use CVA variants (Twig-time only).
 
+### Appearance
+
+One look for every consumer — set on the atomic components, **not** per consumer: `Tabs:List` is a borderless `nav` row (`gap-6`, `mb-4`); each `Tabs:Tab` is `fs-5` with a 2px bottom line (`--vi-tab-line`, transparent → `--primary` on `[aria-selected='true']`), muted when inactive and semibold body colour when selected. Do not pass `:cva` overrides to restyle tabs.
+
 ## Consumers
 
 | Shell | Doc |
 |-------|-----|
 | `Cms:DescriptionReviews` (`appearance=tabs`, default) | [review.md](review.md) |
+| `Address:Manager:View` | [address-manager.md](address-manager.md) |
+| `Account:Register:Page` | [account.md](account.md) |
 
 ## Related
 

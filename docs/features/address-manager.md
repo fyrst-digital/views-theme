@@ -58,7 +58,7 @@ Address:Editor
 ## Features
 
 - Confirm shipping / billing change opens the themed modal on the matching tab. Title is `viewsTheme.account.addressChoose`
-- Tabs sit under the title (underline is manager `View.css` on `[aria-selected]`, not a global Tabs change). Digital cart (`hideShipping`): billing-only pane, no tabs
+- Tabs sit under the title (underline is the global [Tabs](tabs.md) look). Digital cart (`hideShipping`): billing-only pane, no tabs
 - The current address stays in place. `Item:Hero` fills its `label` (Default badge or use-as-default, then the name), `description` (lines and Edit), and an empty `trailing`. Choosing a row checks that row’s radio, unchecks the previous one, and updates the switch hidden input. Selected fill and border follow the checked radio. Edit is only on the current address
 - Search filters rows inside `List` (the address in use stays). Empty vs no-results `Status` stay
 - Apply POSTs `/vi/address/switch` → **204** → `location.reload()`
