@@ -55,7 +55,7 @@
                     :cva="{ root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 m-0 mb-6 pb-3' }"
                 >
                     <twig:block name="content">
-                        {% block tabLogin %}
+                        {% vi_block tab_login %}
                             <twig:ViewsTheme:Tabs:Tab
                                 id="{{ loginTabId }}"
                                 panel="{{ loginPanelId }}"
@@ -65,9 +65,9 @@
                                     {{ 'viewsTheme.account.tabLogin'|trans|sw_sanitize }}
                                 </twig:block>
                             </twig:ViewsTheme:Tabs:Tab>
-                        {% endblock %}
+                        {% endvi_block %}
 
-                        {% block tabRegister %}
+                        {% vi_block tab_register %}
                             <twig:ViewsTheme:Tabs:Tab
                                 id="{{ registerTabId }}"
                                 panel="{{ registerPanelId }}"
@@ -77,7 +77,7 @@
                                     {{ 'viewsTheme.account.tabRegister'|trans|sw_sanitize }}
                                 </twig:block>
                             </twig:ViewsTheme:Tabs:Tab>
-                        {% endblock %}
+                        {% endvi_block %}
                     </twig:block>
                 </twig:ViewsTheme:Tabs:List>
             </twig:block>
