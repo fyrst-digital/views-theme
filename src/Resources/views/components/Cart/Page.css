@@ -1,11 +1,3 @@
-.vi-cart-page__body {
-  grid-template-columns: var(--vi-cart-page-cols, minmax(0, 1fr));
-
-  @media (min-width: 1260px) {
-    --vi-cart-page-cols: minmax(0, 1fr) var(--vi-cart-page-aside, 360px);
-  }
-}
-
 .vi-cart-page-aside {
   top: var(--vi-top, 24px);
 }

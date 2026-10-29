@@ -25,7 +25,6 @@ export default class CartPage extends ShopwareComponent {
         this._queued = false
         this._fetch = { controller: null, seq: 0 }
         this._onCartChanged = this._onCartChanged.bind(this)
-        this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
         window.Shopware.on(this.options.changedEvent, this._onCartChanged)
     }
@@ -36,17 +35,12 @@ export default class CartPage extends ShopwareComponent {
         this._queued = false
     }
 
-    _bodyEl() {
-        return this.el.querySelector('[data-cart-page-body]') || this.el
-    }
-
     async _onCartChanged(payload) {
         if (!payload || payload.ok === false) {
-            this._showError(payload?.error)
+            this._showError()
             return
         }
 
-        this._clearError()
         await this._refresh()
     }
 
@@ -78,7 +72,7 @@ export default class CartPage extends ShopwareComponent {
                 return
             }
             console.error('CartPage: Failed to refresh cart page', error)
-            this._showError(null)
+            this._showError()
         } finally {
             this._busy = false
             this.el.removeAttribute('aria-busy')
@@ -93,7 +87,7 @@ export default class CartPage extends ShopwareComponent {
         this._swap(source, this.el, this.options.flashesComponent)
         this._swap(source, this.el, this.options.headingComponent)
         this._swap(source, this.el, this.options.itemsComponent)
-        this._swap(source, this._bodyEl(), this.options.asideComponent)
+        this._swap(source, this.el, this.options.asideComponent)
     }
 
     /**
@@ -124,21 +118,18 @@ export default class CartPage extends ShopwareComponent {
         }
     }
 
-    _showError(message) {
-        if (!this._alertEl) {
+    /**
+     * Mounts the server-rendered error alert (Flashes `<template>`). The next successful
+     * refresh swaps Flashes and clears it.
+     */
+    _showError() {
+        const flashes = this.el.querySelector(`[data-component="${this.options.flashesComponent}"]`)
+        const template = flashes?.querySelector(':scope > template')
+        if (!template) {
             return
         }
 
-        this._alertEl.hidden = false
-        this._alertEl.textContent = message || this._alertEl.dataset.fallback || ''
-    }
-
-    _clearError() {
-        if (!this._alertEl) {
-            return
-        }
-
-        this._alertEl.hidden = true
-        this._alertEl.textContent = ''
+        flashes.replaceChildren(template, template.content.cloneNode(true))
+        flashes.hidden = false
     }
 }

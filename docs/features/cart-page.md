@@ -8,8 +8,9 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/cart/index.html.twig` → `page_checkout` → `Cart:Page` |
 | `Cart:Page` | Owner JS: listen `Cart:Changed`, fetch `/vi/cart/page`, swap islands |
-| `Cart:Flashes` | Session flash bag (`app.flashes`) via `Alert`; shared with drawer |
-| `Cart:Heading` | Title + inline count (`h1`); island. `title` default `checkout.cartHeader` |
+| `Cart:Flashes` | Session flash bag (`app.flashes`) via `Alert`; shared with drawer. With `clientError` (the page sets it) it also holds a `<template>` with the default danger `Alert` (`error.message-default`), which `Cart:Page` mounts when a cart change fails |
+| `Checkout:Title` | Page title (`h1` “Shopping cart” with the item count in the meta line). Reuses the shared atomic checkout title; `Cart:Page` passes `heading` (`checkout.cartHeader`) and `meta.items` (`checkout.itemCounter`, e.g. “6 items”; omitted when the cart is empty) and sets `data-component="ViewsTheme:Cart:Heading"` so the island swap keeps working |
+| `Cart:Heading` | Cart drawer title only (inline count, `div`); island inside `Cart:Drawer:Heading` |
 | `LineItems:Table` | Table view on this page. Columns: product (image, name, `Product:Variations` badges), qty, line total. `Cart:Empty` when empty. Editable rows put the stepper and remove in the qty cell |
 | `Cart:Items` | Stacked list (cart drawer, register aside) |
 | `Cart:Page:Aside` | Sticky island root (`div`, `data-component`) containing `Cart:Shipping` (nest `shipping`, above) and one [`Summary:Box`](summary-box.md) (nest `box`) that groups a `heading` (`h2`, `checkout.summaryHeader`, same typography as the confirm summary) + Summary + `Cart:Options` (promotion only) + checkout CTA (slots are `vi_block`s) — **omitted** when empty. The root keeps `d-flex flex-column gap-6 position-xl-sticky`; the box supplies chrome and the 20px body gap |
@@ -23,25 +24,25 @@ Theme-owned checkout cart page. Replaces core Bootstrap cart chrome with UX comp
 ## Composition
 
 ```
-Cart:Page (data-component owner)
-├─ Cart:Flashes
-├─ Cart:Heading (h1, countDisplay=inline)
-├─ [role=alert] (client error)
-└─ body (`data-cart-page-body`)
-      ├─ LineItems:Table
-      │    ├─ Product / Qty / Total (d-none d-lg-block; Product spans 2)
-      │    ├─ Divider (header, d-none d-lg-block)
-      │    └─ LineItem layout="table" d-lg-contents × N, then Divider after each row except the last (every viewport)  |  Cart:Empty
-      └─ Cart:Page:Aside (div root; when not empty; position-xl-sticky)
-          ├─ Cart:Shipping → Shipping:Calculation (always open; physical carts only)
-          └─ Summary:Box
-              ├─ h2 heading (checkout.summaryHeader)
-              ├─ Cart:Summary
-              ├─ Cart:Options (shipping block emptied → promotion only)
-              └─ Cart:Actions (no cart-page link)
+Cart:Page (data-component owner; .grid, grid-columns-1 / xl-8 / xxl-12)
+├─ Cart:Flashes                          (g-col-1 g-col-xl-8 g-col-xxl-12; flash bag + client-error template)
+├─ Checkout:Title                        (g-col-1 g-col-xl-8 g-col-xxl-12; h1 heading prop + meta.items, data-component=ViewsTheme:Cart:Heading)
+├─ LineItems:Table                       (g-col-1 g-col-xl-5 g-col-xxl-8; full row when empty)
+│    ├─ Product / Qty / Total (d-none d-lg-block; Product spans 2)
+│    ├─ Divider (header, d-none d-lg-block)
+│    └─ LineItem layout="table" d-lg-contents × N, then Divider after each row except the last (every viewport)  |  Cart:Empty
+└─ Cart:Page:Aside                       (div root; when not empty; g-col-1 g-col-xl-3 g-col-xxl-4; position-xl-sticky, align-self-start)
+    ├─ Cart:Shipping → Shipping:Calculation (always open; physical carts only)
+    └─ Summary:Box
+        ├─ h2 heading (checkout.summaryHeader)
+        ├─ Cart:Summary
+        ├─ Cart:Options (shipping block emptied → promotion only)
+        └─ Cart:Actions (no cart-page link)
 ```
 
-Desktop (`xl` / 1260px+): items + sticky aside. Mobile: stack.
+The page root is the layout grid, the same one as [`Checkout:Confirm`](checkout-confirm.md): `d-grid grid grid-columns-1 grid-columns-xl-8 grid-columns-xxl-12 row-gap-7 column-gap-xl-9`. There is no body wrapper. Every direct child gets its span from the `Cart:Page` CVA, never from the child's own CVA.
+
+Desktop (`xl` / 1260px+): eight tracks. Flashes and the title span the row. `LineItems:Table` is `g-col-xl-5` (`g-col-xxl-8` from `xxl`) and the sticky aside is `g-col-xl-3` (`g-col-xxl-4`); both are `align-self-start`. An empty cart has no aside, so the table spans the full row (`empty` variant on `items`). Row gap 32px, column gap 64px. Mobile: one track, children stack.
 
 ## Cart:Summary
 
@@ -50,7 +51,7 @@ Shared totals list. The row defaults below follow the confirm summary design and
 | Component | Default | Nest |
 |-----------|---------|------|
 | `Cart:Summary:Total` | `fs-5`; label `fw-medium text-muted`; value `fw-semibold` | `total` (`summary`) |
-| `Cart:Summary:Shipping` | same as total; one row per delivery; `label` block | `shipping` |
+| `Cart:Summary:Shipping` | same as total; one row per delivery; `label` block. Under the label it shows that delivery’s shipping method name (`delivery.shippingMethod.translated.name`, nest/CVA `method`: `d-block fs-6 fw-normal text-body-tertiary`), omitted when the method is missing. Every consumer (cart page, drawer, confirm, register, success) gets it from this one component | `shipping` |
 | `Cart:Summary:GrandTotal` | `fs-5`; label `fw-semibold`; value `vi-cart-summary__grand fs-3 fw-bold` | `grand` |
 | `Cart:Summary:NetTotal` | `fs-6 text-muted`; label and value `fw-normal` | `net` |
 | `Cart:Summary:Tax` | same as net; one row per rate. An empty `calculatedTaxes` collection still renders one row at 0% (`checkout.summaryTax`, amount 0) | `tax` |
@@ -90,15 +91,15 @@ Used for in-page island refresh. Same data/hooks as [cart drawer](cart-drawer.md
 
 On `ViewsTheme:Cart:Changed`:
 
-- `ok === false` → show `[role=alert]`
+- `ok === false` (or a failed refresh) → clone the `Cart:Flashes` `<template>` into the Flashes root and unhide it. The next successful refresh swaps Flashes and clears it. The server error text is not shown
 - `ok` → fetch `pageUrl` and swap by `data-component` identity (scoped to the page root / body)
 
 | Island | Root |
 |--------|------|
 | `ViewsTheme:Cart:Flashes` | Page |
-| `ViewsTheme:Cart:Heading` | Page |
+| `ViewsTheme:Cart:Heading` | Page (root is `Checkout:Title`) |
 | `ViewsTheme:LineItems:Table` | Page |
-| `ViewsTheme:Cart:Page:Aside` | `[data-cart-page-body]` (remove when missing, append when newly present) |
+| `ViewsTheme:Cart:Page:Aside` | Page (remove when missing; append when newly present — it is the last grid child) |
 
 Busy/queue/abort + island swap match drawer Body (`parseHtmlFragment` + `data-component` identity). Swap stays scoped so drawer + page can both be open.
 

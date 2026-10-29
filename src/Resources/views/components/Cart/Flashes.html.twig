@@ -1,4 +1,5 @@
 {% props
+    clientError = false,
     cva = {},
 %}
 
@@ -21,5 +22,18 @@
                 :ariaLive="type == 'danger' ? 'assertive' : 'polite'"
             />
         {% endfor %}
+    {% endblock %}
+
+    {% block client_error %}
+        {% if clientError %}
+            <template>
+                <twig:ViewsTheme:Alert
+                    type="danger"
+                    content="{{ 'error.message-default'|trans|striptags }}"
+                    announceOnLoad
+                    ariaLive="assertive"
+                />
+            </template>
+        {% endif %}
     {% endblock %}
 </div>

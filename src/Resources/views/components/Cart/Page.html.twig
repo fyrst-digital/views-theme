@@ -5,11 +5,12 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'heading', 'alert', 'body', 'items', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'heading', 'items', 'aside']) %}
 
 {% set cart = page.cart %}
 {% set productsQuantity = cart.lineItems|length %}
 {% set isEmpty = productsQuantity < 1 %}
+{% set meta = isEmpty ? {} : { items: { label: 'checkout.itemCounter'|trans({'%count%': productsQuantity})|striptags } } %}
 
 <div
     {{ attributes.defaults({
@@ -28,58 +29,40 @@
     {% block flashes %}
         <twig:ViewsTheme:Cart:Flashes
             class="{{ vi_class('flashes') }}"
-            {{ ...vi_attrs('flashes').all() }}
-        />
-    {% endblock %}
-
-    {% block heading %}
-        <twig:ViewsTheme:Cart:Heading
-            class="{{ vi_class('heading') }}"
-            {{ ...vi_attrs('heading').defaults({
-                productsQuantity: productsQuantity,
-                countDisplay: 'inline',
-                titleTag: 'h1',
+            {{ ...vi_attrs('flashes').defaults({
+                clientError: true,
             }).all() }}
         />
     {% endblock %}
 
-    {% block alert %}
-        <div
-            {{ vi_attrs('alert').defaults({
-                role: 'alert',
-                hidden: true,
-                'data-fallback': 'error.message-default'|trans|striptags,
-            }) }}
-            class="{{ vi_class('alert') }}"
-        ></div>
+    {% block heading %}
+        <twig:ViewsTheme:Checkout:Title
+            class="{{ vi_class('heading') }}"
+            {{ ...vi_attrs('heading').defaults({
+                'data-component': 'ViewsTheme:Cart:Heading',
+                heading: 'checkout.cartHeader'|trans|striptags,
+                meta: meta,
+            }).all() }}
+        />
     {% endblock %}
 
-    {% block body %}
-        <div
-            {{ vi_attrs('body').defaults({
-                'data-cart-page-body': true,
-            }) }}
-            class="{{ vi_class('body') }}"
-        >
-            {% block items %}
-                <twig:ViewsTheme:LineItems:Table
-                    class="{{ vi_class('items') }}"
-                    {{ ...vi_attrs('items').defaults({
-                        cart: cart,
-                    }).all() }}
-                />
-            {% endblock %}
+    {% block items %}
+        <twig:ViewsTheme:LineItems:Table
+            class="{{ vi_class('items', { empty: isEmpty }) }}"
+            {{ ...vi_attrs('items').defaults({
+                cart: cart,
+            }).all() }}
+        />
+    {% endblock %}
 
-            {% block aside %}
-                {% if not isEmpty %}
-                    <twig:ViewsTheme:Cart:Page:Aside
-                        class="{{ vi_class('aside') }}"
-                        {{ ...vi_attrs('aside').defaults({
-                            page: page,
-                        }).all() }}
-                    />
-                {% endif %}
-            {% endblock %}
-        </div>
+    {% block aside %}
+        {% if not isEmpty %}
+            <twig:ViewsTheme:Cart:Page:Aside
+                class="{{ vi_class('aside') }}"
+                {{ ...vi_attrs('aside').defaults({
+                    page: page,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 </div>

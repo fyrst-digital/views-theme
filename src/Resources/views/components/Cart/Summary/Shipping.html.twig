@@ -4,12 +4,16 @@
 %}
 
 {% set shippingLabel = 'checkout.summaryShipping'|trans|sw_sanitize %}
+{% set methodName = delivery.shippingMethod.translated.name|default(null) %}
 
 {% do vi_define_cva({
     root: { base: 'fs-5' },
     label: { base: 'fw-medium text-muted' },
     value: { base: 'fw-semibold' },
+    method: { base: 'd-block fs-6' },
 }|replace_recursive(cva)) %}
+
+{% do vi_define_attrs(['method']) %}
 
 <twig:ViewsTheme:Cart:Summary:Item
     class="{{ vi_class('root') }}"
@@ -23,6 +27,14 @@
         {% vi_block label %}
             <dt class="{{ vi_class('label') }}">
                 {{ shippingLabel|raw }}
+                {% if methodName %}
+                    <span
+                        {{ vi_attrs('method') }}
+                        class="{{ vi_class('method') }}"
+                    >
+                        ({{ methodName }})
+                    </span>
+                {% endif %}
             </dt>
         {% endvi_block %}
     </twig:block>

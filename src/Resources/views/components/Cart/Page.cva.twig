@@ -1,23 +1,23 @@
 {
     root: {
-        base: 'vi-cart-page container py-8',
+        base: 'vi-cart-page d-grid grid grid-columns-1 grid-columns-xl-8 grid-columns-xxl-12 row-gap-7 column-gap-xl-9',
     },
     flashes: {
-        base: 'vi-cart-page__flashes mb-4',
+        base: 'vi-cart-page__flashes g-col-1 g-col-xl-8 g-col-xxl-12',
     },
     heading: {
-        base: 'vi-cart-page__heading mb-6',
-    },
-    alert: {
-        base: 'vi-cart-page__alert alert alert-danger mb-4',
-    },
-    body: {
-        base: 'vi-cart-page__body d-grid gap-6 align-items-start',
+        base: 'vi-cart-page__heading g-col-1 g-col-xl-8 g-col-xxl-12',
     },
     items: {
-        base: 'vi-cart-page__items min-w-0',
+        base: 'vi-cart-page__items min-w-0 align-self-start g-col-1',
+        variants: {
+            empty: {
+                true: 'g-col-xl-8 g-col-xxl-12',
+                false: 'g-col-xl-5 g-col-xxl-8',
+            },
+        },
     },
     aside: {
-        base: 'vi-cart-page__aside',
+        base: 'vi-cart-page__aside align-self-start g-col-1 g-col-xl-3 g-col-xxl-4',
     },
 }
