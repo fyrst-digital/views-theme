@@ -11,12 +11,12 @@
 >
     <twig:block name="description">
         {% if description %}
-            <p
+            <div
                 {{ vi_attrs('description') }}
                 class="{{ vi_class('description') }}"
             >
                 {{ description|sw_sanitize }}
-            </p>
+            </div>
         {% endif %}
 
         <twig:ViewsTheme:Page:Support class="d-xl-none" />
