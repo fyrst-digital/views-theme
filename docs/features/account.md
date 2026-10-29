@@ -26,7 +26,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion |
 | `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
-| `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Shared with [success](checkout-success.md) |
+| `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
 | `Account:Register:Page` | Login + register grid on `/account/register` |
 | Storefront `component/account/register.html.twig` | `Account:Register` (plugin / leftover includes) |

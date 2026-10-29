@@ -9,6 +9,7 @@ use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -177,6 +178,47 @@ final class AddressesTest extends TestCase
         self::assertFalse($component->cards[0]['warn']);
     }
 
+    public function testReadOnlyOrderAddressesIgnoreContextAndOmitChange(): void
+    {
+        $contextAddress = $this->address('context', $this->country(false));
+        $shipping = $this->orderAddress('order-ship', $this->country(false));
+        $billing = $this->orderAddress('order-bill', $this->country(false));
+
+        $component = $this->component($this->context($contextAddress, $contextAddress));
+        $component->billingAddress = $billing;
+        $component->shippingAddress = $shipping;
+        $component->hideShippingAddress = false;
+        $component->readOnly = true;
+        $component->postMount([]);
+
+        self::assertSame($billing, $component->billingAddress);
+        self::assertSame($shipping, $component->shippingAddress);
+        self::assertFalse($component->addressesEqual);
+        self::assertCount(2, $component->cards);
+        self::assertFalse($component->cards[0]['warn']);
+        self::assertNull($component->cards[0]['editHref']);
+        self::assertSame($shipping, $component->cards[0]['address']);
+        self::assertNull($component->cards[1]['editHref']);
+        self::assertSame($billing, $component->cards[1]['address']);
+    }
+
+    public function testReadOnlyEqualOrderAddressesCollapseBilling(): void
+    {
+        $address = $this->orderAddress('same');
+
+        $component = $this->component(null);
+        $component->billingAddress = $address;
+        $component->shippingAddress = $address;
+        $component->hideShippingAddress = false;
+        $component->readOnly = true;
+        $component->postMount([]);
+
+        self::assertTrue($component->addressesEqual);
+        self::assertTrue($component->cards[1]['equal']);
+        self::assertNull($component->cards[1]['address']);
+        self::assertSame($address, $component->cards[0]['address']);
+    }
+
     private function component(?SalesChannelContext $context): Addresses
     {
         $stack = new RequestStack();
@@ -225,6 +267,17 @@ final class AddressesTest extends TestCase
     private function address(string $id, ?CountryEntity $country = null): CustomerAddressEntity
     {
         $address = new CustomerAddressEntity();
+        $address->setId($id);
+        if ($country !== null) {
+            $address->setCountry($country);
+        }
+
+        return $address;
+    }
+
+    private function orderAddress(string $id, ?CountryEntity $country = null): OrderAddressEntity
+    {
+        $address = new OrderAddressEntity();
         $address->setId($id);
         if ($country !== null) {
             $address->setCountry($country);

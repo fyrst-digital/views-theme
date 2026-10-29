@@ -10,8 +10,8 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 |-------|----------------|
 | `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer |
 | `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
-| `Checkout:Addresses` | Class VM for the confirm section: customer `active*` addresses mounted as `Address`, section title `checkout.confirmAddresses`, `Address:Manager:Action`. Not `Address:List` |
-| `Checkout:Success:Addresses` | Class VM adapter: order addresses (6.7 vs 6.8 delivery) → `Address:List`, no change actions |
+| `Checkout:Addresses` | Class VM for the confirm and success sections: customer `active*` addresses (or, read-only, the addresses it is given) mounted as `Address`, section title `checkout.confirmAddresses`, `Address:Manager:Action` unless `readOnly`. Not `Address:List` |
+| `Checkout:Success:Addresses` | Class VM, extends `Order:Addresses`: order addresses (6.7 vs 6.8 delivery) → read-only `Checkout:Addresses`, no change actions |
 | `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is [`Account:Addressbook`](account.md) |
 | `Address:Manager:*` | Picker modal — [address manager](address-manager.md) |
 | `Address:Editor` / `Account:Form:Personal` / `Address:Form` | Create/edit forms — [address manager](address-manager.md) / [checkout register](checkout-register.md) |
@@ -29,8 +29,8 @@ Checkout:Addresses               (class VM; not Address:List)
 └─ panel
      ├─ shipping column → Address + Address:Manager:Action
      └─ billing column → Address (or equal copy in content) + Address:Manager:Action
-Checkout:Success:Addresses       (class VM, root-host)
-└─ Address:List             (no action nests)
+Checkout:Success:Addresses       (class VM, extends Order:Addresses)
+└─ Checkout:Addresses       (readOnly; order addresses; no Address:Manager:Action)
 Address:Item
 └─ Address
 Address:Manager:Item:Hero   (address in use)
@@ -76,7 +76,9 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 `Checkout:Addresses` is a class view-model. `#[PostMount]` resolves customer `activeBillingAddress` / `activeShippingAddress` and `page.hideShippingAddress`, and builds the card list. Each card keeps the customer address entity. The template owns the section and the `checkout.confirmAddresses` title, mounts `Address` for the lines (`fullName`, including the salutation, as the name style; other fields as the body style), and puts `Address:Manager:Action` on each column (`tab` shipping/billing, fallback `href` `frontend.account.address.edit.page`). When billing matches shipping, that column passes no address and overrides `Address`’s `content` with the equal copy. Nests: `title`, `panel`, `shipping`, `billing`, `shippingChange`, `billingChange`. See [checkout confirm](checkout-confirm.md) and [address manager](address-manager.md).
 
-`Order:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`). `Checkout:Success:Addresses` is a shim. No manager. See [checkout success](checkout-success.md) and [account pages](account.md).
+`Checkout:Addresses` takes `readOnly`. Then it does not fall back to the customer’s addresses, omits `Address:Manager:Action`, and never shows the shipping warning. It accepts customer or order address entities.
+
+`Order:Addresses` resolves order billing + delivery shipping in `#[PostMount]` (6.7 `order.deliveries.first` vs 6.8 `primaryOrderDelivery`) and renders `Address:List` (account pages). `Checkout:Success:Addresses` extends it and renders the read-only `Checkout:Addresses` panel instead. No manager. See [checkout success](checkout-success.md) and [account pages](account.md).
 
 ## Out of scope
 
@@ -84,7 +86,7 @@ Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shippin
 
 ## Files
 
-`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/Addresses.*` · `components/Order/Addresses.*` · `components/Checkout/Success/Addresses.*` (shim → `Order:Addresses`)
+`components/Address.*` · `components/Address/List.*` · adapters `components/Checkout/Addresses.*` · `components/Order/Addresses.*` · `components/Checkout/Success/Addresses.*` (extends `Order:Addresses`, renders `Checkout:Addresses`)
 
 ## Related
 

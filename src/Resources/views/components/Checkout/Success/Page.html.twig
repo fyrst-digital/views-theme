@@ -1,0 +1,46 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['flashes', 'header', 'main', 'aside']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block flashes %}
+        <twig:ViewsTheme:Cart:Flashes
+            class="{{ vi_class('flashes') }}"
+            {{ ...vi_attrs('flashes').all() }}
+        />
+    {% endblock %}
+
+    {% block header %}
+        <twig:ViewsTheme:Checkout:Success:Header
+            class="{{ vi_class('header') }}"
+            {{ ...vi_attrs('header').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block main %}
+        <twig:ViewsTheme:Checkout:Success:Main
+            class="{{ vi_class('main') }}"
+            {{ ...vi_attrs('main').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block aside %}
+        <twig:ViewsTheme:Checkout:Success:Aside
+            class="{{ vi_class('aside') }}"
+            {{ ...vi_attrs('aside').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

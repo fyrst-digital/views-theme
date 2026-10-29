@@ -1,0 +1,76 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['addresses', 'methods', 'paymentMethod', 'shippingMethod', 'itemsSection', 'itemsTitle', 'items']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block addresses %}
+        <twig:ViewsTheme:Checkout:Success:Addresses
+            class="{{ vi_class('addresses') }}"
+            {{ ...vi_attrs('addresses').defaults({
+                page: page,
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block methods %}
+        <twig:ViewsTheme:Checkout:Methods
+            class="{{ vi_class('methods') }}"
+            {{ ...vi_attrs('methods').defaults({
+                page: page,
+            }).all() }}
+        >
+            <twig:block name="payment">
+                <twig:ViewsTheme:Checkout:Success:Payment
+                    class="{{ vi_class('paymentMethod') }}"
+                    :framed="false"
+                    {{ ...vi_attrs('paymentMethod').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            </twig:block>
+
+            <twig:block name="shipping">
+                <twig:ViewsTheme:Checkout:Success:Shipping
+                    class="{{ vi_class('shippingMethod') }}"
+                    :framed="false"
+                    {{ ...vi_attrs('shippingMethod').defaults({
+                        page: page,
+                    }).all() }}
+                />
+            </twig:block>
+        </twig:ViewsTheme:Checkout:Methods>
+    {% endblock %}
+
+    {% block items %}
+        <section
+            {{ vi_attrs('itemsSection') }}
+            class="{{ vi_class('itemsSection') }}"
+        >
+            {% block items_title %}
+                <h2
+                    {{ vi_attrs('itemsTitle') }}
+                    class="{{ vi_class('sectionTitle') }}"
+                >
+                    {{ 'checkout.confirmItems'|trans|sw_sanitize }}
+                </h2>
+            {% endblock %}
+
+            <twig:ViewsTheme:LineItems:Table
+                class="{{ vi_class('items') }}"
+                {{ ...vi_attrs('items').defaults({
+                    cart: page.order,
+                    lineItems: page.order.nestedLineItems,
+                    showRemoveButton: false,
+                    showQuantitySelect: false,
+                }).all() }}
+            />
+        </section>
+    {% endblock %}
+</div>

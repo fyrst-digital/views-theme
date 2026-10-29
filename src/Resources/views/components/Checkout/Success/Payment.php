@@ -30,6 +30,8 @@ class Payment
 
     public bool $visible = false;
 
+    public bool $framed = true;
+
     /**
      * @var array<string, mixed>
      */

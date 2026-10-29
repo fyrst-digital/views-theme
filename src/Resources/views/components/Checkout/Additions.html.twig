@@ -1,15 +1,14 @@
 {% props
     page = __context.page|default(null),
     showComment = config('core.cart.showCustomerComment'),
+    visible = showComment or (page ? page.extensions.viewsTheme.deliveryDate.active|default(false) : false),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['title', 'fields', 'comment', 'deliveryDate']) %}
 
-{% set deliveryDateActive = page ? page.extensions.viewsTheme.deliveryDate.active|default(false) : false %}
-
-{% if showComment or deliveryDateActive %}
+{% if visible %}
     <section
         {{ attributes }}
         class="{{ vi_class('root') }}"

@@ -1,11 +1,3 @@
-.vi-checkout-confirm-main {
-    gap: var(--vi-confirm-main-gap, 28px);
-
-    @media (min-width: 1260px) {
-        --vi-confirm-main-gap: 40px;
-    }
-}
-
 .vi-checkout-confirm-main__returns-icon {
     --icon-size: var(--vi-confirm-main-icon, 14px);
 }
