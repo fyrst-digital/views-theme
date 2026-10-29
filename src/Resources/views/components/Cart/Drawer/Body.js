@@ -17,6 +17,7 @@ export default class CartDrawerBody extends ShopwareComponent {
         flashesComponent: 'ViewsTheme:Cart:Flashes',
         headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
         itemsComponent: 'ViewsTheme:Cart:Items',
+        shippingComponent: 'ViewsTheme:Cart:Shipping',
         footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
         drawerSelector: '#vi-cart-drawer',
     }
@@ -90,6 +91,7 @@ export default class CartDrawerBody extends ShopwareComponent {
         const source = parseHtmlFragment(html)
         this._swap(source, this.el, this.options.flashesComponent)
         this._swap(source, this.el, this.options.itemsComponent)
+        this._swap(source, this.el, this.options.shippingComponent, this.options.footerComponent)
         this._swap(source, this.el, this.options.footerComponent)
         this._swap(source, this._drawerEl || document, this.options.headingComponent)
     }
@@ -98,8 +100,9 @@ export default class CartDrawerBody extends ShopwareComponent {
      * @param {ParentNode} sourceRoot
      * @param {ParentNode} targetRoot
      * @param {string} componentName
+     * @param {string} [beforeComponentName] insert a newly present island before this one
      */
-    _swap(sourceRoot, targetRoot, componentName) {
+    _swap(sourceRoot, targetRoot, componentName, beforeComponentName) {
         if (!targetRoot) {
             return
         }
@@ -118,7 +121,10 @@ export default class CartDrawerBody extends ShopwareComponent {
         }
 
         if (!existing && next) {
-            targetRoot.appendChild(next)
+            const anchor = beforeComponentName
+                ? targetRoot.querySelector(`[data-component="${beforeComponentName}"]`)
+                : null
+            targetRoot.insertBefore(next, anchor)
         }
     }
 

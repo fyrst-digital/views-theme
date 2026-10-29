@@ -1,4 +1,5 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
+import { request as shippingRequest } from '@views-theme/modules/shipping/store.js'
 
 /**
  * Cart mutation owner (HTTP + serial queue).
@@ -17,7 +18,6 @@ export default class Cart extends ShopwareComponent {
         removeEvent: 'ViewsTheme:Cart:Remove',
         updateEvent: 'ViewsTheme:Cart:Update',
         promoteEvent: 'ViewsTheme:Cart:Promote',
-        configureEvent: 'ViewsTheme:Cart:Configure',
         changedEvent: 'ViewsTheme:Cart:Changed',
         placeholderId: '00000000000000000000000000000000',
     }
@@ -37,13 +37,13 @@ export default class Cart extends ShopwareComponent {
         this._onRemove = this._onRemove.bind(this)
         this._onUpdate = this._onUpdate.bind(this)
         this._onPromote = this._onPromote.bind(this)
-        this._onConfigure = this._onConfigure.bind(this)
+        this._onShippingRequest = this._onShippingRequest.bind(this)
 
         window.Shopware.on(this.options.addEvent, this._onAdd)
         window.Shopware.on(this.options.removeEvent, this._onRemove)
         window.Shopware.on(this.options.updateEvent, this._onUpdate)
         window.Shopware.on(this.options.promoteEvent, this._onPromote)
-        window.Shopware.on(this.options.configureEvent, this._onConfigure)
+        this._unsubscribeShipping = shippingRequest.subscribe(this._onShippingRequest)
     }
 
     destroy() {
@@ -51,7 +51,7 @@ export default class Cart extends ShopwareComponent {
         window.Shopware.off(this.options.removeEvent, this._onRemove)
         window.Shopware.off(this.options.updateEvent, this._onUpdate)
         window.Shopware.off(this.options.promoteEvent, this._onPromote)
-        window.Shopware.off(this.options.configureEvent, this._onConfigure)
+        this._unsubscribeShipping?.()
 
         this._queue?.clear()
     }
@@ -106,14 +106,20 @@ export default class Cart extends ShopwareComponent {
         }, payload)
     }
 
-    _onConfigure(payload) {
+    /**
+     * @param {import('@views-theme/modules/shipping/store.js').ShippingRequest|null} request
+     */
+    _onShippingRequest(request) {
+        if (!request) {
+            return
+        }
+
         void this._enqueue('configure', async () => {
-            const formData = payload?.formData instanceof FormData
-                ? this._forAjax(payload.formData)
-                : new FormData()
+            const formData = new FormData()
+            Object.entries(request.values).forEach(([field, value]) => formData.append(field, value))
 
             await this._post(this.options.configurePath, formData)
-        }, payload)
+        }, request)
     }
 
     async _enqueue(action, runner, payload = {}) {

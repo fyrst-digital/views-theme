@@ -92,7 +92,7 @@ To omit an HTML attribute in `attributes.defaults` / `nested().defaults`, pass *
 |----------|--------|
 | `Account:Login` | `Form:Handler` + `Form:Input`; unique per-instance ids; forwards via `username:*` / `password:*` spread ([account-action](account-action.md#accountlogin-field-forwarding)) |
 | `Cart:PromotionForm` | Uses `Form:Input:Group` + `Button` in `append` ([cart-drawer](cart-drawer.md#promotion-form)) |
-| `Cart:ShippingCalculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
+| `Shipping:Calculation:*` | Uses `Form:Select` via `:options` + `:value` ([cart-drawer](cart-drawer.md#shipping-calculation)) |
 | `Filter:Boolean` | Uses `Form:Switch` inside bar chip ([filters.md](filters.md)) |
 | `Filter:Range` | Uses `Form:Slider` (`mode=range`) under min/max fields ([filters.md](filters.md)) |
 | `Review:Form` | Uses `Form:Textarea` (+ Input / Select) — [review.md](review.md) |

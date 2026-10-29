@@ -17,7 +17,7 @@ Does **not** own account edit-order / complete-payment. That page is [`Account:O
 | `Checkout:Confirm:Main` | Primary column (`div`). Confirm passes `g-col-1 g-col-xl-5 g-col-xxl-8`. Addresses, methods, and items. Section gap 28px, 40px from `xl`. No `data-component`. No `g-col-*` in its CVA |
 | `Checkout:Title` | Shared class view-model. `heading` string and `meta` as `array<string, CheckoutTitleMeta>` (`label`, optional `icon`). Each entry renders in `{% block meta_item %}` (`key` and `item` in scope). The meta container and the items wrapper are `div`s. The `description` block is empty. No `g-col-*` in its CVA |
 | `Checkout:Aside` | Sidebar column (`<aside>`). Confirm gives it `g-col-1 g-col-xl-3`. Below `xl` it stacks after main. Mounts `Checkout:Additions` then `Checkout:Summary` |
-| `Checkout:Summary` | Sticky summary card: `Cart:Summary` with confirm row CVA, `Checkout:ArrivalDate`, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
+| `Checkout:Summary` | Sticky summary card on a [`Summary:Box`](summary-box.md) root: `Cart:Summary` with confirm row CVA, `Checkout:ArrivalDate`, TOS, place-order, secure note. Not `Cart:Page:Aside` / `Register:Aside` |
 | `Checkout:ArrivalDate` | Delivery-period pill. First cart delivery’s `deliveryDate`, `checkout.lineItemDeliveryDate`, truck icon. Hidden when `ViewsTheme.config.checkoutArrivalDateActive` is off, or when the cart has no delivery date. Not the title meta line |
 | `Checkout:Addresses` | Section + address panel. Class view-model builds the cards; Twig owns the section, the `checkout.confirmAddresses` title, the columns, `Address`, and `Address:Manager:Action`. Not [`Address:List`](address.md) |
 | `Checkout:Methods` | Section + one shared card around payment and shipping. Title `checkout.confirmMethods` |
@@ -64,8 +64,8 @@ page/checkout/confirm/index.html.twig
 │         ├─ Checkout:Additions
 │         │    ├─ Checkout:Confirm:Comment           (if core.cart.showCustomerComment)
 │         │    └─ Checkout:DeliveryDateSelection
-│         └─ Checkout:Summary
-│              ├─ Cart:Summary                       (confirm row CVA; `grand_total` override adds `Divider`)
+│         └─ Checkout:Summary                    (root = Summary:Box: accent + padded body)
+│              ├─ Cart:Summary                       (row CVA from its components; `grand_total` block renders `Divider` + `GrandTotal`)
 │              ├─ Checkout:ArrivalDate             (first delivery deliveryDate; omit if none or switch off)
 │              ├─ Checkout:Confirm:Tos               (tos + revocation)
 │              ├─ Form:Handler#confirmOrderForm → hash + Button submit (`blockResubmit`)
@@ -117,7 +117,7 @@ Blocks: `additions` (`Checkout:Additions`), `summary` (`Checkout:Summary`). Stic
 
 ## Checkout:Summary
 
-Summary card for confirm only. Root is a `div`; the landmark is `Checkout:Aside`. Chrome (coral accent, linen border, 12px radius, 24px padding (`p-6`)) is on this card. Row utilities are plain class strings on the `Cart:Summary` call: `total:cva`, `shipping:cva`, `grand:cva`, `net:cva`, and `tax:cva` (`root`, `label`, `value`). `cva.root` is the summary grid (`d-grid align-items-center`). Subtotal and shipping are `fs-5`, labels `fw-medium text-muted`, values `fw-semibold`. The grand total is `fs-5` / `fw-semibold`, and its value is `vi-cart-summary__grand fs-3 fw-bold`. Net and tax are `fs-6 text-muted` at `fw-normal`. `.vi-checkout-summary` assigns `--vi-cart-summary-gap` (`10px`) and `--vi-cart-summary-tracking` (`-0.6px`). Confirm overrides `grand_total` and renders `Divider` (`my-2`) before `GrandTotal`. The span is `--vi-divider-col` (`1 / -1`) on `.vi-divider`. `GrandTotal` is only the row. The cart page does not override that block, so it has no rule, and it keeps each row component’s default classes. The card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
+Summary card for confirm only. Root is [`Summary:Box`](summary-box.md) (a `div`); the landmark is `Checkout:Aside`. Chrome (coral accent, linen border, 12px radius, 24px padding (`p-6`)) comes from that shell. `Checkout:Summary` fills its `content` block, and every slot (`heading`, `summary`, `arrival`, `tos`, `form`, `submit`, `secure`) is a `{% vi_block %}` so callers can still override it. Its own root CVA is only `vi-checkout-summary position-xl-sticky`. The `Cart:Summary` call passes only `summary`; row typography comes from the row components’ default CVA ([cart page](cart-page.md#cartsummary)). `.vi-checkout-summary` assigns `--vi-cart-summary-gap` (`10px`) and `--vi-cart-summary-tracking` (`-0.6px`). The rule before the grand total comes from `Cart:Summary` itself (`grand_total` block, `Divider` `my-2`); Confirm does not override it — [cart page](cart-page.md#cartsummary). The cart page does not override that block, so it has no rule. The card stays `position-xl-sticky`; `top` is `--vi-top` (`24px`).
 
 Arrival is `Checkout:ArrivalDate`: the first cart delivery’s `deliveryDate.earliest` / `latest`, rendered with `checkout.lineItemDeliveryDate`. Row padding is `py-2 px-3`. The component renders nothing when `ViewsTheme.config.checkoutArrivalDateActive` is off, or when the cart has no delivery. This is not the preferred-delivery-date field and not the title’s `checkout.confirmArrival` line. That title meta string is not gated by this switch.
 
@@ -179,7 +179,7 @@ Payment `framed` defaults to `true`, which adds the standalone card (white, 1px 
 
 Description is every method’s plain text (tags stripped), truncated at 75 characters. `Shipping:Selection` builds those rows in `Selection.php`: the quote comes from `page.extensions.viewsTheme.shippingPrices`, and a missing quote on the selected method uses that cart delivery’s `shippingCosts.totalPrice`. `trailing` is set there too. A total of `0` is `viewsTheme.checkout.shippingFree` (`Free` / `Gratis`). Any other amount is formatted with `CurrencyFormatter` for the current currency and language. A missing quote leaves `trailing` empty. The template only passes each row into `Form:Selection`. Payment rows omit `trailing`.
 
-`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Cart:ShippingCalculation`).
+`Checkout:Method` is removed. `Checkout:Method:Form` still wraps the confirm lists and POSTs `frontend.checkout.configure` with hidden `redirectTo` = `frontend.checkout.confirm.page`. Shipping renders only when the cart has a physical line item (`State::IS_PHYSICAL`, same as `Shipping:Calculation`).
 
 `Payment:Selection` accepts `action` (default `frontend.checkout.configure`) and `redirectTo`. Edit-order passes the change-payment-method path and an empty redirect. Edit-order shipping stays read-only [`Checkout:Success:Shipping`](checkout-success.md).
 

@@ -6,9 +6,9 @@
 {% set shippingLabel = 'checkout.summaryShipping'|trans|sw_sanitize %}
 
 {% do vi_define_cva({
-    root: { base: 'fs-6' },
-    label: { base: 'fw-medium' },
-    value: { base: 'fw-medium' },
+    root: { base: 'fs-5' },
+    label: { base: 'fw-medium text-muted' },
+    value: { base: 'fw-semibold' },
 }|replace_recursive(cva)) %}
 
 <twig:ViewsTheme:Cart:Summary:Item

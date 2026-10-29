@@ -1,0 +1,36 @@
+{% props
+    page,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['title', 'calculation']) %}
+
+{% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
+
+{% if page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
+    <section
+        {{ attributes.defaults({
+            'data-component': 'ViewsTheme:Cart:Shipping',
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        {% block title %}
+            <h2
+                {{ vi_attrs('title') }}
+                class="{{ vi_class('title') }}"
+            >
+                {{ 'checkout.shippingDetailsHeader'|trans|sw_sanitize }}
+            </h2>
+        {% endblock %}
+
+        {% block calculation %}
+            <twig:ViewsTheme:Shipping:Calculation
+                class="{{ vi_class('calculation') }}"
+                {{ ...vi_attrs('calculation').defaults({
+                    page: page,
+                }).all() }}
+            />
+        {% endblock %}
+    </section>
+{% endif %}

@@ -5,7 +5,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['alert', 'flashes', 'items']) %}
+{% do vi_define_attrs(['alert', 'flashes', 'items', 'shipping']) %}
 
 {% set cart = page.cart %}
 
@@ -18,6 +18,7 @@
             flashesComponent: 'ViewsTheme:Cart:Flashes',
             headingComponent: 'ViewsTheme:Cart:Drawer:Heading',
             itemsComponent: 'ViewsTheme:Cart:Items',
+            shippingComponent: 'ViewsTheme:Cart:Shipping',
             footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
             drawerSelector: '#vi-cart-drawer',
         }|json_encode,
@@ -50,6 +51,19 @@
                 layout: 'stacked',
             }).all() }}
         />
+    {% endblock %}
+
+    {% block shipping %}
+        {% if config('ViewsTheme.config.checkoutShippingCalculationActive') %}
+            <twig:ViewsTheme:Cart:Shipping
+                {{ ...vi_attrs('shipping').defaults({
+                    page: page,
+                    cva: {
+                        root: { base: 'vi-cart-shipping d-flex flex-column gap-4 min-w-0 overflow-clip bg-white p-4 flex-shrink-0' },
+                    },
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     {% block footer %}

@@ -14,11 +14,10 @@
 >
     {% block content %}
         {% block shipping %}
-            <twig:ViewsTheme:Cart:ShippingCalculation
+            <twig:ViewsTheme:Shipping:Calculation
                 class="{{ vi_class('shipping') }}"
                 {{ ...vi_attrs('shipping').defaults({
                     page: page,
-                    redirectTo: redirectTo,
                 }).all() }}
             />
         {% endblock %}

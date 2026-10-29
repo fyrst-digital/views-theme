@@ -474,7 +474,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
 | Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
-| Form:Select | UX + `vi_cva`; used by Cart:ShippingCalculation:Country / PaymentMethod / ShippingMethod |
+| Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Country / PaymentMethod / ShippingMethod |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* (Main/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
@@ -491,6 +491,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Account:Action (nest `toggle`) / Menu (`register`) / Login:Actions (`login`/`recovery`) | UX + nest chrome |
 | Privacy:Note | Anonymous UX + `vi_cva`; register footer; optional `acceptedDataProtection` checkbox |
 | Address (class-backed) / Address:List | `Address.php` exposes one block per address field; List stays anonymous — [address.md](../features/address.md) |
+| Summary:Box | Anonymous UX + `vi_cva`; shared summary card shell (accent + padded body, `content` block); root of `Checkout:Summary` — [summary-box.md](../features/summary-box.md) |
 | Checkout:Title (class-backed) | UX + `vi_cva`; `meta` is `array<string, CheckoutTitleMeta>` (`label`, optional `icon`); `{% block meta_item %}` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm (+ Main / Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm:Title (class-backed) | UX + `vi_cva`; email, item count, and arrival in `Title.php`; fills `Checkout:Title` — [checkout-confirm.md](../features/checkout-confirm.md) |

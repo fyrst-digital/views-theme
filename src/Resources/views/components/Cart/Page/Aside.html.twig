@@ -4,7 +4,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['summary', 'options', 'actions']) %}
+{% do vi_define_attrs(['shipping', 'box', 'heading', 'summary', 'options', 'actions']) %}
 
 <div
     {{ attributes.defaults({
@@ -12,30 +12,59 @@
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block summary %}
-        <twig:ViewsTheme:Cart:Summary
-            class="{{ vi_class('summary') }}"
-            {{ ...vi_attrs('summary').defaults({
-                summary: page.cart,
-            }).all() }}
-        />
+    {% block shipping %}
+        {% if config('ViewsTheme.config.checkoutShippingCalculationActive') %}
+            <twig:ViewsTheme:Cart:Shipping
+                class="{{ vi_class('shipping') }}"
+                {{ ...vi_attrs('shipping').defaults({
+                    page: page,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
-    {% block options %}
-        <twig:ViewsTheme:Cart:Options
-            class="{{ vi_class('options') }}"
-            {{ ...vi_attrs('options').defaults({
-                page: page,
-            }).all() }}
-        />
-    {% endblock %}
+    <twig:ViewsTheme:Summary:Box
+        class="{{ vi_class('box') }}"
+        {{ ...vi_attrs('box').all() }}
+    >
+        <twig:block name="content">
+            {% vi_block heading %}
+                <h2
+                    {{ vi_attrs('heading') }}
+                    class="{{ vi_class('heading') }}"
+                >
+                    {{ 'checkout.summaryHeader'|trans|sw_sanitize }}
+                </h2>
+            {% endvi_block %}
 
-    {% block actions %}
-        <twig:ViewsTheme:Cart:Actions
-            class="{{ vi_class('actions') }}"
-            {{ ...vi_attrs('actions').all() }}
-        >
-            <twig:block name="cart"></twig:block>
-        </twig:ViewsTheme:Cart:Actions>
-    {% endblock %}
+            {% vi_block summary %}
+                <twig:ViewsTheme:Cart:Summary
+                    class="{{ vi_class('summary') }}"
+                    {{ ...vi_attrs('summary').defaults({
+                        summary: page.cart,
+                    }).all() }}
+                />
+            {% endvi_block %}
+
+            {% vi_block options %}
+                <twig:ViewsTheme:Cart:Options
+                    class="{{ vi_class('options') }}"
+                    {{ ...vi_attrs('options').defaults({
+                        page: page,
+                    }).all() }}
+                >
+                    <twig:block name="shipping"></twig:block>
+                </twig:ViewsTheme:Cart:Options>
+            {% endvi_block %}
+
+            {% vi_block actions %}
+                <twig:ViewsTheme:Cart:Actions
+                    class="{{ vi_class('actions') }}"
+                    {{ ...vi_attrs('actions').all() }}
+                >
+                    <twig:block name="cart"></twig:block>
+                </twig:ViewsTheme:Cart:Actions>
+            {% endvi_block %}
+        </twig:block>
+    </twig:ViewsTheme:Summary:Box>
 </div>

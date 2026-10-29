@@ -75,5 +75,12 @@
             <label lang="de-DE">Lieferzeitraum in der Zusammenfassung anzeigen</label>
             <defaultValue>true</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>checkoutShippingCalculationActive</name>
+            <label>Show shipping calculation in cart page sidebar and cart drawer</label>
+            <label lang="de-DE">Versandberechnung in der Warenkorb-Seitenleiste und im Warenkorb-Drawer anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
     </card>
 </config>

@@ -20,6 +20,8 @@
     <twig:ViewsTheme:Form:Select
         class="{{ vi_class('root') }}"
         {{ ...attributes.defaults({
+            'data-component': 'ViewsTheme:Shipping:Calculation:Field',
+            'data-component-options': { field: 'countryId' }|json_encode,
             id: id,
             name: 'countryId',
             label: 'checkout.shippingCountry'|trans|sw_sanitize,

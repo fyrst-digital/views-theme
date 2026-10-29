@@ -34,8 +34,11 @@ See [Preferred delivery date](features/delivery-date.md).
 | Config key | Type | Default | Description |
 |------------|------|---------|-------------|
 | `ViewsTheme.config.checkoutArrivalDateActive` | bool | `true` | Show `Checkout:ArrivalDate` on the confirm summary |
+| `ViewsTheme.config.checkoutShippingCalculationActive` | bool | `true` | Checked by the callers `Cart:Page:Aside` and `Cart:Drawer:Body` before they render `Cart:Shipping` |
 
-See [Checkout confirm](features/checkout-confirm.md).
+Never write `config('…') ?? true` for a bool: Twig compiles `??` to a truthiness test, so a stored `false` falls back to `true`. Test the value directly (`{% if config('…') %}`) and rely on the `config.xml` default.
+
+See [Checkout confirm](features/checkout-confirm.md), [Cart page](features/cart-page.md), [Cart drawer](features/cart-drawer.md).
 
 ## Theme configuration (`theme.json`)
 
