@@ -1,3 +1,5 @@
+import { getInstanceByElement } from '@views-theme/modules/shared/component.js'
+
 /**
  * Accessible tabs owner — discovers Tabs:Tab / Tabs:Panel children.
  * State SoT is ARIA (`aria-selected`) + panel `hidden`; look follows CSS.
@@ -9,6 +11,7 @@ export default class Tabs extends ShopwareComponent {
         tabComponent: 'ViewsTheme:Tabs:Tab',
         panelComponent: 'ViewsTheme:Tabs:Panel',
         changeEvent: 'ViewsTheme:Tabs:Change',
+        param: null,
     }
 
     init() {
@@ -120,11 +123,29 @@ export default class Tabs extends ShopwareComponent {
             return
         }
 
+        this._syncUrl(tab)
+
         window.Shopware.emit(this.options.changeEvent, {
             el: this.el,
             tabId: tab.id,
             panelId,
         })
+    }
+
+    /**
+     * Mirrors the selected tab into `?{options.param}=` so the server renders it after a refresh.
+     *
+     * @param {HTMLElement} tab
+     */
+    _syncUrl(tab) {
+        if (!this.options.param) {
+            return
+        }
+
+        const slug = getInstanceByElement(this.options.tabComponent, tab)?.options.slug || tab.id
+        const url = new URL(window.location.href)
+        url.searchParams.set(this.options.param, slug)
+        window.history.replaceState(window.history.state, '', url)
     }
 
     /**

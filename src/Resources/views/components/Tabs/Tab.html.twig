@@ -1,6 +1,7 @@
 {% props
     id = null,
     panel = null,
+    slug = null,
     active = false,
     cva = {},
 %}
@@ -18,6 +19,7 @@
         'data-component': 'ViewsTheme:Tabs:Tab',
         'data-component-options': {
             panel: panel,
+            slug: slug ?: id,
         }|json_encode,
     }) }}
     class="{{ vi_class('root') }}"
