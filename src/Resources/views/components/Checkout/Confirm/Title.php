@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Confirm;
 
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\CheckoutTitleMeta;
+use Fyrst\ViewsTheme\Struct\PageTitleMeta;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\Delivery;
 use Shopware\Core\Checkout\Customer\Service\EmailIdnConverter;
@@ -16,7 +16,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Checkout:Confirm:Title — heading and keyed meta for Checkout:Title.
+ * View-model for Checkout:Confirm:Title — heading and keyed meta for Page:Title.
  * Template fills the description block and passes the grid class through.
  */
 #[AsTwigComponent]
@@ -27,7 +27,7 @@ class Title
     public string $heading = '';
 
     /**
-     * @var array<string, CheckoutTitleMeta>
+     * @var array<string, PageTitleMeta>
      */
     public array $meta = [];
 
@@ -59,16 +59,16 @@ class Title
 
         $email = $this->customerEmail();
         if ($email !== '') {
-            $meta['email'] = new CheckoutTitleMeta($email);
+            $meta['email'] = new PageTitleMeta($email);
         }
 
-        $meta['items'] = new CheckoutTitleMeta($this->translator->trans('checkout.itemCounter', [
+        $meta['items'] = new PageTitleMeta($this->translator->trans('checkout.itemCounter', [
             '%count%' => $this->page->getCart()->getLineItems()->count(),
         ]));
 
         $arrival = $this->arrivalLabel($this->page->getCart());
         if ($arrival !== null) {
-            $meta['arrival'] = new CheckoutTitleMeta($arrival);
+            $meta['arrival'] = new PageTitleMeta($arrival);
         }
 
         $this->meta = $meta;

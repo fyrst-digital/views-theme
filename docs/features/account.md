@@ -28,7 +28,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
-| `Account:Register:Page` | Heading + one bordered card with two [`Tabs`](tabs.md) (Log in / Register) on `/account/register` and `/account/login`. Register tab is active when the request carries register `formViolations` or posted `data`; otherwise Log in |
+| `Account:Register:Page` | [`Page:Title`](checkout-confirm.md#pagetitle) (intro copy `viewsTheme.account.loginRegisterDescription` in its `description` block) + one bordered card with two [`Tabs`](tabs.md) (Log in / Register) on `/account/register` and `/account/login`. Register tab is active when the request carries register `formViolations` or posted `data`; otherwise Log in |
 | Storefront `component/account/register.html.twig` | `Account:Register` (plugin / leftover includes) |
 | `Account:Recover` / `:ResetPassword` | Password recover / reset |
 | `Account:GuestAuth` | Guest order login (email + zip) |

@@ -17,19 +17,29 @@
 {% set registerPanelId = 'vi-account-pane-register' %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['heading', 'tabs', 'login', 'register']) %}
+{% do vi_define_attrs(['heading', 'description', 'tabs', 'login', 'register']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block heading %}
-        <twig:ViewsTheme:Account:Heading
+        <twig:ViewsTheme:Page:Title
             class="{{ vi_class('heading') }}"
             {{ ...vi_attrs('heading').defaults({
-                title: 'account.loginRegistrationHeader'|trans|sw_sanitize,
+                heading: 'account.loginRegistrationHeader'|trans|sw_sanitize,
+                align: 'center',
             }).all() }}
-        />
+        >
+            <twig:block name="description">
+                <div
+                    {{ vi_attrs('description') }}
+                    class="{{ vi_class('description') }}"
+                >
+                    {{ 'viewsTheme.account.loginRegisterDescription'|trans|sw_sanitize }}
+                </div>
+            </twig:block>
+        </twig:ViewsTheme:Page:Title>
     {% endblock %}
 
     {% block tabs %}
@@ -41,7 +51,9 @@
             }).all() }}
         >
             <twig:block name="list">
-                <twig:ViewsTheme:Tabs:List>
+                <twig:ViewsTheme:Tabs:List
+                    :cva="{ root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 m-0 mb-6 pb-3' }"
+                >
                     <twig:block name="content">
                         {% block tabLogin %}
                             <twig:ViewsTheme:Tabs:Tab

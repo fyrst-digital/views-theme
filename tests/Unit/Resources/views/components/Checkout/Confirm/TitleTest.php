@@ -6,7 +6,7 @@ namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout\Confir
 
 use Fyrst\ViewsTheme\Resources\views\components\Checkout\Confirm\Title;
 use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\CheckoutTitleMeta;
+use Fyrst\ViewsTheme\Struct\PageTitleMeta;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Delivery\Struct\Delivery;
@@ -148,7 +148,7 @@ final class TitleTest extends TestCase
     }
 
     /**
-     * @param array<string, CheckoutTitleMeta> $meta
+     * @param array<string, PageTitleMeta> $meta
      *
      * @return array<string, string>
      */

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Success;
 
-use Fyrst\ViewsTheme\Struct\CheckoutTitleMeta;
+use Fyrst\ViewsTheme\Struct\PageTitleMeta;
 use Shopware\Core\Checkout\Customer\Service\EmailIdnConverter;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Feature;
@@ -15,7 +15,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Checkout:Success:Header — heading, intro copy and keyed meta for Checkout:Title.
+ * View-model for Checkout:Success:Header — heading, intro copy and keyed meta for Page:Title.
  * Template fills the description block and passes the grid class through.
  */
 #[AsTwigComponent]
@@ -30,7 +30,7 @@ class Header
     public string $orderNumber = '';
 
     /**
-     * @var array<string, CheckoutTitleMeta>
+     * @var array<string, PageTitleMeta>
      */
     public array $meta = [];
 
@@ -73,14 +73,14 @@ class Header
         $meta = [];
 
         if ($this->orderNumber !== '') {
-            $meta['orderNumber'] = new CheckoutTitleMeta(
+            $meta['orderNumber'] = new PageTitleMeta(
                 $this->translator->trans('checkout.finishInfoOrdernumber') . $this->orderNumber,
             );
         }
 
         $email = $order->getOrderCustomer()?->getEmail();
         if (\is_string($email) && $email !== '') {
-            $meta['email'] = new CheckoutTitleMeta(EmailIdnConverter::decode($email));
+            $meta['email'] = new PageTitleMeta(EmailIdnConverter::decode($email));
         }
 
         $this->meta = $meta;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout\Success;
 
 use Fyrst\ViewsTheme\Resources\views\components\Checkout\Success\Header;
-use Fyrst\ViewsTheme\Struct\CheckoutTitleMeta;
+use Fyrst\ViewsTheme\Struct\PageTitleMeta;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;
@@ -113,7 +113,7 @@ final class HeaderTest extends TestCase
     }
 
     /**
-     * @param array<string, CheckoutTitleMeta> $meta
+     * @param array<string, PageTitleMeta> $meta
      *
      * @return array<string, string>
      */

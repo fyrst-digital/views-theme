@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout;
+namespace Fyrst\ViewsTheme\Resources\views\components\Page;
 
-use Fyrst\ViewsTheme\Struct\CheckoutTitleMeta;
+use Fyrst\ViewsTheme\Struct\PageTitleMeta;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Checkout:Title. Twig composes the heading, description block, and meta line.
+ * View-model for Page:Title. Twig composes the heading, description block, and meta line.
  */
 #[AsTwigComponent]
 class Title
@@ -17,7 +17,12 @@ class Title
     public string $heading = '';
 
     /**
-     * @var array<string, CheckoutTitleMeta>
+     * @var 'start'|'center'
+     */
+    public string $align = 'start';
+
+    /**
+     * @var array<string, PageTitleMeta>
      */
     public array $meta = [];
 
@@ -35,7 +40,7 @@ class Title
         $meta = [];
 
         foreach ($this->meta as $key => $item) {
-            if ($item instanceof CheckoutTitleMeta) {
+            if ($item instanceof PageTitleMeta) {
                 $entry = $item;
             } elseif (\is_array($item)) {
                 $label = trim((string) ($item['label'] ?? ''));
@@ -44,7 +49,7 @@ class Title
                 }
 
                 $icon = $item['icon'] ?? null;
-                $entry = new CheckoutTitleMeta(
+                $entry = new PageTitleMeta(
                     $label,
                     \is_string($icon) && $icon !== '' ? $icon : null,
                 );

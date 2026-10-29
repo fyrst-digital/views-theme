@@ -3,7 +3,7 @@
 
 <div
     {{ attributes }}
-    class="{{ vi_class('root') }}"
+    class="{{ vi_class('root', { align: align }) }}"
 >
     {% block heading %}
         {% if heading is not empty %}
@@ -26,7 +26,7 @@
             >
                 <div
                     {{ vi_attrs('items') }}
-                    class="{{ vi_class('items') }}"
+                    class="{{ vi_class('items', { align: align }) }}"
                 >
                     {% for key, item in meta %}
                         {% block meta_item_divider %}
