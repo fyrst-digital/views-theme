@@ -1,0 +1,62 @@
+{% props
+    formId = 'form-' ~ random(),
+    siteKey = null,
+    invisible = false,
+    protection = false,
+    cva = {},
+%}
+
+{% set feedbackId = formId ~ '-grecaptcha-v2-feedback' %}
+{% set requestParameter = constant('Shopware\\Storefront\\Framework\\Captcha\\GoogleReCaptchaV2::CAPTCHA_REQUEST_PARAMETER') %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['input', 'container', 'protection', 'feedback']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-google-re-captcha-v2': 'true',
+        'data-google-re-captcha-v2-options': {
+            siteKey: siteKey,
+            invisible: invisible,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block input %}
+        <input
+            {{ vi_attrs('input').defaults({
+                type: 'hidden',
+                name: requestParameter,
+                'data-validation': 'grecaptcha',
+                'data-validate-hidden': 'true',
+                'aria-describedby': feedbackId,
+            }) }}
+            class="grecaptcha-v2-input {{ vi_class('input') }}"
+        >
+    {% endblock %}
+
+    {% block container %}
+        <div
+            {{ vi_attrs('container') }}
+            class="grecaptcha-v2-container {{ vi_class('container') }}"
+        ></div>
+    {% endblock %}
+
+    {% block protection %}
+        {% if protection %}
+            <div
+                {{ vi_attrs('protection') }}
+                class="{{ vi_class('protection') }}"
+            >
+                {{ 'captcha.googleReCaptcha.dataProtectionInformation'|trans|sw_sanitize }}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block feedback %}
+        <div
+            {{ vi_attrs('feedback').defaults({ id: feedbackId }) }}
+            class="{{ vi_class('feedback') }}"
+        ></div>
+    {% endblock %}
+</div>

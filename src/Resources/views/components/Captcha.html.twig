@@ -1,0 +1,15 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['basicCaptcha', 'honeypot', 'googleReCaptchaV2', 'googleReCaptchaV3', 'legacy']) %}
+
+{% if captchas is not empty %}
+    <div
+        {{ attributes }}
+        class="{{ vi_class('root', { hidden: hidden }) }}"
+    >
+        {% for captcha in captchas %}
+            {{ component(captcha.component, vi_attrs(captcha.slot).defaults(captcha.props|merge({
+                class: vi_class(captcha.slot),
+            })).all()) }}
+        {% endfor %}
+    </div>
+{% endif %}

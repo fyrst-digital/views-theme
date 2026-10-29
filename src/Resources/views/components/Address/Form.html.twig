@@ -7,11 +7,13 @@
     idPrefix = '',
     showNoShippingPostfix = false,
     disableNonShippableCountries = false,
+    heading = null,
+    headingTag = 'h2',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['grid', 'street', 'postal', 'country', 'phone']) %}
+{% do vi_define_attrs(['heading', 'grid', 'street', 'postal', 'country', 'phone']) %}
 
 <div
     {{ attributes }}
@@ -20,6 +22,17 @@
     {% if data and data.id|default(null) %}
         <input type="hidden" name="{{ prefix }}[id]" value="{{ data.id }}">
     {% endif %}
+
+    {% block heading %}
+        {% if heading %}
+            <{{ headingTag|raw }}
+                {{ vi_attrs('heading') }}
+                class="{{ vi_class('heading') }}"
+            >
+                {{ heading }}
+            </{{ headingTag|raw }}>
+        {% endif %}
+    {% endblock %}
 
     <twig:ViewsTheme:Grid
         {{ ...vi_attrs('grid').defaults({

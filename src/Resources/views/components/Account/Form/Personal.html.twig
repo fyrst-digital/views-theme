@@ -11,16 +11,29 @@
     showBirthdayField = null,
     showVat = true,
     showCompanyFields = false,
+    heading = null,
+    headingTag = 'h2',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['grid', 'accountType', 'salutation', 'title', 'name', 'birthday', 'company']) %}
+{% do vi_define_attrs(['heading', 'grid', 'accountType', 'salutation', 'title', 'name', 'birthday', 'company']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
+    {% block heading %}
+        {% if heading %}
+            <{{ headingTag|raw }}
+                {{ vi_attrs('heading') }}
+                class="{{ vi_class('heading') }}"
+            >
+                {{ heading }}
+            </{{ headingTag|raw }}>
+        {% endif %}
+    {% endblock %}
+
     {% block fields %}
         <twig:ViewsTheme:Grid
             {{ ...vi_attrs('grid').defaults({

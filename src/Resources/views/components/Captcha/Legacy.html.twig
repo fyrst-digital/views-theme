@@ -1,0 +1,12 @@
+{% props
+    type,
+    formId = 'form-' ~ random(),
+%}
+
+{% sw_include '@Storefront/storefront/component/captcha/%s.html.twig'|format(type)
+    ignore missing
+    with {
+        additionalClass: null,
+        formId: formId,
+    }
+%}

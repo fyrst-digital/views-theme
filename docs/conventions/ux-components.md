@@ -494,6 +494,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Summary:Box | Anonymous UX + `vi_cva`; shared summary card shell (accent + padded body, `content` block); root of `Checkout:Summary` — [summary-box.md](../features/summary-box.md) |
 | Page:Title (class-backed) | UX + `vi_cva`; `meta` is `array<string, PageTitleMeta>` (`label`, optional `icon`); `{% block meta_item %}` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Confirm (+ Main / Tos / Comment) + Checkout:Aside + Checkout:Summary + Checkout:Additions + Checkout:Methods + Payment:Selection + Checkout:Method:Form | Anonymous UX; confirm page composer; method rows are `Form:Selection` — [checkout-confirm.md](../features/checkout-confirm.md) |
+| Captcha (class-backed) + Captcha:Basic / Honeypot / GoogleReCaptchaV2 / GoogleReCaptchaV3 | UX + `vi_cva`; `Captcha.php` resolves the active captchas from system config, children are anonymous — [captcha.md](../features/captcha.md) |
 | Checkout:Confirm:Title (class-backed) | UX + `vi_cva`; email, item count, and arrival in `Title.php`; fills `Page:Title` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Checkout:Addresses (class-backed) | UX + `vi_cva`; section and `checkout.confirmAddresses` title in Twig; cards in `Addresses.php`; lines are `Address` — [checkout-confirm.md](../features/checkout-confirm.md) |
 | Shipping:Selection (class-backed) | UX + `vi_cva`; rows, quotes, trailing label, and the physical gate in `Selection.php` — [checkout-confirm.md](../features/checkout-confirm.md) |

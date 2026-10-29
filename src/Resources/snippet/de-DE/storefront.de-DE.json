@@ -42,6 +42,7 @@
         },
         "account": {
             "loginRegisterDescription": "Melden Sie sich an oder erstellen Sie ein Konto, um schneller zu bestellen und Ihre Bestellungen im Blick zu behalten.",
+            "personalHeading": "Persönliche Daten",
             "tabLogin": "Anmelden",
             "tabRegister": "Registrieren",
             "addressChoose": "Adresse auswählen",
