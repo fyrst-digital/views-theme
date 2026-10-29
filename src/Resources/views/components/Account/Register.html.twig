@@ -151,15 +151,17 @@
 
                 {% block footer %}
                     <div {{ vi_attrs('footer') }} class="{{ vi_class('footer') }}">
+                        <div class="{{ vi_class('requiredHint') }}">
+                            {{ 'general.requiredFields'|trans|sw_sanitize }}
+                        </div>
+
+
                         <twig:ViewsTheme:Privacy:Note
                             class="{{ vi_class('privacy') }}"
                             {{ ...vi_attrs('privacy').defaults({
                                 formViolations: formViolations,
                             }).all() }}
                         />
-                        <div class="{{ vi_class('requiredHint') }}">
-                            {{ 'general.requiredFields'|trans|sw_sanitize }}
-                        </div>
 
                         {% block submit %}
                             <twig:ViewsTheme:Button
