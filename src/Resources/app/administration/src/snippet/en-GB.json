@@ -37,6 +37,17 @@
             }
           }
         }
+      },
+      "sections": {
+        "layout": {
+          "title": "Layout",
+          "gap": "Gap (px)",
+          "mobile": "Mobile",
+          "tablet": "Tablet",
+          "desktop": "Desktop",
+          "helpText": "Applies to the device selected in the editor toolbar. Space between the blocks of a default section, or between the sidebar and the main column. Leave empty to inherit the smaller viewport.",
+          "themeOnlyInfo": "These settings are specific to Views Theme (or themes based on it). They have no effect with other storefront themes."
+        }
       }
     }
   }

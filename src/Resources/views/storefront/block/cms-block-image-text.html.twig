@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-text.html.twig' %}
+
+{% block block_image_text %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:6" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:6" />
+{% endblock %}

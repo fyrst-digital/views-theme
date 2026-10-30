@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-form.html.twig' %}
+
+{% block block_form %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="content" span="md:12" />
+{% endblock %}

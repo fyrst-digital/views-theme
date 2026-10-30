@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-gallery-buybox.html.twig' %}
+
+{% block block_gallery_buybox %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:12-lg:7" class="product-detail-media" :includeVars="{ startIndexThumbnails: 1, startIndexSlider: 1 }" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:12-lg:5" class="product-detail-buy" />
+{% endblock %}

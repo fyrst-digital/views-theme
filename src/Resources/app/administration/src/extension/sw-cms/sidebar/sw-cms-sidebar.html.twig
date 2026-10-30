@@ -1,0 +1,42 @@
+{% block sw_cms_sidebar_section_settings_content %}
+{% parent %}
+
+{% block vi_cms_sidebar_section_layout_settings %}
+    <sw-sidebar-collapse :expand-on-loading="false">
+        {% block vi_cms_sidebar_section_layout_settings_header %}
+            <template #header>
+                <span>{{ $t('viewsTheme.sw-cms.sections.layout.title') }}</span>
+            </template>
+        {% endblock %}
+
+        {% block vi_cms_sidebar_section_layout_settings_form %}
+            <template #content>
+                <div
+                    :style="{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        padding: '25px',
+                    }"
+                >
+                    <mt-banner variant="info">
+                        {{ $t('viewsTheme.sw-cms.sections.layout.themeOnlyInfo') }}
+                    </mt-banner>
+
+                    <mt-number-field
+                        :key="sectionGapViewport"
+                        :model-value="getSectionGap(sectionGapViewport)"
+                        :label="sectionGapLabel"
+                        :placeholder="sectionGapPlaceholder"
+                        :help-text="$t('viewsTheme.sw-cms.sections.layout.helpText')"
+                        number-type="int"
+                        allow-empty
+                        :min="0"
+                        @update:model-value="(value) => onSectionGapChange(sectionGapViewport, value)"
+                    />
+                </div>
+            </template>
+        {% endblock %}
+    </sw-sidebar-collapse>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% props cva = {} %}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root') }}"
+    columns="1"
+    {{ ...attributes.all() }}
+>
+    <twig:block name="content">
+        {% vi_block content %}{% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-four-column.html.twig' %}
+
+{% block block_image_four_column %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:3" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="center-left" span="md:3" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="center-right" span="md:3" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:3" />
+{% endblock %}

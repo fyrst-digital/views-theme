@@ -510,6 +510,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Review:Rating (class-backed) | UX + `vi_cva` + `Rating.php` → `starIcons` |
 | Review:Matrix (class-backed) + Matrix:Check / Bar / Share | UX + `vi_cva` + `Matrix.php` → `rows` / `visible`; Bar → Progress |
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
+| Cms:Sections / Section (+ Default / Sidebar) / Block / Element | Anonymous UX + `vi_cva`; CMS page layout on `Grid` only (no `.row` / `.col-*`); core page / section / block templates bridged — [cms.md](../features/cms.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
 | Legacy `vi_define_classes` / `defaultBaseClasses` API | **Removed** |

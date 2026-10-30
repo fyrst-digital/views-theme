@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-text-row.html.twig' %}
+
+{% block block_image_text_row %}
+    <twig:ViewsTheme:Cms:Element :block="block" span="md:4">
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="left-image" />
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="left-text" />
+    </twig:ViewsTheme:Cms:Element>
+    <twig:ViewsTheme:Cms:Element :block="block" span="md:4">
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="center-image" />
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="center-text" />
+    </twig:ViewsTheme:Cms:Element>
+    <twig:ViewsTheme:Cms:Element :block="block" span="md:4">
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="right-image" />
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="right-text" />
+    </twig:ViewsTheme:Cms:Element>
+{% endblock %}

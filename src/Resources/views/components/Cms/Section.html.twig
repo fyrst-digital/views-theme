@@ -1,0 +1,51 @@
+{% props
+    section,
+    visibility = section.visibility|default({ mobile: true, tablet: true, desktop: true }),
+    backgroundColor = section.backgroundColor,
+    backgroundImage = section.backgroundMedia|sw_encode_media_url,
+    gapMobile = section.customFields.viewsTheme.layout.gap.mobile|default(null),
+    gapTablet = section.customFields.viewsTheme.layout.gap.tablet|default(null),
+    gapDesktop = section.customFields.viewsTheme.layout.gap.desktop|default(null),
+    cva = {},
+%}
+
+{% set gaps = {} %}
+{% for viewport, value in { mobile: gapMobile, tablet: gapTablet, desktop: gapDesktop } %}
+    {% if value is not null and (value ~ '') matches '/^-?\\d+(\\.\\d+)?$/' %}
+        {% set gaps = gaps|merge({ (viewport): max(value|round, 0)|number_format(0, '', '') }) %}
+    {% endif %}
+{% endfor %}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-cms-section-id': gaps is not empty ? section.id : false,
+        style: (backgroundColor ? 'background-color: ' ~ backgroundColor ~ ';' : '')
+            ~ (backgroundImage ? 'background-image: url(' ~ backgroundImage ~ ');background-size: ' ~ section.backgroundMediaMode ~ ';' : '')
+            ?: false,
+    }) }}
+    class="{{ vi_class('root', {
+        image: backgroundImage is not empty,
+        color: backgroundColor is not empty,
+        mobile: visibility.mobile,
+        tablet: visibility.tablet,
+        desktop: visibility.desktop,
+    }) }}"
+>
+    {% if gaps is not empty %}
+        <style>
+            {%- if gaps.mobile is defined %}
+            [data-cms-section-id="{{ section.id }}"] { --vi-cms-section-gap: {{ gaps.mobile }}px; }
+            {%- endif %}
+            {%- if gaps.tablet is defined %}
+            @media (min-width: {{ theme_config('breakpoint.md') }}px) { [data-cms-section-id="{{ section.id }}"] { --vi-cms-section-gap: {{ gaps.tablet }}px; } }
+            {%- endif %}
+            {%- if gaps.desktop is defined %}
+            @media (min-width: {{ theme_config('breakpoint.lg') }}px) { [data-cms-section-id="{{ section.id }}"] { --vi-cms-section-gap: {{ gaps.desktop }}px; } }
+            {%- endif %}
+        </style>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>

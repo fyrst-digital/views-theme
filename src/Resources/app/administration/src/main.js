@@ -1,3 +1,4 @@
+import './extension/sw-cms/sidebar';
 import './extension/sw-cms/elements/product-listing';
 import './extension/sw-cms/elements/product-description-reviews';
 import enGB from './snippet/en-GB.json';

@@ -1,0 +1,25 @@
+{
+    root: {
+        base: 'vi-cms-section-sidebar cms-section-sidebar',
+        variants: {
+            sizing: {
+                container: 'container',
+                boxed: 'boxed',
+                'full-width': 'full-width',
+            },
+            mobileBehavior: {
+                wrap: 'cms-section-sidebar-mobile-wrap',
+                hidden: 'cms-section-sidebar-mobile-hidden',
+            },
+        },
+    },
+    sidebar: {
+        base: 'vi-cms-section-sidebar__sidebar cms-section-sidebar-sidebar-content g-col-lg-4 g-col-xl-3',
+        variants: {
+            mobileBehavior: {
+                hidden: 'd-none d-lg-block',
+            },
+        },
+    },
+    main: { base: 'vi-cms-section-sidebar__main cms-section-sidebar-main-content g-col-lg-8 g-col-xl-9' },
+}

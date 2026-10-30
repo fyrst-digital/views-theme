@@ -9,7 +9,7 @@
 
 <div
     {{ attributes.defaults({
-        role: role,
+        role: role ?: false,
     }) }}
     class="{{ vi_class('root', { gap: gap }|merge(columns is null ? {} : { columns: columns })) }}"
 >

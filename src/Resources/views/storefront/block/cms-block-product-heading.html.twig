@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-product-heading.html.twig' %}
+
+{% block block_product_heading %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:9" class="product-heading-name-container" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:3" class="product-heading-manufacturer-logo-container" />
+{% endblock %}

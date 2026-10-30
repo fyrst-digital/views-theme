@@ -82,6 +82,7 @@ Full index: [docs/README.md](docs/README.md).
 | Tabs | [docs/features/tabs.md](docs/features/tabs.md) |
 | Accordion | [docs/features/accordion.md](docs/features/accordion.md) |
 | Grid | [docs/features/grid.md](docs/features/grid.md) |
+| CMS layout (sections, blocks; grid only) | [docs/features/cms.md](docs/features/cms.md) |
 | Stepper | [docs/features/stepper.md](docs/features/stepper.md) |
 | Summary box (shared shell) | [docs/features/summary-box.md](docs/features/summary-box.md) |
 | Filters | [docs/features/filters.md](docs/features/filters.md) |

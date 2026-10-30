@@ -363,6 +363,42 @@
         "value": "12",
         "editable": false,
         "order": 100
+      },
+      "sw-breakpoint-xs": {
+        "type": "number",
+        "value": 0,
+        "editable": false,
+        "order": 100
+      },
+      "sw-breakpoint-sm": {
+        "type": "number",
+        "value": 520,
+        "editable": false,
+        "order": 100
+      },
+      "sw-breakpoint-md": {
+        "type": "number",
+        "value": 768,
+        "editable": false,
+        "order": 100
+      },
+      "sw-breakpoint-lg": {
+        "type": "number",
+        "value": 1024,
+        "editable": false,
+        "order": 100
+      },
+      "sw-breakpoint-xl": {
+        "type": "number",
+        "value": 1260,
+        "editable": false,
+        "order": 100
+      },
+      "sw-breakpoint-xxl": {
+        "type": "number",
+        "value": 1600,
+        "editable": false,
+        "order": 100
       }
     }
   }

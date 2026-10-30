@@ -1,0 +1,14 @@
+{
+    root: {
+        base: 'vi-cms-block cms-block cms-block-' ~ block.type ~ ' pos-' ~ block.position ~ ' ' ~ block.cssClass ~ ' position-relative',
+        variants: {
+            image: { true: 'bg-image' },
+            color: { true: 'bg-color' },
+            mobile: { false: 'hidden-mobile' },
+            tablet: { false: 'hidden-tablet' },
+            desktop: { false: 'hidden-desktop' },
+        },
+    },
+    container: { base: 'vi-cms-block__container cms-block-container position-relative' },
+    grid: { base: 'vi-cms-block__grid cms-block-container-row' },
+}

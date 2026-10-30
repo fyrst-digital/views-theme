@@ -1,0 +1,7 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+
+{% block section_content_block %}
+    <twig:ViewsTheme:Cms:Block :block="block">
+        {% sw_include '@Storefront/storefront/block/cms-block-' ~ block.type ~ '.html.twig' ignore missing %}
+    </twig:ViewsTheme:Cms:Block>
+{% endblock %}

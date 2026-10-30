@@ -37,6 +37,17 @@
             }
           }
         }
+      },
+      "sections": {
+        "layout": {
+          "title": "Layout",
+          "gap": "Abstand (px)",
+          "mobile": "Mobil",
+          "tablet": "Tablet",
+          "desktop": "Desktop",
+          "helpText": "Gilt für das in der Editor-Leiste gewählte Gerät. Abstand zwischen den Blöcken einer Standard-Sektion bzw. zwischen Sidebar und Hauptspalte. Leer lassen, um den Wert des kleineren Viewports zu übernehmen.",
+          "themeOnlyInfo": "Diese Einstellungen gelten nur für das Views Theme (oder darauf basierende Themes). Bei anderen Storefront-Themes haben sie keine Wirkung."
+        }
       }
     }
   }

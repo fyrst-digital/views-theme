@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-sidebar.html.twig' %}
+
+{% block page_content_section_sidebar %}
+    <twig:ViewsTheme:Cms:Section:Sidebar :section="section">
+        <twig:block name="sidebar">
+            {% for block in section.blocks.filterBySectionPosition('sidebar') %}
+                {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+            {% endfor %}
+        </twig:block>
+
+        <twig:block name="main">
+            {% for block in section.blocks.filterBySectionPosition('main') %}
+                {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+            {% endfor %}
+        </twig:block>
+    </twig:ViewsTheme:Cms:Section:Sidebar>
+{% endblock %}

@@ -1,0 +1,7 @@
+.vi-cms-section-default {
+    gap: var(--vi-cms-section-gap, 0);
+}
+
+.vi-cms-section-sidebar {
+    gap: var(--vi-cms-section-gap, 24px);
+}

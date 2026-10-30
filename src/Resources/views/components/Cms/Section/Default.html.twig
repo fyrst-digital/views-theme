@@ -1,0 +1,18 @@
+{% props
+    section,
+    sizing = section.sizingMode|default('container')|replace({'_': '-'}),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root', { sizing: sizing }) }}"
+    columns="1"
+    gap="custom"
+    {{ ...attributes.all() }}
+>
+    <twig:block name="content">
+        {% vi_block content %}{% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Grid>

@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-text-teaser-section.html.twig' %}
+
+{% block block_text_teaser_section %}
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:4" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:8" />
+{% endblock %}

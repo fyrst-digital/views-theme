@@ -1,0 +1,32 @@
+{% props
+    section,
+    sizing = section.sizingMode|default('container')|replace({'_': '-'}),
+    mobileBehavior = section.mobileBehavior|default('wrap'),
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['sidebar', 'main']) %}
+
+<twig:ViewsTheme:Grid
+    class="{{ vi_class('root', { sizing: sizing, mobileBehavior: mobileBehavior }) }}"
+    columns="1-lg:12"
+    gap="custom"
+    {{ ...attributes.all() }}
+>
+    <twig:block name="content">
+        <div
+            {{ vi_attrs('sidebar') }}
+            class="{{ vi_class('sidebar', { mobileBehavior: mobileBehavior }) }}"
+        >
+            {% vi_block sidebar %}{% endvi_block %}
+        </div>
+
+        <div
+            {{ vi_attrs('main') }}
+            class="{{ vi_class('main') }}"
+        >
+            {% vi_block main %}{% endvi_block %}
+        </div>
+    </twig:block>
+</twig:ViewsTheme:Grid>
