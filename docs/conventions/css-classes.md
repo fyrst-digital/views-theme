@@ -42,6 +42,8 @@ CVA is the **variant API**, not a bag for a BEM root. Check CVA first. Component
 
 SoT: `src/Resources/app/storefront/src/scss/override.scss` (`$grid-breakpoints`).
 
+Twig sees them through `theme_config('breakpoint.{xs…xxl}')` (media queries in templates, `window.breakpoints`). Shopware reads them from the `sw-breakpoint-*` fields, so `src/Resources/theme.json` **must mirror** `$grid-breakpoints` (0 / 520 / 768 / 1024 / 1260 / 1600). Change both together, then refresh the theme config.
+
 | Token | Width |
 |-------|-------|
 | `sm` | 520px |

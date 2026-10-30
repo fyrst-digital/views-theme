@@ -11,15 +11,21 @@
 
 {% do vi_define_cva(cva) %}
 
-<div
-    {{ attributes.defaults({
-        'data-cms-element-id': elementId,
-    }) }}
-    class="{{ vi_class('root', { span: span, sidebar: span is not null and sidebar }) }}"
->
+{% set body %}
     {% block content %}
         {% if element %}
             {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing with includeVars %}
         {% endif %}
     {% endblock %}
-</div>
+{% endset %}
+
+{% if body|trim is not empty %}
+    <div
+        {{ attributes.defaults({
+            'data-cms-element-id': elementId,
+        }) }}
+        class="{{ vi_class('root', { span: span, sidebar: span is not null and sidebar }) }}"
+    >
+        {{ body }}
+    </div>
+{% endif %}

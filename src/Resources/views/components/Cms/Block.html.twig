@@ -12,6 +12,9 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['container', 'grid']) %}
 
+{% set body %}{% block content %}{% endblock %}{% endset %}
+
+{% if body|trim is not empty %}
 <div
     {{ attributes.defaults({
         style: backgroundColor ? 'background-color: ' ~ backgroundColor : false,
@@ -58,8 +61,9 @@
             }).all() }}
         >
             <twig:block name="content">
-                {% vi_block content %}{% endvi_block %}
+                {{ body }}
             </twig:block>
         </twig:ViewsTheme:Grid>
     </div>
 </div>
+{% endif %}

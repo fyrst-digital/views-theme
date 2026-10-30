@@ -1,7 +1,7 @@
 {% sw_extends '@Storefront/storefront/block/cms-block-image-highlight-row.html.twig' %}
 
 {% block block_image_highlight_row %}
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left" span="md:4" />
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="center" span="md:4" />
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right" span="md:4" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:4" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="center" span="md:4" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:4" />
 {% endblock %}

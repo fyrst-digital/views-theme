@@ -1,11 +1,11 @@
 {% sw_extends '@Storefront/storefront/block/cms-block-image-simple-grid.html.twig' %}
 
 {% block block_image_simple_grid %}
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:6">
-        <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left-top" class="left-top" />
-        <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left-bottom" class="left-bottom" />
-    </twig:ViewsTheme:Cms:Block:Cell>
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:6">
-        <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right" class="right" />
-    </twig:ViewsTheme:Cms:Block:Cell>
+    <twig:ViewsTheme:Cms:Element :block="block" span="md:6">
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="left-top" class="left-top" />
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="left-bottom" class="left-bottom" />
+    </twig:ViewsTheme:Cms:Element>
+    <twig:ViewsTheme:Cms:Element :block="block" span="md:6">
+        <twig:ViewsTheme:Cms:Element :block="block" slotName="right" class="right" />
+    </twig:ViewsTheme:Cms:Element>
 {% endblock %}

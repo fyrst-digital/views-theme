@@ -1,6 +1,6 @@
 {% sw_extends '@Storefront/storefront/block/cms-block-text-two-column.html.twig' %}
 
 {% block block_text_two_column %}
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left" span="md:6" />
-    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right" span="md:6" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:6" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:6" />
 {% endblock %}

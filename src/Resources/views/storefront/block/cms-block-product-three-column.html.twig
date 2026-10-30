@@ -6,7 +6,7 @@
     {% for slotName in ['left', 'center', 'right'] %}
         {% set slotElement = block.slots.getSlot(slotName) %}
         {% if slotElement.type not in productElementTypes or slotElement.data.products or slotElement.data.product %}
-            <twig:ViewsTheme:Cms:Block:Cell :block="block" :slotName="slotName" span="md:4" />
+            <twig:ViewsTheme:Cms:Element :block="block" :slotName="slotName" span="md:4" />
         {% endif %}
     {% endfor %}
 {% endblock %}

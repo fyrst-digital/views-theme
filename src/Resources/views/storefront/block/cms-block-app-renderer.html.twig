@@ -1,6 +1,6 @@
 {% set appTwigBlockName = "block_app_renderer_#{block.customFields.appBlockName}"|replace({'-': '_'}) %}
 
-<twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:12">
+<twig:ViewsTheme:Cms:Element :block="block" span="md:12">
     {% if sw_block(appTwigBlockName) is defined %}
         {{ sw_block(appTwigBlockName) }}
     {% else %}
@@ -9,7 +9,7 @@
             style="display: grid; grid: {{ block.customFields.slotLayout.grid }};"
         >
             {% for slot in block.slots %}
-                <twig:ViewsTheme:Cms:Block:Cell
+                <twig:ViewsTheme:Cms:Element
                     :block="block"
                     :slotName="slot.slot"
                     class="cms-block-app-renderer-fallback-slot-{{ block.slots.getSlot(slot.slot).type }}"
@@ -17,4 +17,4 @@
             {% endfor %}
         </div>
     {% endif %}
-</twig:ViewsTheme:Cms:Block:Cell>
+</twig:ViewsTheme:Cms:Element>
