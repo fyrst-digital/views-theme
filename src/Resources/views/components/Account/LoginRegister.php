@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Account\Register;
+namespace Fyrst\ViewsTheme\Resources\views\components\Account;
 
 use Fyrst\ViewsTheme\Service\ComponentData;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -10,10 +10,10 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Account:Register:Page — which tab is active and the ids/slugs that wire tabs to panels.
+ * View-model for Account:LoginRegister — the shared login / register tabs (register page and checkout register): which tab is active and the ids/slugs that wire tabs to panels.
  */
 #[AsTwigComponent]
-class Page
+class LoginRegister
 {
     public const TAB_PARAM = 'action';
 
@@ -30,6 +30,10 @@ class Page
     public mixed $waitTime = null;
 
     public string $redirectTo = 'frontend.account.home.page';
+
+    public string $registerErrorRoute = 'frontend.account.register.page';
+
+    public bool $guestSelectable = false;
 
     public mixed $redirectParameters = null;
 

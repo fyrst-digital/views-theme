@@ -4,39 +4,49 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['heading', 'summary', 'items']) %}
+{% do vi_define_attrs(['box', 'heading', 'summary', 'items']) %}
 
 <aside
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
-    {% block heading %}
-        <h2
-            {{ vi_attrs('heading') }}
-            class="{{ vi_class('heading') }}"
+    {% block box %}
+        <twig:ViewsTheme:Summary:Box
+            class="{{ vi_class('box') }}"
+            {{ ...vi_attrs('box').all() }}
         >
-            {{ 'checkout.cartHeader'|trans|sw_sanitize }}
-        </h2>
-    {% endblock %}
+            <twig:block name="content">
+                {% vi_block heading %}
+                    <h2
+                        {{ vi_attrs('heading') }}
+                        class="{{ vi_class('heading') }}"
+                    >
+                        {{ 'checkout.cartHeader'|trans|sw_sanitize }}
+                    </h2>
+                {% endvi_block %}
 
-    {% block summary %}
-        <twig:ViewsTheme:Cart:Summary
-            class="{{ vi_class('summary') }}"
-            {{ ...vi_attrs('summary').defaults({
-                summary: page.cart,
-            }).all() }}
-        />
-    {% endblock %}
+                {% vi_block summary %}
+                    <twig:ViewsTheme:Cart:Summary
+                        class="{{ vi_class('summary') }}"
+                        {{ ...vi_attrs('summary').defaults({
+                            summary: page.cart,
+                        }).all() }}
+                    />
+                {% endvi_block %}
 
-    {% block items %}
-        <twig:ViewsTheme:Cart:Items
-            class="{{ vi_class('items') }}"
-            {{ ...vi_attrs('items').defaults({
-                cart: page.cart,
-                layout: 'stacked',
-                showRemoveButton: false,
-                showQuantitySelect: false,
-            }).all() }}
-        />
+                {% vi_block items %}
+                    <twig:ViewsTheme:Cart:Items
+                        class="{{ vi_class('items') }}"
+                        {{ ...vi_attrs('items').defaults({
+                            cart: page.cart,
+                            layout: 'stacked',
+                            showRemoveButton: false,
+                            showQuantitySelect: false,
+                            'item:footer:quantity:cva': { label: 'vi-line-item-quantity__label text-muted' },
+                        }).all() }}
+                    />
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Summary:Box>
     {% endblock %}
 </aside>

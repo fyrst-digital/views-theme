@@ -94,7 +94,7 @@ One look for every consumer — set on the atomic components, **not** per consum
 |-------|-----|
 | `Cms:DescriptionReviews` (`appearance=tabs`, default) | [review.md](review.md) |
 | `Address:Manager:View` | [address-manager.md](address-manager.md) |
-| `Account:Register:Page` | [account.md](account.md) |
+| `Account:LoginRegister` (register page, checkout register) | [account.md](account.md) |
 
 ## Related
 

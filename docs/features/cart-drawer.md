@@ -126,13 +126,13 @@ LineItem:Product
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name, then the delivery window. Name is `d-inline` here (`Product:Name` stays `d-inline-flex` elsewhere). `header:name:class` appends on Header, then that string replaces `Product:Name`’s root |
-| `LineItem:Body` | Variations / features |
+| `LineItem:Body` | Variations / features. Props are `options` and `features` only (not the line item). `LineItem:Product` reads them from the payload and mounts Body only when at least one is non-empty, so no empty wrapper is rendered |
 | `LineItem:Footer` | `LineItem:Actions` or `LineItem:Quantity`, then the line total. Never both. Actions when `showQuantitySelect` and `showRemoveButton` are true, `nestingLevel < 1`, and the line item has `quantityInformation`, is `stackable`, and is `removable`. Otherwise the plain number. `stacked` stays that flex row at every width (total `ms-auto`). `table` below `lg` is the same flex row. The stepper and remove stay one group when the footer wraps. From `lg`, the table-layout line item root is `d-lg-contents` and the footer is `display: contents`, so cover, content, qty, and price are cells of `LineItems:Table`. The row rule is a sibling `Divider` on the table (`itemLine`), at every viewport, not after the last row |
 | `LineItem:Price` | Line total (`totalPrice\|currency`); skip delivery-discount scope — not `Product:Price` |
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
 | `Product:Variations` | `payload.options`. Each badge is `group: option` (for example `Color: Oat`). An empty `group` shows the option alone |
-| `LineItem:Features` | `payload.features` |
+| `LineItem:Features` | `features` prop (from `payload.features`) |
 | `LineItem:DeliveryDate` | Delivery window when configured. In the header, under the name, in every layout including `table` below `lg` |
 | `LineItem:Actions` | Flex group. Always renders `QuantityInput` and `Remove` |
 | `LineItem:Quantity` | Plain quantity. No JS. Below `lg` the label is “Quantity” (`viewsTheme.lineItems.quantityLabel`) beside a `fw-semibold` amount; from `lg` only the amount shows |

@@ -2,7 +2,7 @@
 
 `Summary:Box` is the shared card shell for summary-like asides: white surface, border, 12px radius, a coral accent bar, and a padded column body. It is shell only. It holds no content, JS, or `data-component`.
 
-Consumers: [`Checkout:Summary`](checkout-confirm.md) (confirm page), the cart page aside, and `Checkout:Success:Aside` ([success page](checkout-success.md)).
+Consumers: [`Checkout:Summary`](checkout-confirm.md) (confirm page), the cart page aside, `Checkout:Success:Aside` ([success page](checkout-success.md)), and `Checkout:Register:Aside` ([register](checkout-register.md)).
 
 ## Ownership
 

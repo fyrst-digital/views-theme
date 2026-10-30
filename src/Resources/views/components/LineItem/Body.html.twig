@@ -1,9 +1,9 @@
 {% props
-    lineItem,
+    options = [],
+    features = [],
     cva = {},
 %}
 
-{% set options = lineItem.payload.options ?? [] %}
 {% do vi_define_cva(cva) %}
 
 {% do vi_define_attrs(['variations', 'features']) %}
@@ -26,7 +26,7 @@
     {% block features %}
         <twig:ViewsTheme:LineItem:Features
             {{ ...vi_attrs('features').defaults({
-                lineItem: lineItem,
+                features: features,
             }).all() }}
         />
     {% endblock %}

@@ -15,6 +15,8 @@
 {% do vi_define_attrs(['cover', 'content', 'header', 'body', 'footer']) %}
 
 {% set label = lineItem.label|trans|sw_sanitize %}
+{% set options = lineItem.payload.options ?? [] %}
+{% set features = lineItem.payload.features ?? [] %}
 {% set productLink = lineItem.type is same as('product')
     ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId })
     : null %}
@@ -59,11 +61,14 @@
                 }).all() }}
             />
 
-            <twig:ViewsTheme:LineItem:Body
-                {{ ...vi_attrs('body').defaults({
-                    lineItem: lineItem,
-                }).all() }}
-            />
+            {% if options is not empty or features is not empty %}
+                <twig:ViewsTheme:LineItem:Body
+                    {{ ...vi_attrs('body').defaults({
+                        options: options,
+                        features: features,
+                    }).all() }}
+                />
+            {% endif %}
         </twig:ViewsTheme:LineItem:Content>
     {% endblock %}
 
