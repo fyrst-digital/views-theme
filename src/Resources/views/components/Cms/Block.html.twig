@@ -1,0 +1,65 @@
+{% props
+    block,
+    visibility = block.visibility|default({ mobile: true, tablet: true, desktop: true }),
+    backgroundColor = block.backgroundColor,
+    sidebar = block.sectionPosition == 'sidebar',
+    cva = {},
+%}
+
+{% set margins = [block.marginTop, block.marginRight, block.marginBottom, block.marginLeft] %}
+{% set contentSlot = block.slots.elements|filter(slot => slot.slot == 'content' and slot.config.media.value|default(null))|first %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['container', 'grid']) %}
+
+<div
+    {{ attributes.defaults({
+        style: backgroundColor ? 'background-color: ' ~ backgroundColor : false,
+    }) }}
+    class="{{ vi_class('root', {
+        image: block.backgroundMedia is not empty,
+        color: backgroundColor is not empty,
+        mobile: visibility.mobile,
+        tablet: visibility.tablet,
+        desktop: visibility.desktop,
+    }) }}"
+>
+    {% block background %}
+        {% if block.backgroundMedia %}
+            {% sw_thumbnails 'cms-block-background' with {
+                media: block.backgroundMedia,
+                autoColumnSizes: false,
+                attributes: {
+                    class: 'cms-block-background media-mode--' ~ block.backgroundMediaMode
+                }
+            } %}
+        {% elseif block.type == 'text-on-image' and contentSlot %}
+            <img
+                src="{{ asset(contentSlot.config.media.value) }}"
+                class="cms-block-background media-mode--{{ block.backgroundMediaMode|default('cover') }}"
+                alt=""
+            >
+        {% endif %}
+    {% endblock %}
+
+    <div
+        {{ vi_attrs('container').defaults({
+            style: margins|filter(margin => margin)|length
+                ? 'padding: ' ~ margins|map(margin => margin ?: 0)|join(' ') ~ ';'
+                : false,
+        }) }}
+        class="{{ vi_class('container') }}"
+    >
+        <twig:ViewsTheme:Grid
+            class="{{ vi_class('grid') }}"
+            {{ ...vi_attrs('grid').defaults({
+                columns: sidebar ? '1-md:12-lg:1' : '1-md:12',
+                gap: block.type == 'image-three-cover' ? false : 'lg',
+            }).all() }}
+        >
+            <twig:block name="content">
+                {% vi_block content %}{% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Grid>
+    </div>
+</div>

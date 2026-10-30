@@ -1,0 +1,12 @@
+{
+    root: {
+        base: 'vi-cms-section cms-section pos-' ~ section.position ~ ' cms-section-' ~ section.type ~ ' ' ~ section.cssClass,
+        variants: {
+            image: { true: 'bg-image' },
+            color: { true: 'bg-color' },
+            mobile: { false: 'hidden-mobile' },
+            tablet: { false: 'hidden-tablet' },
+            desktop: { false: 'hidden-desktop' },
+        },
+    },
+}

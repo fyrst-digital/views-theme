@@ -1,0 +1,26 @@
+{% props
+    section,
+    visibility = section.visibility|default({ mobile: true, tablet: true, desktop: true }),
+    backgroundColor = section.backgroundColor,
+    backgroundImage = section.backgroundMedia|sw_encode_media_url,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        style: (backgroundColor ? 'background-color: ' ~ backgroundColor ~ ';' : '')
+            ~ (backgroundImage ? 'background-image: url(' ~ backgroundImage ~ ');background-size: ' ~ section.backgroundMediaMode ~ ';' : '')
+            ?: false,
+    }) }}
+    class="{{ vi_class('root', {
+        image: backgroundImage is not empty,
+        color: backgroundColor is not empty,
+        mobile: visibility.mobile,
+        tablet: visibility.tablet,
+        desktop: visibility.desktop,
+    }) }}"
+>
+    {% block content %}{% endblock %}
+</div>

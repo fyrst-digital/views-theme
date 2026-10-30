@@ -1,0 +1,25 @@
+{% props
+    block,
+    slotName = null,
+    span = null,
+    includeVars = {},
+    sidebar = block.sectionPosition == 'sidebar',
+    element = slotName ? block.slots.getSlot(slotName) : null,
+    elementId = element ? element.id : false,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<div
+    {{ attributes.defaults({
+        'data-cms-element-id': elementId,
+    }) }}
+    class="{{ vi_class('root', { span: span, sidebar: span is not null and sidebar }) }}"
+>
+    {% block content %}
+        {% if element %}
+            {% sw_include '@Storefront/storefront/element/cms-element-' ~ element.type ~ '.html.twig' ignore missing with includeVars %}
+        {% endif %}
+    {% endblock %}
+</div>

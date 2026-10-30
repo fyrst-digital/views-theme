@@ -1,0 +1,22 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-text-gallery.html.twig' %}
+
+{% block block_image_text_gallery %}
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:4">
+        <div class="image-text-gallery-card">
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left-image" />
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left-text" />
+        </div>
+    </twig:ViewsTheme:Cms:Block:Cell>
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:4">
+        <div class="image-text-gallery-card">
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="center-image" />
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="center-text" />
+        </div>
+    </twig:ViewsTheme:Cms:Block:Cell>
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" span="md:4">
+        <div class="image-text-gallery-card">
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right-image" />
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right-text" />
+        </div>
+    </twig:ViewsTheme:Cms:Block:Cell>
+{% endblock %}

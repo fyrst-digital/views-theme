@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/section/cms-section-default.html.twig' %}
+
+{% block page_content_section_default %}
+    <twig:ViewsTheme:Cms:Section:Default :section="section">
+        {% for block in section.blocks %}
+            {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+        {% endfor %}
+    </twig:ViewsTheme:Cms:Section:Default>
+{% endblock %}

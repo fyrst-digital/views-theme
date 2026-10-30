@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-product-three-column.html.twig' %}
+
+{% block block_product_three_column %}
+    {% set productElementTypes = ['product-box', 'product-slider', 'buy-box'] %}
+
+    {% for slotName in ['left', 'center', 'right'] %}
+        {% set slotElement = block.slots.getSlot(slotName) %}
+        {% if slotElement.type not in productElementTypes or slotElement.data.products or slotElement.data.product %}
+            <twig:ViewsTheme:Cms:Block:Cell :block="block" :slotName="slotName" span="md:4" />
+        {% endif %}
+    {% endfor %}
+{% endblock %}

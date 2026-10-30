@@ -1,0 +1,5 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-text-teaser.html.twig' %}
+
+{% block block_text_teaser %}
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="content" span="md:12" />
+{% endblock %}

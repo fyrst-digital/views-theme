@@ -1,0 +1,7 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-three-cover.html.twig' %}
+
+{% block block_image_three_cover %}
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left" span="md:4" />
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="center" span="md:4" />
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right" span="md:4" />
+{% endblock %}

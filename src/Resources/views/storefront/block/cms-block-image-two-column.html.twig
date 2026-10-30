@@ -1,0 +1,6 @@
+{% sw_extends '@Storefront/storefront/block/cms-block-image-two-column.html.twig' %}
+
+{% block block_image_two_column %}
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="left" span="md:6" />
+    <twig:ViewsTheme:Cms:Block:Cell :block="block" slotName="right" span="md:6" />
+{% endblock %}
