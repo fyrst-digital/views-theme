@@ -11,7 +11,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['flashes', 'heading', 'body', 'main', 'login', 'register', 'aside']) %}
+{% do vi_define_attrs(['flashes', 'title', 'main', 'aside']) %}
 
 <div
     {{ attributes }}
@@ -24,63 +24,39 @@
         />
     {% endblock %}
 
-    {% block heading %}
-        <h1
-            {{ vi_attrs('heading') }}
-            class="{{ vi_class('heading') }}"
-        >
-            {{ 'checkout.addressHeader'|trans|sw_sanitize }}
-        </h1>
+    {% block title %}
+        <twig:ViewsTheme:Page:Title
+            class="{{ vi_class('title') }}"
+            {{ ...vi_attrs('title').defaults({
+                heading: 'checkout.addressHeader'|trans|striptags,
+            }).all() }}
+        />
     {% endblock %}
 
-    {% block body %}
-        <div
-            {{ vi_attrs('body') }}
-            class="{{ vi_class('body') }}"
-        >
-            {% block main %}
-                <div
-                    {{ vi_attrs('main') }}
-                    class="{{ vi_class('main') }}"
-                >
-                    {% block login %}
-                        <twig:ViewsTheme:Account:Login
-                            class="{{ vi_class('login') }}"
-                            {{ ...vi_attrs('login').defaults({
-                                redirectTo: redirectTo,
-                                redirectParameters: redirectParameters,
-                                loginError: loginError,
-                                errorSnippet: errorSnippet,
-                                waitTime: waitTime,
-                            }).all() }}
-                        />
-                    {% endblock %}
+    {% block main %}
+        <twig:ViewsTheme:Account:LoginRegister
+            class="{{ vi_class('main') }}"
+            {{ ...vi_attrs('main').defaults({
+                page: page,
+                data: data,
+                formViolations: formViolations,
+                loginError: loginError,
+                errorSnippet: errorSnippet,
+                waitTime: waitTime,
+                guestSelectable: true,
+                redirectTo: redirectTo,
+                redirectParameters: redirectParameters,
+                registerErrorRoute: 'frontend.checkout.register.page',
+            }).all() }}
+        />
+    {% endblock %}
 
-                    {% block register %}
-                        <twig:ViewsTheme:Account:Register
-                            class="{{ vi_class('register') }}"
-                            {{ ...vi_attrs('register').defaults({
-                                page: page,
-                                data: data,
-                                guestSelectable: true,
-                                redirectTo: redirectTo,
-                                redirectParameters: redirectParameters,
-                                errorRoute: 'frontend.checkout.register.page',
-                                formViolations: formViolations,
-                            }).all() }}
-                        />
-                    {% endblock %}
-                </div>
-            {% endblock %}
-
-            {% block aside %}
-                <twig:ViewsTheme:Checkout:Register:Aside
-                    class="{{ vi_class('aside') }}"
-                    {{ ...vi_attrs('aside').defaults({
-                        page: page,
-                    }).all() }}
-                />
-            {% endblock %}
-        </div>
+    {% block aside %}
+        <twig:ViewsTheme:Checkout:Register:Aside
+            class="{{ vi_class('aside') }}"
+            {{ ...vi_attrs('aside').defaults({
+                page: page,
+            }).all() }}
+        />
     {% endblock %}
 </div>

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Account\Register;
+namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Account;
 
-use Fyrst\ViewsTheme\Resources\views\components\Account\Register\Page;
+use Fyrst\ViewsTheme\Resources\views\components\Account\LoginRegister;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-final class PageTest extends TestCase
+final class LoginRegisterTest extends TestCase
 {
     #[DataProvider('registerActiveProvider')]
     public function testRegisterActive(Request $request, mixed $data, mixed $formViolations, bool $expected): void
@@ -62,11 +62,11 @@ final class PageTest extends TestCase
         };
     }
 
-    private function createComponent(Request $request): Page
+    private function createComponent(Request $request): LoginRegister
     {
         $stack = new RequestStack();
         $stack->push($request);
 
-        return new Page($stack);
+        return new LoginRegister($stack);
     }
 }

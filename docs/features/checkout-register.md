@@ -2,7 +2,7 @@
 
 Theme-owned `/checkout/register` (`frontend.checkout.register.page`). Core renders `storefront/page/checkout/address/index.html.twig` — not `checkout/register/`. Empty cart and logged-in redirects stay in core `RegisterController`.
 
-Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` / no island JS / no `/vi/…`**. Aside is read-only.
+Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` / no island JS / no `/vi/…`**. Aside is read-only. The layout mirrors [checkout confirm](checkout-confirm.md) and the cart page: one 8/12-track grid with flashes, title, main, and aside.
 
 ## Ownership
 
@@ -10,10 +10,11 @@ Unlike [cart page](cart-page.md), **`Checkout:Register` has no `data-component` 
 |-------|----------------|
 | Storefront bridge | `storefront/page/checkout/address/index.html.twig` → `base_esi_header` = `Page:Header:Minimal`; `page_checkout` = `Checkout:Register` |
 | `Page:Header:Minimal` | Inline header (no ESI). Full-bleed bar; inner `.container` owns the grid (`Page:Logo`, `Page:Support`, light `Button`). No min-height and no inline padding. `supportDisplay` stays `all`, so `Page:Support` shows at every width. Register passes `action="cart"` (`frontend.checkout.cart.page`, `checkout.backToCart`) |
-| `Checkout:Register` | Layout composer — flashes, h1, always-visible login, register, aside. Ambient `__context.formViolations` (and `data` / login errors) forwarded into `Account:Register` |
-| `Checkout:Register:Aside` | Sticky summary + stacked read-only line items |
-| `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) |
-| `Account:Register` | Register form (class VM, `guestSelectable`) |
+| `Checkout:Register` | Grid composer — `Cart:Flashes`, [`Page:Title`](checkout-confirm.md#pagetitle) (`checkout.addressHeader`), main, aside. Ambient `__context.formViolations` (and `data` / login errors) forwarded into the main tabs |
+| `Account:LoginRegister` | Shared Log in / Register [`Tabs`](tabs.md) card (class VM; also used by [`Account:Register:Page`](account.md)). Checkout passes `guestSelectable`, `registerErrorRoute`, `redirectTo` |
+| `Checkout:Register:Aside` | [`Summary:Box`](summary-box.md): cart heading, `Cart:Summary`, stacked read-only `Cart:Items` (quantity label shown at every width via a caller CVA replacement on `LineItem:Quantity`); the box is sticky from `xl` |
+| `Account:Login` | Login form (`Form:Handler`, `redirectTo` = confirm) — tab 1 |
+| `Account:Register` | Register form (class VM, `guestSelectable`) — tab 2 |
 | `Privacy:Note` | Register footer privacy copy (+ optional `acceptedDataProtection` checkbox) |
 | Footer | [`Page:Footer:Minimal`](footer.md) via `base_esi_footer` (inline, no ESI) |
 
@@ -28,20 +29,23 @@ page/checkout/address/index.html.twig
 │         ├─ Page:Logo
 │         ├─ Page:Support
 │         └─ Button (frontend.checkout.cart.page, checkout.backToCart)
-├─ page_checkout → Checkout:Register       (no data-component)
+├─ page_checkout → Checkout:Register       (no data-component; grid like Checkout:Confirm)
 │    ├─ Cart:Flashes
-│    ├─ heading (h1, checkout.addressHeader)
-│    ├─ Account:Login (always visible; redirectTo=frontend.checkout.confirm.page)
-│    ├─ Account:Register (guestSelectable, formViolations)
-│    └─ Checkout:Register:Aside
-│         ├─ Cart:Summary
-│         └─ Cart:Items stacked, showRemoveButton=false, showQuantitySelect=false
+│    ├─ Page:Title (checkout.addressHeader)
+│    ├─ main → Account:LoginRegister (bordered card, `?action=register` / violations pick the tab)
+│    │    ├─ tab Log in   → Account:Login (column; redirectTo=frontend.checkout.confirm.page)
+│    │    └─ tab Register → Account:Register (guestSelectable, errorRoute=frontend.checkout.register.page)
+│    └─ aside → Checkout:Register:Aside
+│         └─ Summary:Box (sticky xl)
+│              ├─ heading (checkout.cartHeader)
+│              ├─ Cart:Summary
+│              └─ Cart:Items stacked, showRemoveButton=false, showQuantitySelect=false
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`xl` / 1260px): main + sticky aside (`--vi-checkout-register-cols`). Aside `top` is `--vi-top` (`24px`). Mobile: stack.
+Grid (CVA, same tracks as confirm): one column; from `xl` 8 tracks (main 5, aside 3); from `xxl` 12 tracks (main 8, aside 4). Flashes and title span the full row. The aside box is `position-xl-sticky` with `top: var(--vi-top, 24px)` (`Aside.css`). Mobile: stack.
 
-Login is **always visible** — no collapse / Accordion.
+Login and Register are two tabs, not stacked forms. Log in is the default; the Register tab is active for `?action=register`, posted `data`, or register `formViolations` (`LoginRegister.php`).
 
 ## Account:Register
 
@@ -100,7 +104,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 | Bridge | Mount |
 |--------|--------|
-| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Tabs` → `Account:Login` (column) + `Account:Register` (no card title) |
+| `storefront/page/account/register/index.html.twig` | `Account:Register:Page` → `Account:LoginRegister` → `Account:Login` (column) + `Account:Register` (no card title) |
 | `storefront/component/account/register.html.twig` | `Account:Register` |
 | `storefront/component/account/customer-group-register.html.twig` | `Account:Register` + `requestedGroupId` |
 | `storefront/page/account/addressbook/create.html.twig` / `edit.html.twig` | `Account:Addressbook:Form` → `Address:Editor` |
@@ -112,7 +116,7 @@ Guest password, different-shipping, and company visibility use `Form:Toggle` (co
 
 ## Files
 
-`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Form/Personal.*` · `components/Account/Input/Birthday.*` · `components/Account/Input/Credentials.*` · `components/Privacy/Note.*` · `components/Address.{html.twig,cva.twig}` · `components/Address/{List,Form,Item,ItemActions,Editor}.*` · `components/Address/Input/{AccountType,Salutation,Title,Name,Company,Street,Postal,Country,Phone}.*` · `src/Service/ComponentData.php`
+`components/Checkout/Register.*` · `components/Checkout/Register/Aside.*` · `components/Account/LoginRegister.*` · `components/Page/Header/Minimal.*` · `components/Account/Register.*` · `components/Account/Form/Personal.*` · `components/Account/Input/Birthday.*` · `components/Account/Input/Credentials.*` · `components/Privacy/Note.*` · `components/Address.{html.twig,cva.twig}` · `components/Address/{List,Form,Item,ItemActions,Editor}.*` · `components/Address/Input/{AccountType,Salutation,Title,Name,Company,Street,Postal,Country,Phone}.*` · `src/Service/ComponentData.php`
 
 ## Related
 

@@ -1,9 +1,8 @@
 {% props
-    lineItem,
+    features = [],
     cva = {},
 %}
 
-{% set features = lineItem.payload.features ?? [] %}
 {% do vi_define_cva(cva) %}
 
 {% do vi_define_attrs(['item']) %}

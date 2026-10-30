@@ -1,0 +1,92 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['login', 'register']) %}
+
+<twig:ViewsTheme:Tabs
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        active: registerActive ? registerTabId : loginTabId,
+        param: tabParam,
+        label: 'account.loginRegistrationHeader'|trans|striptags,
+    }).all() }}
+>
+    <twig:block name="list">
+        <twig:ViewsTheme:Tabs:List
+            :cva="{ root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 p-4' }"
+        >
+            <twig:block name="content">
+                {% vi_block tab_login %}
+                    <twig:ViewsTheme:Tabs:Tab
+                        id="{{ loginTabId }}"
+                        panel="{{ loginPanelId }}"
+                        slug="{{ loginSlug }}"
+                        :active="not registerActive"
+                    >
+                        <twig:block name="content">
+                            {{ 'viewsTheme.account.tabLogin'|trans|sw_sanitize }}
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Tab>
+                {% endvi_block %}
+
+                {% vi_block tab_register %}
+                    <twig:ViewsTheme:Tabs:Tab
+                        id="{{ registerTabId }}"
+                        panel="{{ registerPanelId }}"
+                        slug="{{ registerSlug }}"
+                        :active="registerActive"
+                    >
+                        <twig:block name="content">
+                            {{ 'viewsTheme.account.tabRegister'|trans|sw_sanitize }}
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Tab>
+                {% endvi_block %}
+            </twig:block>
+        </twig:ViewsTheme:Tabs:List>
+    </twig:block>
+
+    <twig:block name="panels">
+        {% block panelLogin %}
+            <twig:ViewsTheme:Tabs:Panel
+                id="{{ loginPanelId }}"
+                tab="{{ loginTabId }}"
+                :active="not registerActive"
+            >
+                <twig:block name="content">
+                    <twig:ViewsTheme:Account:Login
+                        class="{{ vi_class('login') }}"
+                        {{ ...vi_attrs('login').defaults({
+                            layout: 'column',
+                            loginError: loginError,
+                            errorSnippet: errorSnippet,
+                            waitTime: waitTime,
+                            redirectTo: redirectTo,
+                            redirectParameters: redirectParameters,
+                        }).all() }}
+                    />
+                </twig:block>
+            </twig:ViewsTheme:Tabs:Panel>
+        {% endblock %}
+
+        {% block panelRegister %}
+            <twig:ViewsTheme:Tabs:Panel
+                id="{{ registerPanelId }}"
+                tab="{{ registerTabId }}"
+                :active="registerActive"
+            >
+                <twig:block name="content">
+                    <twig:ViewsTheme:Account:Register
+                        class="{{ vi_class('register') }}"
+                        {{ ...vi_attrs('register').defaults({
+                            page: page,
+                            data: data,
+                            guestSelectable: guestSelectable,
+                            formViolations: formViolations,
+                            redirectTo: redirectTo,
+                            redirectParameters: redirectParameters,
+                            errorRoute: registerErrorRoute,
+                        }).all() }}
+                    />
+                </twig:block>
+            </twig:ViewsTheme:Tabs:Panel>
+        {% endblock %}
+    </twig:block>
+</twig:ViewsTheme:Tabs>

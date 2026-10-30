@@ -8,7 +8,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['empty']) %}
+{% do vi_define_attrs(['empty', 'item', 'itemLine']) %}
 
 {% set isEmpty = lineItems|length < 1 %}
 
@@ -29,14 +29,24 @@
         {% block items %}
             {% for lineItem in lineItems %}
                 <twig:ViewsTheme:LineItem
-                    :lineItem="lineItem"
-                    :deliveries="cart.deliveries"
-                    :showRemoveButton="showRemoveButton"
-                    :showQuantitySelect="showQuantitySelect"
-                    :layout="layout"
-                    tag="div"
                     class="{{ vi_class('item') }}"
+                    {{ ...vi_attrs('item').defaults({
+                        lineItem: lineItem,
+                        deliveries: cart.deliveries,
+                        showRemoveButton: showRemoveButton,
+                        showQuantitySelect: showQuantitySelect,
+                        layout: layout,
+                        tag: 'div',
+                    }).all() }}
                 />
+                {% if not loop.last %}
+                    <twig:ViewsTheme:Divider
+                        class="{{ vi_class('itemLine') }}"
+                        {{ ...vi_attrs('itemLine').defaults({
+                            'aria-hidden': 'true',
+                        }).all() }}
+                    />
+                {% endif %}
             {% endfor %}
         {% endblock %}
     {% endif %}
