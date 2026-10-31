@@ -1,7 +1,11 @@
-.btn.vi-product-configurator-option--color,
-.btn.vi-product-configurator-option--media {
+.btn.vi-variant-option--color,
+.btn.vi-variant-option--media {
     aspect-ratio: 1;
-    width: var(--vi-product-configurator-option-size, 60px);
-    padding: var(--vi-product-configurator-option-pad, 2px);
+    width: var(--vi-variant-option-size, 60px);
+    padding: var(--vi-variant-option-pad, 2px);
     background-clip: content-box;
+}
+
+.vi-variant-option__label {
+    --btn-active-bg: var(--primary);
 }

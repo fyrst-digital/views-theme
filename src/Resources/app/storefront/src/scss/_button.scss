@@ -12,6 +12,13 @@
 
 }
 
+// Bootstrap resets `.btn-check + .btn:hover` to the base colors; restore the hover tokens for unchecked radio/checkbox buttons.
+.btn-check:not(:checked) + .btn:hover {
+  color: var(--btn-hover-color);
+  background-color: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border-color);
+}
+
 .btn-sm {
   --#{$prefix}btn-line-height: #{$line-height-sm};
 }

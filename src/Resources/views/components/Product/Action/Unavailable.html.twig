@@ -1,0 +1,35 @@
+{% props
+    product = null,
+    cva = {},
+%}
+
+{% set showRestock = product
+    and product.deliveryTime
+    and product.restockTime
+    and product.stock < product.minPurchase
+%}
+
+{% do vi_define_cva(cva, ['root', 'alert']) %}
+{% do vi_define_attrs(['alert']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block alert %}
+        <twig:ViewsTheme:Alert
+            class="{{ vi_class('alert') }}"
+            {{ ...vi_attrs('alert').defaults({
+                type: 'neutral',
+                icon: showRestock ? 'truck' : false,
+                content: showRestock
+                    ? 'detail.deliveryTimeRestock'|trans({
+                        '%count%': product.restockTime,
+                        '%restockTime%': product.restockTime,
+                        '%name%': product.deliveryTime.translation('name'),
+                    })|sw_sanitize
+                    : 'viewsTheme.product.unavailable'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

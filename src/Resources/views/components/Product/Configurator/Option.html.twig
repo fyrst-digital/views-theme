@@ -25,11 +25,12 @@
                 class="{{ vi_class('label', { combinable: combinable ? 'yes' : 'no', kind: face.kind }) }}"
                 {{ ...vi_attrs('label').defaults({
                     tag: 'label',
-                    color: 'outline-secondary',
+                    color: 'outline-light',
+                    size: 'sm',
                     title: face.name,
                     for: identifier,
                     id: identifier ~ '-label',
-                    style: face.colorHex ? '--vi-product-configurator-option-bg: ' ~ face.colorHex : false,
+                    style: face.colorHex ? '--vi-variant-option-bg: ' ~ face.colorHex : false,
                 }).all() }}
             >
                 <twig:block name="prepend">

@@ -64,6 +64,13 @@
   }
 }
 
+.alert-neutral {
+  --alert-color: var(--body-color);
+  --alert-bg: var(--light);
+  --alert-border-color: var(--border-color);
+  --alert-link-color: var(--body-color);
+}
+
 .header-main {
   --vi-logo-w: 80px;
 }

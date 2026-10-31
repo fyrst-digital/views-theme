@@ -20,10 +20,13 @@
     {% set iconName = 'x-circle' %}
 {% elseif alertType is same as('warning') %}
     {% set iconName = 'warning' %}
-{% elseif alertType is same as('info') %}
+{% elseif alertType is same as('info') or alertType is same as('neutral') %}
     {% set iconName = 'info' %}
 {% elseif alertType is same as('success') %}
     {% set iconName = 'check' %}
+{% endif %}
+{% if icon is string and icon not in ['', 'true', 'false'] %}
+    {% set iconName = icon %}
 {% endif %}
 
 <div
@@ -36,7 +39,7 @@
     class="{{ vi_class('root', { type: alertType, dismissible: dismissible }) }}"
 >
     {% block icon %}
-        {% if icon is not same as(false) and icon is not same as('false') %}
+        {% if icon is not same as(false) %}
             <div {{ vi_attrs('icon') }} class="{{ vi_class('icon') }}">
                 {% block icon_element %}
                     {{ vi_icon(iconName) }}
