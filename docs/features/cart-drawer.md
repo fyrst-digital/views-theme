@@ -217,23 +217,23 @@ Each select is `ViewsTheme:Shipping:Calculation:Field` (`Field.js`): it reads on
 | Piece | Component |
 |-------|-----------|
 | Selection stack | `ViewsTheme:Shipping:Calculation:Selection` |
-| Country (guest only) | `…:Selection` → `…:Country` → `Form:Select` (`:options` + `:value`) |
-| Payment method | `…:Selection` → `…:PaymentMethod` → `Form:Select` (+ leading disabled row when unavailable) |
-| Shipping method | `…:Selection` → `…:ShippingMethod` → same as payment |
+| Country (guest only; `Selection` skips the mount for customers) | `…:Selection` → `…:Field` → `Form:Select` (`:options` + `:value`) |
+| Payment method | `…:Selection` → `…:Field` (`guardSelected`) → `Form:Select` (+ leading disabled row when unavailable) |
+| Shipping method | `…:Selection` → `…:Field` (`guardSelected`) → same as payment |
 
-Children stay **anonymous** (no PHP class). Field adapters map entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
+Children stay **anonymous** (no PHP class). One generic `Shipping:Calculation:Field` serves all three selects (props `field`, `label`, `items`, `selectedId`, `selectedName`, `guardSelected`; default `id` is `vi-cart-<field>`). It maps entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
 
 Nest names (via `Cart:Options` → `shipping:*`):
 
 | Nest | Target |
 |------|--------|
 | `shipping:selection:*` | Selection root / props |
-| `shipping:selection:country:*` | Country → `Form:Select` (default `size: sm` in nest defaults) |
-| `shipping:selection:payment:*` | PaymentMethod → `Form:Select` |
-| `shipping:selection:shipping:*` | ShippingMethod → `Form:Select` |
+| `shipping:selection:country:*` | Country `Field` → `Form:Select` (default `size: sm` in `Field`) |
+| `shipping:selection:payment:*` | Payment `Field` → `Form:Select` |
+| `shipping:selection:shipping:*` | Shipping `Field` → `Form:Select` |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
-Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
+Action and Body options (`data-component-options`): `drawerUrl`. Badge (`Count`) options: `changedEvent`, `countKey`.
 
 Events:
 
