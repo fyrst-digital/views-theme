@@ -493,7 +493,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
 | Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
-| Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Country / PaymentMethod / ShippingMethod |
+| Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Field |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* (Main/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
