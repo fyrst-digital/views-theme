@@ -1,0 +1,22 @@
+{% props
+    cva = {},
+%}
+
+{% do vi_define_cva(cva, ['root', 'alert']) %}
+{% do vi_define_attrs(['alert']) %}
+
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block alert %}
+        <twig:ViewsTheme:Alert
+            class="{{ vi_class('alert') }}"
+            {{ ...vi_attrs('alert').defaults({
+                type: 'neutral',
+                icon: false,
+                content: 'viewsTheme.product.unavailable'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

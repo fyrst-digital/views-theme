@@ -17,6 +17,9 @@
         "configurator": {
             "title": "Select variant|Select variants"
         },
+        "product": {
+            "unavailable": "This product is currently not available."
+        },
         "review": {
             "author": "by %name%",
             "commentFooter": "Reply from the shop owner"

@@ -34,7 +34,7 @@ Groups are the `PropertyGroupCollection` from `ProductConfiguratorLoader`.
 | `color` | 60px swatch. Name is visually hidden only when `colorHex` is set |
 | `media` | Thumbnail when a `MediaEntity` exists. Name is visually hidden only then |
 
-The label is `ViewsTheme:Button` (`tag=label`, `color=outline-primary`, `size=sm`). The unavailable note is Button `append`. A color hex sets `--vi-product-configurator-option-bg` on that button.
+The label is `ViewsTheme:Button` (`tag=label`, `color=outline-primary`, `size=sm`). The unavailable note is Button `append`. A color hex sets `--vi-variant-option-bg` on that button.
 
 Selected state is `option.id` in `product.optionIds` (the buy-box product, including CMS). Non-combinable options stay selectable: radios add a visually hidden unavailable note; selects append `detail.unavailable` and set `title` to `detail.unavailableTooltip`. `Product:Configurator:GroupLabel` renders the legend from `component.product.configurator.legend` with `%hidden_cls%` = `visually-hidden`.
 
@@ -42,7 +42,9 @@ The `Product:Configurator` root is a flex column with `gap-4` between groups (`C
 
 `Product:BuyContainer` gives the configurator `mb-4` (`BuyContainer.cva.twig`) so it is spaced from the buy form.
 
-Color and media controls are 60px with 2px padding (`Option.css`). The color fill is `--vi-product-configurator-option-bg` on that option. The checked control uses a 2px border (`Option.css`).
+Hover: Bootstrap's `.btn-check + .btn:hover` resets the label to the base `--btn-*` colors. `scss/_button.scss` restores `--btn-hover-*` for `.btn-check:not(:checked) + .btn:hover`. The checked label keeps the active colors.
+
+Color and media controls are 60px with 2px padding (`Option.css`). The color fill is `--vi-variant-option-bg` on that option. The checked control uses a 2px border (`Option.css`).
 
 ## Props
 
@@ -91,7 +93,7 @@ The root is a `<fieldset>`. `GroupLabel` is the legend. `displayType === 'select
 | `face` | `ConfiguratorOptionFace`: `kind`, `name`, `colorHex`, `media`. `hidesName()` is true only when the swatch or thumbnail is shown |
 | `cva` | `root`, `input`, `label` (`combinable`, `kind`), `media`, `name` (`hidden: yes` is `visually-hidden`) |
 
-No `data-component`. `label` variant `combinable: no` is `text-decoration-line-through`. `kind` `color` / `media` adds the swatch class. The label classes sit on `ViewsTheme:Button`.
+No `data-component`. `label` variant `combinable: no` is `not-combinable opacity-50`. `kind` `color` / `media` adds the swatch class. The label classes sit on `ViewsTheme:Button`.
 
 ### `Product:Configurator:GroupLabel` (anonymous)
 

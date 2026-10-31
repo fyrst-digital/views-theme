@@ -58,6 +58,8 @@ class BuyContainer
 
     public bool $showBuyFormBlock = false;
 
+    public bool $showUnavailableBlock = false;
+
     public bool $showConfiguratorBlock = false;
 
     public string $rootElementClass = 'product-detail-buy';
@@ -101,9 +103,14 @@ class BuyContainer
 
         $this->useVariantsGrid = $variantsGridActive && $variantCount > 0;
 
-        $this->showBuyFormBlock = $this->productActive
+        $buyBlockVisible = $this->productActive
             && $this->showBuyForm
             && !$this->useVariantsGrid;
+        $buyable = $this->product->getAvailable()
+            && $this->product->getCalculatedMaxPurchase() > 0;
+
+        $this->showBuyFormBlock = $buyBlockVisible && $buyable;
+        $this->showUnavailableBlock = $buyBlockVisible && !$buyable;
 
         $this->showConfiguratorBlock = $this->showConfigurator
             && !$this->useVariantsGrid

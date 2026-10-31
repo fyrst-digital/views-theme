@@ -9,6 +9,10 @@ Namespace: **`ViewsTheme`** (plugin bundle name).
 <twig:ViewsTheme:QuantityInput quantity="1" size="sm" />
 ```
 
+`Alert` `type`: `danger`, `warning`, `info`, `success`, `neutral`. `neutral` is the light scheme (`--light` background, `--border-color` border, body text, like `btn-light`). `.alert-neutral` assigns the `--alert-*` tokens in `scss/_theme.scss`.
+
+`Alert` `icon`: `true` (default) uses the icon for the `type`, `false` hides it, any other string is the `vi_icon` name (`icon="warning"`).
+
 ## Directory layout
 
 Components under `src/Resources/views/components/`:

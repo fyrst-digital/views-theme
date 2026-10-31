@@ -5,6 +5,7 @@
     'delivery',
     'configurator',
     'buy',
+    'unavailable',
     'actions',
 ]) %}
 {% do vi_define_attrs([
@@ -13,6 +14,7 @@
     'delivery',
     'configurator',
     'buy',
+    'unavailable',
     'actions',
 ]) %}
 
@@ -87,6 +89,11 @@
                 {{ ...vi_attrs('buy').defaults({
                     product: product,
                 }).all() }}
+            />
+        {% elseif showUnavailableBlock %}
+            <twig:ViewsTheme:Product:Action:Unavailable
+                class="{{ vi_class('unavailable') }}"
+                {{ ...vi_attrs('unavailable').all() }}
             />
         {% endif %}
     {% endblock %}

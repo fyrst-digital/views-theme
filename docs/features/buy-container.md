@@ -17,6 +17,7 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 | `Product:Prices` | Price stack shell: Tiered + Price + Tax |
 | `Product:Price` / `Price:Tiered` / `Price:Tax` | Leaves (parent-mounted by Prices) |
 | `Product:Action:Buy` | Add-to-cart form → cart drawer bus |
+| `Product:Action:Unavailable` | Warning `Alert` shown in the buy slot when the product is not buyable |
 | `Product:Actions` | Secondary actions shell (wishlist, …) |
 | `Product:Action:Wishlist` | Wishlist toggle (via Actions) |
 | `VariantsGrid:Container` | Multi-variant grid when config + extension present |
@@ -89,7 +90,8 @@ Product:BuyContainer (class VM)
 ├─ configurator → Product:Configurator (when parent + settings and not variants grid)
 ├─ buy
 │    ├─ VariantsGrid:Container  XOR
-│    └─ Product:Action:Buy
+│    ├─ Product:Action:Buy  XOR
+│    └─ Product:Action:Unavailable  (active but not buyable)
 └─ actions → Product:Actions (when showActions)
      └─ Product:Action:Wishlist (when wishlistEnabled)
 ```
@@ -124,11 +126,12 @@ Product:BuyContainer (class VM)
 | `rootElementClass` | `product-detail-buy` or `product-detail-buy-{elementId}` |
 | `productActive` | `product.active` |
 | `useVariantsGrid` | config `variantsGridActive` ∧ grid has variants |
-| `showBuyFormBlock` | active ∧ `showBuyForm` ∧ not variants grid |
+| `showBuyFormBlock` | active ∧ available ∧ `calculatedMaxPurchase > 0` ∧ `showBuyForm` ∧ not variants grid |
+| `showUnavailableBlock` | active ∧ `showBuyForm` ∧ not variants grid ∧ not (available ∧ `calculatedMaxPurchase > 0`). Mounts `Product:Action:Unavailable` instead of the buy form (`viewsTheme.product.unavailable`) |
 | `showConfiguratorBlock` | `showConfigurator` ∧ parent ∧ settings ∧ not grid |
 | Prices XOR (Twig) | `showPrice` = single/empty `calculatedPrices`; `showTieredPrices` = `count > 1` — caller props are not passed through |
 
-Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `configurator:…` (see [Configurator](configurator.md)), `buy:…`, `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
+Nested overrides: `header:…` (incl. `header:manufacturer:…`, `header:name:…`, `header:sku:…`, `header:rating:…`), `prices:…`, `configurator:…` (see [Configurator](configurator.md)), `buy:…`, `unavailable:…` (forwarded to `Product:Action:Unavailable`; `unavailable:alert:…` reaches the Alert), `actions:…` (incl. `actions:wishlist:…`), and DOM nests (`delivery`, …).
 
 ### `Product:Header` (anonymous)
 
@@ -249,4 +252,5 @@ See [Variants grid](variants-grid.md). Data is attached on PDP by `ProductPageSu
 | Secondary actions | `src/Resources/views/components/Product/Actions.*` |
 | Configurator | `src/Resources/views/components/Product/Configurator.*` — [Configurator](configurator.md) |
 | Buy action | `src/Resources/views/components/Product/Action/Buy.*` |
+| Unavailable notice | `src/Resources/views/components/Product/Action/Unavailable.{html.twig,cva.twig}` |
 | Variants data | `src/Subscriber/ProductPageSubscriber.php` |
