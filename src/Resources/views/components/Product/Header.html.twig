@@ -17,7 +17,7 @@
     {% block prepend %}{% endblock %}
 
     {% block manufacturer %}
-        {% if showManufacturer %}
+        {% if showManufacturer and product.manufacturer.translated.name|default(null) %}
             <twig:ViewsTheme:Product:Manufacturer
                 class="{{ vi_class('manufacturer') }}"
                 {{ ...vi_attrs('manufacturer').defaults({
@@ -39,7 +39,7 @@
     {% endblock %}
 
     {% block sku %}
-        {% if showSku %}
+        {% if showSku and product.productNumber|default(null) %}
             <twig:ViewsTheme:Product:SKU
                 class="{{ vi_class('sku') }}"
                 {{ ...vi_attrs('sku').defaults({

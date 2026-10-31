@@ -26,7 +26,7 @@ See [Configuration](../configuration.md).
 
 ### Component
 
-Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. `Checkout:Aside` mounts Additions above `Checkout:Summary` (that column stacks after main on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
+Rendered by `<twig:ViewsTheme:Checkout:DeliveryDateSelection />` inside [`Checkout:Additions`](checkout-confirm.md) (the pen “Before you order” box, next to the customer comment). `Checkout:Additions` mounts it only when the delivery-date extension is active. The box chrome stays on Additions. Comment localStorage stays on `Checkout:Confirm:Comment`. `Checkout:Aside` mounts Additions above `Checkout:Summary` (that column stacks after main on mobile). The confirm bridge mounts `Checkout:Confirm` — see [checkout-confirm](checkout-confirm.md). The page subscriber below is unchanged.
 
 The confirm box passes an empty `title`. The picker renders the headline only when `title` is not empty. Callers that omit `title` still get `checkout.preferredDeliveryDateHeader`. The success-page title stays that snippet.
 
@@ -55,7 +55,7 @@ The component renders nothing when inactive.
 
 ### Success page
 
-`Checkout:Success:DeliveryDate` reads `page.order.customFields[ViewsTheme.config.deliveryDateCustomFieldKey]` and prints the stored ISO date with `format_date`. Renders nothing when the field is empty. No picker / no JS.
+`Checkout:Success:DeliveryDate` reads `page.order.customFields[ViewsTheme.config.deliveryDateCustomFieldKey]` and prints the stored ISO date with `format_date`. `Checkout:Success:Aside` mounts it only when the field is set. No picker / no JS.
 
 ### Persistence
 

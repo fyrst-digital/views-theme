@@ -18,7 +18,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-1 g-col-lg-8`); payment + shipping Columns |
 | `Page:Footer:Services` | Service-menu list. Renders nothing when `serviceMenu` is empty. Each link is `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Callers add list chrome (`gap-6` on Minimal, `justify-content-center gap-3` on Main) |
-| `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage` when config allows |
+| `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage`. `Page:Footer:Column:Hotline` mounts it only when `showRevocation` |
 | `FooterCmsUrlResolver` | Contact / revocation / shipping CMS URLs from service menu or nav `seoUrl`, else `frontend.cms.page.full` |
 
 Do **not** add `storefront/layout/footer/footer-minimal.html.twig`.

@@ -24,12 +24,13 @@
                 '%url%': contactUrl,
             })|raw }}
         </div>
-        <twig:ViewsTheme:Page:Footer:Revocation
-            class="{{ vi_class('revocation') }}"
-            {{ ...vi_attrs('revocation').defaults({
-                url: revocationUrl,
-                visible: showRevocation,
-            }).all() }}
-        />
+        {% if showRevocation %}
+            <twig:ViewsTheme:Page:Footer:Revocation
+                class="{{ vi_class('revocation') }}"
+                {{ ...vi_attrs('revocation').defaults({
+                    url: revocationUrl,
+                }).all() }}
+            />
+        {% endif %}
     </twig:block>
 </twig:ViewsTheme:Page:Footer:Column>

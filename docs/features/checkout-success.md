@@ -129,7 +129,7 @@ Qty / remove stay off — order line items are not cart `LineItem` mutators. Suc
 
 Props: `page`, `comment` (`page.order.customerComment`), `customFieldKey` (`ViewsTheme.config.deliveryDateCustomFieldKey`, default `preferred_delivery_date`) and `date` (that order custom field). Nests: `additions`, `orderComment`, `orderDeliveryDate`, `box`, `heading`, `summary`. The outer Twig block for the card is named `box`, not `summary`, so it cannot collide with the inner `{% vi_block summary %}`.
 
-`Checkout:Additions` is mounted with `visible` = comment or date, an empty `title` block, and `comment` / `delivery_date` blocks that mount `Success:Comment` / `Success:DeliveryDate`. Those two print their own label (`checkout.customerCommentHeader`, `checkout.preferredDeliveryDateHeader`, 14px / 600) and value. The summary card is the confirm look without arrival, TOS and place-order. The card is `position-xl-sticky`; `top` is `--vi-top` (`24px`, `Aside.css`).
+`Checkout:Additions` is mounted with `visible` = comment or date, an empty `title` block, and `comment` / `delivery_date` blocks that mount `Success:Comment` / `Success:DeliveryDate`. `Checkout:Success:Aside` mounts `Success:Comment` only when the order has a comment and `Success:DeliveryDate` only when it has a preferred date. Those two print their own label (`checkout.customerCommentHeader`, `checkout.preferredDeliveryDateHeader`, 14px / 600) and value. The summary card is the confirm look without arrival, TOS and place-order. The card is `position-xl-sticky`; `top` is `--vi-top` (`24px`, `Aside.css`).
 
 ## Out of scope
 

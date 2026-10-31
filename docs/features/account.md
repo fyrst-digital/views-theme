@@ -149,7 +149,7 @@ Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), canc
 | `page/account/order-history/order-item.html.twig` | `Order:Item` |
 | `page/account/order-history/order-detail.html.twig` | `Order:ItemDetails` |
 | `page/account/order-history/order-detail-list.html.twig` | `Order:ItemDetailsList` |
-| `page/account/order-history/order-detail-document.html.twig` | `Order:Documents` |
+| `page/account/order-history/order-detail-document.html.twig` | `Order:Documents` (mounted only when the order has documents; `Order:ItemDetails` gates it the same way) |
 | `page/account/order/index.html.twig` | `Account:Order:Edit` |
 | `page/account/order/header.html.twig` | `Page:Header:Minimal` |
 | `page/account/order/address.html.twig` | `Order:Addresses` |

@@ -14,7 +14,7 @@ Theme-owned PDP Description/Reviews **chrome** (`tabs` or `accordion`) and revie
 | `Review:Item:Title` | Review heading text (+ optional `lang`); nested by Header |
 | `Review:Item:Header` | Title + stars (`Review:Rating`) + author (`viewsTheme.review.author`) + date |
 | `Review:Item:Content` | Body text (`nl2br`, optional `lang`) |
-| `Review:Item:Comment` | Merchant reply card; root-hosts `Blockquote` (+ default shop-owner footer snippet) |
+| `Review:Item:Comment` | Merchant reply card; root-hosts `Blockquote` (+ default shop-owner footer snippet). `Review:Item` mounts it only when `review.comment` is set |
 | `Review:Average` | Text average (`points` / `maxPoints`); composed by Summary when `totalReviewCount > 0` |
 | CMS bridge | `storefront/element/cms-element-product-description-reviews.html.twig` → `Cms:DescriptionReviews` |
 | Content bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (non-CMS / legacy include path) |
@@ -189,7 +189,7 @@ Controls call Panel only via `@views-theme/modules/review/apply.js` — not raw 
 | `Progress` | Generic bar; CVA `root`/`fill`; props `value`/`min`/`max`/`size` (`sm`\|`md`\|`lg`, default `md`)/`color` (`none`\|`primary`\|…\|`dark`, default `none`)/`striped`/`animate` (bool, default false) |
 | `Review:Average` | Visible average line; composed by Summary (`totalReviewCount > 0`) |
 | `Product:Description:Detail` | PDP description pane composition |
-| `Product:Properties` | Spec table from `product.sortedProperties` |
+| `Product:Properties` | Spec table from `product.sortedProperties`. `Product:Description:Detail` mounts it only when the product has properties |
 | `Product:Description` | HTML description body (also product card) |
 | `Review:Item` | Presentational card only (no `editable` prop / no `Item.js`) |
 | `Review:Rating` | Display stars; class VM builds `starIcons` |

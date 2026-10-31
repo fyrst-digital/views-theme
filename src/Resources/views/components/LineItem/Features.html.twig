@@ -7,21 +7,19 @@
 
 {% do vi_define_attrs(['item']) %}
 
-{% if features is not empty %}
-    <ul
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
-    >
-        {% for feature in features %}
-            <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
-                {% if feature.label is defined %}
-                    {{ feature.label|trans|sw_sanitize }}
-                {% elseif feature.value is defined %}
-                    {{ feature.value }}
-                {% else %}
-                    {{ feature }}
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<ul
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% for feature in features %}
+        <li {{ vi_attrs('item') }} class="{{ vi_class('item') }}">
+            {% if feature.label is defined %}
+                {{ feature.label|trans|sw_sanitize }}
+            {% elseif feature.value is defined %}
+                {{ feature.value }}
+            {% else %}
+                {{ feature }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

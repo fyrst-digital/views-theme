@@ -11,8 +11,8 @@ SEO structured data is page-level JSON-LD only (no buy-box microdata).
 | Storefront bridge | `storefront/component/buy-widget/buy-widget.html.twig` — thin `sw_extends`; mounts `Product:BuyContainer` |
 | `Product:BuyContainer` | Class-backed buy shell: gates + composition. Root keeps the magnifier class |
 | `Product:Header` | Manufacturer + name + SKU + Rating (in container when `showHeader`) |
-| `Product:Manufacturer` | Brand name text only; self-gated |
-| `Product:SKU` | Product number + label; self-gated |
+| `Product:Manufacturer` | Brand name text only. `Product:Header` mounts it only when the product has a manufacturer name |
+| `Product:SKU` | Product number + label. `Product:Header` mounts it only when `showSku` and the product has a number |
 | `Product:Rating` | Rating summary (via Header; self-gated `visible`) |
 | `Product:Prices` | Price stack shell: Tiered + Price + Tax |
 | `Product:Price` / `Price:Tiered` / `Price:Tax` | Leaves (parent-mounted by Prices) |

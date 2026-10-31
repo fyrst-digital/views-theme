@@ -1,5 +1,4 @@
 {% props
-    total = 0,
     searchTerm = '',
     cva = {},
 %}
@@ -8,23 +7,21 @@
 
 {% do vi_define_attrs(['action']) %}
 
-{% if total > 0 %}
-    <div
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
-    >
-        {% block action %}
-            <twig:ViewsTheme:Button
-                class="{{ vi_class('action') }}"
-                {{ ...vi_attrs('action').defaults({
-                    type: 'link',
-                    color: 'light',
-                    href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,
-                    title: 'header.searchAllResults'|trans|striptags,
-                    label: 'header.searchAllResults'|trans|sw_sanitize,
-                    'data-action': 'view-all',
-                }).all() }}
-            />
-        {% endblock %}
-    </div>
-{% endif %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block action %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('action') }}"
+            {{ ...vi_attrs('action').defaults({
+                type: 'link',
+                color: 'light',
+                href: path('frontend.search.page') ~ '?search=' ~ searchTerm|url_encode,
+                title: 'header.searchAllResults'|trans|striptags,
+                label: 'header.searchAllResults'|trans|sw_sanitize,
+                'data-action': 'view-all',
+            }).all() }}
+        />
+    {% endblock %}
+</div>

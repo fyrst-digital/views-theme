@@ -7,11 +7,9 @@
 
 {% do vi_define_cva(cva, ['root']) %}
 
-{% if name %}
-    <{{ tag|raw }}
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
-    >
-        {{ name }}
-    </{{ tag|raw }}>
-{% endif %}
+<{{ tag|raw }}
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {{ name }}
+</{{ tag|raw }}>

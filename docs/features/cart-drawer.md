@@ -132,7 +132,7 @@ LineItem:Product
 | `Product:Cover` | Line thumb / placeholder |
 | `Product:Name` | Label + optional PDP link (scalar `name`/`url`) |
 | `Product:Variations` | `payload.options`. Each badge is `group: option` (for example `Color: Oat`). An empty `group` shows the option alone |
-| `LineItem:Features` | `features` prop (from `payload.features`) |
+| `LineItem:Features` | `features` prop (from `payload.features`). `LineItem:Body` mounts it only when there are features |
 | `LineItem:DeliveryDate` | Delivery window when configured. In the header, under the name, in every layout including `table` below `lg` |
 | `LineItem:Actions` | Flex group. Always renders `QuantityInput` and `Remove` |
 | `LineItem:Quantity` | Plain quantity. No JS. Below `lg` the label is “Quantity” (`viewsTheme.lineItems.quantityLabel`) beside a `fw-semibold` amount; from `lg` only the amount shows |

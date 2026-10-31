@@ -361,6 +361,21 @@ Inside `<twig:ViewsTheme:…>` use **HTML syntax only** for blocks — do **not*
 
 `class="{{ … }}"`, `:prop="expr"`, and `{% for %}` inside HTML tags are fine.
 
+### Skip the mount instead of self-gating
+
+A component whose whole template is `{% if data %}…{% endif %}` is still instantiated by Symfony UX and then renders nothing. When the caller already has that data, gate the `<twig:…>` tag at the call site and keep the component unconditional:
+
+```twig
+{# ✅ caller skips the mount #}
+{% if features is not empty %}
+    <twig:ViewsTheme:LineItem:Features :features="features" />
+{% endif %}
+
+{# ❌ component wraps its entire template in {% if features is not empty %} #}
+```
+
+Inner `{% if %}` that branch **content** (folder vs link, optional slots) stay in the component. Class-component `visible` derived in `#[PostMount]` is a separate case. Do not put a removed gate back inside the component.
+
 ### Nested blocks: parent locals are shadowed
 
 Child mount merges parent context, then **child props win**. Host templates that set `cx` / `attributes` (and used to set `attrs` / `classes`) shadow those names inside `<twig:block>`.
