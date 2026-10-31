@@ -1,6 +1,9 @@
 {% props
     count = 0,
-    changedEvent = 'ViewsTheme:Cart:Changed',
+    changedEvent,
+    countKey = null,
+    liveId = null,
+    liveText = '%counter%',
     cva = {},
 %}
 
@@ -8,11 +11,14 @@
 
 <span
     {{ attributes.defaults({
-        'data-component': 'ViewsTheme:Cart:Drawer:Action:Badge',
+        hidden: count < 1,
+        'data-component': 'ViewsTheme:Count',
         'data-component-options': {
             changedEvent: changedEvent,
+            countKey: countKey,
+            liveId: liveId,
+            liveText: liveText,
         }|json_encode,
-        hidden: count < 1,
     }) }}
     class="{{ vi_class('root') }}"
 >{% if count > 0 %}{{ count }}{% endif %}</span>

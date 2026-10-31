@@ -234,7 +234,7 @@ Nested overrides: `discount:…`, `topseller:…`, `new:…` (spread into the sp
 | `Product:Badge:New` | Default label `listing.boxLabelNew`; `type="new"` |
 | `Badge` | Generic leaf: `type`, `label`, CVA type variants (`badge` / `product-badge` / `badge-*`) |
 
-Not the wishlist/cart count pills (`Wishlist:Action:Badge`, `Cart:Drawer:Action:Badge`).
+Not the wishlist/cart count pills (generic `Count`).
 
 ### CVA slots (`Box.cva.twig`)
 

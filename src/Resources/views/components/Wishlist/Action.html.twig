@@ -26,9 +26,12 @@
     }).all() }}
 >
     <twig:block name="prepend">
-        <twig:ViewsTheme:Wishlist:Action:Badge
+        <twig:ViewsTheme:Count
             :id="badgeId"
+            changedEvent="ViewsTheme:Wishlist:Changed"
+            countKey="wishlistCount"
             :liveId="liveId"
+            :liveText="'header.wishlistAriaLiveTemplate'|trans"
         />
     </twig:block>
 
