@@ -6,7 +6,7 @@
 
 {% do vi_define_cva(cva) %}
 
-{% do vi_define_attrs(['panel']) %}
+{% do vi_define_attrs(['close', 'panel']) %}
 
 <div
     {{ attributes.defaults({
@@ -25,7 +25,13 @@
     {% endblock %}
 
     {% block close %}
-        <twig:ViewsTheme:Search:Overlay:Close />
+        <twig:ViewsTheme:Close
+            class="{{ vi_class('close') }}"
+            {{ ...vi_attrs('close').defaults({
+                target: 'ViewsTheme:Search:Overlay',
+                label: 'header.searchCloseButton'|trans|striptags,
+            }).all() }}
+        />
     {% endblock %}
 
     {% block panel %}

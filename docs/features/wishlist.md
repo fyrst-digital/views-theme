@@ -9,7 +9,7 @@ Theme-owned wishlist: product toggle, header/nav badge, guest localStorage and l
 | `Wishlist` | Always-mounted owner: load, guest storage, logged-in HTTP, merge on login; emits `Wishlist:Changed` |
 | `Product:Action:Wishlist` | Product heart Button; emits `Wishlist:Toggle`; syncs `aria-pressed` / label from `Changed` |
 | `Wishlist:Action` | Header / nav link to wishlist page (`Button` + badge + live region) |
-| `Wishlist:Action:Badge` | Count badge from `Changed` (and `window.wishlistCount` on late mount) |
+| `Count` | Count pill from `Changed` (`countKey: wishlistCount` on late mount, optional live region) |
 
 ## Wire-up
 
@@ -82,6 +82,6 @@ See [product-listing.md](product-listing.md) for the shared grid shell and Box w
 | Owner | `components/Wishlist.html.twig` + `Wishlist.js` |
 | Product toggle | `components/Product/Action/Wishlist.{html.twig,cva.twig,js,css}` |
 | Header action | `components/Wishlist/Action.html.twig` + `Action.cva.twig` |
-| Badge | `components/Wishlist/Action/Badge.{html.twig,cva.twig,js}` |
+| Count pill | `components/Count.{html.twig,cva.twig,js}` |
 | Listing shell | `components/Wishlist/Listing.html.twig` |
 | Listing bridge | `storefront/component/wishlist/listing.html.twig` |

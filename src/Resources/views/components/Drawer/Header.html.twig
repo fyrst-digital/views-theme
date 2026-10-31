@@ -24,8 +24,12 @@
         {% endblock %}
 
         {% block close %}
-            <twig:ViewsTheme:Drawer:Close
-                {{ ...vi_attrs('close').defaults({}).all() }}
+            <twig:ViewsTheme:Close
+                class="{{ vi_class('close') }}"
+                {{ ...vi_attrs('close').defaults({
+                    target: 'ViewsTheme:Drawer',
+                    label: 'general.offcanvasCloseMenu'|trans|striptags,
+                }).all() }}
             />
         {% endblock %}
     {% endblock %}

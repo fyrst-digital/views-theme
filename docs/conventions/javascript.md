@@ -193,10 +193,9 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
 | Wishlist owner | `ViewsTheme:Wishlist` | `Wishlist.js` |
-| Wishlist action badge | `ViewsTheme:Wishlist:Action:Badge` | `Wishlist/Action/Badge.js` |
+| Count pill (wishlist and cart action badges) | `ViewsTheme:Count` | `Count.js` |
 | Product wishlist toggle | `ViewsTheme:Product:Action:Wishlist` | `Product/Action/Wishlist.js` |
 | Cart drawer action | `ViewsTheme:Cart:Drawer:Action` | `Cart/Drawer/Action.js` |
-| Cart drawer action badge | `ViewsTheme:Cart:Drawer:Action:Badge` | `Cart/Drawer/Action/Badge.js` |
 | Cart drawer body | `ViewsTheme:Cart:Drawer:Body` | `Cart/Drawer/Body.js` |
 | Cart flashes / items / heading | `ViewsTheme:Cart:Flashes` / `Items` / `Heading` | `Cart/Flashes.js` etc. |
 | Cart page | `ViewsTheme:Cart:Page` | `Cart/Page.js` |
@@ -212,12 +211,11 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Variants grid | `ViewsTheme:VariantsGrid:Container` | `VariantsGrid/Container.js` |
 | Search action | `ViewsTheme:Search:Action` | `Search/Action.js` |
 | Search overlay | `ViewsTheme:Search:Overlay` | `Search/Overlay.js` |
-| Search overlay close | `ViewsTheme:Search:Overlay:Close` | `Search/Overlay/Close.js` |
+| Close button (drawer, modal, search overlay) | `ViewsTheme:Close` | `Close.js` |
 | Search bar | `ViewsTheme:Search:Bar` | `Search/Bar.js` |
 | Backdrop (shared) | `ViewsTheme:Backdrop` | `Backdrop.js` |
 | Drawer | `ViewsTheme:Drawer` | `Drawer.js` |
 | Drawer panel | `ViewsTheme:Drawer:Panel` | `Drawer/Panel.js` |
-| Drawer close | `ViewsTheme:Drawer:Close` | `Drawer/Close.js` |
 | Navigation drawer action | `ViewsTheme:Navigation:Drawer:Action` | `Navigation/Drawer/Action.js` |
 | Navigation drawer menu | `ViewsTheme:Navigation:Drawer:Menu` | `Navigation/Drawer/Menu.js` |
 | Navigation drawer drill | `ViewsTheme:Navigation:Drawer:Drill` | `Navigation/Drawer/Drill.js` |
@@ -252,7 +250,6 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Address manager status / create / edit / default / back / dismiss | `ViewsTheme:Address:Manager:*` | `Address/Manager/*.js` |
 | Modal | `ViewsTheme:Modal` | `Modal.js` |
 | Modal panel | `ViewsTheme:Modal:Panel` | `Modal/Panel.js` |
-| Modal close | `ViewsTheme:Modal:Close` | `Modal/Close.js` |
 | Checkout method form | `ViewsTheme:Checkout:Method:Form` | `Checkout/Method/Form.js` |
 | Checkout confirm comment | `ViewsTheme:Checkout:Confirm:Comment` | `Checkout/Confirm/Comment.js` |
 
@@ -337,7 +334,7 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | Action | `data-component="ViewsTheme:Search:Action"` |
 | Overlay | `data-component="ViewsTheme:Search:Overlay"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |
-| Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
+| Close | `data-component="ViewsTheme:Close"` (`target`: `ViewsTheme:Search:Overlay`) |
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` (legacy) |
 
@@ -360,7 +357,7 @@ Lazy-loaded side drawer. **Menu** owns drill-down orchestration; interactive lin
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |
-| Close | `data-component="ViewsTheme:Drawer:Close"` |
+| Close | `data-component="ViewsTheme:Close"` (`target`: `ViewsTheme:Drawer`) |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Menu scrollport | nested `data-component="ViewsTheme:Scroll:Area"` |
 | Drill link | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
@@ -410,7 +407,7 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 |------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action | `data-component="ViewsTheme:Cart:Drawer:Action"` |
-| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` (`Action/Badge.js` owns count) |
+| Action badge | `data-component="ViewsTheme:Count"` (`countKey: cartCount`, `Count.js` owns the count) |
 | Drawer (mount root) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |

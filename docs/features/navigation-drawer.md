@@ -16,8 +16,8 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 | `Navigation:Drawer:Footer` | Presentational chrome (no JS). Hosts `Language:Action` + `Currency:Action` when either collection has more than one item; root class `vi-navigation-drawer-footer` |
 | `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
-| `Drawer:Header` | Presentational chrome: title slot + `Drawer:Close` (no JS) |
-| `Backdrop` / `Drawer:Close` | `callMethod(Drawer, close)` (`Backdrop` via `componentName`) |
+| `Drawer:Header` | Presentational chrome: title slot + generic `Close` (`target: ViewsTheme:Drawer`) |
+| `Backdrop` / `Close` | `callMethod(Drawer, close)` (`Backdrop` via `componentName`) |
 | `Navigation:Drawer:Menu` | Drill-down fetch, cache, level slide; composes `Scroll:Area` as scrollport |
 | `Navigation:Drawer:Menu:Header` | Non-root level chrome: Back + ShowAll + Active (presentational) |
 | `Navigation:Drawer:Item` | Category row: label link → category; caret `Drill` → submenu (caret only if children) |
@@ -36,14 +36,14 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 - Header instances pass `:label="false"` on Wishlist and `:toggle:label="false"` on Account (icon-only); drawer keeps default label snippets
 - Navigation levels use core-style **drill-down** (depth 1 per request) via `MenuOffcanvasPageletLoader`
 - Item label opens the category; optional `vi_navigation_image` thumb before the label; caret drills deeper; no caret when the category has no children
-- Close via `Drawer:Close` / `Backdrop`, Escape, or toggling the action again
+- Close via `Close` / `Backdrop`, Escape, or toggling the action again
 - Focus returns to the action after the close transition finishes
 
 ### Header actions in the drawer title
 
 `Navigation:Drawer` overrides Panel `header` with `Navigation:Drawer:Header`, which wraps `Drawer:Header` and fills `title` with icon+label actions (not the scalar `title` prop). Drawer root keeps `label` for `aria-label`.
 
-`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is `Wishlist:Action:Badge` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. Wishlist is a root-host leaf (`:label="false"`); Account toggle chrome is nest `toggle:label` (`:toggle:label="false"`). Drawer uses defaults; header hides labels.
+`Wishlist:Action` composes `ViewsTheme:Button` (`type="link"`, `icon="heart"`, `color="none"`). Badge is the generic `Count` in Button `prepend` (theme JS on `Wishlist:Changed`, not core widget); live region is inline in `append`. Owner is always-mounted `ViewsTheme:Wishlist` in header actions. Wishlist is a root-host leaf (`:label="false"`); Account toggle chrome is nest `toggle:label` (`:toggle:label="false"`). Drawer uses defaults; header hides labels.
 
 Drawer chrome for those actions lives on `Navigation:Drawer:Header` CVA (`wishlist`, `wishlistLabel`, `account`, `accountLabel`). A caller overrides it with `:cva` or `wishlist:class` / `account:class`. Child CVA forwards through the nests: `wishlist:cva` and `account:cva` (deep-merged by each child). Drawer classes stay extras on top of the child’s own bases. `Navigation:Drawer` still mounts Header with no extra props; override on a `Navigation:Drawer:Header` call or a `header` block override.
 
@@ -129,7 +129,7 @@ Header load + `header-pagelet-loaded` run only on full drawer open (not menu dri
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-navigation-drawer` |
 | Panel | `data-component="ViewsTheme:Drawer:Panel"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |
-| Close | `data-component="ViewsTheme:Drawer:Close"` |
+| Close | `data-component="ViewsTheme:Close"` (`target: ViewsTheme:Drawer`) |
 | Menu | `data-component="ViewsTheme:Navigation:Drawer:Menu"` |
 | Menu scrollport | `data-component="ViewsTheme:Scroll:Area"` (nested under Menu) |
 | Drill | `data-component="ViewsTheme:Navigation:Drawer:Drill"` |
@@ -160,7 +160,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 |------|------|
 | Controller | `src/Controller/NavigationDrawerController.php` |
 | Drawer primitive | `src/Resources/views/components/Drawer.*` |
-| Panel / Header / Close | `src/Resources/views/components/Drawer/{Panel,Header,Close}.*` |
+| Panel / Header | `src/Resources/views/components/Drawer/{Panel,Header}.*` |
+| Close | `src/Resources/views/components/Close.*` |
 | Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
 | Navigation compose | `src/Resources/views/components/Navigation/Drawer.html.twig` |
 | Drawer header | `src/Resources/views/components/Navigation/Drawer/Header.*` |

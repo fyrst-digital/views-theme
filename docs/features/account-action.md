@@ -46,14 +46,9 @@ Page:Header:Actions
 - Guest menu root: `role="dialog"` + `aria-label`
 - Customer: nav links from `Account:Actions` (no dialog role); `aria-current="page"` when `activeRoute` (default: `app.request` `_route`) matches the action route
 
-## Deprecations
+## Removed
 
-| Legacy shim (still present) | Replacement |
-|-----------------------------|-------------|
-| `Page:Header:Action:Account` | `Account:Action` |
-| `Account:Dropdown` | `Account:Menu` inside `Dropdown` |
-
-Both shims emit Twig `{% deprecated %}` (`package="fyrst/views-theme"`, `version="1.0.0"`).
+`Page:Header:Action:Account` (use `Account:Action`) and `Account:Dropdown` (use `Account:Menu` inside `Dropdown`) are gone.
 
 `Account:LoginCard` is gone — callers use `Account:Login`. Thin bridge: `storefront/component/account/login.html.twig`.
 
