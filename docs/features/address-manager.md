@@ -18,7 +18,7 @@ Core Address Manager (`data-address-manager`, `address-manager-modal*.html.twig`
 | `Address:Manager:Create` / `:Edit` / `:Default` / `:Back` / `:Dismiss` | `callMethod` / closest Manager or `Modal.close`. Create follows the active tab |
 | `Address:Editor` | Form SoT: `Account:Form:Personal` + `Address:Form` + `Form:Handler`. Hidden `address[id]` when editing. Nested `hidden` / `fields` / `hint` / `actions` |
 | `Modal` | Centered card dialog: open/close, backdrop, Escape, Tab trap, body lock. Not Drawer / Search overlay / Gallery fullscreen |
-| `Modal:Panel` / `:Header` / `:Close` | Header + scroll body + footer slots; Close → `callMethod('ViewsTheme:Modal', 'close')` |
+| `Modal:Panel` / `:Header` | Header + scroll body + footer slots. The header mounts the generic `Close` (`target: ViewsTheme:Modal`) |
 
 Do **not** add `data-component` on `Checkout:Confirm`. Addressbook **listing** page is [`Account:Addressbook`](account.md) (`Address:Item` / `ItemActions`). Display pair chrome is [`Address:List`](address.md).
 
@@ -140,7 +140,7 @@ Centered card (header + scroll body + footer). Drawer / Search overlay / Gallery
 |-------|------|
 | `Modal` | `role="dialog"`, `aria-modal`, `inert` / `aria-hidden`, `data-open`, body lock, Escape, Tab trap, `ViewsTheme:Modal:Open` / `:Close` `{ el }` |
 | `Modal:Panel` | slots `header` / `body` / `footer`. `title` feeds `Modal:Header`. Footer contains the `actions` block. Panel is `overflow-hidden` inside `--vi-modal-max-h`. Slot body is the scrollport (`overflow-y-auto`) unless a caller overrides it |
-| `Modal:Close` | `callMethod('ViewsTheme:Modal', 'close')` |
+| `Close` | `callMethod('ViewsTheme:Modal', 'close')` (`target: ViewsTheme:Modal`) |
 | `Backdrop` | `componentName="ViewsTheme:Modal"` |
 
 Address manager keeps the panel header and footer. Its body override is `overflow-hidden` (not the scrollport). `Address:Manager:View` fills that body: an `overflow-hidden` flex column. List mode’s tabs wrapper is the same kind of column. The view body is the only `overflow-y-auto` scrollport. Header and footer stay `flex-shrink-0`, so the footer stays pinned while the body scrolls.
@@ -155,7 +155,7 @@ Action owns fetch/mount/unmount; Modal only open/closes. See [JS lazy-loaded she
 
 ## Files
 
-`components/Modal.*` · `components/Modal/{Panel,Header,Close}.*` · `components/Address/Editor.*` · `components/Address/Manager.*` · `components/Address/Manager/{Action,View,Pane,List,Item,Status,Create,Edit,Default,Back,Dismiss}.*` · `src/Controller/AddressManagerController.php` · `storefront/page/account/addressbook/{create,edit}.html.twig` · `src/Resources/app/storefront/src/modules/shared/focus-trap.js`
+`components/Modal.*` · `components/Modal/{Panel,Header}.*` · `components/Close.*` · `components/Address/Editor.*` · `components/Address/Manager.*` · `components/Address/Manager/{Action,View,Pane,List,Item,Status,Create,Edit,Default,Back,Dismiss}.*` · `src/Controller/AddressManagerController.php` · `storefront/page/account/addressbook/{create,edit}.html.twig` · `src/Resources/app/storefront/src/modules/shared/focus-trap.js`
 
 ## Out of scope
 

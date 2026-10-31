@@ -38,7 +38,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Summary, cart options (promotion form + shipping pre-calculation), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
-- Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
+- Header badge (generic `Count`, `countKey: cartCount`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
 - Cart page mutations refresh theme `Cart:Page` islands — see [cart page](cart-page.md)
 
@@ -169,7 +169,7 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 |-----------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action (`Button` root) | `data-component="ViewsTheme:Cart:Drawer:Action"` |
-| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
+| Action badge | `data-component="ViewsTheme:Count"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |

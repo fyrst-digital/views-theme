@@ -228,7 +228,7 @@ Nested overrides: `discount:…`, `topseller:…`, `new:…` (forwarded to the `
 
 `Product:Badges` mounts the generic `Badge` directly. Default labels: discount `N %` (`discountPercent`), `listing.boxLabelTopseller`, `listing.boxLabelNew`. Override with `discount:label` / `topseller:label` / `new:label`. `Badge` itself takes `label`, `color`, `size` and `pill`.
 
-Not the wishlist/cart count pills (`Wishlist:Action:Badge`, `Cart:Drawer:Action:Badge`).
+Not the wishlist/cart count pills (generic `Count`).
 
 ### CVA slots (`Box.cva.twig`)
 

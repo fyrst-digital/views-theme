@@ -23,8 +23,11 @@
         {% endblock %}
 
         {% block close %}
-            <twig:ViewsTheme:Modal:Close
-                {{ ...vi_attrs('close').defaults({}).all() }}
+            <twig:ViewsTheme:Close
+                class="{{ vi_class('close') }}"
+                {{ ...vi_attrs('close').defaults({
+                    target: 'ViewsTheme:Modal',
+                }).all() }}
             />
         {% endblock %}
     {% endblock %}
