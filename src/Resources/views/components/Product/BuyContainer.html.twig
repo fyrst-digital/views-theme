@@ -93,7 +93,9 @@
         {% elseif showUnavailableBlock %}
             <twig:ViewsTheme:Product:Action:Unavailable
                 class="{{ vi_class('unavailable') }}"
-                {{ ...vi_attrs('unavailable').all() }}
+                {{ ...vi_attrs('unavailable').defaults({
+                    product: product,
+                }).all() }}
             />
         {% endif %}
     {% endblock %}
