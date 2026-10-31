@@ -24,10 +24,12 @@
     {% endblock %}
 
     {% block features %}
-        <twig:ViewsTheme:LineItem:Features
-            {{ ...vi_attrs('features').defaults({
-                features: features,
-            }).all() }}
-        />
+        {% if features is not empty %}
+            <twig:ViewsTheme:LineItem:Features
+                {{ ...vi_attrs('features').defaults({
+                    features: features,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 </div>

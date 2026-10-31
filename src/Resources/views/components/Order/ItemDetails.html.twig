@@ -15,12 +15,14 @@
     class="{{ vi_class('root') }}"
 >
     {% block documents %}
-        <twig:ViewsTheme:Order:Documents
-            class="{{ vi_class('documents') }}"
-            {{ ...vi_attrs('documents').defaults({
-                order: order,
-            }).all() }}
-        />
+        {% if order.documents|length %}
+            <twig:ViewsTheme:Order:Documents
+                class="{{ vi_class('documents') }}"
+                {{ ...vi_attrs('documents').defaults({
+                    order: order,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     {% block items %}

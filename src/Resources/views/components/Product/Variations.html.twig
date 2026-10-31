@@ -10,11 +10,11 @@
 }|replace_recursive(cva), ['item', 'root']) %}
 {% do vi_define_attrs(['item']) %}
 
-{% if variations is not empty %}
-    <div
-        {{ attributes }}
-        class="{{ vi_class('root') }}"
-    >
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
         {% for variation in variations %}
             <twig:ViewsTheme:Badge
                 class="{{ vi_class('item') }}"
@@ -25,5 +25,5 @@
                 }).all() }}
             />
         {% endfor %}
-    </div>
-{% endif %}
+    {% endblock %}
+</div>

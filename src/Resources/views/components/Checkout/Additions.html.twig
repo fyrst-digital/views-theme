@@ -37,13 +37,16 @@
                 {% endblock %}
 
                 {% block delivery_date %}
-                    <twig:ViewsTheme:Checkout:DeliveryDateSelection
-                        class="{{ vi_class('deliveryDate') }}"
-                        :title="''"
-                        {{ ...vi_attrs('deliveryDate').defaults({
-                            deliveryDate: page.extensions.viewsTheme.deliveryDate|default({}),
-                        }).all() }}
-                    />
+                    {% set deliveryDate = page.extensions.viewsTheme.deliveryDate|default({}) %}
+                    {% if deliveryDate.active|default(false) %}
+                        <twig:ViewsTheme:Checkout:DeliveryDateSelection
+                            class="{{ vi_class('deliveryDate') }}"
+                            :title="''"
+                            {{ ...vi_attrs('deliveryDate').defaults({
+                                deliveryDate: deliveryDate,
+                            }).all() }}
+                        />
+                    {% endif %}
                 {% endblock %}
             </div>
         {% endblock %}

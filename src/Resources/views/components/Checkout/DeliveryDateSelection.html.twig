@@ -10,35 +10,33 @@
 
 {% do vi_define_attrs(['title', 'field']) %}
 
-{% if deliveryDate.active|default(false) %}
-    <div
-        {{ attributes.defaults({
-            'data-component': 'ViewsTheme:Checkout:DeliveryDateSelection',
-        }) }}
-        class="{{ vi_class('root') }}"
-    >
-        {% block title %}
-            {% if title is not empty %}
-                <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-                    {{ title }}
-                </div>
-            {% endif %}
-        {% endblock %}
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Checkout:DeliveryDateSelection',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block title %}
+        {% if title is not empty %}
+            <div {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                {{ title }}
+            </div>
+        {% endif %}
+    {% endblock %}
 
-        {% block field %}
-            <twig:ViewsTheme:Form:Input
-                class="{{ vi_class('field') }}"
-                {{ ...vi_attrs('field').defaults({
-                    type: 'date',
-                    id: 'PreferredDeliveryDate',
-                    name: 'viewsThemeDeliveryDate',
-                    label: label,
-                    description: helpText,
-                    'input:form': 'confirmOrderForm',
-                    'input:min': deliveryDate.min|default(false),
-                    'input:max': deliveryDate.max|default(false),
-                }).all() }}
-            />
-        {% endblock %}
-    </div>
-{% endif %}
+    {% block field %}
+        <twig:ViewsTheme:Form:Input
+            class="{{ vi_class('field') }}"
+            {{ ...vi_attrs('field').defaults({
+                type: 'date',
+                id: 'PreferredDeliveryDate',
+                name: 'viewsThemeDeliveryDate',
+                label: label,
+                description: helpText,
+                'input:form': 'confirmOrderForm',
+                'input:min': deliveryDate.min|default(false),
+                'input:max': deliveryDate.max|default(false),
+            }).all() }}
+        />
+    {% endblock %}
+</div>

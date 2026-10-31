@@ -34,7 +34,7 @@
     {% endblock %}
 
     {% block properties %}
-        {% if product %}
+        {% if product and product.sortedProperties|default([]) is not empty %}
             <twig:ViewsTheme:Product:Properties
                 class="{{ vi_class('properties') }}"
                 {{ ...vi_attrs('properties').defaults({

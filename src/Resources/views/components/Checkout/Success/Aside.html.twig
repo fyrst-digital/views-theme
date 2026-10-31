@@ -24,23 +24,27 @@
             <twig:block name="title"></twig:block>
 
             <twig:block name="comment">
-                <twig:ViewsTheme:Checkout:Success:Comment
-                    class="{{ vi_class('orderComment') }}"
-                    {{ ...vi_attrs('orderComment').defaults({
-                        page: page,
-                        comment: comment,
-                    }).all() }}
-                />
+                {% if comment %}
+                    <twig:ViewsTheme:Checkout:Success:Comment
+                        class="{{ vi_class('orderComment') }}"
+                        {{ ...vi_attrs('orderComment').defaults({
+                            page: page,
+                            comment: comment,
+                        }).all() }}
+                    />
+                {% endif %}
             </twig:block>
 
             <twig:block name="delivery_date">
-                <twig:ViewsTheme:Checkout:Success:DeliveryDate
-                    class="{{ vi_class('orderDeliveryDate') }}"
-                    {{ ...vi_attrs('orderDeliveryDate').defaults({
-                        page: page,
-                        date: date,
-                    }).all() }}
-                />
+                {% if date %}
+                    <twig:ViewsTheme:Checkout:Success:DeliveryDate
+                        class="{{ vi_class('orderDeliveryDate') }}"
+                        {{ ...vi_attrs('orderDeliveryDate').defaults({
+                            page: page,
+                            date: date,
+                        }).all() }}
+                    />
+                {% endif %}
             </twig:block>
         </twig:ViewsTheme:Checkout:Additions>
     {% endblock %}
