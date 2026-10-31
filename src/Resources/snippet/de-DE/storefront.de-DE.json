@@ -14,6 +14,9 @@
             "cart": "Warenkorb",
             "summaryNote": "Steuern und Versandkosten werden an der Kasse berechnet."
         },
+        "configurator": {
+            "title": "Variante wählen|Varianten wählen"
+        },
         "review": {
             "author": "von %name%",
             "commentFooter": "Antwort des Shopbetreibers"

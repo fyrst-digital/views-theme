@@ -6,6 +6,8 @@ Shopware keeps the switch HTTP API. The theme does not use `data-variant-switch`
 
 ## Composition
 
+`Product:Configurator` renders a title above the groups (`viewsTheme.configurator.title`, "Select variant" for one group, "Select variants" for several; pluralized with `%count%` = number of groups). It is the `title` slot / block / nest on the root.
+
 ```
 Product:Configurator (class VM + JS executor)
 └─ Product:Configurator:Group (class VM + JS)
@@ -32,9 +34,13 @@ Groups are the `PropertyGroupCollection` from `ProductConfiguratorLoader`.
 | `color` | 60px swatch. Name is visually hidden only when `colorHex` is set |
 | `media` | Thumbnail when a `MediaEntity` exists. Name is visually hidden only then |
 
-The label is `ViewsTheme:Button` (`tag=label`, `color=outline-secondary`). The unavailable note is Button `append`. A color hex sets `--vi-product-configurator-option-bg` on that button.
+The label is `ViewsTheme:Button` (`tag=label`, `color=outline-primary`, `size=sm`). The unavailable note is Button `append`. A color hex sets `--vi-product-configurator-option-bg` on that button.
 
 Selected state is `option.id` in `product.optionIds` (the buy-box product, including CMS). Non-combinable options stay selectable: radios add a visually hidden unavailable note; selects append `detail.unavailable` and set `title` to `detail.unavailableTooltip`. `Product:Configurator:GroupLabel` renders the legend from `component.product.configurator.legend` with `%hidden_cls%` = `visually-hidden`.
+
+The `Product:Configurator` root is a flex column with `gap-4` between groups (`Configurator.cva.twig`).
+
+`Product:BuyContainer` gives the configurator `mb-4` (`BuyContainer.cva.twig`) so it is spaced from the buy form.
 
 Color and media controls are 60px with 2px padding (`Option.css`). The color fill is `--vi-product-configurator-option-bg` on that option. The checked control uses a 2px border (`Option.css`).
 
@@ -47,7 +53,7 @@ Color and media controls are 60px with 2px padding (`Option.css`). The color fil
 | `product` | required | `SalesChannelProductEntity` |
 | `configuratorSettings` | `null` | `PropertyGroupCollection` |
 | `elementId` | `null` | CMS element id. Unique control ids and `configuratorId` when several buy boxes share a page |
-| `cva` | `{}` | `Configurator.cva.twig`: `root`, `group` |
+| `cva` | `{}` | `Configurator.cva.twig`: `root`, `title`, `group` |
 
 ### Derived
 
@@ -59,7 +65,7 @@ Color and media controls are 60px with 2px padding (`Option.css`). The color fil
 | `switchUrl` | `frontend.detail.switch` |
 | `groups` | `list<PropertyGroupEntity>` |
 
-Nests: `group` (class plus forwarded attrs on `Product:Configurator:Group`).
+Nests: `title` (attrs on the title `<div>`), `group` (class plus forwarded attrs on `Product:Configurator:Group`).
 
 ### `Product:Configurator:Group` (class-backed)
 
@@ -89,7 +95,7 @@ No `data-component`. `label` variant `combinable: no` is `text-decoration-line-t
 
 ### `Product:Configurator:GroupLabel` (anonymous)
 
-`<legend>` for one group. Prop `name` is the group name. No `data-component`. `cva` slot `root` is `vi-product-configurator-group__legend fs-5 fw-semibold`.
+`<legend>` for one group. Prop `name` is the group name. No `data-component`. `cva` slot `root` is `vi-product-configurator-group__legend fs-5 fw-medium`.
 
 ## JavaScript
 
