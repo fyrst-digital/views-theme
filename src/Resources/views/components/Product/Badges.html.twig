@@ -9,10 +9,10 @@
     >
         {% block discount %}
             {% if showDiscount %}
-                <twig:ViewsTheme:Product:Badge:Discount
+                <twig:ViewsTheme:Badge
                     class="{{ vi_class('discount') }}"
                     {{ ...vi_attrs('discount').defaults({
-                        percentage: discountPercent,
+                        label: discountPercent|number_format(0) ~ ' %',
                     }).all() }}
                 />
             {% endif %}
@@ -20,18 +20,22 @@
 
         {% block topseller %}
             {% if showTopseller %}
-                <twig:ViewsTheme:Product:Badge:Topseller
+                <twig:ViewsTheme:Badge
                     class="{{ vi_class('topseller') }}"
-                    {{ ...vi_attrs('topseller').all() }}
+                    {{ ...vi_attrs('topseller').defaults({
+                        label: 'listing.boxLabelTopseller'|trans|sw_sanitize,
+                    }).all() }}
                 />
             {% endif %}
         {% endblock %}
 
         {% block new %}
             {% if showNew %}
-                <twig:ViewsTheme:Product:Badge:New
+                <twig:ViewsTheme:Badge
                     class="{{ vi_class('new') }}"
-                    {{ ...vi_attrs('new').all() }}
+                    {{ ...vi_attrs('new').defaults({
+                        label: 'listing.boxLabelNew'|trans|sw_sanitize,
+                    }).all() }}
                 />
             {% endif %}
         {% endblock %}
