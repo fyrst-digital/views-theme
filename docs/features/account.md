@@ -26,6 +26,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion. Card chrome as below. Header: a left `main` wrap row and the menu on the right. From `md` the date (`fs-4`) and status `Badge` share a row with the full-width order number below; below `md` the order is date, number, status (responsive `order-*`). The menu toggle and its rows use `square`; the popover is capped at 240px (`--vi-max-w` assigned on `.vi-order-item__menu` in `Order/Item.css`, instead of the `Dropdown` default of 352px). Summary: ruled grid, two columns, four from `xl`; `Order:SummaryItem` is a muted label over a semibold value. The customer comment is not in the card summary; it lives in `Order:ItemDetails` |
 | `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals. Footer grid (one track, two from `lg`, `gap-5`): customer comment (`Order:SummaryItem`) left, totals right (`g-start-lg-2`, so they take the right half from `lg` even without a comment); stacked below `lg`. No order date / number block — both are in the `Order:Item` header |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
+| `Order:Reorder` | Repeat-order `form` in the `Order:Item` menu: one hidden `lineItems[…]` group per product line item plus the menu button. Co-located JS: submit → `ViewsTheme:Cart:Add` with the form data (the `Cart` owner posts to `frontend.checkout.line-item.add`, so no navigation) and the drawer opens on success; it closes its menu popover. Same event path as `Product:Action:Buy`. No `redirectTo`: the old `frontend.cart.offcanvas` redirect landed on the raw core offcanvas fragment. Items already in the cart merge into their quantity |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
 | `Account:LoginRegister` (class-backed) | Shared Log in / Register card. View-model (`LoginRegister.php`): `#[PostMount]` null-coalesces `formViolations` from the request and computes `registerActive`; it also owns the tab param name (`action`), slugs and tab / panel ids, so the server read and the `Tabs` wiring cannot drift. One bordered card with two [`Tabs`](tabs.md) (Log in / Register). Register tab is active when the request carries register `formViolations` or posted `data`, or `?action=register`; otherwise Log in. The tabs use `param="action"` (`LoginRegister::TAB_PARAM`) with slugs `login` / `register`, so the URL keeps the selection and a refresh renders it server-side. Props: `guestSelectable` (default `false`), `registerErrorRoute` (default `frontend.account.register.page`), `redirectTo`, login error props. Nests `login`, `register`. Used by `Account:Register:Page` and [`Checkout:Register`](checkout-register.md) |
@@ -77,7 +78,7 @@ Edit-order (checkout `_page`, minimal chrome):
 
 ```
 page/account/order/index.html.twig
-├─ base_esi_header → Page:Header:Minimal
+├─ base_esi_header → Page:Header:Minimal action="account"
 │    └─ .container
 │         ├─ Page:Logo
 │         ├─ Page:Support
@@ -89,7 +90,7 @@ page/account/order/index.html.twig
 │    ├─ Payment:Selection          (POST edit-order.change-payment-method)
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
 │    ├─ LineItems:Table (read-only, nestedLineItems)
-│    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
+│    └─ Account:Order:Edit:Aside   (<aside>, sticky from xl → Summary:Box: heading + Cart:Summary + update + Order:Cancel)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
@@ -97,7 +98,7 @@ Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 
-`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
+`Page:Header:Minimal` here passes `action="account"` (back button → `frontend.account.home.page`, `viewsTheme.account.backToAccount`; both the page header and `order/header.html.twig`) and keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
 
 ## Scripts (theme-owned)
 
@@ -138,7 +139,7 @@ Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOr
 | `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
 | `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
 
-Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
+Menu: change/complete payment, reorder (`Order:Reorder` → `Cart:Add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
 
 ## Storefront bridges
 
@@ -178,7 +179,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 
 ## Files
 
-`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Reorder,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
 
 ## Out of scope
 

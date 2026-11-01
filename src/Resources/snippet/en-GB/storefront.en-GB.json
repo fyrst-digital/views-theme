@@ -58,7 +58,8 @@
             "addressNew": "New address",
             "addressPhoneOptional": "Optional",
             "addressStreetPlaceholder": "Street and number",
-            "requiredFields": "* Required fields"
+            "requiredFields": "* Required fields",
+            "backToAccount": "Back to account"
         }
     },
 

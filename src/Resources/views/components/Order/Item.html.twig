@@ -95,33 +95,7 @@
                                 />
                             {% endif %}
 
-                            <twig:ViewsTheme:Form:Handler
-                                action="{{ path('frontend.checkout.line-item.add') }}"
-                                method="post"
-                            >
-                                <twig:block name="content">
-                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                    {% for lineItem in order.lineItems %}
-                                        {% if lineItem.type == productLineItemType %}
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
-                                        {% endif %}
-                                    {% endfor %}
-                                    <twig:ViewsTheme:Button
-                                        type="submit"
-                                        color="none"
-                                        size="sm"
-                                        justify="start"
-                                        :square="true"
-                                        icon="arrows-clockwise"
-                                        label="{{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}"
-                                    />
-                                </twig:block>
-                            </twig:ViewsTheme:Form:Handler>
+                            <twig:ViewsTheme:Order:Reorder :order="order" />
 
                             {% if allowOrderCancellation %}
                                 <twig:ViewsTheme:Modal:Open

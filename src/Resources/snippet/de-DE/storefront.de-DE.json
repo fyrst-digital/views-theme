@@ -58,7 +58,8 @@
             "addressNew": "Neue Adresse",
             "addressPhoneOptional": "Optional",
             "addressStreetPlaceholder": "Straße und Hausnummer",
-            "requiredFields": "* Pflichtfelder"
+            "requiredFields": "* Pflichtfelder",
+            "backToAccount": "Zurück zum Konto"
         }
     },
 
