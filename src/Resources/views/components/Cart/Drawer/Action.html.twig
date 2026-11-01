@@ -29,6 +29,11 @@
     }).all() }}
 >
     <twig:block name="prepend">
-        <twig:ViewsTheme:Cart:Drawer:Action:Badge :count="count" />
+        <twig:ViewsTheme:Count
+            class="vi-cart-drawer-action__badge"
+            :count="count"
+            changedEvent="ViewsTheme:Cart:Changed"
+            countKey="cartCount"
+        />
     </twig:block>
 </twig:ViewsTheme:Button>

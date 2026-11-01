@@ -493,13 +493,13 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
 | Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
-| Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Country / PaymentMethod / ShippingMethod |
+| Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Field |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* (Main/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
-| Search:* (+ Action/Overlay JS), Offcanvas, Navigation/Flyout, Cart:Drawer:* | UX / component |
+| Search:* (+ Action/Overlay JS), Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
-| Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header/Close; Panel/Close JS), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
+| Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header; Panel JS), generic `Close` (`target` → parent `close`) and `Count` (bus-driven count pill), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |
 | Product:* | UX; BuyContainer class-backed + buy-widget bridge; Listing class-backed + storefront listing bridge; Box via `card/box.html.twig` bridge; Action:Buy / Action:Detail class-backed |
 | Product:Listing (class-backed + JS owner) | Results island + `/vi/listing/*` controllers; [product-listing.md](../features/product-listing.md) |
 | Pagination / Sorting (class-backed + JS) | Theme controls → Listing owner; [pagination.md](../features/pagination.md) · [sorting.md](../features/sorting.md) |
@@ -521,7 +521,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Checkout:Success:Page (+ Header / Main / Addresses / Payment / Shipping / Comment / DeliveryDate / Aside) | Read-only recap that reuses the confirm sub-components (`Page:Title`, `Addresses`, `Methods`, `Additions`, `Summary:Box`) — [checkout-success.md](../features/checkout-success.md) |
 | Dropdown (Popover + CSS anchor; toggle chrome via `toggle:*` only) | UX + `vi_cva` + CSS/JS |
 | Gallery (+ Thumbnails/Thumb/Canvas/Slide/Control/Dots/Dot JS) | UX + scroll-snap PDP gallery; [gallery.md](../features/gallery.md) |
-| Cookie:*, Filter, ContactChannel, ScrollUp | UX / shells; core `sw_extends` shells runtime-deprecated (`{% deprecated %}`, see [components.md#extends-shells](components.md#extends-shells)) |
+| Filter | UX |
 | Order:Item* shells | Legacy core `sw_extends` shells — `{% deprecated %}` since 1.0.0 |
 | Tabs / Tabs:List / Tab / Panel | Anonymous UX + JS; [tabs.md](../features/tabs.md) |
 | Accordion / Item / Header / Panel | Anonymous UX + JS; [accordion.md](../features/accordion.md) |

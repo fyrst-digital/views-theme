@@ -13,7 +13,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
 - `Search:Bar` owns suggest UX (debounce, fetch, DOM insert) — **not** core `SearchWidgetPlugin`
 - Suggest HTML is rendered by the theme controller via Symfony UX `ComponentRendererInterface` as `ViewsTheme:Search:Suggest` with explicit props
-- Close via isolated `Search:Overlay:Close` / shared `Backdrop`, Escape, or toggling the action again
+- Close via the generic `Close` / shared `Backdrop`, Escape, or toggling the action again
 - Body scroll lock while open; focus returns to the action on close
 - Open state traps Tab within the dialog
 
@@ -21,7 +21,7 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 - Styling is **Bootstrap utilities first** (in sibling `*.cva.twig`). Co-located component CSS (e.g. `Bar.css`, `Overlay.css`, `Scroll/Area.css`) is last resort only — no global `search.scss`.
 - Overlay open/close toggles `d-none` / `d-flex` in `Overlay.js`.
-- Close is nested under `Search/Overlay/`; backdrop uses shared `ViewsTheme:Backdrop`.
+- Close is the generic `ViewsTheme:Close` (`target: ViewsTheme:Search:Overlay`); backdrop uses shared `ViewsTheme:Backdrop`.
 - Suggest is inserted as the **next sibling after the bar form**.
 - Flex scroll chain: panel (`min-h-0` + column flex) → Suggest (`flex-1 min-h-0`) → Results/`Scroll:Area` (`flex-1 min-h-0`) so long result lists scroll inside the panel.
 - Product rows (`Search:Suggest:Item`): compose `Product:Cover` (`showLink=false`), local manufacturer/category meta, `Product:Name` (`showLink=false`), and compact `Product:Price` (list price via shared Price / `ProductPriceResolver`).
@@ -84,7 +84,7 @@ $this->components->createAndRender('ViewsTheme:Search:Suggest', [
 | Action (`Button` root) | `data-component="ViewsTheme:Search:Action"` |
 | Overlay root | `data-component="ViewsTheme:Search:Overlay"` |
 | Backdrop | `data-component="ViewsTheme:Backdrop"` |
-| Close | `data-component="ViewsTheme:Search:Overlay:Close"` |
+| Close | `data-component="ViewsTheme:Close"` (`target: ViewsTheme:Search:Overlay`) |
 | Search bar | `data-component="ViewsTheme:Search:Bar"` |
 | Scroll area (results grid) | `data-component="ViewsTheme:Scroll:Area"` |
 | View all | `data-action="view-all"` |
@@ -107,7 +107,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Controller | `src/Controller/SearchOverlayController.php` |
 | Overlay | `src/Resources/views/components/Search/Overlay.*` |
 | Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
-| Close | `src/Resources/views/components/Search/Overlay/Close.*` |
+| Close | `src/Resources/views/components/Close.*` |
 | Action | `src/Resources/views/components/Search/Action.*` |
 | Bar | `src/Resources/views/components/Search/Bar.*` |
 | Suggest | `src/Resources/views/components/Search/Suggest.*` |

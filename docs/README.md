@@ -84,9 +84,7 @@ Families that exist in code but are only covered lightly (or not at all) under `
 
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
 - **Account / Order** — owned under [account pages](features/account.md) (display primitives: [address](features/address.md); register/address forms: [checkout-register](features/checkout-register.md); confirm picker + editor: [address manager](features/address-manager.md); header login: [account-action](features/account-action.md))
-- **Cookie** — banner / configuration UX
 - **Page layout** — Logo, `meta.html.twig` + `CartContextSubscriber` / `cartCount` (footer: [footer](features/footer.md))
-- **Offcanvas** (vs Drawer), **ScrollUp**
 - **Primitives** — Button, Alert, Badge, Progress, Blockquote, Divider (conventions + call sites)
 
 ## Related

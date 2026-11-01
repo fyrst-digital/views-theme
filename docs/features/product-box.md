@@ -18,8 +18,7 @@ Listing / CMS product card UI. Core includes `component/product/card/box.html.tw
 | `Name` / `Variations` / `Description` | Shared product primitives |
 | `Product:Price` | Class-backed price row only; math via `ProductPriceResolver` |
 | `ProductPriceResolver` | Shared price data for Price + Badges |
-| `Product:Badges` | Class-backed shell: product → visibility gates; composes `Product:Badge:*` |
-| `Product:Badge:Discount` / `Topseller` / `New` | Thin specialties → generic `Badge` |
+| `Product:Badges` | Class-backed shell: product → visibility gates; mounts the generic `Badge` per badge |
 | `Badge` | Generic label leaf (`type` CVA variants) |
 | `Product:Prices` | PDP price stack shell (Tiered + Price + Tax) — used by [BuyContainer](buy-container.md); Box:Footer still mounts leaves directly |
 | `Product:Price:Tiered` | Tier table — parent-mounted (e.g. `Product:Prices`), not nested in Price |
@@ -69,9 +68,9 @@ This is an intentional **new** `views/storefront/` bridge (same role as header �
 Product:Box (class VM — no productUrl)
   ├─ Product:Cover (product → media + url via ProductDetailUrlBuilder)
   │    ├─ prepend → Product:Badges (class VM)
-  │    │    ├─ Product:Badge:Discount → Badge type=discount
-  │    │    ├─ Product:Badge:Topseller → Badge type=topseller
-  │    │    └─ Product:Badge:New → Badge type=new
+  │    │    ├─ Badge  (discount)
+  │    │    ├─ Badge  (topseller)
+  │    │    └─ Badge  (new)
   │    ├─ media
   │    └─ append → Product:Action:Wishlist (if wishlist enabled)
   └─ content
@@ -223,18 +222,13 @@ Secondary actions (wishlist, …) for PDP buy box — see [Buy container](buy-co
 | `showDiscount` / `discountPercent` | derived | List-price % when not tier-range and not display-from-variants |
 | `showTopseller` / `showNew` | derived | `markAsTopseller` / `isNew` |
 
-Nested overrides: `discount:…`, `topseller:…`, `new:…` (spread into the specialty → `Badge`).
+Nested overrides: `discount:…`, `topseller:…`, `new:…` (forwarded to the `Badge`).
 
-### `Product:Badge:*` / `Badge`
+### Badges
 
-| Component | Role |
-|-----------|------|
-| `Product:Badge:Discount` | `percentage` → label `N %`; wires `Badge` `type="discount"` |
-| `Product:Badge:Topseller` | Default label `listing.boxLabelTopseller`; `type="topseller"` |
-| `Product:Badge:New` | Default label `listing.boxLabelNew`; `type="new"` |
-| `Badge` | Generic leaf: `type`, `label`, CVA type variants (`badge` / `product-badge` / `badge-*`) |
+`Product:Badges` mounts the generic `Badge` directly. Default labels: discount `N %` (`discountPercent`), `listing.boxLabelTopseller`, `listing.boxLabelNew`. Override with `discount:label` / `topseller:label` / `new:label`. `Badge` itself takes `label`, `color`, `size` and `pill`.
 
-Not the wishlist/cart count pills (`Wishlist:Action:Badge`, `Cart:Drawer:Action:Badge`).
+Not the wishlist/cart count pills (generic `Count`).
 
 ### CVA slots (`Box.cva.twig`)
 

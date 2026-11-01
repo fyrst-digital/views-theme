@@ -1,27 +1,29 @@
 {% props
-    shippingMethods,
-    selectedId = context.shippingMethod.id,
-    selectedName = context.shippingMethod.translated.name,
-    id = 'vi-cart-shippingMethodId',
+    field,
+    label,
+    items,
+    selectedId = null,
+    selectedName = null,
+    guardSelected = false,
+    id = 'vi-cart-' ~ field,
     size = 'sm',
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% set selectOptions = [] %}
 
-{% if selectedId not in shippingMethods.ids %}
+{% set selectOptions = [] %}
+{% if guardSelected and selectedId not in items.ids %}
     {% set selectOptions = selectOptions|merge([{
         value: selectedId,
         label: selectedName ~ ' ' ~ ('checkout.notAvailableSuffix'|trans|sw_sanitize),
         disabled: true,
     }]) %}
 {% endif %}
-
-{% for shipping in shippingMethods %}
+{% for item in items %}
     {% set selectOptions = selectOptions|merge([{
-        value: shipping.id,
-        label: shipping.translated.name,
+        value: item.id,
+        label: item.translated.name,
     }]) %}
 {% endfor %}
 
@@ -29,10 +31,10 @@
     class="{{ vi_class('root') }}"
     {{ ...attributes.defaults({
         'data-component': 'ViewsTheme:Shipping:Calculation:Field',
-        'data-component-options': { field: 'shippingMethodId' }|json_encode,
+        'data-component-options': { field: field }|json_encode,
         id: id,
-        name: 'shippingMethodId',
-        label: 'checkout.shippingMethod'|trans|sw_sanitize,
+        name: field,
+        label: label,
         size: size,
         options: selectOptions,
         value: selectedId,

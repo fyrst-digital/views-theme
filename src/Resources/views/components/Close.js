@@ -1,9 +1,11 @@
 /**
+ * Calls `close` on the component named in `targetComponentName` (Drawer, Modal, Search overlay, …).
+ *
  * @extends {ShopwareComponent}
  */
-export default class ModalClose extends ShopwareComponent {
+export default class Close extends ShopwareComponent {
     static options = {
-        modalComponentName: 'ViewsTheme:Modal',
+        targetComponentName: null,
     }
 
     init() {
@@ -20,6 +22,11 @@ export default class ModalClose extends ShopwareComponent {
      */
     _onClick(event) {
         event.preventDefault()
-        window.Shopware.callMethod(this.options.modalComponentName, 'close')
+
+        if (!this.options.targetComponentName) {
+            return
+        }
+
+        window.Shopware.callMethod(this.options.targetComponentName, 'close')
     }
 }

@@ -13,7 +13,7 @@ use Symfony\UX\TwigComponent\Attribute\PostMount;
 /**
  * View-model for LineItem — maps a cart or order line item to its type component.
  *
- * Order matches core line-item.html.twig: product, then the discount heuristic, then container, else generic.
+ * Order matches core line-item.html.twig: product, then the discount heuristic. Containers and generic items render as a product row.
  */
 #[AsTwigComponent]
 class LineItem
@@ -21,10 +21,6 @@ class LineItem
     public const PRODUCT = 'ViewsTheme:LineItem:Product';
 
     public const PROMOTION = 'ViewsTheme:LineItem:Promotion';
-
-    public const CONTAINER = 'ViewsTheme:LineItem:Container';
-
-    public const GENERIC = 'ViewsTheme:LineItem:Generic';
 
     public mixed $lineItem = null;
 
@@ -67,8 +63,7 @@ class LineItem
         $this->typeComponent = match (true) {
             $type === CartLineItem::PRODUCT_LINE_ITEM_TYPE => self::PRODUCT,
             $this->isDiscount($lineItem) => self::PROMOTION,
-            $type === CartLineItem::CONTAINER_LINE_ITEM => self::CONTAINER,
-            default => self::GENERIC,
+            default => self::PRODUCT,
         };
 
         $this->typeProps = [

@@ -38,7 +38,7 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Summary, cart options (promotion form + shipping pre-calculation), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
 - Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
-- Header badge (`Cart:Drawer:Action:Badge`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
+- Header badge (generic `Count`, `countKey: cartCount`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
 - Cart page mutations refresh theme `Cart:Page` islands — see [cart page](cart-page.md)
 
@@ -122,7 +122,7 @@ LineItem:Product
 
 | Component | Role |
 |-----------|------|
-| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; `container` → Container; else Generic. `tag` (`div` from `Cart:Items` and `LineItems:Table`) and `layout` (`stacked` default on drawer and register `Cart:Items`, `table` on [cart page](cart-page.md) and [confirm](checkout-confirm.md) `LineItems:Table`) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
+| `LineItem` | Class router. `#[PostMount]` sets `typeComponent` and `typeProps`; Twig calls `component()`. Order: `product` → Product (wins over a discount-like price); not-good with `totalPrice <= 0`, or type `discount` → Promotion; everything else (`container`, generic) → Product. `tag` (`div` from `Cart:Items` and `LineItems:Table`) and `layout` (`stacked` default on drawer and register `Cart:Items`, `table` on [cart page](cart-page.md) and [confirm](checkout-confirm.md) `LineItems:Table`) are in `typeProps`. Caller `cva`, `class`, and nests are merged into the `component()` data (`typeProps|merge(attributes.all())`), not nested under an `attributes` key, so leaf `{% props %}` can bind `cva`. Promotion’s bag is only `lineItem`, `tag`, `layout` |
 | `LineItem:Product` | Thin orchestrator; root tag from `tag` |
 | `LineItem:Content` | Right column stack |
 | `LineItem:Header` | Product name, then the delivery window. Name is `d-inline` here (`Product:Name` stays `d-inline-flex` elsewhere). `header:name:class` appends on Header, then that string replaces `Product:Name`’s root |
@@ -169,7 +169,7 @@ No wishlist on line items. No core offcanvas class hooks; no `data-form-auto-sub
 |-----------|-----------|
 | Cart owner | `data-component="ViewsTheme:Cart"` |
 | Action (`Button` root) | `data-component="ViewsTheme:Cart:Drawer:Action"` |
-| Action badge | `data-component="ViewsTheme:Cart:Drawer:Action:Badge"` |
+| Action badge | `data-component="ViewsTheme:Count"` |
 | Drawer root (mount) | `data-component="ViewsTheme:Drawer"` / `#vi-cart-drawer` |
 | Body coordinator | `data-component="ViewsTheme:Cart:Drawer:Body"` |
 | Flashes / Items | `data-component="ViewsTheme:Cart:Flashes"` / `ViewsTheme:Cart:Items` |
@@ -217,23 +217,23 @@ Each select is `ViewsTheme:Shipping:Calculation:Field` (`Field.js`): it reads on
 | Piece | Component |
 |-------|-----------|
 | Selection stack | `ViewsTheme:Shipping:Calculation:Selection` |
-| Country (guest only) | `…:Selection` → `…:Country` → `Form:Select` (`:options` + `:value`) |
-| Payment method | `…:Selection` → `…:PaymentMethod` → `Form:Select` (+ leading disabled row when unavailable) |
-| Shipping method | `…:Selection` → `…:ShippingMethod` → same as payment |
+| Country (guest only; `Selection` skips the mount for customers) | `…:Selection` → `…:Field` → `Form:Select` (`:options` + `:value`) |
+| Payment method | `…:Selection` → `…:Field` (`guardSelected`) → `Form:Select` (+ leading disabled row when unavailable) |
+| Shipping method | `…:Selection` → `…:Field` (`guardSelected`) → same as payment |
 
-Children stay **anonymous** (no PHP class). Field adapters map entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
+Children stay **anonymous** (no PHP class). One generic `Shipping:Calculation:Field` serves all three selects (props `field`, `label`, `items`, `selectedId`, `selectedName`, `guardSelected`; default `id` is `vi-cart-<field>`). It maps entities to `{ value, label, disabled? }` in Twig and pass `:options` / `:value` into `Form:Select` (no `options` block override).
 
 Nest names (via `Cart:Options` → `shipping:*`):
 
 | Nest | Target |
 |------|--------|
 | `shipping:selection:*` | Selection root / props |
-| `shipping:selection:country:*` | Country → `Form:Select` (default `size: sm` in nest defaults) |
-| `shipping:selection:payment:*` | PaymentMethod → `Form:Select` |
-| `shipping:selection:shipping:*` | ShippingMethod → `Form:Select` |
+| `shipping:selection:country:*` | Country `Field` → `Form:Select` (default `size: sm` in `Field`) |
+| `shipping:selection:payment:*` | Payment `Field` → `Form:Select` |
+| `shipping:selection:shipping:*` | Shipping `Field` → `Form:Select` |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
-Action and Body options (`data-component-options`): `drawerUrl`. Badge options: `changedEvent`.
+Action and Body options (`data-component-options`): `drawerUrl`. Badge (`Count`) options: `changedEvent`, `countKey`.
 
 Events:
 

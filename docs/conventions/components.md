@@ -24,15 +24,7 @@ Some templates still `sw_extends` core Storefront templates (register, address f
 
 ### Deprecated (runtime)
 
-These core `sw_extends` shells emit Twig `{% deprecated %}` on every render (`package="fyrst/views-theme"`, `version="1.0.0"` → `trigger_deprecation`). Rewrite as pure UX (optional thin storefront bridge).
-
-| Tag | Path |
-|-----|------|
-| `Cookie:Configuration` | `Cookie/Configuration.html.twig` |
-| `Cookie:ConfigurationGroup` | `Cookie/ConfigurationGroup.html.twig` |
-| `ScrollUp` | `ScrollUp.html.twig` |
-
-Related shims (replacement exists): `Account:Dropdown` → `Account:Menu` inside `Dropdown`; `Page:Header:Action:Account` → `Account:Action`.
+No `{% deprecated %}` shells remain. The unmounted `Cookie:Configuration`, `Cookie:ConfigurationGroup`, `ScrollUp`, `Account:Dropdown` and `Page:Header:Action:Account` shims were removed (see [#64](https://github.com/fyrst-digital/views-theme/issues/64)). New shells that are kept for a transition must emit `{% deprecated package="fyrst/views-theme" version="…" %}`.
 
 ## Related
 

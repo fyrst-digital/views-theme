@@ -12,31 +12,43 @@
     class="{{ vi_class('root') }}"
 >
     {% block country %}
-        <twig:ViewsTheme:Shipping:Calculation:Country
-            class="{{ vi_class('country') }}"
-            {{ ...vi_attrs('country').defaults({
-                countries: page.countries,
-                size: 'sm',
-            }).all() }}
-        />
+        {% if not context.customer %}
+            <twig:ViewsTheme:Shipping:Calculation:Field
+                class="{{ vi_class('country') }}"
+                {{ ...vi_attrs('country').defaults({
+                    field: 'countryId',
+                    label: 'checkout.shippingCountry'|trans|sw_sanitize,
+                    items: page.countries,
+                    selectedId: context.shippingLocation.country.id,
+                }).all() }}
+            />
+        {% endif %}
     {% endblock %}
 
     {% block payment_method %}
-        <twig:ViewsTheme:Shipping:Calculation:PaymentMethod
+        <twig:ViewsTheme:Shipping:Calculation:Field
             class="{{ vi_class('payment') }}"
             {{ ...vi_attrs('payment').defaults({
-                paymentMethods: page.paymentMethods,
-                size: 'sm',
+                field: 'paymentMethodId',
+                label: 'checkout.paymentMethod'|trans|sw_sanitize,
+                items: page.paymentMethods,
+                selectedId: context.paymentMethod.id,
+                selectedName: context.paymentMethod.translated.name,
+                guardSelected: true,
             }).all() }}
         />
     {% endblock %}
 
     {% block shipping_method %}
-        <twig:ViewsTheme:Shipping:Calculation:ShippingMethod
+        <twig:ViewsTheme:Shipping:Calculation:Field
             class="{{ vi_class('shipping') }}"
             {{ ...vi_attrs('shipping').defaults({
-                shippingMethods: page.shippingMethods,
-                size: 'sm',
+                field: 'shippingMethodId',
+                label: 'checkout.shippingMethod'|trans|sw_sanitize,
+                items: page.shippingMethods,
+                selectedId: context.shippingMethod.id,
+                selectedName: context.shippingMethod.translated.name,
+                guardSelected: true,
             }).all() }}
         />
     {% endblock %}

@@ -1,0 +1,24 @@
+{% props
+    target,
+    label = 'global.default.close'|trans|striptags,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'data-component': 'ViewsTheme:Close',
+        'data-component-options': {
+            targetComponentName: target,
+        }|json_encode,
+        'aria-label': label,
+        title: label,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block icon %}
+        {{ vi_icon('x') }}
+    {% endblock %}
+</button>
