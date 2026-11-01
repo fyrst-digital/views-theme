@@ -1,5 +1,4 @@
 .btn {
-  --icon-size: var(--btn-icon-size, var(--icon-size-2));
   text-decoration-color: var(--btn-decoration-color, rgba(from currentColor r g b / var(--btn-decoration-color-opacity, 30%))) !important;
   text-underline-offset: var(--btn-underline-offset, .25em);
 

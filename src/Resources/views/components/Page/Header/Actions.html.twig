@@ -4,7 +4,7 @@
 %}
 
 {% do vi_define_cva({
-    root: { base: 'col d-flex justify-content-end align-items-center' },
+    root: { base: 'col d-flex justify-content-end align-items-center gap-xl-2' },
 }|replace_recursive(cva)) %}
 
 <div
@@ -15,19 +15,19 @@
 
         {% block menu %}
             <twig:ViewsTheme:Navigation:Drawer:Action
-                class="header-action icon-size-3 icon-size-lg-4 d-lg-none" />
+                class="header-action icon-size-3 icon-size-xl-4 d-lg-none" />
         {% endblock %}
 
         {% block search %}
             <twig:ViewsTheme:Search:Action 
-                class="header-action icon-size-3 icon-size-lg-4" />
+                class="header-action icon-size-3 icon-size-xl-4" />
         {% endblock %}
 
         {% block wishlist %}
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
                     :label="false"
-                    class="header-action icon-size-3 icon-size-lg-4 position-relative d-none d-lg-inline-flex" />
+                    class="header-action icon-size-3 icon-size-xl-4 position-relative d-none d-lg-inline-flex" />
             {% endif %}
         {% endblock %}
 
@@ -36,12 +36,12 @@
                 :toggle:label="false"
                 class="mt-2 p-0 vi-account__dropdown"
                 host:class="vi-dropdown-host--lg-up d-none d-lg-contents"
-                toggle:class="header-action icon-size-3 icon-size-lg-4" />
+                toggle:class="header-action icon-size-3 icon-size-xl-4" />
         {% endblock %}
 
         {% block cart %}
             <twig:ViewsTheme:Cart:Drawer:Action
-                class="header-action icon-size-3 icon-size-lg-4 position-relative" />
+                class="header-action icon-size-3 icon-size-xl-4 position-relative" />
         {% endblock %}
 
     {% endblock %}
