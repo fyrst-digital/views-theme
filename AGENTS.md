@@ -40,6 +40,12 @@ Full index: [docs/README.md](docs/README.md).
 |---------|------|---------|
 | **`/implement`** | [`.cursor/commands/implement.md`](.cursor/commands/implement.md) | Implement an agreed plan or a goal typed after the command |
 
+## Skills
+
+| Skill | Path | Trigger |
+|-------|------|---------|
+| **`component-audit`** | [`.claude/skills/component-audit/SKILL.md`](.claude/skills/component-audit/SKILL.md) | Recurring audit of dead/duplicated components (issue #64): audit, plan, then one PR per approved step |
+
 ## Quick reference (docs)
 
 | Topic | Doc |
