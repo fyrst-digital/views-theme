@@ -488,7 +488,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Area | Status |
 |------|--------|
 | Alert, Button, Blockquote, Progress, QuantityInput, Form:Input, Form:Input:Group (facade exception), Form:Select | UX + `vi_cva` (nest chrome; Group dual API documented) |
-| Header actions, forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
+| Forms, wishlist, language switch | Bare attrs → `attributes.defaults` (P3) |
 | Form:Input | UX + `vi_cva`; native `required` / `confirmFor`; used by Account:Login + Register/Address |
 | Form:Birthday (class-backed) | UX + `vi_cva`; day/month/year options in `Birthday.php` |
 | Form:Handler / Form:Toggle | UX + `data-component`; shared `@views-theme/modules/shared/form.js` |

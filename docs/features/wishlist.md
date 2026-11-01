@@ -14,7 +14,7 @@ Theme-owned wishlist: product toggle, header/nav badge, guest localStorage and l
 ## Wire-up
 
 - Owner mounts once in `Page:Header:Actions` when `core.cart.wishlistEnabled` (next to `Cart`)
-- Header: `Wishlist:Action` (`:label="false"`)
+- Header: `Wishlist:Action` via `Page:Header:Actions` nest `wishlist` (default `label: false`; classes on CVA slot `wishlist`)
 - Nav drawer title (`Navigation:Drawer:Header`): `Wishlist:Action` with drawer-scoped `badgeId` / `liveId`. Chrome is Header CVA (`wishlist`, `wishlistLabel`); override via Header `:cva` / `wishlist:class`, or forward `Wishlist:Action` CVA with `wishlist:cva`
 - Listing box: `Product:Action:Wishlist` on Cover `append`, `appearance="circle"`
 - PDP: `BuyContainer` → `Product:Actions` → `Product:Action:Wishlist` (`showText`, `size: sm`)

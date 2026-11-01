@@ -13,7 +13,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | Storefront `_page` | Logout fallback: empty `Account:Page` (no nested `page_account_main_content`) |
 | Logged-in page bridges | `page_account` → `Account:Page` + composer in the `content` slot |
 | Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
-| `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
+| `Account:Page` | Layout composer. One track below `lg` (`grid-columns-1`); twelve from `lg` (`grid-columns-lg-12`). Sidebar `g-col-lg-4` (`g-col-xl-3`), main `g-col-lg-8` (`g-col-xl-9`). Sidebar is `position-lg-sticky`; `top` is `--vi-top` (`24px`) |
 | `Account:Sidebar` | Card (white, 1px linen, `rounded-4`) with greeting + `Account:Actions` (no logout in the nav list) + logout footer. The active item (`aria-current`) uses the `active` CVA variant on `Account:Actions` (`bg-light`, semibold) |
 | `Account:Heading` | Thin wrapper over [`Page:Title`](checkout-confirm.md#pagetitle): `title` is the h1 (30px / 36px from `xl`, 600), `intro` fills the `description` block (`fs-4`, muted). Same h1 as confirm, cart and the register page |
 | `Account:Overview` | Confirm-style grid (`grid-columns-md-2`, 24px column / 40px row gap). Heading, default addresses and newest order span the row; profile card and newsletter share a row. Alerts wrapper renders only when there is an alert. Newest order has an `fs-4` section title above the `Order:Item` card |
@@ -96,7 +96,7 @@ page/account/order/index.html.twig
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
+Below `lg`: one track (`grid-columns-1`); sidebar and main stack. From `lg` (`1024px`): twelve tracks (`grid-columns-lg-12`); sidebar `g-col-lg-4` (`g-col-xl-3` from `xl`), main `g-col-lg-8` (`g-col-xl-9` from `xl`). The sidebar is `position-lg-sticky` with `top: var(--vi-top, 24px)`. Header `Account:Action` remains the nav.
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 

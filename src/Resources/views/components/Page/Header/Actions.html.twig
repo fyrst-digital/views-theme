@@ -3,9 +3,8 @@
     cva = {},
 %}
 
-{% do vi_define_cva({
-    root: { base: 'col d-flex justify-content-end align-items-center gap-xl-2' },
-}|replace_recursive(cva)) %}
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['menu', 'search', 'wishlist', 'account', 'cart']) %}
 
 <div
     {{ attributes.without('class').without('data-component-template') }}
@@ -15,33 +14,45 @@
 
         {% block menu %}
             <twig:ViewsTheme:Navigation:Drawer:Action
-                class="header-action icon-size-3 icon-size-xl-4 d-lg-none" />
+                class="{{ vi_class('menu') }}"
+                {{ ...vi_attrs('menu').all() }}
+            />
         {% endblock %}
 
         {% block search %}
-            <twig:ViewsTheme:Search:Action 
-                class="header-action icon-size-3 icon-size-xl-4" />
+            <twig:ViewsTheme:Search:Action
+                class="{{ vi_class('search') }}"
+                {{ ...vi_attrs('search').all() }}
+            />
         {% endblock %}
 
         {% block wishlist %}
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
-                    :label="false"
-                    class="header-action icon-size-3 icon-size-xl-4 position-relative d-none d-lg-inline-flex" />
+                    class="{{ vi_class('wishlist') }}"
+                    {{ ...vi_attrs('wishlist').defaults({
+                        label: false,
+                    }).all() }}
+                />
             {% endif %}
         {% endblock %}
 
         {% block account %}
             <twig:ViewsTheme:Account:Action
-                :toggle:label="false"
-                class="mt-2 p-0 vi-account__dropdown"
-                host:class="vi-dropdown-host--lg-up d-none d-lg-contents"
-                toggle:class="header-action icon-size-3 icon-size-xl-4" />
+                class="{{ vi_class('account') }}"
+                host:class="{{ vi_class('accountHost') }}"
+                toggle:class="{{ vi_class('accountToggle') }}"
+                {{ ...vi_attrs('account').defaults({
+                    'toggle:label': false,
+                }).all() }}
+            />
         {% endblock %}
 
         {% block cart %}
             <twig:ViewsTheme:Cart:Drawer:Action
-                class="header-action icon-size-3 icon-size-xl-4 position-relative" />
+                class="{{ vi_class('cart') }}"
+                {{ ...vi_attrs('cart').all() }}
+            />
         {% endblock %}
 
     {% endblock %}
