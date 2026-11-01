@@ -26,9 +26,9 @@
                 'outline-muted': 'btn-outline-muted',
             },
             size: {
-                sm: 'btn-sm gap-2',
-                md: 'btn-md gap-2',
-                lg: 'btn-lg gap-2',
+                sm: 'btn-sm gap-3',
+                md: 'btn-md gap-3',
+                lg: 'btn-lg gap-4',
             },
             justify: {
                 start: 'justify-content-start',
@@ -72,6 +72,15 @@
             class: 'fs-6',
         }],
     },
-    icon: { base: 'btn-icon' },
+    icon: { 
+        base: 'btn-icon',
+        variants: {
+            size: {
+                sm: 'icon-size-2',
+                md: 'icon-size-3',
+                lg: 'icon-size-4',
+            },
+        },
+    },
     label: { base: 'btn-label' },
 }

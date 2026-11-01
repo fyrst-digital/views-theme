@@ -24,13 +24,23 @@
     {% block decrease %}
         <twig:ViewsTheme:Button
             class="{{ vi_class('decrease') }}"
-            icon:class="{{ vi_class('icon', { size: size }) }}"
+            icon:class="{{ vi_class('icon') }}"
             {{ ...vi_attrs('decrease').defaults({
                 type: 'button',
                 icon: 'minus',
-                color: 'light',
+                color: 'white',
                 size: size,
                 square: true,
+                cva: {
+                    icon: {
+                        variants: {
+                            size: {
+                                sm: 'icon-size-1',
+                                md: 'icon-size-2',
+                            },
+                        },
+                    },
+                },
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.decrease'|trans|striptags,
             }).all() }}
@@ -65,13 +75,23 @@
     {% block increase %}
         <twig:ViewsTheme:Button
             class="{{ vi_class('increase') }}"
-            icon:class="{{ vi_class('icon', { size: size }) }}"
+            icon:class="{{ vi_class('icon') }}"
             {{ ...vi_attrs('increase').defaults({
                 type: 'button',
                 icon: 'plus',
-                color: 'light',
+                color: 'white',
                 size: size,
                 square: true,
+                cva: {
+                    icon: {
+                        variants: {
+                            size: {
+                                sm: 'icon-size-1',
+                                md: 'icon-size-2',
+                            },
+                        },
+                    },
+                },
                 disabled: disabled is same as(true) ? 'disabled' : false,
                 'aria-label': 'component.product.quantitySelect.increase'|trans|striptags,
             }).all() }}
