@@ -4,7 +4,7 @@ Theme-owned customer account area. Storefront templates are thin bridges: they `
 
 Header login / register dropdown stays on [account action](account-action.md). Address **forms** stay on [`Address:Editor`](address-manager.md). Address **display** stays on [`Address:List` / `Address:Item`](address.md).
 
-Unlike [cart page](cart-page.md), logged-in account pages have **no island refresh / no `/vi/…`**. Interactive bits are local: newsletter change-submit, addressbook search, profile accordion, order details accordion, delete/cancel `Modal`.
+Unlike [cart page](cart-page.md), logged-in account pages have **no island refresh / no `/vi/…`**. Interactive bits are local: newsletter change → XHR, addressbook search, profile accordion, order details accordion, delete/cancel `Modal`.
 
 ## Ownership
 
@@ -15,16 +15,16 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
 | `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
 | `Account:Sidebar` | Card (white, 1px linen, `rounded-4`) with greeting + `Account:Actions` (no logout in the nav list) + logout footer. The active item (`aria-current`) uses the `active` CVA variant on `Account:Actions` (`bg-light`, semibold) |
-| `Account:Heading` | Thin wrapper over [`Page:Title`](checkout-confirm.md#pagetitle): `title` is the h1 (30px / 36px from `xl`, 600), `intro` fills the `description` block (`fs-5`, muted). Same h1 as confirm, cart and the register page |
+| `Account:Heading` | Thin wrapper over [`Page:Title`](checkout-confirm.md#pagetitle): `title` is the h1 (30px / 36px from `xl`, 600), `intro` fills the `description` block (`fs-4`, muted). Same h1 as confirm, cart and the register page |
 | `Account:Overview` | Confirm-style grid (`grid-columns-md-2`, 24px column / 40px row gap). Heading, default addresses and newest order span the row; profile card and newsletter share a row. Alerts wrapper renders only when there is an alert. Newest order has an `fs-4` section title above the `Order:Item` card |
 | `Account:PersonalCard` | Name / company / email + optional profile edit |
-| `Account:Newsletter` | `Form:Switch` + change → submit `frontend.account.newsletter`. Public guest subscribe is [`Newsletter:Form`](newsletter.md) |
+| `Account:Newsletter` | `Form:Switch` + change → XHR POST to `frontend.account.newsletter` (no page navigation). The widget route re-renders the theme bridge `page/account/newsletter.html.twig`; the component replaces its own root with the `Account:Newsletter` root from that response (new switch state + flash messages) and refocuses the switch. On failure the switch reverts. Public guest subscribe is [`Newsletter:Form`](newsletter.md) |
 | `Account:Profile` | Personal form, credentials, email/password accordion, delete |
 | `Account:Addressbook` | Default pair + search + `Address:Item` grid |
 | `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |
 | `Account:Orders` | Order list + `Pagination` (GET `?p=`) |
-| `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion. Card chrome as below. Header: date (`fs-4` from `md`), status `Badge`, order number, menu; below `md` the menu sits beside the date and status / number wrap under it (responsive `order-*`). Summary: ruled grid, two columns, four from `xl`; `Order:SummaryItem` is a muted label over a semibold value; the customer comment spans the row. The comment is shown here only, not again in `Order:ItemDetails` |
-| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals |
+| `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion. Card chrome as below. Header: a left `main` wrap row and the menu on the right. From `md` the date (`fs-4`) and status `Badge` share a row with the full-width order number below; below `md` the order is date, number, status (responsive `order-*`). The menu toggle and its rows use `square`; the popover is capped at 240px (`--vi-max-w` assigned on `.vi-order-item__menu` in `Order/Item.css`, instead of the `Dropdown` default of 352px). Summary: ruled grid, two columns, four from `xl`; `Order:SummaryItem` is a muted label over a semibold value. The customer comment is not in the card summary; it lives in `Order:ItemDetails` |
+| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals. Footer grid (one track, two from `lg`, `gap-5`): customer comment (`Order:SummaryItem`) left, totals right (`g-start-lg-2`, so they take the right half from `lg` even without a comment); stacked below `lg`. No order date / number block — both are in the `Order:Item` header |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
@@ -39,7 +39,7 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 
 ## Card chrome
 
-Every account card shares the confirm / `Checkout:Additions` shell: `d-flex flex-column gap-4 p-5 bg-white border rounded-4`, title `fs-4 fw-semibold text-body mb-0` inside the card. Used by `Account:PersonalCard`, `Account:Newsletter`, `Account:Profile:Personal` / `:Credentials`, `Address:List` cards, `Address:Item`, `Order:Item` and the address-editor card on `Account:Addressbook:Form`. `Account:Profile:Email` / `:Password` sit inside the profile accordion, so they have padding only, and their title is `visually-hidden` because the accordion header already names the panel. The accordion itself is `bg-white rounded-4`.
+Every account card shares the confirm / `Checkout:Additions` shell: `d-flex flex-column gap-4 p-5 bg-white border rounded-4`, title `fs-4 fw-semibold text-body mb-0` inside the card. Used by `Account:PersonalCard`, `Account:Newsletter`, `Account:Profile:Personal` / `:Credentials`, `Address:List` (one panel, divider between columns), `Address:Item`, `Order:Item` and the address-editor card on `Account:Addressbook:Form`. `Account:Profile:Email` / `:Password` sit inside the profile accordion, so they have padding only, and their title is `visually-hidden` because the accordion header already names the panel. The accordion itself is `bg-white rounded-4`.
 
 Page sections are spaced `gap-7` (32px); the page grid is `column-gap-8` / `row-gap-7`.
 
@@ -104,7 +104,7 @@ Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edi
 | Core (forbidden) | Theme owner |
 |------------------|--------------|
 | `FormHandler` / `data-form-handler` | `Form:Handler` |
-| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `requestSubmit()` |
+| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `fetchText` POST of the form, then `replaceWith` on its own root |
 | `FormAjaxSubmit` + pagination | `Pagination` GET `?p=` (no listing owner on the page → native href) |
 | Bootstrap collapse (profile / order details) | `Accordion` |
 | Bootstrap dropdown (order actions) | `Dropdown` |

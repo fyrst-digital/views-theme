@@ -9,7 +9,7 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 | Piece | Responsibility |
 |-------|----------------|
 | `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer. Default CVA carries the pen typography: `fullName` semibold ink, every other line 14px muted, no line gap. `Checkout:Addresses` layers its own classes on top |
-| `Address:List` | Shipping + billing pair: Grid, card chrome (white, 1px linen, `rounded-4`, 24px padding, `fs-4` semibold title), hide shipping, equal-id copy, optional action slots, optional built-in edit link |
+| `Address:List` | Shipping + billing pair as **one** panel (white, 1px linen, `rounded-4`) with a linen divider between the two columns, like `Checkout:Addresses`. Columns: 24px padding, `fs-4` semibold title. Hide shipping, equal-id copy, optional action slots, optional built-in edit link |
 | `Checkout:Addresses` | Class VM for the confirm and success sections: customer `active*` addresses (or, read-only, the addresses it is given) mounted as `Address`, section title `checkout.confirmAddresses`, `Address:Manager:Action` unless `readOnly`. Not `Address:List` |
 | `Checkout:Success:Addresses` | Class VM, extends `Order:Addresses`: order addresses (6.7 vs 6.8 delivery) → read-only `Checkout:Addresses`, no change actions |
 | `Address:Item` / `ItemActions` | Addressbook **listing** row. `Address:Item` owns the card chrome and the default-address `Badge` (pill, above the lines); `ItemActions` is a ruled footer of ink `link` buttons (edit, delete, set default). Listing page owner is [`Account:Addressbook`](account.md) |
@@ -56,7 +56,7 @@ Each field is a `{% block %}` on a `span`. Callers replace one with `<twig:block
 
 ## Address:List
 
-Anonymous. Shipping card is omitted when `hideShippingAddress`. When both ids match and shipping is visible, `equalText` goes on the **visually second** card: billing when `shippingFirst` (checkout), shipping when `shippingFirst` is false (account billing-first). The first card always shows the live address.
+Anonymous. Below `md` the columns stack with the divider on top of the visually second column; from `md` they are equal columns (`flex: 1 1 0`) with the divider on its left (`Address/List.css`, `data-divided`). The divider is set on the visually second column only, and not at all when shipping is hidden. Shipping card is omitted when `hideShippingAddress`. When both ids match and shipping is visible, `equalText` goes on the **visually second** card: billing when `shippingFirst` (checkout), shipping when `shippingFirst` is false (account billing-first). The first card always shows the live address.
 
 | Prop | Default | Notes |
 |------|---------|--------|
@@ -71,7 +71,7 @@ Anonymous. Shipping card is omitted when `hideShippingAddress`. When both ids ma
 | `equalText` | `checkout.addressEqualText` | Account: `account.overviewAddressEqual` |
 | `cva` | `{}` | Root `vi-address-list` |
 
-Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`, `edit`. Blocks: `shipping` / `billing` (whole card), `shippingActions` / `billingActions` (footer; empty by default).
+Nests: `panel`, `shipping`, `billing`, `title`, `body`, `equal`, `edit`. Blocks: `shipping` / `billing` (whole card), `shippingActions` / `billingActions` (footer; empty by default).
 
 ## Adapters
 

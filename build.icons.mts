@@ -17,6 +17,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
   default: {
     ph: [
       "address-book",
+      "arrows-clockwise",
       "arrows-in-cardinal",
       "arrows-out",
       "arrow-counter-clockwise",
@@ -42,6 +43,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "code",
       "credit-card",
       "dots-three",
+      "file-text",
       "flow-arrow",
       "globe",
       "handbag",
@@ -56,6 +58,10 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "package",
       "paper-plane-right",
       "pencil-simple-line",
+      {
+        icon: "image-square",
+        class: "placeholder",
+      },
       "plus",
       "rocket-launch",
       "ruler",
@@ -76,6 +82,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
   bold: {
     ph: [
       "address-book-bold",
+      "arrows-clockwise-bold",
       {
         icon: "warning-circle-bold",
         class: "alert-bold",
@@ -106,6 +113,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "code-bold",
       "credit-card-bold",
       "dots-three-bold",
+      "file-text-bold",
       "flow-arrow-bold",
       "globe-bold",
       "handbag-bold",
@@ -121,6 +129,10 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "package-bold",
       "paper-plane-right-bold",
       "pencil-simple-line-bold",
+      {
+        icon: "image-square-bold",
+        class: "placeholder-bold",
+      },
       "plus-bold",
       "rocket-launch-bold",
       "ruler-bold",
@@ -143,6 +155,7 @@ const icons: Record<string, Record<string, IconEntry[]>> = {
       "trash-bold",
       "truck-bold",
       "user-bold",
+      "warning-bold",
       "x-bold",
       "x-circle-bold",
     ],

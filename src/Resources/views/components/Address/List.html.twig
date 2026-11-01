@@ -13,93 +13,49 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['grid', 'shipping', 'billing', 'title', 'body', 'equal', 'edit']) %}
+{% do vi_define_attrs(['panel', 'shipping', 'billing', 'title', 'body', 'equal', 'edit']) %}
 
 <div
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        <twig:ViewsTheme:Grid
-            class="{{ vi_class('grid') }}"
-            {{ ...vi_attrs('grid').defaults({
-                columns: '1-md:2',
-                gap: 'md',
-            }).all() }}
+        <div
+            {{ vi_attrs('panel') }}
+            class="{{ vi_class('panel') }}"
         >
-            <twig:block name="content">
-                {% vi_block shipping %}
-                    {% if not hideShippingAddress %}
-                        <section
-                            {{ vi_attrs('shipping') }}
-                            class="{{ vi_class('shipping', { shippingFirst: shippingFirst }) }}"
-                        >
-                            <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-                                {{ shippingTitle }}
-                            </h2>
-
-                            <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                                {% if addressesEqual and not shippingFirst %}
-                                    <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
-                                        {{ equalText }}
-                                    </p>
-                                {% else %}
-                                    <twig:ViewsTheme:Address
-                                        :address="shippingAddress"
-                                        :showShippingWarning="showShippingWarning"
-                                    />
-                                {% endif %}
-                            </div>
-
-                            {% vi_block shippingActions %}
-                                {% if editable %}
-                                    <twig:ViewsTheme:Button
-                                        class="{{ vi_class('edit') }}"
-                                        {{ ...vi_attrs('edit').defaults({
-                                            type: 'link',
-                                            href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
-                                            color: 'none',
-                                            link: true,
-                                            size: 'sm',
-                                            icon: 'pencil-simple-line',
-                                            label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
-                                            title: 'account.addressesContentItemActionEdit'|trans|striptags,
-                                        }).all() }}
-                                    />
-                                {% endif %}
-                            {% endvi_block %}
-                        </section>
-                    {% endif %}
-                {% endvi_block %}
-
-                {% vi_block billing %}
+            {% vi_block shipping %}
+                {% if not hideShippingAddress %}
                     <section
-                        {{ vi_attrs('billing') }}
-                        class="{{ vi_class('billing', { shippingFirst: shippingFirst }) }}"
+                        {{ vi_attrs('shipping').defaults({
+                            'data-divided': not shippingFirst ? 'true' : false,
+                        }) }}
+                        class="{{ vi_class('shipping', { shippingFirst: shippingFirst }) }}"
                     >
                         <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
-                            {{ billingTitle }}
+                            {{ shippingTitle }}
                         </h2>
 
                         <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
-                            {% if addressesEqual and not hideShippingAddress and shippingFirst %}
+                            {% if addressesEqual and not shippingFirst %}
                                 <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
                                     {{ equalText }}
                                 </p>
                             {% else %}
                                 <twig:ViewsTheme:Address
-                                    :address="billingAddress"
+                                    :address="shippingAddress"
+                                    :showShippingWarning="showShippingWarning"
                                 />
                             {% endif %}
                         </div>
 
-                        {% vi_block billingActions %}
+                        {% vi_block shippingActions %}
                             {% if editable %}
                                 <twig:ViewsTheme:Button
                                     class="{{ vi_class('edit') }}"
                                     {{ ...vi_attrs('edit').defaults({
                                         type: 'link',
-                                        href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
+                                        href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
                                         color: 'none',
                                         link: true,
                                         size: 'sm',
@@ -111,8 +67,51 @@
                             {% endif %}
                         {% endvi_block %}
                     </section>
-                {% endvi_block %}
-            </twig:block>
-        </twig:ViewsTheme:Grid>
+                {% endif %}
+            {% endvi_block %}
+
+            {% vi_block billing %}
+                <section
+                    {{ vi_attrs('billing').defaults({
+                        'data-divided': shippingFirst and not hideShippingAddress ? 'true' : false,
+                    }) }}
+                    class="{{ vi_class('billing', { shippingFirst: shippingFirst }) }}"
+                >
+                    <h2 {{ vi_attrs('title') }} class="{{ vi_class('title') }}">
+                        {{ billingTitle }}
+                    </h2>
+
+                    <div {{ vi_attrs('body') }} class="{{ vi_class('body') }}">
+                        {% if addressesEqual and not hideShippingAddress and shippingFirst %}
+                            <p {{ vi_attrs('equal') }} class="{{ vi_class('equal') }}">
+                                {{ equalText }}
+                            </p>
+                        {% else %}
+                            <twig:ViewsTheme:Address
+                                :address="billingAddress"
+                            />
+                        {% endif %}
+                    </div>
+
+                    {% vi_block billingActions %}
+                        {% if editable %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('edit') }}"
+                                {{ ...vi_attrs('edit').defaults({
+                                    type: 'link',
+                                    href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
+                                    color: 'none',
+                                    link: true,
+                                    size: 'sm',
+                                    icon: 'pencil-simple-line',
+                                    label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
+                                    title: 'account.addressesContentItemActionEdit'|trans|striptags,
+                                }).all() }}
+                            />
+                        {% endif %}
+                    {% endvi_block %}
+                </section>
+            {% endvi_block %}
+        </div>
     {% endblock %}
 </div>

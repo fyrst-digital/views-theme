@@ -82,7 +82,7 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 |--------|--------|
 | `Product:Listing:Results` | Items grid (`gap="md"`; `size=md` adds `gap-md-8`); `columns: 'custom'`; auto-fill tracks in `Results.css` (`--vi-product-basis`) |
 | `Account:Register` / `Address:*` | Field canvas `columns="1-md:6"` (one column, six from `md`) |
-| `Address:List` | Shipping + billing cards (`columns="1-md:2"`; each card is one track) |
+| `Address:List` | Not a `Grid` consumer: one flex panel with a divider — [address](address.md) |
 | `Cms:Sections` / `Cms:Section:Default` / `Cms:Section:Sidebar` / `Cms:Block` | Page, section and block layout (`columns` `1`, `1-lg:12`, `1-md:12`, `1-md:12-lg:1`); columns span with `g-col-*` — [cms.md](cms.md) |
 | `Cms:Section:Default` / `Cms:Section:Sidebar` | `gap: 'custom'`; `Section.css` reads `--vi-cms-section-gap` — [cms.md](cms.md#section-layout-settings) |
 | `Page:Footer:Main` | Outer columns Grid (`columns="1-lg:8"`, `gap: false` / `--vi-grid-gap`). From `lg`: Hotline `g-col-lg-3`, Navigation `g-col-lg-5`, Logos `g-col-lg-8` |
