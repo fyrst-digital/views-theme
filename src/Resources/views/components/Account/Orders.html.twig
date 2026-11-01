@@ -4,7 +4,10 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['heading', 'empty', 'list', 'item', 'pagination']) %}
+{% do vi_define_attrs(['heading', 'filter', 'empty', 'list', 'item', 'pagination']) %}
+
+{% set orderFilter = page.extensions.viewsTheme.orderFilter|default(null) %}
+{% set filtered = orderFilter and (orderFilter.status or orderFilter.period) %}
 
 <div
     {{ attributes }}
@@ -20,13 +23,26 @@
         />
     {% endblock %}
 
+    {% block filter %}
+        {% if orderFilter and (page.orders.total > 0 or filtered) %}
+            <twig:ViewsTheme:Account:Orders:Filter
+                class="{{ vi_class('filter') }}"
+                {{ ...vi_attrs('filter').defaults({
+                    states: orderFilter.states,
+                    status: orderFilter.status,
+                    period: orderFilter.period,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+
     {% block body %}
         {% if page.orders.total == 0 %}
             <twig:ViewsTheme:Alert
                 class="{{ vi_class('empty') }}"
                 {{ ...vi_attrs('empty').defaults({
                     type: 'warning',
-                    content: 'account.ordersInfoEmpty'|trans|sw_sanitize,
+                    content: (filtered ? 'viewsTheme.account.ordersFilterEmpty' : 'account.ordersInfoEmpty')|trans|sw_sanitize,
                 }).all() }}
             />
         {% else %}

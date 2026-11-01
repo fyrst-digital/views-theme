@@ -1,7 +1,7 @@
 $input-padding-y: var(--spacing-3);
 $input-padding-x: var(--spacing-5);
 $input-padding-y-sm: var(--spacing-1);
-$input-padding-x-sm: var(--spacing-2);
+$input-padding-x-sm: var(--spacing-3);
 $input-padding-y-lg: var(--spacing-4);
 $input-padding-x-lg: var(--spacing-5);
 $input-font-size: var(--font-size-5);
@@ -11,7 +11,7 @@ $input-color: var(--body-color);
 $input-bg: var(--white);
 $input-border-color: var(--border-color);
 $input-border-radius: var(--border-radius-3);
-$input-border-radius-sm: var(--border-radius-2);
+$input-border-radius-sm: var(--border-radius-lg);
 $input-border-radius-lg: var(--border-radius-4);
 $input-box-shadow: none;
 $input-focus-box-shadow: var(--control-focus-shadow, 0 0 0 4px var(--control-focus-shadow-color, rgba(from var(--primary) r g b / 30%)));
