@@ -24,21 +24,24 @@
             {{ vi_attrs('body') }}
             class="{{ vi_class('body') }}"
         >
+            {% block badge %}
+                {% if badgeSnippet %}
+                    <twig:ViewsTheme:Badge
+                        class="{{ vi_class('badge') }}"
+                        {{ ...vi_attrs('badge').defaults({
+                            color: 'light',
+                            size: 'sm',
+                            pill: true,
+                            label: badgeSnippet|trans|striptags,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
+
             {% block address %}
                 <twig:ViewsTheme:Address
                     :address="address"
                 />
-            {% endblock %}
-
-            {% block badge %}
-                {% if badgeSnippet %}
-                    <p
-                        {{ vi_attrs('badge') }}
-                        class="{{ vi_class('badge') }}"
-                    >
-                        {{ badgeSnippet|trans|sw_sanitize }}
-                    </p>
-                {% endif %}
             {% endblock %}
         </div>
     {% endblock %}

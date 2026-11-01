@@ -5,6 +5,7 @@
     addressesEqual = billingAddress and shippingAddress and billingAddress.id is same as(shippingAddress.id),
     shippingFirst = true,
     showShippingWarning = false,
+    editable = false,
     shippingTitle = 'checkout.shippingAddressHeader'|trans|sw_sanitize,
     billingTitle = 'checkout.billingAddressHeader'|trans|sw_sanitize,
     equalText = 'checkout.addressEqualText'|trans|sw_sanitize,
@@ -12,7 +13,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['grid', 'shipping', 'billing', 'title', 'body', 'equal']) %}
+{% do vi_define_attrs(['grid', 'shipping', 'billing', 'title', 'body', 'equal', 'edit']) %}
 
 <div
     {{ attributes }}
@@ -50,7 +51,23 @@
                                 {% endif %}
                             </div>
 
-                            {% vi_block shippingActions %}{% endvi_block %}
+                            {% vi_block shippingActions %}
+                                {% if editable %}
+                                    <twig:ViewsTheme:Button
+                                        class="{{ vi_class('edit') }}"
+                                        {{ ...vi_attrs('edit').defaults({
+                                            type: 'link',
+                                            href: path('frontend.account.address.edit.page', { addressId: shippingAddress.id }),
+                                            color: 'none',
+                                            link: true,
+                                            size: 'sm',
+                                            icon: 'pencil-simple-line',
+                                            label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
+                                            title: 'account.addressesContentItemActionEdit'|trans|striptags,
+                                        }).all() }}
+                                    />
+                                {% endif %}
+                            {% endvi_block %}
                         </section>
                     {% endif %}
                 {% endvi_block %}
@@ -76,7 +93,23 @@
                             {% endif %}
                         </div>
 
-                        {% vi_block billingActions %}{% endvi_block %}
+                        {% vi_block billingActions %}
+                            {% if editable %}
+                                <twig:ViewsTheme:Button
+                                    class="{{ vi_class('edit') }}"
+                                    {{ ...vi_attrs('edit').defaults({
+                                        type: 'link',
+                                        href: path('frontend.account.address.edit.page', { addressId: billingAddress.id }),
+                                        color: 'none',
+                                        link: true,
+                                        size: 'sm',
+                                        icon: 'pencil-simple-line',
+                                        label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
+                                        title: 'account.addressesContentItemActionEdit'|trans|striptags,
+                                    }).all() }}
+                                />
+                            {% endif %}
+                        {% endvi_block %}
                     </section>
                 {% endvi_block %}
             </twig:block>

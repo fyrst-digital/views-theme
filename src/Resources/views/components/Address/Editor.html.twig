@@ -73,7 +73,7 @@
                     {{ vi_attrs('hint') }}
                     class="{{ vi_class('hint') }}"
                 >
-                    {{ 'general.requiredFields'|trans|sw_sanitize }}
+                    {{ 'viewsTheme.account.requiredFields'|trans|sw_sanitize }}
                 </p>
             {% endif %}
         {% endblock %}
@@ -91,7 +91,7 @@
                                 {{ ...vi_attrs('back').defaults({
                                     type: 'link',
                                     href: backHref,
-                                    color: 'secondary',
+                                    color: 'light',
                                     label: 'general.back'|trans|sw_sanitize,
                                 }).all() }}
                             />

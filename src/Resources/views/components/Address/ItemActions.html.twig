@@ -23,7 +23,8 @@
             {{ ...vi_attrs('edit').defaults({
                 type: 'link',
                 href: path('frontend.account.address.edit.page', { addressId: address.id }),
-                color: 'link',
+                color: 'none',
+                link: true,
                 size: 'sm',
                 icon: 'pencil-simple-line',
                 label: 'account.addressesContentItemActionEdit'|trans|sw_sanitize,
@@ -43,7 +44,8 @@
             >
                 <twig:ViewsTheme:Button
                     type="submit"
-                    color="link"
+                    color="none"
+                    :link="true"
                     size="sm"
                     icon="x"
                     label="{{ 'account.addressesContentItemActionDelete'|trans|sw_sanitize }}"
@@ -64,7 +66,8 @@
             >
                 <twig:ViewsTheme:Button
                     type="submit"
-                    color="link"
+                    color="none"
+                    :link="true"
                     size="sm"
                     label="{{ 'account.addressesSetAsDefaultBillingAction'|trans|sw_sanitize }}"
                     title="{{ 'account.addressesSetAsDefaultBillingAction'|trans|striptags }}"
@@ -84,7 +87,8 @@
             >
                 <twig:ViewsTheme:Button
                     type="submit"
-                    color="link"
+                    color="none"
+                    :link="true"
                     size="sm"
                     label="{{ 'account.addressesSetAsDefaultShippingAction'|trans|sw_sanitize }}"
                     title="{{ 'account.addressesSetAsDefaultShippingAction'|trans|striptags }}"

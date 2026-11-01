@@ -8,11 +8,11 @@ Do **not** use `Address:Item` or `Address:Manager:Item` for checkout recap cards
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer |
-| `Address:List` | Shipping + billing pair: Grid, card chrome, hide shipping, equal-id copy, optional action slots |
+| `Address` | One block per address field, read from the customer or order address entity. No country-format snippet renderer. Default CVA carries the pen typography: `fullName` semibold ink, every other line 14px muted, no line gap. `Checkout:Addresses` layers its own classes on top |
+| `Address:List` | Shipping + billing pair: Grid, card chrome (white, 1px linen, `rounded-4`, 24px padding, `fs-4` semibold title), hide shipping, equal-id copy, optional action slots, optional built-in edit link |
 | `Checkout:Addresses` | Class VM for the confirm and success sections: customer `active*` addresses (or, read-only, the addresses it is given) mounted as `Address`, section title `checkout.confirmAddresses`, `Address:Manager:Action` unless `readOnly`. Not `Address:List` |
 | `Checkout:Success:Addresses` | Class VM, extends `Order:Addresses`: order addresses (6.7 vs 6.8 delivery) → read-only `Checkout:Addresses`, no change actions |
-| `Address:Item` / `ItemActions` | Addressbook **listing** row (badges + edit/delete). Listing page owner is [`Account:Addressbook`](account.md) |
+| `Address:Item` / `ItemActions` | Addressbook **listing** row. `Address:Item` owns the card chrome and the default-address `Badge` (pill, above the lines); `ItemActions` is a ruled footer of ink `link` buttons (edit, delete, set default). Listing page owner is [`Account:Addressbook`](account.md) |
 | `Address:Manager:*` | Picker modal — [address manager](address-manager.md) |
 | `Address:Editor` / `Account:Form:Personal` / `Address:Form` | Create/edit forms — [address manager](address-manager.md) / [checkout register](checkout-register.md) |
 
@@ -65,12 +65,13 @@ Anonymous. Shipping card is omitted when `hideShippingAddress`. When both ids ma
 | `addressesEqual` | billing id === shipping id | Pass to override |
 | `shippingFirst` | `true` | DOM stays shipping then billing. `false` → Bootstrap `order-1` / `order-2` so billing paints first |
 | `showShippingWarning` | `false` | Shipping card only (confirm passes `true`) |
+| `editable` | `false` | Renders the default `Edit address` link (`color: none`, `link: true`, `frontend.account.address.edit.page`) in each card’s `*Actions` slot. Account overview and addressbook pass `true`; override the slot blocks for anything else |
 | `shippingTitle` | `checkout.shippingAddressHeader` | Account: `account.overviewShippingHeader` |
 | `billingTitle` | `checkout.billingAddressHeader` | Account: `account.overviewBillingHeader` |
 | `equalText` | `checkout.addressEqualText` | Account: `account.overviewAddressEqual` |
 | `cva` | `{}` | Root `vi-address-list` |
 
-Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`. Blocks: `shipping` / `billing` (whole card), `shippingActions` / `billingActions` (footer; empty by default).
+Nests: `grid`, `shipping`, `billing`, `title`, `body`, `equal`, `edit`. Blocks: `shipping` / `billing` (whole card), `shippingActions` / `billingActions` (footer; empty by default).
 
 ## Adapters
 

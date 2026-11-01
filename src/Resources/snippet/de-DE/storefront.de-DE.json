@@ -57,7 +57,8 @@
             "addressUseAsDefault": "als Standard",
             "addressNew": "Neue Adresse",
             "addressPhoneOptional": "Optional",
-            "addressStreetPlaceholder": "Straße und Hausnummer"
+            "addressStreetPlaceholder": "Straße und Hausnummer",
+            "requiredFields": "* Pflichtfelder"
         }
     },
 

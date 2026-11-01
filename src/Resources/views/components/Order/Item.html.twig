@@ -161,6 +161,7 @@
             {% endif %}
             {% if order.customerComment %}
                 <twig:ViewsTheme:Order:SummaryItem
+                    class="g-col-2 g-col-xl-4"
                     label="{{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}"
                     value="{{ order.customerComment|sw_sanitize|nl2br }}"
                 />

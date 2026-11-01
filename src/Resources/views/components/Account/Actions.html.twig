@@ -57,7 +57,7 @@
                         ) %}
                         {% block action %}
                             <twig:ViewsTheme:Button
-                                class="{{ vi_class('action') }}"
+                                class="{{ vi_class('action', { active: isActive }) }}"
                                 {{ ...vi_attrs('action').defaults({
                                     type: 'link',
                                     href: path(action.route),

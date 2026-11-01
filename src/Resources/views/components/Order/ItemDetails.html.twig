@@ -8,7 +8,7 @@
 {% set totalValue = taxFree ? order.amountNet : order.amountTotal %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['documents', 'items', 'comment', 'info', 'summary']) %}
+{% do vi_define_attrs(['documents', 'items', 'info', 'summary']) %}
 
 <div
     {{ attributes }}
@@ -32,20 +32,6 @@
                 order: order,
             }).all() }}
         />
-    {% endblock %}
-
-    {% block comment %}
-        {% if order.customerComment %}
-            <div
-                {{ vi_attrs('comment') }}
-                class="{{ vi_class('comment') }}"
-            >
-                <h3 class="{{ vi_class('commentTitle') }}">
-                    {{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}
-                </h3>
-                <p class="{{ vi_class('commentBody') }}">{{ order.customerComment|sw_sanitize|nl2br }}</p>
-            </div>
-        {% endif %}
     {% endblock %}
 
     {% block footer %}

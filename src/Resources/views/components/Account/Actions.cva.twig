@@ -1,5 +1,12 @@
 {
     root: { base: 'vi-account-actions' },
-    nav: { base: 'vi-account-actions__nav nav flex-column' },
-    action: { base: 'vi-account-actions__action rounded-0' },
+    nav: { base: 'vi-account-actions__nav nav flex-column gap-1' },
+    action: {
+        base: 'vi-account-actions__action w-100 rounded-3 px-3 py-2 fw-medium text-body',
+        variants: {
+            active: {
+                true: 'bg-light fw-semibold',
+            },
+        },
+    },
 }
