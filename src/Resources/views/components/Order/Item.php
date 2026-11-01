@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fyrst\ViewsTheme\Resources\views\components\Order;
 
-use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -48,8 +47,6 @@ class Item
     public ?string $paymentMethodName = null;
 
     public ?string $shippingMethodName = null;
-
-    public string $productLineItemType = LineItem::PRODUCT_LINE_ITEM_TYPE;
 
     public function __construct(
         private readonly SystemConfigService $systemConfigService,

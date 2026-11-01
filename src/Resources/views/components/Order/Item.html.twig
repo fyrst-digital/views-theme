@@ -1,5 +1,5 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['header', 'title', 'status', 'number', 'menu', 'summary', 'details']) %}
+{% do vi_define_attrs(['header', 'main', 'title', 'status', 'number', 'menu', 'summary', 'details']) %}
 
 {% set headerId = 'vi-order-' ~ order.id ~ '-header' %}
 {% set panelId = 'vi-order-' ~ order.id ~ '-panel' %}
@@ -16,49 +16,55 @@
             {{ vi_attrs('header') }}
             class="{{ vi_class('header') }}"
         >
-            {% block title %}
-                <h2
-                    {{ vi_attrs('title') }}
-                    class="{{ vi_class('title') }}"
-                >
-                    {{ 'account.orderHeadline'|trans|sw_sanitize }}
-                    {{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}
-                </h2>
-            {% endblock %}
+            <div
+                {{ vi_attrs('main') }}
+                class="{{ vi_class('main') }}"
+            >
+                {% block title %}
+                    <h2
+                        {{ vi_attrs('title') }}
+                        class="{{ vi_class('title') }}"
+                    >
+                        {{ 'account.orderHeadline'|trans|sw_sanitize }}
+                        {{ order.orderDateTime|format_date('medium', locale=app.request.locale) }}
+                    </h2>
+                {% endblock %}
 
-            {% block status %}
-                {% if isPaymentNeeded %}
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('status') }}"
-                        {{ ...vi_attrs('status').defaults({
-                            type: 'link',
-                            href: path('frontend.account.edit-order.page', { orderId: order.id }),
-                            color: 'danger',
-                            size: 'sm',
-                            label: 'account.orderStatusActionCompletePayment'|trans|sw_sanitize,
-                        }).all() }}
-                    />
-                {% else %}
-                    <twig:ViewsTheme:Badge
-                        class="{{ vi_class('status') }}"
-                        {{ ...vi_attrs('status').defaults({
-                            color: 'light',
-                            pill: true,
-                            label: order.stateMachineState.translated.name,
-                        }).all() }}
-                    />
-                {% endif %}
-            {% endblock %}
+                {% block status %}
+                    {% if isPaymentNeeded %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('status') }}"
+                            {{ ...vi_attrs('status').defaults({
+                                type: 'link',
+                                href: path('frontend.account.edit-order.page', { orderId: order.id }),
+                                color: 'danger',
+                                size: 'sm',
+                                label: 'account.orderStatusActionCompletePayment'|trans|sw_sanitize,
+                            }).all() }}
+                        />
+                    {% else %}
+                        <twig:ViewsTheme:Badge
+                            class="{{ vi_class('status') }}"
+                            {{ ...vi_attrs('status').defaults({
+                                color: 'light',
+                                size: 'sm',
+                                pill: true,
+                                label: order.stateMachineState.translated.name,
+                            }).all() }}
+                        />
+                    {% endif %}
+                {% endblock %}
 
-            {% block number %}
-                <p
-                    {{ vi_attrs('number') }}
-                    class="{{ vi_class('number') }}"
-                >
-                    {{ 'account.orderNumber'|trans|sw_sanitize }}
-                    {{ order.orderNumber|sw_sanitize }}
-                </p>
-            {% endblock %}
+                {% block number %}
+                    <p
+                        {{ vi_attrs('number') }}
+                        class="{{ vi_class('number') }}"
+                    >
+                        {{ 'account.orderNumber'|trans|sw_sanitize }}
+                        {{ order.orderNumber|sw_sanitize }}
+                    </p>
+                {% endblock %}
+            </div>
 
             {% block menu %}
                 <div class="{{ vi_class('menu') }}">
@@ -69,6 +75,7 @@
                             'toggle:icon': 'dots-three',
                             'toggle:label': false,
                             'toggle:size': 'sm',
+                            'toggle:square': true,
                             'toggle:color': 'light',
                             'toggle:title': 'account.orderActions'|trans|striptags,
                             'toggle:aria-label': 'account.orderActions'|trans|striptags,
@@ -82,37 +89,13 @@
                                     color="none"
                                     size="sm"
                                     justify="start"
+                                    :square="true"
                                     icon="{{ isPaymentNeeded ? 'check' : 'pencil-simple-line' }}"
                                     label="{{ (isPaymentNeeded ? 'account.orderStatusActionCompletePayment' : 'account.orderContextMenuChangePayment')|trans|sw_sanitize }}"
                                 />
                             {% endif %}
 
-                            <twig:ViewsTheme:Form:Handler
-                                action="{{ path('frontend.checkout.line-item.add') }}"
-                                method="post"
-                            >
-                                <twig:block name="content">
-                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                    {% for lineItem in order.lineItems %}
-                                        {% if lineItem.type == productLineItemType %}
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
-                                            <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
-                                        {% endif %}
-                                    {% endfor %}
-                                    <twig:ViewsTheme:Button
-                                        type="submit"
-                                        color="none"
-                                        size="sm"
-                                        justify="start"
-                                        icon="arrows-clockwise"
-                                        label="{{ 'account.orderContextMenuReorder'|trans|sw_sanitize }}"
-                                    />
-                                </twig:block>
-                            </twig:ViewsTheme:Form:Handler>
+                            <twig:ViewsTheme:Order:Reorder :order="order" />
 
                             {% if allowOrderCancellation %}
                                 <twig:ViewsTheme:Modal:Open
@@ -120,6 +103,7 @@
                                     color="none"
                                     size="sm"
                                     justify="start"
+                                    :square="true"
                                     icon="x"
                                     label="{{ 'account.editOrderCancelOrderButton'|trans|sw_sanitize }}"
                                 />
@@ -157,12 +141,6 @@
                 <twig:ViewsTheme:Order:SummaryItem
                     label="{{ 'account.orderShippingMethod'|trans|sw_sanitize }}"
                     value="{{ shippingMethodName }}"
-                />
-            {% endif %}
-            {% if order.customerComment %}
-                <twig:ViewsTheme:Order:SummaryItem
-                    label="{{ 'checkout.customerCommentHeader'|trans|sw_sanitize }}"
-                    value="{{ order.customerComment|sw_sanitize|nl2br }}"
                 />
             {% endif %}
         </div>

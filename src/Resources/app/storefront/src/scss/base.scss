@@ -17,6 +17,9 @@
   @each $key, $value in $font-sizes {
     --#{$prefix}font-size-#{$key}: #{$value};
   }
+  @each $key, $value in $line-heights {
+    --#{$prefix}line-height-#{$key}: #{$value};
+  }
   @each $key, $value in $icon-sizes {
     --#{$prefix}icon-size-#{$key}: #{$value};
   }

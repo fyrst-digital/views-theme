@@ -37,7 +37,7 @@ Page:Header:Actions
 - **Responsive hide:** `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"` hides host + force-dismisses open panel below `lg` (no anchor jump)
 - **Composition:** `class` → panel, `toggle:class` → Button, `host:class` → host; other attrs via `attributes.defaults` (**no** `class` in defaults; **no** parallel chrome props)
 - **Visible label:** `toggle:label` defaults to `account.myAccount`; `:toggle:label="false"` hides it (icon-only). Button label classes via `toggle:label:class`
-- **Header wire-up:** `host:class="vi-dropdown-host--lg-up d-none d-lg-contents"`, `toggle:class="header-action icon-size-3 icon-size-lg-4"`, `:toggle:label="false"`
+- **Header wire-up:** `Page:Header:Actions` CVA slots `account` / `accountHost` / `accountToggle`; nest `account` default `'toggle:label': false`
 - **Build:** from Shopware root — `make build-storefront`
 
 ## Account-specific a11y
@@ -60,12 +60,16 @@ Account pages (overview, profile, addressbook, orders): [account.md](account.md)
 
 ```twig
 <twig:ViewsTheme:Account:Action
-    :toggle:label="false"
-    class="mt-2 p-0 vi-account__dropdown"
-    host:class="vi-dropdown-host--lg-up d-none d-lg-contents"
-    toggle:class="header-action icon-size-3 icon-size-lg-4"
+    class="{{ vi_class('account') }}"
+    host:class="{{ vi_class('accountHost') }}"
+    toggle:class="{{ vi_class('accountToggle') }}"
+    {{ ...vi_attrs('account').defaults({
+        'toggle:label': false,
+    }).all() }}
 />
 ```
+
+Classes live on `Page:Header:Actions` CVA: `account` `mt-2 p-0 vi-account__dropdown`, `accountHost` `vi-dropdown-host--lg-up d-none d-lg-contents`, `accountToggle` `header-action icon-size-3`. Override with `:cva` or `account:class` / `accountHost:class` / `accountToggle:class`. Other account inputs override the `account` nest (`:account:toggle:label`, …).
 
 Below `lg`, `d-none d-lg-contents` hides the host; `--lg-up` force-dismisses an open panel (same CSS cascade — no corner jump).
 

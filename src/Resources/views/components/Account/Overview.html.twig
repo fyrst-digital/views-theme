@@ -14,28 +14,30 @@
     class="{{ vi_class('root') }}"
 >
     {% block alerts %}
-        <div
-            {{ vi_attrs('alerts') }}
-            class="{{ vi_class('alerts') }}"
-        >
-            {% if not ableToShip %}
-                <twig:ViewsTheme:Alert
-                    type="warning"
-                    content="{{ 'account.overviewNotAbleToShip'|trans|sw_sanitize }}"
-                    announceOnLoad
-                />
-            {% endif %}
+        {% if not ableToShip or page.customer.requestedGroup %}
+            <div
+                {{ vi_attrs('alerts') }}
+                class="{{ vi_class('alerts') }}"
+            >
+                {% if not ableToShip %}
+                    <twig:ViewsTheme:Alert
+                        type="warning"
+                        content="{{ 'account.overviewNotAbleToShip'|trans|sw_sanitize }}"
+                        announceOnLoad
+                    />
+                {% endif %}
 
-            {% if page.customer.requestedGroup %}
-                <twig:ViewsTheme:Alert
-                    type="info"
-                    content="{{ 'account.overviewCustomerGroupRequest'|trans({
-                        '%group%': page.customer.requestedGroup.translated.name,
-                    })|sw_sanitize }}"
-                    announceOnLoad
-                />
-            {% endif %}
-        </div>
+                {% if page.customer.requestedGroup %}
+                    <twig:ViewsTheme:Alert
+                        type="info"
+                        content="{{ 'account.overviewCustomerGroupRequest'|trans({
+                            '%group%': page.customer.requestedGroup.translated.name,
+                        })|sw_sanitize }}"
+                        announceOnLoad
+                    />
+                {% endif %}
+            </div>
+        {% endif %}
     {% endblock %}
 
     {% block heading %}
@@ -78,29 +80,9 @@
                 shippingTitle: 'account.overviewShippingHeader'|trans|sw_sanitize,
                 billingTitle: 'account.overviewBillingHeader'|trans|sw_sanitize,
                 equalText: 'account.overviewAddressEqual'|trans|sw_sanitize,
+                editable: true,
             }).all() }}
-        >
-            <twig:block name="billingActions">
-                <twig:ViewsTheme:Button
-                    type="link"
-                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultBillingAddress.id }) }}"
-                    color="link"
-                    size="sm"
-                    icon="pencil-simple-line"
-                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
-                />
-            </twig:block>
-            <twig:block name="shippingActions">
-                <twig:ViewsTheme:Button
-                    type="link"
-                    href="{{ path('frontend.account.address.edit.page', { addressId: customer.defaultShippingAddress.id }) }}"
-                    color="link"
-                    size="sm"
-                    icon="pencil-simple-line"
-                    label="{{ 'account.addressesContentItemActionEdit'|trans|sw_sanitize }}"
-                />
-            </twig:block>
-        </twig:ViewsTheme:Address:List>
+        />
     {% endblock %}
 
     {% block newestOrder %}

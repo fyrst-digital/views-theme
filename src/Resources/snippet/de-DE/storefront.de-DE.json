@@ -57,7 +57,20 @@
             "addressUseAsDefault": "als Standard",
             "addressNew": "Neue Adresse",
             "addressPhoneOptional": "Optional",
-            "addressStreetPlaceholder": "Straße und Hausnummer"
+            "addressStreetPlaceholder": "Straße und Hausnummer",
+            "requiredFields": "* Pflichtfelder",
+            "ordersFilterLabel": "Bestellungen filtern",
+            "ordersFilterStatus": "Bestellstatus",
+            "ordersFilterStatusAll": "Alle Status",
+            "ordersFilterPeriod": "Bestelldatum",
+            "ordersFilterPeriodAll": "Alle",
+            "ordersFilterPeriod1": "Letzter Monat",
+            "ordersFilterPeriod3": "Letzte 3 Monate",
+            "ordersFilterPeriod6": "Letzte 6 Monate",
+            "ordersFilterPeriod12": "Letzte 12 Monate",
+            "ordersFilterReset": "Filter zurücksetzen",
+            "ordersFilterEmpty": "Keine Bestellungen entsprechen Ihren Filtern.",
+            "backToAccount": "Zurück zum Konto"
         }
     },
 

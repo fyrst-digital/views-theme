@@ -1,0 +1,58 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['status', 'period', 'reset']) %}
+
+{% set filterId = 'vi-order-filter-' ~ random() %}
+
+<form
+    {{ attributes.defaults({
+        method: 'get',
+        action: path('frontend.account.order.page'),
+        'aria-label': 'viewsTheme.account.ordersFilterLabel'|trans|striptags,
+        'data-component': 'ViewsTheme:Account:Orders:Filter',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block status %}
+        <twig:ViewsTheme:Form:Select
+            class="{{ vi_class('status') }}"
+            {{ ...vi_attrs('status').defaults({
+                id: filterId ~ '-status',
+                name: 'status',
+                label: 'viewsTheme.account.ordersFilterStatus'|trans|sw_sanitize,
+                options: statusOptions,
+                value: status,
+                size: 'sm',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block period %}
+        <twig:ViewsTheme:Form:Select
+            class="{{ vi_class('period') }}"
+            {{ ...vi_attrs('period').defaults({
+                id: filterId ~ '-period',
+                name: 'period',
+                label: 'viewsTheme.account.ordersFilterPeriod'|trans|sw_sanitize,
+                options: periodOptions,
+                value: period,
+                size: 'sm',
+            }).all() }}
+        />
+    {% endblock %}
+
+    {% block reset %}
+        {% if active %}
+            <twig:ViewsTheme:Button
+                class="{{ vi_class('reset') }}"
+                {{ ...vi_attrs('reset').defaults({
+                    type: 'link',
+                    href: path('frontend.account.order.page'),
+                    icon: 'arrow-counter-clockwise',
+                    color: 'light',
+                    size: 'sm',
+                    label: 'viewsTheme.account.ordersFilterReset'|trans|sw_sanitize,
+                }).all() }}
+            />
+        {% endif %}
+    {% endblock %}
+</form>

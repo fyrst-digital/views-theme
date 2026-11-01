@@ -262,6 +262,18 @@
         "editable": false,
         "order": 100
       },
+      "line-height-tight": {
+        "type": "text",
+        "value": "1.25",
+        "editable": false,
+        "order": 100
+      },
+      "line-height-normal": {
+        "type": "text",
+        "value": "1.5",
+        "editable": false,
+        "order": 100
+      },
       "spacing-2xs": {
         "type": "text",
         "value": "4px",

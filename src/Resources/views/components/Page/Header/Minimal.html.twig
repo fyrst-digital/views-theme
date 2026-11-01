@@ -16,6 +16,10 @@
         href: path('frontend.checkout.cart.page'),
         label: 'checkout.backToCart'|trans|striptags,
     },
+    account: {
+        href: path('frontend.account.home.page'),
+        label: 'viewsTheme.account.backToAccount'|trans|striptags,
+    },
 } %}
 {% set backTarget = backTargets[action]|default(backTargets.home) %}
 

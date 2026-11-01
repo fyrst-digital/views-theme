@@ -4,7 +4,7 @@ Theme-owned customer account area. Storefront templates are thin bridges: they `
 
 Header login / register dropdown stays on [account action](account-action.md). Address **forms** stay on [`Address:Editor`](address-manager.md). Address **display** stays on [`Address:List` / `Address:Item`](address.md).
 
-Unlike [cart page](cart-page.md), logged-in account pages have **no island refresh / no `/vi/…`**. Interactive bits are local: newsletter change-submit, addressbook search, profile accordion, order details accordion, delete/cancel `Modal`.
+Unlike [cart page](cart-page.md), logged-in account pages have **no island refresh / no `/vi/…`**. Interactive bits are local: newsletter change → XHR, addressbook search, profile accordion, order details accordion, delete/cancel `Modal`.
 
 ## Ownership
 
@@ -13,19 +13,22 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | Storefront `_page` | Logout fallback: empty `Account:Page` (no nested `page_account_main_content`) |
 | Logged-in page bridges | `page_account` → `Account:Page` + composer in the `content` slot |
 | Storefront `sidebar.html.twig` | `Account:Sidebar` (page) or `Account:Menu` (`headerWidget`) |
-| `Account:Page` | Layout composer — `Account:Sidebar` from `lg` + main content |
-| `Account:Sidebar` | Greeting + `Account:Actions` (no logout in the nav list) + logout footer |
-| `Account:Heading` | Shared h1 + intro |
-| `Account:Overview` | Alerts, profile card, newsletter, default addresses, newest order |
+| `Account:Page` | Layout composer. One track below `lg` (`grid-columns-1`); twelve from `lg` (`grid-columns-lg-12`). Sidebar `g-col-lg-4` (`g-col-xl-3`), main `g-col-lg-8` (`g-col-xl-9`). Sidebar is `position-lg-sticky`; `top` is `--vi-top` (`24px`) |
+| `Account:Sidebar` | Card (white, 1px linen, `rounded-4`) with greeting + `Account:Actions` (no logout in the nav list) + logout footer. The active item (`aria-current`) uses the `active` CVA variant on `Account:Actions` (`bg-light`, semibold) |
+| `Account:Heading` | Thin wrapper over [`Page:Title`](checkout-confirm.md#pagetitle): `title` is the h1 (30px / 36px from `xl`, 600), `intro` fills the `description` block (`fs-4`, muted). Same h1 as confirm, cart and the register page |
+| `Account:Overview` | Confirm-style grid (`grid-columns-md-2`, 24px column / 40px row gap). Heading, default addresses and newest order span the row; profile card and newsletter share a row. Alerts wrapper renders only when there is an alert. Newest order has an `fs-4` section title above the `Order:Item` card |
 | `Account:PersonalCard` | Name / company / email + optional profile edit |
-| `Account:Newsletter` | `Form:Switch` + change → submit `frontend.account.newsletter`. Public guest subscribe is [`Newsletter:Form`](newsletter.md) |
+| `Account:Newsletter` | `Form:Switch` + change → XHR POST to `frontend.account.newsletter` (no page navigation). The widget route re-renders the theme bridge `page/account/newsletter.html.twig`; the component replaces its own root with the `Account:Newsletter` root from that response (new switch state + flash messages) and refocuses the switch. On failure the switch reverts. Public guest subscribe is [`Newsletter:Form`](newsletter.md) |
 | `Account:Profile` | Personal form, credentials, email/password accordion, delete |
 | `Account:Addressbook` | Default pair + search + `Address:Item` grid |
 | `Account:Addressbook:Form` | Create/edit heading + `Address:Editor` |
-| `Account:Orders` | Order list + `Pagination` (GET `?p=`) |
-| `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion |
-| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals |
+| `Account:Orders` | Heading, `Account:Orders:Filter`, order list + `Pagination` (GET `?p=`, `preserveQuery` keeps the filter params). The filter shows when there are orders or a filter is active. With a filter active and no result, the empty `Alert` reads `viewsTheme.account.ordersFilterEmpty` instead of the "no orders yet" copy |
+| `Account:Orders:Filter` (class-backed) | GET `form` to `frontend.account.order.page` with two `Form:Select`: order status (`status` = order state technical name) and order date (`period` = `1` / `3` / `6` / `12` months). "All" is the value `all` (`Filter::ALL`) and is ignored server-side like any unknown value. Co-located JS submits the form on `change`; the form has no `p`, so the page resets to 1. Card chrome as above (`p-4 p-md-5 bg-white border rounded-4`), selects `col-md-3`, selects and button `size="sm"`. "Reset filters" is a `light` `Button` link with the `arrow-counter-clockwise` icon, pushed to the end of the row from `md` (only while a filter is active). Sorting is untouched: newest first (core `orderDateTime` desc) |
+| `AccountOrderPageSubscriber` | `OrderRouteRequestEvent`: adds `stateMachineState.technicalName` equals and `orderDateTime` ≥ now − N months (`OrderHistoryPeriod`) to the core order criteria. `AccountOrderPageLoadedEvent`: sets `page.extensions.viewsTheme.orderFilter` (`states`, validated `status`, `period`); the states come from `state_machine_state.repository` (machine `order.state`, ordered open → in progress → completed → cancelled). Unknown `status` / `period` values are ignored (no filter) |
+| `Order:Item` | Class VM — status, menu (`Dropdown`), summary, details accordion. Card chrome as below. Header: a left `main` wrap row and the menu on the right. From `md` the date (`fs-4`) and status `Badge` share a row with the full-width order number below; below `md` the order is date, number, status (responsive `order-*`). The menu toggle and its rows use `square`; the popover is capped at 240px (`--vi-max-w` assigned on `.vi-order-item__menu` in `Order/Item.css`, instead of the `Dropdown` default of 352px). Summary: ruled grid, two columns, four from `xl`; `Order:SummaryItem` is a muted label over a semibold value. The customer comment is not in the card summary; it lives in `Order:ItemDetails` |
+| `Order:ItemDetails` / `:Documents` | Line items (`LineItems:Table`, read-only, `nestedLineItems`), documents, totals. Footer grid (one track, two from `lg`, `gap-5`): customer comment (`Order:SummaryItem`) left, totals right (`g-start-lg-2`, so they take the right half from `lg` even without a comment); stacked below `lg`. No order date / number block — both are in the `Order:Item` header |
 | `Order:Cancel` | Cancel `Modal` + POST `frontend.account.order.cancel` |
+| `Order:Reorder` | Repeat-order `form` in the `Order:Item` menu: one hidden `lineItems[…]` group per product line item plus the menu button. Co-located JS: submit → `ViewsTheme:Cart:Add` with the form data (the `Cart` owner posts to `frontend.checkout.line-item.add`, so no navigation) and the drawer opens on success; it closes its menu popover. Same event path as `Product:Action:Buy`. No `redirectTo`: the old `frontend.cart.offcanvas` redirect landed on the raw core offcanvas fragment. Items already in the cart merge into their quantity |
 | `Order:Addresses` | Order billing/shipping → `Address:List` (6.7 vs 6.8). Parent of `Checkout:Success:Addresses` ([success](checkout-success.md)), which renders the read-only `Checkout:Addresses` panel instead |
 | `Account:Order:Edit` | Complete-payment / change-payment. Minimal header, not `Checkout:Confirm` |
 | `Account:LoginRegister` (class-backed) | Shared Log in / Register card. View-model (`LoginRegister.php`): `#[PostMount]` null-coalesces `formViolations` from the request and computes `registerActive`; it also owns the tab param name (`action`), slugs and tab / panel ids, so the server read and the `Tabs` wiring cannot drift. One bordered card with two [`Tabs`](tabs.md) (Log in / Register). Register tab is active when the request carries register `formViolations` or posted `data`, or `?action=register`; otherwise Log in. The tabs use `param="action"` (`LoginRegister::TAB_PARAM`) with slugs `login` / `register`, so the URL keeps the selection and a refresh renders it server-side. Props: `guestSelectable` (default `false`), `registerErrorRoute` (default `frontend.account.register.page`), `redirectTo`, login error props. Nests `login`, `register`. Used by `Account:Register:Page` and [`Checkout:Register`](checkout-register.md) |
@@ -36,6 +39,14 @@ Unlike [cart page](cart-page.md), logged-in account pages have **no island refre
 | `Account:Convert` | Guest → customer password |
 | `Account:CustomerGroupRegister` | `Account:Register` + `requestedGroupId` |
 | `Modal:Open` | Opens a `Modal` by `modalId` (profile delete, order cancel) |
+
+## Card chrome
+
+Every account card shares the confirm / `Checkout:Additions` shell: `d-flex flex-column gap-4 p-5 bg-white border rounded-4`, title `fs-4 fw-semibold text-body mb-0` inside the card. Used by `Account:PersonalCard`, `Account:Newsletter`, `Account:Profile:Personal` / `:Credentials`, `Address:List` (one panel, divider between columns), `Address:Item`, `Order:Item` and the address-editor card on `Account:Addressbook:Form`. `Account:Profile:Email` / `:Password` sit inside the profile accordion, so they have padding only, and their title is `visually-hidden` because the accordion header already names the panel. The accordion itself is `bg-white rounded-4`.
+
+Page sections are spaced `gap-7` (32px); the page grid is `column-gap-8` / `row-gap-7`.
+
+Required-field hint: `viewsTheme.account.requiredFields` (core 6.7 has no `general.requiredFields`). Used by every account / address / review form.
 
 Do **not** use core `data-form-handler` / `data-form-auto-submit` / `data-form-ajax-submit` / `data-order-detail-loader` / Bootstrap dropdown or collapse on these pages.
 
@@ -69,7 +80,7 @@ Edit-order (checkout `_page`, minimal chrome):
 
 ```
 page/account/order/index.html.twig
-├─ base_esi_header → Page:Header:Minimal
+├─ base_esi_header → Page:Header:Minimal action="account"
 │    └─ .container
 │         ├─ Page:Logo
 │         ├─ Page:Support
@@ -81,23 +92,24 @@ page/account/order/index.html.twig
 │    ├─ Payment:Selection          (POST edit-order.change-payment-method)
 │    ├─ Checkout:Success:Shipping  (read-only, :order)
 │    ├─ LineItems:Table (read-only, nestedLineItems)
-│    └─ Account:Order:Edit:Aside   (Cart:Summary + update + Order:Cancel)
+│    └─ Account:Order:Edit:Aside   (<aside>, sticky from xl → Summary:Box: heading + Cart:Summary + update + Order:Cancel)
 └─ base_esi_footer → Page:Footer:Minimal :footer="footer"
 ```
 
-Desktop (`lg` / 1024px): sidebar + main (`--vi-account-page-cols`). Mobile: main only — header `Account:Action` is the nav.
+Below `lg`: one track (`grid-columns-1`); sidebar and main stack. From `lg` (`1024px`): twelve tracks (`grid-columns-lg-12`); sidebar `g-col-lg-4` (`g-col-xl-3` from `xl`), main `g-col-lg-8` (`g-col-xl-9` from `xl`). The sidebar is `position-lg-sticky` with `top: var(--vi-top, 24px)`. Header `Account:Action` remains the nav.
 
 Edit-order desktop (`xl` / 1260px): main + sticky aside (`--vi-account-order-edit-cols`).
 
-`Page:Header:Minimal` here keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
+`Page:Header:Minimal` here passes `action="account"` (back button → `frontend.account.home.page`, `viewsTheme.account.backToAccount`; both the page header and `order/header.html.twig`) and keeps `supportDisplay` at `all`, so `Page:Support` shows at every width. The bar is full-bleed; an inner `.container` owns the grid. No min-height and no inline padding. The footer is [`Page:Footer:Minimal`](footer.md) (shop copyright, service menu, VAT, theme credit; no revocation CTA).
 
 ## Scripts (theme-owned)
 
 | Core (forbidden) | Theme owner |
 |------------------|--------------|
 | `FormHandler` / `data-form-handler` | `Form:Handler` |
-| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `requestSubmit()` |
+| `FormAutoSubmit` (newsletter) | `Account:Newsletter` — checkbox `change` → `fetchText` POST of the form, then `replaceWith` on its own root |
 | `FormAjaxSubmit` + pagination | `Pagination` GET `?p=` (no listing owner on the page → native href) |
+| Order history filter (none in core) | `Account:Orders:Filter` — select `change` → `requestSubmit()` of its GET form (full navigation, like pagination) |
 | Bootstrap collapse (profile / order details) | `Accordion` |
 | Bootstrap dropdown (order actions) | `Dropdown` |
 | Bootstrap modal (delete / cancel) | `Modal` + `Modal:Open` |
@@ -130,7 +142,7 @@ Class VM. 6.7 uses `transactions.last` / `deliveries.first`; 6.8 uses `primaryOr
 | `allowChangePayment` | `OrderService::ALLOWED_TRANSACTION_STATES` |
 | `allowOrderCancellation` | Open + `core.cart.enableOrderRefunds` |
 
-Menu: change/complete payment, reorder (`frontend.checkout.line-item.add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
+Menu: change/complete payment, reorder (`Order:Reorder` → `Cart:Add`), cancel (`Modal:Open` in the `Dropdown`; `Order:Cancel` **beside** the dropdown, not inside the popover). Details: `Accordion` → `Order:ItemDetails` → `LineItems:Table` + `Order:Documents` + totals.
 
 ## Storefront bridges
 
@@ -170,7 +182,7 @@ Existing row bridges stay: `addressbook/address-item.html.twig` → `Address:Ite
 
 ## Files
 
-`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
+`components/Account/{Page,Sidebar,Heading,Overview,Newsletter,Profile,Addressbook,Orders,Recover,ResetPassword,GuestAuth,Convert,CustomerGroupRegister}.*` · `components/Account/{Profile,Addressbook,Register,Form,Order}/**` · `components/Order/{Item,ItemDetails,ItemDetailsList,Documents,Cancel,Reorder,Addresses,SummaryItem}.*` · `components/Modal/Open.*` · `storefront/page/account/**` · `storefront/component/account/**`
 
 ## Out of scope
 

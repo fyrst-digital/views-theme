@@ -57,7 +57,20 @@
             "addressUseAsDefault": "use as default",
             "addressNew": "New address",
             "addressPhoneOptional": "Optional",
-            "addressStreetPlaceholder": "Street and number"
+            "addressStreetPlaceholder": "Street and number",
+            "requiredFields": "* Required fields",
+            "ordersFilterLabel": "Filter orders",
+            "ordersFilterStatus": "Order status",
+            "ordersFilterStatusAll": "All statuses",
+            "ordersFilterPeriod": "Order date",
+            "ordersFilterPeriodAll": "All",
+            "ordersFilterPeriod1": "Last month",
+            "ordersFilterPeriod3": "Last 3 months",
+            "ordersFilterPeriod6": "Last 6 months",
+            "ordersFilterPeriod12": "Last 12 months",
+            "ordersFilterReset": "Reset filters",
+            "ordersFilterEmpty": "No orders match your filters.",
+            "backToAccount": "Back to account"
         }
     },
 

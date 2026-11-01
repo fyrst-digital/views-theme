@@ -55,6 +55,7 @@ Path: `src/Resources/theme.json`.
 | Light / dark | `#faf5ee` / `#2E282A` |
 | Base grid | 8px (SCSS spacing scale) |
 | Icon sizes | `$icon-sizes` in `scss/override.scss`: 1→12px … 6→40px |
+| Line heights | `$line-heights` in `scss/override.scss` (theme fields `line-height-tight` 1.25 / `line-height-normal` 1.5) → `--line-height-1` / `--line-height-2` |
 
 Authoritative field defaults: `theme.json` / theme fields table below.
 

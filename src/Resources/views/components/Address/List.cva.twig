@@ -1,8 +1,8 @@
 {
     root: { base: 'vi-address-list w-100' },
-    grid: { base: 'vi-address-list__grid' },
+    panel: { base: 'vi-address-list__panel d-flex flex-column flex-md-row bg-white border rounded-4' },
     shipping: {
-        base: 'vi-address-list__shipping d-flex flex-column gap-3 p-3 border rounded min-w-0',
+        base: 'vi-address-list__shipping vi-address-list__column d-flex flex-column gap-4 p-5 min-w-0',
         variants: {
             shippingFirst: {
                 false: 'order-2',
@@ -10,14 +10,15 @@
         },
     },
     billing: {
-        base: 'vi-address-list__billing d-flex flex-column gap-3 p-3 border rounded min-w-0',
+        base: 'vi-address-list__billing vi-address-list__column d-flex flex-column gap-4 p-5 min-w-0',
         variants: {
             shippingFirst: {
                 false: 'order-1',
             },
         },
     },
-    title: { base: 'vi-address-list__title fw-semibold fs-5 mb-0' },
-    body: { base: 'vi-address-list__body' },
-    equal: { base: 'vi-address-list__equal mb-0' },
+    title: { base: 'vi-address-list__title fs-4 fw-semibold text-body mb-0' },
+    body: { base: 'vi-address-list__body flex-grow-1' },
+    edit: { base: 'vi-address-list__edit align-self-start mt-auto' },
+    equal: { base: 'vi-address-list__equal text-muted mb-0' },
 }

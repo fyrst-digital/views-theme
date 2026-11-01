@@ -1,0 +1,49 @@
+{% props
+    order,
+    cva = {},
+%}
+
+{% set productLineItemType = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::PRODUCT_LINE_ITEM_TYPE') %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['submit']) %}
+
+<form
+    {{ attributes.defaults({
+        action: path('frontend.checkout.line-item.add'),
+        method: 'post',
+        'data-component': 'ViewsTheme:Order:Reorder',
+        'data-component-options': {
+            addEvent: 'ViewsTheme:Cart:Add',
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block items %}
+        {% for lineItem in order.lineItems %}
+            {% if lineItem.type == productLineItemType %}
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][id]" value="{{ lineItem.identifier }}">
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][referencedId]" value="{{ lineItem.referencedId }}">
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][type]" value="{{ lineItem.type }}">
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][stackable]" value="1">
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][removable]" value="1">
+                <input type="hidden" name="lineItems[{{ lineItem.identifier }}][quantity]" value="{{ lineItem.quantity }}">
+            {% endif %}
+        {% endfor %}
+    {% endblock %}
+
+    {% block submit %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('submit') }}"
+            {{ ...vi_attrs('submit').defaults({
+                type: 'submit',
+                color: 'none',
+                size: 'sm',
+                justify: 'start',
+                square: true,
+                icon: 'arrows-clockwise',
+                label: 'account.orderContextMenuReorder'|trans|sw_sanitize,
+            }).all() }}
+        />
+    {% endblock %}
+</form>

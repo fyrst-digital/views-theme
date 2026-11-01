@@ -16,6 +16,13 @@
   color: var(--primary);
 }
 
+// Small select: smaller caret, closer to the edge (the base indicator sits 20px in).
+.form-select-sm {
+  padding-right: calc(var(--spacing-3) + var(--icon-size-1) + var(--spacing-2));
+  background-position: right var(--spacing-3) center;
+  background-size: var(--icon-size-1) var(--icon-size-1);
+}
+
 .form-select {
   &.is-placeholder {
     color: $muted;

@@ -1,0 +1,19 @@
+@media (min-width: 768px) {
+  .vi-address-list__column {
+    --vi-address-list-col: 1 1 0px;
+  }
+}
+
+.vi-address-list__column {
+  flex: var(--vi-address-list-col, 1 1 auto);
+}
+
+.vi-address-list__column[data-divided='true'] {
+  border-top: var(--vi-address-list-divide-y, 1px solid var(--bs-border-color, #e5dbd0));
+  border-left: var(--vi-address-list-divide-x, 0);
+
+  @media (min-width: 768px) {
+    --vi-address-list-divide-y: 0;
+    --vi-address-list-divide-x: 1px solid var(--bs-border-color, #e5dbd0);
+  }
+}
