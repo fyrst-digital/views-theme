@@ -1,7 +1,7 @@
 {% do vi_define_cva({
     root: { base: 'd-inline-flex' },
     text: { base: '' },
-    image: { base: 'img-fluid' },
+    image: { base: 'vi-logo__image img-fluid' },
 }|replace_recursive(cva)) %}
 {% do vi_define_attrs(['image', 'text']) %}
 
@@ -48,7 +48,6 @@
                             {{ vi_attrs('image').defaults({
                                 src: logoPath|sw_encode_url,
                                 alt: title ?? 'header.logoLink'|trans|striptags,
-                                style: 'width: var(--vi-logo-w, auto)',
                             }) }}
                             class="{{ vi_class('image') }}"
                         >

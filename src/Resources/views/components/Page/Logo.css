@@ -1,0 +1,3 @@
+.vi-logo__image {
+    width: var(--vi-logo-w, auto);
+}

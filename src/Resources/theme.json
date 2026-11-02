@@ -184,6 +184,48 @@
         "order": 100,
         "fullWidth": true
       },
+      "logo-width-mobile": {
+        "type": "number",
+        "value": 120,
+        "editable": true,
+        "scss": false,
+        "label": { "en-GB": "Logo width mobile (px)", "de-DE": "Logo-Breite mobil (px)" },
+        "helpText": {
+          "en-GB": "Header logo width below Tablet.",
+          "de-DE": "Breite des Header-Logos unter Tablet."
+        },
+        "tab": "media",
+        "block": "default",
+        "order": 200
+      },
+      "logo-width-tablet": {
+        "type": "number",
+        "value": 120,
+        "editable": true,
+        "scss": false,
+        "label": { "en-GB": "Logo width tablet (px)", "de-DE": "Logo-Breite Tablet (px)" },
+        "helpText": {
+          "en-GB": "Header logo width from Tablet.",
+          "de-DE": "Breite des Header-Logos von Tablet."
+        },
+        "tab": "media",
+        "block": "default",
+        "order": 300
+      },
+      "logo-width-desktop": {
+        "type": "number",
+        "value": 140,
+        "editable": true,
+        "scss": false,
+        "label": { "en-GB": "Logo width desktop (px)", "de-DE": "Logo-Breite Desktop (px)" },
+        "helpText": {
+          "en-GB": "Header logo width from Desktop.",
+          "de-DE": "Breite des Header-Logos ab Desktop."
+        },
+        "tab": "media",
+        "block": "default",
+        "order": 400
+      },
       "border-radius": {
         "type": "text",
         "value": "6px",

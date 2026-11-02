@@ -5,7 +5,7 @@ Header / drawer currency control: domain `Currency:Action` composed with the gen
 ## Composition
 
 ```
-layout_top_bar (desktop lg+)
+Page:Header:Actions (desktop lg+)
   └─ Currency:Action
        └─ Dropdown
             ├─ toggle → Button (prepend symbol, label, append caret)
@@ -85,16 +85,9 @@ Same patterns as [Account action](account-action.md) / [Language switch](languag
 
 ## Wire-up
 
-Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block `layout_top_bar`:
+Desktop header — `storefront/layout/header/header.html.twig` passes `header.currencies` into `Page:Header:Main`, which forwards it to `Page:Header:Actions`. Actions renders `Currency:Action` before Search (`vi_attrs('currency')` defaults: `currencies`, `placement: 'bottom-end'`). Core `layout_top_bar` is emptied.
 
-```twig
-<twig:ViewsTheme:Currency:Action
-    :currencies="header.currencies"
-    placement="bottom-end"
-/>
-```
-
-Optional stable `id="vi-header-currency"`. Toggle is always `Button` `size="sm"` `color="none"`.
+CVA slots on `Page:Header:Actions`: `currencyHost` (`vi-dropdown-host--lg-up d-none d-lg-contents`, so lg and up only) and `currencyToggle` (`header-action p-2`). Override with `:cva` or the `currency` nest (`:currency:showCode`, …). Toggle is `Button` `size="sm"` `color="none"`. The header hides the toggle label below `xxl` (`d-none d-xxl-inline` via the `currency` nest `cva.label`); the aria-label keeps the name. The drawer footer keeps it.
 
 Navigation drawer footer — `Navigation:Drawer` forwards currencies from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders. Classes come from Footer CVA slot `currency`; currencies and `placement="top-start"` are the `currency` nest defaults:
 

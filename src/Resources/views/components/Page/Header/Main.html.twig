@@ -1,11 +1,13 @@
 {% props
     navigation = null,
+    languages = [],
+    currencies = [],
     widthAnchor = '--vi-header-main',
     cva = {},
 %}
 
 {% do vi_define_cva({
-    root: { base: 'vi-header-main d-flex flex-wrap flex-row align-items-center py-4 gap-3' },
+    root: { base: 'vi-header-main d-flex flex-wrap flex-row align-items-center py-4 gap-3 gap-lg-8 gap-xxl-10' },
     navigation: { base: 'order-lg-0 col' },
     actions: { base: 'col-lg-auto' },
 }|replace_recursive(cva)) %}
@@ -35,8 +37,11 @@
         {% endblock %}
 
         {% block actions %}
-            <twig:ViewsTheme:Page:Header:Actions 
-                class="{{ vi_class('actions') }}" />
+            <twig:ViewsTheme:Page:Header:Actions
+                class="{{ vi_class('actions') }}"
+                :languages="languages"
+                :currencies="currencies"
+            />
         {% endblock %}
     {% endblock %}
 </div>

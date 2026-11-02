@@ -11,12 +11,12 @@ The header override replaces core `layout_header_navigation` content with `Page:
 | Piece | Responsibility |
 |-------|----------------|
 | `Navigation:Bar` | Horizontal top-level list; hover/focus intent; one flyout at a time; in-session HTML cache; active path; listens to Flyout Open/Close; prop `widthAnchor` applied to mounted flyout |
-| `Navigation:Bar:Item` | Top-level link or folder button + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) + `caret-down` when children exist |
+| `Navigation:Bar:Item` | Top-level link or folder button (`fw-semibold`, `fs-xxl-4` = 20px from `xxl`) + flyout trigger attrs (`aria-expanded` / `aria-controls` / `aria-haspopup`) + `caret-down` when children exist |
 | `Navigation:Flyout` | Panel shell (`popover="manual"`, mega grid layout, open/close motion, a11y region); `emitQueued` Open/Close |
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
 | `Navigation:Flyout:Item` | Nested category link/folder; recurses to max depth |
 | `Navigation:Flyout:Teaser` | Category image teaser when default `category.media` is set |
-| `Page:Header:Main` | Composes Bar from `navigation` prop (`d-lg+` via Bar CVA); prop `widthAnchor` (default `--vi-header-main`) → Bar |
+| `Page:Header:Main` | Composes Logo, Bar and Actions. Bar from `navigation` prop (`d-lg+` via Bar CVA); prop `widthAnchor` (default `--vi-header-main`) → Bar. Root gap is `gap-3`, `gap-lg-10` from `lg`. Props `languages` / `currencies` forward to `Page:Header:Actions` (language and currency switches, lg+) |
 
 ## Features
 

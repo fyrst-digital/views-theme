@@ -1,10 +1,12 @@
 {% props
     wishlist = config('core.cart.wishlistEnabled'),
+    languages = [],
+    currencies = [],
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['menu', 'search', 'wishlist', 'account', 'cart']) %}
+{% do vi_define_attrs(['menu', 'language', 'currency', 'search', 'wishlist', 'account', 'cart']) %}
 
 <div
     {{ attributes.without('class').without('data-component-template') }}
@@ -15,13 +17,39 @@
         {% block menu %}
             <twig:ViewsTheme:Navigation:Drawer:Action
                 class="{{ vi_class('menu') }}"
+                icon:class="{{ vi_class('icon') }}"
                 {{ ...vi_attrs('menu').all() }}
+            />
+        {% endblock %}
+
+        {% block language %}
+            <twig:ViewsTheme:Language:Action
+                host:class="{{ vi_class('languageHost') }}"
+                toggle:class="{{ vi_class('languageToggle') }}"
+                {{ ...vi_attrs('language').defaults({
+                    languages: languages,
+                    placement: 'bottom-end',
+                    cva: { label: { base: 'vi-language-action__label d-none d-xxl-inline' } },
+                }).all() }}
+            />
+        {% endblock %}
+
+        {% block currency %}
+            <twig:ViewsTheme:Currency:Action
+                host:class="{{ vi_class('currencyHost') }}"
+                toggle:class="{{ vi_class('currencyToggle') }}"
+                {{ ...vi_attrs('currency').defaults({
+                    currencies: currencies,
+                    placement: 'bottom-end',
+                    cva: { label: { base: 'vi-currency-action__label d-none d-xxl-inline' } },
+                }).all() }}
             />
         {% endblock %}
 
         {% block search %}
             <twig:ViewsTheme:Search:Action
                 class="{{ vi_class('search') }}"
+                icon:class="{{ vi_class('icon') }}"
                 {{ ...vi_attrs('search').all() }}
             />
         {% endblock %}
@@ -30,6 +58,7 @@
             {% if wishlist %}
                 <twig:ViewsTheme:Wishlist:Action
                     class="{{ vi_class('wishlist') }}"
+                    icon:class="{{ vi_class('icon') }}"
                     {{ ...vi_attrs('wishlist').defaults({
                         label: false,
                     }).all() }}
@@ -42,6 +71,7 @@
                 class="{{ vi_class('account') }}"
                 host:class="{{ vi_class('accountHost') }}"
                 toggle:class="{{ vi_class('accountToggle') }}"
+                toggle:icon:class="{{ vi_class('icon') }}"
                 {{ ...vi_attrs('account').defaults({
                     'toggle:label': false,
                 }).all() }}
@@ -51,6 +81,7 @@
         {% block cart %}
             <twig:ViewsTheme:Cart:Drawer:Action
                 class="{{ vi_class('cart') }}"
+                icon:class="{{ vi_class('icon') }}"
                 {{ ...vi_attrs('cart').all() }}
             />
         {% endblock %}

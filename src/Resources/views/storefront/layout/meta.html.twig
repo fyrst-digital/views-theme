@@ -11,6 +11,12 @@
       }
     </style>
   {%- endif -%}
+
+  <style>
+    .vi-header-main { --vi-logo-w: {{ theme_config('logo-width-mobile')|default(80)|round }}px; }
+    @media (min-width: {{ theme_config('breakpoint.lg') }}px) { .vi-header-main { --vi-logo-w: {{ theme_config('logo-width-tablet')|default(100)|round }}px; } }
+    @media (min-width: {{ theme_config('breakpoint.xxl') }}px) { .vi-header-main { --vi-logo-w: {{ theme_config('logo-width-desktop')|default(120)|round }}px; } }
+  </style>
 {% endblock %}
 
 {% block layout_head_stylesheet %}
