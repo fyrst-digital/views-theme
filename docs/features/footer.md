@@ -12,7 +12,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` |
 | `Page:Footer:Main` | Class VM. Complete footer: hotline, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: shop copyright, `Services`, then `Bottom` (VAT + theme credit). No revocation CTA |
-| `Page:Footer:Bottom` | VAT notice and theme credit (`brand` prop → snippet `%brand%`). Mounted by Main and Minimal |
+| `Page:Footer:Bottom` | VAT notice and theme credit; empty `prepend` block (Main fills with `Services`) (`brand` prop → snippet `%brand%`). Mounted by Main and Minimal |
 | `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
 | `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
 | `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
@@ -38,8 +38,8 @@ layout/footer.html.twig                    (ESI frontend.footer)
           │    └─ Page:Footer:Column:Logos        g-col-1 g-col-lg-8 flex (role=list)
           │         ├─ Page:Footer:Column         payment (if paymentLogos)
           │         └─ Page:Footer:Column         shipping (if shippingLogos)
-          ├─ Page:Footer:Services (`justify-content-center gap-3`)
-          └─ Page:Footer:Bottom
+          └─ Page:Footer:Bottom (root classes replaced via `cva.root.base`)
+               ├─ `prepend` block: Page:Footer:Services (`justify-content-center gap-3`)
                ├─ VAT notice
                └─ theme credit (`viewsTheme.copyright`, `%brand%`)
 
@@ -54,7 +54,7 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
                └─ theme credit (`viewsTheme.copyright`, `%brand%`)
 ```
 
-Minimal matches the checkout pen footer, with the shop name in place of the pen’s sample brand and real service-menu labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: shop copyright, then the service links, then the VAT line, then the theme credit; vertical padding `18px` / `22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: the row is one line, shop copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line, theme credit on the line after that; vertical padding `22px`. The bar is full-bleed. Horizontal inset is Minimal’s `.container`, the same inset as the minimal header. Service links are `Page:Footer:Services` in both footers: `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Minimal passes `gap-6`; Main passes `justify-content-center gap-3`. `Page:Footer:Bottom` is only the VAT notice and the theme credit, mounted by Main and Minimal. Minimal forwards `:brand`. `Page:Footer:Revocation` is not mounted on Minimal. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s hotline column.
+Minimal matches the checkout pen footer, with the shop name in place of the pen’s sample brand and real service-menu labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: shop copyright, then the service links, then the VAT line, then the theme credit; vertical padding `18px` / `22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: the row is one line, shop copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line, theme credit on the line after that; vertical padding `22px`. The bar is full-bleed. Horizontal inset is Minimal’s `.container`, the same inset as the minimal header. Service links are `Page:Footer:Services` in both footers: `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Minimal passes `gap-6`; Main passes `justify-content-center gap-3`. `Page:Footer:Bottom` is the VAT notice and the theme credit, mounted by Main and Minimal. Its empty `prepend` block sits before the VAT line; Main puts `Services` there, so Main’s bottom bar is Bottom itself, not a plain wrapper `div`. Minimal forwards `:brand`. `Page:Footer:Revocation` is not mounted on Minimal. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s hotline column.
 
 Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open, the caret is `d-{collapseUntil}-none`, and `inert` stays off even if `aria-expanded` is false. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
 
@@ -62,7 +62,7 @@ Main skips the Navigation mount when `footer.navigation.tree` is empty. Skip `Co
 
 Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid has no `role=list`; list semantics live on Navigation’s and Logos’ flex roots + their Column `role=listitem` (hosts pass it; Column does not default it).
 
-Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`. From `lg` the row is Hotline 3 + Navigation 5; Logos is the next full 8. Column contributes `g-col-1`; Hotline adds `g-col-lg-3`.
+Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom` (forwards to `Page:Footer:Bottom`), `services`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`. From `lg` the row is Hotline 3 + Navigation 5; Logos is the next full 8. Column contributes `g-col-1`; Hotline adds `g-col-lg-3`.
 
 ## Class components
 

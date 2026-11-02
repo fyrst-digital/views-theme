@@ -12,6 +12,8 @@
     {{ attributes }}
     class="{{ vi_class('root') }}"
 >
+    {% block prepend %}{% endblock %}
+
     {% block vat %}
         {% if showVatNotice %}
             <div {{ vi_attrs('vat') }} class="{{ vi_class('vat') }}">
