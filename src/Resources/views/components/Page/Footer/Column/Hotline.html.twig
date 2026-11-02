@@ -6,24 +6,80 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['revocation']) %}
+{% do vi_define_attrs(['revocation', 'link']) %}
+
+{% set shopName = config('core.basicInformation.shopName')|default(context.salesChannel.translated.name|default(''), true)|trim %}
+{% set street = config('ViewsTheme.config.shopInfoStreet')|trim %}
+{% set cityLine = (config('ViewsTheme.config.shopInfoZipcode') ~ ' ' ~ config('ViewsTheme.config.shopInfoCity'))|trim %}
+{% set phone = config('ViewsTheme.config.shopInfoPhone')|trim %}
+{% set email = config('ViewsTheme.config.shopInfoEmail')|trim %}
 
 <twig:ViewsTheme:Page:Footer:Column
     class="{{ vi_class('root') }}"
+    title:class="{{ vi_class('title') }}"
     {{ ...attributes.all() }}
 >
     <twig:block name="headline">
-        {{ 'footer.serviceHotlineHeadline'|trans|sw_sanitize }}
+        <twig:ViewsTheme:Page:Logo />
     </twig:block>
     <twig:block name="content">
-        <p class="{{ vi_class('hotline') }}">
-            {{ 'footer.serviceHotline'|trans|sw_sanitize }}
-        </p>
-        <div class="{{ vi_class('contact') }}">
-            {{ 'footer.serviceContactTextPage'|trans({
-                '%url%': contactUrl,
-            })|raw }}
-        </div>
+        {% if shopName or street or cityLine %}
+            <address class="{{ vi_class('address') }}">
+                {% if shopName %}<span class="d-block fw-semibold">{{ shopName }}</span>{% endif %}
+                {% if street %}<span class="d-block">{{ street }}</span>{% endif %}
+                {% if cityLine %}<span class="d-block">{{ cityLine }}</span>{% endif %}
+            </address>
+        {% endif %}
+
+        <ul class="{{ vi_class('list') }}">
+            {% if phone %}
+                <li>
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('link') }}"
+                        {{ ...vi_attrs('link').defaults({
+                            type: 'link',
+                            icon: 'phone',
+                            href: 'tel:' ~ phone|replace({' ': '', '-': '', '/': '', '(': '', ')': ''}),
+                            color: 'dark',
+                            size: 'sm',
+                            link: true,
+                            label: phone,
+                        }).all() }}
+                    />
+                </li>
+            {% endif %}
+            {% if email %}
+                <li>
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('link') }}"
+                        {{ ...vi_attrs('link').defaults({
+                            type: 'link',
+                            icon: 'envelope-simple',
+                            href: 'mailto:' ~ email,
+                            color: 'dark',
+                            size: 'sm',
+                            link: true,
+                            label: email,
+                        }).all() }}
+                    />
+                </li>
+            {% endif %}
+            <li>
+                <twig:ViewsTheme:Button
+                    class="{{ vi_class('link') }}"
+                    {{ ...vi_attrs('link').defaults({
+                        type: 'link',
+                        icon: 'chat-circle-text',
+                        href: contactUrl,
+                        color: 'dark',
+                        size: 'sm',
+                        link: true,
+                        label: 'viewsTheme.footer.contactForm'|trans,
+                    }).all() }}
+                />
+            </li>
+        </ul>
+
         {% if showRevocation %}
             <twig:ViewsTheme:Page:Footer:Revocation
                 class="{{ vi_class('revocation') }}"

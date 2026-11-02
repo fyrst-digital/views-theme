@@ -14,7 +14,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: shop copyright, `Services`, then `Bottom` (VAT + theme credit). No revocation CTA |
 | `Page:Footer:Bottom` | VAT notice and theme credit; empty `prepend` block (Main fills with `Services`) (`brand` prop → snippet `%brand%`). Mounted by Main and Minimal |
 | `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
-| `Page:Footer:Column:Hotline` | Root-host of Column; contact + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
+| `Page:Footer:Column:Hotline` | Root-host of Column; headline is the theme logo (`Page:Logo`, width `--vi-footer-hotline-logo-w`, default `120px`); contact block built from shop backend data (see [Contact data](#contact-data)) + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
 | `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
 | `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-1 g-col-lg-8`); payment + shipping Columns |
 | `Page:Footer:Services` | Service-menu list. Renders nothing when `serviceMenu` is empty. Each link is `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Callers add list chrome (`gap-6` on Minimal, `justify-content-center gap-3` on Main) |
@@ -93,14 +93,26 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 | Checkout register / confirm / finish | `base_esi_footer` → `Page:Footer:Minimal :footer="footer"` |
 | Edit-order | Same Minimal mount |
 
+## Contact data
+
+`Page:Footer:Column:Hotline` renders the theme logo as its headline and a contact block from the plugin config card **Shop information** ([Configuration](../configuration.md#shop-information)). It reads only two things from `core.basicInformation.*`: the shop name and the CMS page links (contact page, via the resolver) and does not use the core `footer.serviceHotline` / `footer.serviceContactTextPage` snippets. Every field is optional and renders nothing when empty:
+
+| Output | Config |
+|--------|--------|
+| Address block (`<address>`) | core `shopName` (bold; else sales channel name), then `shopInfoStreet`, `shopInfoZipcode` + `shopInfoCity` |
+| Phone (`tel:` link) | `shopInfoPhone` (spaces, `-`, `/`, `()` stripped from the `href`) |
+| Email (`mailto:` link) | `shopInfoEmail` |
+| Contact form link | core `contactPage` → `contactUrl`, label `viewsTheme.footer.contactForm` |
+
+Links are `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`) with Phosphor icons: `phone`, `envelope-simple`, `chat-circle-text` (contact form); the address block has no icon. The icons are listed in `build.icons.mts` (`default` + `bold` packs) and need `npm run build:icons`.
+
 ## Snippets
 
 Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal shows the shop claim `viewsTheme.shopCopyright` (`%year%`, `%shop%` from `core.basicInformation.shopName`, else the sales channel name). The theme credit `viewsTheme.copyright` is `Page:Footer:Bottom` in both footers (`%brand%` from `brand`, default fyrst.dev `<a>`). Minimal forwards `:brand` into Bottom.
 
 | Key | Where |
 |-----|--------|
-| `footer.serviceHotlineHeadline` / `footer.serviceHotline` | Hotline column |
-| `footer.serviceContactTextPage` | Contact CMS link (`%url%`) |
+| `viewsTheme.footer.contactForm` | Contact-form link label (`href` = `contactUrl`) |
 | `footer.serviceRevocationRequestTextPage` | Hotline revocation CTA (`%url%`). Not the minimal footer |
 | `footer.includeVatTextPage` / `footer.excludeVatTextPage` | VAT (`%url%`, `%star%`) |
 | `checkout.paymentMethod` / `checkout.shippingMethod` | Logos Column headlines |

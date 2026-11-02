@@ -6,6 +6,20 @@ ViewsTheme has two configuration surfaces: **plugin config** (system config) and
 
 Defined in `src/Resources/config/config.xml`. Editable in the Shopware administration under the plugin settings.
 
+### Shop information
+
+Theme-owned contact data for the footer hotline column. The theme does **not** read contact fields from `core.basicInformation.*` (the admin has no phone field and the company card is behind a feature flag). Exceptions: the shop name (`core.basicInformation.shopName`, else the sales channel name) and CMS page links such as the contact form (`contactPage`). Every field is optional and renders nothing when empty; plugin config can be overridden per sales channel.
+
+| Config key | Type | Default | Description |
+|------------|------|---------|-------------|
+| `ViewsTheme.config.shopInfoStreet` | string | – | Street line |
+| `ViewsTheme.config.shopInfoZipcode` | string | – | Zip code (shares a line with city) |
+| `ViewsTheme.config.shopInfoCity` | string | – | City |
+| `ViewsTheme.config.shopInfoPhone` | string | – | Phone (`tel:` link) |
+| `ViewsTheme.config.shopInfoEmail` | string | – | Email (`mailto:` link) |
+
+See [Footer](features/footer.md#contact-data).
+
 ### Variants Grid
 
 | Config key | Type | Default | Description |
