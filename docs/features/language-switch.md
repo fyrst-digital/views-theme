@@ -5,7 +5,7 @@ Header / drawer language control: domain `Language:Action` composed with the gen
 ## Composition
 
 ```
-layout_top_bar (desktop lg+)
+Page:Header:Actions (desktop lg+)
   └─ Language:Action
        └─ Dropdown
             ├─ toggle → Button (prepend flag/code, label, append caret)
@@ -91,16 +91,9 @@ Same patterns as [Account action](account-action.md):
 
 ## Wire-up
 
-Desktop top-bar — `storefront/layout/header/header.html.twig` overrides block `layout_top_bar`:
+Desktop header — `storefront/layout/header/header.html.twig` passes `header.languages` into `Page:Header:Main`, which forwards it to `Page:Header:Actions`. Actions renders `Language:Action` before Search (`vi_attrs('language')` defaults: `languages`, `placement: 'bottom-end'`). Core `layout_top_bar` is emptied.
 
-```twig
-<twig:ViewsTheme:Language:Action
-    :languages="header.languages"
-    placement="bottom-end"
-/>
-```
-
-Optional stable `id="vi-header-language"`. Toggle is always `Button` `size="sm"` `color="none"`.
+CVA slots on `Page:Header:Actions`: `languageHost` (`vi-dropdown-host--lg-up d-none d-lg-contents`, so lg and up only) and `languageToggle` (`header-action p-2`). Override with `:cva` or the `language` nest (`:language:showCode`, …). Toggle is `Button` `size="sm"` `color="none"`. The header hides the toggle label below `xxl` (`d-none d-xxl-inline` via the `language` nest `cva.label`); the aria-label keeps the name. The drawer footer keeps it.
 
 Navigation drawer footer — `Navigation:Drawer` forwards languages from `NavigationDrawerController` (via `HeaderPageletLoader`) into `Navigation:Drawer:Footer`, which renders. Classes come from Footer CVA slot `language`; languages and `placement="top-start"` are the `language` nest defaults:
 

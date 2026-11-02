@@ -69,7 +69,7 @@ Account pages (overview, profile, addressbook, orders): [account.md](account.md)
 />
 ```
 
-Classes live on `Page:Header:Actions` CVA: `account` `mt-2 p-0 vi-account__dropdown`, `accountHost` `vi-dropdown-host--lg-up d-none d-lg-contents`, `accountToggle` `header-action icon-size-3`. Override with `:cva` or `account:class` / `accountHost:class` / `accountToggle:class`. Other account inputs override the `account` nest (`:account:toggle:label`, …).
+Classes live on `Page:Header:Actions` CVA: `account` `mt-2 p-0 vi-account__dropdown`, `accountHost` `vi-dropdown-host--lg-up d-none d-lg-contents`, `accountToggle` `header-action icon-size-3`, `icon` `icon-size-xxl-4` (shared by all header action icons via `icon:class` / `toggle:icon:class`; 24px from `xxl`). Override with `:cva` or `account:class` / `accountHost:class` / `accountToggle:class`. Other account inputs override the `account` nest (`:account:toggle:label`, …).
 
 Below `lg`, `d-none d-lg-contents` hides the host; `--lg-up` force-dismisses an open panel (same CSS cascade — no corner jump).
 
