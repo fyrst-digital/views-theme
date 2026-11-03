@@ -1,0 +1,53 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['main', 'logos', 'bottom', 'services']) %}
+
+<div
+    {{ attributes.without('data-component-template') }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% block logos %}
+            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
+                <twig:ViewsTheme:Page:Footer:Column:Logos
+                    class="{{ vi_class('logos') }}"
+                    {{ ...vi_attrs('logos').defaults({
+                        paymentLogos: paymentLogos,
+                        shippingLogos: shippingLogos,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
+        <twig:ViewsTheme:Page:Footer:Main
+            class="{{ vi_class('main') }}"
+            {{ ...vi_attrs('main').defaults({
+                footer: footer,
+                contactUrl: contactUrl,
+                revocationUrl: revocationUrl,
+                showRevocation: showRevocation,
+            }).all() }}
+        />
+
+        {% block bottom %}
+            {% if footer %}
+                <twig:ViewsTheme:Page:Footer:Bottom
+                    {{ ...vi_attrs('bottom').defaults({
+                        shippingUrl: shippingUrl,
+                        cva: { root: { base: vi_class('bottom') } },
+                    }).all() }}
+                >
+                    <twig:block name="prepend">
+                        {% block services %}
+                            <twig:ViewsTheme:Page:Footer:Services
+                                class="{{ vi_class('services') }}"
+                                {{ ...vi_attrs('services').defaults({
+                                    serviceMenu: footer.serviceMenu,
+                                }).all() }}
+                            />
+                        {% endblock %}
+                    </twig:block>
+                </twig:ViewsTheme:Page:Footer:Bottom>
+            {% endif %}
+        {% endblock %}
+    {% endblock %}
+</div>

@@ -40,6 +40,9 @@
         },
         "copyright": "Theme made with ❤️ by %brand%",
         "shopCopyright": "© %year% %shop%",
+        "footer": {
+            "contactForm": "Contact form"
+        },
         "lineItems": {
             "product": "Product",
             "quantity": "Qty",

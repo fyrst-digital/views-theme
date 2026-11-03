@@ -1,7 +1,8 @@
 {% props
     section,
+    # container | boxed | full-width
     sizing = section.sizingMode|default('container')|replace({'_': '-'}),
-    mobileBehavior = section.mobileBehavior|default('wrap'),
+    mobileBehavior = section.mobileBehavior|default('wrap'), # wrap | hidden
     cva = {},
 %}
 

@@ -100,7 +100,7 @@ class Action
 {% endif %}
 ```
 
-Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / `Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Account:Input:Birthday`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` / `Street` / `Postal` / `Country` / `Phone`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Page:Title`, `Checkout:Confirm:Title`, `Checkout:Addresses`, `Checkout:Success:Header` / `Addresses` / `Payment` / `Shipping`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form` / `Account:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
+Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer` / `Page:Footer:Minimal`, `Product:Badges`, `Product:Box`, `Product:BuyContainer`, `Product:Configurator`, `Product:Configurator:Group` / `Option`, `Product:Actions`, `Product:Prices`, `Product:Rating`, `Product:Cover`, `Product:Price`, `Product:Box:Header` / `Body` / `Footer` / `Actions`, `Product:Action:Buy` / `Detail`, `Product:Listing`, `Product:Listing:Results`, `Cms:DescriptionReviews`, `Pagination`, `Sorting`, `Filter:Panel`, `LineItem`, `Review:Panel` / `Results` / `Form` / `Rating`, `Account:Register`, `Account:Input:Birthday`, `Address:Input:AccountType` / `Salutation` / `Title` / `Name` / `Company` / `Street` / `Postal` / `Country` / `Phone`, `Address:Manager:Item`, `Form:Birthday`, `Order:Item`, `Order:Addresses`, `Page:Title`, `Checkout:Confirm:Title`, `Checkout:Addresses`, `Checkout:Success:Header` / `Addresses` / `Payment` / `Shipping`, `Shipping:Selection`. (`Tabs` / `Tabs:List` / `Tab` / `Panel`, `Accordion` / `Item` / `Header` / `Panel`, `Address:Form` / `Account:Form:Personal`, and `Product:Configurator:GroupLabel` are anonymous UX — they have no JS.)
 
 ## Props / CVA / attributes
 
@@ -111,6 +111,25 @@ Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / 
 - Symfony applies a default only when the prop is **missing or `null`** (`!isset`). Defaults evaluate **in declaration order** — declare dependencies before dependents.
 - Do **not** reassign prop names with `{% set prop = … %}` after the props block.
 - Non-prop locals are fine; prefer `vi_define_cva` / `vi_class` over `{% set cx %}`.
+
+#### Annotate possible values
+
+Document props with a **closed set of values** (enums, variants, layouts, HTML tag names) or a non-obvious type with an inline Twig `#` comment inside `{% props %}`, so callers see the allowed values without opening the CVA file. Twig ≥ 3.29 (the Shopware minimum) lexes `#` to end of line as a comment inside tags.
+
+```twig
+{% props
+    type = 'info', # danger | warning | info | neutral | success
+    icon = true, # true (icon of type) | false (hidden) | vi_icon name
+    # none | primary | secondary | light | … (long lists go on their own lines above the prop)
+    color = 'primary',
+    cva = {},
+%}
+```
+
+- Values come from the co-located `.cva.twig` `variants` and from comparisons in the template. Keep the comment in sync when a variant is added or removed.
+- Skip self-explanatory props (booleans, labels, ids, URLs, `cva`).
+- A prop that forwards to another component can point to it instead of repeating the list (`# Button color, see Button.html.twig`).
+- Class components document values on the public property (docblock or enum), not here.
 
 #### Preferred: fallbacks in `{% props %}` (not `resolved*`)
 
@@ -495,7 +514,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Input:Group | UX + `vi_cva`; shell + nested Form:Input control; used by Cart:PromotionForm (+ Button in append) |
 | Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Field |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
-| Page:Header:* (+ Cart JS), Page:Footer:* (Main/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
+| Page:Header:* (+ Cart JS), Page:Footer:* (Footer/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
 | Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |

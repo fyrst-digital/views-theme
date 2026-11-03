@@ -1,18 +1,21 @@
 {% props
-    type = 'button',
-    tag = null,
-    icon = null,
+    type = 'button', # button | submit | reset | link (renders <a>)
+    tag = null, # null (derived: a for type=link, else button) | any HTML tag name
+    icon = null, # vi_icon name | null
     label = null,
     href = null,
     target = null,
     title = null,
+    # none | primary | secondary | light | white | link | success | danger | warning | info | muted
+    # outline-primary | outline-secondary | outline-light | outline-dark | outline-white
+    # outline-success | outline-danger | outline-warning | outline-info | outline-muted
     color = 'primary',
-    size = 'md',
+    size = 'md', # sm | md | lg
     square = false,
     pill = false,
     full = false,
     link = false,
-    justify = 'center',
+    justify = 'center', # start | center | end
     cva = {},
 %}
 

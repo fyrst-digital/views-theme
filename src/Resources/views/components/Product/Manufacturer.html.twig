@@ -1,7 +1,7 @@
 {% props
     product = null,
     name = product and product.manufacturer ? product.manufacturer.translated.name|default(null) : null,
-    tag = 'div',
+    tag = 'div', # HTML tag name: div | span | …
     cva = {},
 %}
 
