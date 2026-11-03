@@ -6,7 +6,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['panel', 'body', 'description', 'actions', 'accept', 'login', 'cancel', 'preferences']) %}
+{% do vi_define_attrs(['body', 'description', 'actions', 'accept', 'login', 'cancel', 'preferences']) %}
 
 {% set title = ('cookie.' ~ featureName ~ '.title')|trans|striptags %}
 
@@ -16,64 +16,70 @@
         id: 'vi-cookie-drawer',
         side: 'start',
         label: title,
+        title: title,
     }).all() }}
 >
-    <twig:block name="panel">
-        <twig:ViewsTheme:Drawer:Panel
-            {{ ...vi_attrs('panel').defaults({
-                side: 'start',
-                title: title,
-            }).all() }}
+    <twig:block name="content">
+        <div
+            {{ vi_attrs('body').defaults({
+                'data-component': 'ViewsTheme:Cookie:Consent',
+                'data-component-options': {
+                    cookieName: cookieName,
+                    loginUrl: loginUrl,
+                }|json_encode,
+            }) }}
+            class="{{ vi_class('body') }}"
         >
-            <div
-                {{ vi_attrs('body').defaults({
-                    'data-component': 'ViewsTheme:Cookie:Consent',
-                    'data-component-options': {
-                        cookieName: cookieName,
-                        loginUrl: loginUrl,
-                    }|json_encode,
-                }) }}
-                class="{{ vi_class('body') }}"
-            >
+            {% vi_block description %}
                 <p {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
                     {{ ('cookie.' ~ featureName ~ '.description')|trans({ '%cookieName%': cookieName })|sw_sanitize }}
                 </p>
+            {% endvi_block %}
 
+            {% vi_block actions %}
                 <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('accept') }}"
-                        {{ ...vi_attrs('accept').defaults({
-                            type: 'button',
-                            name: 'action',
-                            value: 'accept',
-                            color: 'primary',
-                            label: ('cookie.' ~ featureName ~ '.accept')|trans|striptags,
-                        }).all() }}
-                    />
+                    {% vi_block accept %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('accept') }}"
+                            {{ ...vi_attrs('accept').defaults({
+                                type: 'button',
+                                name: 'action',
+                                value: 'accept',
+                                color: 'primary',
+                                label: ('cookie.' ~ featureName ~ '.accept')|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
 
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('login') }}"
-                        {{ ...vi_attrs('login').defaults({
-                            type: 'button',
-                            name: 'action',
-                            value: 'login',
-                            color: 'primary',
-                            label: ('cookie.' ~ featureName ~ '.login')|trans|striptags,
-                        }).all() }}
-                    />
+                    {% vi_block login %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('login') }}"
+                            {{ ...vi_attrs('login').defaults({
+                                type: 'button',
+                                name: 'action',
+                                value: 'login',
+                                color: 'primary',
+                                label: ('cookie.' ~ featureName ~ '.login')|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
 
-                    <twig:ViewsTheme:Button
-                        class="{{ vi_class('cancel') }}"
-                        {{ ...vi_attrs('cancel').defaults({
-                            type: 'button',
-                            name: 'action',
-                            value: 'cancel',
-                            color: 'secondary',
-                            label: 'global.default.cancel'|trans|striptags,
-                        }).all() }}
-                    />
+                    {% vi_block cancel %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('cancel') }}"
+                            {{ ...vi_attrs('cancel').defaults({
+                                type: 'button',
+                                name: 'action',
+                                value: 'cancel',
+                                color: 'secondary',
+                                label: 'global.default.cancel'|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
                 </div>
+            {% endvi_block %}
 
+            {% vi_block preferences %}
                 <twig:ViewsTheme:Button
                     class="{{ vi_class('preferences') }}"
                     {{ ...vi_attrs('preferences').defaults({
@@ -84,7 +90,7 @@
                         label: 'cookie.headline'|trans|striptags,
                     }).all() }}
                 />
-            </div>
-        </twig:ViewsTheme:Drawer:Panel>
+            {% endvi_block %}
+        </div>
     </twig:block>
 </twig:ViewsTheme:Drawer>

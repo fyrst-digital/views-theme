@@ -168,7 +168,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 | JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
-Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`, `AddressManagerController`.
+Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`, `AddressManagerController`, `CookieController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -197,6 +197,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Reviews list/save (`ReviewController`) | `ProductReviewGateway` → `AbstractProductReviewLoader`; save → `AbstractProductReviewSaveRoute` | `product-reviews-widget-loaded` | HTML `Review:Results` / `Review:Panel`; [review.md](features/review.md) |
 | Gallery fullscreen (`GalleryFullscreenController`) | `AbstractMediaRoute` / `MediaRoute` | *(none — raw media list)* | HTML `Gallery:Fullscreen`; [gallery.md](features/gallery.md) |
 | Address manager (`AddressManagerController`) | `AddressListingPageLoader` | `address-book-widget-loaded` (`AddressBookWidgetLoadedHook`) | HTML `Address:Manager` / editor View island; upsert + context switch; [address-manager.md](features/address-manager.md) |
+| Cookie manager (`CookieController::manager`) | `AbstractCookieRoute` / `CookieRoute` (service id, decorators apply) | *(none — core cookie offcanvas has no page hook)* | HTML `Cookie:Manager`; consent request has no loader; [cookie.md](features/cookie.md) |
 
 **Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 

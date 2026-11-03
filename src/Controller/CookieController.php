@@ -20,6 +20,17 @@ use Symfony\UX\TwigComponent\ComponentRendererInterface;
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [StorefrontRouteScope::ID]])]
 class CookieController extends AbstractComponentController
 {
+    private const DEFAULT_FEATURE = 'wishlist';
+
+    private const DEFAULT_COOKIE = 'wishlist-enabled';
+
+    /**
+     * `featureName` becomes a snippet key segment (`cookie.{featureName}.*`), so no dots.
+     */
+    private const FEATURE_PATTERN = '/^[A-Za-z0-9_-]+$/';
+
+    private const COOKIE_PATTERN = '/^[A-Za-z0-9._-]+$/';
+
     public function __construct(
         ComponentRendererInterface $components,
         ComponentHtmlRenderer $htmlRenderer,
@@ -50,8 +61,18 @@ class CookieController extends AbstractComponentController
     public function consent(Request $request): Response
     {
         return $this->renderComponent('ViewsTheme:Cookie:Consent', [
-            'featureName' => $request->query->getString('featureName', 'wishlist'),
-            'cookieName' => $request->query->getString('cookieName', 'wishlist-enabled'),
+            'featureName' => self::allowed($request, 'featureName', self::FEATURE_PATTERN, self::DEFAULT_FEATURE),
+            'cookieName' => self::allowed($request, 'cookieName', self::COOKIE_PATTERN, self::DEFAULT_COOKIE),
         ]);
+    }
+
+    /**
+     * Query values flow into snippet keys, JSON options and `document.cookie`: allowlist them.
+     */
+    private static function allowed(Request $request, string $key, string $pattern, string $default): string
+    {
+        $value = $request->query->get($key);
+
+        return \is_string($value) && preg_match($pattern, $value) === 1 ? $value : $default;
     }
 }

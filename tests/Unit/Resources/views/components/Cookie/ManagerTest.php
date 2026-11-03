@@ -53,7 +53,6 @@ final class ManagerTest extends TestCase
         $view = $this->mount([$group])->views[0];
 
         self::assertSame('Nice to have', $view->description);
-        self::assertTrue($view->expandable());
         self::assertSame('youtube video', $view->entries[0]->name);
         self::assertNull($view->entries[0]->description);
         self::assertSame('vi-cookie-youtube-video', $view->entries[0]->id);
@@ -69,7 +68,6 @@ final class ManagerTest extends TestCase
 
         self::assertSame([], $view->entries);
         self::assertSame('single-cookie', $view->cookie);
-        self::assertFalse($view->expandable());
     }
 
     public function testGroupsWithoutVisibleCookiesAreSkipped(): void

@@ -1,4 +1,5 @@
 import { createSerialQueue } from '@views-theme/modules/serial-queue.js'
+import { getCookie } from '@views-theme/modules/cookie/storage.js'
 
 /**
  * Wishlist mutation owner (HTTP + serial queue).
@@ -293,7 +294,7 @@ export default class Wishlist extends ShopwareComponent {
             return true
         }
 
-        return this._getCookie(this.options.cookieName) !== null
+        return getCookie(this.options.cookieName) !== null
     }
 
     _requestConsent() {
@@ -305,12 +306,6 @@ export default class Wishlist extends ShopwareComponent {
             featureName: 'wishlist',
             cookieName: this.options.cookieName,
         })
-    }
-
-    _getCookie(name) {
-        const prefix = `${name}=`
-        const match = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix))
-        return match ? match.slice(prefix.length) : null
     }
 
     _urlWithId(template, id) {

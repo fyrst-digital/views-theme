@@ -24,12 +24,4 @@ final readonly class CookieGroupView
         public ?string $cookie = null,
     ) {
     }
-
-    /**
-     * True when the group has a collapsible panel (entries and/or a description).
-     */
-    public function expandable(): bool
-    {
-        return $this->entries !== [] || $this->description !== null;
-    }
 }

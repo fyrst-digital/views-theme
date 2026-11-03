@@ -52,7 +52,7 @@ app/storefront/src/modules/
 | `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` or `configurator/*` |
 | `@views-theme/modules/configurator/*` | `@views-theme/modules/shared/*` — **not** `listing/*` or `review/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor) |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor); `Wishlist.js` may import `cookie/storage.js` (consent cookie read) |
 | `@views-theme/modules/shipping/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*` or `configurator/*` |
 | `Cookie/*` components | `@views-theme/modules/cookie/*`, `lazy-shell.js` — [cookie.md](../features/cookie.md) |
 | `@views-theme/modules/cookie/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/cookie/*` |

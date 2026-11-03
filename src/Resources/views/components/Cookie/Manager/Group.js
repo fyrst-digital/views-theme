@@ -3,7 +3,8 @@ import { getCookie } from '@views-theme/modules/cookie/storage.js'
 /**
  * One cookie group of the manager: preselects the cookies that are set and keeps the group switch
  * (`input[name="group"]`) in sync with its cookies (`input[name="cookie"]`): checked when any is
- * on, indeterminate when only some are.
+ * on, indeterminate when only some are. The group switch is a plain checkbox (no `role="switch"`), so
+ * the indeterminate state is announced as "mixed".
  *
  * @extends {ShopwareComponent}
  */

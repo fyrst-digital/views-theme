@@ -1,6 +1,7 @@
 import {
     abortRequest,
     beginRequest,
+    eventEl,
     fetchText,
     getInstanceByElement,
     replaceMount,
@@ -12,6 +13,7 @@ import { urlWithParams } from '@views-theme/modules/shared/http.js'
 /**
  * Lazy shell opener of the cookie drawer. Shows the cookie manager, or — with `{ consent }` — the
  * request for one feature cookie (wishlist). Refetches on every open and unmounts on close.
+ * Owns only the drawer it mounted; a drawer of another Action is closed through its owner first.
  *
  * @extends {ShopwareComponent}
  */
@@ -51,7 +53,7 @@ export default class CookieManagerAction extends ShopwareComponent {
     }
 
     /**
-     * Public API — own click, `callMethod`.
+     * Public API — own click, `Cookie:Bar.openManager()`.
      *
      * @param {{ consent?: { featureName?: string, cookieName?: string } }} [options]
      *   `consent`: show the request for that feature cookie instead of the manager
@@ -115,6 +117,7 @@ export default class CookieManagerAction extends ShopwareComponent {
                 return
             }
 
+            this._releaseDrawers()
             this._view = view
             this._drawerEl = replaceMount(this.options.drawerSelector, html)
             await waitForInstance(() => this._getDrawerInstance())
@@ -143,17 +146,42 @@ export default class CookieManagerAction extends ShopwareComponent {
 
     _getDrawerInstance() {
         if (!this._drawerEl || !document.body.contains(this._drawerEl)) {
-            this._drawerEl = document.querySelector(this.options.drawerSelector)
+            this._drawerEl = null
+            return null
         }
 
         return getInstanceByElement(this.options.drawerComponentName, this._drawerEl)
     }
 
     /**
-     * @param {Element|null} drawerEl
+     * Before mounting the next drawer: a foreign one (opened by another Action) is closed through
+     * its owner (Close event → unmount, `Cookie:Manager:Close`); the own one is swapped in place —
+     * the trigger is kept for the next drawer, but a replaced manager still reports its close.
      */
-    _onDrawerOpen(drawerEl) {
-        if (!this._isOwnDrawer(drawerEl)) {
+    _releaseDrawers() {
+        const existing = document.querySelector(this.options.drawerSelector)
+        if (existing && existing !== this._drawerEl) {
+            window.Shopware.emit(this.options.drawerCloseEvent, existing)
+            existing.remove()
+        }
+
+        if (!this._drawerEl) {
+            return
+        }
+
+        const view = this._view
+        this._unmountDrawer()
+
+        if (view === 'manager') {
+            window.Shopware.emit(this.options.closeEvent)
+        }
+    }
+
+    /**
+     * @param {unknown} payload Drawer element (or `{ el }`)
+     */
+    _onDrawerOpen(payload) {
+        if (!this._isOwnDrawer(eventEl(payload))) {
             return
         }
 
@@ -165,10 +193,10 @@ export default class CookieManagerAction extends ShopwareComponent {
     }
 
     /**
-     * @param {Element|null} drawerEl
+     * @param {unknown} payload Drawer element (or `{ el }`)
      */
-    _onDrawerClose(drawerEl) {
-        if (!this._isOwnDrawer(drawerEl)) {
+    _onDrawerClose(payload) {
+        if (!this._isOwnDrawer(eventEl(payload))) {
             return
         }
 
@@ -197,7 +225,7 @@ export default class CookieManagerAction extends ShopwareComponent {
     }
 
     _unmountDrawer() {
-        unmountEl(this._drawerEl, this.options.drawerSelector)
+        unmountEl(this._drawerEl)
         this._drawerEl = null
         this._view = null
     }

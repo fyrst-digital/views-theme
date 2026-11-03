@@ -13,7 +13,8 @@ export default class CookieConsent extends ShopwareComponent {
         loginUrl: null,
         expirationDays: 30,
         drawerComponentName: 'ViewsTheme:Drawer',
-        actionComponent: 'ViewsTheme:Cookie:Manager:Action',
+        /** Handled by `Cookie:Bar`, which opens the manager through its own Action */
+        managerRequestEvent: 'ViewsTheme:Cookie:Manager:Request',
     }
 
     init() {
@@ -48,7 +49,7 @@ export default class CookieConsent extends ShopwareComponent {
                 break
             case 'preferences':
                 // The manager replaces this drawer.
-                window.Shopware.callMethod(this.options.actionComponent, 'open')
+                window.Shopware.emit(this.options.managerRequestEvent)
                 break
         }
     }

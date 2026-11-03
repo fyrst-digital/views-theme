@@ -29,7 +29,7 @@ interface Window {
     breakpoints?: Record<string, number>
     focusHandler: {
         getFocusableElements(root: Element): HTMLElement[]
-        setFocus(el: Element, options?: { focusVisible?: boolean }): void
+        setFocus(el: Element, options?: { focusVisible?: boolean; preventScroll?: boolean }): void
     }
     cartCount?: number
     wishlistCount?: number
@@ -44,8 +44,15 @@ interface Window {
 }
 
 interface Document {
-    /** Core global event emitter (`CookieConfiguration_Update`, …). */
-    $emitter?: { publish(eventName: string, detail?: unknown): void }
+    /**
+     * Core global event emitter (`CookieConfiguration_Update`, `CookieConfiguration/requestConsent`, …).
+     * `unsubscribe` removes every listener of the name: subscribe with a `.Namespace` suffix.
+     */
+    $emitter?: {
+        publish(eventName: string, detail?: unknown): CustomEvent
+        subscribe(eventName: string, callback: (event: CustomEvent) => void, opts?: { once?: boolean; scope?: unknown }): boolean
+        unsubscribe(eventName: string): boolean
+    }
 }
 
 declare const ShopwareComponent: {

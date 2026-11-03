@@ -37,6 +37,9 @@
                 side: side,
                 title: title,
             }).all() }}
-        />
+        >
+            {# Panel body; a slot of this Drawer so callers write it one level deep (their own `vi_block`s still resolve) #}
+            <twig:block name="content">{% vi_block content %}{% endvi_block %}</twig:block>
+        </twig:ViewsTheme:Drawer:Panel>
     {% endblock %}
 </div>

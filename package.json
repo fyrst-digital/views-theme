@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build:icons": "node build.icons.mts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test --import ./tests/js/setup.mjs \"tests/js/**/*.test.mjs\"",
     "format": "prettier --write \"src/**/*.{js,ts,html,css,scss,json,md,twig}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,html,css,scss,json,md,twig}\""
   },
