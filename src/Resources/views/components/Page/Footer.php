@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Page\Footer;
+namespace Fyrst\ViewsTheme\Resources\views\components\Page;
 
 use Fyrst\ViewsTheme\Service\FooterCmsUrlResolver;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -16,10 +16,10 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Page:Footer:Main — CMS URLs + payment/shipping logos; Twig only composes.
+ * View-model for Page:Footer — CMS URLs + payment/shipping logos; Twig only composes.
  */
 #[AsTwigComponent]
-class Main
+class Footer
 {
     public mixed $footer = null;
 

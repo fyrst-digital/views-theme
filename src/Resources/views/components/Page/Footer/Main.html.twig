@@ -1,24 +1,20 @@
+{% props
+    footer = null,
+    contactUrl = '#',
+    revocationUrl = '#',
+    showRevocation = false,
+    cva = {},
+%}
+
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['columns', 'company', 'navigation', 'logos', 'bottom', 'services']) %}
+{% do vi_define_attrs(['wrapper', 'columns', 'company', 'navigation', 'column']) %}
 
 <div
-    {{ attributes.without('data-component-template') }}
+    {{ attributes }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
-        {% block logos %}
-            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
-                <twig:ViewsTheme:Page:Footer:Column:Logos
-                    class="{{ vi_class('logos') }}"
-                    {{ ...vi_attrs('logos').defaults({
-                        paymentLogos: paymentLogos,
-                        shippingLogos: shippingLogos,
-                    }).all() }}
-                />
-            {% endif %}
-        {% endblock %}
-
-        <div class="{{ vi_class('container') }}">
+        <div {{ vi_attrs('wrapper') }} class="{{ vi_class('wrapper') }}">
             {% block columns %}
                 <twig:ViewsTheme:Grid
                     class="{{ vi_class('columns') }}"
@@ -28,7 +24,10 @@
                     }).all() }}
                 >
                     <twig:block name="content">
-                        {% block company %}
+
+                        {% vi_block prepend %}{% endvi_block %}
+
+                        {% vi_block company %}
                             <twig:ViewsTheme:Page:Footer:Column:Company
                                 class="{{ vi_class('column') }}"
                                 {{ ...vi_attrs('company').defaults({
@@ -37,9 +36,9 @@
                                     showRevocation: showRevocation,
                                 }).all() }}
                             />
-                        {% endblock %}
+                        {% endvi_block %}
 
-                        {% block navigation %}
+                        {% vi_block navigation %}
                             {% if footer and footer.navigation and footer.navigation.tree|default([])|length > 0 %}
                                 <twig:ViewsTheme:Page:Footer:Column:Navigation
                                     class="{{ vi_class('column') }}"
@@ -48,32 +47,12 @@
                                     }).all() }}
                                 />
                             {% endif %}
-                        {% endblock %}
+                        {% endvi_block %}
+
+                        {% vi_block append %}{% endvi_block %}
                     </twig:block>
                 </twig:ViewsTheme:Grid>
             {% endblock %}
         </div>
-
-        {% block bottom %}
-            {% if footer %}
-                <twig:ViewsTheme:Page:Footer:Bottom
-                    {{ ...vi_attrs('bottom').defaults({
-                        shippingUrl: shippingUrl,
-                        cva: { root: { base: vi_class('bottom') } },
-                    }).all() }}
-                >
-                    <twig:block name="prepend">
-                        {% block services %}
-                            <twig:ViewsTheme:Page:Footer:Services
-                                class="{{ vi_class('services') }}"
-                                {{ ...vi_attrs('services').defaults({
-                                    serviceMenu: footer.serviceMenu,
-                                }).all() }}
-                            />
-                        {% endblock %}
-                    </twig:block>
-                </twig:ViewsTheme:Page:Footer:Bottom>
-            {% endif %}
-        {% endblock %}
     {% endblock %}
 </div>
