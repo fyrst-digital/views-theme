@@ -58,6 +58,10 @@ Never write `config('…') ?? true` for a bool: Twig compiles `??` to a truthine
 
 See [Checkout confirm](features/checkout-confirm.md), [Cart page](features/cart-page.md), [Cart drawer](features/cart-drawer.md).
 
+### Plugin icon
+
+The extension list icon is `src/Resources/config/plugin.png` (256×256, transparent), linked through `extra.plugin-icon` in `composer.json`. It is the coloured Views mark (`#F87060`, no wordmark) rendered from the source `src/Resources/config/plugin.svg`. Regenerate after editing the SVG: `rsvg-convert -w 256 -h 256 plugin.svg -o plugin.png`. Shopware reads the icon on `plugin:refresh`.
+
 ## Theme configuration (`theme.json`)
 
 Path: `src/Resources/theme.json`.
