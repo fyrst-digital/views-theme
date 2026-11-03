@@ -13,6 +13,10 @@
     }
   },
   "viewsTheme": {
+    "settings": {
+      "title": "Views Theme",
+      "description": "Shop-Informationen, Varianten-Raster, Lieferdatum und Kassen-Optionen des Views Theme konfigurieren."
+    },
     "sw-cms": {
       "elements": {
         "productListing": {

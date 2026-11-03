@@ -4,7 +4,11 @@ ViewsTheme has two configuration surfaces: **plugin config** (system config) and
 
 ## Plugin configuration
 
-Defined in `src/Resources/config/config.xml`. Editable in the Shopware administration under the plugin settings.
+Defined in `src/Resources/config/config.xml` (the schema and defaults). Editable in the Shopware administration under **Settings → Extensions → Views Theme**.
+
+That page is the admin module `views-theme-settings` (`src/Resources/app/administration/src/module/views-theme-settings/`). It registers a `settingsItem` in the `plugins` group (the **Extensions** column) and renders `<sw-system-config domain="ViewsTheme.config" sales-channel-switchable>`, so every card and field below comes from `config.xml` with no duplicated form. Add a new option in `config.xml` only; it appears on the page automatically. Access requires the `system.system_config` privilege. Snippets: `viewsTheme.settings.*` in the admin `en-GB.json` / `de-DE.json`.
+
+Admin changes need an administration build (`bin/build-administration.sh`), run by the human.
 
 ### Shop information
 
