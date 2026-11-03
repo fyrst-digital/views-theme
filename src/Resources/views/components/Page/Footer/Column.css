@@ -3,9 +3,16 @@
 
   .vi-footer-column__content {
     interpolate-size: allow-keywords;
+    display: var(--vi-footer-column-content-d, none);
     block-size: var(--vi-footer-column-content-h, 0);
     overflow: var(--vi-footer-column-overflow, hidden);
-    transition: block-size var(--vi-footer-column-duration, 150ms) ease;
+    transition:
+      block-size var(--vi-footer-column-duration, 150ms) ease,
+      display var(--vi-footer-column-duration, 150ms) allow-discrete;
+
+    @starting-style {
+      block-size: 0;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       transition: none;
@@ -13,6 +20,7 @@
   }
 
   &:has([aria-expanded='true']) .vi-footer-column__content {
+    --vi-footer-column-content-d: block;
     --vi-footer-column-content-h: auto;
   }
 

@@ -8,7 +8,7 @@ Defined in `src/Resources/config/config.xml`. Editable in the Shopware administr
 
 ### Shop information
 
-Theme-owned contact data for the footer hotline column. The theme does **not** read contact fields from `core.basicInformation.*` (the admin has no phone field and the company card is behind a feature flag). Exceptions: the shop name (`core.basicInformation.shopName`, else the sales channel name) and CMS page links such as the contact form (`contactPage`). Every field is optional and renders nothing when empty; plugin config can be overridden per sales channel.
+Theme-owned contact data for the footer company column. The theme does **not** read contact fields from `core.basicInformation.*` (the admin has no phone field and the company card is behind a feature flag). Exceptions: the shop name (`core.basicInformation.shopName`, else the sales channel name) and CMS page links such as the contact form (`contactPage`). Every field is optional and renders nothing when empty; plugin config can be overridden per sales channel.
 
 | Config key | Type | Default | Description |
 |------------|------|---------|-------------|

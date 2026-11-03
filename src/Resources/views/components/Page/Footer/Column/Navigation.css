@@ -1,0 +1,3 @@
+.vi-footer-navigation {
+  grid-template-columns: repeat(auto-fit, min(100%, var(--vi-footer-navigation-basis, 100%)));
+}

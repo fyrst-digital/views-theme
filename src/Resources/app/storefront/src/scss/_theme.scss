@@ -140,17 +140,16 @@
   }
 }
 
-.vi-footer-column__navigation {
-  flex-basis: var(--vi-footer-column-basis, 100%);
-
+.vi-footer-navigation {
   @include media-breakpoint-up(md) {
-    --vi-footer-column-basis: 180px;
+    --vi-footer-navigation-basis: 200px;
   }
 }
 
 .vi-footer-column--collapsible {
   @include vi-collapse-until {
     --vi-footer-column-border: 0;
+    --vi-footer-column-content-d: block;
     --vi-footer-column-content-h: auto;
     --vi-footer-column-overflow: visible;
   }

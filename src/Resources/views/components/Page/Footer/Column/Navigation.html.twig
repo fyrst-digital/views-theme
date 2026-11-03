@@ -1,7 +1,7 @@
 {% props
     navigation,
     collapsible = null,
-    collapseUntil = 'md',
+    collapseUntil = 'md', # sm | md | lg | xl | xxl
     cva = {},
 %}
 
@@ -27,17 +27,20 @@
                 {% if root.category.type == 'folder' %}
                     {{ root.category.translated.name }}
                 {% else %}
-                    <a
-                        {{ vi_attrs('headlineLink').defaults({
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('headlineLink') }}"
+                        {{ ...vi_attrs('headlineLink').defaults({
+                            type: 'link',
                             href: category_url(root.category),
                             title: root.category.translated.name,
-                            target: category_linknewtab(root.category) ? '_blank' : null,
-                            rel: category_linknewtab(root.category) ? 'noopener noreferrer' : null,
-                        }) }}
-                        class="{{ vi_class('headlineLink') }}"
-                    >
-                        {{ root.category.translated.name }}
-                    </a>
+                            target: category_linknewtab(root.category) ? '_blank' : false,
+                            rel: category_linknewtab(root.category) ? 'noopener noreferrer' : false,
+                            color: 'dark',
+                            size: 'md',
+                            link: true,
+                            label: root.category.translated.name,
+                        }).all() }}
+                    />
                 {% endif %}
             </twig:block>
 
@@ -52,17 +55,20 @@
                                 {% if category.type == 'folder' %}
                                     <div>{{ categoryName }}</div>
                                 {% else %}
-                                    <a
-                                        {{ vi_attrs('link').defaults({
+                                    <twig:ViewsTheme:Button
+                                        class="{{ vi_class('link') }}"
+                                        {{ ...vi_attrs('link').defaults({
+                                            type: 'link',
                                             href: category_url(category),
                                             title: categoryName,
-                                            target: category_linknewtab(category) ? '_blank' : null,
-                                            rel: category_linknewtab(category) ? 'noopener noreferrer' : null,
-                                        }) }}
-                                        class="{{ vi_class('link') }}"
-                                    >
-                                        {{ categoryName }}
-                                    </a>
+                                            target: category_linknewtab(category) ? '_blank' : false,
+                                            rel: category_linknewtab(category) ? 'noopener noreferrer' : false,
+                                            color: 'dark',
+                                            size: 'sm',
+                                            link: true,
+                                            label: categoryName,
+                                        }).all() }}
+                                    />
                                 {% endif %}
                             </li>
                         {% endfor %}

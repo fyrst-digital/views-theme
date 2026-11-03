@@ -1,7 +1,7 @@
 {% props
     block,
     slotName = null,
-    span = null,
+    span = null, # md:3 | md:4 | md:6 | md:8 | md:9 | md:12 | md:12-lg:5 | md:12-lg:7
     includeVars = {},
     sidebar = block.sectionPosition == 'sidebar',
     element = slotName ? block.slots.getSlot(slotName) : null,

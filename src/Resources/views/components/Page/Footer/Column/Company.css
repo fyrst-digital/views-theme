@@ -1,0 +1,3 @@
+.vi-footer-company {
+  --vi-logo-w: var(--vi-footer-company-logo-w, 120px);
+}

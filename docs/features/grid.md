@@ -85,7 +85,7 @@ Nested `<twig:…>` children **must** sit in `<twig:block name="content">`. With
 | `Address:List` | Not a `Grid` consumer: one flex panel with a divider — [address](address.md) |
 | `Cms:Sections` / `Cms:Section:Default` / `Cms:Section:Sidebar` / `Cms:Block` | Page, section and block layout (`columns` `1`, `1-lg:12`, `1-md:12`, `1-md:12-lg:1`); columns span with `g-col-*` — [cms.md](cms.md) |
 | `Cms:Section:Default` / `Cms:Section:Sidebar` | `gap: 'custom'`; `Section.css` reads `--vi-cms-section-gap` — [cms.md](cms.md#section-layout-settings) |
-| `Page:Footer:Main` | Outer columns Grid (`columns="1-lg:8"`, `gap: false` / `--vi-grid-gap`). From `lg`: Hotline `g-col-lg-3`, Navigation `g-col-lg-5`, Logos `g-col-lg-8` |
+| `Page:Footer:Main` | Outer columns Grid (`columns="1-lg:8"`, `gap: false` / `--vi-grid-gap`). From `lg`: Company `g-col-lg-3`, Navigation `g-col-lg-5`. Logos are no longer a Grid cell; Main renders them above the grid container |
 
 ## Files
 

@@ -112,6 +112,25 @@ Pilots: `Language:Action`, `Currency:Action`, `Page:Logo`, `Page:Footer:Main` / 
 - Do **not** reassign prop names with `{% set prop = … %}` after the props block.
 - Non-prop locals are fine; prefer `vi_define_cva` / `vi_class` over `{% set cx %}`.
 
+#### Annotate possible values
+
+Document props with a **closed set of values** (enums, variants, layouts, HTML tag names) or a non-obvious type with an inline Twig `#` comment inside `{% props %}`, so callers see the allowed values without opening the CVA file. Twig ≥ 3.29 (the Shopware minimum) lexes `#` to end of line as a comment inside tags.
+
+```twig
+{% props
+    type = 'info', # danger | warning | info | neutral | success
+    icon = true, # true (icon of type) | false (hidden) | vi_icon name
+    # none | primary | secondary | light | … (long lists go on their own lines above the prop)
+    color = 'primary',
+    cva = {},
+%}
+```
+
+- Values come from the co-located `.cva.twig` `variants` and from comparisons in the template. Keep the comment in sync when a variant is added or removed.
+- Skip self-explanatory props (booleans, labels, ids, URLs, `cva`).
+- A prop that forwards to another component can point to it instead of repeating the list (`# Button color, see Button.html.twig`).
+- Class components document values on the public property (docblock or enum), not here.
+
 #### Preferred: fallbacks in `{% props %}` (not `resolved*`)
 
 Put simple fallbacks in the prop default. Use the prop name in the template. Do **not** add `{% set resolvedX = x is not null ? x : … %}` for that.

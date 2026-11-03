@@ -1,25 +1,37 @@
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['columns', 'hotline', 'navigation', 'logos', 'bottom', 'services']) %}
+{% do vi_define_attrs(['columns', 'company', 'navigation', 'logos', 'bottom', 'services']) %}
 
 <div
     {{ attributes.without('data-component-template') }}
     class="{{ vi_class('root') }}"
 >
     {% block content %}
+        {% block logos %}
+            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
+                <twig:ViewsTheme:Page:Footer:Column:Logos
+                    class="{{ vi_class('logos') }}"
+                    {{ ...vi_attrs('logos').defaults({
+                        paymentLogos: paymentLogos,
+                        shippingLogos: shippingLogos,
+                    }).all() }}
+                />
+            {% endif %}
+        {% endblock %}
+
         <div class="{{ vi_class('container') }}">
             {% block columns %}
                 <twig:ViewsTheme:Grid
                     class="{{ vi_class('columns') }}"
                     {{ ...vi_attrs('columns').defaults({
-                        gap: false,
-                        columns: '1-lg:8',
+                        gap: 'custom',
+                        columns: 'custom',
                     }).all() }}
                 >
                     <twig:block name="content">
-                        {% block hotline %}
-                            <twig:ViewsTheme:Page:Footer:Column:Hotline
+                        {% block company %}
+                            <twig:ViewsTheme:Page:Footer:Column:Company
                                 class="{{ vi_class('column') }}"
-                                {{ ...vi_attrs('hotline').defaults({
+                                {{ ...vi_attrs('company').defaults({
                                     contactUrl: contactUrl,
                                     revocationUrl: revocationUrl,
                                     showRevocation: showRevocation,
@@ -33,18 +45,6 @@
                                     class="{{ vi_class('column') }}"
                                     {{ ...vi_attrs('navigation').defaults({
                                         navigation: footer.navigation,
-                                    }).all() }}
-                                />
-                            {% endif %}
-                        {% endblock %}
-
-                        {% block logos %}
-                            {% if paymentLogos|length > 0 or shippingLogos|length > 0 %}
-                                <twig:ViewsTheme:Page:Footer:Column:Logos
-                                    class="{{ vi_class('column') }}"
-                                    {{ ...vi_attrs('logos').defaults({
-                                        paymentLogos: paymentLogos,
-                                        shippingLogos: shippingLogos,
                                     }).all() }}
                                 />
                             {% endif %}

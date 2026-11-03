@@ -10,16 +10,18 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 |-------|----------------|
 | ESI bridge | `storefront/layout/footer.html.twig` → `<footer class="footer-main">` + inner include |
 | Inner bridge | `storefront/layout/footer/footer.html.twig` → `Page:Footer:Main` |
-| `Page:Footer:Main` | Class VM. Complete footer: hotline, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
+| `Page:Footer:Main` | Class VM. Complete footer: company, nav, logos, bottom; owns `paymentLogos` / `shippingLogos` |
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: shop copyright, `Services`, then `Bottom` (VAT + theme credit). No revocation CTA |
 | `Page:Footer:Bottom` | VAT notice and theme credit; empty `prepend` block (Main fills with `Services`) (`brand` prop → snippet `%brand%`). Mounted by Main and Minimal |
 | `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
-| `Page:Footer:Column:Hotline` | Root-host of Column; headline is the theme logo (`Page:Logo`, width `--vi-footer-hotline-logo-w`, default `120px`); contact block built from shop backend data (see [Contact data](#contact-data)) + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
-| `Page:Footer:Column:Navigation` | Own flex `div` (`role=list`, `g-col-1 g-col-lg-5`); tree loop of N Columns; `collapsible` when a root has children |
-| `Page:Footer:Column:Logos` | Navigation-style flex host (`role=list`, `g-col-1 g-col-lg-8`); payment + shipping Columns |
+| `Page:Footer:Column:Company` | Root-host of Column; headline is the theme logo (`Page:Logo`, width `--vi-footer-company-logo-w`, default `120px`); contact block built from shop backend data (see [Contact data](#contact-data)) + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
+| `Page:Footer:Column:Navigation` | Own grid `div` (`role=list`, `d-grid`, `g-col-1 g-col-md-6`; `Column/Navigation.css` sets `grid-template-columns: repeat(auto-fit, min(100%, var(--vi-footer-navigation-basis, 100%)))`, fixed-width tracks pushed to the end with `justify-content-md-end`; `_theme.scss` assigns `--vi-footer-navigation-basis: 200px` from `md`); tree loop of N Columns; `collapsible` when a root has children. Root headline links (size `md`, `fw-semibold`) and child links (size `sm`) are `Button` (`type: link`, `link: true`, `color: dark`); folders stay plain text. Nests: `headlineLink`, `link` |
+| `Page:Footer:Column:Logos` | Flex host (`role=list`, `d-flex flex-wrap gap-6`) mounted by Main **above** the `__container` as its own `container` row (slot `logos`: `vi-footer-main__logos container`), not a Grid cell; payment + shipping Columns |
 | `Page:Footer:Services` | Service-menu list. Renders nothing when `serviceMenu` is empty. Each link is `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Callers add list chrome (`gap-6` on Minimal, `justify-content-center gap-3` on Main) |
-| `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage`. `Page:Footer:Column:Hotline` mounts it only when `showRevocation` |
+| `Page:Footer:Revocation` | `footer.serviceRevocationRequestTextPage`. `Page:Footer:Column:Company` mounts it only when `showRevocation` |
 | `FooterCmsUrlResolver` | Contact / revocation / shipping CMS URLs from service menu or nav `seoUrl`, else `frontend.cms.page.full` |
+
+Main’s ground and top rule are CVA utilities on the root (`bg-light border-top`); there is no `Main.css`.
 
 Do **not** add `storefront/layout/footer/footer-minimal.html.twig`.
 
@@ -31,13 +33,14 @@ Cart page keeps the **full** ESI footer (same as full header).
 layout/footer.html.twig                    (ESI frontend.footer)
 └─ footer → layout/footer/footer.html.twig
      └─ Page:Footer:Main
-          ├─ Grid (columns=1-lg:8; gap=false / --vi-grid-gap)
-          │    ├─ Page:Footer:Column:Hotline      root-host of Column; g-col-1 + g-col-lg-3
-          │    ├─ Page:Footer:Column:Navigation   g-col-1 g-col-lg-5 flex (role=list, d-flex gap-6)
-          │    │    └─ Page:Footer:Column × N
-          │    └─ Page:Footer:Column:Logos        g-col-1 g-col-lg-8 flex (role=list)
-          │         ├─ Page:Footer:Column         payment (if paymentLogos)
-          │         └─ Page:Footer:Column         shipping (if shippingLogos)
+          ├─ Page:Footer:Column:Logos            above the container; container + flex (role=list), only if a logo list is non-empty
+          │    ├─ Page:Footer:Column             payment (if paymentLogos)
+          │    └─ Page:Footer:Column             shipping (if shippingLogos)
+          ├─ .vi-footer-main__container
+          │    └─ Grid (columns=1-lg:8; gap=false / --vi-grid-gap)
+          │         ├─ Page:Footer:Column:Company      root-host of Column; g-col-1 + g-col-lg-3
+          │         └─ Page:Footer:Column:Navigation   g-col-1 g-col-md-6 grid (role=list, d-grid gap-md-6 justify-content-md-end, auto-fit fixed columns)
+          │              └─ Page:Footer:Column × N
           └─ Page:Footer:Bottom (root classes replaced via `cva.root.base`)
                ├─ `prepend` block: Page:Footer:Services (`justify-content-center gap-3`)
                ├─ VAT notice
@@ -54,15 +57,15 @@ checkout / edit-order  base_esi_footer     (inline, no ESI)
                └─ theme credit (`viewsTheme.copyright`, `%brand%`)
 ```
 
-Minimal matches the checkout pen footer, with the shop name in place of the pen’s sample brand and real service-menu labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: shop copyright, then the service links, then the VAT line, then the theme credit; vertical padding `18px` / `22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: the row is one line, shop copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line, theme credit on the line after that; vertical padding `22px`. The bar is full-bleed. Horizontal inset is Minimal’s `.container`, the same inset as the minimal header. Service links are `Page:Footer:Services` in both footers: `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Minimal passes `gap-6`; Main passes `justify-content-center gap-3`. `Page:Footer:Bottom` is the VAT notice and the theme credit, mounted by Main and Minimal. Its empty `prepend` block sits before the VAT line; Main puts `Services` there, so Main’s bottom bar is Bottom itself, not a plain wrapper `div`. Minimal forwards `:brand`. `Page:Footer:Revocation` is not mounted on Minimal. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s hotline column.
+Minimal matches the checkout pen footer, with the shop name in place of the pen’s sample brand and real service-menu labels. Ivory ground (`bg-light`), linen top rule (`border-top`). Below `xl`: shop copyright, then the service links, then the VAT line, then the theme credit; vertical padding `18px` / `22px`; link gap `24px` (`gap-6`); stack gap `12px` (`gap-3`). From `xl`: the row is one line, shop copyright at the start and service links at the end (`justify-content-xl-between`), VAT on the next full-width line, theme credit on the line after that; vertical padding `22px`. The bar is full-bleed. Horizontal inset is Minimal’s `.container`, the same inset as the minimal header. Service links are `Page:Footer:Services` in both footers: `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Minimal passes `gap-6`; Main passes `justify-content-center gap-3`. `Page:Footer:Bottom` is the VAT notice and the theme credit, mounted by Main and Minimal. Its empty `prepend` block sits before the VAT line; Main puts `Services` there, so Main’s bottom bar is Bottom itself, not a plain wrapper `div`. Minimal forwards `:brand`. `Page:Footer:Revocation` is not mounted on Minimal. Register, confirm, finish, and edit-order share this footer, so they all drop that CTA and keep the service links. Revocation stays on the confirm summary agreements and on the full footer’s company column.
 
-Hotline Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open, the caret is `d-{collapseUntil}-none`, and `inert` stays off even if `aria-expanded` is false. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
+Company Column stays always-open (`collapsible` default `false`). Navigation opts in per root when it has child links: toggle via `aria-expanded` (`Column.js`); columns start collapsed. Collapse applies **below** `collapseUntil` (default `md`); from that breakpoint up content stays open, the caret is `d-{collapseUntil}-none`, and `inert` stays off even if `aria-expanded` is false. Pass `collapsible=false` on Navigation (nest `navigation:collapsible`) to opt all columns out. Override the breakpoint with `navigation:collapseUntil` (`sm` | `md` | `lg` | `xl` | `xxl`). Logos Columns stay always-open.
 
 Main skips the Navigation mount when `footer.navigation.tree` is empty. Skip `Column:Logos` when both `paymentLogos` and `shippingLogos` are empty. Bottom still `{% if footer %}`. Do not wrap Navigation’s or Logos’ own templates in those gates. Logos still mounts a Column only when that list is non-empty.
 
 Do **not** wrap columns in the generic `Accordion` — the desktop headline can be a category link. Outer Main Grid has no `role=list`; list semantics live on Navigation’s and Logos’ flex roots + their Column `role=listitem` (hosts pass it; Column does not default it).
 
-Main nests: `columns`, `hotline`, `navigation`, `logos`, `bottom` (forwards to `Page:Footer:Bottom`), `services`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Hotline nest `revocation` forwards to `Page:Footer:Revocation`. From `lg` the row is Hotline 3 + Navigation 5; Logos is the next full 8. Column contributes `g-col-1`; Hotline adds `g-col-lg-3`.
+Main nests: `columns`, `company`, `navigation`, `logos`, `bottom` (forwards to `Page:Footer:Bottom`), `services`. Navigation and Logos nest `column` forwards to each `Page:Footer:Column`. Company nest `revocation` forwards to `Page:Footer:Revocation`. Logos sit above the Grid, outside `__container`, in their own `container` row (Main `logos` slot). Column contributes `g-col-1`; Company adds `g-col-lg-3`.
 
 ## Class components
 
@@ -78,7 +81,7 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 |-------|--------|
 | `footer` | `FooterPagelet` (ESI + checkout controllers already load it) |
 | `contactUrl` | Main only — contact CMS page |
-| `revocationUrl` | Main only — revocation CMS page (hotline). Minimal does not mount `Page:Footer:Revocation` |
+| `revocationUrl` | Main only — revocation CMS page (company). Minimal does not mount `Page:Footer:Revocation` |
 | `shippingUrl` | Shipping/payment info CMS page (VAT snippet). Passed into Bottom |
 | `brand` | Theme-credit link (`%brand%`). Minimal forwards it to Bottom; Bottom’s own default is the same fyrst.dev `<a>` |
 | `showRevocation` | Main only — `core.basicInformation.showRevocationButton` and a revocation page id |
@@ -95,7 +98,7 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 
 ## Contact data
 
-`Page:Footer:Column:Hotline` renders the theme logo as its headline and a contact block from the plugin config card **Shop information** ([Configuration](../configuration.md#shop-information)). It reads only two things from `core.basicInformation.*`: the shop name and the CMS page links (contact page, via the resolver) and does not use the core `footer.serviceHotline` / `footer.serviceContactTextPage` snippets. Every field is optional and renders nothing when empty:
+`Page:Footer:Column:Company` renders the theme logo as its headline and a contact block from the plugin config card **Shop information** ([Configuration](../configuration.md#shop-information)). It reads only two things from `core.basicInformation.*`: the shop name and the CMS page links (contact page, via the resolver) and does not use the core `footer.serviceCompany` / `footer.serviceContactTextPage` snippets. Every field is optional and renders nothing when empty:
 
 | Output | Config |
 |--------|--------|
@@ -113,7 +116,7 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal
 | Key | Where |
 |-----|--------|
 | `viewsTheme.footer.contactForm` | Contact-form link label (`href` = `contactUrl`) |
-| `footer.serviceRevocationRequestTextPage` | Hotline revocation CTA (`%url%`). Not the minimal footer |
+| `footer.serviceRevocationRequestTextPage` | Company revocation CTA (`%url%`). Not the minimal footer |
 | `footer.includeVatTextPage` / `footer.excludeVatTextPage` | VAT (`%url%`, `%star%`) |
 | `checkout.paymentMethod` / `checkout.shippingMethod` | Logos Column headlines |
 | `viewsTheme.shopCopyright` | Minimal shop claim (`%year%`, `%shop%`) |
@@ -123,9 +126,9 @@ Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal
 
 | Component | Role |
 |-----------|------|
-| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `vi-collapse-until` in `scss/_theme.scss`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
+| `Page:Footer:Column` | Only when `collapsible` is true: `data-component` + click `button[aria-expanded]` → toggle `aria-expanded` and `__content.inert`. SoT is ARIA + `inert` (no Twig `inert` — desktop CSS forces open while `aria-expanded` stays false). Shell `__content` owns `display` (`none` while collapsed, so the root’s `gap` adds no space; `transition … allow-discrete` + `@starting-style` keep the animation), `block-size` + `[aria-expanded]`; from `collapseUntil` up (`data-collapse-until` + `vi-collapse-until` in `scss/_theme.scss`) always open and `inert` off. `matchMedia` uses `window.breakpoints[collapseUntil]` (px); optional `data-component-options` `{ breakpoints: { md: 900 } }` overlays that map. Inner `__body` holds padding — same split as Accordion:Panel |
 
-Main / Minimal / Bottom / Services / Column:Logos / Column:Hotline have **no** `data-component`. Navigation Columns do when they have children.
+Main / Minimal / Bottom / Services / Column:Logos / Column:Company have **no** `data-component`. Navigation Columns do when they have children.
 
 ## Out of scope
 
@@ -136,7 +139,7 @@ Main / Minimal / Bottom / Services / Column:Logos / Column:Hotline have **no** `
 
 ## Files
 
-`components/Page/Footer/{Main,Minimal,Column,Bottom,Services,Revocation}.*` · `components/Page/Footer/Column/{Hotline,Navigation,Logos}.*` · `app/storefront/src/scss/_theme.scss` (`vi-collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
+`components/Page/Footer/{Main,Minimal,Column,Bottom,Services,Revocation}.*` · `components/Page/Footer/Column/{Company,Navigation,Logos}.*` · `app/storefront/src/scss/_theme.scss` (`vi-collapse-until` token assigns) · `src/Service/FooterCmsUrlResolver.php` · `storefront/layout/footer.html.twig` · `storefront/layout/footer/footer.html.twig` · checkout `address` / `confirm` / `finish` + `account/order` bridges
 
 ## Related
 
