@@ -1,6 +1,7 @@
 {
   "name": "ViewsTheme",
   "author": "fyrst.dev",
+  "previewMedia": "theme-preview.png",
   "views": ["@Storefront", "@ViewsTheme"],
   "style": [
     "app/storefront/src/scss/override.scss",

@@ -66,6 +66,10 @@ The extension list icon is `src/Resources/config/plugin.png` (256×256, transpar
 
 Path: `src/Resources/theme.json`.
 
+### Theme preview
+
+`theme.json` `previewMedia` points at `src/Resources/theme-preview.png` (684×414, the Views mark and wordmark on `#faf5ee`), shown in the Theme Manager and the Shopping Experiences theme list. It is rendered from the source `src/Resources/theme-preview.svg`, which inlines the logo from `public/img/views-logo.svg`. Regenerate after editing the SVG: `rsvg-convert theme-preview.svg -o theme-preview.png`. Shopware imports the media on `theme:refresh` / plugin update, and only when the path changed or the theme has no preview yet, so re-importing an edited image under the same path needs the theme's preview media removed first.
+
 ### Design system (summary)
 
 | Token | Value |
