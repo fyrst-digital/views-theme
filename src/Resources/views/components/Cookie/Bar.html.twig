@@ -35,14 +35,6 @@
             {% endblock %}
 
             <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
-                {# Deny and accept carry equal visual weight #}
-                {% block configure %}
-                    <twig:ViewsTheme:Cookie:Manager:Action
-                        class="{{ vi_class('configure') }}"
-                        {{ ...vi_attrs('configure').all() }}
-                    />
-                {% endblock %}
-
                 {% block deny %}
                     <twig:ViewsTheme:Button
                         class="{{ vi_class('deny') }}"
@@ -50,8 +42,18 @@
                             type: 'button',
                             name: 'action',
                             value: 'deny',
-                            color: 'primary',
+                            color: 'light',
+                            size: 'sm',
                             label: 'cookie.deny'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endblock %}
+
+                {% block configure %}
+                    <twig:ViewsTheme:Cookie:Manager:Action
+                        class="{{ vi_class('configure') }}"
+                        {{ ...vi_attrs('configure').defaults({
+                            size: 'sm',
                         }).all() }}
                     />
                 {% endblock %}
@@ -65,6 +67,7 @@
                                 name: 'action',
                                 value: 'accept',
                                 color: 'primary',
+                                size: 'sm',
                                 label: 'cookie.acceptAll'|trans|striptags,
                             }).all() }}
                         />
