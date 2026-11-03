@@ -1,3 +1,4 @@
+import '../../component/views-theme-icon';
 import './page/views-theme-settings';
 
 const { Module } = Shopware;
@@ -27,7 +28,7 @@ Module.register('views-theme-settings', {
     settingsItem: {
         group: 'plugins',
         to: 'views.theme.settings.index',
-        icon: 'regular-cog',
+        iconComponent: 'views-theme-icon',
         label: 'viewsTheme.settings.title',
         privilege: 'system.system_config',
     },
