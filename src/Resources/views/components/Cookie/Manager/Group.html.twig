@@ -4,7 +4,7 @@
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['row', 'switch', 'toggle', 'panel', 'entries', 'description', 'entry', 'entrySwitch', 'entryDescription']) %}
+{% do vi_define_attrs(['row', 'switch', 'title', 'toggle', 'panel', 'entries', 'description', 'entry', 'entrySwitch', 'entryDescription']) %}
 
 {# Required cookies are on and cannot be switched off #}
 {% set required = group.required %}
@@ -28,14 +28,15 @@
                         label: group.name,
                         checked: required,
                         disabled: required,
+                        cva: { label: vi_class('title') },
                         'input:aria-describedby': group.description ? group.id ~ '-description' : false,
                     }).all() }}
                 />
 
                 {% if group.description %}
                     <p
-                        {{ vi_attrs('entryDescription').defaults({ id: group.id ~ '-description' }) }}
-                        class="{{ vi_class('entryDescription') }}"
+                        {{ vi_attrs('description').defaults({ id: group.id ~ '-description' }) }}
+                        class="{{ vi_class('description') }}"
                     >
                         {{ group.description|sw_sanitize }}
                     </p>
@@ -55,6 +56,7 @@
                             label: group.name,
                             checked: required,
                             disabled: required,
+                            cva: { label: vi_class('title') },
                         }).all() }}
                     />
 
