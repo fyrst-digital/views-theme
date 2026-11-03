@@ -1,0 +1,118 @@
+{% props
+    group, # Fyrst\ViewsTheme\Struct\CookieGroupView
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['row', 'switch', 'toggle', 'panel', 'entries', 'description', 'entry', 'entrySwitch', 'entryDescription']) %}
+
+{# Required cookies are on and cannot be switched off #}
+{% set required = group.required %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Cookie:Manager:Group',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% if group.entries is empty %}
+        {# The group is a cookie itself #}
+        <div {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+            <div {{ vi_attrs('entry') }} class="{{ vi_class('entry') }}">
+                <twig:ViewsTheme:Form:Switch
+                    class="{{ vi_class('entrySwitch') }}"
+                    {{ ...vi_attrs('entrySwitch').defaults({
+                        id: group.id,
+                        name: 'cookie',
+                        value: group.cookie,
+                        label: group.name,
+                        checked: required,
+                        disabled: required,
+                        'input:aria-describedby': group.description ? group.id ~ '-description' : false,
+                    }).all() }}
+                />
+
+                {% if group.description %}
+                    <p
+                        {{ vi_attrs('entryDescription').defaults({ id: group.id ~ '-description' }) }}
+                        class="{{ vi_class('entryDescription') }}"
+                    >
+                        {{ group.description|sw_sanitize }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <twig:ViewsTheme:Accordion:Item>
+            <twig:block name="header">
+                <div {{ vi_attrs('row') }} class="{{ vi_class('row') }}">
+                    {# Group switch: toggles every cookie of the group #}
+                    <twig:ViewsTheme:Form:Switch
+                        class="{{ vi_class('switch') }}"
+                        {{ ...vi_attrs('switch').defaults({
+                            id: group.id,
+                            name: 'group',
+                            label: group.name,
+                            checked: required,
+                            disabled: required,
+                        }).all() }}
+                    />
+
+                    <twig:ViewsTheme:Accordion:Header
+                        {{ ...vi_attrs('toggle').defaults({
+                            id: group.id ~ '-toggle',
+                            panel: group.id ~ '-panel',
+                            'aria-label': group.name,
+                            cva: { root: vi_class('toggle') },
+                        }).all() }}
+                    />
+                </div>
+            </twig:block>
+
+            <twig:block name="panel">
+                <twig:ViewsTheme:Accordion:Panel
+                    {{ ...vi_attrs('panel').defaults({
+                        id: group.id ~ '-panel',
+                        header: group.id ~ '-toggle',
+                    }).all() }}
+                >
+                    <twig:block name="content">
+                        <div {{ vi_attrs('entries') }} class="{{ vi_class('entries') }}">
+                            {% if group.description %}
+                                <p {{ vi_attrs('description') }} class="{{ vi_class('description') }}">
+                                    {{ group.description|sw_sanitize }}
+                                </p>
+                            {% endif %}
+
+                            {% for entry in group.entries %}
+                                <div {{ vi_attrs('entry') }} class="{{ vi_class('entry') }}">
+                                    <twig:ViewsTheme:Form:Switch
+                                        class="{{ vi_class('entrySwitch') }}"
+                                        {{ ...vi_attrs('entrySwitch').defaults({
+                                            id: entry.id,
+                                            name: 'cookie',
+                                            value: entry.cookie,
+                                            label: entry.name,
+                                            checked: required,
+                                            disabled: required,
+                                            'input:aria-describedby': entry.description ? entry.id ~ '-description' : false,
+                                        }).all() }}
+                                    />
+
+                                    {% if entry.description %}
+                                        <p
+                                            {{ vi_attrs('entryDescription').defaults({ id: entry.id ~ '-description' }) }}
+                                            class="{{ vi_class('entryDescription') }}"
+                                        >
+                                            {{ entry.description|sw_sanitize }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </twig:block>
+                </twig:ViewsTheme:Accordion:Panel>
+            </twig:block>
+        </twig:ViewsTheme:Accordion:Item>
+    {% endif %}
+</div>

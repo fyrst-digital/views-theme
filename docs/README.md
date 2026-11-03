@@ -60,6 +60,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Form input](features/form-input.md)
 - [Component showcase](features/component-showcase.md)
 - [Newsletter](features/newsletter.md)
+- [Cookie consent](features/cookie.md)
 - [Product box](features/product-box.md)
 - [Buy container](features/buy-container.md)
 - [Product configurator](features/configurator.md)

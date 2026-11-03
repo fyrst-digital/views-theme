@@ -176,5 +176,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Out of scope (v1)
 
-- Cookie offcanvas → `Drawer` (cart drawer: [cart-drawer.md](cart-drawer.md))
+- Cookie offcanvas → `Drawer` (done separately: [cookie.md](cookie.md))
 - Auto-reopening the theme drawer after language/currency switch (page reloads closed)

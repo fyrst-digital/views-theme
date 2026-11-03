@@ -36,6 +36,16 @@ interface Window {
     wishlistProducts?: Record<string, unknown>
     activeNavigationId?: string
     activeNavigationPathIdList?: string[]
+    /** Core cookie consent switch (`core.basicInformation.useDefaultCookieConsent`). */
+    useDefaultCookieConsent?: boolean
+    /** Core reCAPTCHA gate, re-run once the cookie preference changes. */
+    registerGoogleReCaptchaPlugins?: () => void
+    PluginManager?: { initializePlugins(): void }
+}
+
+interface Document {
+    /** Core global event emitter (`CookieConfiguration_Update`, …). */
+    $emitter?: { publish(eventName: string, detail?: unknown): void }
 }
 
 declare const ShopwareComponent: {

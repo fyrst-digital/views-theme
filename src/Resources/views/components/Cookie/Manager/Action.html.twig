@@ -1,0 +1,26 @@
+{% props
+    managerUrl = path('frontend.views-theme.cookie.manager'),
+    consentUrl = path('frontend.views-theme.cookie.consent'),
+    label = 'cookie.configure'|trans|striptags,
+    color = 'primary', # Button color, see Button.html.twig
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Button
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        type: 'button',
+        color: color,
+        label: label,
+        'aria-haspopup': 'dialog',
+        'aria-controls': 'vi-cookie-drawer',
+        'aria-expanded': 'false',
+        'data-component': 'ViewsTheme:Cookie:Manager:Action',
+        'data-component-options': {
+            managerUrl: managerUrl,
+            consentUrl: consentUrl,
+        }|json_encode,
+    }).all() }}
+/>

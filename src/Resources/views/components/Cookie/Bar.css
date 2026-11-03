@@ -1,0 +1,7 @@
+.vi-cookie-bar {
+    z-index: var(--vi-cookie-bar-z, 1040);
+}
+
+.vi-cookie-bar[data-visible='false'] {
+    display: none;
+}

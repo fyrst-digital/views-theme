@@ -1,0 +1,76 @@
+{% props
+    enabled = config('core.basicInformation.useDefaultCookieConsent') == true,
+    acceptAll = config('core.basicInformation.acceptAllCookies') == true,
+    privacyPageId = config('core.basicInformation.privacyPage'),
+    privacyUrl = privacyPageId ? path('frontend.cms.page.full', { id: privacyPageId }) : '#',
+    groupsUrl = path('frontend.cookie.groups'),
+    managerLinkHref = path('frontend.cookie.offcanvas'), # core cookie link; clicks open the manager
+    label = 'cookie.headline'|trans|striptags,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['inner', 'text', 'actions', 'configure', 'deny', 'accept']) %}
+
+{% if enabled %}
+    <section
+        {{ attributes.defaults({
+            role: 'region',
+            tabindex: '-1',
+            'aria-label': label,
+            'data-visible': 'false',
+            'data-component': 'ViewsTheme:Cookie:Bar',
+            'data-component-options': {
+                groupsUrl: groupsUrl,
+                linkHref: managerLinkHref,
+            }|json_encode,
+        }) }}
+        class="{{ vi_class('root') }}"
+    >
+        <div {{ vi_attrs('inner') }} class="{{ vi_class('inner') }}">
+            {% block text %}
+                <div {{ vi_attrs('text') }} class="{{ vi_class('text') }}">
+                    {{ 'cookie.messageTextPage'|trans({ '%url%': privacyUrl })|raw }}
+                </div>
+            {% endblock %}
+
+            <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                {# Deny and accept carry equal visual weight #}
+                {% block configure %}
+                    <twig:ViewsTheme:Cookie:Manager:Action
+                        class="{{ vi_class('configure') }}"
+                        {{ ...vi_attrs('configure').all() }}
+                    />
+                {% endblock %}
+
+                {% block deny %}
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('deny') }}"
+                        {{ ...vi_attrs('deny').defaults({
+                            type: 'button',
+                            name: 'action',
+                            value: 'deny',
+                            color: 'primary',
+                            label: 'cookie.deny'|trans|striptags,
+                        }).all() }}
+                    />
+                {% endblock %}
+
+                {% if acceptAll %}
+                    {% block accept %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('accept') }}"
+                            {{ ...vi_attrs('accept').defaults({
+                                type: 'button',
+                                name: 'action',
+                                value: 'accept',
+                                color: 'primary',
+                                label: 'cookie.acceptAll'|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endblock %}
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endif %}

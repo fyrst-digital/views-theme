@@ -1,0 +1,75 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['panel', 'form', 'intro', 'groups', 'actions', 'accept', 'save']) %}
+
+{% set label = 'cookie.headline'|trans|striptags %}
+{% set privacyUrl = privacyPageId ? path('frontend.cms.page.full', { id: privacyPageId }) : '#' %}
+
+<twig:ViewsTheme:Drawer
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        id: 'vi-cookie-drawer',
+        side: 'start',
+        label: label,
+    }).all() }}
+>
+    <twig:block name="panel">
+        <twig:ViewsTheme:Drawer:Panel
+            {{ ...vi_attrs('panel').defaults({
+                side: 'start',
+                title: label,
+            }).all() }}
+        >
+            <form
+                {{ vi_attrs('form').defaults({
+                    novalidate: true,
+                    'data-component': 'ViewsTheme:Cookie:Manager',
+                    'data-component-options': {
+                        groupsUrl: path('frontend.cookie.groups'),
+                    }|json_encode,
+                }) }}
+                class="{{ vi_class('form') }}"
+            >
+                <div {{ vi_attrs('intro') }} class="{{ vi_class('intro') }}">
+                    {{ 'cookie.messageTextPage'|trans({ '%url%': privacyUrl })|raw }}
+                </div>
+
+                <twig:ViewsTheme:Accordion
+                    class="{{ vi_class('groups') }}"
+                    :multiple="true"
+                >
+                    <twig:block name="items">
+                        {% for group in views %}
+                            <twig:ViewsTheme:Cookie:Manager:Group :group="group" />
+                        {% endfor %}
+                    </twig:block>
+                </twig:ViewsTheme:Accordion>
+
+                <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                    {% if acceptAll %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('accept') }}"
+                            {{ ...vi_attrs('accept').defaults({
+                                type: 'submit',
+                                name: 'action',
+                                value: 'all',
+                                color: 'primary',
+                                label: 'cookie.acceptAll'|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endif %}
+
+                    <twig:ViewsTheme:Button
+                        class="{{ vi_class('save') }}"
+                        {{ ...vi_attrs('save').defaults({
+                            type: 'submit',
+                            name: 'action',
+                            value: 'save',
+                            color: 'primary',
+                            label: 'global.default.save'|trans|striptags,
+                        }).all() }}
+                    />
+                </div>
+            </form>
+        </twig:ViewsTheme:Drawer:Panel>
+    </twig:block>
+</twig:ViewsTheme:Drawer>
