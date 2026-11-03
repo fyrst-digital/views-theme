@@ -1,0 +1,53 @@
+{% block views_theme_settings_index %}
+<sw-page class="views-theme-settings">
+    {% block views_theme_settings_search_bar %}
+    <template #search-bar>
+        <sw-search-bar />
+    </template>
+    {% endblock %}
+
+    {% block views_theme_settings_smart_bar_header %}
+    <template #smart-bar-header>
+        <h2>
+            <span>{{ $t('sw-settings.index.title') }}</span>
+
+            <mt-icon
+                name="regular-chevron-right-xs"
+                size="12px"
+            />
+
+            <span>{{ $t('viewsTheme.settings.title') }}</span>
+        </h2>
+    </template>
+    {% endblock %}
+
+    {% block views_theme_settings_smart_bar_actions %}
+    <template #smart-bar-actions>
+        <sw-button-process
+            class="views-theme-settings__save-action"
+            :is-loading="isLoading"
+            :process-success="isSaveSuccessful"
+            :disabled="isLoading"
+            variant="primary"
+            @update:process-success="saveFinish"
+            @click="onSave"
+        >
+            {{ $t('global.default.save') }}
+        </sw-button-process>
+    </template>
+    {% endblock %}
+
+    {% block views_theme_settings_content %}
+    <template #content>
+        <sw-card-view>
+            <sw-system-config
+                ref="systemConfig"
+                sales-channel-switchable
+                domain="ViewsTheme.config"
+                @loading-changed="onLoadingChanged"
+            />
+        </sw-card-view>
+    </template>
+    {% endblock %}
+</sw-page>
+{% endblock %}

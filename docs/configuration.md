@@ -4,7 +4,11 @@ ViewsTheme has two configuration surfaces: **plugin config** (system config) and
 
 ## Plugin configuration
 
-Defined in `src/Resources/config/config.xml`. Editable in the Shopware administration under the plugin settings.
+Defined in `src/Resources/config/config.xml` (the schema and defaults). Editable in the Shopware administration under **Settings → Extensions → Views Theme**.
+
+That page is the admin module `views-theme-settings` (`src/Resources/app/administration/src/module/views-theme-settings/`). It registers a `settingsItem` in the `plugins` group (the **Extensions** column) with `iconComponent: 'views-theme-icon'`: the Views mark from `public/img/views-logo.svg` (without the wordmark) as an inline SVG in `currentColor`, so it follows the admin light/dark text color and renders `<sw-system-config domain="ViewsTheme.config" sales-channel-switchable>`, so every card and field below comes from `config.xml` with no duplicated form. Add a new option in `config.xml` only; it appears on the page automatically. Access requires the `system.system_config` privilege. Snippets: `viewsTheme.settings.*` in the admin `en-GB.json` / `de-DE.json`.
+
+Admin changes need an administration build (`bin/build-administration.sh`), run by the human.
 
 ### Shop information
 
@@ -54,9 +58,17 @@ Never write `config('…') ?? true` for a bool: Twig compiles `??` to a truthine
 
 See [Checkout confirm](features/checkout-confirm.md), [Cart page](features/cart-page.md), [Cart drawer](features/cart-drawer.md).
 
+### Plugin icon
+
+The extension list icon is `src/Resources/config/plugin.png` (256×256, transparent), linked through `extra.plugin-icon` in `composer.json`. It is the coloured Views mark (`#F87060`, no wordmark) rendered from the source `src/Resources/config/plugin.svg`. Regenerate after editing the SVG: `rsvg-convert -w 256 -h 256 plugin.svg -o plugin.png`. Shopware reads the icon on `plugin:refresh`.
+
 ## Theme configuration (`theme.json`)
 
 Path: `src/Resources/theme.json`.
+
+### Theme preview
+
+`theme.json` `previewMedia` points at `src/Resources/theme-preview.png` (684×414, the Views mark and wordmark on `#faf5ee`), shown in the Theme Manager and the Shopping Experiences theme list. It is rendered from the source `src/Resources/theme-preview.svg`, which inlines the logo from `public/img/views-logo.svg`. Regenerate after editing the SVG: `rsvg-convert theme-preview.svg -o theme-preview.png`. Shopware imports the media on `theme:refresh` / plugin update, and only when the path changed or the theme has no preview yet, so re-importing an edited image under the same path needs the theme's preview media removed first.
 
 ### Design system (summary)
 

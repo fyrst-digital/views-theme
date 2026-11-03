@@ -16,6 +16,7 @@
   },
   "extra": {
     "shopware-plugin-class": "Fyrst\\ViewsTheme\\ViewsTheme",
+    "plugin-icon": "src/Resources/config/plugin.png",
     "label": {
       "de-DE": "ViewsTheme",
       "en-GB": "ViewsTheme"
