@@ -1,0 +1,35 @@
+{% props
+    label = 'general.scrollUpBtn'|trans|striptags,
+    visibleFrom = 250, # px scrolled before the button shows
+    topElementId = 'page-top', # element focused after scrolling up
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['button']) %}
+
+<div
+    {{ attributes.defaults({
+        'data-component': 'ViewsTheme:Scroll:Up',
+        'data-component-options': {
+            visibleFrom: visibleFrom,
+            topElementId: topElementId,
+        }|json_encode,
+        'data-visible': 'false',
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block button %}
+        <twig:ViewsTheme:Button
+            class="{{ vi_class('button') }}"
+            {{ ...vi_attrs('button').defaults({
+                icon: 'arrow-up',
+                color: 'primary',
+                square: true,
+                pill: true,
+                title: label,
+                'aria-label': label,
+            }).all() }}
+        />
+    {% endblock %}
+</div>

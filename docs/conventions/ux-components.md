@@ -550,6 +550,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Breadcrumb (+ Item; class-backed) | UX + `vi_cva`; SoT `categoryId` → `CategoryBreadcrumbBuilder`; [breadcrumb.md](../features/breadcrumb.md) |
 | Cms:Sections / Section (+ Default / Sidebar) / Block / Element | Anonymous UX + `vi_cva`; CMS page layout on `Grid` only (no `.row` / `.col-*`); core page / section / block templates bridged — [cms.md](../features/cms.md) |
 | Scroll:Area (+ Area.js / Area.css) | UX + `vi_cva` |
+| Scroll:Up (+ Up.js / Up.css; back-to-top button, replaces core `layout/scroll-up.html.twig`) | UX + `vi_cva`; [javascript.md](javascript.md#scroll-up) |
 | VariantsGrid:* (+ Container JS) | UX + `vi_cva` |
 | Legacy `vi_define_classes` / `defaultBaseClasses` API | **Removed** |
 

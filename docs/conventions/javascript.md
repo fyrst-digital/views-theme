@@ -222,6 +222,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Language flag (load error / fallback) | `ViewsTheme:Language:Flag` | `Language/Flag.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
+| Scroll up (back-to-top) | `ViewsTheme:Scroll:Up` | `Scroll/Up.js` |
 | Pagination (Listing control API) | `ViewsTheme:Pagination` | `Pagination.js` |
 | Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 | Tabs (a11y owner) | `ViewsTheme:Tabs` | `Tabs.js` |
@@ -493,6 +494,22 @@ JS detects overflow and sets edge flags. Horizontal position uses `Math.abs(scro
 | `data-scroll-start` / `data-scroll-end` | `--fade-start` / `--fade-end` |
 
 Public `sync()` re-reads edges after programmatic scroll. Put content in the component’s `content` block. Used by Search results, Navigation drawer menu, and Gallery thumbnails.
+
+### Scroll up
+
+Theme-owned back-to-top button. `storefront/layout/scroll-up.html.twig` replaces the core template (the one include for base, single CMS page and maintenance) with `<twig:ViewsTheme:Scroll:Up />`. The core `ScrollUp` plugin and `data-scroll-up` hook are **not** used (`data-scroll-up` on `Scroll:Area` is unrelated).
+
+| Hook | Attribute |
+|------|-----------|
+| Root | `data-component="ViewsTheme:Scroll:Up"` (fixed wrapper, `data-visible="true\|false"`) |
+| Button | nested `Button` via nest `button:*` (defaults `arrow-up`, `color: primary`, square + `pill`; CVA slot `button` = `shadow`) |
+
+| Option | Default | Role |
+|--------|---------|------|
+| `visibleFrom` | `250` | px scrolled before the button shows |
+| `topElementId` | `page-top` | element focused after scrolling up (skipped when missing) |
+
+JS toggles `data-visible` on a passive `scroll` listener (rAF-throttled) and scrolls smoothly (instant under `prefers-reduced-motion: reduce`). CSS (`Scroll/Up.css`) hides via `visibility` + `pointer-events: none` so the button is not focusable while hidden. Tokens: `--vi-scroll-up-z` (700), `--vi-scroll-up-duration` (300ms).
 
 ### Dropdown
 
