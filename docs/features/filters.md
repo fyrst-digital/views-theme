@@ -126,7 +126,7 @@ viewsTheme: {
 | `viewsTheme.value.filterLayout` | `bar` \| `stacked` | `bar` | **Desktop** `Filter:Panel` only (bridge). Drawer always `stacked`. |
 | `viewsTheme.value.showActiveFilters` | bool | `true` | Desktop Panel **and** Drawer Panel |
 
-Bridge reads `cmsPage.getFirstElementOfType('product-listing').config.viewsTheme.value`. Missing keys / search (no slot) → defaults above. Drawer XHR has no CMS page: Action sends `viShowActiveFilters=0|1`; `FilterDrawerController` passes `showActive` into `Filter:Drawer`.
+Bridge reads `cmsPage.getFirstElementOfType('product-listing').config.viewsTheme.value`. Missing keys / search (no slot) → defaults above. The bridge needs `cmsPage` in its context, so its block must mount `Cms:Element` in the non-self-closing form ([CMS — never self-close](cms.md#never-self-close-cmselement-critical)); otherwise the filters render nothing. Drawer XHR has no CMS page: Action sends `viShowActiveFilters=0|1`; `FilterDrawerController` passes `showActive` into `Filter:Drawer`.
 
 Config is **per content language** (cms slot translation). Save once per language you use on the storefront.
 

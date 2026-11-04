@@ -23,7 +23,7 @@ page/content/detail.html.twig             → Cms:Sections      Grid, one column
 | `Cms:Section:Default` | `Grid` `columns="1"`. `sizing` (`container` \| `boxed` \| `full-width`, from `section.sizingMode`) |
 | `Cms:Section:Sidebar` | `Grid` `columns="1-lg:12"`, `gap="lg"`. Blocks `sidebar` (`g-col-lg-4 g-col-xl-3`) and `main` (`g-col-lg-8 g-col-xl-9`). `mobileBehavior` `wrap` (default) \| `hidden` (`d-none d-lg-block` on the sidebar) |
 | `Cms:Block` | One block's chrome (`.cms-block cms-block-{type} pos-{position}`, background color / media, margins as padding on `.cms-block-container`, visibility) around a `Grid` (`gap="lg"`). `columns` is `1-md:12`; in a sidebar section it is `1-md:12-lg:1` so cells stack beside the narrow column |
-| `Cms:Element` | One grid item for a slot's element. Props `block`, `slotName`, `span`, `includeVars`. With `slotName` it sets `data-cms-element-id` and renders `cms-element-{type}` as the default `content`; without `slotName` it is a plain column wrapper whose body the caller fills (blocks that stack several elements). Owns the `span` classes (+ `g-col-lg-1` in a sidebar section). **Renders nothing when its content is blank** |
+| `Cms:Element` | One grid item for a slot's element. Props `block`, `slotName`, `span`, `includeVars`. With `slotName` it sets `data-cms-element-id` and renders `cms-element-{type}` as the default `content` (**never self-close it**, see [below](#never-self-close-cmselement-critical)); without `slotName` it is a plain column wrapper whose body the caller fills (blocks that stack several elements). Owns the `span` classes (+ `g-col-lg-1` in a sidebar section). **Renders nothing when its content is blank** |
 
 No PHP / JS / `data-component`. Anonymous UX + `vi_cva`.
 
@@ -56,8 +56,8 @@ Block templates stay thin. Override the block's outer Twig block and emit Elemen
 {% sw_extends '@Storefront/storefront/block/cms-block-text-two-column.html.twig' %}
 
 {% block block_text_two_column %}
-    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:6" />
-    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:6" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left" span="md:6"></twig:ViewsTheme:Cms:Element>
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="right" span="md:6"></twig:ViewsTheme:Cms:Element>
 {% endblock %}
 ```
 
@@ -65,10 +65,23 @@ Nested columns (several elements in one column) use a body-bearing `Cms:Element`
 
 ```twig
 <twig:ViewsTheme:Cms:Element :block="block" span="md:6">
-    <twig:ViewsTheme:Cms:Element :block="block" slotName="left-top" class="left-top" />
-    <twig:ViewsTheme:Cms:Element :block="block" slotName="left-bottom" class="left-bottom" />
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left-top" class="left-top"></twig:ViewsTheme:Cms:Element>
+    <twig:ViewsTheme:Cms:Element :block="block" slotName="left-bottom" class="left-bottom"></twig:ViewsTheme:Cms:Element>
 </twig:ViewsTheme:Cms:Element>
 ```
+
+### Never self-close `Cms:Element` (critical)
+
+Always write `<twig:ViewsTheme:Cms:Element …></twig:ViewsTheme:Cms:Element>`, never `<twig:ViewsTheme:Cms:Element … />`.
+
+Core element templates read the page render context, as core `sw_include`s them with the full context: `cmsPage` (`sidebar-filter` finds the listing, `product-listing` its slot, `buy-box` the page type), `page` (`image-gallery` fallback title, contact / revocation forms), `section` (`product-listing`, `wishlist-listing`), `landingPage`, plus whatever plugin elements expect. UX compiles the two tag forms differently:
+
+| Form | Compiles to | Element template sees |
+|------|-------------|-----------------------|
+| `<twig:X …></twig:X>` | `{% component %}` (embedded) | Caller context + props (declared props with defaults still win) |
+| `<twig:X … />` | `{{ component() }}` | Props + Twig globals only. `cmsPage` / `page` / `section` are undefined |
+
+With the self-closing form `sidebar-filter` gets no listing, renders blank, and `Cms:Element` / `Cms:Block` then drop the whole block: filters vanish without an error. Globals (`context`, `activeRoute`, `shopware`) are available either way.
 
 `includeVars` forwards extra variables to the element include (`gallery-buybox`: `{ startIndexThumbnails: 1, startIndexSlider: 1 }`).
 
