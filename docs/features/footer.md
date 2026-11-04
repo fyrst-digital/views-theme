@@ -15,7 +15,7 @@ Content comes from the core `FooterPagelet` (footer category tree, service menu,
 | `Page:Footer:Minimal` | Class VM. Checkout chrome: shop copyright, `Services`, then `Bottom` (VAT + theme credit). No revocation CTA |
 | `Page:Footer:Bottom` | VAT notice and theme credit; empty `prepend` block (Footer fills with `Services`) (`brand` prop → snippet `%brand%`). Mounted by Footer and Minimal |
 | `Page:Footer:Column` | Headline + body; `g-col-1` on the footer grid. Optional collapse via `collapsible` (default `false`); `collapseUntil` (`sm`–`xxl`, default `md`) |
-| `Page:Footer:Column:Company` | Root-host of Column; headline is the theme logo (`Page:Logo`, width `--vi-footer-company-logo-w`, default `120px`); contact block built from shop backend data (see [Contact data](#contact-data)) + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
+| `Page:Footer:Column:Company` | Root-host of Column; headline is the theme logo ([`Page:Logo`](logo.md), width `--vi-footer-company-logo-w`, default `120px`); contact block built from shop backend data (see [Contact data](#contact-data)) + revocation; always-open; `g-col-lg-3` (with Column’s `g-col-1`) |
 | `Page:Footer:Column:Navigation` | Own grid `div` (`role=list`, `d-grid`, `g-col-1 g-col-md-6`; `Column/Navigation.css` sets `grid-template-columns: repeat(auto-fit, min(100%, var(--vi-footer-navigation-basis, 100%)))`, fixed-width tracks pushed to the end with `justify-content-md-end`; `_theme.scss` assigns `--vi-footer-navigation-basis: 200px` from `md`); tree loop of N Columns; `collapsible` when a root has children. Root headline links (size `md`, `fw-semibold`) and child links (size `sm`) are `Button` (`type: link`, `link: true`, `color: dark`); folders stay plain text. Nests: `headlineLink`, `link` |
 | `Page:Footer:Column:Logos` | Root is the wrapper band (`vi-footer__logos-wrapper py-6 border-bottom`, carries `data-component-*` and caller `class`); inside it the `list` slot is the flex host (`role=list`, `d-flex flex-wrap gap-4 container`; the inner logo `items` rows are flex too) mounted by Footer **above** the main content (Footer slot `logos`: `vi-footer__logos`, lands on the wrapper root), not a Grid cell; payment + shipping Columns, headline (`title` slot via `title:class`) is `fs-6`; each Column's root `base` is replaced through `cva` (`column` slot) so its headline-to-logos gap is `gap-2` instead of Column's `gap-4`, and the Column is `flex-md-row` from `md` (headline beside the logos). Blocks: `content` (directly under the root, wraps the `list`), `prepend` / `append` (plain list HTML), `payment` / `shipping` (whole Column), and `{% vi_block %}` slots forwarded into each Column host: `paymentHeadline`, `paymentContent`, `shippingHeadline`, `shippingContent` |
 | `Page:Footer:Services` | Service-menu list. Renders nothing when `serviceMenu` is empty. Each link is `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`). Callers add list chrome (`gap-6` on Minimal, `justify-content-center gap-3` on Footer) |
@@ -144,6 +144,7 @@ Footer / Minimal / Bottom / Services / Column:Logos / Column:Company have **no**
 
 ## Related
 
+- [Logo](logo.md)
 - [Grid](grid.md)
 - [Checkout register](checkout-register.md)
 - [Checkout confirm](checkout-confirm.md)

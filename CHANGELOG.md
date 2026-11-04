@@ -1,3 +1,11 @@
+# Unreleased
+
+**Upgrade notes**
+- **Behaviour change:** the storefront logo no longer uses the inherited Storefront `sw-logo-desktop` / `sw-logo-tablet` / `sw-logo-mobile` fields. Set `page-logo` in the theme Media settings. If `page-logo` is empty, the bundled Views logo is shown. Favicon and Open Graph images are unchanged and still use the Storefront `sw-logo-*` fields.
+
+**Changelog**
+- Empty `page-logo` now renders the bundled Views logo instead of the Shopware demo logo from `sw-logo-*`
+
 # 1.1.1
 
 **Changelog**

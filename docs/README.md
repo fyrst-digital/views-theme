@@ -16,7 +16,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 | [Hard rules](conventions/hard-rules.md) | Agent checklist (links into topic docs) |
 | [Conventions](conventions/ux-components.md) | UX components, CSS, JS |
 | [Twig extensions](twig/overview.md) | `vi_icon`, `vi_define_cva` / `vi_class`, `vi_define_attrs` / `vi_attrs`, `{% vi_block %}` |
-| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, CMS layout, language/currency switch, form input, component showcase, newsletter, captcha, product box, buy container, product configurator, product listing, reviews, tabs, accordion, stepper, pagination, sorting, filters, breadcrumb, gallery, footer |
+| [Features](features/variants-grid.md) | Variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, cart page, checkout register, checkout confirm, checkout success, address, address manager, wishlist, account pages, account action, CMS layout, language/currency switch, form input, component showcase, newsletter, captcha, product box, buy container, product configurator, product listing, reviews, tabs, accordion, stepper, pagination, sorting, filters, breadcrumb, gallery, logo, footer |
 
 ## Conventions
 
@@ -77,6 +77,7 @@ Convention changes: edit the **topic page** only. Update [hard-rules.md](convent
 - [Filters](features/filters.md)
 - [Breadcrumb](features/breadcrumb.md)
 - [Gallery](features/gallery.md)
+- [Logo](features/logo.md)
 - [Footer](features/footer.md)
 
 ## Undocumented / partial (no dedicated feature page)
@@ -85,7 +86,7 @@ Families that exist in code but are only covered lightly (or not at all) under `
 
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
 - **Account / Order** — owned under [account pages](features/account.md) (display primitives: [address](features/address.md); register/address forms: [checkout-register](features/checkout-register.md); confirm picker + editor: [address manager](features/address-manager.md); header login: [account-action](features/account-action.md))
-- **Page layout** — Logo, `meta.html.twig` + `CartContextSubscriber` / `cartCount` (footer: [footer](features/footer.md))
+- **Page layout** — `meta.html.twig` + `CartContextSubscriber` / `cartCount` (logo: [logo](features/logo.md); footer: [footer](features/footer.md))
 - **Primitives** — Button, Alert, Badge, Progress, Blockquote, Divider (conventions + call sites)
 
 ## Related

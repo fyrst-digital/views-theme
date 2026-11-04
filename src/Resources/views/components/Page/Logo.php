@@ -14,7 +14,7 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 /**
- * View-model for Page:Logo — theme logo paths + asset fallback; Twig only composes.
+ * View-model for Page:Logo — `page-logo`, else the bundled Views asset; Twig only composes.
  */
 #[AsTwigComponent]
 class Logo
@@ -56,14 +56,11 @@ class Logo
     public function postMount(array $data): void
     {
         $desktop = $this->nonEmpty($this->logoPath)
-            ?? $this->themeString('sw-logo-desktop')
+            ?? $this->themeString('page-logo')
             ?? $this->packages->getUrl(self::DEFAULT_LOGO_ASSET, 'asset');
 
-        $tablet = $this->nonEmpty($this->tabletLogoPath)
-            ?? $this->themeString('sw-logo-tablet');
-
-        $mobile = $this->nonEmpty($this->mobileLogoPath)
-            ?? $this->themeString('sw-logo-mobile');
+        $tablet = $this->nonEmpty($this->tabletLogoPath);
+        $mobile = $this->nonEmpty($this->mobileLogoPath);
 
         $this->logoPath = $desktop;
         $this->tabletLogoPath = ($tablet !== null && $tablet !== $desktop) ? $tablet : null;

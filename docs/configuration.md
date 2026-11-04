@@ -179,12 +179,12 @@ Views fields sit on their own theme-manager tabs. Storefront defaults stay on **
 | Colors | `vi-headline-color` | color | `#2E282A`. `custom.css: true` → `--vi-headline-color` |
 | Typography (`typography`) | `vi-font-family-base` | text | `'Figtree', sans-serif`. `custom.css: true` → `--vi-font-family-base` |
 | Typography | `vi-font-family-headline` | text | `'Figtree', sans-serif`. `custom.css: true` → `--vi-font-family-headline` |
-| Media (`media`) | `vi-logo` | media | `custom.css: true` → `--vi-logo`. `fullWidth: true` |
+| Media (`media`) | `page-logo` | media | Empty default. `Page:Logo` uses this, else the bundled Views logo — never Storefront `sw-logo-*`. `custom.css: true` → `--page-logo`. `fullWidth: true`. See [Logo](features/logo.md) |
 | Media | `logo-width-mobile` | number | `80` (px), below `md`. `scss: false` |
 | Media | `logo-width-tablet` | number | `100` (px), `md` up to below `lg`. `scss: false` |
 | Media | `logo-width-desktop` | number | `120` (px), `lg` up. `scss: false` |
 
-The three `logo-width-*` fields size the header logo only (`Page:Header:Main`). `storefront/layout/meta.html.twig` prints a `<style>` in `layout_head_theme_css_vars` that assigns `--vi-logo-w` on `.vi-header-main` in px per breakpoint (`theme_config('breakpoint.md' / 'breakpoint.lg')`); `Page:Logo` reads it in `Logo.css`. `Page:Header:Minimal` does not assign it, so its logo stays auto width. Breakpoints match the `Page:Logo` `<picture>` sources.
+The three `logo-width-*` fields size the header logo only (`Page:Header:Main`). `storefront/layout/meta.html.twig` prints a `<style>` in `layout_head_theme_css_vars` that assigns `--vi-logo-w` on `.vi-header-main` in px per breakpoint (`theme_config('breakpoint.md' / 'breakpoint.lg')`); `Page:Logo` reads it in `Logo.css`. `Page:Header:Minimal` does not assign it, so its logo stays auto width. Image source is independent of those widths: [Logo](features/logo.md).
 
 `custom.css` on a theme field opts that field into a `:root` custom property in the document head (`--{field-name}`). It is independent of `scss`: omitted or `false` prints nothing, and `scss: false` still only skips the compiled SCSS variable. A top-level `css` key is invalid: the theme manager only accepts known field setters, and `custom` is the extension bag (`setCustom`). `layout_head_theme_css_vars` renders `views_theme_css_vars()` and does not emit Shopware’s `scss`-based set. Every field in the table except `logo-width-*` sets `custom.css: true`. `views_theme_css_vars()` reads the sales channel from the Twig `context` variable, and from `salesChannelContext` when that mail-template variable is present. It does not call `TwigContextHelper`, which Shopware adds in 6.7.12.
 
