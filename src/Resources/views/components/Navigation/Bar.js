@@ -1,6 +1,14 @@
-import { mountComponents } from '@views-theme/modules/shared/component.js'
+import { parseHtmlRoot } from '@views-theme/modules/shared/dom.js'
+import { fetchResponse } from '@views-theme/modules/shared/http.js'
 
 /**
+ * Desktop top-level bar with lazy flyouts.
+ *
+ * Every pointer / focus event resolves to one intended trigger (or `null`), and a
+ * single timer moves the shown flyout there. Flyouts are fetched once per trigger,
+ * inserted right after it (tab order: trigger → flyout → next trigger) and then only
+ * shown / hidden as `popover="manual"`; CSS owns the open/close motion.
+ *
  * @extends {ShopwareComponent}
  */
 export default class NavigationBar extends ShopwareComponent {
@@ -9,426 +17,202 @@ export default class NavigationBar extends ShopwareComponent {
         switchDelay: 350,
         closeDelay: 200,
         widthAnchor: '--vi-navigation-bar',
-        flyoutComponentName: 'ViewsTheme:Navigation:Flyout',
         triggerAttr: 'data-flyout-trigger',
         navigationIdAttr: 'data-navigation-id',
         flyoutUrlAttr: 'data-flyout-url',
         activeAttr: 'data-active',
-        openEvent: 'ViewsTheme:Navigation:Flyout:Open',
-        closeEvent: 'ViewsTheme:Navigation:Flyout:Close',
     }
 
     init() {
-        this._cache = {}
-        this._openId = null
-        this._requestId = 0
-        this._abort = null
-        this._flyoutEl = null
-        this._triggerEl = null
-        this._openTimer = null
-        this._closeTimer = null
-        this._pointerInside = false
+        /** @type {Map<Element, Promise<HTMLElement|null>>} */
+        this._flyouts = new Map()
+        /** @type {{ trigger: Element, el: HTMLElement }|null} */
+        this._current = null
+        /** @type {Element|null} */
+        this._wanted = null
+        this._timer = null
 
-        this._onPointerEnter = this._onPointerEnter.bind(this)
+        this._onPointerOver = this._onPointerOver.bind(this)
         this._onPointerLeave = this._onPointerLeave.bind(this)
         this._onFocusIn = this._onFocusIn.bind(this)
         this._onFocusOut = this._onFocusOut.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
-        this._onFlyoutOpen = this._onFlyoutOpen.bind(this)
-        this._onFlyoutClose = this._onFlyoutClose.bind(this)
-        this._onTriggerClick = this._onTriggerClick.bind(this)
 
-        this.el.addEventListener('pointerover', this._onPointerEnter)
+        // `pointerover` bubbles on every target change; `pointerenter` would miss moving
+        // from an item onto the bar's own empty space.
+        this.el.addEventListener('pointerover', this._onPointerOver)
         this.el.addEventListener('pointerleave', this._onPointerLeave)
         this.el.addEventListener('focusin', this._onFocusIn)
         this.el.addEventListener('focusout', this._onFocusOut)
-        this.el.addEventListener('click', this._onTriggerClick)
         document.addEventListener('keydown', this._onKeydown)
-        window.Shopware.on(this.options.openEvent, this._onFlyoutOpen)
-        window.Shopware.on(this.options.closeEvent, this._onFlyoutClose)
 
         this._setActiveItems()
     }
 
     destroy() {
-        this._clearOpenTimer()
-        this._clearCloseTimer()
-        this._abortFetch()
-        this._unmountFlyout()
+        window.clearTimeout(this._timer)
 
-        this.el.removeEventListener('pointerover', this._onPointerEnter)
+        this.el.removeEventListener('pointerover', this._onPointerOver)
         this.el.removeEventListener('pointerleave', this._onPointerLeave)
         this.el.removeEventListener('focusin', this._onFocusIn)
         this.el.removeEventListener('focusout', this._onFocusOut)
-        this.el.removeEventListener('click', this._onTriggerClick)
         document.removeEventListener('keydown', this._onKeydown)
-        window.Shopware.off(this.options.openEvent, this._onFlyoutOpen)
-        window.Shopware.off(this.options.closeEvent, this._onFlyoutClose)
     }
 
-    _onFlyoutOpen(payload = {}) {
-        const el = this._eventEl(payload)
-        if (!this._isOwnFlyout(el)) {
+    _onPointerOver(event) {
+        // Over the open flyout (incl. its hover bridge): stay. Over a trigger: go there.
+        // Anywhere else in the bar (leaf item, empty space): close.
+        if (this._current?.el.contains(event.target)) {
+            this._intend(this._current.trigger)
             return
         }
 
-        this._setTriggerExpanded(this._triggerEl, true)
+        this._intend(this._triggerOf(event.target))
     }
 
-    _onFlyoutClose(payload = {}) {
-        const el = this._eventEl(payload)
-        if (!this._isOwnFlyout(el)) {
-            return
-        }
-
-        this._finishClose()
-    }
-
-    _onTriggerClick(event) {
-        const trigger = this._triggerFromEvent(event)
-        if (!trigger || trigger.matches('a[href]')) {
-            return
-        }
-
-        event.preventDefault()
-    }
-
-    // `pointerover` (bubbling), not `pointerenter`: moving from an item onto the
-    // bar's own empty space (ul / nav) fires no `pointerenter`, so nothing would close.
-    _onPointerEnter(event) {
-        const trigger = this._triggerFromEvent(event)
-        if (trigger && trigger.contains(event.relatedTarget)) {
-            return
-        }
-
-        if (!trigger) {
-            if (!this._isInside(event.target)) {
-                return
-            }
-
-            if (this._flyoutEl?.contains(event.target)) {
-                this._pointerInside = true
-                this._clearCloseTimer()
-                // Multi-row path: entering flyout must cancel a pending switch
-                // from intermediate bar items the pointer crossed.
-                this._clearOpenTimer()
-                return
-            }
-
-            // Non-trigger bar item (leaf link): not part of the open flyout,
-            // so cancel any pending open and close the flyout after closeDelay.
-            // Entering the flyout within that delay cancels the close.
-            this._pointerInside = false
-            this._clearOpenTimer()
-            if (this._openId) {
-                this._scheduleClose()
-            }
-            return
-        }
-
-        this._pointerInside = true
-        this._clearCloseTimer()
-        this._scheduleOpen(trigger)
-    }
-
-    _onPointerLeave(event) {
-        if (this._isInside(event.relatedTarget)) {
-            return
-        }
-
-        this._pointerInside = false
-        this._clearOpenTimer()
-        this._scheduleClose()
+    _onPointerLeave() {
+        this._intend(null)
     }
 
     _onFocusIn(event) {
-        const trigger = this._triggerFromEvent(event)
+        const trigger = this._triggerOf(event.target)
         if (trigger) {
-            this._clearCloseTimer()
-            this._scheduleOpen(trigger)
-            return
-        }
-
-        if (this._isInside(event.target)) {
-            this._clearCloseTimer()
+            this._intend(trigger)
+        } else if (this._current?.el.contains(event.target)) {
+            this._intend(this._current.trigger)
         }
     }
 
     _onFocusOut(event) {
-        if (this._isInside(event.relatedTarget)) {
+        // Clicking a non-focusable spot in the flyout blurs to `null`; keep it while hovered.
+        if (this.el.contains(event.relatedTarget) || this.el.matches(':hover')) {
             return
         }
 
-        this._clearOpenTimer()
-        this._scheduleClose()
+        this._intend(null)
     }
 
     _onKeydown(event) {
-        if (event.key !== 'Escape' || !this._openId) {
+        if (event.key !== 'Escape' || !this._current) {
             return
         }
 
         event.preventDefault()
-        const trigger = this._triggerEl
-        this._close()
-        if (trigger && typeof trigger.focus === 'function') {
-            trigger.focus()
+        // Refocus first: its focusin then targets the shown flyout and cannot schedule a reopen.
+        if (this.el.contains(document.activeElement)) {
+            this._current.trigger.focus()
         }
+
+        window.clearTimeout(this._timer)
+        this._wanted = null
+        this._show(null)
     }
 
-    _scheduleOpen(trigger) {
-        const navigationId = trigger.getAttribute(this.options.navigationIdAttr)
-        if (!navigationId) {
+    /**
+     * @param {Element|null} trigger flyout trigger to show, or `null` to close
+     */
+    _intend(trigger) {
+        if (trigger === this._wanted) {
             return
         }
 
-        if (this._openId === navigationId && this._flyoutEl) {
+        this._wanted = trigger
+        window.clearTimeout(this._timer)
+
+        // Back on the shown flyout: cancelling the pending switch / close is enough.
+        if (trigger === (this._current?.trigger ?? null)) {
             return
         }
 
-        const delay = this._openId && this._flyoutEl
-            ? this.options.switchDelay
-            : this.options.debounceTime
+        let delay = this.options.debounceTime
+        if (!trigger) {
+            delay = this.options.closeDelay
+        } else if (this._current) {
+            // Longer dwell so a path into the panel that crosses other items keeps it.
+            delay = this.options.switchDelay
+        }
 
-        this._clearOpenTimer()
-        this._openTimer = window.setTimeout(() => {
-            this._open(trigger)
-        }, delay)
+        this._timer = window.setTimeout(() => this._show(trigger), delay)
     }
 
-    _scheduleClose() {
-        this._clearCloseTimer()
-        this._closeTimer = window.setTimeout(() => {
-            if (!this._pointerInside && !this._hasFocusInside()) {
-                this._close()
-            }
-        }, this.options.closeDelay)
+    /**
+     * @param {Element|null} trigger
+     */
+    async _show(trigger) {
+        if (this._current) {
+            this._current.el.hidePopover()
+            this._current.trigger.setAttribute('aria-expanded', 'false')
+            this._current = null
+        }
+
+        if (!trigger) {
+            return
+        }
+
+        const el = await this._flyout(trigger)
+        // Stale: the intent moved on, or a concurrent call for this trigger already showed it.
+        if (!el || this._wanted !== trigger || this._current) {
+            return
+        }
+
+        el.showPopover()
+        trigger.setAttribute('aria-expanded', 'true')
+        this._current = { trigger, el }
     }
 
-    async _open(trigger) {
-        const navigationId = trigger.getAttribute(this.options.navigationIdAttr)
-        const url = trigger.getAttribute(this.options.flyoutUrlAttr)
-
-        if (!navigationId || !url) {
-            return
+    /**
+     * @param {Element} trigger
+     * @returns {Promise<HTMLElement|null>}
+     */
+    _flyout(trigger) {
+        if (!this._flyouts.has(trigger)) {
+            this._flyouts.set(trigger, this._load(trigger))
         }
 
-        if (this._openId === navigationId && this._flyoutEl) {
-            this._setTriggerExpanded(trigger, true)
-            return
-        }
+        return this._flyouts.get(trigger)
+    }
 
-        this._setTriggerExpanded(this._triggerEl, false)
-        this._triggerEl = trigger
-        this._openId = navigationId
-        this._setTriggerExpanded(trigger, true)
-
-        const requestId = ++this._requestId
-
+    /**
+     * Fetch and insert a hidden flyout. Empty (`204`) caches `null`; a failure is
+     * dropped from the cache so the next hover retries.
+     *
+     * @param {Element} trigger
+     * @returns {Promise<HTMLElement|null>}
+     */
+    async _load(trigger) {
         try {
-            const html = await this._fetch(navigationId, url)
-            if (requestId !== this._requestId || this._openId !== navigationId) {
-                return
+            const response = await fetchResponse(trigger.getAttribute(this.options.flyoutUrlAttr))
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`)
             }
 
-            if (!html) {
-                this._resetOpenState()
-                return
+            const el = /** @type {HTMLElement|null} */ (parseHtmlRoot(await response.text()))
+            if (el) {
+                el.style.setProperty('--vi-flyout-width-anchor', this.options.widthAnchor)
+                trigger.after(el)
             }
 
-            this._mountFlyout(html)
-            await mountComponents(this._flyoutEl)
-            const flyout = this._getFlyoutInstance()
-
-            if (requestId !== this._requestId || this._openId !== navigationId) {
-                return
-            }
-
-            if (!flyout || typeof flyout.open !== 'function') {
-                console.error('NavigationBar: Flyout instance missing after mount')
-                this._resetOpenState()
-                this._unmountFlyout()
-                return
-            }
-
-            flyout.open()
+            return el
         } catch (error) {
-            if (error?.name === 'AbortError') {
-                return
-            }
+            this._flyouts.delete(trigger)
+            console.error('NavigationBar: failed to load flyout', error)
 
-            console.error('NavigationBar: Failed to open flyout', error)
-            if (this._openId === navigationId) {
-                this._resetOpenState()
-                this._unmountFlyout()
-            }
-        }
-    }
-
-    _close() {
-        this._clearOpenTimer()
-        this._clearCloseTimer()
-        this._abortFetch()
-        this._requestId += 1
-
-        const flyout = this._getFlyoutInstance()
-        if (flyout && typeof flyout.close === 'function' && typeof flyout.isOpen === 'function' && flyout.isOpen()) {
-            flyout.close()
-            return
-        }
-
-        this._finishClose()
-    }
-
-    _finishClose() {
-        this._setTriggerExpanded(this._triggerEl, false)
-        this._unmountFlyout()
-        this._openId = null
-        this._triggerEl = null
-    }
-
-    _resetOpenState() {
-        this._setTriggerExpanded(this._triggerEl, false)
-        this._openId = null
-        this._triggerEl = null
-    }
-
-    async _fetch(navigationId, url) {
-        if (this._cache[navigationId]) {
-            return this._cache[navigationId]
-        }
-
-        this._abortFetch()
-        this._abort = new AbortController()
-
-        const response = await fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            signal: this._abort.signal,
-        })
-
-        if (response.status === 204) {
-            return ''
-        }
-
-        if (!response.ok) {
-            throw new Error(`Flyout fetch failed: ${response.status}`)
-        }
-
-        const html = await response.text()
-        this._cache[navigationId] = html
-        this._abort = null
-
-        return html
-    }
-
-    _abortFetch() {
-        if (this._abort) {
-            this._abort.abort()
-            this._abort = null
-        }
-    }
-
-    _mountFlyout(html) {
-        this._unmountFlyout()
-
-        if (!html) {
-            return
-        }
-
-        const root = this._parseRoot(html)
-        if (!root) {
-            return
-        }
-
-        this._applyWidthAnchor(root)
-        this.el.append(root)
-        this._flyoutEl = root
-    }
-
-    _applyWidthAnchor(root) {
-        const anchor = this.options.widthAnchor
-        if (!anchor || typeof anchor !== 'string') {
-            return
-        }
-
-        root.style.setProperty('--vi-flyout-width-anchor', anchor)
-    }
-
-    _unmountFlyout() {
-        if (this._flyoutEl) {
-            this._flyoutEl.remove()
-            this._flyoutEl = null
-            return
-        }
-
-        this.el.querySelector(`[data-component="${this.options.flyoutComponentName}"]`)?.remove()
-    }
-
-    _parseRoot(html) {
-        const template = document.createElement('template')
-        template.innerHTML = html.trim()
-        return template.content.firstElementChild
-    }
-
-    _getFlyoutInstance() {
-        if (!this._flyoutEl || !window.Shopware) {
             return null
         }
-
-        return window.Shopware.getComponentInstanceByElement(
-            this.options.flyoutComponentName,
-            this._flyoutEl,
-        )
     }
 
-    _triggerFromEvent(event) {
-        const target = event.target
+    /**
+     * @param {EventTarget|null} target
+     * @returns {Element|null}
+     */
+    _triggerOf(target) {
         if (!(target instanceof Element)) {
             return null
         }
 
         const trigger = target.closest(`[${this.options.triggerAttr}]`)
-        if (!trigger || !this.el.contains(trigger)) {
-            return null
-        }
 
-        return trigger
-    }
-
-    _eventEl(payload) {
-        if (payload && typeof payload === 'object' && 'el' in payload) {
-            return payload.el
-        }
-
-        return payload
-    }
-
-    _isOwnFlyout(el) {
-        if (!el) {
-            return !this._flyoutEl
-        }
-
-        if (this._flyoutEl && el !== this._flyoutEl) {
-            return false
-        }
-
-        return this.el.contains(el)
-    }
-
-    _isInside(node) {
-        return node instanceof Node && this.el.contains(node)
-    }
-
-    _hasFocusInside() {
-        return this._isInside(document.activeElement)
-    }
-
-    _setTriggerExpanded(trigger, expanded) {
-        if (!trigger) {
-            return
-        }
-
-        trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false')
+        return trigger && this.el.contains(trigger) ? trigger : null
     }
 
     _setActiveItems() {
@@ -459,19 +243,5 @@ export default class NavigationBar extends ShopwareComponent {
                 el.setAttribute('aria-current', 'page')
             }
         })
-    }
-
-    _clearOpenTimer() {
-        if (this._openTimer) {
-            window.clearTimeout(this._openTimer)
-            this._openTimer = null
-        }
-    }
-
-    _clearCloseTimer() {
-        if (this._closeTimer) {
-            window.clearTimeout(this._closeTimer)
-            this._closeTimer = null
-        }
     }
 }

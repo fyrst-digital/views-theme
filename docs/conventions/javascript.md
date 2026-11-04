@@ -145,7 +145,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 - `ViewsTheme:Modal` (e.g. Address Manager)
 - Cookie drawer (`Cookie:Manager` / `Cookie:Consent`, owner `Cookie:Manager:Action`)
 
-Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
+Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panels (see exception below).
 
 | Phase | Required |
 |-------|----------|
@@ -175,15 +175,16 @@ Other lazy shells (navigation, filter and cookie drawers, gallery fullscreen, ad
 
 **Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
 
-### Exception: Navigation flyout HTML cache
+### Exception: Navigation flyout DOM cache
 
-`ViewsTheme:Navigation:Bar` may keep an **in-session memory cache** of flyout HTML strings keyed by category id (hover thrash). Rules:
+`ViewsTheme:Navigation:Bar` keeps fetched flyouts **in the DOM** for the page lifetime (hover thrash; a flyout is a hint popover, not a shell). Rules:
 
 | Rule | Required |
 |------|----------|
-| Storage | Memory on the Bar instance only — **no** `sessionStorage` / `localStorage` |
-| DOM | Still **unmount** the closed flyout root; reopen = cache hit → remount (or fetch on miss) |
-| Races | Abort in-flight fetch; ignore stale responses when the open target changes |
+| Storage | Map on the Bar instance (trigger → promise of the inserted element) — **no** `sessionStorage` / `localStorage` |
+| DOM | Insert once after the trigger; closed = `hidePopover()` (hidden, `display: none`), not unmounted; reopen = `showPopover()` |
+| Components | Flyout markup has **no** `data-component` and no nested components, so nothing needs mounting |
+| Races | Show a resolved flyout only if it is still the intended one; drop failed fetches from the cache |
 | Lifetime | Cleared on hard reload (new page = new Bar instance) |
 
 See [Navigation bar](../features/navigation-bar.md).
@@ -201,7 +202,7 @@ See [Navigation bar](../features/navigation-bar.md).
 
 See [Navigation drawer](../features/navigation-drawer.md).
 
-References: `Navigation/Drawer/Action.js`, `Navigation/Drawer/Menu.js`, `Navigation/Bar.js`, `Navigation/Flyout.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
+References: `Navigation/Drawer/Action.js`, `Navigation/Drawer/Menu.js`, `Navigation/Bar.js`, `Search/Action.js`, `Search/Overlay.js`, `Search/Bar.js`.
 
 ## Co-located component JS
 
@@ -212,7 +213,6 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Component | `data-component` | Script |
 |-----------|------------------|--------|
 | Navigation bar | `ViewsTheme:Navigation:Bar` | `Navigation/Bar.js` |
-| Navigation flyout | `ViewsTheme:Navigation:Flyout` | `Navigation/Flyout.js` |
 | Cart mutation owner | `ViewsTheme:Cart` | `Cart.js` |
 | Wishlist owner | `ViewsTheme:Wishlist` | `Wishlist.js` |
 | Count pill (wishlist and cart action badges) | `ViewsTheme:Count` | `Count.js` |
@@ -401,29 +401,23 @@ See [Navigation drawer](../features/navigation-drawer.md).
 
 ### Navigation bar / flyout
 
-Desktop top-level bar with lazy mega flyouts. **Bar** owns intent, fetch, cache, and mount; **Flyout** owns popover open/close motion and lifecycle events.
+Desktop top-level bar with lazy mega flyouts. **Bar** owns everything: intent, fetch, cache, insert, `showPopover` / `hidePopover`, ARIA. **Flyout** is markup only (no JS, no `data-component`); CSS owns its motion.
 
 | Hook | Attribute |
 |------|-----------|
 | Bar | `data-component="ViewsTheme:Navigation:Bar"` |
-| Flyout anchors | Bar `--vi-navigation-bar` (top); width via Bar option `widthAnchor` → mount sets `--vi-flyout-width-anchor` |
+| Flyout anchors | Bar `--vi-navigation-bar` (top); width via Bar option `widthAnchor` → insert sets `--vi-flyout-width-anchor` |
 | Item trigger | `data-flyout-trigger` + `data-flyout-url` + `data-navigation-id` |
-| Flyout | `data-component="ViewsTheme:Navigation:Flyout"` / `popover="manual"` |
+| Flyout | `#vi-navigation-flyout-{id}` / `popover="manual"`, inserted after its trigger |
 
-| Event | Emitter | Listener |
-|-------|---------|----------|
-| `ViewsTheme:Navigation:Flyout:Open` | Flyout (`emitQueued`, `{ el }`) | Bar (sync trigger ARIA; filter `contains(el)`) |
-| `ViewsTheme:Navigation:Flyout:Close` | Flyout (`emitQueued`, `{ el }`) | Bar **unmounts** flyout DOM + clears ARIA (string cache kept) |
-
-- Open: debounced hover/focus on trigger → fetch or memory cache → append flyout under Bar → `flyout.open()` → `showPopover()`
-- Close: leave delay, Escape, focus out → `flyout.close()` → `hidePopover()` → Close event → Bar unmounts
-- Flyout close timeout reads CSS var from options `durationVar` (default `--vi-flyout-duration`) / `durationFallback` (parity with Drawer `--vi-drawer-duration`)
+- Intent: each `pointerover` / `pointerleave` / `focusin` / `focusout` resolves to one intended trigger (or none); a single timer (`debounceTime` / `switchDelay` / `closeDelay`) moves the shown flyout there
+- Show: cache or fetch → insert after trigger (once) → `showPopover()` if still intended → `aria-expanded="true"`
+- Hide: `hidePopover()` → `aria-expanded="false"`; element stays in the DOM
 - Placement: dual CSS anchors — top under Bar, left/right to Header:Main (full header width, hover path intact)
 - `popover="manual"` (hover intent + delays stay JS; unlike click `Dropdown` `auto` + `popovertarget`)
-- Only one flyout; `AbortController` + request id ignore stale responses
-- Empty / failed fetch resets trigger ARIA (no stuck `aria-expanded`)
+- Empty (`204`) caches "no flyout"; failed fetch is not cached (next hover retries)
 - Active path: `window.activeNavigationId` / `window.activeNavigationPathIdList` → `data-active` on triggers
-- Cache exception: see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Cache exception: see [Lazy-loaded shells](#exception-navigation-flyout-dom-cache)
 
 See [Navigation bar](../features/navigation-bar.md).
 ### Cart drawer
