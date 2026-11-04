@@ -7,44 +7,39 @@
         active: registerActive ? registerTabId : loginTabId,
         param: tabParam,
         label: 'account.loginRegistrationHeader'|trans|striptags,
+        'list:cva': { root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 p-4' },
     }).all() }}
 >
-    <twig:block name="list">
-        <twig:ViewsTheme:Tabs:List
-            :cva="{ root: 'vi-tabs__list nav justify-content-center border-bottom gap-6 p-4' }"
-        >
-            <twig:block name="content">
-                {% vi_block tab_login %}
-                    <twig:ViewsTheme:Tabs:Tab
-                        id="{{ loginTabId }}"
-                        panel="{{ loginPanelId }}"
-                        slug="{{ loginSlug }}"
-                        :active="not registerActive"
-                    >
-                        <twig:block name="content">
-                            {{ 'viewsTheme.account.tabLogin'|trans|sw_sanitize }}
-                        </twig:block>
-                    </twig:ViewsTheme:Tabs:Tab>
-                {% endvi_block %}
+    <twig:block name="tabs">
+        {% vi_block tab_login %}
+            <twig:ViewsTheme:Tabs:Tab
+                id="{{ loginTabId }}"
+                panel="{{ loginPanelId }}"
+                slug="{{ loginSlug }}"
+                :active="not registerActive"
+            >
+                <twig:block name="content">
+                    {{ 'viewsTheme.account.tabLogin'|trans|sw_sanitize }}
+                </twig:block>
+            </twig:ViewsTheme:Tabs:Tab>
+        {% endvi_block %}
 
-                {% vi_block tab_register %}
-                    <twig:ViewsTheme:Tabs:Tab
-                        id="{{ registerTabId }}"
-                        panel="{{ registerPanelId }}"
-                        slug="{{ registerSlug }}"
-                        :active="registerActive"
-                    >
-                        <twig:block name="content">
-                            {{ 'viewsTheme.account.tabRegister'|trans|sw_sanitize }}
-                        </twig:block>
-                    </twig:ViewsTheme:Tabs:Tab>
-                {% endvi_block %}
-            </twig:block>
-        </twig:ViewsTheme:Tabs:List>
+        {% vi_block tab_register %}
+            <twig:ViewsTheme:Tabs:Tab
+                id="{{ registerTabId }}"
+                panel="{{ registerPanelId }}"
+                slug="{{ registerSlug }}"
+                :active="registerActive"
+            >
+                <twig:block name="content">
+                    {{ 'viewsTheme.account.tabRegister'|trans|sw_sanitize }}
+                </twig:block>
+            </twig:ViewsTheme:Tabs:Tab>
+        {% endvi_block %}
     </twig:block>
 
     <twig:block name="panels">
-        {% block panelLogin %}
+        {% vi_block panelLogin %}
             <twig:ViewsTheme:Tabs:Panel
                 id="{{ loginPanelId }}"
                 tab="{{ loginTabId }}"
@@ -64,9 +59,9 @@
                     />
                 </twig:block>
             </twig:ViewsTheme:Tabs:Panel>
-        {% endblock %}
+        {% endvi_block %}
 
-        {% block panelRegister %}
+        {% vi_block panelRegister %}
             <twig:ViewsTheme:Tabs:Panel
                 id="{{ registerPanelId }}"
                 tab="{{ registerTabId }}"
@@ -87,6 +82,6 @@
                     />
                 </twig:block>
             </twig:ViewsTheme:Tabs:Panel>
-        {% endblock %}
+        {% endvi_block %}
     </twig:block>
 </twig:ViewsTheme:Tabs>
