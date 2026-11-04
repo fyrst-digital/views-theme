@@ -178,7 +178,7 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 | `--vi-min-h` | `auto` | — | — | `0` |
 | `--vi-cols` | `minmax(0, 1fr)` | — | `var(--vi-thumbs-w, auto) minmax(0, 1fr)` | — |
 | `--vi-rows` | `none` | — | — | multi: `minmax(0, 1fr) auto` (md: `minmax(0, 1fr)`); single: `minmax(0, 1fr)` |
-| `--vi-areas` | `none` | `'canvas' 'thumbs'` | `'thumbs canvas'` | — |
+| `--vi-areas` | `'canvas'` (single must name the area — Canvas `grid-area: canvas` otherwise lands in implicit tracks + gap) | `'canvas' 'thumbs'` | `'thumbs canvas'` | — |
 | `--vi-thumbs-w` | — | — | used inside `--vi-cols` (`auto`) | — |
 | `--vi-thumbs-snap` | `x mandatory` (Thumbnails) | — | `y mandatory` | — |
 | `--vi-thumb-snap-align` | `start` (Thumb) | — | — | —; `thumbnailAlign=center` assigns `center` |
