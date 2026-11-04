@@ -33,7 +33,10 @@ class ListingController extends AbstractComponentController
     #[Route(
         path: '/vi/listing/category/{navigationId}',
         name: 'frontend.views-theme.listing.category',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function category(string $navigationId, Request $request, SalesChannelContext $context): Response
@@ -53,7 +56,10 @@ class ListingController extends AbstractComponentController
     #[Route(
         path: '/vi/listing/category/{navigationId}/aggregations',
         name: 'frontend.views-theme.listing.category.aggregations',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function categoryAggregations(string $navigationId, Request $request, SalesChannelContext $context): JsonResponse
@@ -70,7 +76,10 @@ class ListingController extends AbstractComponentController
     #[Route(
         path: '/vi/listing/category/{navigationId}/filter-options',
         name: 'frontend.views-theme.listing.category.filter-options',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function categoryFilterOptions(string $navigationId, Request $request, SalesChannelContext $context): JsonResponse

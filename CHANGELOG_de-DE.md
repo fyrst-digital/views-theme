@@ -6,6 +6,7 @@
 **Changelog**
 - Ein leeres `page-logo` zeigt jetzt das mitgelieferte Views-Logo statt des Shopware-Demo-Logos aus `sw-logo-*`
 - Die Schrift Figtree wird vorab geladen und startet damit sofort statt erst nach dem Theme-Stylesheet
+- Navigations-Schublade, Navigations-Flyout, Vollbild-Galerie, Kategorie-Listing und Kategorie-Filterschublade werden jetzt im HTTP-Cache gespeichert und öffnen sich bei wiederholten Aufrufen schneller
 
 # 1.1.1
 

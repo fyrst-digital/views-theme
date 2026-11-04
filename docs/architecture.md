@@ -155,6 +155,29 @@ Examples:
 
 Legacy feature routes (e.g. variants grid under `/checkout/variants-grid/…`) may predate this convention; new routes must use `/vi/…`.
 
+### HTTP cache (`_httpCache`)
+
+Shopware only HTTP-caches a route that opts in with `PlatformRequest::ATTRIBUTE_HTTP_CACHE => true` in its route `defaults`. Without it, `CacheResponseSubscriber` marks the response `no-cache`, and every request runs the full context, loader and render.
+
+| Rule | Detail |
+|------|--------|
+| Opt in | `GET` routes whose output depends only on the URL (path + query) and the context hash (language, currency, customer group, logged-in state, …) |
+| Opt out | Cart or customer state (cart, address, the customer's own review), free-text search terms (unbounded keys, low hit rate; core `/suggest` is not cached either), `POST` |
+| Invalidation | Cache tags come from the core routes the controller loads through (`NavigationRoute`, `ProductListingRoute`, `MediaRoute`, …). Load data through those routes or loaders, not through raw repositories, or the cached response will not be invalidated |
+| New route | Decide on `_httpCache` explicitly and add the route to the table below |
+
+| Cached | Not cached (reason) |
+|--------|---------------------|
+| `navigation.drawer`, `navigation.drawer.menu` (core `frontend.menu.offcanvas` parity) | `cart.drawer`, `cart.page`, `checkout.variants-grid.*` (cart) |
+| `navigation.flyout` | `address.*` (customer) |
+| `gallery.fullscreen` | `review.list` (`Review:Form` reads the customer's own review) |
+| `listing.category`, `listing.category.aggregations`, `listing.category.filter-options` (core CMS navigation page parity) | `search.overlay`, `search.suggest`, `listing.search*`, `filter.drawer.search` (search term) |
+| `filter.drawer.category` | `cookie.manager`, `cookie.consent` (rarely hit; core cookie offcanvas is not cached either) |
+
+Route names above omit the `frontend.views-theme.` prefix.
+
+The server-side HTTP cache is separate from the client-side rule in [lazy-loaded shells](conventions/javascript.md#lazy-loaded-shells-critical). Shells still refetch on every open; with `_httpCache` that refetch is a cache hit.
+
 ## UX XHR component responses (critical)
 
 XHR controllers that render UX components via `ComponentRendererInterface` **must** run the same SEO/media placeholder replacement as core `StorefrontController::renderStorefront()`.

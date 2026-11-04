@@ -47,6 +47,8 @@ Sidebar (sibling): desktop `Filter:Panel` + mobile `Filter:Drawer:Action` — se
 
 Loaders: `ProductListingGateway` → core listing/search routes. Results XHR sets `no-aggregations`. Render via `AbstractComponentController` + `ComponentHtmlRenderer`. Filter-options payload + drawer: [filters.md](filters.md).
 
+HTTP cache: the **category** routes (results, aggregations, filter-options, filter drawer) are cached, the same as the core CMS navigation page, and invalidated through `ProductListingRoute` tags. The **search** routes are not cached (free-text term). See [architecture — HTTP cache](../architecture.md#http-cache-_httpcache).
+
 ## Owner JS (`Listing.js`)
 
 Orchestrator only. Domain modules under `app/storefront/src/modules/listing/` — import via `@views-theme/modules/listing/…` only (plus `shared/*` for pure helpers):

@@ -129,6 +129,8 @@ Bar gates flyout with `navigationDepth > 1` (prop from header / `context.salesCh
 
 Renders `ViewsTheme:Navigation:Flyout` via `ComponentRendererInterface`. Empty tree → `204`.
 
+HTTP-cached (`_httpCache`), so a Bar in-session cache miss after a reload is a server cache hit. See [architecture — HTTP cache](../architecture.md#http-cache-_httpcache).
+
 ## Hooks
 
 | Hook | Attribute |

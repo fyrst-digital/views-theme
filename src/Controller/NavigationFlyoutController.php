@@ -29,7 +29,10 @@ class NavigationFlyoutController extends AbstractComponentController
     #[Route(
         path: '/vi/navigation/flyout/{navigationId}',
         name: 'frontend.views-theme.navigation.flyout',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function flyout(string $navigationId, SalesChannelContext $context): Response

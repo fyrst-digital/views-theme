@@ -29,6 +29,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | **CSS vars (critical):** init once `prop: var(--token, fallback)`; variants **assign** `--token` only; chrome tokens `--vi-{component}-{prop}` (never `--vi-color` / `--vi-fw`); nest `&[aria-*]` | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) · [token naming](css-classes.md#token-naming) |
 | **Length units (critical):** component CSS / token fallbacks use **`px` only** — no `rem`/`em` lengths | [css-classes.md — Length units](css-classes.md#length-units-critical) |
 | Storefront routes `/vi/…`, `path(…)` only, no new `/widgets/…` | [architecture.md](../architecture.md) |
+| **HTTP cache:** every new `GET` `/vi/…` route decides `_httpCache` explicitly (opt in only when the output depends only on the URL and the context hash) | [architecture.md — HTTP cache](../architecture.md#http-cache-_httpcache) |
 | **XHR UX HTML (critical):** always `AbstractComponentController::renderComponent()` — never raw `createAndRender` Response | [architecture.md — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |
 | **XHR data hooks:** after core loader, fire matching App `*LoadedHook` when core defines one | [architecture.md — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks) |
 | Design tokens (font, brand colors, grid) | [configuration.md](../configuration.md) |

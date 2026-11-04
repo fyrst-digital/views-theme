@@ -6,6 +6,7 @@
 **Changelog**
 - Empty `page-logo` now renders the bundled Views logo instead of the Shopware demo logo from `sw-logo-*`
 - The Figtree font is preloaded, so it starts loading right away instead of after the theme stylesheet
+- The navigation drawer, navigation flyout, fullscreen gallery, category listing and category filter drawer responses are now HTTP-cached, so they open faster on repeat requests
 
 # 1.1.1
 
