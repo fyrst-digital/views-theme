@@ -144,6 +144,8 @@ Variable fonts live under `app/storefront/src/assets/fonts/` and are declared in
 | `figtree-var.woff2` | Figtree normal (weight 300–900) |
 | `figtree-italic-var.woff2` | Figtree italic (weight 300–900) |
 
+`storefront/layout/meta.html.twig` (`views_theme_font_preload`) preloads `figtree-var.woff2`. Without the preload, the browser only finds the font after it has parsed `all.css`. The `href` is `asset('assets/fonts/figtree-var.woff2', 'theme')` with the version query removed, so it equals the URL the `@font-face` resolves to and the browser reuses the preloaded response. The italic face is not preloaded. The preload is left out on the Vite dev server, which serves fonts from a different URL. If you rename the normal face in `scss/_fonts.scss`, update the preload too.
+
 `theme.json` sets `sw-font-family-base` to `'Figtree', sans-serif`. After adding or changing font files, run `bin/console theme:compile` (or rebuild storefront) so assets are copied into `public/theme/{id}/assets/fonts/`.
 
 ### Static asset CSS (Vite dev)

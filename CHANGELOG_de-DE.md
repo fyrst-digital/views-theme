@@ -5,6 +5,7 @@
 
 **Changelog**
 - Ein leeres `page-logo` zeigt jetzt das mitgelieferte Views-Logo statt des Shopware-Demo-Logos aus `sw-logo-*`
+- Die Schrift Figtree wird vorab geladen und startet damit sofort statt erst nach dem Theme-Stylesheet
 
 # 1.1.1
 

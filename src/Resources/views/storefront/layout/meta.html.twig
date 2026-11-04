@@ -20,6 +20,20 @@
 {% endblock %}
 
 {% block layout_head_stylesheet %}
+  {% block views_theme_font_preload %}
+    {# Figtree normal (scss/_fonts.scss) is otherwise discovered only after all.css is parsed.
+       href must equal the URL the @font-face resolves to (theme package, no version query) so the
+       preloaded response is reused. Prod only: the Vite dev server serves fonts from another URL. #}
+    {% if not (importmapData.isDevServer ?? false) %}
+      <link
+        rel="preload"
+        href="{{ asset('assets/fonts/figtree-var.woff2', 'theme')|split('?')|first }}"
+        as="font"
+        type="font/woff2"
+        crossorigin>
+    {% endif %}
+  {% endblock %}
+
   {{ parent() }}
 
   {% block views_theme_additional_stylesheet %}
