@@ -94,7 +94,7 @@ Canvas settle: `scrollend` clears the programmatic gate (timeout is fallback onl
 2. Click / `open()` → if another gallery’s shell is live, **close it first** (owner restores index + unmounts) so `replaceMount` does not tear down foreign DOM without Close
 3. `GET frontend.views-theme.gallery.fullscreen?ids[]=…&active=N` (N from parent `getIndex()`)
 4. Response root mounted on `document.body`; Action stores `_overlayEl` (owned only — never re-query foreign shells). Empty body / **204** (no medias) → no mount
-5. Action waits for Fullscreen instance → `open()` (body lock, aria, focus close)
+5. Action `mountComponents` (Fullscreen + nested Gallery / chrome) then `open()` (body lock, aria, focus close)
 6. Nested `Gallery` is the media SoT inside the dialog
 7. Close (button / backdrop / Escape) → emit Close `{ el, index }` → **only** the owning Action (`payload.el === this._overlayEl`) restores parent index, returns focus, unmounts owned el
 

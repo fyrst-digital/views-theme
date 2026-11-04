@@ -1,6 +1,14 @@
 /**
  * Shopware component instance helpers.
  *
+ * Shopware mounts inserted `[data-component]` nodes from a MutationObserver
+ * after a dynamic import-map `import()`. On a cold production chunk that
+ * import can take longer than any frame-count poll, so callers must not race
+ * the observer. `mountComponents` awaits the same import (`Shopware.getComponent`)
+ * and instantiates via `Shopware.initializeComponentOnElement`. Both are
+ * idempotent with the observer path, so whichever runs first wins and the
+ * other reuses the instance.
+ *
  * @module @views-theme/modules/shared/component
  */
 
@@ -18,56 +26,52 @@ export function getInstanceByElement(componentName, el) {
 }
 
 /**
- * @param {() => unknown} getInstance
- * @param {number} [retries]
- * @returns {Promise<unknown>}
- */
-export async function waitForInstance(getInstance, retries = 20) {
-    for (let i = 0; i < retries; i++) {
-        const instance = getInstance()
-        if (instance) {
-            return instance
-        }
-
-        await new Promise((resolve) => {
-            requestAnimationFrame(resolve)
-        })
-    }
-
-    return getInstance()
-}
-
-/**
- * Wait until every named component under root has a mounted instance
- * (or no matching elements exist).
+ * Mount `[data-component]` nodes in `root` (root included) and resolve once
+ * they have instances. Each component chunk is imported once, in parallel.
+ * Elements are then instantiated in document order (parent before child), as
+ * on page boot.
  *
- * @param {Element} root
- * @param {string[]} componentNames
- * @param {number} [retries]
+ * Nodes that leave the document while chunks load are skipped. The observer
+ * would never destroy a detached instance. A component whose import fails, or
+ * whose constructor throws, is skipped (logged). Check the instance afterwards
+ * with `getInstanceByElement`.
+ *
+ * @param {Element|null|undefined} root
+ * @param {string[]} [componentNames] only these names (default: every component in the tree)
  * @returns {Promise<void>}
  */
-export async function waitForComponentsIn(root, componentNames, retries = 20) {
-    if (!root || !window.Shopware?.getComponentInstanceByElement) {
+export async function mountComponents(root, componentNames) {
+    const shopware = window.Shopware
+    if (!root?.isConnected || typeof shopware?.getComponent !== 'function') {
         return
     }
 
-    const names = componentNames || []
+    const only = componentNames ? new Set(componentNames) : null
+    const els = [root, ...root.querySelectorAll('[data-component]')].filter((el) => {
+        const name = el.getAttribute('data-component')
+        return Boolean(name) && (!only || only.has(name))
+    })
+    if (!els.length) {
+        return
+    }
 
-    for (let i = 0; i < retries; i++) {
-        const ready = names.every((name) => {
-            const els = root.querySelectorAll(`[data-component="${name}"]`)
-            if (!els.length) {
-                return true
-            }
-            return [...els].every((el) => getInstanceByElement(name, el))
-        })
-        if (ready) {
-            return
+    const names = [...new Set(els.map((el) => el.getAttribute('data-component')))]
+    const classes = new Map(
+        await Promise.all(names.map(async (name) => [name, await shopware.getComponent(name)])),
+    )
+
+    for (const el of els) {
+        const name = el.getAttribute('data-component')
+        const component = classes.get(name)
+        if (!component || !el.isConnected) {
+            continue
         }
-
-        await new Promise((resolve) => {
-            requestAnimationFrame(resolve)
-        })
+        try {
+            shopware.initializeComponentOnElement(name, component, el)
+        } catch (error) {
+            // One broken child must not keep the shell from opening.
+            console.error(`Component ${name} failed to initialize`, error)
+        }
     }
 }
 

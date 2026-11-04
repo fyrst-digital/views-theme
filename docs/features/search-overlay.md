@@ -36,8 +36,8 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 2. **Click:** if Overlay open → shell `close()` (no fetch); else Action `open()`
 3. **`open({ term }?)`** (click or `callMethod`): optional `term` updates preserved string; if already open → Overlay `open({ term })` only; else **always** fetch `frontend.views-theme.search.overlay`
 4. Response root is mounted on `document.body` (any leftover mount removed first)
-5. Action waits for Overlay instance, then `overlay.open({ term: preservedTerm })` (logs if instance never mounts; Action does not touch the input)
-6. Overlay opens chrome, waits for Bar, calls `Bar.onOpened(term)` (setTerm + suggest once), then `emitQueued` Open `{ el, term }` for Action aria, then `Bar.focusInput()`
+5. Action `mountComponents` (Overlay + nested Bar / Backdrop / Close) then `overlay.open({ term: preservedTerm })` (logs if instance never mounts; Action does not touch the input)
+6. Overlay opens chrome, mounts Bar via `mountComponents(el, [Bar])`, calls `Bar.onOpened(term)` (setTerm + suggest once), then `emitQueued` Open `{ el, term }` for Action aria, then `Bar.focusInput()`
 7. Action sets `aria-expanded` on Open
 
 ### Close flow

@@ -1,6 +1,6 @@
 import {
     getInstanceByElement,
-    waitForInstance,
+    mountComponents,
 } from '@views-theme/modules/shared/component.js'
 
 /**
@@ -32,7 +32,7 @@ export default class Gallery extends ShopwareComponent {
     }
 
     async _hydrate() {
-        await waitForInstance(() => this._canvas())
+        await mountComponents(this.el, [this.options.canvasComponent])
         if (this._destroyed) {
             return
         }

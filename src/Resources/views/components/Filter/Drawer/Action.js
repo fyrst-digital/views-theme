@@ -7,7 +7,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForInstance,
+    mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -101,7 +101,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
             }
 
             this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForInstance(() => this._getDrawerInstance())
+            await mountComponents(this._drawerEl)
 
             if (!request.isCurrent()) {
                 return
@@ -114,10 +114,6 @@ export default class FilterDrawerAction extends ShopwareComponent {
             }
 
             drawer.open()
-            // Children (Panel/facets) init after Drawer; second frame then sync.
-            await new Promise((resolve) => {
-                requestAnimationFrame(() => requestAnimationFrame(resolve))
-            })
             await this._syncListingControls()
         } catch (error) {
             if (error?.name === 'AbortError') {

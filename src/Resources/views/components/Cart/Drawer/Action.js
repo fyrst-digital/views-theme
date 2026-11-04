@@ -5,7 +5,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForInstance,
+    mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -120,7 +120,7 @@ export default class CartDrawerAction extends ShopwareComponent {
             }
 
             this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForInstance(() => this._getDrawerInstance())
+            await mountComponents(this._drawerEl)
 
             if (!request.isCurrent()) {
                 return

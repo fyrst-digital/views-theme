@@ -5,7 +5,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForInstance,
+    mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -106,7 +106,7 @@ export default class SearchAction extends ShopwareComponent {
             }
 
             this._overlayEl = replaceMount(this.options.overlaySelector, html)
-            await waitForInstance(() => this._getOverlayInstance())
+            await mountComponents(this._overlayEl)
 
             if (!request.isCurrent()) {
                 return

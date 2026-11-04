@@ -5,7 +5,7 @@ import {
     collectControlValues,
     urlParams,
 } from '@views-theme/modules/review/params.js'
-import { getInstanceByElement, waitForComponentsIn } from '@views-theme/modules/shared/component.js'
+import { getInstanceByElement, mountComponents } from '@views-theme/modules/shared/component.js'
 import { parseHtmlRoot, replaceComponentIsland } from '@views-theme/modules/shared/dom.js'
 
 const RESULTS_CONTROL_NAMES = [
@@ -124,7 +124,7 @@ export default class ReviewPanel extends ShopwareComponent {
                 `[data-component="${this.options.listComponent}"]`,
             )
             if (results) {
-                await waitForComponentsIn(results, RESULTS_CONTROL_NAMES)
+                await mountComponents(results, RESULTS_CONTROL_NAMES)
             }
 
             this.syncControls()
