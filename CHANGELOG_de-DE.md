@@ -1,3 +1,31 @@
+# 1.1.0
+
+**Hinweise zum Update**
+- Die Theme-Einstellungen wurden umbenannt und neu gruppiert. In Version 1.0.0 gesetzte Farben, Schriften und Logos werden nicht übernommen: Prüfe die Theme-Einstellungen nach dem Update und trage sie erneut ein
+- Das Theme hat keine eigenen Logos für Tablet und Mobil, kein Teilen-Icon, kein Favicon und keine Tertiärfarbe mehr
+- Storefront- und Administrations-Assets nach dem Update neu bauen und kompilieren
+
+**Changelog**
+- Die Theme-Einstellungen sind in die Tabs Farben, Typografie und Medien gruppiert, mit neuen Optionen für Statusfarben, Hintergründe von Header, Seite und Footer, Rahmenfarbe, Eckenradius, Abstände, Icon-Größen, Überschriftengrößen und Breakpoints
+- Die Logo-Breite lässt sich für Mobil, Tablet und Desktop getrennt einstellen
+- Neu gestalteter Header: Sprach- und Währungswechsel sitzen auf großen Bildschirmen bei den Header-Aktionen
+- Neu gestalteter Footer mit Newsletter-Anmeldung, Shop-Adresse und Kontakt-Buttons für Telefon, E-Mail und Kontaktformular (neue Einstellungen für Shop-Informationen)
+- Neu gestalteter Cookie-Hinweis und neu gestaltete Cookie-Einstellungen, die sich jetzt in einer Schublade öffnen
+- Neu gestalteter Nach-oben-Button
+- Neu gestaltete Warenkorbseite mit optionaler Versandkostenberechnung in der Warenkorb-Seitenleiste und der Warenkorb-Schublade (Plugin-Einstellung)
+- Registrierung, Bestellbestätigung und Abschlussseite der Kasse nutzen ein gemeinsames Layout, mit Auswahlkarten für Zahlungs- und Versandarten, die Versandpreise anzeigen
+- Optionaler Lieferzeitraum in der Zusammenfassung der Kasse (Plugin-Einstellung)
+- Adressen werden in der Kasse in einer neu gestalteten Adressverwaltung geändert
+- Der minimale Kassen-Header führt zurück zum Warenkorb
+- Anmeldung und Registrierung teilen sich eine Seite mit Tabs
+- Kunden können ihre Bestellhistorie nach Status und Datum filtern und eine frühere Bestellung wiederholen
+- Neu gestaltete Seiten im Kundenkonto
+- Neu gestaltete Variantenauswahl auf der Produktseite, mit Hinweis und Lieferhinweis, wenn ein Produkt nicht kaufbar ist
+- Überarbeitete Darstellung aktiver Filter und des Filter-Zurücksetzens
+- Erlebniswelten: Der Abstand zwischen Sektionen lässt sich im Layout-Editor je Viewport einstellen
+- Eigene Einstellungsseite für das Views Theme in der Administration, mit Plugin-Icon und Theme-Vorschaubild
+- Neu gestaltete Formularfelder, Checkboxen und Radiobuttons
+
 # 1.0.0
 
 **Changelog**
