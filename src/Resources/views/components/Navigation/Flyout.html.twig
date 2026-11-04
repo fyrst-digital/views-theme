@@ -10,15 +10,13 @@
 {% set flyoutId = category ? 'vi-navigation-flyout-' ~ category.id : 'vi-navigation-flyout' %}
 {% set teaserImage = category and category.media ? category.media : null %}
 {% set hasTeaser = teaserImage is not null %}
-{% do vi_define_cva(cva, ['root', 'columns', 'teaser']) %}
-{% do vi_define_attrs(['columns', 'teaser']) %}
+{% do vi_define_cva(cva, ['root', 'body', 'columns', 'teaser']) %}
+{% do vi_define_attrs(['body', 'columns', 'teaser']) %}
 
 <div
     {{ attributes.defaults({
         id: flyoutId,
         popover: 'manual',
-        'data-component': 'ViewsTheme:Navigation:Flyout',
-        'data-navigation-id': category ? category.id : null,
         'data-has-teaser': hasTeaser ? 'true' : 'false',
         role: 'region',
         'aria-label': name,
@@ -26,39 +24,46 @@
     }) }}
     class="{{ vi_class('root', { teaser: hasTeaser }) }}"
 >
-    {% block content %}
+    {# Layout lives on `body`, not the popover root: a display utility there (`!important`)
+       would beat the UA `display: none` of a closed popover. #}
+    <div
+        {{ vi_attrs('body') }}
+        class="{{ vi_class('body') }}"
+    >
+        {% block content %}
 
-        {% block columns %}
-            <div
-                {{ vi_attrs('columns') }}
-                class="{{ vi_class('columns') }}"
-            >
-                {% for treeItem in navigation.tree %}
-                    {% set cat = treeItem.category %}
-                    {% set hasChildren = treeItem.children|length > 0 %}
-                    {% set itemSkipped = cat.type == 'folder' and not hasChildren %}
+            {% block columns %}
+                <div
+                    {{ vi_attrs('columns') }}
+                    class="{{ vi_class('columns') }}"
+                >
+                    {% for treeItem in navigation.tree %}
+                        {% set cat = treeItem.category %}
+                        {% set hasChildren = treeItem.children|length > 0 %}
+                        {% set itemSkipped = cat.type == 'folder' and not hasChildren %}
 
-                    {% if not itemSkipped %}
-                        <twig:ViewsTheme:Navigation:Flyout:Column
-                            :item="treeItem"
-                            :level="0"
-                            :maxDepth="maxDepth"
-                        />
-                    {% endif %}
-                {% endfor %}
-            </div>
+                        {% if not itemSkipped %}
+                            <twig:ViewsTheme:Navigation:Flyout:Column
+                                :item="treeItem"
+                                :level="0"
+                                :maxDepth="maxDepth"
+                            />
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endblock %}
+
+            {% block teaser %}
+                {% if hasTeaser and category %}
+                    <twig:ViewsTheme:Navigation:Flyout:Teaser
+                        class="{{ vi_class('teaser') }}"
+                        {{ ...vi_attrs('teaser').defaults({
+                            category: category,
+                            image: teaserImage,
+                        }).all() }}
+                    />
+                {% endif %}
+            {% endblock %}
         {% endblock %}
-
-        {% block teaser %}
-            {% if hasTeaser and category %}
-                <twig:ViewsTheme:Navigation:Flyout:Teaser
-                    class="{{ vi_class('teaser') }}"
-                    {{ ...vi_attrs('teaser').defaults({
-                        category: category,
-                        image: teaserImage,
-                    }).all() }}
-                />
-            {% endif %}
-        {% endblock %}
-    {% endblock %}
+    </div>
 </div>

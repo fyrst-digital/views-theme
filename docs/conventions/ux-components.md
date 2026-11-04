@@ -515,7 +515,7 @@ Co-located JS extends global `ShopwareComponent`. Build: `composer build:js:stor
 | Form:Select | UX + `vi_cva`; used by Shipping:Calculation:Field |
 | Multi-slot CVA (≥5 slots) | Sibling `.cva.twig` + `vi_define_cva` |
 | Page:Header:* (+ Cart JS), Page:Footer:* (Footer/Minimal class-backed; Column.js) | UX + `vi_cva`; [footer.md](../features/footer.md) |
-| Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser, Flyout.js) | UX + `vi_cva` |
+| Navigation:Bar (+ Bar.js), Navigation:Flyout (+ Column/Item/Teaser; markup only, Bar owns behavior) | UX + `vi_cva` |
 | Search:* (+ Action/Overlay JS), Navigation/Flyout, Cart:Drawer:* | UX / component |
 | Language:Action / Currency:Action (class-backed; nest `toggle`) + Menu (via Dropdown) | UX + `vi_cva` + `Action.php` |
 | Backdrop (shared; click → parent `close` via `componentName`), Drawer (+ Panel/Header; Panel JS), generic `Close` (`target` → parent `close`) and `Count` (bus-driven count pill), Navigation:Drawer (compose via panel override), Action / Menu / Drill JS | UX + `vi_cva` |

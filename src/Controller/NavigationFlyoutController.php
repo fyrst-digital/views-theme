@@ -29,6 +29,8 @@ class NavigationFlyoutController extends AbstractComponentController
     #[Route(
         path: '/vi/navigation/flyout/{navigationId}',
         name: 'frontend.views-theme.navigation.flyout',
+        // Category ids only: the route is HTTP-cached, so arbitrary strings must not create entries.
+        requirements: ['navigationId' => '[0-9a-f]{32}'],
         defaults: [
             'XmlHttpRequest' => true,
             PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
@@ -37,10 +39,6 @@ class NavigationFlyoutController extends AbstractComponentController
     )]
     public function flyout(string $navigationId, SalesChannelContext $context): Response
     {
-        if ($navigationId === '') {
-            return new Response('', Response::HTTP_BAD_REQUEST);
-        }
-
         $scDepth = $context->getSalesChannel()->getNavigationCategoryDepth();
         if ($scDepth < 1) {
             $scDepth = self::FALLBACK_DEPTH;
@@ -54,7 +52,6 @@ class NavigationFlyoutController extends AbstractComponentController
         }
 
         $loaderDepth = max(0, $flyoutLevels - 1);
-        $twigMaxDepth = $loaderDepth;
 
         $navigation = $this->navigationLoader->load(
             $navigationId,
@@ -71,7 +68,7 @@ class NavigationFlyoutController extends AbstractComponentController
         return $this->renderComponent('ViewsTheme:Navigation:Flyout', [
             'navigation' => $navigation,
             'category' => $navigation->getActive(),
-            'maxDepth' => $twigMaxDepth,
+            'maxDepth' => $loaderDepth,
         ]);
     }
 }
