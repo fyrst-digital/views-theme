@@ -3,7 +3,8 @@
   min-block-size: var(--vi-min-h, auto);
   grid-template-columns: var(--vi-cols, minmax(0, 1fr));
   grid-template-rows: var(--vi-rows, none);
-  grid-template-areas: var(--vi-areas, none);
+  /* Single: canvas must resolve to a named area (Canvas sets grid-area: canvas) or it lands in implicit tracks */
+  grid-template-areas: var(--vi-areas, 'canvas');
 
   &[data-multi='true'] {
     --vi-areas: 'canvas' 'thumbs';
