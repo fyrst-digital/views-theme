@@ -1,3 +1,13 @@
+# 1.1.3
+
+**Upgrade notes**
+- The `Navigation:Flyout` JS component (`Flyout.js`) and its open/close events were removed. `Navigation:Bar` now owns the flyouts. Overrides that hooked into the Flyout component must hook into `Navigation:Bar` instead.
+- The navigation flyout route now only accepts a 32-character hex category id.
+
+**Changelog**
+- The navigation flyout now closes when you hover a menu item without a flyout or empty space in the bar
+- Product filters appear on category listings again. CMS elements receive the page context again, so they no longer render blank and hide their block
+
 # 1.1.2
 
 **Upgrade notes**

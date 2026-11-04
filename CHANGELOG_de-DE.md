@@ -1,3 +1,13 @@
+# 1.1.3
+
+**Hinweise zum Update**
+- Die JS-Komponente `Navigation:Flyout` (`Flyout.js`) und ihre Open-/Close-Events wurden entfernt. `Navigation:Bar` verwaltet die Flyouts jetzt selbst. Anpassungen, die sich in die Flyout-Komponente eingehängt haben, müssen stattdessen `Navigation:Bar` verwenden.
+- Die Route des Navigations-Flyouts akzeptiert nur noch eine 32-stellige hexadezimale Kategorie-ID.
+
+**Changelog**
+- Das Navigations-Flyout schließt sich jetzt, wenn du mit der Maus über einen Menüpunkt ohne Flyout oder über leeren Platz in der Leiste fährst
+- Produktfilter erscheinen in Kategorie-Listings wieder. CMS-Elemente erhalten wieder den Seitenkontext und bleiben nicht mehr leer, sodass ihr Block nicht mehr ausgeblendet wird
+
 # 1.1.2
 
 **Hinweise zum Update**
