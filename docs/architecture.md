@@ -125,7 +125,6 @@ Examples:
 
 | Name | Path |
 |------|------|
-| `frontend.views-theme.search.overlay` | `/vi/search/overlay` |
 | `frontend.views-theme.search.suggest` | `/vi/search/suggest` |
 | `frontend.views-theme.navigation.drawer` | `/vi/navigation/drawer` |
 | `frontend.views-theme.navigation.drawer.menu` | `/vi/navigation/drawer/menu` |
@@ -171,7 +170,7 @@ Shopware only HTTP-caches a route that opts in with `PlatformRequest::ATTRIBUTE_
 | `navigation.drawer`, `navigation.drawer.menu` (core `frontend.menu.offcanvas` parity) | `cart.drawer`, `cart.page`, `checkout.variants-grid.*` (cart) |
 | `navigation.flyout` | `address.*` (customer) |
 | `gallery.fullscreen` | `review.list` (`Review:Form` reads the customer's own review) |
-| `listing.category`, `listing.category.aggregations`, `listing.category.filter-options` (core CMS navigation page parity) | `search.overlay`, `search.suggest`, `listing.search*`, `filter.drawer.search` (search term) |
+| `listing.category`, `listing.category.aggregations`, `listing.category.filter-options` (core CMS navigation page parity) | `search.suggest`, `listing.search*`, `filter.drawer.search` (search term) |
 | `filter.drawer.category` | `cookie.manager`, `cookie.consent` (rarely hit; core cookie offcanvas is not cached either) |
 
 Route names above omit the `frontend.views-theme.` prefix.

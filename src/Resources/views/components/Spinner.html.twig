@@ -1,0 +1,21 @@
+{% props
+    size = 'md', # sm | md
+    label = 'viewsTheme.spinner.label'|trans|striptags,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+{% do vi_define_attrs(['label']) %}
+
+<div
+    {{ attributes.defaults({
+        role: 'status',
+    }) }}
+    class="{{ vi_class('root', { size: size }) }}"
+>
+    <span
+        {{ vi_attrs('label') }}
+        class="{{ vi_class('label') }}"
+    >{{ label }}</span>
+</div>

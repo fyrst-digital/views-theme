@@ -2,11 +2,14 @@
 
 **Hinweise zum Update**
 - **Verhaltensänderung:** Das Storefront-Logo verwendet die geerbten Storefront-Felder `sw-logo-desktop` / `sw-logo-tablet` / `sw-logo-mobile` nicht mehr. Setze `page-logo` in den Theme-Einstellungen unter Medien. Ist `page-logo` leer, erscheint das mitgelieferte Views-Logo. Favicon und Open-Graph-Bilder bleiben unverändert und nutzen weiter die Storefront-Felder `sw-logo-*`.
+- **Entfernt:** die Route `/vi/search/overlay` (`frontend.views-theme.search.overlay`) und das Prop `overlayUrl` von `Search:Action`. Das Such-Overlay wird jetzt mit der Seite ausgeliefert. Anpassungen, die das Overlay über diese Route geändert haben, müssen stattdessen `Search:Overlay` erweitern.
 
 **Changelog**
 - Ein leeres `page-logo` zeigt jetzt das mitgelieferte Views-Logo statt des Shopware-Demo-Logos aus `sw-logo-*`
 - Die Schrift Figtree wird vorab geladen und startet damit sofort statt erst nach dem Theme-Stylesheet
 - Navigations-Schublade, Navigations-Flyout, Vollbild-Galerie, Kategorie-Listing und Kategorie-Filterschublade werden jetzt im HTTP-Cache gespeichert und öffnen sich bei wiederholten Aufrufen schneller
+- Die Warenkorb-Schublade öffnet sich sofort beim Klick und zeigt einen Ladeindikator, bis der Warenkorb geladen ist
+- Das Such-Overlay öffnet sich sofort, ohne Anfrage an den Server
 
 # 1.1.1
 

@@ -1,9 +1,6 @@
 import {
-    abortRequest,
-    beginRequest,
-    fetchText,
     getInstanceByElement,
-    replaceMount,
+    mountTemplate,
     unmountEl,
     mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
@@ -13,7 +10,8 @@ import {
  */
 export default class SearchAction extends ShopwareComponent {
     static options = {
-        overlayUrl: null,
+        /** `<template>` with the static overlay shell (rendered next to the Action) */
+        templateId: 'vi-search-overlay-template',
         overlayComponentName: 'ViewsTheme:Search:Overlay',
         overlaySelector: '[data-component="ViewsTheme:Search:Overlay"]',
         openEvent: 'ViewsTheme:Search:Overlay:Open',
@@ -24,7 +22,6 @@ export default class SearchAction extends ShopwareComponent {
         this._overlayEl = null
         this._preservedTerm = ''
         this._loading = false
-        this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
         this._onOverlayOpen = this._onOverlayOpen.bind(this)
         this._onOverlayClose = this._onOverlayClose.bind(this)
@@ -38,7 +35,6 @@ export default class SearchAction extends ShopwareComponent {
         this.el.removeEventListener('click', this._onClick)
         window.Shopware.off(this.options.openEvent, this._onOverlayOpen)
         window.Shopware.off(this.options.closeEvent, this._onOverlayClose)
-        abortRequest(this._fetch)
         this._unmountOverlay()
     }
 
@@ -63,7 +59,7 @@ export default class SearchAction extends ShopwareComponent {
             return
         }
 
-        await this._loadAndMountOverlay()
+        await this._mountAndOpenOverlay()
     }
 
     async close() {
@@ -89,28 +85,13 @@ export default class SearchAction extends ShopwareComponent {
         await this.open()
     }
 
-    async _loadAndMountOverlay() {
-        if (!this.options.overlayUrl) {
-            console.error('SearchAction: overlayUrl is missing')
-            return
-        }
-
+    async _mountAndOpenOverlay() {
         this._loading = true
         this.el.setAttribute('aria-busy', 'true')
-        const request = beginRequest(this._fetch)
 
         try {
-            const html = await fetchText(this.options.overlayUrl, { signal: request.signal })
-            if (!request.isCurrent()) {
-                return
-            }
-
-            this._overlayEl = replaceMount(this.options.overlaySelector, html)
+            this._overlayEl = mountTemplate(this.options.templateId, this.options.overlaySelector)
             await mountComponents(this._overlayEl)
-
-            if (!request.isCurrent()) {
-                return
-            }
 
             const overlay = this._getOverlayInstance()
             if (!overlay || typeof overlay.open !== 'function') {
@@ -120,9 +101,6 @@ export default class SearchAction extends ShopwareComponent {
 
             await overlay.open({ term: this._preservedTerm || null })
         } catch (error) {
-            if (error?.name === 'AbortError') {
-                return
-            }
             console.error('SearchAction: Failed to open search overlay', error)
         } finally {
             this._loading = false

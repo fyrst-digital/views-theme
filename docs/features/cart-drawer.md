@@ -8,11 +8,11 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Cart:Drawer:Action` | Lazy fetch/mount; toggle open/close; auto-open on configured `Cart:Changed` actions. Public `open()` / `close()` (`callMethod`). Composes `Button` + badge |
+| `Cart:Drawer:Action` | Clones the drawer shell `<template>` (rendered next to the Button) and opens it at once; toggle open/close; auto-open on configured `Cart:Changed` actions. Public `open()` / `close()` (`callMethod`). Composes `Button` + badge |
 
 | `Cart` | Always-mounted mutation owner: listens for cart intents, POSTs core checkout routes, emits `Cart:Changed` |
-| `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body` |
-| `Cart:Drawer:Body` | While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Shipping / Footer roots |
+| `Cart:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` / header; body is `Cart:Drawer:Body`. Without `page` it renders the data-free shell (heading without count, pending Body) |
+| `Cart:Drawer:Body` | Pending (no `page`): `ViewsTheme:Spinner` + `aria-busy`, fetches drawer HTML on init and fills itself. While open: on `Cart:Changed` re-fetches drawer HTML and swaps Flashes / Heading / Items / Shipping / Footer roots |
 | `Cart:Flashes` | Session flash bag (`app.flashes`) via `ViewsTheme:Alert`; shared with [cart page](cart-page.md) |
 | `Cart:Items` | Stacked line items (`layout="stacked"`, no list wrapper), or `Cart:Empty`. Register aside uses the same list. The cart page table is [`LineItems:Table`](cart-page.md) |
 | `Cart:Empty` | Empty-cart message (`role="status"`); reusable outside the drawer |
@@ -33,11 +33,12 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 - Successful `Cart:Changed` with `action` in `openOnActions` (default `['add']`) calls Action `open()` — fetch + mount if closed; no-op if already open (Body refreshes)
 - Twig/JS: `openOnActions` (default `['add']`); pass `:openOnActions="[]"` to disable auto-open
 - Public API: `open()` / `close()` via `Shopware.callMethod('ViewsTheme:Cart:Drawer:Action', 'open'|'close')`
-- Drawer shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
+- Instant open: the drawer, backdrop and header show on click with a loader in the body. No request runs before the drawer opens; the body loads the cart inside the open drawer ([shell template](../conventions/javascript.md#shell-templates-instant-open))
+- Drawer shell lifecycle (hard rule): **fresh shell + cart fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Generic `ViewsTheme:Drawer` primitive owns open/close, backdrop, Escape, focus trap, body scroll lock (`side="end"`)
 - Line items via shared `LineItem:*` UX components; quantity and remove use AJAX + events
 - Summary, cart options (promotion form + shipping pre-calculation), CTAs (`Cart:Actions` → `Cart:Action:Checkout` + `Cart:Action:Cart` → `Button`) — Footer only when cart has line items
-- Empty, loading (`aria-busy`), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
+- Empty, loading (`aria-busy`; spinner on first fill), session flash messages (success/danger from core cart mutations), and client error (`role="alert"`) states
 - Header badge (generic `Count`, `countKey: cartCount`) tracks cart via `ViewsTheme:Cart:Changed` — not core `OffCanvasCart` / `CartWidget`
 - Listing/PDP buy: `Product:Action:Buy` → `Cart:Add` → badge + drawer open (Action). Variants grid still core `data-add-to-cart` (follow-up)
 - Cart page mutations refresh theme `Cart:Page` islands — see [cart page](cart-page.md)
@@ -46,15 +47,15 @@ All UI lives under UX components (`components/Drawer/*`, `components/Cart/*`, `c
 
 ### Open flow
 
-1. `ViewsTheme:Cart:Drawer:Action` reads `drawerUrl` / `openOnActions` from `data-component-options`
-2. **Click:** if Drawer open → `close()` (no fetch); else `open()`
- 3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else **always** fetch `frontend.views-theme.cart.drawer` (`AbortController`; stale responses ignored)
- 4. Response root is `ViewsTheme:Drawer` (`#vi-cart-drawer`); any leftover mount is removed, then the new root is appended to `document.body`
- 5. Drawer + Panel + Body + LineItem children initialize; Action calls Drawer `open()` (logs if instance never mounts)
- 6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
- 7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
- 8. Action `destroy()` aborts in-flight open fetch and unmounts any open shell
- 9. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
+1. `Cart:Drawer:Action` renders the Button plus a sibling `<template id="vi-cart-drawer-template">` holding `Cart:Drawer` **without** `page`: the drawer chrome, the heading without a count, and a pending `Cart:Drawer:Body` (spinner, `aria-busy`, alert; **no** `Cart:Flashes`, which would consume the session flash bag of the page). Action reads `templateId` / `openOnActions` from `data-component-options`
+2. **Click:** if Drawer open → `close()`; else `open()`
+3. **`open()`** (click, `callMethod`, or auto from `Cart:Changed`): if already open → no-op; else `mountTemplate()` clones the template onto `document.body` (any leftover mount removed first), `mountComponents()`, then Drawer `open()` (logs if the instance never mounts). No request runs before this
+4. The pending Body fetches `frontend.views-theme.cart.drawer` from `init()` (`AbortController`; aborted when the drawer unmounts)
+5. **First fill:** Body replaces its children with the children of the response's `Cart:Drawer:Body` (Flashes, alert, Items, Shipping, Footer, in server order), swaps `Cart:Drawer:Heading`, and drops `aria-busy`. On failure it drops the loader and shows the alert; the next `Cart:Changed` retries the fill
+6. Drawer emits `ViewsTheme:Drawer:Open` via `Shopware.emitQueued`; Action sets `aria-expanded`
+7. On `ViewsTheme:Drawer:Close`: Action sets `aria-expanded`, **removes** the drawer root (no focus restore — avoids scroll jump)
+8. Action `destroy()` unmounts any open shell (Body `destroy()` aborts its fetch)
+9. **Auto-open:** on `Cart:Changed` with `ok` and `action` ∈ `openOnActions` → `open()` (Body still owns in-open refresh)
 
 ### Mutation API
 
@@ -89,7 +90,7 @@ Callers may emit `ViewsTheme:Cart:Add` / `ViewsTheme:Cart:Changed` directly. `Pr
     - `ViewsTheme:Cart:Drawer:Heading`
  4. Parse with `<template>`; Body refresh aborts stale fetches and queues one follow-up while busy. Island swap: both → replace; existing only → remove; next only → append to target root
 
-Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Open still full-refetches + mounts; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
+Shell stays mounted (open state, focus trap). Only the islands are swapped — Body and Drawer root are not replaced. Every open mounts a fresh shell and fetches; close unmounts. Rendering flashes in the drawer prevents them from appearing in page `base_flashbags` after reload.
 
 ### Controller
 
@@ -105,7 +106,7 @@ Shell stays mounted (open state, focus trap). Only the islands are swapped — B
 | Render | `AbstractComponentController::renderComponent()` → `ViewsTheme:Cart:Drawer` with prop `page` |
 | SEO/media | Placeholder replace on the response — see [architecture — UX XHR](../architecture.md#ux-xhr-component-responses-critical) |
 
-Used for shell open and in-open island refresh. Third parties that enrich cart **page** data (App scripts on `checkout-cart-page-loaded`, or subscribers to `CheckoutCartPageLoadedEvent`) apply to the drawer automatically. Do **not** target `checkout-offcanvas-widget-loaded` for this UI.
+Used for the Body's first fill and in-open island refresh (the shell itself comes from the page template). Third parties that enrich cart **page** data (App scripts on `checkout-cart-page-loaded`, or subscribers to `CheckoutCartPageLoadedEvent`) apply to the drawer automatically. Do **not** target `checkout-offcanvas-widget-loaded` for this UI.
 
 See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks).
 
@@ -233,7 +234,7 @@ Nest names (via `Cart:Options` → `shipping:*`):
 | `shipping:selection:shipping:*` | Shipping `Field` → `Form:Select` |
 | `shipping:page` | Cart page DTO (countries / paymentMethods / shippingMethods) |
 
-Action and Body options (`data-component-options`): `drawerUrl`. Badge (`Count`) options: `changedEvent`, `countKey`.
+Action options (`data-component-options`): `templateId`, `openOnActions`. Body options: `drawerUrl`, `pending`, component names. Badge (`Count`) options: `changedEvent`, `countKey`.
 
 Events:
 
@@ -252,6 +253,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 | Drawer compose | `src/Resources/views/components/Cart/Drawer.*` |
 | Action | `src/Resources/views/components/Cart/Drawer/Action.*` |
 | Body / drawer islands | `src/Resources/views/components/Cart/Drawer/{Body,Footer,Heading}.*` |
+| Loader | `src/Resources/views/components/Spinner.*` |
+| Template mount | `src/Resources/app/storefront/src/modules/shared/dom.js` (`mountTemplate`) |
 | Shared flashes / items | `src/Resources/views/components/Cart/{Flashes,Items}.*` |
 | Empty state | `src/Resources/views/components/Cart/Empty.*` |
 | Options | `src/Resources/views/components/Cart/Options.*` |

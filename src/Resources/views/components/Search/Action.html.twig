@@ -1,6 +1,6 @@
 {% props
     size = 'md', # md
-    overlayUrl = path('frontend.views-theme.search.overlay'),
+    templateId = 'vi-search-overlay-template',
     cva = {},
 %}
 
@@ -19,7 +19,12 @@
         'aria-expanded': 'false',
         'data-component': 'ViewsTheme:Search:Action',
         'data-component-options': {
-            overlayUrl: overlayUrl,
+            templateId: templateId,
         }|json_encode,
     }).all() }}
 />
+
+{# Static overlay shell: the Action clones it on open (no request) #}
+<template id="{{ templateId }}">
+    <twig:ViewsTheme:Search:Overlay />
+</template>

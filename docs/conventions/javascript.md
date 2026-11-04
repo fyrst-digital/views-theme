@@ -149,11 +149,29 @@ Does **not** cover in-session Menu drill level HTML caches, suggest result fragm
 
 | Phase | Required |
 |-------|----------|
-| **Open** | Always **(re)fetch** HTML. Never keep a string cache of a previous response for reuse. After insert, **`await mountComponents(root)`** so the shell **and nested** `[data-component]` nodes (Bar, Filter:Panel, …) are mounted, then read the shell instance. Do not poll for instances (rAF loops lose to a cold chunk). |
+| **Open** | Always mount **fresh** markup: **(re)fetch** HTML, or clone a [shell template](#shell-templates-instant-open). Never keep a string cache of a previous response for reuse. After insert, **`await mountComponents(root)`** so the shell **and nested** `[data-component]` nodes (Bar, Filter:Panel, …) are mounted, then read the shell instance. Do not poll for instances (rAF loops lose to a cold chunk). |
 | **Close** | After close completes (`*:Close` event), **remove** the shell root from the DOM. Do not keep a closed mount for the next open. |
-| **Re-open** | Full fetch + mount again. |
+| **Re-open** | Full fetch (or template clone) + mount again. |
 
 The Action owns this lifecycle; the shell primitive only open/closes.
+
+### Shell templates (instant open)
+
+When the shell chrome needs no request data, it ships with the page so the open does not wait for a request.
+
+| Rule | Required |
+|------|----------|
+| Markup | The Action's Twig renders the data-free shell into a sibling `<template id="…">` (prop + option `templateId`). The Action clones it with `mountTemplate(templateId, selector)` from `lazy-shell.js`, then mounts and opens it. No fetch before open |
+| Data | Content that needs the server loads **after** open, inside the open shell. The data region renders a pending state (`ViewsTheme:Spinner`, `aria-busy="true"`) and its own component fetches and fills itself (abort on destroy) |
+| Template content | Must not read or consume request state (for example the session flash bag): it is part of every page, and pages are HTTP-cached |
+| Close / re-open | Unchanged: remove on close. Every open clones a fresh copy; the `<template>` is never mutated |
+
+| Shell | Template | After open |
+|-------|----------|------------|
+| Search overlay | Whole overlay (static) | Nothing: no request |
+| Cart drawer | Drawer + header + pending `Cart:Drawer:Body` | Body fetches `frontend.views-theme.cart.drawer` and fills (see [Cart drawer](#cart-drawer)) |
+
+Other lazy shells (navigation, filter and cookie drawers, gallery fullscreen, address modal) still fetch before open.
 
 **Search overlay only:** Action keeps the **term string** from the Close payload (`{ el, term }`). On open it calls `overlay.open({ term })` only. Overlay coordinates Bar (`onOpened` / `getTerm` / `focusInput`) and `emitQueued` Open/Close `{ el, term }`. Action never queries the input DOM. Never cache overlay HTML or suggest DOM for reuse.
 
@@ -347,7 +365,7 @@ Lazy-loaded dialog from the header search action. Suggest UX lives on the bar co
 | Bar | `data-component="ViewsTheme:Search:Bar"` |
 | View all results | `data-action="view-all"` (legacy) |
 
-- Action lifecycle (critical): **(re)fetch + mount on every open**; `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Action lifecycle (critical): **clone the static [shell template](#shell-templates-instant-open) + mount on every open** (no request); `overlay.open({ term })`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - Public Action API: `open({ term }?)` / `close()` via `callMethod('ViewsTheme:Search:Action', …)`; already-open re-applies term without remount
 - Open/Close payload: `{ el, term }` via `emitQueued` (Action stores `term` / aria); Overlay calls `Bar.onOpened(term)` once for restore + suggest
 - Backdrop (`componentName`) / Close `callMethod('ViewsTheme:Search:Overlay', 'close')`
@@ -424,7 +442,8 @@ Lazy-loaded end-side cart drawer. **Cart** owns mutations; **Body** owns in-open
 | Quantity input | `data-component="ViewsTheme:LineItem:QuantityInput"` |
 | Remove | `data-component="ViewsTheme:LineItem:Remove"` |
 
-- Action lifecycle (critical): **(re)fetch + mount on every open**; on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Action lifecycle (critical): **clone the [shell template](#shell-templates-instant-open) + mount + open on every open** (no request before open); on `ViewsTheme:Drawer:Close` **unmount** drawer root — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
+- Body first fill: the shell's Body renders pending (`pending: true`, `ViewsTheme:Spinner`, `aria-busy`), fetches the drawer HTML on `init()`, then replaces its children with the response body's children (server order) and swaps the Heading. A failed fill drops the loader and shows the alert; the next `Cart:Changed` retries
 - Intents: `ViewsTheme:Cart:Add|Remove|Update|Promote|Configure` → Cart HTTP (serial queue, per-lineItemId coalesce) → `ViewsTheme:Cart:Changed`
 - Theme owns header drawer open + in-drawer mutations; `Product:Action:Buy` → `Cart:Add` → badge + Action `open()` when `openOnActions` includes `add` (default). Public `callMethod(…, 'open'|'close')`. Variants grid still core AddToCart
 - Body on `Changed`: re-fetch drawer HTML → swap Flashes / Items / Footer / Heading by `data-component` identity (shell stays mounted; flashes consume session bag)

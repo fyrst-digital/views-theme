@@ -24,7 +24,7 @@ Open the relevant links below and follow them. Full index: [docs/README.md](../R
 | Icons (`vi_icon`) | [vi-icon.md](../twig/vi-icon.md) |
 | JS: `data-component`, no CSS selectors, no `data-ref`, `ShopwareComponent` | [javascript.md](javascript.md) |
 | JS bus: `emit` / `emitQueued` / `on` / `off`, `callMethod`, event PascalCase | [javascript.md](javascript.md) |
-| **Lazy shells (critical):** never cache HTML/DOM; unmount on close; always (re)fetch on open (Search term via Open/Close payload only) | [javascript.md — Lazy-loaded shells](javascript.md#lazy-loaded-shells-critical) |
+| **Lazy shells (critical):** never cache HTML/DOM; unmount on close; mount fresh on every open: (re)fetch, or clone a data-free shell `<template>` and load data inside the open shell (Search term via Open/Close payload only) | [javascript.md — Lazy-loaded shells](javascript.md#lazy-loaded-shells-critical) · [shell templates](javascript.md#shell-templates-instant-open) |
 | Removed legacy class-map APIs (`vi_attr_classes`, `vi_classes`, old map-style define) | [css-classes.md](css-classes.md) |
 | **CSS vars (critical):** init once `prop: var(--token, fallback)`; variants **assign** `--token` only; chrome tokens `--vi-{component}-{prop}` (never `--vi-color` / `--vi-fw`); nest `&[aria-*]` | [css-classes.md — CSS custom properties](css-classes.md#css-custom-properties-critical) · [token naming](css-classes.md#token-naming) |
 | **Length units (critical):** component CSS / token fallbacks use **`px` only** — no `rem`/`em` lengths | [css-classes.md — Length units](css-classes.md#length-units-critical) |

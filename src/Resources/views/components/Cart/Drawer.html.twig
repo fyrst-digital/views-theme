@@ -1,5 +1,5 @@
 {% props
-    page,
+    page = null, # null → shell (Body shows the loader and fetches the cart)
     drawerUrl = path('frontend.views-theme.cart.drawer'),
     label = 'checkout.cartTitle'|trans|striptags,
     cva = {},
@@ -8,8 +8,7 @@
 {% do vi_define_cva(cva) %}
 {% do vi_define_attrs(['panel']) %}
 
-{% set cart = page.cart %}
-{% set productsQuantity = cart.lineItems|length %}
+{% set productsQuantity = page ? page.cart.lineItems|length : 0 %}
 
 <twig:ViewsTheme:Drawer
     class="{{ vi_class('root') }}"
