@@ -1,9 +1,6 @@
 import {
-    abortRequest,
-    beginRequest,
-    fetchText,
     getInstanceByElement,
-    replaceMount,
+    mountTemplate,
     unmountEl,
     mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
@@ -13,7 +10,8 @@ import {
  */
 export default class CartDrawerAction extends ShopwareComponent {
     static options = {
-        drawerUrl: null,
+        /** `<template>` with the data-free drawer shell (rendered next to the Action) */
+        templateId: 'vi-cart-drawer-template',
         drawerComponentName: 'ViewsTheme:Drawer',
         drawerSelector: '#vi-cart-drawer',
         openEvent: 'ViewsTheme:Drawer:Open',
@@ -26,7 +24,6 @@ export default class CartDrawerAction extends ShopwareComponent {
     init() {
         this._drawerEl = null
         this._loading = false
-        this._fetch = { controller: null, seq: 0 }
         this._onClick = this._onClick.bind(this)
         this._onDrawerOpen = this._onDrawerOpen.bind(this)
         this._onDrawerClose = this._onDrawerClose.bind(this)
@@ -43,7 +40,6 @@ export default class CartDrawerAction extends ShopwareComponent {
         window.Shopware.off(this.options.openEvent, this._onDrawerOpen)
         window.Shopware.off(this.options.closeEvent, this._onDrawerClose)
         window.Shopware.off(this.options.changedEvent, this._onCartChanged)
-        abortRequest(this._fetch)
         this._unmountDrawer()
     }
 
@@ -61,7 +57,7 @@ export default class CartDrawerAction extends ShopwareComponent {
             return
         }
 
-        await this._loadAndMountDrawer()
+        await this._mountAndOpenDrawer()
     }
 
     async close() {
@@ -103,28 +99,17 @@ export default class CartDrawerAction extends ShopwareComponent {
         void this.open()
     }
 
-    async _loadAndMountDrawer() {
-        if (!this.options.drawerUrl) {
-            console.error('CartDrawerAction: drawerUrl is missing')
-            return
-        }
-
+    /**
+     * Opens the shell straight away: no request before the drawer shows.
+     * `Cart:Drawer:Body` renders the loader and fetches the cart itself.
+     */
+    async _mountAndOpenDrawer() {
         this._loading = true
         this.el.setAttribute('aria-busy', 'true')
-        const request = beginRequest(this._fetch)
 
         try {
-            const html = await fetchText(this.options.drawerUrl, { signal: request.signal })
-            if (!request.isCurrent()) {
-                return
-            }
-
-            this._drawerEl = replaceMount(this.options.drawerSelector, html)
+            this._drawerEl = mountTemplate(this.options.templateId, this.options.drawerSelector)
             await mountComponents(this._drawerEl)
-
-            if (!request.isCurrent()) {
-                return
-            }
 
             const drawer = this._getDrawerInstance()
             if (!drawer || typeof drawer.open !== 'function') {
@@ -134,9 +119,6 @@ export default class CartDrawerAction extends ShopwareComponent {
 
             drawer.open()
         } catch (error) {
-            if (error?.name === 'AbortError') {
-                return
-            }
             console.error('CartDrawerAction: Failed to open cart drawer', error)
         } finally {
             this._loading = false

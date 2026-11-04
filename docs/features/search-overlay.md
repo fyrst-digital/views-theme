@@ -2,13 +2,14 @@
 
 Lazy-loaded full-viewport search dialog opened from the header search action.
 
-All UI lives under UX components (`components/Search/*`). Markup is served by theme routes under `/vi/…` — no storefront template overrides for search.
+All UI lives under UX components (`components/Search/*`). The overlay shell ships with the page as a `<template>` next to the Action; suggest results come from a theme route under `/vi/…`. No storefront template overrides for search.
 
 ## Features
 
 - Header `Search:Action` toggles `Search:Overlay` on click. Composes `ViewsTheme:Button` (`color="none"`, `icon="magnifying-glass"`)
 - Public API: `open({ term }?)` / `close()` via `Shopware.callMethod('ViewsTheme:Search:Action', 'open'|'close')`. Optional `term` sets preserved query; if overlay already open, re-applies via Overlay `open({ term })` without remount
-- Overlay shell lifecycle (hard rule): **(re)fetch on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
+- Instant open: the overlay is static, so it opens with **no request** ([shell template](../conventions/javascript.md#shell-templates-instant-open))
+- Overlay shell lifecycle (hard rule): **fresh clone on every open**, **remove from DOM when close finishes** — never cache HTML or keep a closed mount (see [JS conventions](../conventions/javascript.md#lazy-loaded-shells-critical))
 - Term hand-off is **event-only**: Close payload `{ el, term }` → Action stores string → `overlay.open({ term })` → Open payload → Bar `setTerm` + suggest. Action never touches the input DOM
 - Wide centered panel (command-palette style): search chrome + in-panel product list + “View all” footer
 - `Search:Bar` owns suggest UX (debounce, fetch, DOM insert) — **not** core `SearchWidgetPlugin`
@@ -32,10 +33,10 @@ All UI lives under UX components (`components/Search/*`). Markup is served by th
 
 ### Open flow
 
-1. `ViewsTheme:Search:Action` reads `overlayUrl` from `data-component-options`
+1. `ViewsTheme:Search:Action` renders the Button plus a sibling `<template id="vi-search-overlay-template">` holding `Search:Overlay`. Action reads `templateId` from `data-component-options`
 2. **Click:** if Overlay open → shell `close()` (no fetch); else Action `open()`
-3. **`open({ term }?)`** (click or `callMethod`): optional `term` updates preserved string; if already open → Overlay `open({ term })` only; else **always** fetch `frontend.views-theme.search.overlay`
-4. Response root is mounted on `document.body` (any leftover mount removed first)
+3. **`open({ term }?)`** (click or `callMethod`): optional `term` updates preserved string; if already open → Overlay `open({ term })` only; else `mountTemplate()` clones the template onto `document.body` (any leftover mount removed first). No request
+4. The template itself is never mutated, so every open starts from the same markup
 5. Action `mountComponents` (Overlay + nested Bar / Backdrop / Close) then `overlay.open({ term: preservedTerm })` (logs if instance never mounts; Action does not touch the input)
 6. Overlay opens chrome, mounts Bar via `mountComponents(el, [Bar])`, calls `Bar.onOpened(term)` (setTerm + suggest once), then `emitQueued` Open `{ el, term }` for Action aria, then `Bar.focusInput()`
 7. Action sets `aria-expanded` on Open
@@ -74,7 +75,6 @@ $this->components->createAndRender('ViewsTheme:Search:Suggest', [
 
 | Route name | Path | Method |
 |------------|------|--------|
-| `frontend.views-theme.search.overlay` | `/vi/search/overlay` | `GET` (XHR) |
 | `frontend.views-theme.search.suggest` | `/vi/search/suggest` | `GET` (XHR) |
 
 ## Hooks
@@ -104,7 +104,8 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 | Area | Path |
 |------|------|
-| Controller | `src/Controller/SearchOverlayController.php` |
+| Controller (suggest) | `src/Controller/SearchOverlayController.php` |
+| Template mount | `src/Resources/app/storefront/src/modules/shared/dom.js` (`mountTemplate`) |
 | Overlay | `src/Resources/views/components/Search/Overlay.*` |
 | Backdrop (shared) | `src/Resources/views/components/Backdrop.*` |
 | Close | `src/Resources/views/components/Close.*` |

@@ -1,13 +1,14 @@
 {% props
-    page,
+    page = null, # null → pending: loader, then JS fetches drawerUrl and fills the body
     drawerUrl = path('frontend.views-theme.cart.drawer'),
     cva = {},
 %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['alert', 'flashes', 'items', 'shipping']) %}
+{% do vi_define_attrs(['alert', 'flashes', 'items', 'shipping', 'loading', 'spinner']) %}
 
-{% set cart = page.cart %}
+{% set pending = page is null %}
+{% set cart = pending ? null : page.cart %}
 
 <div
     {{ attributes.defaults({
@@ -21,16 +22,22 @@
             shippingComponent: 'ViewsTheme:Cart:Shipping',
             footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
             drawerSelector: '#vi-cart-drawer',
+            bodyComponent: 'ViewsTheme:Cart:Drawer:Body',
+            pending: pending,
         }|json_encode,
+        'aria-busy': pending ? 'true' : false,
     }) }}
     class="{{ vi_class('root') }}"
 >
-    {% block flashes %}
-        <twig:ViewsTheme:Cart:Flashes
-            class="{{ vi_class('flashes') }}"
-            {{ ...vi_attrs('flashes').all() }}
-        />
-    {% endblock %}
+    {# Flashes consume the session bag: never in the pending shell, which ships with every page #}
+    {% if not pending %}
+        {% block flashes %}
+            <twig:ViewsTheme:Cart:Flashes
+                class="{{ vi_class('flashes') }}"
+                {{ ...vi_attrs('flashes').all() }}
+            />
+        {% endblock %}
+    {% endif %}
 
     {% block alert %}
         <div
@@ -43,6 +50,16 @@
         ></div>
     {% endblock %}
 
+    {% if pending %}
+        {% block loading %}
+            <div
+                {{ vi_attrs('loading') }}
+                class="{{ vi_class('loading') }}"
+            >
+                <twig:ViewsTheme:Spinner {{ ...vi_attrs('spinner').all() }} />
+            </div>
+        {% endblock %}
+    {% else %}
     {% block content %}
         <twig:ViewsTheme:Cart:Items
             class="{{ vi_class('items') }}"
@@ -71,4 +88,5 @@
             <twig:ViewsTheme:Cart:Drawer:Footer :page="page" />
         {% endif %}
     {% endblock %}
+    {% endif %}
 </div>

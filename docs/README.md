@@ -87,7 +87,7 @@ Families that exist in code but are only covered lightly (or not at all) under `
 - **QuantityInput** — shared qty stepper (Buy, LineItem, VariantsGrid)
 - **Account / Order** — owned under [account pages](features/account.md) (display primitives: [address](features/address.md); register/address forms: [checkout-register](features/checkout-register.md); confirm picker + editor: [address manager](features/address-manager.md); header login: [account-action](features/account-action.md))
 - **Page layout** — `meta.html.twig` + `CartContextSubscriber` / `cartCount` (logo: [logo](features/logo.md); footer: [footer](features/footer.md))
-- **Primitives** — Button, Alert, Badge, Progress, Blockquote, Divider (conventions + call sites)
+- **Primitives** — Button, Alert, Badge, Progress, Blockquote, Divider, Spinner (conventions + call sites; Spinner: [shell templates](conventions/javascript.md#shell-templates-instant-open))
 
 ## Related
 

@@ -121,6 +121,8 @@ Wire-up: `Page:Header:Actions` (desktop) and `Navigation:Drawer:Header` title (m
 
 Header load + `header-pagelet-loaded` run only on full drawer open (not menu drill). See [architecture — data + App hooks](../architecture.md#theme-xhr-controllers-data-app-hooks).
 
+Both routes are HTTP-cached (`_httpCache`, the same as core `frontend.menu.offcanvas`). The drawer still refetches on every open, and the refetch is a cache hit. See [architecture — HTTP cache](../architecture.md#http-cache-_httpcache).
+
 ## Hooks
 
 | Component | Attribute |

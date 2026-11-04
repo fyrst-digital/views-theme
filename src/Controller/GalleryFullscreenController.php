@@ -32,7 +32,10 @@ class GalleryFullscreenController extends AbstractComponentController
     #[Route(
         path: '/vi/gallery/fullscreen',
         name: 'frontend.views-theme.gallery.fullscreen',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function fullscreen(Request $request, SalesChannelContext $context): Response

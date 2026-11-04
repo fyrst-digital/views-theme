@@ -32,7 +32,10 @@ class NavigationDrawerController extends AbstractComponentController
     #[Route(
         path: '/vi/navigation/drawer',
         name: 'frontend.views-theme.navigation.drawer',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function drawer(Request $request, SalesChannelContext $context): Response
@@ -60,7 +63,10 @@ class NavigationDrawerController extends AbstractComponentController
     #[Route(
         path: '/vi/navigation/drawer/menu',
         name: 'frontend.views-theme.navigation.drawer.menu',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function menu(Request $request, SalesChannelContext $context): Response

@@ -27,30 +27,6 @@ class SearchOverlayController extends AbstractComponentController
     }
 
     #[Route(
-        path: '/vi/search/overlay',
-        name: 'frontend.views-theme.search.overlay',
-        defaults: ['XmlHttpRequest' => true],
-        methods: ['GET'],
-    )]
-    public function overlay(Request $request, SalesChannelContext $context): Response
-    {
-        $searchTerm = $request->query->getString('search');
-        $minSearchLength = $request->query->get('minSearchLength');
-
-        $props = [];
-
-        if ($searchTerm !== '') {
-            $props['searchTerm'] = $searchTerm;
-        }
-
-        if ($minSearchLength !== null && $minSearchLength !== '') {
-            $props['minSearchLength'] = (int) $minSearchLength;
-        }
-
-        return $this->renderComponent('ViewsTheme:Search:Overlay', $props);
-    }
-
-    #[Route(
         path: '/vi/search/suggest',
         name: 'frontend.views-theme.search.suggest',
         defaults: ['XmlHttpRequest' => true],
