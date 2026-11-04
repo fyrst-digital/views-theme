@@ -5,7 +5,7 @@
  */
 
 import { replaceComponentIsland } from '@views-theme/modules/shared/dom.js'
-import { waitForComponentsIn } from '@views-theme/modules/shared/component.js'
+import { mountComponents } from '@views-theme/modules/shared/component.js'
 
 const RESULTS_CONTROL_NAMES = ['ViewsTheme:Pagination', 'ViewsTheme:Sorting']
 
@@ -21,15 +21,14 @@ export function replaceResults(root, html, resultsComponent) {
 /**
  * @param {Element} root
  * @param {string} resultsComponent
- * @param {number|{ timeoutMs?: number }} [retriesOrOptions]
  * @returns {Promise<void>}
  */
-export async function waitForResultsControls(root, resultsComponent, retriesOrOptions) {
+export async function waitForResultsControls(root, resultsComponent) {
     const results = root.querySelector(`[data-component="${resultsComponent}"]`)
     if (!results) {
         return
     }
-    await waitForComponentsIn(results, RESULTS_CONTROL_NAMES, retriesOrOptions)
+    await mountComponents(results, RESULTS_CONTROL_NAMES)
 }
 
 /**

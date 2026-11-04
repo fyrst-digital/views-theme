@@ -19,8 +19,13 @@ interface ShopwareGlobal {
     callMethod(componentName: string | RegExp, methodName: string, ...args: unknown[]): void
     getComponentInstances(componentName: string | RegExp): ShopwareComponent[]
     getComponentInstanceByElement(componentName: string, element: Node): ShopwareComponent | undefined
-    getComponent(componentName: string | null | undefined): Promise<unknown>
+    getComponent(componentName: string | null | undefined): Promise<typeof ShopwareComponent | undefined>
     initializeComponent(componentName: string): Promise<void>
+    initializeComponentOnElement(
+        componentName: string,
+        component: typeof ShopwareComponent,
+        element: HTMLElement,
+    ): ShopwareComponent | undefined
     serializeForm(form: HTMLFormElement): FormData
     serializeFormJson(form: HTMLFormElement): Record<string, FormDataEntryValue>
 }

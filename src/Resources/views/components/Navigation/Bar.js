@@ -1,4 +1,4 @@
-import { waitForMountedTree } from '@views-theme/modules/shared/component.js'
+import { mountComponents } from '@views-theme/modules/shared/component.js'
 
 /**
  * @extends {ShopwareComponent}
@@ -217,7 +217,7 @@ export default class NavigationBar extends ShopwareComponent {
             }
 
             this._mountFlyout(html)
-            await waitForMountedTree(this._flyoutEl)
+            await mountComponents(this._flyoutEl)
             const flyout = this._getFlyoutInstance()
 
             if (requestId !== this._requestId || this._openId !== navigationId) {

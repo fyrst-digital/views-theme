@@ -1,5 +1,5 @@
 import { setBodyLock } from '@views-theme/modules/body-lock.js'
-import { waitForInstance } from '@views-theme/modules/shared/component.js'
+import { mountComponents } from '@views-theme/modules/shared/component.js'
 import { trapFocus } from '@views-theme/modules/shared/focus-trap.js'
 
 /**
@@ -89,9 +89,8 @@ export default class SearchOverlay extends ShopwareComponent {
     }
 
     async _waitForBar() {
-        return waitForInstance(() => this._bar(), {
-            componentName: this.options.barComponentName,
-        })
+        await mountComponents(this.el, [this.options.barComponentName])
+        return this._bar()
     }
 
     _onKeydown(event) {

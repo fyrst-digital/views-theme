@@ -7,7 +7,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForMountedTree,
+    mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -101,7 +101,7 @@ export default class FilterDrawerAction extends ShopwareComponent {
             }
 
             this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForMountedTree(this._drawerEl)
+            await mountComponents(this._drawerEl)
 
             if (!request.isCurrent()) {
                 return

@@ -1,266 +1,204 @@
 import { afterEach, beforeEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 
-import {
-    waitForInstance,
-    waitForComponentsIn,
-    waitForMountedTree,
-} from '@views-theme/modules/shared/component.js'
+import { mountComponents } from '@views-theme/modules/shared/component.js'
 
 /**
- * @param {string} componentName
- * @param {object[]} [descendants]
+ * Minimal element: `data-component`, descendants in document order, `isConnected`.
+ *
+ * @param {string|null} componentName
+ * @param {object[]} [children]
  */
-function createEl(componentName, descendants = []) {
-    const el = {
-        descendants,
+function createEl(componentName, children = []) {
+    return {
+        children,
+        isConnected: true,
         getAttribute(attr) {
             return attr === 'data-component' ? componentName : null
         },
-        matches(selector) {
-            return selector === `[data-component="${componentName}"]`
-        },
         querySelectorAll(selector) {
-            const nested = []
+            assert.equal(selector, '[data-component]')
+            const found = []
             const walk = (nodes) => {
-                for (const child of nodes) {
-                    nested.push(child)
-                    walk(child.descendants)
+                for (const node of nodes) {
+                    if (node.getAttribute('data-component')) {
+                        found.push(node)
+                    }
+                    walk(node.children)
                 }
             }
-            walk(this.descendants)
-
-            if (selector === '[data-component]') {
-                return nested.filter((node) => node.getAttribute('data-component'))
-            }
-
-            const match = /^\[data-component="([^"]+)"\]$/.exec(selector)
-            if (!match) {
-                return []
-            }
-
-            return nested.filter((node) => node.getAttribute('data-component') === match[1])
+            walk(this.children)
+            return found
         },
     }
-
-    return el
 }
 
 /**
- * @param {object[]} roots
+ * Fake `window.Shopware` with the core semantics `mountComponents` relies on:
+ * `getComponent` awaits an import (per-name delay, `null` = failed import) and
+ * `initializeComponentOnElement` is idempotent per element + name.
+ *
+ * @param {{ delays?: Record<string, number|null>, throws?: string[] }} [options]
  */
-function catalogFrom(roots) {
-    const catalog = []
-    const walk = (nodes) => {
-        for (const node of nodes) {
-            catalog.push(node)
-            walk(node.descendants)
-        }
-    }
-    walk(roots)
-    return catalog
-}
-
-/**
- * @param {{ delayMs?: number, initialize?: boolean }} [options]
- */
-function installShopware({ delayMs = 0, initialize = true } = {}) {
-    /** @type {WeakMap<object, Map<string, { componentName: string, el: object }>>} */
-    const instances = new WeakMap()
-    let catalog = []
-
-    function getInstance(name, el) {
-        return instances.get(el)?.get(name) ?? null
-    }
-
-    function mount(name, el) {
-        const map = instances.get(el) ?? new Map()
-        if (!map.has(name)) {
-            map.set(name, { componentName: name, el })
-        }
-        instances.set(el, map)
-        return map.get(name)
-    }
-
-    globalThis.document = {
-        querySelectorAll(selector) {
-            const match = /^\[data-component="([^"]+)"\]$/.exec(selector)
-            if (!match) {
-                return []
-            }
-            return catalog.filter((node) => node.getAttribute('data-component') === match[1])
-        },
-    }
+function installShopware({ delays = {}, throws = [] } = {}) {
+    const instances = new Map()
+    /** @type {string[]} */
+    const mounted = []
+    /** @type {string[]} */
+    const imports = []
 
     const shopware = {
-        getComponentInstanceByElement: getInstance,
+        getComponentInstanceByElement(name, el) {
+            return instances.get(el)?.get(name)
+        },
         async getComponent(name) {
-            if (delayMs) {
-                await new Promise((resolve) => {
-                    setTimeout(resolve, delayMs)
-                })
+            imports.push(name)
+            if (delays[name] === null) {
+                return undefined
             }
-            return name ? class Component {} : undefined
+            await new Promise((resolve) => {
+                setTimeout(resolve, delays[name] ?? 0)
+            })
+            return class {}
         },
-        async initializeComponent(name) {
-            await this.getComponent(name)
-            for (const el of document.querySelectorAll(`[data-component="${name}"]`)) {
-                mount(name, el)
+        initializeComponentOnElement(name, component, el) {
+            const existing = this.getComponentInstanceByElement(name, el)
+            if (existing) {
+                return existing
             }
+            if (throws.includes(name)) {
+                throw new Error(`${name} constructor failed`)
+            }
+            const instance = new component()
+            const byName = instances.get(el) ?? new Map()
+            byName.set(name, instance)
+            instances.set(el, byName)
+            mounted.push(name)
+            return instance
         },
-    }
-
-    if (!initialize) {
-        delete shopware.initializeComponent
-        delete shopware.getComponent
     }
 
     globalThis.window = { Shopware: shopware }
 
-    return {
-        setCatalog(roots) {
-            catalog = catalogFrom(roots)
-        },
-        mount,
-        getInstance,
-    }
+    return { shopware, mounted, imports }
 }
 
-describe('shared/component wait helpers', () => {
-    /** @type {ReturnType<typeof installShopware>} */
-    let shopware
+describe('shared/component mountComponents', () => {
+    /** @type {typeof console.error} */
+    let consoleError
+    /** @type {unknown[][]} */
+    let errors
 
     beforeEach(() => {
-        globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0)
+        consoleError = console.error
+        errors = []
+        console.error = (...args) => {
+            errors.push(args)
+        }
     })
 
     afterEach(() => {
+        console.error = consoleError
         delete globalThis.window
-        delete globalThis.document
-        delete globalThis.requestAnimationFrame
     })
 
-    it('returns immediately when the instance is already mounted', async () => {
-        shopware = installShopware()
-        const el = createEl('ViewsTheme:Search:Overlay')
-        shopware.setCatalog([el])
-        shopware.mount('ViewsTheme:Search:Overlay', el)
+    it('mounts the root and nested components after a slow (cold) import', async () => {
+        const { shopware } = installShopware({ delays: { 'Shell': 60, 'Panel': 30 } })
+        const panel = createEl('Panel')
+        const root = createEl('Shell', [createEl(null, [panel])])
 
-        const instance = await waitForInstance(
-            () => shopware.getInstance('ViewsTheme:Search:Overlay', el),
-            { componentName: 'ViewsTheme:Search:Overlay', timeoutMs: 40 },
-        )
+        await mountComponents(root)
 
-        assert.equal(instance.el, el)
+        assert.ok(shopware.getComponentInstanceByElement('Shell', root))
+        assert.ok(shopware.getComponentInstanceByElement('Panel', panel))
     })
 
-    it('awaits Shopware.initializeComponent through a cold import longer than 20 frames', async () => {
-        shopware = installShopware({ delayMs: 80 })
-        const el = createEl('ViewsTheme:Gallery:Fullscreen')
-        shopware.setCatalog([el])
+    it('instantiates in document order even when a child chunk resolves first', async () => {
+        const { mounted } = installShopware({ delays: { 'Shell': 40, 'Panel': 0, 'Close': 10 } })
+        const root = createEl('Shell', [createEl('Panel'), createEl('Close')])
 
-        const started = Date.now()
-        const instance = await waitForInstance(
-            () => shopware.getInstance('ViewsTheme:Gallery:Fullscreen', el),
-            { componentName: 'ViewsTheme:Gallery:Fullscreen', timeoutMs: 1000 },
-        )
+        await mountComponents(root)
 
-        assert.ok(instance, 'instance should mount after the delayed import')
-        assert.ok(Date.now() - started >= 80)
-        assert.equal(instance.componentName, 'ViewsTheme:Gallery:Fullscreen')
+        assert.deepEqual(mounted, ['Shell', 'Panel', 'Close'])
     })
 
-    it('keeps polling past a fixed 20-frame cap when initializeComponent is missing', async () => {
-        shopware = installShopware({ initialize: false })
-        const el = createEl('ViewsTheme:Search:Overlay')
-        shopware.setCatalog([el])
+    it('imports each component name once', async () => {
+        const { imports } = installShopware()
+        const root = createEl('List', [createEl('Item'), createEl('Item'), createEl('Item')])
 
-        let frames = 0
-        globalThis.requestAnimationFrame = (callback) => {
-            frames += 1
-            if (frames === 25) {
-                shopware.mount('ViewsTheme:Search:Overlay', el)
-            }
-            return setTimeout(callback, 0)
-        }
+        await mountComponents(root)
 
-        const instance = await waitForInstance(
-            () => shopware.getInstance('ViewsTheme:Search:Overlay', el),
-            { timeoutMs: 400 },
-        )
-
-        assert.ok(instance, 'observer-only mount should still resolve')
-        assert.ok(frames >= 25, `expected at least 25 frames, got ${frames}`)
+        assert.deepEqual(imports.sort(), ['Item', 'List'])
     })
 
-    it('ignores a numeric retries cap so a late mount still resolves', async () => {
-        shopware = installShopware({ initialize: false })
-        const el = createEl('ViewsTheme:Drawer')
-        shopware.setCatalog([el])
+    it('limits mounting to the given component names', async () => {
+        const { mounted, imports } = installShopware()
+        const root = createEl('Results', [createEl('Pagination'), createEl('ProductBox')])
 
-        let frames = 0
-        globalThis.requestAnimationFrame = (callback) => {
-            frames += 1
-            if (frames === 5) {
-                shopware.mount('ViewsTheme:Drawer', el)
-            }
-            return setTimeout(callback, 0)
-        }
+        await mountComponents(root, ['Pagination', 'Sorting'])
 
-        const instance = await waitForInstance(
-            () => shopware.getInstance('ViewsTheme:Drawer', el),
-            2,
-        )
-
-        assert.ok(instance)
-        assert.ok(frames >= 5)
+        assert.deepEqual(mounted, ['Pagination'])
+        assert.deepEqual(imports, ['Pagination'])
     })
 
-    it('returns null when the time budget elapses without a mount', async () => {
-        shopware = installShopware({ initialize: false })
-        const el = createEl('ViewsTheme:Search:Overlay')
-        shopware.setCatalog([el])
+    it('reuses instances the MutationObserver already created', async () => {
+        const { shopware, mounted } = installShopware()
+        const root = createEl('Shell')
+        const existing = shopware.initializeComponentOnElement('Shell', class {}, root)
 
-        const instance = await waitForInstance(
-            () => shopware.getInstance('ViewsTheme:Search:Overlay', el),
-            { timeoutMs: 40 },
-        )
+        await mountComponents(root)
 
-        assert.equal(instance, null)
+        assert.equal(shopware.getComponentInstanceByElement('Shell', root), existing)
+        assert.deepEqual(mounted, ['Shell'])
     })
 
-    it('waitForMountedTree waits for nested components such as a drawer panel', async () => {
-        shopware = installShopware({ delayMs: 40 })
-        const panel = createEl('ViewsTheme:Filter:Panel')
-        const drawer = createEl('ViewsTheme:Drawer', [panel])
-        shopware.setCatalog([drawer])
+    it('skips nodes removed from the document while chunks load', async () => {
+        const { mounted } = installShopware({ delays: { 'Shell': 20 } })
+        const root = createEl('Shell')
 
-        await waitForMountedTree(drawer, { timeoutMs: 1000 })
+        const pending = mountComponents(root)
+        root.isConnected = false
+        await pending
 
-        assert.ok(shopware.getInstance('ViewsTheme:Drawer', drawer))
-        assert.ok(shopware.getInstance('ViewsTheme:Filter:Panel', panel))
+        assert.deepEqual(mounted, [])
     })
 
-    it('waitForComponentsIn includes the root when it matches the name', async () => {
-        shopware = installShopware({ delayMs: 20 })
-        const overlay = createEl('ViewsTheme:Search:Overlay')
-        shopware.setCatalog([overlay])
+    it('resolves without waiting when an import fails', async () => {
+        const { shopware, mounted } = installShopware({ delays: { 'Broken': null } })
+        const broken = createEl('Broken')
+        const root = createEl('Shell', [broken])
 
-        await waitForComponentsIn(overlay, ['ViewsTheme:Search:Overlay'], { timeoutMs: 1000 })
+        await mountComponents(root)
 
-        assert.ok(shopware.getInstance('ViewsTheme:Search:Overlay', overlay))
+        assert.deepEqual(mounted, ['Shell'])
+        assert.equal(shopware.getComponentInstanceByElement('Broken', broken), undefined)
     })
 
-    it('waitForComponentsIn treats missing names as ready', async () => {
-        shopware = installShopware()
-        const results = createEl('ViewsTheme:Product:Listing:Results')
-        shopware.setCatalog([results])
+    it('keeps mounting siblings when one constructor throws', async () => {
+        const { mounted } = installShopware({ throws: ['Broken'] })
+        const root = createEl('Shell', [createEl('Broken'), createEl('Close')])
 
-        await waitForComponentsIn(results, ['ViewsTheme:Pagination'], { timeoutMs: 40 })
+        await mountComponents(root)
+
+        assert.deepEqual(mounted, ['Shell', 'Close'])
+        assert.equal(errors.length, 1)
     })
 
-    it('waitForMountedTree is a no-op for a null root', async () => {
-        shopware = installShopware()
-        await waitForMountedTree(null, { timeoutMs: 40 })
+    it('is a no-op for a missing or detached root', async () => {
+        const { imports } = installShopware()
+        const detached = createEl('Shell')
+        detached.isConnected = false
+
+        await mountComponents(null)
+        await mountComponents(undefined)
+        await mountComponents(detached)
+
+        assert.deepEqual(imports, [])
+    })
+
+    it('is a no-op without window.Shopware', async () => {
+        globalThis.window = {}
+
+        await mountComponents(createEl('Shell'))
     })
 })

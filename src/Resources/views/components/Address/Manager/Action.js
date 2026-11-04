@@ -6,7 +6,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForMountedTree,
+    mountComponents,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -113,7 +113,7 @@ export default class AddressManagerAction extends ShopwareComponent {
             }
 
             this._managerEl = replaceMount(this.options.managerSelector, html)
-            await waitForMountedTree(this._managerEl)
+            await mountComponents(this._managerEl)
 
             if (!request.isCurrent()) {
                 return

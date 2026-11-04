@@ -217,7 +217,7 @@ Identity hooks: only `data-component="ViewsTheme:…"`. Drawer `id` (`#vi-filter
 ## Lazy shell flow
 
 1. Click Action → always `GET` drawer URL + **current** `location.search` (full catalog; no reduce)
-2. Mount root on `document.body` → `waitForMountedTree` (Drawer + nested Panel / facets) → `open()`
+2. Mount root on `document.body` → `mountComponents` (Drawer + nested Panel / facets) → `open()`
 3. `Listing.syncControls()` then `await syncAvailability()` (hydrate + reduced aggs)
 4. On `ViewsTheme:Drawer:Close` → unmount root → `syncControls` + `syncAvailability` → focus Action
 
