@@ -232,6 +232,8 @@ See [JS lazy-loaded shells](../conventions/javascript.md#lazy-loaded-shells-crit
 | `frontend.views-theme.listing.category.filter-options` | `/vi/listing/category/{id}/filter-options` | JSON `{ options, meta }` |
 | `frontend.views-theme.listing.search.filter-options` | `/vi/listing/search/filter-options` | JSON `{ options, meta }` |
 
+Category routes are HTTP-cached (`_httpCache`); search routes are not. See [architecture — HTTP cache](../architecture.md#http-cache-_httpcache).
+
 `options` keys: `manufacturer`, `properties:{groupId}`, … → MultiSelect `<ul data-filter-options>` HTML.  
 `meta` keys: same + `shipping-free` / `rating` → `{ disabled, count?, checked?, allowedMax?, selectedValue? }`.
 

@@ -74,6 +74,9 @@
             "ordersFilterReset": "Filter zurücksetzen",
             "ordersFilterEmpty": "Keine Bestellungen entsprechen Ihren Filtern.",
             "backToAccount": "Zurück zum Konto"
+        },
+        "spinner": {
+            "label": "Wird geladen …"
         }
     },
 

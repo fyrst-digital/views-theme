@@ -114,6 +114,8 @@ Loads public media via `AbstractMediaRoute` / `MediaRoute`, re-orders to match r
 
 Input: only valid UUIDs; max **50** ids (extra dropped). Invalid ids are ignored (no DAL errors). No resolvable medias → **204** empty body (Action does not mount).
 
+HTTP-cached (`_httpCache`), keyed by the full query (`ids[]`, `active`). Invalidated through `MediaRoute` tags. See [architecture — HTTP cache](../architecture.md#http-cache-_httpcache).
+
 ## Media types
 
 Detection: `media.getMediaType().getName() === 'VIDEO'` (same as product cover). Null and spatial objects are **filtered out of `medias` at Gallery root** (no empty snap cells); Slide/Thumb keep a defensive `isSpatialObject` guard.

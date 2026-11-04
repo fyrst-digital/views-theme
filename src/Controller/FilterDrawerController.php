@@ -30,7 +30,10 @@ class FilterDrawerController extends AbstractComponentController
     #[Route(
         path: '/vi/filter/drawer/category/{navigationId}',
         name: 'frontend.views-theme.filter.drawer.category',
-        defaults: ['XmlHttpRequest' => true],
+        defaults: [
+            'XmlHttpRequest' => true,
+            PlatformRequest::ATTRIBUTE_HTTP_CACHE => true,
+        ],
         methods: ['GET'],
     )]
     public function category(string $navigationId, Request $request, SalesChannelContext $context): Response

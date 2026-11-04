@@ -31,14 +31,42 @@ export function parseHtmlFragment(html) {
  * @returns {Element}
  */
 export function replaceMount(selector, html, appendTo = document.body) {
-    const existing = document.querySelector(selector)
-    if (existing) {
-        existing.remove()
-    }
-
     const el = parseHtmlRoot(html)
     if (!el) {
         throw new Error('dom: mount markup is empty')
+    }
+
+    return mountRoot(selector, el, appendTo)
+}
+
+/**
+ * Mount a fresh copy of a server-rendered `<template>` shell (static markup that ships with the page).
+ *
+ * @param {string} templateId `<template>` element id
+ * @param {string} selector existing mount to remove first
+ * @param {ParentNode} [appendTo]
+ * @returns {Element}
+ */
+export function mountTemplate(templateId, selector, appendTo = document.body) {
+    const template = document.getElementById(templateId)
+    const source = template?.content?.firstElementChild
+    if (!source) {
+        throw new Error(`dom: shell template "${templateId}" is missing or empty`)
+    }
+
+    return mountRoot(selector, document.importNode(source, true), appendTo)
+}
+
+/**
+ * @param {string} selector
+ * @param {Element} el
+ * @param {ParentNode} appendTo
+ * @returns {Element}
+ */
+function mountRoot(selector, el, appendTo) {
+    const existing = document.querySelector(selector)
+    if (existing) {
+        existing.remove()
     }
 
     appendTo.appendChild(el)

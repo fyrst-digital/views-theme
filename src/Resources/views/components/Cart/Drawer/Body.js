@@ -6,7 +6,7 @@ import {
 import { parseHtmlFragment } from '@views-theme/modules/shared/dom.js'
 
 /**
- * In-open cart drawer island refresh.
+ * Cart drawer body: first fill of the pending shell, then in-open island refresh.
  *
  * @extends {ShopwareComponent}
  */
@@ -20,17 +20,25 @@ export default class CartDrawerBody extends ShopwareComponent {
         shippingComponent: 'ViewsTheme:Cart:Shipping',
         footerComponent: 'ViewsTheme:Cart:Drawer:Footer',
         drawerSelector: '#vi-cart-drawer',
+        bodyComponent: 'ViewsTheme:Cart:Drawer:Body',
+        /** Rendered without cart data (loader only): fetch and fill on init */
+        pending: false,
     }
 
     init() {
         this._busy = false
         this._queued = false
         this._fetch = { controller: null, seq: 0 }
+        this._pending = this.options.pending === true
         this._onCartChanged = this._onCartChanged.bind(this)
         this._drawerEl = this.el.closest(this.options.drawerSelector) || document.querySelector(this.options.drawerSelector)
         this._alertEl = this.el.querySelector(':scope > [role="alert"]')
 
         window.Shopware.on(this.options.changedEvent, this._onCartChanged)
+
+        if (this._pending) {
+            void this._refresh()
+        }
     }
 
     destroy() {
@@ -77,6 +85,10 @@ export default class CartDrawerBody extends ShopwareComponent {
                 return
             }
             console.error('CartDrawerBody: Failed to refresh cart drawer', error)
+            if (this._pending && this._alertEl) {
+                // Drop the loader; the next Cart:Changed retries the first fill
+                this.el.replaceChildren(this._alertEl)
+            }
             this._showError(null)
         } finally {
             this._busy = false
@@ -89,11 +101,33 @@ export default class CartDrawerBody extends ShopwareComponent {
      */
     _apply(html) {
         const source = parseHtmlFragment(html)
+        if (this._pending) {
+            this._fill(source)
+            this._swap(source, this._drawerEl || document, this.options.headingComponent)
+            return
+        }
+
         this._swap(source, this.el, this.options.flashesComponent)
         this._swap(source, this.el, this.options.itemsComponent)
         this._swap(source, this.el, this.options.shippingComponent, this.options.footerComponent)
         this._swap(source, this.el, this.options.footerComponent)
         this._swap(source, this._drawerEl || document, this.options.headingComponent)
+    }
+
+    /**
+     * First fill: take every child of the response body (loader out, islands in, server order kept).
+     *
+     * @param {ParentNode} source
+     */
+    _fill(source) {
+        const next = source.querySelector(`[data-component="${this.options.bodyComponent}"]`)
+        if (!next) {
+            throw new Error('CartDrawerBody: response has no drawer body')
+        }
+
+        this.el.replaceChildren(...next.childNodes)
+        this._alertEl = this.el.querySelector(':scope > [role="alert"]')
+        this._pending = false
     }
 
     /**

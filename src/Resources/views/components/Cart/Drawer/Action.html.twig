@@ -1,6 +1,7 @@
 {% props
     size = 'md', # md
     drawerUrl = path('frontend.views-theme.cart.drawer'),
+    templateId = 'vi-cart-drawer-template',
     openOnActions = ['add'],
     count = context.extensions.cart.lineItems|default([])|length,
     cva = {},
@@ -22,7 +23,7 @@
         'aria-expanded': 'false',
         'data-component': 'ViewsTheme:Cart:Drawer:Action',
         'data-component-options': {
-            drawerUrl: drawerUrl,
+            templateId: templateId,
             openOnActions: openOnActions,
             changedEvent: 'ViewsTheme:Cart:Changed',
         }|json_encode,
@@ -37,3 +38,8 @@
         />
     </twig:block>
 </twig:ViewsTheme:Button>
+
+{# Data-free drawer shell: the Action clones it on open; Body shows the loader and fetches the cart #}
+<template id="{{ templateId }}">
+    <twig:ViewsTheme:Cart:Drawer :drawerUrl="drawerUrl" />
+</template>

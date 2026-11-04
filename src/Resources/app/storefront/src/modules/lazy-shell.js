@@ -4,6 +4,6 @@
  * @module @views-theme/modules/lazy-shell
  */
 
-export { parseHtmlRoot, replaceMount, unmountEl } from '@views-theme/modules/shared/dom.js'
+export { mountTemplate, parseHtmlRoot, replaceMount, unmountEl } from '@views-theme/modules/shared/dom.js'
 export { getInstanceByElement, mountComponents, eventEl } from '@views-theme/modules/shared/component.js'
 export { fetchText, beginRequest, abortRequest } from '@views-theme/modules/shared/http.js'
