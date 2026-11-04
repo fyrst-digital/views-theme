@@ -1,3 +1,5 @@
+import { waitForMountedTree } from '@views-theme/modules/shared/component.js'
+
 /**
  * @extends {ShopwareComponent}
  */
@@ -215,7 +217,8 @@ export default class NavigationBar extends ShopwareComponent {
             }
 
             this._mountFlyout(html)
-            const flyout = await this._waitForFlyoutInstance()
+            await waitForMountedTree(this._flyoutEl)
+            const flyout = this._getFlyoutInstance()
 
             if (requestId !== this._requestId || this._openId !== navigationId) {
                 return
@@ -345,21 +348,6 @@ export default class NavigationBar extends ShopwareComponent {
         const template = document.createElement('template')
         template.innerHTML = html.trim()
         return template.content.firstElementChild
-    }
-
-    async _waitForFlyoutInstance(retries = 20) {
-        for (let i = 0; i < retries; i++) {
-            const flyout = this._getFlyoutInstance()
-            if (flyout) {
-                return flyout
-            }
-
-            await new Promise((resolve) => {
-                requestAnimationFrame(resolve)
-            })
-        }
-
-        return this._getFlyoutInstance()
     }
 
     _getFlyoutInstance() {

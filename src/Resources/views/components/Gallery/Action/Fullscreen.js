@@ -5,7 +5,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForInstance,
+    waitForMountedTree,
 } from '@views-theme/modules/lazy-shell.js'
 
 /**
@@ -119,7 +119,7 @@ export default class GalleryActionFullscreen extends ShopwareComponent {
             }
 
             this._overlayEl = replaceMount(this.options.overlaySelector, html)
-            await waitForInstance(() => this._getOverlayInstance())
+            await waitForMountedTree(this._overlayEl)
 
             if (!request.isCurrent()) {
                 return

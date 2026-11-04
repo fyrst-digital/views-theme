@@ -6,7 +6,7 @@ import {
     getInstanceByElement,
     replaceMount,
     unmountEl,
-    waitForInstance,
+    waitForMountedTree,
 } from '@views-theme/modules/lazy-shell.js'
 import { urlWithParams } from '@views-theme/modules/shared/http.js'
 
@@ -120,7 +120,7 @@ export default class CookieManagerAction extends ShopwareComponent {
             this._releaseDrawers()
             this._view = view
             this._drawerEl = replaceMount(this.options.drawerSelector, html)
-            await waitForInstance(() => this._getDrawerInstance())
+            await waitForMountedTree(this._drawerEl)
 
             if (!request.isCurrent()) {
                 return

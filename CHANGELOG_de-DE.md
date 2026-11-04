@@ -1,3 +1,8 @@
+# 1.1.1
+
+**Changelog**
+- Verzögert geladene Overlays, Schubladen, die Adressverwaltung und das Navigations-Flyout öffnen sich beim ersten Klick, auch wenn die Produktions-Assets noch nicht im Cache liegen
+
 # 1.1.0
 
 **Hinweise zum Update**

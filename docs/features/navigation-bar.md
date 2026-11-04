@@ -74,7 +74,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 | `ViewsTheme:Navigation:Flyout:Open` | `{ el }` | Lifecycle; Bar may sync ARIA |
 | `ViewsTheme:Navigation:Flyout:Close` | `{ el }` | Bar unmounts closed flyout |
 
-Bar → Flyout API after mount uses `getComponentInstanceByElement` + `open()` / `close()` / `isOpen()` (same style as Drawer Action → Drawer).
+Bar → Flyout API after mount uses `waitForMountedTree` then `getComponentInstanceByElement` + `open()` / `close()` / `isOpen()` (same style as Drawer Action → Drawer).
 
 ### Lazy-load / cache policy
 

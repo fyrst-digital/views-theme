@@ -21,15 +21,15 @@ export function replaceResults(root, html, resultsComponent) {
 /**
  * @param {Element} root
  * @param {string} resultsComponent
- * @param {number} [retries]
+ * @param {number|{ timeoutMs?: number }} [retriesOrOptions]
  * @returns {Promise<void>}
  */
-export async function waitForResultsControls(root, resultsComponent, retries = 20) {
+export async function waitForResultsControls(root, resultsComponent, retriesOrOptions) {
     const results = root.querySelector(`[data-component="${resultsComponent}"]`)
     if (!results) {
         return
     }
-    await waitForComponentsIn(results, RESULTS_CONTROL_NAMES, retries)
+    await waitForComponentsIn(results, RESULTS_CONTROL_NAMES, retriesOrOptions)
 }
 
 /**

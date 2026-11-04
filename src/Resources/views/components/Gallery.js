@@ -32,7 +32,9 @@ export default class Gallery extends ShopwareComponent {
     }
 
     async _hydrate() {
-        await waitForInstance(() => this._canvas())
+        await waitForInstance(() => this._canvas(), {
+            componentName: this.options.canvasComponent,
+        })
         if (this._destroyed) {
             return
         }

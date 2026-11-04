@@ -69,7 +69,7 @@ app/storefront/src/modules/
 |------|------|
 | `shared/http.js` | `fetchText` / `fetchJson` / `urlWithParams` / abort helpers |
 | `shared/dom.js` | `parseHtmlRoot` / `parseHtmlFragment`, replaceMount, replaceComponentIsland, swapComponentIsland |
-| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `eventEl`, …) |
+| `shared/component.js` | instance lookup + wait helpers (`getInstanceByElement`, `waitForInstance`, `waitForComponentsIn`, `waitForMountedTree`, `eventEl`, …). Waits use a time budget (not a 20-frame cap). When a component name is known they await `Shopware.initializeComponent` so a cold import-map chunk is not raced against MutationObserver |
 | `shared/object-option.js` | `objectOption` / `collectControlValues` (URL-SoT owners) |
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / Address:Input:Country) |
@@ -79,7 +79,7 @@ app/storefront/src/modules/
 | `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
 | `review/*` | Review:Panel owner internals — [review.md](../features/review.md) |
 | `review/apply.js` | façade for review controls / Pagination → Panel |
-| `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component) |
+| `lazy-shell.js` | shell mount/fetch façade (re-exports shared http/dom/component, including `waitForMountedTree`) |
 | `body-lock.js` | ref-counted body scroll lock (Drawer, Overlay, Modal, Gallery Fullscreen) |
 | `serial-queue.js` | Cart + Wishlist |
 | `shared/signal.js` | `createSignal(initial)` → `{ get, set, subscribe }`; `set` is a no-op for an identical value |
@@ -149,7 +149,7 @@ Does **not** cover in-session Menu drill level HTML caches, suggest result fragm
 
 | Phase | Required |
 |-------|----------|
-| **Open** | Always **(re)fetch** HTML. Never keep a string cache of a previous response for reuse. |
+| **Open** | Always **(re)fetch** HTML. Never keep a string cache of a previous response for reuse. After insert, **`waitForMountedTree`** (time budget + `Shopware.initializeComponent`) until the shell **and nested** `[data-component]` nodes (Bar, Filter:Panel, …) have instances — do not poll a fixed rAF count. |
 | **Close** | After close completes (`*:Close` event), **remove** the shell root from the DOM. Do not keep a closed mount for the next open. |
 | **Re-open** | Full fetch + mount again. |
 
@@ -262,7 +262,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Checkout method form | `ViewsTheme:Checkout:Method:Form` | `Checkout/Method/Form.js` |
 | Checkout confirm comment | `ViewsTheme:Checkout:Confirm:Comment` | `Checkout/Confirm/Comment.js` |
 
-Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
+Table is the live co-located inventory (feature docs own behavior). Shared helpers: `waitForMountedTree` / `waitForComponentsIn` / `parseHtmlFragment` under `@views-theme/modules/shared/*`.
 
 Build (project root):
 

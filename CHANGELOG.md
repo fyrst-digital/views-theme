@@ -1,3 +1,8 @@
+# 1.1.1
+
+**Changelog**
+- Lazily loaded overlays, drawers, the address manager, and the navigation flyout open on the first click, including on a cold production asset load
+
 # 1.1.0
 
 **Upgrade notes**
