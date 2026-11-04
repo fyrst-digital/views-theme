@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1.2
 
 **Upgrade notes**
 - **Behaviour change:** the storefront logo no longer uses the inherited Storefront `sw-logo-desktop` / `sw-logo-tablet` / `sw-logo-mobile` fields. Set `page-logo` in the theme Media settings. If `page-logo` is empty, the bundled Views logo is shown. Favicon and Open Graph images are unchanged and still use the Storefront `sw-logo-*` fields.
@@ -7,6 +7,7 @@
 **Changelog**
 - Empty `page-logo` now renders the bundled Views logo instead of the Shopware demo logo from `sw-logo-*`
 - The Figtree font is preloaded, so it starts loading right away instead of after the theme stylesheet
+- The product image gallery no longer misplaces the image when a product has only one
 - The navigation drawer, navigation flyout, fullscreen gallery, category listing and category filter drawer responses are now HTTP-cached, so they open faster on repeat requests
 - The cart drawer opens as soon as you click it and shows a loading spinner until the cart is loaded
 - The search overlay opens instantly, with no request to the server
