@@ -30,7 +30,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 - Mega layout uses **CSS multi-column** (`column-width`) for category groups (packs top→bottom; no equal-height row gaps)
 - Optional teaser from default category media (`category.media`; core navbar parity)
 - Tree depth from sales channel `navigationCategoryDepth` (bar = level 1; flyout = remaining levels; no flyout when depth ≤ 1); fallback **3** only if depth &lt; 1
-- Close: pointer leave (intent delay), Escape, focus leaving bar/flyout pair
+- Close: pointer leave (intent delay), pointer moving onto a leaf sibling item (`closeDelay`), Escape, focus leaving bar/flyout pair
 - Only one flyout open; stale fetches aborted/ignored
 - `prefers-reduced-motion` skips open/close motion
 - Below `lg`, Bar is hidden (`d-none d-lg-flex`); Drawer remains the small-viewport entry
@@ -51,7 +51,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 1. `Navigation:Bar` schedules hover/focus intent on a trigger:
    - **First open** (no flyout mounted): `debounceTime` (default 150ms)
    - **Switch** (another item while a flyout is open): `switchDelay` (default 350ms) so a multi-row path into the panel does not steal the open category
-2. Pointer enter on non-trigger chrome inside the bar (open panel / list gap) **clears** any pending open timer
+2. Bar listens to bubbling `pointerover` (not `pointerenter`, which does not fire when the pointer moves from an item onto the bar's own empty space). Pointer over the mounted flyout (panel / hover bridge) **clears** any pending open timer and close timer. Pointer over a non-trigger part of the bar (leaf link, empty list/nav space) clears the pending open timer and **schedules close** (`closeDelay`) when a flyout is open; entering the flyout within that delay cancels it
 3. Fetches `frontend.views-theme.navigation.flyout` for that `navigationId` (or serves in-session cache)
 4. Empty (`204` / blank) or failed fetch → resets trigger ARIA; no mount
 5. Appends response root as last child of Bar (`popover="manual"`)

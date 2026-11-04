@@ -38,7 +38,7 @@ export default class NavigationBar extends ShopwareComponent {
         this._onFlyoutClose = this._onFlyoutClose.bind(this)
         this._onTriggerClick = this._onTriggerClick.bind(this)
 
-        this.el.addEventListener('pointerenter', this._onPointerEnter, true)
+        this.el.addEventListener('pointerover', this._onPointerEnter)
         this.el.addEventListener('pointerleave', this._onPointerLeave)
         this.el.addEventListener('focusin', this._onFocusIn)
         this.el.addEventListener('focusout', this._onFocusOut)
@@ -56,7 +56,7 @@ export default class NavigationBar extends ShopwareComponent {
         this._abortFetch()
         this._unmountFlyout()
 
-        this.el.removeEventListener('pointerenter', this._onPointerEnter, true)
+        this.el.removeEventListener('pointerover', this._onPointerEnter)
         this.el.removeEventListener('pointerleave', this._onPointerLeave)
         this.el.removeEventListener('focusin', this._onFocusIn)
         this.el.removeEventListener('focusout', this._onFocusOut)
@@ -93,15 +93,35 @@ export default class NavigationBar extends ShopwareComponent {
         event.preventDefault()
     }
 
+    // `pointerover` (bubbling), not `pointerenter`: moving from an item onto the
+    // bar's own empty space (ul / nav) fires no `pointerenter`, so nothing would close.
     _onPointerEnter(event) {
         const trigger = this._triggerFromEvent(event)
+        if (trigger && trigger.contains(event.relatedTarget)) {
+            return
+        }
+
         if (!trigger) {
-            if (this._isInside(event.target)) {
+            if (!this._isInside(event.target)) {
+                return
+            }
+
+            if (this._flyoutEl?.contains(event.target)) {
                 this._pointerInside = true
                 this._clearCloseTimer()
                 // Multi-row path: entering flyout must cancel a pending switch
                 // from intermediate bar items the pointer crossed.
                 this._clearOpenTimer()
+                return
+            }
+
+            // Non-trigger bar item (leaf link): not part of the open flyout,
+            // so cancel any pending open and close the flyout after closeDelay.
+            // Entering the flyout within that delay cancels the close.
+            this._pointerInside = false
+            this._clearOpenTimer()
+            if (this._openId) {
+                this._scheduleClose()
             }
             return
         }
