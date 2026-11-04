@@ -1,3 +1,11 @@
+# Unreleased
+
+**Hinweise zum Update**
+- **Verhaltensänderung:** Das Storefront-Logo verwendet die geerbten Storefront-Felder `sw-logo-desktop` / `sw-logo-tablet` / `sw-logo-mobile` nicht mehr. Setze `page-logo` in den Theme-Einstellungen unter Medien. Ist `page-logo` leer, erscheint das mitgelieferte Views-Logo. Favicon und Open-Graph-Bilder bleiben unverändert und nutzen weiter die Storefront-Felder `sw-logo-*`.
+
+**Changelog**
+- Ein leeres `page-logo` zeigt jetzt das mitgelieferte Views-Logo statt des Shopware-Demo-Logos aus `sw-logo-*`
+
 # 1.1.1
 
 **Changelog**

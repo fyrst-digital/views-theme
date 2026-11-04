@@ -16,7 +16,7 @@ The header override replaces core `layout_header_navigation` content with `Page:
 | `Navigation:Flyout:Column` | One first-level branch (heading + nested list) |
 | `Navigation:Flyout:Item` | Nested category link/folder; recurses to max depth |
 | `Navigation:Flyout:Teaser` | Category image teaser when default `category.media` is set |
-| `Page:Header:Main` | Composes Logo, Bar and Actions. Bar from `navigation` prop (`d-lg+` via Bar CVA); prop `widthAnchor` (default `--vi-header-main`) → Bar. Root gap is `gap-3`, `gap-lg-10` from `lg`. Props `languages` / `currencies` forward to `Page:Header:Actions` (language and currency switches, lg+) |
+| `Page:Header:Main` | Composes [Logo](logo.md), Bar and Actions. Bar from `navigation` prop (`d-lg+` via Bar CVA); prop `widthAnchor` (default `--vi-header-main`) → Bar. Root gap is `gap-3`, `gap-lg-10` from `lg`. Props `languages` / `currencies` forward to `Page:Header:Actions` (language and currency switches, lg+) |
 
 ## Features
 
@@ -182,6 +182,7 @@ Bar options (`data-component-options` defaults in JS): `debounceTime`, `switchDe
 
 ## Related
 
+- [Logo](logo.md)
 - [Navigation drawer](navigation-drawer.md)
 - [JavaScript conventions](../conventions/javascript.md)
 - [Architecture](../architecture.md)
