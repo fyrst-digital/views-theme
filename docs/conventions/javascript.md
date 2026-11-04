@@ -34,6 +34,7 @@ app/storefront/src/modules/
   review/     Review:Panel domain only
   configurator/  Product:Configurator sessions only
   shipping/   Shipping calculation signal store (Field → store → Cart)
+  cookie/     Cookie consent storage + consent logic (Cookie:Bar / Manager)
   lazy-shell.js · body-lock.js · serial-queue.js
 ```
 
@@ -51,8 +52,10 @@ app/storefront/src/modules/
 | `@views-theme/modules/review/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/review/*` — **not** `listing/*` or `configurator/*` |
 | `@views-theme/modules/configurator/*` | `@views-theme/modules/shared/*` — **not** `listing/*` or `review/*` |
 | `@views-theme/modules/shared/*` | other `@views-theme/modules/shared/*` |
-| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor) |
+| Cart / Wishlist / shells | shared, `lazy-shell`, `body-lock`, `serial-queue` — **not** listing/review/configurator internals. `Cart.js` may also import `shipping/store.js` (executor); `Wishlist.js` may import `cookie/storage.js` (consent cookie read) |
 | `@views-theme/modules/shipping/*` | `@views-theme/modules/shared/*` — **not** `listing/*`, `review/*` or `configurator/*` |
+| `Cookie/*` components | `@views-theme/modules/cookie/*`, `lazy-shell.js` — [cookie.md](../features/cookie.md) |
+| `@views-theme/modules/cookie/*` | `@views-theme/modules/shared/*`, `@views-theme/modules/cookie/*` |
 
 **URL-SoT owners (listing, review):** domain folders stay separate (encoding + fetch differ). Shared only pure helpers — do **not** merge into one owner engine until a third URL owner needs it. Configurator sessions (`configurator/store.js`) are a separate selection store, not a URL owner.
 
@@ -140,6 +143,7 @@ Applies to **lazy-mounted shells** fetched by an Action:
 - `ViewsTheme:Search:Overlay`
 - `ViewsTheme:Gallery:Fullscreen`
 - `ViewsTheme:Modal` (e.g. Address Manager)
+- Cookie drawer (`Cookie:Manager` / `Cookie:Consent`, owner `Cookie:Manager:Action`)
 
 Does **not** cover in-session Menu drill level HTML caches, suggest result fragments, or **Navigation flyout** panel HTML (see exception below).
 
@@ -223,6 +227,10 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
 | Scroll up (back-to-top) | `ViewsTheme:Scroll:Up` | `Scroll/Up.js` |
+| Cookie bar (consent coordinator) | `ViewsTheme:Cookie:Bar` | `Cookie/Bar.js` — `cookie/consent.js` |
+| Cookie manager action (lazy drawer opener) | `ViewsTheme:Cookie:Manager:Action` | `Cookie/Manager/Action.js` |
+| Cookie manager form / group | `ViewsTheme:Cookie:Manager` / `Cookie:Manager:Group` | `Cookie/Manager.js` / `Cookie/Manager/Group.js` |
+| Cookie consent request | `ViewsTheme:Cookie:Consent` | `Cookie/Consent.js` |
 | Pagination (Listing control API) | `ViewsTheme:Pagination` | `Pagination.js` |
 | Pagination item (click → Listing) | `ViewsTheme:Pagination:Item` | `Pagination/Item.js` |
 | Tabs (a11y owner) | `ViewsTheme:Tabs` | `Tabs.js` |

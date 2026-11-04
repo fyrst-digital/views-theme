@@ -40,7 +40,7 @@ Same data as core widget; theme-owned JS only.
 | Logged-in | `GET frontend.wishlist.product.list` | `POST frontend.wishlist.product.add` / `.remove` |
 | Login + guest keys | `POST frontend.wishlist.product.merge` once, clear local, then list | |
 
-Guest + cookie consent: without `wishlist-enabled` cookie, owner requests core `CookieConfiguration/requestConsent` and does not mutate.
+Guest + cookie consent: without `wishlist-enabled` cookie, owner emits `ViewsTheme:Cookie:Consent:Request` (`{ featureName, cookieName }`, handled by `Cookie:Bar`, see [cookie](cookie.md)) and does not mutate. The bar also still handles the core `CookieConfiguration/requestConsent` event for core / third-party wishlist plugins. The cookie is read with `getCookie` from `@views-theme/modules/cookie/storage.js`.
 
 ## Product action
 

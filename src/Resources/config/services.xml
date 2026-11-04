@@ -148,6 +148,15 @@
             </call>
         </service>
 
+        <service id="Fyrst\ViewsTheme\Controller\CookieController" public="true">
+            <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
+            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Shopware\Core\Content\Cookie\SalesChannel\CookieRoute"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
         <service id="Fyrst\ViewsTheme\Controller\CartPageController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
             <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>

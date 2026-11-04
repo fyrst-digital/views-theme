@@ -24,7 +24,7 @@ Some templates still `sw_extends` core Storefront templates (register, address f
 
 ### Deprecated (runtime)
 
-No `{% deprecated %}` shells remain. The unmounted `Cookie:Configuration`, `Cookie:ConfigurationGroup`, the old `ScrollUp` shim (replaced by the real [`Scroll:Up`](javascript.md#scroll-up)), `Account:Dropdown` and `Page:Header:Action:Account` shims were removed (see [#64](https://github.com/fyrst-digital/views-theme/issues/64)). New shells that are kept for a transition must emit `{% deprecated package="fyrst/views-theme" version="…" %}`.
+No `{% deprecated %}` shells remain. The unmounted `Cookie:Configuration`, `Cookie:ConfigurationGroup` (the cookie UI is now the real [`Cookie:*`](../features/cookie.md) components), the old `ScrollUp` shim (replaced by the real [`Scroll:Up`](javascript.md#scroll-up)), `Account:Dropdown` and `Page:Header:Action:Account` shims were removed (see [#64](https://github.com/fyrst-digital/views-theme/issues/64)). New shells that are kept for a transition must emit `{% deprecated package="fyrst/views-theme" version="…" %}`.
 
 ## Related
 

@@ -24,7 +24,9 @@
             {{ ...vi_attrs('list').defaults({
                 label: label,
             }).all() }}
-        />
+        >
+            <twig:block name="content">{% vi_block tabs %}{% endvi_block %}</twig:block>
+        </twig:ViewsTheme:Tabs:List>
     {% endblock %}
 
     {% block panels %}

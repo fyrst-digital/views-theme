@@ -264,6 +264,6 @@ See [JavaScript conventions](../conventions/javascript.md).
 ## Out of scope (v1)
 
 - Opening the theme drawer on variants-grid success (product add already auto-opens via `openOnActions: ['add']`)
-- Cookie offcanvas → `Drawer`
+- Cookie offcanvas → `Drawer` (done separately: [cookie.md](cookie.md))
 - Finish page redesign (confirm is [checkout-confirm](checkout-confirm.md))
 - Add-by-number / `Cart:AddProductForm`

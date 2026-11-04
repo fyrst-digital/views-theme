@@ -27729,6 +27729,2372 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "bBVAV",
+      "x": 7787,
+      "y": -5538,
+      "name": "Desktop / Footer",
+      "reusable": true,
+      "clip": true,
+      "width": 1920,
+      "fill": "$ivory",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "ty1e2",
+          "name": "Accent",
+          "fill": "$coral",
+          "width": "fill_container",
+          "height": 2
+        },
+        {
+          "type": "frame",
+          "id": "jJz3b",
+          "name": "Newsletter",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-md",
+          "padding": [
+            "$spacing-3xl",
+            160
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "gCDLW",
+              "name": "Container",
+              "width": 640,
+              "layout": "vertical",
+              "gap": "$spacing-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "TgKyw",
+                  "name": "Intro",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jmKDU",
+                      "name": "Headline",
+                      "fill": "$ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "New pieces, told slowly.",
+                      "lineHeight": 1.2,
+                      "textAlign": "center",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-xl",
+                      "fontWeight": "600",
+                      "letterSpacing": -0.4
+                    },
+                    {
+                      "type": "text",
+                      "id": "Mz2KA",
+                      "name": "Copy",
+                      "fill": "$ash",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "A short letter about materials, making, and what just arrived. Once a month.",
+                      "lineHeight": 1.45,
+                      "textAlign": "center",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nEkQw",
+                  "name": "Form",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "k9dSW",
+                      "name": "Fields",
+                      "width": "fill_container",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "r62hJV",
+                          "name": "Email",
+                          "width": "fill_container",
+                          "fill": "$white",
+                          "cornerRadius": "$border-radius-lg",
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            "$spacing-sm",
+                            "$spacing-lg"
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "x0MMt",
+                              "name": "Placeholder",
+                              "fill": "$ash",
+                              "content": "Email address",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font",
+                              "fontSize": "$font-size-md",
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "zYlBH",
+                          "type": "ref",
+                          "ref": "swDlW",
+                          "name": "Subscribe",
+                          "descendants": {
+                            "D5ADn": {
+                              "content": "Subscribe"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "UNik2",
+                      "name": "Consent",
+                      "fill": "$ash",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "By subscribing you agree to the privacy policy. Unsubscribe any time.",
+                      "lineHeight": 1.4,
+                      "textAlign": "center",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "usJBE",
+          "name": "Advantages",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            "$spacing-xl",
+            160
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "me2H3",
+              "name": "Free shipping",
+              "gap": "$spacing-sm",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "x8vTV1",
+                  "name": "Icon",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "truck",
+                  "library": "phosphor",
+                  "weight": 400,
+                  "fill": "$sage"
+                },
+                {
+                  "type": "frame",
+                  "id": "Z3M8CT",
+                  "name": "Copy",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B0udn9",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Free shipping",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VaRAY",
+                      "name": "Detail",
+                      "fill": "$ash",
+                      "content": "From €49 within Germany",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OUWUy",
+              "name": "30-day returns",
+              "gap": "$spacing-sm",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "sHPXp",
+                  "name": "Icon",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "arrow-counter-clockwise",
+                  "library": "phosphor",
+                  "weight": 400,
+                  "fill": "$sage"
+                },
+                {
+                  "type": "frame",
+                  "id": "cVzIq",
+                  "name": "Copy",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q2W1r",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "30-day returns",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SxOl1",
+                      "name": "Detail",
+                      "fill": "$ash",
+                      "content": "Unused items, no fuss",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lHj8u",
+              "name": "Secure checkout",
+              "gap": "$spacing-sm",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "L6L3Ya",
+                  "name": "Icon",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "shield-check",
+                  "library": "phosphor",
+                  "weight": 400,
+                  "fill": "$sage"
+                },
+                {
+                  "type": "frame",
+                  "id": "qAqbA",
+                  "name": "Copy",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jQp01",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Secure checkout",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wn156",
+                      "name": "Detail",
+                      "fill": "$ash",
+                      "content": "Card, PayPal, or invoice",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RkeKa",
+              "name": "Studio advice",
+              "gap": "$spacing-sm",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WK83H",
+                  "name": "Icon",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "headset",
+                  "library": "phosphor",
+                  "weight": 400,
+                  "fill": "$sage"
+                },
+                {
+                  "type": "frame",
+                  "id": "zu1jH",
+                  "name": "Copy",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "E8H6I",
+                      "name": "Title",
+                      "fill": "$ink",
+                      "content": "Studio advice",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "IbUkw",
+                      "name": "Detail",
+                      "fill": "$ash",
+                      "content": "Mon–Fri, 10–18",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dRE79",
+          "name": "Methods",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "gap": "$spacing-4xl",
+          "padding": [
+            "$spacing-lg",
+            160
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "T56Uw",
+              "name": "Payment",
+              "layout": "vertical",
+              "gap": "$spacing-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oWiny",
+                  "name": "Label",
+                  "fill": "$ink",
+                  "content": "Payment",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "T8inL",
+                  "name": "Marks",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZC8c2",
+                      "name": "Visa",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "snXGe",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Visa",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C18CS4",
+                      "name": "Mastercard",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "JT1ml",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Mastercard",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Ppw42",
+                      "name": "PayPal",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Qwnw9",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "PayPal",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JEl1N",
+                      "name": "Klarna",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sBfQj",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Klarna",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JWbze",
+                      "name": "Invoice",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "x5EYo2",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Invoice",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gdeyR",
+              "name": "Shipping",
+              "layout": "vertical",
+              "gap": "$spacing-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Hcgfa",
+                  "name": "Label",
+                  "fill": "$ink",
+                  "content": "Shipping",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "w0isia",
+                  "name": "Marks",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qLfAn",
+                      "name": "DHL",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YnJYc",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "DHL",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Zzdtp",
+                      "name": "DPD",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AKvV4",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "DPD",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fZ80f",
+                      "name": "Hermes",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "bVOT2",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Hermes",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mDb48",
+          "name": "Main",
+          "width": "fill_container",
+          "gap": "$spacing-3xl",
+          "padding": [
+            "$spacing-3xl",
+            160
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "CDgiP",
+              "name": "Company",
+              "width": 280,
+              "layout": "vertical",
+              "gap": "$spacing-lg",
+              "children": [
+                {
+                  "id": "XPF68",
+                  "type": "ref",
+                  "ref": "lYlTe",
+                  "name": "Logo"
+                },
+                {
+                  "type": "text",
+                  "id": "Ej2RS",
+                  "name": "Tagline",
+                  "fill": "$ash",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Objects for rooms you actually live in.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "CGUHp",
+                  "name": "Contact",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lGyJd",
+                      "name": "+49 30 1208 4410",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "tuqDI",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "phone",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "r48i2i",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "+49 30 1208 4410",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IBCDm",
+                      "name": "hello@views.studio",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "cvHfs",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "envelope-simple",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "QpuJE",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "hello@views.studio",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HaxrY",
+                      "name": "Contact form",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "N5cSVW",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chat-circle-text",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "miKyq",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "Contact form",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qHMYX",
+              "name": "Navigation",
+              "width": "fill_container",
+              "gap": "$spacing-2xl",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "jFIUW",
+                  "name": "Shop",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WoZaR",
+                      "name": "Heading",
+                      "fill": "$ink",
+                      "content": "Shop",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "f1v47",
+                      "name": "Links",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-sm",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "t2E6u",
+                          "name": "New in",
+                          "fill": "$ash",
+                          "content": "New in",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YFnhs",
+                          "name": "Seating",
+                          "fill": "$ash",
+                          "content": "Seating",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "z4D9xi",
+                          "name": "Lighting",
+                          "fill": "$ash",
+                          "content": "Lighting",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mF2JT",
+                          "name": "Textiles",
+                          "fill": "$ash",
+                          "content": "Textiles",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BO2CM",
+                          "name": "Objects",
+                          "fill": "$ash",
+                          "content": "Objects",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MEcGn",
+                  "name": "Service",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "atbKE",
+                      "name": "Heading",
+                      "fill": "$ink",
+                      "content": "Service",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bXyZC",
+                      "name": "Links",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-sm",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kEUow",
+                          "name": "Shipping",
+                          "fill": "$ash",
+                          "content": "Shipping",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vT9Ok",
+                          "name": "Returns",
+                          "fill": "$ash",
+                          "content": "Returns",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "rtO9J",
+                          "name": "FAQ",
+                          "fill": "$ash",
+                          "content": "FAQ",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "qPfqO",
+                          "name": "Order status",
+                          "fill": "$ash",
+                          "content": "Order status",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jWdnB",
+                  "name": "About",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "L4lSZH",
+                      "name": "Heading",
+                      "fill": "$ink",
+                      "content": "About",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZHzOg",
+                      "name": "Links",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-sm",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "IkVwp",
+                          "name": "Our story",
+                          "fill": "$ash",
+                          "content": "Our story",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "db6oP",
+                          "name": "Journal",
+                          "fill": "$ash",
+                          "content": "Journal",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jtayI",
+                          "name": "Showroom",
+                          "fill": "$ash",
+                          "content": "Showroom",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "hkhMB",
+                          "name": "Jobs",
+                          "fill": "$ash",
+                          "content": "Jobs",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yId1G",
+          "name": "Legal",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-xs",
+          "padding": [
+            "$spacing-lg",
+            160,
+            "$spacing-xl",
+            160
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "WwyH1",
+              "name": "Row",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "miy6K",
+                  "name": "Copyright",
+                  "fill": "$ash",
+                  "content": "© 2026 views",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "SVkgq",
+                  "name": "Links",
+                  "gap": "$spacing-xl",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Z9w6y",
+                      "name": "Shipping",
+                      "fill": "$ash",
+                      "content": "Shipping",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "W3mCNr",
+                      "name": "Returns",
+                      "fill": "$ash",
+                      "content": "Returns",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mdBCu",
+                      "name": "Privacy",
+                      "fill": "$ash",
+                      "content": "Privacy",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d3SFUG",
+                      "name": "Imprint",
+                      "fill": "$ash",
+                      "content": "Imprint",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "P5pqf",
+              "name": "VAT",
+              "fill": "$ash",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "All prices excl. VAT plus shipping costs and possible delivery charges, if not stated otherwise.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font",
+              "fontSize": "$font-size-sm",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "fgNbA",
+              "name": "Credit",
+              "fill": "$ash",
+              "content": "Theme by fyrst",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "S4Hc5A",
+      "x": 9787,
+      "y": -5538,
+      "name": "Mobile / Footer",
+      "reusable": true,
+      "clip": true,
+      "width": 375,
+      "fill": "$ivory",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "x3Sdj",
+          "name": "Accent",
+          "fill": "$coral",
+          "width": "fill_container",
+          "height": 2
+        },
+        {
+          "type": "frame",
+          "id": "XAsPs",
+          "name": "Newsletter",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-sm",
+          "padding": [
+            "$spacing-xl",
+            20,
+            "$spacing-2xl",
+            20
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "CFLLR",
+              "name": "Headline",
+              "fill": "$ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "New pieces, told slowly.",
+              "lineHeight": 1.2,
+              "textAlign": "center",
+              "fontFamily": "$font",
+              "fontSize": "$font-size-xl",
+              "fontWeight": "600",
+              "letterSpacing": -0.4
+            },
+            {
+              "type": "text",
+              "id": "Fcisk",
+              "name": "Copy",
+              "fill": "$ash",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "A short letter about materials, making, and what just arrived. Once a month.",
+              "lineHeight": 1.45,
+              "textAlign": "center",
+              "fontFamily": "$font",
+              "fontSize": "$font-size-sm",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "C76Rlg",
+              "name": "Fields",
+              "width": "fill_container",
+              "gap": "$spacing-xs",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "kE1MA",
+                  "name": "Email",
+                  "width": "fill_container",
+                  "fill": "$white",
+                  "cornerRadius": "$border-radius-lg",
+                  "stroke": "$linen",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    "$spacing-sm",
+                    "$spacing-lg"
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "E9AKJ",
+                      "name": "Placeholder",
+                      "fill": "$ash",
+                      "content": "Email address",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-md",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "S2Ze3T",
+                  "type": "ref",
+                  "ref": "swDlW",
+                  "name": "Subscribe",
+                  "descendants": {
+                    "D5ADn": {
+                      "content": "Subscribe"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "n4gE8O",
+              "name": "Consent",
+              "fill": "$ash",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "By subscribing you agree to the privacy policy. Unsubscribe any time.",
+              "lineHeight": 1.4,
+              "textAlign": "center",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XVQy2",
+          "name": "Advantages",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-md",
+          "padding": [
+            "$spacing-lg",
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "AgZQ0",
+              "name": "Row",
+              "width": "fill_container",
+              "gap": "$spacing-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "h3CFC",
+                  "name": "Free shipping",
+                  "width": "fill_container",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "PpPIF",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "truck",
+                      "library": "phosphor",
+                      "weight": 400,
+                      "fill": "$sage"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VwrXy",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "U6yfGF",
+                          "name": "Title",
+                          "fill": "$ink",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Free shipping",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "MUoUF",
+                          "name": "Detail",
+                          "fill": "$ash",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "From €49 within Germany",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gqbBL",
+                  "name": "30-day returns",
+                  "width": "fill_container",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "AWhCg",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "arrow-counter-clockwise",
+                      "library": "phosphor",
+                      "weight": 400,
+                      "fill": "$sage"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "s8gCRX",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "glEHg",
+                          "name": "Title",
+                          "fill": "$ink",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "30-day returns",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "e6nff",
+                          "name": "Detail",
+                          "fill": "$ash",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Unused items, no fuss",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FzgYA",
+              "name": "Row",
+              "width": "fill_container",
+              "gap": "$spacing-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "myy2X",
+                  "name": "Secure checkout",
+                  "width": "fill_container",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "uDkMa",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "shield-check",
+                      "library": "phosphor",
+                      "weight": 400,
+                      "fill": "$sage"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O2xe8A",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dCRvh",
+                          "name": "Title",
+                          "fill": "$ink",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Secure checkout",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "OPKpB",
+                          "name": "Detail",
+                          "fill": "$ash",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Card, PayPal, or invoice",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "q2KcBO",
+                  "name": "Studio advice",
+                  "width": "fill_container",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "W0dVOG",
+                      "name": "Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "headset",
+                      "library": "phosphor",
+                      "weight": 400,
+                      "fill": "$sage"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h7ajz",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YvD4u",
+                          "name": "Title",
+                          "fill": "$ink",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Studio advice",
+                          "fontFamily": "$font",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Sp10P",
+                          "name": "Detail",
+                          "fill": "$ash",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Mon–Fri, 10–18",
+                          "lineHeight": 1.35,
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "neX9I",
+          "name": "Methods",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-md",
+          "padding": [
+            "$spacing-lg",
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "s3ROSs",
+              "name": "Payment",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-xs",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "aSlxE",
+                  "name": "Label",
+                  "fill": "$ink",
+                  "content": "Payment",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "O11run",
+                  "name": "Marks",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "n4nf9",
+                      "name": "Visa",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wyy8d",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Visa",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TOlUF",
+                      "name": "Mastercard",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "akvgV",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Mastercard",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O2SnhN",
+                      "name": "PayPal",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WXggt",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "PayPal",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zm434",
+                  "name": "Marks",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dRGq2",
+                      "name": "Klarna",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "cszrv",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Klarna",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KsXbs",
+                      "name": "Invoice",
+                      "fill": "$white",
+                      "cornerRadius": "$border-radius-lg",
+                      "stroke": "$linen",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wbodK",
+                          "name": "Mark",
+                          "fill": "$ink",
+                          "content": "Invoice",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HC5tS",
+              "name": "Shipping",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-xs",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W3P0g",
+                  "name": "Label",
+                  "fill": "$ink",
+                  "content": "Shipping",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "XvIzi",
+                  "name": "Row",
+                  "gap": "$spacing-sm",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ZVsQz",
+                      "name": "Marks",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "W80Cm8",
+                          "name": "DHL",
+                          "fill": "$white",
+                          "cornerRadius": "$border-radius-lg",
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MO6Hs",
+                              "name": "Mark",
+                              "fill": "$ink",
+                              "content": "DHL",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "o9okQO",
+                          "name": "DPD",
+                          "fill": "$white",
+                          "cornerRadius": "$border-radius-lg",
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "gHQ1Q",
+                              "name": "Mark",
+                              "fill": "$ink",
+                              "content": "DPD",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "m0dTO4",
+                          "name": "Hermes",
+                          "fill": "$white",
+                          "cornerRadius": "$border-radius-lg",
+                          "stroke": "$linen",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner",
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "GoW0P",
+                              "name": "Mark",
+                              "fill": "$ink",
+                              "content": "Hermes",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "jFbe5",
+                      "name": "Timing",
+                      "fill": "$ash",
+                      "content": "2–4 working days",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "CMGq1",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spacing-2xl",
+          "padding": [
+            "$spacing-2xl",
+            20,
+            "$spacing-xl",
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "URv8c",
+              "name": "Company",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$spacing-md",
+              "children": [
+                {
+                  "id": "cN2Hj",
+                  "type": "ref",
+                  "ref": "lYlTe",
+                  "name": "Logo"
+                },
+                {
+                  "type": "text",
+                  "id": "O3z68A",
+                  "name": "Tagline",
+                  "fill": "$ash",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Objects for rooms you actually live in.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "DHdyf",
+                  "name": "Address",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "L7TND",
+                      "name": "Atelier views",
+                      "fill": "$ink",
+                      "content": "Atelier views",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "s0SlR",
+                      "name": "Linienstraße 42",
+                      "fill": "$ash",
+                      "content": "Linienstraße 42",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "H1jtPA",
+                      "name": "10119 Berlin",
+                      "fill": "$ash",
+                      "content": "10119 Berlin",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tS1kY",
+                  "name": "Contact",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xs",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "e2x2k",
+                      "name": "+49 30 1208 4410",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "clvh4",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "phone",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Yrbs1",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "+49 30 1208 4410",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q2GDk",
+                      "name": "hello@views.studio",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "e9vdzg",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "envelope-simple",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xLdxK",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "hello@views.studio",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "m5EiF",
+                      "name": "Contact form",
+                      "gap": "$spacing-xs",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "HsESU",
+                          "name": "Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chat-circle-text",
+                          "library": "phosphor",
+                          "weight": 600,
+                          "fill": "$ink"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pplJV",
+                          "name": "Label",
+                          "fill": "$ink",
+                          "content": "Contact form",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Uq1pJ",
+              "name": "Navigation",
+              "width": "fill_container",
+              "gap": "$spacing-xl",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "XSK5r",
+                  "name": "Shop",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-sm",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Vp5l7",
+                      "name": "Heading",
+                      "fill": "$ink",
+                      "content": "Shop",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "e4mwRc",
+                      "name": "New in",
+                      "fill": "$ash",
+                      "content": "New in",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "oLbnZ",
+                      "name": "Seating",
+                      "fill": "$ash",
+                      "content": "Seating",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nWbDC",
+                      "name": "Lighting",
+                      "fill": "$ash",
+                      "content": "Lighting",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VBZo8",
+                      "name": "Textiles",
+                      "fill": "$ash",
+                      "content": "Textiles",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "A1Y3b",
+                      "name": "Objects",
+                      "fill": "$ash",
+                      "content": "Objects",
+                      "fontFamily": "$font",
+                      "fontSize": "$font-size-sm",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OeAG4",
+                  "name": "Service and about",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$spacing-xl",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rai5F",
+                      "name": "Service",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-sm",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Cnq6k",
+                          "name": "Heading",
+                          "fill": "$ink",
+                          "content": "Service",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "h7MYq",
+                          "name": "Shipping",
+                          "fill": "$ash",
+                          "content": "Shipping",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "AhANL",
+                          "name": "Returns",
+                          "fill": "$ash",
+                          "content": "Returns",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "e1TKgk",
+                          "name": "FAQ",
+                          "fill": "$ash",
+                          "content": "FAQ",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jBST9",
+                          "name": "Order status",
+                          "fill": "$ash",
+                          "content": "Order status",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QnVaW",
+                      "name": "About",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$spacing-sm",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uI8Tx",
+                          "name": "Heading",
+                          "fill": "$ink",
+                          "content": "About",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "OwXxF",
+                          "name": "Our story",
+                          "fill": "$ash",
+                          "content": "Our story",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "TAyLu",
+                          "name": "Journal",
+                          "fill": "$ash",
+                          "content": "Journal",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "G6Mu4Y",
+                          "name": "Showroom",
+                          "fill": "$ash",
+                          "content": "Showroom",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "IJziJ",
+                          "name": "Jobs",
+                          "fill": "$ash",
+                          "content": "Jobs",
+                          "fontFamily": "$font",
+                          "fontSize": "$font-size-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "tnzuh",
+          "name": "Legal",
+          "width": "fill_container",
+          "stroke": "$linen",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": "$spacing-sm",
+          "padding": [
+            "$spacing-lg",
+            20,
+            "$spacing-xl",
+            20
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "HqKKI",
+              "name": "Copyright",
+              "fill": "$ash",
+              "content": "© 2026 views",
+              "fontFamily": "$font",
+              "fontSize": "$font-size-sm",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "oReu7",
+              "name": "Links",
+              "gap": "$spacing-md",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Hk1yb",
+                  "name": "Shipping",
+                  "fill": "$ash",
+                  "content": "Shipping",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "B9OET",
+                  "name": "Returns",
+                  "fill": "$ash",
+                  "content": "Returns",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "FH4Pc",
+                  "name": "Privacy",
+                  "fill": "$ash",
+                  "content": "Privacy",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "vsnfd",
+                  "name": "Imprint",
+                  "fill": "$ash",
+                  "content": "Imprint",
+                  "fontFamily": "$font",
+                  "fontSize": "$font-size-sm",
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "dJsPs",
+              "name": "VAT",
+              "fill": "$ash",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "All prices excl. VAT plus shipping costs and possible delivery charges, if not stated otherwise.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "uTkjf",
+              "name": "Credit",
+              "fill": "$ash",
+              "content": "Theme by fyrst",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {

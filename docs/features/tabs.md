@@ -55,6 +55,26 @@ Tabs (data-component owner)
 </twig:ViewsTheme:Tabs>
 ```
 
+Shells that only need the default list fill the `tabs` slot instead of replacing `list`. `Tabs` forwards it into its own `Tabs:List`, so the shell's tabs stay one host deep and its [`{% vi_block %}`](../twig/vi-block.md) slots reach callers. The list keeps the `label` prop, and its look can be changed with the `list` nest (`'list:cva'`). `Account:LoginRegister` works this way:
+
+```twig
+<twig:ViewsTheme:Tabs active="tab-a" label="…">
+    <twig:block name="tabs">
+        {% vi_block tab_a %}<twig:ViewsTheme:Tabs:Tab id="tab-a" …>…</twig:ViewsTheme:Tabs:Tab>{% endvi_block %}
+    </twig:block>
+    <twig:block name="panels">…</twig:block>
+</twig:ViewsTheme:Tabs>
+```
+
+## Slots
+
+| Slot | Role |
+|------|------|
+| `list` | Whole list; replace it to render your own `Tabs:List` |
+| `tabs` | Tabs inside the default `Tabs:List` (one host deep) |
+| `panels` | Whole panels region (default: `panels` div) |
+| `panel` | Panels inside the default `panels` div |
+
 ## Props
 
 | Component | Prop | Role |

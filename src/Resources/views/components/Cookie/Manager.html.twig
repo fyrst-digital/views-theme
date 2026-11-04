@@ -1,0 +1,80 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['form', 'intro', 'groups', 'actions', 'accept', 'save']) %}
+
+{% set label = 'cookie.headline'|trans|striptags %}
+{% set privacyUrl = privacyPageId ? path('frontend.cms.page.full', { id: privacyPageId }) : '#' %}
+
+<twig:ViewsTheme:Drawer
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        id: 'vi-cookie-drawer',
+        side: 'start',
+        label: label,
+        title: label,
+    }).all() }}
+>
+    <twig:block name="content">
+        <form
+            {{ vi_attrs('form').defaults({
+                novalidate: true,
+                'data-component': 'ViewsTheme:Cookie:Manager',
+                'data-component-options': {
+                    groupsUrl: path('frontend.cookie.groups'),
+                }|json_encode,
+            }) }}
+            class="{{ vi_class('form') }}"
+        >
+            {% vi_block intro %}
+                <div {{ vi_attrs('intro') }} class="{{ vi_class('intro') }}">
+                    {{ 'cookie.messageTextPage'|trans({ '%url%': privacyUrl })|raw }}
+                </div>
+            {% endvi_block %}
+
+            {# The whole list: a slot inside the Accordion would be two hosts deep (vi_block forwards one) #}
+            {% vi_block groups %}
+                <twig:ViewsTheme:Accordion
+                    class="{{ vi_class('groups') }}"
+                    :multiple="true"
+                >
+                    <twig:block name="items">
+                        {% for group in views %}
+                            <twig:ViewsTheme:Cookie:Manager:Group :group="group" />
+                        {% endfor %}
+                    </twig:block>
+                </twig:ViewsTheme:Accordion>
+            {% endvi_block %}
+
+            {% vi_block actions %}
+                <div {{ vi_attrs('actions') }} class="{{ vi_class('actions') }}">
+                    {% if acceptAll %}
+                        {% vi_block accept %}
+                            <twig:ViewsTheme:Button
+                                class="{{ vi_class('accept') }}"
+                                {{ ...vi_attrs('accept').defaults({
+                                    type: 'submit',
+                                    name: 'action',
+                                    value: 'all',
+                                    color: 'primary',
+                                    label: 'cookie.acceptAll'|trans|striptags,
+                                }).all() }}
+                            />
+                        {% endvi_block %}
+                    {% endif %}
+
+                    {% vi_block save %}
+                        <twig:ViewsTheme:Button
+                            class="{{ vi_class('save') }}"
+                            {{ ...vi_attrs('save').defaults({
+                                type: 'submit',
+                                name: 'action',
+                                value: 'save',
+                                color: 'primary',
+                                label: 'global.default.save'|trans|striptags,
+                            }).all() }}
+                        />
+                    {% endvi_block %}
+                </div>
+            {% endvi_block %}
+        </form>
+    </twig:block>
+</twig:ViewsTheme:Drawer>

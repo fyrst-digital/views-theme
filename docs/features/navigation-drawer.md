@@ -14,7 +14,7 @@ Desktop top-level nav is theme-owned via [Navigation bar](navigation-bar.md) (`P
 | `Navigation:Drawer` | Thin composition — **no** JS. Overrides Drawer `panel` + Panel `header` (`Navigation:Drawer:Header`) and `footer` (`Navigation:Drawer:Footer`); Menu is Panel body |
 | `Navigation:Drawer:Header` | Root-host wrapper of `Drawer:Header` (no extra node, no JS). Title hosts `Wishlist:Action` + `Account:Action`; root class `vi-navigation-drawer-header` |
 | `Navigation:Drawer:Footer` | Presentational chrome (no JS). Hosts `Language:Action` + `Currency:Action` when either collection has more than one item; root class `vi-navigation-drawer-footer` |
-| `Drawer` | Shell: open/close a11y, motion; default empty `panel` (Panel with `title` prop); no body content slot |
+| `Drawer` | Shell: open/close a11y, motion; default `panel` = Panel with `title` prop whose body is the Drawer's `content` slot (forwarded with `{% vi_block content %}`) |
 | `Drawer:Panel` | Sliding surface + header/body; owns `{% block content %}`; body is flex column (`min-h-0 overflow-hidden`) so nested scrollports can fill; composes `Header` via `title` prop (overridable); JS notifies Drawer on close `transitionend` |
 | `Drawer:Header` | Presentational chrome: title slot + generic `Close` (`target: ViewsTheme:Drawer`) |
 | `Backdrop` / `Close` | `callMethod(Drawer, close)` (`Backdrop` via `componentName`) |
@@ -145,7 +145,7 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Generic Drawer
 
-`ViewsTheme:Drawer` is reusable (side `start` \| `end`, `title` prop, Panel/Close + shared `Backdrop`). Callers that need a body override the `panel` block and put content on `Drawer:Panel` (no multi-hop block capture). Navigation does this; other features may reuse the same pattern later.
+`ViewsTheme:Drawer` is reusable (side `start` \| `end`, `title` prop, Panel/Close + shared `Backdrop`). A body only: fill the Drawer `content` slot — it lands in the default Panel body, one host deep, so the caller's own `{% vi_block %}` slots still reach *its* callers (`Cookie:Manager`, `Cookie:Consent`). Override `panel` and compose `Drawer:Panel` yourself only when Panel `header` / `footer` change too (Navigation). Slots written inside that nested `Drawer:Panel` are two hosts deep and cannot be forwarded.
 
 ### Motion
 
@@ -176,5 +176,5 @@ See [JavaScript conventions](../conventions/javascript.md).
 
 ## Out of scope (v1)
 
-- Cookie offcanvas → `Drawer` (cart drawer: [cart-drawer.md](cart-drawer.md))
+- Cookie offcanvas → `Drawer` (done separately: [cookie.md](cookie.md))
 - Auto-reopening the theme drawer after language/currency switch (page reloads closed)

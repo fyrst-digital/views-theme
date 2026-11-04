@@ -35,6 +35,8 @@ Do **not** use `{% set x %}{% block %}{% endset %}` + `<twig:block>` capture/for
 
 Keep `{% block %}` when the slot sits on **plain HTML** in that same component (`Form:Input:Group` `append`).
 
+**One host deep only.** `vi_block` resolves the outer component's blocks from the `<twig:block>` of the **direct** nested host (Symfony `outerBlocks`). Inside a host that is itself inside another host (`Drawer` → `Drawer:Panel`, `Accordion:Item` → `Accordion:Panel`, `Tabs` → `Tabs:List`) it always renders its default. Fix the depth instead: fill a slot the outer host forwards (Drawer `content`, Tabs `tabs`), or put the `vi_block` around the inner host (`Cookie:Manager` `groups`, `Cookie:Manager:Group` `entries`). `Account:LoginRegister` fills the Tabs `tabs` slot, so its `tab_login` / `tab_register` sit one host deep.
+
 Closer is `{% endvi_block %}` — not `{% endblock %}`. Symfony’s UX PreLexer treats `{% endblock %}` as the closer for `<twig:block>`.
 
 ## Implementation

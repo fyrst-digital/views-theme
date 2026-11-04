@@ -29,13 +29,30 @@ interface Window {
     breakpoints?: Record<string, number>
     focusHandler: {
         getFocusableElements(root: Element): HTMLElement[]
-        setFocus(el: Element, options?: { focusVisible?: boolean }): void
+        setFocus(el: Element, options?: { focusVisible?: boolean; preventScroll?: boolean }): void
     }
     cartCount?: number
     wishlistCount?: number
     wishlistProducts?: Record<string, unknown>
     activeNavigationId?: string
     activeNavigationPathIdList?: string[]
+    /** Core cookie consent switch (`core.basicInformation.useDefaultCookieConsent`). */
+    useDefaultCookieConsent?: boolean
+    /** Core reCAPTCHA gate, re-run once the cookie preference changes. */
+    registerGoogleReCaptchaPlugins?: () => void
+    PluginManager?: { initializePlugins(): void }
+}
+
+interface Document {
+    /**
+     * Core global event emitter (`CookieConfiguration_Update`, `CookieConfiguration/requestConsent`, …).
+     * `unsubscribe` removes every listener of the name: subscribe with a `.Namespace` suffix.
+     */
+    $emitter?: {
+        publish(eventName: string, detail?: unknown): CustomEvent
+        subscribe(eventName: string, callback: (event: CustomEvent) => void, opts?: { once?: boolean; scope?: unknown }): boolean
+        unsubscribe(eventName: string): boolean
+    }
 }
 
 declare const ShopwareComponent: {

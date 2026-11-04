@@ -43,7 +43,7 @@ src/
 
 - **UX components** under `views/components/` as `<twig:ViewsTheme:…>` — anonymous by default; optional co-located `Name.php` class components for view-model logic ([UX guide](conventions/ux-components.md#class-components-php-backed)).
 - **Page overrides** only in existing `views/storefront/` files.
-- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), CMS page / section / block templates → [CMS layout](features/cms.md), checkout cart page → [Cart page](features/cart-page.md), checkout finish page → [Checkout success](features/checkout-success.md), footer layout → [Footer](features/footer.md).
+- **Thin bridges** (exception): new storefront files only when core has no theme override yet and a single include choke-point must mount UX — e.g. product card → [Product box](features/product-box.md), buy-widget → [Buy container](features/buy-container.md), product listing → [Product listing](features/product-listing.md), wishlist listing → [Wishlist](features/wishlist.md), pagination → [Pagination](features/pagination.md), sorting → [Sorting](features/sorting.md), breadcrumb → [Breadcrumb](features/breadcrumb.md), CMS product-description-reviews → [Product reviews](features/review.md) (`Cms:DescriptionReviews`), CMS image-gallery → [Gallery](features/gallery.md), CMS page / section / block templates → [CMS layout](features/cms.md), checkout cart page → [Cart page](features/cart-page.md), checkout finish page → [Checkout success](features/checkout-success.md), footer layout → [Footer](features/footer.md), cookie permission → [Cookie consent](features/cookie.md).
 - **Dev showcase pages** (`APP_ENV=dev` only): `storefront/page/showcase/*.html.twig` mount existing `<twig:ViewsTheme:…>` tags in the page template. No showcase UX component. See [Component showcase](features/component-showcase.md).
 
 ### Storefront JS
@@ -88,6 +88,7 @@ src/
 | `ConfiguratorOptionFace` | Option label kind (`text`, `color`, `media`) plus name, hex, and media |
 | `ProductPriceData` | Price view-model |
 | `VariantsGridPagination` | Variants grid pagination state |
+| `CookieGroupView` / `CookieEntryView` | Cookie manager group / switch view-models |
 
 ## Subscribers
 
@@ -142,6 +143,8 @@ Examples:
 | `frontend.views-theme.review.list` | `/vi/product/{productId}/reviews` (GET) |
 | `frontend.views-theme.review.save` | `/vi/product/{productId}/reviews` (POST) |
 | `frontend.views-theme.gallery.fullscreen` | `/vi/gallery/fullscreen` |
+| `frontend.views-theme.cookie.manager` | `/vi/cookie/manager` |
+| `frontend.views-theme.cookie.consent` | `/vi/cookie/consent` |
 | `frontend.views-theme.address.manager` | `/vi/address/manager` |
 | `frontend.views-theme.address.editor` | `/vi/address/editor` (GET) |
 | `frontend.views-theme.address.editor.save` | `/vi/address/editor` (POST) |
@@ -165,7 +168,7 @@ XHR controllers that render UX components via `ComponentRendererInterface` **mus
 | Replace | `MediaUrlPlaceholderHandler` then `SeoUrlPlaceholderHandler` (host = `RequestTransformer::STOREFRONT_URL`) |
 | JSON HTML | Filter-options option fragments also go through `ComponentHtmlRenderer::render()` |
 
-Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`, `AddressManagerController`.
+Controllers: `CartDrawerController`, `CartPageController`, `NavigationFlyoutController`, `NavigationDrawerController`, `SearchOverlayController`, `GalleryFullscreenController`, `FilterDrawerController`, `ListingController`, `ReviewController`, `AddressManagerController`, `CookieController`.
 
 Legacy debt: `VariantsGridController` JSON HTML fragments do not use this path yet (`sw_encode_media_url` / `renderView`).
 
@@ -194,6 +197,7 @@ Controllers orchestrate core data into ViewsTheme UX components. They do not rei
 | Reviews list/save (`ReviewController`) | `ProductReviewGateway` → `AbstractProductReviewLoader`; save → `AbstractProductReviewSaveRoute` | `product-reviews-widget-loaded` | HTML `Review:Results` / `Review:Panel`; [review.md](features/review.md) |
 | Gallery fullscreen (`GalleryFullscreenController`) | `AbstractMediaRoute` / `MediaRoute` | *(none — raw media list)* | HTML `Gallery:Fullscreen`; [gallery.md](features/gallery.md) |
 | Address manager (`AddressManagerController`) | `AddressListingPageLoader` | `address-book-widget-loaded` (`AddressBookWidgetLoadedHook`) | HTML `Address:Manager` / editor View island; upsert + context switch; [address-manager.md](features/address-manager.md) |
+| Cookie manager (`CookieController::manager`) | `AbstractCookieRoute` / `CookieRoute` (service id, decorators apply) | *(none — core cookie offcanvas has no page hook)* | HTML `Cookie:Manager`; consent request has no loader; [cookie.md](features/cookie.md) |
 
 **Not used for cart drawer:** `OffcanvasCartPageLoader` / `checkout-offcanvas-widget-loaded`. Theme cart UX needs the full cart page shape (summary, shipping calculation, line items). Third parties enriching cart drawer data should use cart-page hooks/events, not offcanvas-widget ones.
 
