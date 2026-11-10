@@ -1,3 +1,11 @@
+# 1.1.5
+
+**Upgrade notes**
+- Child themes can now change ViewsTheme's Bootstrap Sass variables (button and input radius, padding, font sizes, colors, spacers, breakpoints, ...) from a file listed before `@ViewsTheme` in their `style` list. Values that a child theme already set there, and that had no effect before, now apply. A child theme's `$utilities` map is merged with ViewsTheme's utilities instead of being ignored.
+
+**Changelog**
+- Child themes can override the button and input radius and the other Bootstrap settings of ViewsTheme without patching the compiled CSS
+
 # 1.1.4
 
 **Upgrade notes**
