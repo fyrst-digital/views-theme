@@ -3,9 +3,11 @@
 **Upgrade notes**
 - The Shopping Experiences product slider and the product page cross-selling now render the theme carousel instead of the Shopware slider. The slider settings for autoplay, speed, border, vertical alignment, display mode and arrow position are no longer used. Template overrides of the inner `element_product_slider_*` blocks no longer apply; extend `Product:Carousel` or the new `element_product_slider_carousel` block instead.
 - Cross-selling on the product page now uses the theme tabs (`Cms:CrossSelling`). Template overrides of the inner `cms_element_cross_selling_*` blocks no longer apply; extend `Cms:CrossSelling` instead.
+- The image gallery now uses the theme carousel for its slides. The `ViewsTheme:Gallery:Canvas` JS component (`Canvas.js`, `goTo`) was removed: call `select(index)` on the `Gallery` instead. `Gallery:Canvas` nests changed from `track:*` to `carousel:*`, `item:*` and `slide:*`. `Gallery:Slide` no longer has the `total` prop or a slide role and label; the wrapping carousel item has them, and its label now reads "1 of 6" instead of "Show image 1 of 6".
 
 **Changelog**
 - New product carousel for the product slider and cross-selling: swipe or scroll through products, with previous/next buttons that hide when all products fit
+- The product image gallery shares the carousel's swipe track. It looks and works as before: thumbnails and dots follow your swipes, and the current image stays in place when the window is resized or the phone is rotated
 - Cross-selling tabs and their products are shown on every screen size; on phones they no longer move into a side panel
 - The browser console no longer logs the "Init method has to be implemented." warning on category listings and other pages with filters or the newsletter form
 

@@ -2,8 +2,6 @@
   min-inline-size: 0;
   min-block-size: 0;
   block-size: var(--vi-slide-h, auto);
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .vi-gallery-slide__image,

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { pageTarget, scrollEdges } from '@views-theme/modules/shared/scroll.js'
+import { nearestIndex, pageTarget, scrollEdges } from '@views-theme/modules/shared/scroll.js'
 
 /**
  * Items of equal width separated by a gap, as logical edges.
@@ -98,5 +98,25 @@ describe('pageTarget', () => {
         const wide = row(3, 1500, 0)
         assert.equal(pageTarget({ x: 0, max: 3500, viewport: 1000, items: wide, direction: 'next' }), 1000)
         assert.equal(pageTarget({ x: 1000, max: 3500, viewport: 1000, items: wide, direction: 'prev' }), 0)
+    })
+})
+
+describe('nearestIndex', () => {
+    // full-width cells (gallery): 1000px wide, 1px anti-bleed gap
+    const cells = row(4, 1000, 1)
+
+    it('returns the snapped cell', () => {
+        assert.equal(nearestIndex(cells, 0), 0)
+        assert.equal(nearestIndex(cells, 1001), 1)
+        assert.equal(nearestIndex(cells, 3003), 3)
+    })
+
+    it('picks the closest start between two cells', () => {
+        assert.equal(nearestIndex(cells, 400), 0)
+        assert.equal(nearestIndex(cells, 600), 1)
+    })
+
+    it('returns -1 without items', () => {
+        assert.equal(nearestIndex([], 0), -1)
     })
 })

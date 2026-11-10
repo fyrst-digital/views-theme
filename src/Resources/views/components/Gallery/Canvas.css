@@ -3,32 +3,17 @@
   min-block-size: 0;
   block-size: var(--vi-canvas-h, auto);
   grid-area: canvas;
+  /* Composed Carousel: one full-width slide per snap stop */
+  --vi-carousel-item-w: 100%;
+  --vi-carousel-snap-stop: always;
 }
 
+/* Carousel track (`track:class`); scroll-snap layout + height tokens come from Carousel.css */
 .vi-gallery-canvas__track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 100%;
-  grid-auto-rows: var(--vi-track-rows, auto);
-  min-block-size: 0;
-  block-size: var(--vi-track-h, auto);
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
   border-radius: var(--vi-canvas-radius, 8px);
   background: var(--vi-canvas-bg, transparent);
+  /* Anti-bleed between full-width cells (Carousel `gap="none"` drops the utility gap) */
   gap: var(--vi-canvas-gap, 1px);
-}
-
-.vi-gallery-canvas__track::-webkit-scrollbar {
-  display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vi-gallery-canvas__track {
-    scroll-behavior: auto;
-  }
 }
 
 .vi-gallery-canvas__fullscreen {

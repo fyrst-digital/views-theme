@@ -2,6 +2,7 @@
     label = null,
     controls = true,
     rewind = false,
+    gap = 'default', # default | none (caller styles the track gap)
     id = 'vi-carousel-' ~ random(),
     cva = {},
 %}
@@ -29,7 +30,7 @@
             id: trackId,
             tabindex: '0',
         }) }}
-        class="{{ vi_class('track') }}"
+        class="{{ vi_class('track', { gap: gap == 'none' ? 'none' : 'default' }) }}"
     >
         {% block content %}{% endblock %}
     </div>

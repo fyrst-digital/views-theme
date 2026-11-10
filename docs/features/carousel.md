@@ -1,12 +1,12 @@
 # Carousel
 
-Generic horizontal carousel on native CSS scroll-snap (no slider library), plus `Product:Carousel`, which renders `Product:Box` cards. The CMS **product-slider** element renders through `Product:Carousel`; PDP **cross-selling** renders through [`Cms:CrossSelling`](#cmscrossselling) (theme `Tabs` + one `Product:Carousel` per tab). Core tiny-slider markup is not used on these surfaces.
+Generic horizontal carousel on native CSS scroll-snap (no slider library), plus `Product:Carousel`, which renders `Product:Box` cards. It is also the canvas track of the [Gallery](gallery.md) (`Gallery:Canvas` composes it with full-width items). The CMS **product-slider** element renders through `Product:Carousel`; PDP **cross-selling** renders through [`Cms:CrossSelling`](#cmscrossselling) (theme `Tabs` + one `Product:Carousel` per tab). Core tiny-slider markup is not used on these surfaces.
 
 ## Ownership
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Carousel` | Owner (`data-component="ViewsTheme:Carousel"`). Region shell, scroll-snap track, prev/next. Reads the track's overflow and scroll position, sets the host `data-overflow` and the controls' `disabled` / `aria-disabled`. `prev()` / `next()` / `goTo(index)`. No product knowledge |
+| `Carousel` | Owner (`data-component="ViewsTheme:Carousel"`). Region shell, scroll-snap track, prev/next. Reads the track's overflow and scroll position, sets the host `data-overflow` and the controls' `disabled` / `aria-disabled`. Tracks the snapped item index and keeps it in place on resize. `prev()` / `next()` / `goTo(index)` / `getIndex()`, `ViewsTheme:Carousel:Change`. No product or gallery knowledge |
 | `Carousel:Item` | Snap cell, identity only (`Item.js` is empty). Width from `--vi-carousel-item-w`, `scroll-snap-align: start`, slide a11y. Content from the default slot. Same identity-child pattern as `Gallery:Slide` |
 | `Carousel:Control` | Prev/next button (`direction`). Calls the **nearest** Carousel via `closest` + `getInstanceByElement`, never global `callMethod`, so nested or sibling carousels stay independent. Root host of the shared [`Control`](#shared-control-chrome) |
 | `Product:Carousel` (class-backed) | Product view-model shell. Optional title, then `Carousel` with one `Product:Box` per `Carousel:Item` |
@@ -56,8 +56,9 @@ Product:Carousel
 | `Carousel` | `label` | `null` | Region `aria-label` |
 | `Carousel` | `controls` | `true` | Render prev/next |
 | `Carousel` | `rewind` | `false` | `false`: controls are disabled at the start and end. `true`: next at the end scrolls to the start, prev at the start scrolls to the end |
+| `Carousel` | `gap` | `default` | `default`: track CVA `gap-3 gap-md-4`. `none`: no gap utility, so the caller sets the gap in its own CSS (Gallery: 1px anti-bleed via `--vi-canvas-gap`) |
 | `Carousel` | `id` | `vi-carousel-{random}` | Root id; the track is `{id}-track` (controls' `aria-controls`) |
-| `Carousel` | `cva` | `{}` | Slots `root`, `track`, `controls`. Nests `track:*`, `controls:*` |
+| `Carousel` | `cva` | `{}` | Slots `root`, `track` (variant `gap`), `controls`. Nests `track:*` (e.g. `track:class`, `:track:tabindex="false"`), `controls:*` |
 | `Carousel:Item` | `index`, `total` | `null` | 0-based position and count. Both set → `aria-label` "N of M" (`viewsTheme.carousel.slideLabel`); otherwise no label |
 | `Carousel:Control` | `direction`, `disabled` | `next`, `false` | SSR state; the owner keeps it in sync |
 | `Product:Carousel` | `products` | `[]` | Product collection, array or iterable. `null` entries are dropped |
@@ -75,8 +76,10 @@ Product:Carousel
 | Concern | Where |
 |---------|-------|
 | Track layout | CVA `position-relative d-grid overflow-x-auto overflow-y-hidden`. `position-relative` makes the track the containing block, so absolutely positioned content in a slide (e.g. a `visually-hidden` rating label) is clipped by the scrollport instead of widening the page. `Carousel.css`: `grid-auto-flow: column`, `grid-auto-columns: var(--vi-carousel-item-w, 200px)`, `scroll-snap-type: x mandatory`, `overscroll-behavior-x: contain`, hidden scrollbar (same as `Gallery:Canvas` track) |
-| Gap | Track CVA `gap-3 gap-md-4`. Not a token |
-| Item width | `Carousel:Item`: `inline-size: var(--vi-carousel-item-w, 200px)`, `scroll-snap-align: start`, `min-inline-size: 0`. Assign the token per instance (`itemWidth`, inline `style`) or per breakpoint (`_theme.scss`) without changing the template |
+| Gap | Track CVA variant `gap`: `default` → `gap-3 gap-md-4`; `none` → no utility (the caller styles the gap). Not a token |
+| Height | Root `block-size: var(--vi-carousel-h, auto)`; track `block-size: var(--vi-track-h, auto)`, `grid-auto-rows: var(--vi-track-rows, auto)`, `min-block-size: 0`. A host assigns them to fill a fixed-height panel (Gallery `mode=fullscreen`: `100%` / `minmax(0, 100%)`) |
+| Item width | `Carousel:Item`: `inline-size: var(--vi-carousel-item-w, 200px)`, `scroll-snap-align: start`, `min-inline-size: 0`, `min-block-size: 0`. Assign the token per instance (`itemWidth`, inline `style`), per breakpoint (`_theme.scss`) or from a composing host (`Gallery:Canvas`: `100%`) without changing the template |
+| Snap stop | `Carousel:Item`: `scroll-snap-stop: var(--vi-carousel-snap-stop, normal)`. `always` = one item per swipe (Gallery) |
 | Smooth scroll | `scroll-behavior: smooth`; `prefers-reduced-motion: reduce` → CSS `auto`, JS `behavior: 'auto'` |
 | Controls | CVA overlay (`position-absolute` inset 0, `d-flex align-items-center justify-content-between`, `pe-none`, `z-1`): start/end edge, vertically centred on the carousel. `Carousel.css` adds the inset `padding-inline: var(--vi-control-inset, var(--spacing-2))`. Chrome from `Control` |
 | No overflow | Host `data-overflow="false"` hides its own controls (`> .vi-carousel__controls`, so nested carousels are unaffected). Not set on the server: controls show until JS has measured |
@@ -89,13 +92,18 @@ Product:Carousel
 | `next()` | Scrolls to the start of the first item that is **not fully visible**, so a partly visible item is never skipped (a plain `+clientWidth` step can snap past it). Clamped to the end |
 | `prev()` | Moves back by at most one viewport, to the first item edge inside it. Clamped to the start |
 | Ends | Without `rewind`: no-op and the control is disabled. With `rewind`: next at the end → start, prev at the start → end |
-| `goTo(index)` | `scrollIntoView({ inline: 'start', block: 'nearest' })` on item N (Gallery follow-up, programmatic use) |
+| `goTo(index, { behavior })` | Scrolls **only the track** (`scrollTo`, no page jump) to item N's start, clamped to the end. `behavior`: `smooth` (default; `auto` under reduced motion) or `instant`. Sets the index and never emits. While hidden (`clientWidth` 0) it only stores the index; the resize re-pin scrolls once shown |
+| `getIndex()` | Current item index: last `goTo`, or the snapped item after a user scroll |
+| Item edges | Layout offsets (`offsetLeft` / `offsetWidth`; the `position-relative` track is the items' offsetParent), so the math is right mid-scroll and under transforms. RTL: `clientWidth - offsetLeft - width` |
+| Programmatic gate | `goTo` sets it; `scrollend` releases it (timeout `450ms` fallback for smooth, two frames for instant). A user swipe that interrupts a smooth `goTo` still settles on `scrollend` |
+| Settle | On `scrollend` (or `80ms` after the last `scroll` where `scrollend` is unsupported), outside the gate: the item whose start is nearest the logical offset (`nearestIndex`). New index → emit `ViewsTheme:Carousel:Change` `{ el, index }`. Prev/next paging is a user action and emits too |
+| Resize | `ResizeObserver(track)`: state sync, and when the track **width** changed (resize, orientation, hidden pane shown) re-pins the current index with `behavior: 'instant'` after `50ms`. `goTo` records the width it pinned at, so a fresh `goTo` is not re-pinned |
 | State sync | On `scroll` (rAF-throttled), `scrollend` and `ResizeObserver(track)`: host `data-overflow`, controls `disabled` + `aria-disabled`. A track with `clientWidth` 0 (hidden tab pane) keeps its state; the observer re-syncs when it is shown |
 | Discovery | `[data-component="ViewsTheme:Carousel:Item|Control"]` whose nearest `ViewsTheme:Carousel` is this host. Track = parent of the first item (same as `Gallery:Canvas`) |
-| Lifecycle | `destroy()` removes listeners, cancels the frame and disconnects the observer. Works when mounted later (XHR, tab panes) |
-| Events | None. `ViewsTheme:Carousel:Change` is not emitted until a consumer needs it |
+| Lifecycle | `destroy()` removes listeners, cancels frames and timers and disconnects the observer. Works when mounted later (XHR, tab panes) |
+| Events | `ViewsTheme:Carousel:Change` `{ el, index }` (bus). Listeners filter by `el` (Gallery: nearest owner only) |
 
-Scroll math lives in `@views-theme/modules/shared/scroll.js` (`scrollEdges`, `pageTarget`; pure, unit-tested in `tests/js/modules/shared/scroll.test.mjs`). `Scroll:Area` uses `scrollEdges` for its horizontal edges too.
+Scroll math lives in `@views-theme/modules/shared/scroll.js` (`scrollEdges`, `pageTarget`, `nearestIndex`; pure, unit-tested in `tests/js/modules/shared/scroll.test.mjs`). `Scroll:Area` uses `scrollEdges` for its horizontal edges too.
 
 ## Accessibility
 
@@ -180,13 +188,12 @@ A carousel in a hidden panel keeps its last state; its `ResizeObserver` re-syncs
 
 ## Out of scope
 
-- `Gallery:Canvas` on `Carousel` ([#170](https://github.com/fyrst-digital/views-theme/issues/170)): the API is ready for it (full-width items through the token, `goTo(index)`)
 - Dots / pagination, autoplay, infinite loop (cloned slides), mouse drag-to-scroll
 - Edge fades with `Scroll:Area` as the scrollport
 
 ## Related
 
-- [Gallery](gallery.md): shared control chrome, same scroll-snap track
+- [Gallery](gallery.md): shared control chrome; `Gallery:Canvas` composes `Carousel` as its track
 - [Product box](product-box.md)
 - [Tabs](tabs.md)
 - [Product reviews](review.md): `Cms:DescriptionReviews`, the same CMS-shell pattern

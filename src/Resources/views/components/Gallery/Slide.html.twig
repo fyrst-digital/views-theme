@@ -2,7 +2,6 @@
     media = null,
     index = 0,
     priority = false,
-    total = 0,
     cva = {},
 %}
 
@@ -10,12 +9,6 @@
 
 <div
     {{ attributes.defaults({
-        role: 'group',
-        'aria-roledescription': 'slide',
-        'aria-label': 'component.cms.imageGallery.sliderDotLabel'|trans({
-            '%index%': index + 1,
-            '%total%': total,
-        })|striptags,
         'data-component': 'ViewsTheme:Gallery:Slide',
         'data-component-options': {
             index: index,

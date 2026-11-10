@@ -74,7 +74,7 @@ app/storefront/src/modules/
 | `shared/history.js` | Configurable `createHistoryController` (inject keys + encode) |
 | `shared/form.js` | `setRequired` / `setFieldEnabled` / `setInvalidChrome` (WeakMap; Handler / Toggle / Address:Input:Country) |
 | `shared/focus-trap.js` | `trapFocus(event, root)` — Modal, Drawer, Search Overlay, Gallery Fullscreen |
-| `shared/scroll.js` | Pure horizontal scrollport math on the logical (RTL-safe) offset: `scrollEdges` (overflow / start / end), `pageTarget` (item-aligned prev/next step) — Carousel, Scroll:Area |
+| `shared/scroll.js` | Pure horizontal scrollport math on the logical (RTL-safe) offset: `scrollEdges` (overflow / start / end), `pageTarget` (item-aligned prev/next step), `nearestIndex` (snapped item) — Carousel, Scroll:Area |
 | `listing/*` | Listing owner internals — [product-listing.md](../features/product-listing.md) |
 | `listing/store.js` | **only** listing import allowed from filters / Pagination / Sorting |
 | `configurator/store.js` | Sessions keyed by configurator id. Group calls `apply` only. Configurator `attach` / `detach` / `commit` — [configurator.md](../features/configurator.md) |
@@ -246,7 +246,7 @@ Do **not** use `index.js` / `index.html.twig` naming for components (import-map 
 | Navigation drawer drill | `ViewsTheme:Navigation:Drawer:Drill` | `Navigation/Drawer/Drill.js` |
 | Language flag (load error / fallback) | `ViewsTheme:Language:Flag` | `Language/Flag.js` |
 | Scroll area (edge fades) | `ViewsTheme:Scroll:Area` | `Scroll/Area.js` |
-| Carousel (scroll-snap owner) | `ViewsTheme:Carousel` | `Carousel.js` — [carousel.md](../features/carousel.md) |
+| Carousel (scroll-snap owner; also the Gallery canvas track) | `ViewsTheme:Carousel` | `Carousel.js` — [carousel.md](../features/carousel.md) |
 | Carousel item / control | `ViewsTheme:Carousel:Item` / `Control` | `Carousel/Item.js` / `Control.js` |
 | Dropdown (a11y focus / aria-expanded) | `ViewsTheme:Dropdown` | `Dropdown.js` |
 | Scroll up (back-to-top) | `ViewsTheme:Scroll:Up` | `Scroll/Up.js` |
@@ -481,7 +481,7 @@ Lazy-loaded dialog from the PDP/CMS gallery canvas action. Nested `Gallery` is t
 - Action lifecycle (critical): **(re)fetch + mount on every open** with `ids[]` + parent `getIndex()`; on Close **unmount** — see [Lazy-loaded shells](#lazy-loaded-shells-critical)
 - **Multi-instance ownership (critical):** unlike singleton Search/Cart Actions, many galleries may mount Actions on one page. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`). Never adopt a foreign shell via global selector; unmount owned el only (no selector fallback). Opening while another shell is live: close existing first so its owner restores index + unmounts, then mount
 - Open/Close payload: `{ el, index }` via `emitQueued`; owning Action restores **its** parent gallery index on close
-- Control / Canvas settle use **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries
+- Control uses the **nearest** Gallery owner (`closest` + instance) — not global `callMethod` on all galleries. Canvas swipes arrive as `ViewsTheme:Carousel:Change`; a Gallery adopts only events from carousels whose nearest Gallery is itself
 
 See [Gallery](../features/gallery.md).
 

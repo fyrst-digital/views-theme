@@ -1,5 +1,13 @@
 {
     root: { base: 'vi-carousel position-relative' },
-    track: { base: 'vi-carousel__track position-relative d-grid gap-3 gap-md-4 overflow-x-auto overflow-y-hidden' },
+    track: {
+        base: 'vi-carousel__track position-relative d-grid overflow-x-auto overflow-y-hidden',
+        variants: {
+            gap: {
+                default: 'gap-3 gap-md-4',
+                none: '',
+            },
+        },
+    },
     controls: { base: 'vi-carousel__controls position-absolute top-0 start-0 end-0 bottom-0 z-1 d-flex align-items-center justify-content-between pe-none' },
 }
