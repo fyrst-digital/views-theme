@@ -1,4 +1,4 @@
-# Unreleased
+# 1.1.4
 
 **Hinweise zum Update**
 - Der Produkt-Slider der Erlebniswelten und das Cross-Selling auf der Produktseite verwenden jetzt das Karussell des Themes statt des Shopware-Sliders. Die Slider-Einstellungen für Autoplay, Geschwindigkeit, Rahmen, vertikale Ausrichtung, Darstellungsmodus und Pfeilposition werden nicht mehr verwendet. Template-Anpassungen der inneren `element_product_slider_*`-Blöcke greifen nicht mehr; erweitere stattdessen `Product:Carousel` oder den neuen Block `element_product_slider_carousel`.
