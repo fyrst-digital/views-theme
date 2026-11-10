@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-cross-selling.html.twig' %}
+
+{#
+    Cross-selling → Cms:CrossSelling: theme Tabs + Product:Carousel on every viewport
+    (no core Bootstrap tabs, no mobile offcanvas tabs, no tiny-slider).
+#}
+{% block cms_element_cross_selling_tabs_inner %}
+    {% set crossSellingConfig = element.fieldConfig.elements %}
+
+    <twig:ViewsTheme:Cms:CrossSelling
+        :crossSellings="element.data.crossSellings|default(null)"
+        :boxLayout="crossSellingConfig.boxLayout.value|default('default')"
+        :itemWidth="crossSellingConfig.elMinWidth.value|default(null)"
+        :skipTarget="block.id|default(null)"
+    />
+{% endblock %}

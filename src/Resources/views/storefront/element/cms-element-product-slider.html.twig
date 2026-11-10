@@ -1,7 +1,9 @@
 {% sw_extends '@Storefront/storefront/element/cms-element-product-slider.html.twig' %}
 
 {#
-    Product slider + cross-selling tab panes → Product:Carousel (no tiny-slider).
+    Product slider → Product:Carousel (no tiny-slider). `sliderConfig` is honoured when
+    another template includes this element with its own config (core cross-selling did;
+    the theme renders cross-selling with Cms:CrossSelling).
     Ignored core config: rotate, autoplayTimeout, speed, border, verticalAlign,
     displayMode, inside/outside arrow placement.
 #}

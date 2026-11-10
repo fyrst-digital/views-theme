@@ -1,6 +1,6 @@
 # Carousel
 
-Generic horizontal carousel on native CSS scroll-snap (no slider library), plus `Product:Carousel`, which renders `Product:Box` cards. The CMS **product-slider** element and therefore PDP **cross-selling** render through `Product:Carousel`. Core tiny-slider markup is not used on these surfaces.
+Generic horizontal carousel on native CSS scroll-snap (no slider library), plus `Product:Carousel`, which renders `Product:Box` cards. The CMS **product-slider** element renders through `Product:Carousel`; PDP **cross-selling** renders through [`Cms:CrossSelling`](#cmscrossselling) (theme `Tabs` + one `Product:Carousel` per tab). Core tiny-slider markup is not used on these surfaces.
 
 ## Ownership
 
@@ -11,6 +11,7 @@ Generic horizontal carousel on native CSS scroll-snap (no slider library), plus 
 | `Carousel:Control` | Prev/next button (`direction`). Calls the **nearest** Carousel via `closest` + `getInstanceByElement`, never global `callMethod`, so nested or sibling carousels stay independent. Root host of the shared [`Control`](#shared-control-chrome) |
 | `Product:Carousel` (class-backed) | Product view-model shell. Optional title, then `Carousel` with one `Product:Box` per `Carousel:Item` |
 | `Control` | Shared circular icon button chrome (no JS). See [below](#shared-control-chrome) |
+| `Cms:CrossSelling` (class-backed) | CMS cross-selling element: theme `Tabs` with one `Product:Carousel` per cross-selling, on every viewport. See [below](#cmscrossselling) |
 
 ## Composition
 
@@ -73,11 +74,11 @@ Product:Carousel
 
 | Concern | Where |
 |---------|-------|
-| Track layout | CVA `d-grid overflow-x-auto overflow-y-hidden`. `Carousel.css`: `grid-auto-flow: column`, `grid-auto-columns: var(--vi-carousel-item-w, 200px)`, `scroll-snap-type: x mandatory`, `overscroll-behavior-x: contain`, hidden scrollbar (same as `Gallery:Canvas` track) |
+| Track layout | CVA `position-relative d-grid overflow-x-auto overflow-y-hidden`. `position-relative` makes the track the containing block, so absolutely positioned content in a slide (e.g. a `visually-hidden` rating label) is clipped by the scrollport instead of widening the page. `Carousel.css`: `grid-auto-flow: column`, `grid-auto-columns: var(--vi-carousel-item-w, 200px)`, `scroll-snap-type: x mandatory`, `overscroll-behavior-x: contain`, hidden scrollbar (same as `Gallery:Canvas` track) |
 | Gap | Track CVA `gap-3 gap-md-4`. Not a token |
 | Item width | `Carousel:Item`: `inline-size: var(--vi-carousel-item-w, 200px)`, `scroll-snap-align: start`, `min-inline-size: 0`. Assign the token per instance (`itemWidth`, inline `style`) or per breakpoint (`_theme.scss`) without changing the template |
 | Smooth scroll | `scroll-behavior: smooth`; `prefers-reduced-motion: reduce` → CSS `auto`, JS `behavior: 'auto'` |
-| Controls | CVA overlay (`position-absolute` inset 0, `d-flex align-items-center justify-content-between`, `pe-none`, `z-1`): start/end edge, vertically centred on the carousel. `Carousel.css` adds the inset `padding-inline: var(--vi-control-inset, 8px)`. Chrome from `Control` |
+| Controls | CVA overlay (`position-absolute` inset 0, `d-flex align-items-center justify-content-between`, `pe-none`, `z-1`): start/end edge, vertically centred on the carousel. `Carousel.css` adds the inset `padding-inline: var(--vi-control-inset, var(--spacing-2))`. Chrome from `Control` |
 | No overflow | Host `data-overflow="false"` hides its own controls (`> .vi-carousel__controls`, so nested carousels are unaffected). Not set on the server: controls show until JS has measured |
 | RTL | Logical properties. JS works on the **logical** offset (`Math.abs(scrollLeft)`) and writes `-target` in RTL |
 
@@ -121,23 +122,48 @@ Wrappers forward the icon with `{% vi_block icon %}`, so `<twig:block name="icon
 | Token | Fallback |
 |-------|----------|
 | `--vi-control-size` | `40px` |
-| `--vi-control-bg` | `#fff` |
-| `--vi-control-color` | `#212529` |
+| `--vi-control-bg` | `var(--white)` |
+| `--vi-control-color` | `currentColor` |
 | `--vi-control-shadow` | `0 1px 4px rgba(0, 0, 0, 0.12)` |
 | `--vi-control-disabled-opacity` | `0.4` (`:disabled` / `[aria-disabled='true']`) |
-| `--vi-control-inset` | `8px` (host-owned position, read by Carousel, Gallery canvas and fullscreen close) |
+| `--vi-control-inset` | Host-owned position: Carousel `var(--spacing-2)`; Gallery canvas and fullscreen close `8px` |
 
 ## CMS bridge
 
 | File | Role |
 |------|------|
 | `storefront/element/cms-element-product-slider.html.twig` | `sw_extends` core, overrides `element_product_slider`. `element.data.products.elements` → `products`, `sliderConfig.title` → `title`, `sliderConfig.boxLayout` → `boxLayout`, `sliderConfig.elMinWidth` → `itemWidth`, `navigationArrows == 'none'` → `:carousel:controls="false"`. Keeps the skip link (`element_product_slider_skip_slider`) and the `element_product_slider_target_after_slider` anchor. New block `element_product_slider_carousel` wraps the component |
-| `cms-element-cross-selling` | No override. Each tab pane includes the product-slider element template with its own `sliderConfig`. Tabs stay core Bootstrap tabs |
+| `storefront/element/cms-element-cross-selling.html.twig` | `sw_extends` core, overrides `cms_element_cross_selling_tabs_inner` → [`Cms:CrossSelling`](#cmscrossselling). No longer includes the product-slider element |
 | `cms-block-product-slider`, `cms-block-product-three-column`, `cms-block-cross-selling` | Already bridged to `Cms:Element`; they render the element above |
 
 Core slider config that is **ignored**: `rotate`, `autoplayTimeout`, `speed`, `border`, `verticalAlign`, `displayMode`, and the inside/outside arrow placement (arrows are always overlaid). Core inner Twig blocks (`element_product_slider_slider`, `_title`, `_inner`, `_element`, `_inner_item`, `_controls*`) no longer exist. The theme no longer renders `data-product-slider`, so core `ProductSliderPlugin` (tiny-slider) does not initialise on these surfaces.
 
-On small screens core cross-selling hides the tab content and shows its own offcanvas tabs (core behaviour, unchanged).
+## Cms:CrossSelling
+
+PDP cross-selling, modelled on `Cms:DescriptionReviews`: the theme owns the tabs, so tabs **and** their content show on every viewport. Core Bootstrap tabs (`data-bs-toggle`), the mobile offcanvas tabs (`data-cross-selling`, which hid the tab content below `lg`) and the per-pane product-slider include are gone.
+
+```
+Cms:CrossSelling (class-backed; no JS)
+├─ skip link            (when skipTarget)
+├─ Tabs                 (owner JS: ARIA + keyboard)
+│    ├─ Tabs:Tab × N    (cross-selling name)
+│    └─ Tabs:Panel × N
+│         └─ Product:Carousel  (no title; carousel label = cross-selling name)
+└─ #content-after-target-{skipTarget}
+```
+
+| Prop | Default | Role |
+|------|---------|------|
+| `crossSellings` | `null` | `element.data.crossSellings` (`CrossSellingElementCollection` or iterable of `CrossSellingElement`) |
+| `boxLayout` | `default` | Element config `boxLayout`, forwarded to `Product:Carousel` |
+| `itemWidth` | `null` | Element config `elMinWidth`, forwarded to `Product:Carousel` |
+| `skipTarget` | `null` | CMS block id: "Skip product gallery" link before the tabs + `content-after-target-{id}` anchor after them |
+
+View-model (`CrossSelling.php`): `tabs` is a list of `Struct\CrossSellingTab` (`id`, `name`, `products`, `tabId` `cross-selling-tab-{id}`, `panelId` `cross-selling-tab-{id}-pane`) for every **active** cross-selling with `total > 0`, in element order. The first tab is active (`activeTabId`). `visible` is `false` when there is no tab: the template then renders nothing, so `Cms:Element` / `Cms:Block` drop the empty block (skip link included).
+
+Nests / CVA: `tabs` (`tabs:param`, `tabs:label`, …) and `carousel` (any `Product:Carousel` prop or nest, e.g. `carousel:box:showActions`). CVA slots `root`, `tabs`, `panel`, `carousel`. Override blocks `skip` and `tabs`.
+
+A carousel in a hidden panel keeps its last state; its `ResizeObserver` re-syncs the controls when the panel is shown. Core element config ignored: `displayMode`.
 
 ## Key source files
 
@@ -148,13 +174,13 @@ On small screens core cross-selling hides the tab content and shows its own offc
 | Shared chrome | `src/Resources/views/components/Control.{html.twig,cva.twig,css}` |
 | Product shell | `src/Resources/views/components/Product/Carousel.{php,html.twig,cva.twig}` |
 | Scroll math | `src/Resources/app/storefront/src/modules/shared/scroll.js` |
-| CMS bridge | `src/Resources/views/storefront/element/cms-element-product-slider.html.twig` |
-| Tests | `tests/Unit/Resources/views/components/Product/CarouselTest.php`, `tests/js/modules/shared/scroll.test.mjs` |
+| CMS bridges | `src/Resources/views/storefront/element/cms-element-product-slider.html.twig`, `…/cms-element-cross-selling.html.twig` |
+| Cross-selling shell | `src/Resources/views/components/Cms/CrossSelling.{php,html.twig,cva.twig}`, `src/Struct/CrossSellingTab.php` |
+| Tests | `tests/Unit/Resources/views/components/Product/CarouselTest.php`, `tests/Unit/Resources/views/components/Cms/CrossSellingTest.php`, `tests/js/modules/shared/scroll.test.mjs` |
 
 ## Out of scope
 
 - `Gallery:Canvas` on `Carousel` ([#170](https://github.com/fyrst-digital/views-theme/issues/170)): the API is ready for it (full-width items through the token, `goTo(index)`)
-- Cross-selling tabs on the theme `Tabs` component
 - Dots / pagination, autoplay, infinite loop (cloned slides), mouse drag-to-scroll
 - Edge fades with `Scroll:Area` as the scrollport
 
@@ -162,5 +188,7 @@ On small screens core cross-selling hides the tab content and shows its own offc
 
 - [Gallery](gallery.md): shared control chrome, same scroll-snap track
 - [Product box](product-box.md)
+- [Tabs](tabs.md)
+- [Product reviews](review.md): `Cms:DescriptionReviews`, the same CMS-shell pattern
 - [CMS layout](cms.md)
 - [JavaScript](../conventions/javascript.md)

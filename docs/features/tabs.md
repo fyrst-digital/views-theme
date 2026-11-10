@@ -113,6 +113,7 @@ One look for every consumer — set on the atomic components, **not** per consum
 | Shell | Doc |
 |-------|-----|
 | `Cms:DescriptionReviews` (`appearance=tabs`, default) | [review.md](review.md) |
+| `Cms:CrossSelling` (PDP cross-selling, every viewport) | [carousel.md](carousel.md#cmscrossselling) |
 | `Address:Manager:View` | [address-manager.md](address-manager.md) |
 | `Account:LoginRegister` (register page, checkout register) | [account.md](account.md) |
 

@@ -8,7 +8,7 @@ Theme-owned PDP Description/Reviews **chrome** (`tabs` or `accordion`) and revie
 |-------|----------------|
 | Storefront bridge | `storefront/component/review/review.html.twig` → `Review:Panel` (strips offcanvas chrome) |
 | `Review:Results:Toolbar` | Language + sort + counter chrome |
-| `Review:Sidebar` | Aside column: Summary + Matrix + Teaser |
+| `Review:Sidebar` | Aside column: Summary + Matrix + Teaser. `Review:Panel` makes it sticky from `lg` (`position-lg-sticky top-0` on the `sidebar` slot), where it sits beside the results; below `lg` it stacks above them and scrolls normally |
 | `Review:Matrix` | Class VM points filter control (`points[]`); rows from matrix + URL SoT |
 | `Review:Alerts` | Post-save / validation flash alerts |
 | `Review:Item:Title` | Review heading text (+ optional `lang`); nested by Header |

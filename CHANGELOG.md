@@ -2,9 +2,11 @@
 
 **Upgrade notes**
 - The Shopping Experiences product slider and the product page cross-selling now render the theme carousel instead of the Shopware slider. The slider settings for autoplay, speed, border, vertical alignment, display mode and arrow position are no longer used. Template overrides of the inner `element_product_slider_*` blocks no longer apply; extend `Product:Carousel` or the new `element_product_slider_carousel` block instead.
+- Cross-selling on the product page now uses the theme tabs (`Cms:CrossSelling`). Template overrides of the inner `cms_element_cross_selling_*` blocks no longer apply; extend `Cms:CrossSelling` instead.
 
 **Changelog**
 - New product carousel for the product slider and cross-selling: swipe or scroll through products, with previous/next buttons that hide when all products fit
+- Cross-selling tabs and their products are shown on every screen size; on phones they no longer move into a side panel
 - The browser console no longer logs the "Init method has to be implemented." warning on category listings and other pages with filters or the newsletter form
 
 # 1.1.3
