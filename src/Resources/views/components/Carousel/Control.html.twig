@@ -1,0 +1,30 @@
+{% props
+    direction = 'next', # prev | next
+    disabled = false,
+    cva = {},
+%}
+
+{% set isPrev = direction == 'prev' %}
+
+{% do vi_define_cva(cva) %}
+
+<twig:ViewsTheme:Control
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        label: isPrev
+            ? 'general.previous'|trans|striptags
+            : 'general.next'|trans|striptags,
+        disabled: disabled ? true : false,
+        'aria-disabled': disabled ? 'true' : 'false',
+        'data-component': 'ViewsTheme:Carousel:Control',
+        'data-component-options': {
+            direction: direction,
+        }|json_encode,
+    }).all() }}
+>
+    <twig:block name="content">
+        {% vi_block icon %}
+            {{ vi_icon(isPrev ? 'caret-left' : 'caret-right') }}
+        {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Control>

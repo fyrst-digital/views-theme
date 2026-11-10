@@ -96,6 +96,7 @@ The page, all section, and all 40 core block templates are overridden under `vie
 | `section/cms-section-sidebar.html.twig` | `Cms:Section:Sidebar` |
 | `section/cms-section-block-container.html.twig` | `Cms:Block` |
 | `block/cms-block-*.html.twig` | `Cms:Element` per slot (a body-bearing one around stacked elements). `product-three-column` keeps the product-element gate. `app-renderer` replaces the core template (it has no Twig block) |
+| `element/cms-element-product-slider.html.twig` | `Product:Carousel` (also used by every cross-selling tab pane). See [Carousel](carousel.md#cms-bridge) |
 
 Block templates `sw_extends` their core template and override the **outer** Twig block only. The inner `block_*_left` / `*_inner` Twig blocks of core are not kept: a `{% block %}` cannot sit inside a `<twig:…>` tag.
 

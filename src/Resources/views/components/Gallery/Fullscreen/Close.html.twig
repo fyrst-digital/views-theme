@@ -2,20 +2,18 @@
     cva = {},
 %}
 
-{% set label = 'viewsTheme.gallery.fullscreenClose'|trans|striptags %}
-
 {% do vi_define_cva(cva) %}
 
-<button
-    {{ attributes.defaults({
-        type: 'button',
-        'data-component': 'ViewsTheme:Gallery:Fullscreen:Close',
-        'aria-label': label,
-        title: label,
-    }) }}
+<twig:ViewsTheme:Control
     class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        label: 'viewsTheme.gallery.fullscreenClose'|trans|striptags,
+        'data-component': 'ViewsTheme:Gallery:Fullscreen:Close',
+    }).all() }}
 >
-    {% block icon %}
-        {{ vi_icon('x') }}
-    {% endblock %}
-</button>
+    <twig:block name="content">
+        {% vi_block icon %}
+            {{ vi_icon('x') }}
+        {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Control>

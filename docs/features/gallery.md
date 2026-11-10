@@ -168,7 +168,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Single image | `data-multi="false"` — no thumbs/controls/dots; full-width canvas; fullscreen action still allowed |
 | Controls on hover | Canvas `data-controls-on-hover="true"` — hide `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` until `:hover` or `:has(.vi-gallery-control:focus-visible)` / `:has(.vi-gallery-action-fullscreen:focus-visible)`; only under `@media (hover: hover) and (pointer: fine)`; fade `var(--vi-control-fade-duration, 150ms)` |
 | Fullscreen action | Canvas top-right (`.vi-gallery-canvas__fullscreen`); control-sized circular button; same hover-gate as prev/next when `controlsOnHover` |
-| Control chrome | Shared circular button SoT in `Control.css` (`.vi-gallery-control`, `.vi-gallery-action-fullscreen`, `.vi-gallery-fullscreen-close`); Close adds position only |
+| Control chrome | Shared [`Control`](carousel.md#shared-control-chrome) primitive (`.vi-control`, `Control.css`) is the root host of `Gallery:Control`, `Gallery:Action:Fullscreen` and `Gallery:Fullscreen:Close`. They keep their own root class (`.vi-gallery-control`, `.vi-gallery-action-fullscreen`, `.vi-gallery-fullscreen-close`) for the hover gate; Close adds position only (`Close.css`) |
 | Fullscreen shell | Fixed inset, minimal viewport padding (`p-2` / `p-md-3`); panel fills remaining space; singleton `#vi-gallery-fullscreen` |
 
 ### Host tokens (init on base / consume in children; assign on variants)
@@ -211,6 +211,7 @@ Default PDP layout: `cms-block-gallery-buybox` left slot (unchanged).
 | Controller | `src/Controller/GalleryFullscreenController.php` |
 | Gallery owner | `src/Resources/views/components/Gallery.*` |
 | Canvas / controls | `src/Resources/views/components/Gallery/{Canvas,Control,Slide,Thumb,Thumbnails,Dots,Dot}.*` |
+| Control chrome (shared) | `src/Resources/views/components/Control.*` |
 | Fullscreen action | `src/Resources/views/components/Gallery/Action/Fullscreen.*` |
 | Fullscreen shell | `src/Resources/views/components/Gallery/Fullscreen.*` |
 | Close | `src/Resources/views/components/Gallery/Fullscreen/Close.*` |
@@ -227,6 +228,7 @@ Default PDP layout: `cms-block-gallery-buybox` left slot (unchanged).
 ## Related
 
 - [Tabs](tabs.md) — same owner + identity-child pattern
+- [Carousel](carousel.md) — shared control chrome; scroll-snap carousel (Canvas follow-up #170)
 - [Buy container](buy-container.md) — buy column beside gallery
 - [Search overlay](search-overlay.md) — lazy shell lifecycle pattern
 - [JavaScript](../conventions/javascript.md)

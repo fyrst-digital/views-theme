@@ -1,0 +1,44 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-product-slider.html.twig' %}
+
+{#
+    Product slider + cross-selling tab panes → Product:Carousel (no tiny-slider).
+    Ignored core config: rotate, autoplayTimeout, speed, border, verticalAlign,
+    displayMode, inside/outside arrow placement.
+#}
+{% block element_product_slider %}
+    {% if not sliderConfig %}
+        {% set sliderConfig = element.fieldConfig.elements %}
+    {% endif %}
+
+    {% set blockId = block.id|default(null) %}
+    {% set products = element.data.products.elements|default([]) %}
+
+    {% if products is not empty %}
+        <div class="cms-element-{{ element.type }}">
+            {% if blockId %}
+                {% block element_product_slider_skip_slider %}
+                    {% sw_include '@Storefront/storefront/component/skip-target.html.twig' with {
+                        targetId: blockId,
+                        snippet: 'component.cms.productGallery.skipProductGallery',
+                    } %}
+                {% endblock %}
+            {% endif %}
+
+            {% block element_product_slider_carousel %}
+                <twig:ViewsTheme:Product:Carousel
+                    :products="products"
+                    :title="sliderConfig.title.value|default(null)"
+                    :boxLayout="sliderConfig.boxLayout.value|default('default')"
+                    :itemWidth="sliderConfig.elMinWidth.value|default(null)"
+                    :carousel:controls="sliderConfig.navigationArrows.value|default('outside') != 'none'"
+                />
+            {% endblock %}
+        </div>
+    {% endif %}
+
+    {% if blockId %}
+        {% block element_product_slider_target_after_slider %}
+            <div id="content-after-target-{{ blockId }}"></div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}

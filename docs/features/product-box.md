@@ -32,9 +32,10 @@ Every core call site that includes `box.html.twig` picks up the theme card:
 
 - Category CMS product listing
 - CMS product-box element
-- Product slider / cross-sell (via slider slides)
 - Search results listing
 - Wishlist listing (core path)
+
+Product slider and cross-selling do **not** go through this bridge: the CMS product-slider element mounts [`Product:Carousel`](carousel.md), which renders `Product:Box` directly with item-width `sizes`.
 
 ```twig
 {# storefront/component/product/card/box.html.twig #}

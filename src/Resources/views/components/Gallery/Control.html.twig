@@ -5,28 +5,26 @@
 %}
 
 {% set isPrev = direction == 'prev' %}
-{% set label = isPrev
-    ? 'general.previous'|trans|striptags
-    : 'general.next'|trans|striptags
-%}
 
 {% do vi_define_cva(cva) %}
 
-<button
-    {{ attributes.defaults({
-        type: 'button',
+<twig:ViewsTheme:Control
+    class="{{ vi_class('root') }}"
+    {{ ...attributes.defaults({
+        label: isPrev
+            ? 'general.previous'|trans|striptags
+            : 'general.next'|trans|striptags,
         disabled: disabled ? true : false,
-        'aria-label': label,
-        title: label,
         'aria-disabled': disabled ? 'true' : 'false',
         'data-component': 'ViewsTheme:Gallery:Control',
         'data-component-options': {
             direction: direction,
         }|json_encode,
-    }) }}
-    class="{{ vi_class('root') }}"
+    }).all() }}
 >
-    {% block icon %}
-        {{ vi_icon(isPrev ? 'caret-left' : 'caret-right') }}
-    {% endblock %}
-</button>
+    <twig:block name="content">
+        {% vi_block icon %}
+            {{ vi_icon(isPrev ? 'caret-left' : 'caret-right') }}
+        {% endvi_block %}
+    </twig:block>
+</twig:ViewsTheme:Control>

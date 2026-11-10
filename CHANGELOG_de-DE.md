@@ -1,6 +1,10 @@
 # Unreleased
 
+**Hinweise zum Update**
+- Der Produkt-Slider der Erlebniswelten und das Cross-Selling auf der Produktseite verwenden jetzt das Karussell des Themes statt des Shopware-Sliders. Die Slider-Einstellungen für Autoplay, Geschwindigkeit, Rahmen, vertikale Ausrichtung, Darstellungsmodus und Pfeilposition werden nicht mehr verwendet. Template-Anpassungen der inneren `element_product_slider_*`-Blöcke greifen nicht mehr; erweitere stattdessen `Product:Carousel` oder den neuen Block `element_product_slider_carousel`.
+
 **Changelog**
+- Neues Produkt-Karussell für den Produkt-Slider und das Cross-Selling: Produkte lassen sich wischen oder scrollen, die Vor-/Zurück-Buttons verschwinden, wenn alle Produkte Platz haben
 - Die Browser-Konsole zeigt die Warnung „Init method has to be implemented.“ in Kategorie-Listings und auf anderen Seiten mit Filtern oder dem Newsletter-Formular nicht mehr an
 
 # 1.1.3
