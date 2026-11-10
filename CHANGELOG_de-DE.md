@@ -1,3 +1,11 @@
+# 1.1.5
+
+**Hinweise zum Update**
+- Child-Themes können die Bootstrap-Sass-Variablen von ViewsTheme (Radius, Innenabstand, Schriftgrößen und Farben von Buttons und Eingabefeldern, Spacer, Breakpoints, ...) jetzt in einer Datei ändern, die in ihrer `style`-Liste vor `@ViewsTheme` steht. Werte, die ein Child-Theme dort schon gesetzt hat und die bisher wirkungslos waren, greifen jetzt. Eine `$utilities`-Map des Child-Themes wird mit den Utilities von ViewsTheme zusammengeführt, statt ignoriert zu werden.
+
+**Changelog**
+- Child-Themes können den Radius von Buttons und Eingabefeldern und die übrigen Bootstrap-Einstellungen von ViewsTheme ändern, ohne das kompilierte CSS zu überschreiben
+
 # 1.1.4
 
 **Hinweise zum Update**
