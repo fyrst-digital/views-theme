@@ -130,7 +130,7 @@ root: { base: 'vi-line-item__unit-price d-none d-xl-block' }
 
 ### Bootstrap names only
 
-This theme’s utilities are Bootstrap (see `scss/overrides/_utilities.scss`, imported from `override.scss`).
+This theme’s utilities are Bootstrap (see `scss/overrides/_utilities.scss`, imported from `override.scss`). Bootstrap variables in `override.scss` and `scss/overrides/*.scss` end in `!default` so child themes can set them first. See [Configuration — Sass variables for child themes](../configuration.md#sass-variables-for-child-themes).
 
 | Use | Not |
 |-----|-----|
