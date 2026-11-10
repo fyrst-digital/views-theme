@@ -1,3 +1,8 @@
+# Unreleased
+
+**Changelog**
+- Die Browser-Konsole zeigt die Warnung „Init method has to be implemented.“ in Kategorie-Listings und auf anderen Seiten mit Filtern oder dem Newsletter-Formular nicht mehr an
+
 # 1.1.3
 
 **Hinweise zum Update**

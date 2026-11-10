@@ -7,6 +7,10 @@ export default class FilterGroupCount extends ShopwareComponent {
         count: null,
     }
 
+    init() {
+        // Painted on demand via setCount(); nothing to set up.
+    }
+
     setCount(count) {
         this.options.count = count || null
         this._paint()

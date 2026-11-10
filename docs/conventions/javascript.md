@@ -115,6 +115,8 @@ IDE: root `jsconfig.json` paths + `include` for components, modules, and `shopwa
 
 **Critical:** Every `data-component` **must** have co-located `Name.js` (import-map entry). Shopware loads every `[data-component]` via dynamic `import()` — a missing module becomes a bare specifier URL and fails in the console. Parent-owned identity (partial swaps, nested roots) still uses `data-component` + real JS (minimal `ShopwareComponent` is fine when the parent owns behavior).
 
+**Critical:** Every `ShopwareComponent` class **must** define `init()`, even when empty (`init() {}` with a one-line comment). Core's base `init()` calls `console.warn('Init method has to be implemented.')`, so a missing override logs once per instance.
+
 Find nested components with `[data-component="ViewsTheme:…"]` (component identity), not ad-hoc hooks.
 
 **Deprecated for new code:** `data-action="…"` as JS hooks. Prefer a real sub-component. Legacy uses remain on Variants grid / Search until migrated.

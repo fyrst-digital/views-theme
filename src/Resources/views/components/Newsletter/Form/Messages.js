@@ -12,6 +12,10 @@ export default class NewsletterFormMessages extends ShopwareComponent {
         sampleComponent: 'ViewsTheme:Newsletter:Form:Messages:Sample',
     }
 
+    init() {
+        // Rendered on demand via show(); nothing to set up.
+    }
+
     /**
      * @param {Array<{ type?: string, alert?: string }>} items
      */

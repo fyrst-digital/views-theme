@@ -1,3 +1,8 @@
+# Unreleased
+
+**Changelog**
+- The browser console no longer logs the "Init method has to be implemented." warning on category listings and other pages with filters or the newsletter form
+
 # 1.1.3
 
 **Upgrade notes**
