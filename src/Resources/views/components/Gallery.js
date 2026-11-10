@@ -1,11 +1,13 @@
 import {
+    eventEl,
     getInstanceByElement,
     mountComponents,
 } from '@views-theme/modules/shared/component.js'
 
 /**
- * PDP gallery owner — syncs thumbs, dots, controls, and scroll-snap canvas.
- * Index SoT lives here; chrome follows ARIA / disabled attrs.
+ * PDP gallery owner — syncs thumbs, dots, controls, and the canvas Carousel.
+ * Index SoT lives here; chrome follows ARIA / disabled attrs. The canvas
+ * Carousel scrolls (`goTo`) and reports user swipes (`carouselChangeEvent`).
  *
  * @extends {ShopwareComponent}
  */
@@ -14,9 +16,11 @@ export default class Gallery extends ShopwareComponent {
         thumbComponent: 'ViewsTheme:Gallery:Thumb',
         dotComponent: 'ViewsTheme:Gallery:Dot',
         controlComponent: 'ViewsTheme:Gallery:Control',
-        canvasComponent: 'ViewsTheme:Gallery:Canvas',
+        galleryComponent: 'ViewsTheme:Gallery',
+        carouselComponent: 'ViewsTheme:Carousel',
         thumbnailsComponent: 'ViewsTheme:Gallery:Thumbnails',
         changeEvent: 'ViewsTheme:Gallery:Change',
+        carouselChangeEvent: 'ViewsTheme:Carousel:Change',
         active: 0,
         rewind: true,
     }
@@ -26,13 +30,15 @@ export default class Gallery extends ShopwareComponent {
         this._index = Number(this.options.active) || 0
         this._onClick = this._onClick.bind(this)
         this._onKeydown = this._onKeydown.bind(this)
+        this._onCarouselChange = this._onCarouselChange.bind(this)
         this.el.addEventListener('click', this._onClick)
         this.el.addEventListener('keydown', this._onKeydown)
+        window.Shopware.on(this.options.carouselChangeEvent, this._onCarouselChange)
         this._hydrate()
     }
 
     async _hydrate() {
-        await mountComponents(this.el, [this.options.canvasComponent])
+        await mountComponents(this.el, [this.options.carouselComponent])
         if (this._destroyed) {
             return
         }
@@ -43,6 +49,7 @@ export default class Gallery extends ShopwareComponent {
         this._destroyed = true
         this.el.removeEventListener('click', this._onClick)
         this.el.removeEventListener('keydown', this._onKeydown)
+        window.Shopware.off(this.options.carouselChangeEvent, this._onCarouselChange)
         this._pauseVideos()
     }
 
@@ -63,7 +70,7 @@ export default class Gallery extends ShopwareComponent {
         this._pauseInactiveVideos()
 
         if (scroll) {
-            this._canvas()?.goTo?.(next)
+            this._carousel()?.goTo?.(next)
         }
 
         this._thumbnails()?.scrollToIndex?.(next)
@@ -77,7 +84,7 @@ export default class Gallery extends ShopwareComponent {
     }
 
     /**
-     * Canvas-driven index update (no canvas re-scroll).
+     * Carousel-driven index update (no canvas re-scroll).
      *
      * @param {number} index
      * @param {{ emit?: boolean }} [options]
@@ -130,6 +137,29 @@ export default class Gallery extends ShopwareComponent {
      */
     _rewind() {
         return this.options.rewind === true || this.options.rewind === 'true'
+    }
+
+    /**
+     * User swipe settled on the canvas Carousel. Only this gallery's own
+     * carousel counts (a nested fullscreen gallery owns its carousel).
+     *
+     * @param {{ el?: Element, index?: number }} payload
+     */
+    _onCarouselChange(payload) {
+        const el = eventEl(payload)
+        if (!el || this._owner(el) !== this.el) {
+            return
+        }
+
+        this.setIndex(Number(payload.index) || 0)
+    }
+
+    /**
+     * @param {Element} el
+     * @returns {Element|null} Nearest Gallery host of `el`
+     */
+    _owner(el) {
+        return el.closest(`[data-component="${this.options.galleryComponent}"]`)
     }
 
     /**
@@ -283,11 +313,13 @@ export default class Gallery extends ShopwareComponent {
     }
 
     /**
-     * @returns {import('./Gallery/Canvas.js').default|null}
+     * @returns {import('./Carousel.js').default|null}
      */
-    _canvas() {
-        const name = this.options.canvasComponent
-        const el = this.el.querySelector(`[data-component="${name}"]`)
+    _carousel() {
+        const name = this.options.carouselComponent
+        const el = Array.from(this.el.querySelectorAll(`[data-component="${name}"]`)).find(
+            (carousel) => this._owner(carousel) === this.el,
+        )
         return getInstanceByElement(name, el)
     }
 

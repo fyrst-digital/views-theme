@@ -19,26 +19,41 @@
 {% endif %}
 
 {% do vi_define_cva(cva) %}
-{% do vi_define_attrs(['track', 'controls', 'fullscreen', 'dots']) %}
+{% do vi_define_attrs(['carousel', 'item', 'slide', 'controls', 'fullscreen', 'dots']) %}
 
 <div
     {{ attributes.defaults({
-        'data-component': 'ViewsTheme:Gallery:Canvas',
         'data-controls-on-hover': controlsOnHover ? 'true' : 'false',
     }) }}
     class="{{ vi_class('root') }}"
 >
     {% block track %}
-        <div {{ vi_attrs('track') }} class="{{ vi_class('track') }}">
+        {# Track, goTo, settle and resize: Carousel. Prev/next stay index-based (Gallery:Control → Gallery) #}
+        <twig:ViewsTheme:Carousel
+            class="{{ vi_class('carousel') }}"
+            track:class="{{ vi_class('track') }}"
+            {{ ...vi_attrs('carousel').defaults({
+                controls: false,
+                gap: 'none',
+                'track:tabindex': false,
+            }).all() }}
+        >
             {% for media in medias %}
-                <twig:ViewsTheme:Gallery:Slide
-                    :media="media"
+                <twig:ViewsTheme:Carousel:Item
+                    class="{{ vi_class('item') }}"
                     :index="loop.index0"
-                    :priority="loop.first"
                     :total="total"
-                />
+                    {{ ...vi_attrs('item').all() }}
+                >
+                    <twig:ViewsTheme:Gallery:Slide
+                        :media="media"
+                        :index="loop.index0"
+                        :priority="loop.first"
+                        {{ ...vi_attrs('slide').all() }}
+                    />
+                </twig:ViewsTheme:Carousel:Item>
             {% endfor %}
-        </div>
+        </twig:ViewsTheme:Carousel>
     {% endblock %}
 
     {% if multi %}

@@ -1,5 +1,7 @@
 .vi-carousel-item {
   inline-size: var(--vi-carousel-item-w, 200px);
   min-inline-size: 0;
+  min-block-size: 0;
   scroll-snap-align: start;
+  scroll-snap-stop: var(--vi-carousel-snap-stop, normal);
 }

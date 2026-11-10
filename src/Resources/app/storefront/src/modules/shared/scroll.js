@@ -78,3 +78,26 @@ export function pageTarget({ x, max, viewport, items, direction, rewind = false 
 
     return Math.min(max, target)
 }
+
+/**
+ * Index of the item whose start edge is closest to the logical offset `x`:
+ * the snapped item for `scroll-snap-align: start` cells.
+ *
+ * @param {{ start: number }[]} items Logical item edges, in order
+ * @param {number} x Logical scroll offset
+ * @returns {number} 0-based index, or `-1` without items
+ */
+export function nearestIndex(items, x) {
+    let best = -1
+    let bestDist = Infinity
+
+    items.forEach((item, index) => {
+        const dist = Math.abs(item.start - x)
+        if (dist < bestDist) {
+            best = index
+            bestDist = dist
+        }
+    })
+
+    return best
+}

@@ -32,6 +32,7 @@
     --vi-media-ar: auto;
     --vi-media-fit: contain;
     --vi-canvas-h: 100%;
+    --vi-carousel-h: 100%;
     --vi-track-h: 100%;
     --vi-track-rows: minmax(0, 100%);
     --vi-slide-h: 100%;

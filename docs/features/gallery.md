@@ -6,11 +6,13 @@ PDP / CMS media gallery (images + video). Scroll-snap canvas synced with a thumb
 
 | Piece | Responsibility |
 |-------|----------------|
-| `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex` / `getIndex`, thumb+dot click delegation, control disabled state, pause inactive slide videos, `ViewsTheme:Gallery:Change` |
+| `Gallery` | Owner JS: index SoT, `select` / `prev` / `next` / `setIndex` / `getIndex`, thumb+dot click delegation, control disabled state, pause inactive slide videos, `ViewsTheme:Gallery:Change`. Drives its own canvas `Carousel` (`goTo`) and adopts its user swipes (`ViewsTheme:Carousel:Change` → `setIndex`) |
 | `Gallery:Thumbnails` | Strip shell; `scrollToIndex` keeps active thumb visible (rect math + clamp); composes `Scroll:Area` as scrollport (edge fades) + `__list` flex row/column |
 | `Gallery:Thumb` | Thumb control identity + `aria-current`; `index` in options; video = poster only + play badge |
-| `Gallery:Canvas` | Scroll-snap track; `goTo` via `scrollIntoView`; settle via `getBoundingClientRect`; resize re-pins current index (`behavior: 'instant'`) → `setIndex` only on user scroll; optional fullscreen action slot |
-| `Gallery:Slide` | One media slide identity; image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig` |
+| `Gallery:Canvas` | Thin shell, **no JS** (no `data-component`): composes [`Carousel`](carousel.md) (`controls=false`, `gap=none`, track not focusable) with one `Carousel:Item` per slide; prev/next, fullscreen action, dots; controls-on-hover gate (CSS) |
+| `Carousel` | Scroll-snap track, `goTo(index)`, programmatic-scroll gate, settle → `ViewsTheme:Carousel:Change`, resize re-pin (`behavior: 'instant'`), reduced motion. See [carousel.md](carousel.md#js-behaviour) |
+| `Carousel:Item` | Snap cell + slide a11y (`role=group`, `aria-roledescription=slide`, "N of M") |
+| `Gallery:Slide` | One media slide identity (`index` for video pause); image via `sw_thumbnails`, video via Storefront `utilities/video.html.twig`. No role / label (the wrapping `Carousel:Item` has them) |
 | `Gallery:Control` | Prev/next → nearest Gallery owner (`closest` + instance), never global `callMethod` |
 | `Gallery:Dots` / `Gallery:Dot` | Dot nav; same index / `aria-current` pattern as thumbs |
 | `Gallery:Action:Fullscreen` | Lazy shell owner (multi-instance): fetch/mount/unmount `Gallery:Fullscreen`; open with media `ids` + current index; on close restore **own** parent index. Only the Action that mounted handles Open/Close (`payload.el === this._overlayEl`); never adopt foreign shells via global selector; unmount owned el only |
@@ -25,9 +27,11 @@ Gallery (data-component owner)
 │    └─ Scroll:Area            (scrollport + axis-correct edge fades; track BEM)
 │         └─ __list            (flex; center via auto margins when thumbnailAlign=center)
 │              └─ Gallery:Thumb × N
-└─ Gallery:Canvas
-     ├─ track
-     │    └─ Gallery:Slide × N
+└─ Gallery:Canvas              (no JS)
+     ├─ Carousel                (controls=false, gap=none; track gets .vi-gallery-canvas__track)
+     │    └─ track
+     │         └─ Carousel:Item × N
+     │              └─ Gallery:Slide
      ├─ Gallery:Control prev/next   (multi only)
      ├─ Gallery:Action:Fullscreen   (when fullscreen + media ids)
      └─ Gallery:Dots                (multi only)
@@ -62,6 +66,7 @@ Gallery:Fullscreen
 | `Gallery:Thumb` / `Dot` | `index`, `active`, `total` | Identity + SSR `aria-current` |
 | `Gallery:Control` | `direction`, `disabled` | `prev` \| `next`; clamp ends unless parent `rewind` |
 | `Gallery:Canvas` | `multi` | When false, omit controls + dots |
+| `Gallery:Canvas` | nests | `carousel:*` (→ `Carousel`, e.g. `carousel:track:*`), `item:*` (→ each `Carousel:Item`), `slide:*`, `controls:*`, `fullscreen:*`, `dots:*`. CVA slots `root`, `carousel`, `track` (on the Carousel track), `item`, `controls`, `fullscreen`, `dots` |
 | `Gallery:Canvas` | `rewind` | SSR control `disabled` when false at ends |
 | `Gallery:Canvas` | `controlsOnHover` | Sets `data-controls-on-hover`; CSS-only show/hide of `.vi-gallery-canvas__controls` and `.vi-gallery-canvas__fullscreen` |
 | `Gallery:Canvas` | `fullscreen` | When true, top-right `Gallery:Action:Fullscreen` with media ids |
@@ -84,9 +89,9 @@ Gallery:Fullscreen
 
 Discovery uses `[data-component="ViewsTheme:Gallery:…"]` — never CSS classes.
 
-Child → owner commands (Control / Canvas settle) resolve the **nearest** Gallery via `closest` + `getInstanceByElement` so nested fullscreen galleries do not cross-talk.
+Child → owner commands (Control) resolve the **nearest** Gallery via `closest` + `getInstanceByElement`. `ViewsTheme:Carousel:Change` is a bus event: the Gallery only adopts it when the emitting carousel's nearest Gallery is itself, so nested fullscreen galleries do not cross-talk.
 
-Canvas settle: `scrollend` clears the programmatic gate (timeout is fallback only) so a user swipe during smooth `goTo` still updates chrome.
+Canvas settle (Carousel): `scrollend` clears the programmatic gate (timeout is fallback only) so a user swipe during smooth `goTo` still updates chrome.
 
 ## Fullscreen flow
 
@@ -150,7 +155,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Active index | Gallery owner |
 | Active thumb / dot | `aria-current` — CSS keys off attribute |
 | Control ends | `disabled` + `aria-disabled` |
-| Canvas position | scroll-snap; `goTo` via `scrollIntoView` (element target); `scrollend` clears programmatic settle gate; `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
+| Canvas position | `Carousel` scroll-snap; `goTo` scrolls only the track (layout offsets, so no page jump); `scrollend` clears programmatic settle gate; `prefers-reduced-motion: reduce` → CSS `scroll-behavior: auto` + JS `behavior: 'auto'` on canvas/thumbs |
 
 ## CSS / sizing
 
@@ -160,7 +165,7 @@ Slide video poster/preload comes from the Storefront utility when `videoCoverMed
 | Thumb size | `.vi-gallery-thumb__image` **and** `.vi-gallery-thumb__poster` — `inline-size: var(--vi-thumb-size, 64px)`, `block-size: auto` (button has no fixed box size) |
 | Aspect ratio | Slide media: `var(--vi-media-ar, var(--vi-image-ar, 4 / 3))`; thumb: `var(--vi-image-ar, 1 / 1)`. Theme may set shared `--vi-image-ar`; fullscreen sets **only** `--vi-media-ar` so thumbs keep their box |
 | Layout | Host CVA: `d-grid gap-3 gap-md-4`; `mode=fullscreen` → `p-4 h-100 overflow-hidden`. CSS tokens for `cols` / `rows` / `areas` / heights only |
-| Canvas track | `.vi-gallery-canvas__track` — `display: grid`, `grid-auto-flow: column`, `grid-auto-columns: 100%`; `gap: var(--vi-canvas-gap, 1px)` anti-bleed between snap cells; `block-size: var(--vi-track-h, auto)` |
+| Canvas track | `Carousel` track (layout, snap, `block-size: var(--vi-track-h, auto)`, `grid-auto-rows: var(--vi-track-rows, auto)`). `Canvas.css` assigns `--vi-carousel-item-w: 100%` + `--vi-carousel-snap-stop: always` on `.vi-gallery-canvas`, and styles the track via its `.vi-gallery-canvas__track` class: `gap: var(--vi-canvas-gap, 1px)` anti-bleed (Carousel `gap=none` drops the utility gap), `border-radius: var(--vi-canvas-radius, 8px)`, `background: var(--vi-canvas-bg, transparent)` |
 | `mode=default` | Content-height: token fallbacks only (no host assigns) |
 | `mode=fullscreen` | CVA variant for padding/height/overflow. Host **assigns** geometry tokens only (`--vi-min-h`, `--vi-rows`, `--vi-media-ar` / `--vi-media-fit`, `--vi-*-h`, thumbs height). Never assigns shared `--vi-image-ar` / `--vi-image-fit` (thumbs consume those). No property re-declarations, no descendant selectors |
 | Orientation breakpoint | **Only** `Gallery.css` nested `@media (min-width: 768px)` — **assigns** track/height/snap tokens on multi host. Thumb direction is CVA `flex-md-column` |
@@ -186,13 +191,13 @@ Defaults: under + horizontal track; from `md+` start + vertical track + height l
 | `--vi-thumb-snap-align` | `start` (Thumb) | — | — | —; `thumbnailAlign=center` assigns `center` |
 | `--vi-thumbs-h` / `--vi-thumbs-min-h` | `auto` / `0` | — | `0` / `100%` | `auto` / `0` (md multi: h `100%`) |
 | `--vi-thumbs-track-h` | `auto` | — | `100%` | — |
-| `--vi-canvas-h` / `--vi-track-h` / `--vi-slide-h` / `--vi-media-h` | `auto` | — | — | `100%` |
+| `--vi-canvas-h` / `--vi-carousel-h` / `--vi-track-h` / `--vi-slide-h` / `--vi-media-h` | `auto` | — | — | `100%` (`--vi-carousel-h` / `--vi-track-h` are consumed by the composed `Carousel`) |
 | `--vi-track-rows` | `auto` (Canvas track `grid-auto-rows`) | — | — | `minmax(0, 100%)` — definite row so slide/media `%` heights resolve |
 | `--vi-image-ar` | slide `4 / 3` via chain; thumb `1 / 1` | — | — | **unset** (thumbs must keep box) |
 | `--vi-image-fit` | slide image `fill` / video `contain` via chain; thumb `cover` | — | — | **unset** (thumbs keep `cover`) |
 | `--vi-media-ar` / `--vi-media-fit` | fall through to `--vi-image-*` | — | — | `auto` / `contain` (slide canvas only) |
 
-`Thumbnails.css` / `Canvas.css` / `Slide.css` only **consume** height and media tokens. Host never re-declares those properties on variants.
+`Thumbnails.css` / `Canvas.css` / `Slide.css` / `Carousel.css` only **consume** height and media tokens. Host never re-declares those properties on variants.
 
 Thumb track is `Scroll:Area` (`.vi-gallery-thumbnails__track` + `.vi-scroll-area`) with inner `.vi-gallery-thumbnails__list` (CVA `d-flex flex-row flex-md-column gap-2`; `align=center` → `mx-auto my-auto`). Edge fades via `data-scroll-up|down|start|end` → `--fade-*` (eased, `var(--vi-fade, 40px)` / `var(--vi-fade-duration, 200ms)`); horizontal edges use `Math.abs(scrollLeft)` (Firefox RTL). `scrollToIndex` uses `getBoundingClientRect` + clamp; axis from computed `flex-direction` (`flex-md-column` at `md`).
 
@@ -210,7 +215,8 @@ Default PDP layout: `cms-block-gallery-buybox` left slot (unchanged).
 |------|------|
 | Controller | `src/Controller/GalleryFullscreenController.php` |
 | Gallery owner | `src/Resources/views/components/Gallery.*` |
-| Canvas / controls | `src/Resources/views/components/Gallery/{Canvas,Control,Slide,Thumb,Thumbnails,Dots,Dot}.*` |
+| Canvas / controls | `src/Resources/views/components/Gallery/{Canvas,Control,Slide,Thumb,Thumbnails,Dots,Dot}.*` (Canvas has no `.js`) |
+| Track (shared) | `src/Resources/views/components/Carousel.*`, `Carousel/Item.*` |
 | Control chrome (shared) | `src/Resources/views/components/Control.*` |
 | Fullscreen action | `src/Resources/views/components/Gallery/Action/Fullscreen.*` |
 | Fullscreen shell | `src/Resources/views/components/Gallery/Fullscreen.*` |
@@ -228,7 +234,7 @@ Default PDP layout: `cms-block-gallery-buybox` left slot (unchanged).
 ## Related
 
 - [Tabs](tabs.md) — same owner + identity-child pattern
-- [Carousel](carousel.md) — shared control chrome; scroll-snap carousel (Canvas follow-up #170)
+- [Carousel](carousel.md) — shared control chrome; the canvas scroll-snap track
 - [Buy container](buy-container.md) — buy column beside gallery
 - [Search overlay](search-overlay.md) — lazy shell lifecycle pattern
 - [JavaScript](../conventions/javascript.md)

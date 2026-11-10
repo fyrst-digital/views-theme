@@ -1,4 +1,6 @@
 .vi-carousel {
+  block-size: var(--vi-carousel-h, auto);
+
   /* Controls stay visible until JS reports the track does not overflow */
   &[data-overflow='false'] > .vi-carousel__controls {
     display: none;
@@ -8,6 +10,9 @@
 .vi-carousel__track {
   grid-auto-flow: column;
   grid-auto-columns: var(--vi-carousel-item-w, 200px);
+  grid-auto-rows: var(--vi-track-rows, auto);
+  min-block-size: 0;
+  block-size: var(--vi-track-h, auto);
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;

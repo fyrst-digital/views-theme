@@ -3,9 +3,11 @@
 **Hinweise zum Update**
 - Der Produkt-Slider der Erlebniswelten und das Cross-Selling auf der Produktseite verwenden jetzt das Karussell des Themes statt des Shopware-Sliders. Die Slider-Einstellungen für Autoplay, Geschwindigkeit, Rahmen, vertikale Ausrichtung, Darstellungsmodus und Pfeilposition werden nicht mehr verwendet. Template-Anpassungen der inneren `element_product_slider_*`-Blöcke greifen nicht mehr; erweitere stattdessen `Product:Carousel` oder den neuen Block `element_product_slider_carousel`.
 - Das Cross-Selling auf der Produktseite verwendet jetzt die Tabs des Themes (`Cms:CrossSelling`). Template-Anpassungen der inneren `cms_element_cross_selling_*`-Blöcke greifen nicht mehr; erweitere stattdessen `Cms:CrossSelling`.
+- Die Bildergalerie verwendet für ihre Slides jetzt das Karussell des Themes. Die JS-Komponente `ViewsTheme:Gallery:Canvas` (`Canvas.js`, `goTo`) wurde entfernt: rufe stattdessen `select(index)` auf der `Gallery`-Instanz auf. Die Nests von `Gallery:Canvas` heißen jetzt `carousel:*`, `item:*` und `slide:*` statt `track:*`. `Gallery:Slide` hat kein Prop `total` und keine Slide-Rolle und -Beschriftung mehr; beides trägt jetzt das umgebende Karussell-Element, dessen Beschriftung „1 von 6“ statt „Zeige Bild 1 von 6“ lautet.
 
 **Changelog**
 - Neues Produkt-Karussell für den Produkt-Slider und das Cross-Selling: Produkte lassen sich wischen oder scrollen, die Vor-/Zurück-Buttons verschwinden, wenn alle Produkte Platz haben
+- Die Produkt-Bildergalerie nutzt die Wisch-Spur des Karussells. Sie sieht aus und funktioniert wie bisher: Vorschaubilder und Punkte folgen deinem Wischen, und das aktuelle Bild bleibt an seinem Platz, wenn du das Fenster vergrößerst oder das Smartphone drehst
 - Cross-Selling-Tabs und ihre Produkte werden auf allen Bildschirmgrößen angezeigt; auf Smartphones wandern sie nicht mehr in ein Seitenmenü
 - Die Browser-Konsole zeigt die Warnung „Init method has to be implemented.“ in Kategorie-Listings und auf anderen Seiten mit Filtern oder dem Newsletter-Formular nicht mehr an
 
