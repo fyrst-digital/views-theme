@@ -135,6 +135,32 @@ Responsive: `.grid-columns-{breakpoint}-{n}` (e.g. `grid-columns-2 grid-columns-
 | `script` | Storefront + compiled `views-theme.js` |
 | `asset` | `app/storefront/src/assets` |
 
+### Sass variables for child themes
+
+`override.scss` and `scss/overrides/*.scss` run before `@StorefrontBootstrap`. Every Bootstrap variable they set ends in `!default`, so a child theme can set it first, in a file listed before `@ViewsTheme`:
+
+```json
+"style": [
+  "app/storefront/src/scss/overrides.scss",
+  "@ViewsTheme",
+  "app/storefront/src/scss/base.scss"
+]
+```
+
+```scss
+// child theme: app/storefront/src/scss/overrides.scss
+$btn-border-radius: var(--border-radius-pill);
+$input-border-radius: var(--border-radius-pill);
+```
+
+| Variable | Rule |
+|----------|------|
+| Scalars and maps (`$btn-*`, `$input-*`, `$form-*`, `$spacers`, `$radii`, `$grid-breakpoints`, …) | `!default`. A child value replaces ViewsTheme's value, and a child map replaces the whole map |
+| Derived values (`$container-padding-x`, `$container-max-widths`, `$form-select-focus-box-shadow`, …) | Computed from the variables above, so they follow a child's `$grid-gutter-width`, `$grid-breakpoints` or `$input-focus-box-shadow` |
+| `$utilities` (`overrides/_utilities.scss`) | Starts as `() !default`, then ViewsTheme's entries are merged under it. A child's entries win per key; ViewsTheme's other utilities stay |
+
+Core Shopware's Bootstrap variables also use `!default` and load after this file, so ViewsTheme's values still apply when no child theme sets them. A new variable assignment in these files must end in `!default` (or, for a map that other themes add to, merge like `$utilities`).
+
 ### Local fonts (Figtree)
 
 Variable fonts live under `app/storefront/src/assets/fonts/` and are declared in SCSS (`scss/_fonts.scss` → imported from `base.scss`) via `$app-css-relative-asset-path`:

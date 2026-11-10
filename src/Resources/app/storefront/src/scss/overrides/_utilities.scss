@@ -4,8 +4,10 @@ $grid-column-counts: ();
   $grid-column-counts: map-merge($grid-column-counts, ($i: unquote("repeat(#{$i}, minmax(0, 1fr))")));
 }
 
-// BUtilities overrides
-$utilities: (
+// Bootstrap utilities overrides. Merged under `$utilities` so a child theme's entries (set before
+// `@ViewsTheme`) win per key and ViewsTheme's other entries stay.
+$utilities: () !default;
+$utilities: map-merge((
   "width": (
     property: width,
     class: w,
@@ -80,4 +82,4 @@ $utilities: (
     responsive: true,
     values: $grid-column-counts
   ),
-);
+), $utilities);

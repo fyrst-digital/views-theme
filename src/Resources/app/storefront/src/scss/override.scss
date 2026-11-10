@@ -1,5 +1,5 @@
-$enable-cssgrid: true;
-$prefix: '';
+$enable-cssgrid: true !default;
+$prefix: '' !default;
 
 // Custom spacing scale — must be defined before Bootstrap is imported
 $spacers: (
@@ -14,7 +14,7 @@ $spacers: (
   8: $spacing-3xl,
   9: $spacing-4xl,
   10: $spacing-5xl,
-);
+) !default;
 
 $radii: (
   0: 0,
@@ -25,7 +25,7 @@ $radii: (
   5: $border-radius-xxl,
   6: $border-radius-2xl,
   7: $border-radius-pill,
-);
+) !default;
 
 $grid-breakpoints: (
   xs: 0,
@@ -34,10 +34,10 @@ $grid-breakpoints: (
   lg: 1024px,
   xl: 1260px,
   xxl: 1600px,
-);
+) !default;
 
-$grid-gutter-width: 40px;
-$container-padding-x: $grid-gutter-width;
+$grid-gutter-width: 40px !default;
+$container-padding-x: $grid-gutter-width !default;
 
 $container-max-widths: (
   xs: 360px,
@@ -46,7 +46,7 @@ $container-max-widths: (
   lg: map-get($grid-breakpoints, lg) - $container-padding-x,
   xl: map-get($grid-breakpoints, xl) - $container-padding-x,
   xxl: map-get($grid-breakpoints, xxl) - $container-padding-x,
-);
+) !default;
 
 $font-sizes: (
   1: $h1-font-size,
@@ -55,14 +55,14 @@ $font-sizes: (
   4: $h4-font-size,
   5: $h5-font-size,
   6: $h6-font-size
-);
+) !default;
 
 $line-heights: (
   1: 1.25,
   2: 1.5,
   3: 1.75,
   4: 2,
-);
+) !default;
 
 $icon-sizes: (
   1: $icon-size-sm,
@@ -71,7 +71,7 @@ $icon-sizes: (
   4: $icon-size-xl,
   5: $icon-size-2xl,
   6: $icon-size-3xl,
-);
+) !default;
 
 @import 'overrides/utilities';
 

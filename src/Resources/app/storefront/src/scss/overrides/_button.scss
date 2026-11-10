@@ -1,21 +1,21 @@
 // Horizontal padding is a Sass number ($spacing-lg = 20px) because Bootstrap multiplies $btn-padding-x* by .75
 // for .dropdown-toggle-split, which Sass cannot do on a var(). The emitted --btn-padding-x is set to
 // var(--spacing-5) in scss/_button.scss.
-$btn-padding-y: var(--spacing-3);
-$btn-padding-x: $spacing-lg;
-$btn-font-size: var(--font-size-5);
-$btn-line-height: var(--line-height-2);
-$btn-border-radius: var(--border-radius-lg);
-$btn-disabled-opacity: .5;
+$btn-padding-y: var(--spacing-3) !default;
+$btn-padding-x: $spacing-lg !default;
+$btn-font-size: var(--font-size-5) !default;
+$btn-line-height: var(--line-height-2) !default;
+$btn-border-radius: var(--border-radius-lg) !default;
+$btn-disabled-opacity: .5 !default;
 
-$btn-padding-y-sm: var(--spacing-2);
-$btn-padding-x-sm: $spacing-md;
-$btn-font-size-sm: var(--font-size-6);
-$btn-line-height-sm: var(--line-height-1);
-$btn-border-radius-sm: var(--border-radius-lg);
+$btn-padding-y-sm: var(--spacing-2) !default;
+$btn-padding-x-sm: $spacing-md !default;
+$btn-font-size-sm: var(--font-size-6) !default;
+$btn-line-height-sm: var(--line-height-1) !default;
+$btn-border-radius-sm: var(--border-radius-lg) !default;
 
-$btn-padding-y-lg: var(--spacing-3);
-$btn-padding-x-lg: $spacing-lg;
-$btn-font-size-lg: var(--font-size-4);
-$btn-line-height-lg: var(--line-height-2);
-$btn-border-radius-lg: var(--border-radius-lg);
+$btn-padding-y-lg: var(--spacing-3) !default;
+$btn-padding-x-lg: $spacing-lg !default;
+$btn-font-size-lg: var(--font-size-4) !default;
+$btn-line-height-lg: var(--line-height-2) !default;
+$btn-border-radius-lg: var(--border-radius-lg) !default;
