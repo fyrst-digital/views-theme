@@ -1,0 +1,65 @@
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['tabs', 'carousel']) %}
+
+{% if visible %}
+<div
+    {{ attributes }}
+    class="{{ vi_class('root') }}"
+>
+    {% block skip %}
+        {% if skipTarget %}
+            {% sw_include '@Storefront/storefront/component/skip-target.html.twig' with {
+                targetId: skipTarget,
+                snippet: 'component.cms.productGallery.skipProductGallery',
+            } %}
+        {% endif %}
+    {% endblock %}
+
+    {% block tabs %}
+        <twig:ViewsTheme:Tabs
+            class="{{ vi_class('tabs') }}"
+            active="{{ activeTabId }}"
+            {{ ...vi_attrs('tabs').all() }}
+        >
+            <twig:block name="tabs">
+                {% for entry in tabs %}
+                    <twig:ViewsTheme:Tabs:Tab
+                        id="{{ entry.tabId }}"
+                        panel="{{ entry.panelId }}"
+                        :active="loop.first"
+                    >
+                        <twig:block name="content">{{ entry.name }}</twig:block>
+                    </twig:ViewsTheme:Tabs:Tab>
+                {% endfor %}
+            </twig:block>
+
+            <twig:block name="panel">
+                {% for entry in tabs %}
+                    <twig:ViewsTheme:Tabs:Panel
+                        id="{{ entry.panelId }}"
+                        tab="{{ entry.tabId }}"
+                        class="{{ vi_class('panel') }}"
+                        :active="loop.first"
+                    >
+                        <twig:block name="content">
+                            <twig:ViewsTheme:Product:Carousel
+                                class="{{ vi_class('carousel') }}"
+                                :products="entry.products"
+                                :carousel:label="entry.name"
+                                {{ ...vi_attrs('carousel').defaults({
+                                    boxLayout: boxLayout,
+                                    itemWidth: itemWidth,
+                                }).all() }}
+                            />
+                        </twig:block>
+                    </twig:ViewsTheme:Tabs:Panel>
+                {% endfor %}
+            </twig:block>
+        </twig:ViewsTheme:Tabs>
+    {% endblock %}
+</div>
+
+{% if skipTarget %}
+    <div id="content-after-target-{{ skipTarget }}"></div>
+{% endif %}
+{% endif %}

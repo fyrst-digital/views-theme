@@ -30,6 +30,9 @@
             "fullscreenAriaLabel": "Fullscreen product gallery",
             "dotsAriaLabel": "Gallery slide navigation"
         },
+        "carousel": {
+            "slideLabel": "%index% of %total%"
+        },
         "checkout": {
             "confirmShippingTitle": "Shipping",
             "confirmBillingTitle": "Billing",

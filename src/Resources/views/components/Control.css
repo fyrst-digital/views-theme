@@ -1,0 +1,15 @@
+/* Shared circular control chrome (Gallery, Carousel). Position belongs to the host. */
+.vi-control {
+  inline-size: var(--vi-control-size, 40px);
+  block-size: var(--vi-control-size, 40px);
+  background: var(--vi-control-bg, var(--white));
+  color: var(--vi-control-color, currentColor);
+  box-shadow: var(--vi-control-shadow, 0 1px 4px rgba(0, 0, 0, 0.12));
+  appearance: none;
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: var(--vi-control-disabled-opacity, 0.4);
+    cursor: default;
+  }
+}

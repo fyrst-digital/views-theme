@@ -1,0 +1,27 @@
+{#
+    Shared circular icon button chrome (no behaviour). Interactive controls
+    (Gallery:Control, Carousel:Control, …) wrap it as their root host and add
+    their own `data-component`.
+#}
+{% props
+    icon = null, # vi_icon name | null
+    label = null,
+    cva = {},
+%}
+
+{% do vi_define_cva(cva) %}
+
+<button
+    {{ attributes.defaults({
+        type: 'button',
+        'aria-label': label ?: false,
+        title: label ?: false,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    {% block content %}
+        {% if icon %}
+            {{ vi_icon(icon) }}
+        {% endif %}
+    {% endblock %}
+</button>

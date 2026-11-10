@@ -1,0 +1,52 @@
+{% props
+    label = null,
+    controls = true,
+    rewind = false,
+    id = 'vi-carousel-' ~ random(),
+    cva = {},
+%}
+
+{% set trackId = id ~ '-track' %}
+
+{% do vi_define_cva(cva) %}
+{% do vi_define_attrs(['track', 'controls']) %}
+
+<div
+    {{ attributes.defaults({
+        id: id,
+        role: 'region',
+        'aria-roledescription': 'carousel',
+        'aria-label': label ?: false,
+        'data-component': 'ViewsTheme:Carousel',
+        'data-component-options': {
+            rewind: rewind,
+        }|json_encode,
+    }) }}
+    class="{{ vi_class('root') }}"
+>
+    <div
+        {{ vi_attrs('track').defaults({
+            id: trackId,
+            tabindex: '0',
+        }) }}
+        class="{{ vi_class('track') }}"
+    >
+        {% block content %}{% endblock %}
+    </div>
+
+    {% if controls %}
+        {% block controls %}
+            <div {{ vi_attrs('controls') }} class="{{ vi_class('controls') }}">
+                <twig:ViewsTheme:Carousel:Control
+                    direction="prev"
+                    :disabled="not rewind"
+                    aria-controls="{{ trackId }}"
+                />
+                <twig:ViewsTheme:Carousel:Control
+                    direction="next"
+                    aria-controls="{{ trackId }}"
+                />
+            </div>
+        {% endblock %}
+    {% endif %}
+</div>

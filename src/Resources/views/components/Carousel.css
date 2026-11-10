@@ -1,0 +1,29 @@
+.vi-carousel {
+  /* Controls stay visible until JS reports the track does not overflow */
+  &[data-overflow='false'] > .vi-carousel__controls {
+    display: none;
+  }
+}
+
+.vi-carousel__track {
+  grid-auto-flow: column;
+  grid-auto-columns: var(--vi-carousel-item-w, 200px);
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.vi-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vi-carousel__track {
+    scroll-behavior: auto;
+  }
+}
+
+.vi-carousel__controls {
+  padding-inline: var(--vi-control-inset, var(--spacing-2));
+}
