@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout\Success;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Checkout\Success;
 
-use Fyrst\ViewsTheme\Resources\views\components\Checkout\Success\Header;
-use Fyrst\ViewsTheme\Struct\PageTitleMeta;
+use Webflare\ViewsTheme\Resources\views\components\Checkout\Success\Header;
+use Webflare\ViewsTheme\Struct\PageTitleMeta;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionCollection;

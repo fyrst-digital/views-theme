@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components;
+namespace Webflare\ViewsTheme\Resources\views\components;
 
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;

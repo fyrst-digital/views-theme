@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Account;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Account;
 
-use Fyrst\ViewsTheme\Resources\views\components\Account\LoginRegister;
+use Webflare\ViewsTheme\Resources\views\components\Account\LoginRegister;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;

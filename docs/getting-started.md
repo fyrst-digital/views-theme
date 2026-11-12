@@ -19,6 +19,8 @@ bin/console plugin:refresh
 bin/console plugin:update ViewsTheme
 ```
 
+Upgrading from 1.x to 2.0 needs one-time steps before `plugin:refresh` (new package name and namespace): see [Upgrade to 2.0](../UPGRADE-2.0.md).
+
 ## Cloud Agent
 
 Cursor Cloud Agents create this shop with `shopware-cli` at `/home/ubuntu/shopware` on host MariaDB and PHP 8.3, and link this repository at `custom/static-plugins/ViewsTheme`. The Shopware release is the minimum version that satisfies `shopware/core` and `shopware/storefront` in `composer.json` (currently `^6.7.11`, installed as 6.7.11.0), with a database and a generated demo catalog (categories, products, manufacturers, customers, orders, media, reviews). That release pins `dompdf/dompdf` 3.1.4, which Composer blocks on published advisories, so the installer sets `COMPOSER_NO_SECURITY_BLOCKING=1` for this project create. The Shopware Security plugin does not patch third-party libraries. Storefront: http://127.0.0.1:8000. Admin: http://127.0.0.1:8000/admin (`admin` / `shopware`). From the shop directory, `shopware-cli project console` runs `bin/console`. ViewsTheme is assigned to the storefront sales channel.

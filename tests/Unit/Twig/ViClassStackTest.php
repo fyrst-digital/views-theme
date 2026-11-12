@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Twig;
+namespace Webflare\ViewsTheme\Tests\Unit\Twig;
 
-use Fyrst\ViewsTheme\Twig\ViUtilities;
+use Webflare\ViewsTheme\Twig\ViUtilities;
 use PHPUnit\Framework\TestCase;
 use Symfony\UX\TwigComponent\ComponentAttributes;
 use Symfony\UX\TwigComponent\ComponentStack;

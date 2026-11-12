@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Success;
+namespace Webflare\ViewsTheme\Resources\views\components\Checkout\Success;
 
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;

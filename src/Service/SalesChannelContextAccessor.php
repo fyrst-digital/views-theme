@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Service;
+namespace Webflare\ViewsTheme\Service;
 
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;

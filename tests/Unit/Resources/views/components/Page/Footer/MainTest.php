@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Page\Footer;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Page\Footer;
 
-use Fyrst\ViewsTheme\Resources\views\components\Page\Footer\Main;
-use Fyrst\ViewsTheme\Service\FooterCmsUrlResolver;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Resources\views\components\Page\Footer\Main;
+use Webflare\ViewsTheme\Service\FooterCmsUrlResolver;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address\Manager;
+namespace Webflare\ViewsTheme\Resources\views\components\Address\Manager;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\System\Country\CountryEntity;

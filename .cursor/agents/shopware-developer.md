@@ -42,9 +42,9 @@ Do **not** invent conventions from this file. Theme UI/JS/route rules live only 
 | Property | Value |
 |----------|-------|
 | **Technical plugin name** | `ViewsTheme` |
-| **Composer package** | `fyrst/views-theme` |
-| **PHP namespace** | `Fyrst\ViewsTheme` |
-| **Plugin base class** | `Fyrst\ViewsTheme\ViewsTheme` |
+| **Composer package** | `webflare/views-theme` |
+| **PHP namespace** | `Webflare\ViewsTheme` |
+| **Plugin base class** | `Webflare\ViewsTheme\ViewsTheme` |
 
 ## Technology Stack
 
@@ -102,7 +102,7 @@ Do **not** invent conventions from this file. Theme UI/JS/route rules live only 
 - **Never modify core files** — extensions, decorations, or Twig blocks
 - **Prefer `parent()`** in Twig blocks over copying entire parent templates
 - **Use DI** — no `Shopware()->Container()`, static container access, or superglobals in services
-- **PSR-12** / Shopware coding standards; namespace `Fyrst\ViewsTheme`
+- **PSR-12** / Shopware coding standards; namespace `Webflare\ViewsTheme`
 - **Cache / plugins only when needed** — `cache:clear`, `plugin:*`, migrations are allowed; builds are not
 
 ## Constraints & Anti-Patterns

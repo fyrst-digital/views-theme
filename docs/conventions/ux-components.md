@@ -52,7 +52,7 @@ A **class component is a valid, preferred pattern** when the template would othe
 **Rules:**
 
 - Co-locate `Name.php` next to `Name.html.twig`.
-- Namespace: `Fyrst\ViewsTheme\Resources\views\components\…` (Shopware `getTwigComponentNamespace()`).
+- Namespace: `Webflare\ViewsTheme\Resources\views\components\…` (Shopware `getTwigComponentNamespace()`).
 - `#[AsTwigComponent]` on the class; **no** `{% props %}` in the template (public props are the API).
 - Register via the `services.xml` prototype for `Resources/views/components/**/*.php` with **`autowire` + `autoconfigure`**. `autoconfigure` alone tags `#[AsTwigComponent]` but does **not** inject constructor deps (`Too few arguments to function …::__construct()`). Without registration, Twig **silently** falls back to the anonymous template and ignores the PHP class.
 - Scope: **view-model only** (defaults from sales-channel context, derive display fields, `visible`). No DAL, cart rules, or business workflows.
@@ -71,7 +71,7 @@ Symfony UX hydrates public props **after** `mount()` and **before** `#[PostMount
 
 ```php
 // src/Resources/views/components/Language/Action.php
-namespace Fyrst\ViewsTheme\Resources\views\components\Language;
+namespace Webflare\ViewsTheme\Resources\views\components\Language;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

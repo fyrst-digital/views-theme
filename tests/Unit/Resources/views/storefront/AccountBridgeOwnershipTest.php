@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\storefront;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\storefront;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Product;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Product;
 
-use Fyrst\ViewsTheme\Resources\views\components\Product\Carousel;
+use Webflare\ViewsTheme\Resources\views\components\Product\Carousel;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductCollection;

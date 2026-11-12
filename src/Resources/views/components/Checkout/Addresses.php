@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout;
+namespace Webflare\ViewsTheme\Resources\views\components\Checkout;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\System\Country\CountryEntity;

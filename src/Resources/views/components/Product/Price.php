@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product;
+namespace Webflare\ViewsTheme\Resources\views\components\Product;
 
-use Fyrst\ViewsTheme\Service\ProductPriceResolver;
+use Webflare\ViewsTheme\Service\ProductPriceResolver;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

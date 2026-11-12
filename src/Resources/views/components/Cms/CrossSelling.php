@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Cms;
+namespace Webflare\ViewsTheme\Resources\views\components\Cms;
 
-use Fyrst\ViewsTheme\Struct\CrossSellingTab;
+use Webflare\ViewsTheme\Struct\CrossSellingTab;
 use Shopware\Core\Content\Product\Aggregate\ProductCrossSelling\ProductCrossSellingEntity;
 use Shopware\Core\Content\Product\SalesChannel\CrossSelling\CrossSellingElement;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

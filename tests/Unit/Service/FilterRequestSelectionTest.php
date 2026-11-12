@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Service;
+namespace Webflare\ViewsTheme\Tests\Unit\Service;
 
-use Fyrst\ViewsTheme\Service\FilterRequestSelection;
+use Webflare\ViewsTheme\Service\FilterRequestSelection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 

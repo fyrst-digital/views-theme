@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Review;
+namespace Webflare\ViewsTheme\Resources\views\components\Review;
 
 use Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewResult;
 use Shopware\Core\Framework\Adapter\Request\RequestParamHelper;

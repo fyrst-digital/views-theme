@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product;
+namespace Webflare\ViewsTheme\Resources\views\components\Product;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 

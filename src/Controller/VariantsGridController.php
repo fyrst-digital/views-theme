@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Controller;
+namespace Webflare\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\VariantsLoader;
-use Fyrst\ViewsTheme\Struct\VariantsGridPagination;
+use Webflare\ViewsTheme\Service\VariantsLoader;
+use Webflare\ViewsTheme\Struct\VariantsGridPagination;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\Error\Error;
 use Shopware\Core\Checkout\Cart\LineItemFactoryRegistry;

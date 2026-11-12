@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fyrst-digital/views-theme.git"
+    "url": "git+https://github.com/webflare-sh/views-theme.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/fyrst-digital/views-theme/issues"
+    "url": "https://github.com/webflare-sh/views-theme/issues"
   },
-  "homepage": "https://github.com/fyrst-digital/views-theme#readme",
+  "homepage": "https://github.com/webflare-sh/views-theme#readme",
   "dependencies": {
     "@iconify/utils": "^3.1.4"
   },

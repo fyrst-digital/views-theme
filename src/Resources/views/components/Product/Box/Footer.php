@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product\Box;
+namespace Webflare\ViewsTheme\Resources\views\components\Product\Box;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\ProductDetailUrlBuilder;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Service;
+namespace Webflare\ViewsTheme\Service;
 
-use Fyrst\ViewsTheme\Struct\FilterFacet;
+use Webflare\ViewsTheme\Struct\FilterFacet;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Content\Property\PropertyGroupEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;

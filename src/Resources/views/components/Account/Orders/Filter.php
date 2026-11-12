@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Account\Orders;
+namespace Webflare\ViewsTheme\Resources\views\components\Account\Orders;
 
-use Fyrst\ViewsTheme\Struct\OrderHistoryPeriod;
+use Webflare\ViewsTheme\Struct\OrderHistoryPeriod;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

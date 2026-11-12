@@ -7,7 +7,7 @@
 
 ## Project Overview
 
-Shopware 6.7 storefront theme (`fyrst/views-theme`) with high-fidelity ecommerce UI (Twig/SCSS/JS). Desktop (1280px+) and mobile (375px).
+Shopware 6.7 storefront theme (`webflare/views-theme`) with high-fidelity ecommerce UI (Twig/SCSS/JS). Desktop (1280px+) and mobile (375px).
 
 Requires **Shopware Storefront ≥ 6.7.11** (UX Twig components).
 

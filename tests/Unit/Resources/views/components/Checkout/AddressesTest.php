@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Checkout;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Checkout;
 
-use Fyrst\ViewsTheme\Resources\views\components\Checkout\Addresses;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Resources\views\components\Checkout\Addresses;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;

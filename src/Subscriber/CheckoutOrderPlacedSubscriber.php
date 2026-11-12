@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Subscriber;
+namespace Webflare\ViewsTheme\Subscriber;
 
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;

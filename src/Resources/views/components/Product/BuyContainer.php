@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product;
+namespace Webflare\ViewsTheme\Resources\views\components\Product;
 
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 

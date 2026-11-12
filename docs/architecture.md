@@ -1,6 +1,6 @@
 # Architecture
 
-ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, product listing/filters, reviews, address manager, …).
+ViewsTheme is a Shopware 6.7 platform plugin (`webflare/views-theme`) that acts as a storefront theme and ships storefront features (variants grid, preferred delivery date, search overlay, navigation drawer/bar, cart drawer, product listing/filters, reviews, address manager, …).
 
 ## Identity
 
@@ -8,9 +8,9 @@ ViewsTheme is a Shopware 6.7 platform plugin (`fyrst/views-theme`) that acts as 
 |----------|-------|
 | Technical name | `ViewsTheme` |
 | Version | `1.1.5` (`composer.json`) |
-| Composer package | `fyrst/views-theme` |
-| PHP namespace | `Fyrst\ViewsTheme` |
-| Plugin class | `Fyrst\ViewsTheme\ViewsTheme` |
+| Composer package | `webflare/views-theme` |
+| PHP namespace | `Webflare\ViewsTheme` |
+| Plugin class | `Webflare\ViewsTheme\ViewsTheme` |
 | UX component namespace | `ViewsTheme` |
 
 ## Directory layout

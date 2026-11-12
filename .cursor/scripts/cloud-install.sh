@@ -43,10 +43,10 @@ fi
 write_plugin_link "$ROOT"
 write_env_local
 
-if ! shop composer show fyrst/views-theme >/dev/null 2>&1; then
+if ! shop composer show webflare/views-theme >/dev/null 2>&1; then
   shop composer config repositories.views-theme \
     '{"type":"path","url":"custom/static-plugins/ViewsTheme","options":{"symlink":true}}'
-  shop composer require fyrst/views-theme:@dev --no-interaction --no-scripts
+  shop composer require webflare/views-theme:@dev --no-interaction --no-scripts
 fi
 
 if ! shop shopware-cli project console system:is-installed; then

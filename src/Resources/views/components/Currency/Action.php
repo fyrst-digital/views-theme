@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Currency;
+namespace Webflare\ViewsTheme\Resources\views\components\Currency;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

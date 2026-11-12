@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Subscriber;
+namespace Webflare\ViewsTheme\Subscriber;
 
-use Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver;
+use Webflare\ViewsTheme\Service\ShippingMethodPriceResolver;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;

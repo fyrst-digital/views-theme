@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Controller;
+namespace Webflare\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
+use Webflare\ViewsTheme\Service\ComponentHtmlRenderer;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\UX\TwigComponent\ComponentRendererInterface;

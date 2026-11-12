@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Page;
+namespace Webflare\ViewsTheme\Resources\views\components\Page;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface;
 use Shopware\Core\SalesChannelRequest;
 use Shopware\Storefront\Theme\ThemeConfigValueAccessor;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Address\Input;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Address\Input;
 
-use Fyrst\ViewsTheme\Resources\views\components\Address\Input\AccountType;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Resources\views\components\Address\Input\AccountType;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Symfony\Component\HttpFoundation\RequestStack;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Page;
+namespace Webflare\ViewsTheme\Resources\views\components\Page;
 
-use Fyrst\ViewsTheme\Service\FooterCmsUrlResolver;
+use Webflare\ViewsTheme\Service\FooterCmsUrlResolver;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;

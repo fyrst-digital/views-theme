@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Service;
+namespace Webflare\ViewsTheme\Service;
 
-use Fyrst\ViewsTheme\Struct\ListingScope;
+use Webflare\ViewsTheme\Struct\ListingScope;
 use Shopware\Core\Content\Product\SalesChannel\Listing\AbstractProductListingRoute;
 use Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingResult;
 use Shopware\Core\Content\Product\SalesChannel\Search\AbstractProductSearchRoute;

@@ -246,11 +246,11 @@ reset_shopware_project() {
 plugin_root() {
   local candidate
   candidate="$(cd "$LIB_DIR/../.." && pwd)"
-  if [[ -f "$candidate/composer.json" ]] && grep -q '"fyrst/views-theme"' "$candidate/composer.json"; then
+  if [[ -f "$candidate/composer.json" ]] && grep -q '"webflare/views-theme"' "$candidate/composer.json"; then
     printf '%s\n' "$candidate"
     return 0
   fi
-  if [[ -f /workspace/composer.json ]] && grep -q '"fyrst/views-theme"' /workspace/composer.json; then
+  if [[ -f /workspace/composer.json ]] && grep -q '"webflare/views-theme"' /workspace/composer.json; then
     printf '%s\n' /workspace
     return 0
   fi

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Struct;
+namespace Webflare\ViewsTheme\Struct;
 
 use Shopware\Core\Content\Media\MediaEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;

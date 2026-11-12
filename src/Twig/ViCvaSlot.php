@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Twig;
+namespace Webflare\ViewsTheme\Twig;
 
 use Twig\Extra\Html\Cva;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Twig;
+namespace Webflare\ViewsTheme\Twig;
 
-use Fyrst\ViewsTheme\Service\ThemeParametersResolver;
+use Webflare\ViewsTheme\Service\ThemeParametersResolver;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\RequestStack;

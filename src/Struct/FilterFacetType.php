@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Struct;
+namespace Webflare\ViewsTheme\Struct;
 
-use Fyrst\ViewsTheme\Service\FilterComponents;
+use Webflare\ViewsTheme\Service\FilterComponents;
 use InvalidArgumentException;
 
 /**

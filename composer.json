@@ -1,12 +1,13 @@
 {
-  "name": "fyrst/views-theme",
+  "name": "webflare/views-theme",
   "description": "ViewsTheme - Shopware 6 storefront theme",
   "version": "1.1.5",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [
     {
-      "name": "Fyrst"
+      "name": "Webflare",
+      "homepage": "https://webflare.sh"
     }
   ],
   "require": {
@@ -14,8 +15,11 @@
     "shopware/storefront": "^6.7.11",
     "twig/html-extra": "^3.12"
   },
+  "replace": {
+    "fyrst/views-theme": "self.version"
+  },
   "extra": {
-    "shopware-plugin-class": "Fyrst\\ViewsTheme\\ViewsTheme",
+    "shopware-plugin-class": "Webflare\\ViewsTheme\\ViewsTheme",
     "plugin-icon": "src/Resources/config/plugin.png",
     "label": {
       "de-DE": "ViewsTheme",
@@ -24,12 +28,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Fyrst\\ViewsTheme\\": "src/"
+      "Webflare\\ViewsTheme\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Fyrst\\ViewsTheme\\Tests\\": "tests/"
+      "Webflare\\ViewsTheme\\Tests\\": "tests/"
     }
   }
 }

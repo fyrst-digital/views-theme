@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Checkout\Success;
+namespace Webflare\ViewsTheme\Resources\views\components\Checkout\Success;
 
-use Fyrst\ViewsTheme\Resources\views\components\Order\Addresses as OrderAddresses;
+use Webflare\ViewsTheme\Resources\views\components\Order\Addresses as OrderAddresses;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 /**

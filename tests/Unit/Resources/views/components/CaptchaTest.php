@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components;
 
-use Fyrst\ViewsTheme\Resources\views\components\Captcha;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\CaptchaEntry;
+use Webflare\ViewsTheme\Resources\views\components\Captcha;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Struct\CaptchaEntry;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SystemConfig\SystemConfigService;

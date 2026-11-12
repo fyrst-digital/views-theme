@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Cookie;
+namespace Webflare\ViewsTheme\Resources\views\components\Cookie;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\CookieEntryView;
-use Fyrst\ViewsTheme\Struct\CookieGroupView;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Struct\CookieEntryView;
+use Webflare\ViewsTheme\Struct\CookieGroupView;
 use Shopware\Core\Content\Cookie\Struct\CookieGroup;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

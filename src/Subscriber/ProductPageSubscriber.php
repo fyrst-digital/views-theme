@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Subscriber;
+namespace Webflare\ViewsTheme\Subscriber;
 
-use Fyrst\ViewsTheme\Service\VariantsLoader;
-use Fyrst\ViewsTheme\Struct\VariantsGridPagination;
+use Webflare\ViewsTheme\Service\VariantsLoader;
+use Webflare\ViewsTheme\Struct\VariantsGridPagination;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Product\ProductPageLoadedEvent;

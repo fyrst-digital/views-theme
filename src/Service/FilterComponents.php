@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Service;
+namespace Webflare\ViewsTheme\Service;
 
 /**
  * UX component names for filter facets (SoT for resolver / applier / payload builder).

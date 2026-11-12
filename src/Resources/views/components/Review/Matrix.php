@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Review;
+namespace Webflare\ViewsTheme\Resources\views\components\Review;
 
-use Fyrst\ViewsTheme\Service\ReviewPointsNormalizer;
+use Webflare\ViewsTheme\Service\ReviewPointsNormalizer;
 use Shopware\Core\Content\Product\SalesChannel\Review\MatrixElement;
 use Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewResult;
 use Symfony\Component\HttpFoundation\RequestStack;

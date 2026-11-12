@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components;
+namespace Webflare\ViewsTheme\Resources\views\components;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\CaptchaEntry;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Struct\CaptchaEntry;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

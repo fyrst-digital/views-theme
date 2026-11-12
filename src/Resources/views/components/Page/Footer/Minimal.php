@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Page\Footer;
+namespace Webflare\ViewsTheme\Resources\views\components\Page\Footer;
 
-use Fyrst\ViewsTheme\Service\FooterCmsUrlResolver;
+use Webflare\ViewsTheme\Service\FooterCmsUrlResolver;
 use Shopware\Storefront\Pagelet\Footer\FooterPagelet;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
@@ -24,7 +24,7 @@ class Minimal
 
     public string $shippingUrl = '#';
 
-    public string $brand = '<a href="https://fyrst.dev" target="_blank" rel="noopener noreferrer" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">fyrst.dev</a>';
+    public string $brand = '<a href="https://webflare.sh" target="_blank" rel="noopener noreferrer" class="link-underline link-offset-1 link-underline-opacity-50 text-body-tertiary fw-semibold">Webflare</a>';
 
     public function __construct(
         private readonly FooterCmsUrlResolver $footerCmsUrlResolver,
