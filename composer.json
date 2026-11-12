@@ -1,7 +1,7 @@
 {
   "name": "webflare/views-theme",
   "description": "ViewsTheme - Shopware 6 storefront theme",
-  "version": "1.1.5",
+  "version": "2.0.0",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [

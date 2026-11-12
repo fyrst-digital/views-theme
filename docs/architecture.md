@@ -7,7 +7,7 @@ ViewsTheme is a Shopware 6.7 platform plugin (`webflare/views-theme`) that acts 
 | Property | Value |
 |----------|-------|
 | Technical name | `ViewsTheme` |
-| Version | `1.1.5` (`composer.json`) |
+| Version | `2.0.0` (`composer.json`) |
 | Composer package | `webflare/views-theme` |
 | PHP namespace | `Webflare\ViewsTheme` |
 | Plugin class | `Webflare\ViewsTheme\ViewsTheme` |
