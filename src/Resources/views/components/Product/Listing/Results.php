@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product\Listing;
+namespace Webflare\ViewsTheme\Resources\views\components\Product\Listing;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Struct;
+namespace Webflare\ViewsTheme\Tests\Unit\Struct;
 
-use Fyrst\ViewsTheme\Struct\ConfiguratorOptionFace;
+use Webflare\ViewsTheme\Struct\ConfiguratorOptionFace;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\MediaEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductConfiguratorSetting\ProductConfiguratorSettingEntity;

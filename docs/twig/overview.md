@@ -22,10 +22,10 @@ Aliases: `vi_cva` / `vi_cva_from_file` → `vi_define_cva`.
 
 | Extension class | File |
 |-----------------|------|
-| `Fyrst\ViewsTheme\Twig\ViIcon` | `src/Twig/ViIcon.php` |
-| `Fyrst\ViewsTheme\Twig\ViUtilities` | `src/Twig/ViUtilities.php` |
-| `Fyrst\ViewsTheme\Twig\ViBlockTokenParser` / `ViBlockNode` | `src/Twig/ViBlockTokenParser.php` / `ViBlockNode.php` |
-| `Fyrst\ViewsTheme\Twig\ViCvaSlot` | `src/Twig/ViCvaSlot.php` |
+| `Webflare\ViewsTheme\Twig\ViIcon` | `src/Twig/ViIcon.php` |
+| `Webflare\ViewsTheme\Twig\ViUtilities` | `src/Twig/ViUtilities.php` |
+| `Webflare\ViewsTheme\Twig\ViBlockTokenParser` / `ViBlockNode` | `src/Twig/ViBlockTokenParser.php` / `ViBlockNode.php` |
+| `Webflare\ViewsTheme\Twig\ViCvaSlot` | `src/Twig/ViCvaSlot.php` |
 
 ## Conventions
 

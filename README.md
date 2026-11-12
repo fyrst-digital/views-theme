@@ -21,6 +21,10 @@ Full setup (theme assignment, asset build): [docs/getting-started.md](docs/getti
 - [English](CHANGELOG.md)
 - [Deutsch](CHANGELOG_de-DE.md)
 
+## Upgrade guides
+
+- [1.x to 2.0](UPGRADE-2.0.md) (package `fyrst/views-theme` → `webflare/views-theme`, namespace `Fyrst` → `Webflare`)
+
 ## Documentation
 
 | Topic | Link |

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Struct;
+namespace Webflare\ViewsTheme\Struct;
 
 /**
  * One switchable cookie of a CookieGroupView (a visible core `CookieEntry`).

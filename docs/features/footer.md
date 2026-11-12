@@ -84,7 +84,7 @@ Must stay registered via the components `**/*.php` service prototype (autowire +
 | `contactUrl` | Footer only — contact CMS page |
 | `revocationUrl` | Footer only — revocation CMS page (company). Minimal does not mount `Page:Footer:Revocation` |
 | `shippingUrl` | Shipping/payment info CMS page (VAT snippet). Passed into Bottom |
-| `brand` | Theme-credit link (`%brand%`). Minimal forwards it to Bottom; Bottom’s own default is the same fyrst.dev `<a>` |
+| `brand` | Theme-credit link (`%brand%`). Minimal forwards it to Bottom; Bottom’s own default is the same Webflare `<a>` (`https://webflare.sh`) |
 | `showRevocation` | Footer only — `core.basicInformation.showRevocationButton` and a revocation page id |
 | `paymentLogos` | Footer only — payment methods with media (`media`, `alt`, `title`) |
 | `shippingLogos` | Footer only — shipping methods with media (`media`, `alt`, `title`) |
@@ -112,7 +112,7 @@ Links are `Button` (`type: link`, `link: true`, `color: dark`, `size: sm`) with 
 
 ## Snippets
 
-Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal shows the shop claim `viewsTheme.shopCopyright` (`%year%`, `%shop%` from `core.basicInformation.shopName`, else the sales channel name). The theme credit `viewsTheme.copyright` is `Page:Footer:Bottom` in both footers (`%brand%` from `brand`, default fyrst.dev `<a>`). Minimal forwards `:brand` into Bottom.
+Reuse core `footer.*` keys for shop content. No Shopware copyright icon. Minimal shows the shop claim `viewsTheme.shopCopyright` (`%year%`, `%shop%` from `core.basicInformation.shopName`, else the sales channel name). The theme credit `viewsTheme.copyright` is `Page:Footer:Bottom` in both footers (`%brand%` from `brand`, default Webflare `<a>`). Minimal forwards `:brand` into Bottom.
 
 | Key | Where |
 |-----|--------|

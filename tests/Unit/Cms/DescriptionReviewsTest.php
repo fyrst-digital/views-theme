@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Cms;
+namespace Webflare\ViewsTheme\Tests\Unit\Cms;
 
-use Fyrst\ViewsTheme\Resources\views\components\Cms\DescriptionReviews;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Resources\views\components\Cms\DescriptionReviews;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SystemConfig\SystemConfigService;

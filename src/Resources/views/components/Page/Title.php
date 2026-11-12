@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Page;
+namespace Webflare\ViewsTheme\Resources\views\components\Page;
 
-use Fyrst\ViewsTheme\Struct\PageTitleMeta;
+use Webflare\ViewsTheme\Struct\PageTitleMeta;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;
 

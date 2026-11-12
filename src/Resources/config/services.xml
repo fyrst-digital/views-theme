@@ -5,96 +5,96 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Class-backed UX components (#[AsTwigComponent]); without this, PHP is ignored -->
-        <prototype namespace="Fyrst\ViewsTheme\Resources\views\components\"
+        <prototype namespace="Webflare\ViewsTheme\Resources\views\components\"
                    resource="../views/components/**/*.php"
                    autowire="true"
                    autoconfigure="true"
                    public="false"/>
 
-        <service id="Fyrst\ViewsTheme\Twig\ViIcon">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
+        <service id="Webflare\ViewsTheme\Twig\ViIcon">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ThemeParametersResolver"/>
             <argument type="service" id="request_stack"/>
             <tag name="twig.extension"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Twig\ViUtilities">
+        <service id="Webflare\ViewsTheme\Twig\ViUtilities">
             <argument type="service" id="ux.twig_component.component_stack" on-invalid="null"/>
             <argument type="service" id="ux.twig_component.component_factory" on-invalid="null"/>
             <tag name="twig.extension"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Service\ThemeParametersResolver">
+        <service id="Webflare\ViewsTheme\Service\ThemeParametersResolver">
             <argument type="service" id="Shopware\Storefront\Theme\StorefrontPluginRegistry"/>
             <argument type="service" id="theme.repository"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Service\ThemeCssVariables">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
+        <service id="Webflare\ViewsTheme\Service\ThemeCssVariables">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ThemeParametersResolver"/>
             <argument type="service" id="Shopware\Storefront\Theme\ThemeConfigValueAccessor"/>
             <argument type="service" id="request_stack"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Twig\ThemeCssVariablesExtension">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeCssVariables"/>
+        <service id="Webflare\ViewsTheme\Twig\ThemeCssVariablesExtension">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ThemeCssVariables"/>
             <tag name="twig.extension"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Subscriber\ThemeConfigSubscriber">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ThemeParametersResolver"/>
+        <service id="Webflare\ViewsTheme\Subscriber\ThemeConfigSubscriber">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ThemeParametersResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Subscriber\CartContextSubscriber">
+        <service id="Webflare\ViewsTheme\Subscriber\CartContextSubscriber">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\SalesChannelContextAccessor">
+        <service id="Webflare\ViewsTheme\Service\SalesChannelContextAccessor">
             <argument type="service" id="request_stack"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\FooterCmsUrlResolver">
+        <service id="Webflare\ViewsTheme\Service\FooterCmsUrlResolver">
             <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\SalesChannelContextAccessor"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\SalesChannelContextAccessor"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer">
+        <service id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaUrlPlaceholderHandlerInterface"/>
             <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\ProductListingGateway">
+        <service id="Webflare\ViewsTheme\Service\ProductListingGateway">
             <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Listing\ProductListingRoute"/>
             <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Search\ProductSearchRoute"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterRequestSelection"/>
+        <service id="Webflare\ViewsTheme\Service\FilterRequestSelection"/>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
+        <service id="Webflare\ViewsTheme\Service\FilterAvailabilityApplier"/>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterFacetResolver">
+        <service id="Webflare\ViewsTheme\Service\FilterFacetResolver">
             <argument type="service" id="translator"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterAggregationLoader">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
+        <service id="Webflare\ViewsTheme\Service\FilterAggregationLoader">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ProductListingGateway"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterFacetPipeline">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterFacetResolver"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAggregationLoader"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterAvailabilityApplier"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterRequestSelection"/>
+        <service id="Webflare\ViewsTheme\Service\FilterFacetPipeline">
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterFacetResolver"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterAggregationLoader"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterAvailabilityApplier"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterRequestSelection"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterFacetPipeline"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+        <service id="Webflare\ViewsTheme\Service\FilterOptionsPayloadBuilder">
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterFacetPipeline"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ProductListingGateway"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\VariantsGridController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\VariantsGridController" public="true">
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\LineItemFactoryRegistry"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="twig"/>
             <call method="setContainer">
@@ -102,27 +102,27 @@
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\SearchOverlayController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\SearchOverlayController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Suggest\SuggestPageLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\GalleryFullscreenController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\GalleryFullscreenController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Core\Content\Media\SalesChannel\MediaRoute"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\NavigationDrawerController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\NavigationDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Pagelet\Menu\Offcanvas\MenuOffcanvasPageletLoader"/>
             <argument type="service" id="Shopware\Storefront\Pagelet\Header\HeaderPageletLoader"/>
             <call method="setContainer">
@@ -130,93 +130,93 @@
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\NavigationFlyoutController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\NavigationFlyoutController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Core\Content\Category\Service\NavigationLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\CartDrawerController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\CartDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\CookieController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\CookieController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Core\Content\Cookie\SalesChannel\CookieRoute"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\CartPageController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\CartPageController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\VariantsLoader">
+        <service id="Webflare\ViewsTheme\Service\VariantsLoader">
             <argument type="service" id="sales_channel.product.repository"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder">
+        <service id="Webflare\ViewsTheme\Service\ProductDetailUrlBuilder">
             <argument type="service" id="Shopware\Core\Content\Seo\SeoUrlPlaceholderHandlerInterface"/>
             <argument type="service" id="request_stack"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\ProductPriceResolver"/>
+        <service id="Webflare\ViewsTheme\Service\ProductPriceResolver"/>
 
-        <service id="Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver">
+        <service id="Webflare\ViewsTheme\Service\ShippingMethodPriceResolver">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Delivery\DeliveryBuilder"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Delivery\DeliveryCalculator"/>
             <argument type="service" id="shipping_method.repository"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\ListingController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\ListingController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\FilterOptionsPayloadBuilder"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ProductListingGateway"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\FilterOptionsPayloadBuilder"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\FilterDrawerController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\FilterDrawerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductListingGateway"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ProductListingGateway"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+        <service id="Webflare\ViewsTheme\Service\ReviewPointsNormalizer"/>
 
-        <service id="Fyrst\ViewsTheme\Service\ProductReviewGateway">
+        <service id="Webflare\ViewsTheme\Service\ProductReviewGateway">
             <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewLoader"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ReviewPointsNormalizer"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Subscriber\ReviewRequestSubscriber">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ReviewPointsNormalizer"/>
+        <service id="Webflare\ViewsTheme\Subscriber\ReviewRequestSubscriber">
+            <argument type="service" id="Webflare\ViewsTheme\Service\ReviewPointsNormalizer"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\AddressManagerController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\AddressManagerController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
             <argument type="service" id="Shopware\Storefront\Page\Address\Listing\AddressListingPageLoader"/>
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\ListAddressRoute"/>
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\UpsertAddressRoute"/>
@@ -226,36 +226,36 @@
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Controller\ReviewController" public="true">
+        <service id="Webflare\ViewsTheme\Controller\ReviewController" public="true">
             <argument type="service" id="Symfony\UX\TwigComponent\ComponentRendererInterface"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ComponentHtmlRenderer"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ProductReviewGateway"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ComponentHtmlRenderer"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ProductReviewGateway"/>
             <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewSaveRoute"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Subscriber\ProductPageSubscriber">
-            <argument type="service" id="Fyrst\ViewsTheme\Service\VariantsLoader"/>
+        <service id="Webflare\ViewsTheme\Subscriber\ProductPageSubscriber">
+            <argument type="service" id="Webflare\ViewsTheme\Service\VariantsLoader"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="request_stack"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="Fyrst\ViewsTheme\Subscriber\CheckoutConfirmPageSubscriber">
+        <service id="Webflare\ViewsTheme\Subscriber\CheckoutConfirmPageSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
-            <argument type="service" id="Fyrst\ViewsTheme\Service\ShippingMethodPriceResolver"/>
+            <argument type="service" id="Webflare\ViewsTheme\Service\ShippingMethodPriceResolver"/>
             <tag name="kernel.event_subscriber"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Subscriber\CheckoutFinishPageSubscriber">
+        <service id="Webflare\ViewsTheme\Subscriber\CheckoutFinishPageSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Subscriber\AccountOrderPageSubscriber">
+        <service id="Webflare\ViewsTheme\Subscriber\AccountOrderPageSubscriber">
             <argument type="service" id="state_machine_state.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
-        <service id="Fyrst\ViewsTheme\Subscriber\CheckoutOrderPlacedSubscriber">
+        <service id="Webflare\ViewsTheme\Subscriber\CheckoutOrderPlacedSubscriber">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="order.repository"/>

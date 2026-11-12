@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Service;
+namespace Webflare\ViewsTheme\Tests\Unit\Service;
 
-use Fyrst\ViewsTheme\Service\ComponentData;
+use Webflare\ViewsTheme\Service\ComponentData;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\Country\CountryEntity;

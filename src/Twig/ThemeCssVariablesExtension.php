@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Twig;
+namespace Webflare\ViewsTheme\Twig;
 
-use Fyrst\ViewsTheme\Service\ThemeCssVariables;
+use Webflare\ViewsTheme\Service\ThemeCssVariables;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

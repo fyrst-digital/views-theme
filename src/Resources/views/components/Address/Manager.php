@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address;
+namespace Webflare\ViewsTheme\Resources\views\components\Address;
 
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Storefront\Page\Address\Listing\AddressListingPage;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components;
 
-use Fyrst\ViewsTheme\Resources\views\components\Address;
+use Webflare\ViewsTheme\Resources\views\components\Address;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;

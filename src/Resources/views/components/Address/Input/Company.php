@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address\Input;
+namespace Webflare\ViewsTheme\Resources\views\components\Address\Input;
 
-use Fyrst\ViewsTheme\Service\ComponentData;
+use Webflare\ViewsTheme\Service\ComponentData;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

@@ -1,3 +1,14 @@
+# 2.0.0
+
+**Upgrade notes**
+- **Breaking change:** ViewsTheme moved from Fyrst to Webflare. The Composer package is now `webflare/views-theme` and the PHP namespace is `Webflare\ViewsTheme`. Shops that run 1.x must switch the Composer package and update the plugin row in the database once, after the new code is deployed and before `plugin:refresh`. Without that step the theme is not loaded and `plugin:refresh` fails. Follow the upgrade guide: https://github.com/webflare-sh/views-theme/blob/master/UPGRADE-2.0.md
+- PHP code and service configuration in child themes or plugins that refer to `Fyrst\ViewsTheme` classes or service IDs must use `Webflare\ViewsTheme` instead. Twig, SCSS, JS and snippet overrides need no changes. The theme assignment, theme settings and plugin configuration are kept.
+- The default theme credit in the footer now links to webflare.sh. Shops that pass their own `brand` keep theirs.
+
+**Changelog**
+- ViewsTheme is now published by Webflare: Composer package `webflare/views-theme`, repository https://github.com/webflare-sh/views-theme
+- The footer theme credit reads "Webflare" and links to https://webflare.sh
+
 # 1.1.5
 
 **Upgrade notes**

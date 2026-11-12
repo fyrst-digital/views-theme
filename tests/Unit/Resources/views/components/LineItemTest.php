@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components;
 
-use Fyrst\ViewsTheme\Resources\views\components\LineItem;
+use Webflare\ViewsTheme\Resources\views\components\LineItem;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem as CartLineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;

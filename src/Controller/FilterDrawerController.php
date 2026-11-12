@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Controller;
+namespace Webflare\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
-use Fyrst\ViewsTheme\Service\ProductListingGateway;
-use Fyrst\ViewsTheme\Struct\ListingScope;
+use Webflare\ViewsTheme\Service\ComponentHtmlRenderer;
+use Webflare\ViewsTheme\Service\ProductListingGateway;
+use Webflare\ViewsTheme\Struct\ListingScope;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;

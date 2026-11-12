@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Subscriber;
+namespace Webflare\ViewsTheme\Subscriber;
 
-use Fyrst\ViewsTheme\Struct\OrderHistoryPeriod;
+use Webflare\ViewsTheme\Struct\OrderHistoryPeriod;
 use Shopware\Core\Checkout\Order\OrderStates;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;

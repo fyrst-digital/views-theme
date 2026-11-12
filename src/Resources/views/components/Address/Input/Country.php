@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Address\Input;
+namespace Webflare\ViewsTheme\Resources\views\components\Address\Input;
 
-use Fyrst\ViewsTheme\Service\ComponentData;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Service\ComponentData;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
 use Shopware\Core\System\Country\CountryEntity;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Translation\TranslatorInterface;

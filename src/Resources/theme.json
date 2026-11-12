@@ -1,6 +1,6 @@
 {
   "name": "ViewsTheme",
-  "author": "fyrst.dev",
+  "author": "Webflare",
   "previewMedia": "theme-preview.png",
   "views": ["@Storefront", "@ViewsTheme"],
   "style": [

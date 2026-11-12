@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Order;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Order;
 
-use Fyrst\ViewsTheme\Resources\views\components\Order\Item;
+use Webflare\ViewsTheme\Resources\views\components\Order\Item;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;

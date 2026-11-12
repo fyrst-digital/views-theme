@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components;
+namespace Webflare\ViewsTheme\Resources\views\components;
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem as CartLineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Struct;
+namespace Webflare\ViewsTheme\Struct;
 
 /**
  * One active captcha for Captcha.

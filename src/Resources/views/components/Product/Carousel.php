@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product;
+namespace Webflare\ViewsTheme\Resources\views\components\Product;
 
 use Shopware\Core\Framework\Struct\Collection;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;

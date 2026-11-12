@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Service;
+namespace Webflare\ViewsTheme\Service;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Storefront\Page\Account\Login\AccountLoginPage;

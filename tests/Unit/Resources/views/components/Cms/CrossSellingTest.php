@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Tests\Unit\Resources\views\components\Cms;
+namespace Webflare\ViewsTheme\Tests\Unit\Resources\views\components\Cms;
 
-use Fyrst\ViewsTheme\Resources\views\components\Cms\CrossSelling;
+use Webflare\ViewsTheme\Resources\views\components\Cms\CrossSelling;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\Aggregate\ProductCrossSelling\ProductCrossSellingEntity;
 use Shopware\Core\Content\Product\ProductCollection;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Controller;
+namespace Webflare\ViewsTheme\Controller;
 
-use Fyrst\ViewsTheme\Service\ComponentHtmlRenderer;
+use Webflare\ViewsTheme\Service\ComponentHtmlRenderer;
 use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Content\Media\SalesChannel\AbstractMediaRoute;
 use Shopware\Core\Framework\Uuid\Uuid;

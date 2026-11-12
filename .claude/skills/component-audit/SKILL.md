@@ -5,11 +5,11 @@ description: Audit ViewsTheme UX components for dead, duplicated or overlapping 
 
 # Component audit (issue #64)
 
-Recurring task: keep the component set under `src/Resources/views/components/` minimal, with generic components reused instead of near-copies. Issue: https://github.com/fyrst-digital/views-theme/issues/64 (repo `fyrst-digital/views-theme`).
+Recurring task: keep the component set under `src/Resources/views/components/` minimal, with generic components reused instead of near-copies. Issue: https://github.com/webflare-sh/views-theme/issues/64 (repo `webflare-sh/views-theme`).
 
 **Phases are gated.** Audit and plan first, post them, and wait for the user's decision before touching code. Never continue to the next plan step on your own; implement only what the user approved.
 
-Read before starting: [hard-rules.md](../../../docs/conventions/hard-rules.md), [agent-workflow.md](../../../docs/conventions/agent-workflow.md) (no builds, surgical edits, holistic refactors), [ux-components.md](../../../docs/conventions/ux-components.md) (incl. "Skip the mount instead of self-gating"), [components.md](../../../docs/conventions/components.md). Read the previous audit and progress comments on #64 first (`gh issue view 64 --repo fyrst-digital/views-theme --comments`) so you only report what is new and do not re-propose items the user already decided against.
+Read before starting: [hard-rules.md](../../../docs/conventions/hard-rules.md), [agent-workflow.md](../../../docs/conventions/agent-workflow.md) (no builds, surgical edits, holistic refactors), [ux-components.md](../../../docs/conventions/ux-components.md) (incl. "Skip the mount instead of self-gating"), [components.md](../../../docs/conventions/components.md). Read the previous audit and progress comments on #64 first (`gh issue view 64 --repo webflare-sh/views-theme --comments`) so you only report what is new and do not re-propose items the user already decided against.
 
 ## 1. Audit (read-only)
 

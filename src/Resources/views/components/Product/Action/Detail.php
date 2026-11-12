@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product\Action;
+namespace Webflare\ViewsTheme\Resources\views\components\Product\Action;
 
-use Fyrst\ViewsTheme\Service\ProductDetailUrlBuilder;
+use Webflare\ViewsTheme\Service\ProductDetailUrlBuilder;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PostMount;

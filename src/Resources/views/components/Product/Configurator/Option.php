@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Product\Configurator;
+namespace Webflare\ViewsTheme\Resources\views\components\Product\Configurator;
 
-use Fyrst\ViewsTheme\Struct\ConfiguratorOptionFace;
+use Webflare\ViewsTheme\Struct\ConfiguratorOptionFace;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
 use Shopware\Core\Content\Property\PropertyGroupEntity;

@@ -93,4 +93,5 @@ Families that exist in code but are only covered lightly (or not at all) under `
 ## Related
 
 - Root [README](../README.md) — product overview and quick install
+- [Upgrade to 2.0](../UPGRADE-2.0.md) — 1.x → 2.0 (Fyrst → Webflare package and namespace)
 - [AGENTS.md](../AGENTS.md) — AI agent routing (no convention prose)

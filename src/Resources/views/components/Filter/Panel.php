@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme\Resources\views\components\Filter;
+namespace Webflare\ViewsTheme\Resources\views\components\Filter;
 
-use Fyrst\ViewsTheme\Service\FilterFacetPipeline;
-use Fyrst\ViewsTheme\Service\SalesChannelContextAccessor;
-use Fyrst\ViewsTheme\Struct\FilterFacet;
+use Webflare\ViewsTheme\Service\FilterFacetPipeline;
+use Webflare\ViewsTheme\Service\SalesChannelContextAccessor;
+use Webflare\ViewsTheme\Struct\FilterFacet;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\RequestStack;

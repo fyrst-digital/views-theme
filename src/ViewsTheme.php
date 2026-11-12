@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fyrst\ViewsTheme;
+namespace Webflare\ViewsTheme;
 
 use Shopware\Core\Framework\Plugin;
 use Shopware\Storefront\Framework\ThemeInterface;
